@@ -1,7 +1,7 @@
 ARG IMG_TAG=latest
 
-# Compile the gaiad binary
-FROM golang:1.21-alpine AS gaiad-builder
+# Compile the atomoned binary
+FROM golang:1.21-alpine AS atomoned-builder
 WORKDIR /src/app/
 COPY go.mod go.sum* ./
 RUN go mod download
@@ -14,8 +14,8 @@ RUN CGO_ENABLED=0 make install
 FROM alpine:$IMG_TAG
 RUN adduser -D nonroot
 ARG IMG_TAG
-COPY --from=gaiad-builder /go/bin/gaiad /usr/local/bin/
+COPY --from=atomoned-builder /go/bin/atomoned /usr/local/bin/
 EXPOSE 26656 26657 1317 9090
 USER nonroot
 
-ENTRYPOINT ["gaiad", "start"]
+ENTRYPOINT ["atomoned", "start"]

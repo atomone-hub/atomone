@@ -1,4 +1,4 @@
-package gaia
+package atomone
 
 import (
 	"fmt"
@@ -51,31 +51,30 @@ import (
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
-	gaiaante "github.com/cosmos/gaia/v15/ante"
-	"github.com/cosmos/gaia/v15/app/keepers"
-	"github.com/cosmos/gaia/v15/app/params"
-	"github.com/cosmos/gaia/v15/app/upgrades"
-	v15 "github.com/cosmos/gaia/v15/app/upgrades/v15"
-	"github.com/cosmos/gaia/v15/x/globalfee"
+	atomoneante "github.com/atomone-hub/atomone/ante"
+	"github.com/atomone-hub/atomone/app/keepers"
+	"github.com/atomone-hub/atomone/app/params"
+	"github.com/atomone-hub/atomone/app/upgrades"
+	"github.com/atomone-hub/atomone/x/globalfee"
 )
 
 var (
 	// DefaultNodeHome default home directories for the application daemon
 	DefaultNodeHome string
 
-	Upgrades = []upgrades.Upgrade{v15.Upgrade}
+	Upgrades = []upgrades.Upgrade{}
 )
 
 var (
-	_ runtime.AppI            = (*GaiaApp)(nil)
-	_ servertypes.Application = (*GaiaApp)(nil)
-	_ ibctesting.TestingApp   = (*GaiaApp)(nil)
+	_ runtime.AppI            = (*AtomOneApp)(nil)
+	_ servertypes.Application = (*AtomOneApp)(nil)
+	_ ibctesting.TestingApp   = (*AtomOneApp)(nil)
 )
 
-// GaiaApp extends an ABCI application, but with most of its parameters exported.
+// AtomOneApp extends an ABCI application, but with most of its parameters exported.
 // They are exported for convenience in creating helper functions, as object
 // capabilities aren't needed for testing.
-type GaiaApp struct { //nolint: revive
+type AtomOneApp struct { //nolint: revive
 	*baseapp.BaseApp
 	keepers.AppKeepers
 
@@ -99,11 +98,11 @@ func init() {
 		panic(err)
 	}
 
-	DefaultNodeHome = filepath.Join(userHomeDir, ".gaia")
+	DefaultNodeHome = filepath.Join(userHomeDir, ".atomone")
 }
 
-// NewGaiaApp returns a reference to an initialized Gaia.
-func NewGaiaApp(
+// NewAtomOneApp returns a reference to an initialized AtomOne.
+func NewAtomOneApp(
 	logger log.Logger,
 	db dbm.DB,
 	traceStore io.Writer,
@@ -113,7 +112,7 @@ func NewGaiaApp(
 	encodingConfig params.EncodingConfig,
 	appOpts servertypes.AppOptions,
 	baseAppOptions ...func(*baseapp.BaseApp),
-) *GaiaApp {
+) *AtomOneApp {
 	appCodec := encodingConfig.Marshaler
 	legacyAmino := encodingConfig.Amino
 	interfaceRegistry := encodingConfig.InterfaceRegistry
@@ -135,7 +134,7 @@ func NewGaiaApp(
 	bApp.SetInterfaceRegistry(interfaceRegistry)
 	bApp.SetTxEncoder(txConfig.TxEncoder())
 
-	app := &GaiaApp{
+	app := &AtomOneApp{
 		BaseApp:           bApp,
 		legacyAmino:       legacyAmino,
 		txConfig:          txConfig,
@@ -214,8 +213,8 @@ func NewGaiaApp(
 	app.MountTransientStores(app.GetTransientStoreKey())
 	app.MountMemoryStores(app.GetMemoryStoreKey())
 
-	anteHandler, err := gaiaante.NewAnteHandler(
-		gaiaante.HandlerOptions{
+	anteHandler, err := atomoneante.NewAnteHandler(
+		atomoneante.HandlerOptions{
 			HandlerOptions: ante.HandlerOptions{
 				AccountKeeper:   app.AccountKeeper,
 				BankKeeper:      app.BankKeeper,
@@ -254,20 +253,20 @@ func NewGaiaApp(
 }
 
 // Name returns the name of the App
-func (app *GaiaApp) Name() string { return app.BaseApp.Name() }
+func (app *AtomOneApp) Name() string { return app.BaseApp.Name() }
 
 // BeginBlocker application updates every begin block
-func (app *GaiaApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.ResponseBeginBlock {
+func (app *AtomOneApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.ResponseBeginBlock {
 	return app.mm.BeginBlock(ctx, req)
 }
 
 // EndBlocker application updates every end block
-func (app *GaiaApp) EndBlocker(ctx sdk.Context, req abci.RequestEndBlock) abci.ResponseEndBlock {
+func (app *AtomOneApp) EndBlocker(ctx sdk.Context, req abci.RequestEndBlock) abci.ResponseEndBlock {
 	return app.mm.EndBlock(ctx, req)
 }
 
 // InitChainer application update at chain initialization
-func (app *GaiaApp) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.ResponseInitChain {
+func (app *AtomOneApp) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.ResponseInitChain {
 	var genesisState GenesisState
 	if err := tmjson.Unmarshal(req.AppStateBytes, &genesisState); err != nil {
 		panic(err)
@@ -279,12 +278,12 @@ func (app *GaiaApp) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci
 }
 
 // LoadHeight loads a particular height
-func (app *GaiaApp) LoadHeight(height int64) error {
+func (app *AtomOneApp) LoadHeight(height int64) error {
 	return app.LoadVersion(height)
 }
 
 // ModuleAccountAddrs returns all the app's module account addresses.
-func (app *GaiaApp) ModuleAccountAddrs() map[string]bool {
+func (app *AtomOneApp) ModuleAccountAddrs() map[string]bool {
 	modAccAddrs := make(map[string]bool)
 	for acc := range maccPerms {
 		modAccAddrs[authtypes.NewModuleAddress(acc).String()] = true
@@ -295,7 +294,7 @@ func (app *GaiaApp) ModuleAccountAddrs() map[string]bool {
 
 // BlockedModuleAccountAddrs returns all the app's blocked module account
 // addresses.
-func (app *GaiaApp) BlockedModuleAccountAddrs(modAccAddrs map[string]bool) map[string]bool {
+func (app *AtomOneApp) BlockedModuleAccountAddrs(modAccAddrs map[string]bool) map[string]bool {
 	// remove module accounts that are ALLOWED to received funds
 	delete(modAccAddrs, authtypes.NewModuleAddress(govtypes.ModuleName).String())
 
@@ -305,35 +304,35 @@ func (app *GaiaApp) BlockedModuleAccountAddrs(modAccAddrs map[string]bool) map[s
 	return modAccAddrs
 }
 
-// LegacyAmino returns GaiaApp's amino codec.
+// LegacyAmino returns AtomOneApp's amino codec.
 //
 // NOTE: This is solely to be used for testing purposes as it may be desirable
 // for modules to register their own custom testing types.
-func (app *GaiaApp) LegacyAmino() *codec.LegacyAmino {
+func (app *AtomOneApp) LegacyAmino() *codec.LegacyAmino {
 	return app.legacyAmino
 }
 
-// AppCodec returns Gaia's app codec.
+// AppCodec returns AtomOne's app codec.
 //
 // NOTE: This is solely to be used for testing purposes as it may be desirable
 // for modules to register their own custom testing types.
-func (app *GaiaApp) AppCodec() codec.Codec {
+func (app *AtomOneApp) AppCodec() codec.Codec {
 	return app.appCodec
 }
 
-// InterfaceRegistry returns Gaia's InterfaceRegistry
-func (app *GaiaApp) InterfaceRegistry() types.InterfaceRegistry {
+// InterfaceRegistry returns AtomOne's InterfaceRegistry
+func (app *AtomOneApp) InterfaceRegistry() types.InterfaceRegistry {
 	return app.interfaceRegistry
 }
 
 // SimulationManager implements the SimulationApp interface
-func (app *GaiaApp) SimulationManager() *module.SimulationManager {
+func (app *AtomOneApp) SimulationManager() *module.SimulationManager {
 	return app.sm
 }
 
 // RegisterAPIRoutes registers all application module routes with the provided
 // API server.
-func (app *GaiaApp) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig) {
+func (app *AtomOneApp) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig) {
 	clientCtx := apiSvr.ClientCtx
 	// Register new tx routes from grpc-gateway.
 	authtx.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
@@ -353,17 +352,17 @@ func (app *GaiaApp) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APICo
 }
 
 // RegisterTxService allows query minimum-gas-prices in app.toml
-func (app *GaiaApp) RegisterNodeService(clientCtx client.Context) {
+func (app *AtomOneApp) RegisterNodeService(clientCtx client.Context) {
 	nodeservice.RegisterNodeService(clientCtx, app.GRPCQueryRouter())
 }
 
 // RegisterTxService implements the Application.RegisterTxService method.
-func (app *GaiaApp) RegisterTxService(clientCtx client.Context) {
+func (app *AtomOneApp) RegisterTxService(clientCtx client.Context) {
 	authtx.RegisterTxService(app.BaseApp.GRPCQueryRouter(), clientCtx, app.BaseApp.Simulate, app.interfaceRegistry)
 }
 
 // RegisterTendermintService implements the Application.RegisterTendermintService method.
-func (app *GaiaApp) RegisterTendermintService(clientCtx client.Context) {
+func (app *AtomOneApp) RegisterTendermintService(clientCtx client.Context) {
 	tmservice.RegisterTendermintService(
 		clientCtx,
 		app.BaseApp.GRPCQueryRouter(),
@@ -373,7 +372,7 @@ func (app *GaiaApp) RegisterTendermintService(clientCtx client.Context) {
 }
 
 // configure store loader that checks if version == upgradeHeight and applies store upgrades
-func (app *GaiaApp) setupUpgradeStoreLoaders() {
+func (app *AtomOneApp) setupUpgradeStoreLoaders() {
 	upgradeInfo, err := app.UpgradeKeeper.ReadUpgradeInfoFromDisk()
 	if err != nil {
 		panic(fmt.Sprintf("failed to read upgrade info from disk %s", err))
@@ -392,7 +391,7 @@ func (app *GaiaApp) setupUpgradeStoreLoaders() {
 	}
 }
 
-func (app *GaiaApp) setupUpgradeHandlers() {
+func (app *AtomOneApp) setupUpgradeHandlers() {
 	for _, upgrade := range Upgrades {
 		app.UpgradeKeeper.SetUpgradeHandler(
 			upgrade.UpgradeName,
@@ -416,21 +415,21 @@ func RegisterSwaggerAPI(rtr *mux.Router) {
 	rtr.PathPrefix("/swagger/").Handler(http.StripPrefix("/swagger/", staticServer))
 }
 
-func (app *GaiaApp) OnTxSucceeded(_ sdk.Context, _, _ string, _ []byte, _ []byte) {
+func (app *AtomOneApp) OnTxSucceeded(_ sdk.Context, _, _ string, _ []byte, _ []byte) {
 }
 
-func (app *GaiaApp) OnTxFailed(_ sdk.Context, _, _ string, _ []byte, _ []byte) {
+func (app *AtomOneApp) OnTxFailed(_ sdk.Context, _, _ string, _ []byte, _ []byte) {
 }
 
 // TestingApp functions
 
 // GetBaseApp implements the TestingApp interface.
-func (app *GaiaApp) GetBaseApp() *baseapp.BaseApp {
+func (app *AtomOneApp) GetBaseApp() *baseapp.BaseApp {
 	return app.BaseApp
 }
 
 // GetTxConfig implements the TestingApp interface.
-func (app *GaiaApp) GetTxConfig() client.TxConfig {
+func (app *AtomOneApp) GetTxConfig() client.TxConfig {
 	return app.txConfig
 }
 

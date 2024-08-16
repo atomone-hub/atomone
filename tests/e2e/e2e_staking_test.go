@@ -36,7 +36,7 @@ func (s *IntegrationTestSuite) testStaking() {
 	delegation := sdk.NewCoin(uatomDenom, delegationAmount) // 500 atom
 
 	// Alice delegate uatom to Validator A
-	s.execDelegate(s.chainA, 0, delegation.String(), validatorAddressA, delegatorAddress.String(), gaiaHomePath, fees.String())
+	s.execDelegate(s.chainA, 0, delegation.String(), validatorAddressA, delegatorAddress.String(), atomoneHomePath, fees.String())
 
 	// Validate delegation successful
 	s.Require().Eventually(
@@ -55,7 +55,7 @@ func (s *IntegrationTestSuite) testStaking() {
 	redelegation := sdk.NewCoin(uatomDenom, redelegationAmount) // 250 atom
 
 	// Alice re-delegate half of her uatom delegation from Validator A to Validator B
-	s.execRedelegate(s.chainA, 0, redelegation.String(), validatorAddressA, validatorAddressB, delegatorAddress.String(), gaiaHomePath, fees.String())
+	s.execRedelegate(s.chainA, 0, redelegation.String(), validatorAddressA, validatorAddressB, delegatorAddress.String(), atomoneHomePath, fees.String())
 
 	// Validate re-delegation successful
 	s.Require().Eventually(
@@ -92,7 +92,7 @@ func (s *IntegrationTestSuite) testStaking() {
 	)
 
 	// Alice unbonds all her uatom delegation from Validator A
-	s.execUnbondDelegation(s.chainA, 0, currDelegation.String(), validatorAddressA, delegatorAddress.String(), gaiaHomePath, fees.String())
+	s.execUnbondDelegation(s.chainA, 0, currDelegation.String(), validatorAddressA, delegatorAddress.String(), atomoneHomePath, fees.String())
 
 	var ubdDelegationEntry types.UnbondingDelegationEntry
 
@@ -119,7 +119,7 @@ func (s *IntegrationTestSuite) testStaking() {
 		validatorAddressA,
 		strconv.Itoa(int(ubdDelegationEntry.CreationHeight)),
 		delegatorAddress.String(),
-		gaiaHomePath,
+		atomoneHomePath,
 		fees.String(),
 	)
 

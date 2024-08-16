@@ -12,12 +12,12 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 
-	gaia "github.com/cosmos/gaia/v15/app"
+	atomone "github.com/atomone-hub/atomone/app"
 )
 
 // SimulationOperations retrieves the simulation params from the provided file path
 // and returns all the modules weighted operations
-func SimulationOperations(app *gaia.GaiaApp, cdc codec.JSONCodec, config simtypes.Config) []simtypes.WeightedOperation {
+func SimulationOperations(app *atomone.AtomOneApp, cdc codec.JSONCodec, config simtypes.Config) []simtypes.WeightedOperation {
 	simState := module.SimulationState{
 		AppParams: make(simtypes.AppParams),
 		Cdc:       cdc,

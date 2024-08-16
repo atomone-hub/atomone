@@ -1,4 +1,4 @@
-package gaia_test
+package atomone_test
 
 import (
 	"os"
@@ -13,12 +13,12 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 	simcli "github.com/cosmos/cosmos-sdk/x/simulation/client/cli"
 
-	gaia "github.com/cosmos/gaia/v15/app"
-	"github.com/cosmos/gaia/v15/app/sim"
+	atomone "github.com/atomone-hub/atomone/app"
+	"github.com/atomone-hub/atomone/app/sim"
 )
 
 // Profile with:
-// /usr/local/go/bin/go test -benchmem -run=^$ github.com/cosmos/cosmos-sdk/GaiaApp -bench ^BenchmarkFullAppSimulation$ -Commit=true -cpuprofile cpu.out
+// /usr/local/go/bin/go test -benchmem -run=^$ github.com/cosmos/cosmos-sdk/AtomOneApp -bench ^BenchmarkFullAppSimulation$ -Commit=true -cpuprofile cpu.out
 func BenchmarkFullAppSimulation(b *testing.B) {
 	b.ReportAllocs()
 
@@ -42,15 +42,15 @@ func BenchmarkFullAppSimulation(b *testing.B) {
 	appOptions := make(simtestutil.AppOptionsMap, 0)
 	appOptions[server.FlagInvCheckPeriod] = simcli.FlagPeriodValue
 
-	encConfig := gaia.RegisterEncodingConfig()
+	encConfig := atomone.RegisterEncodingConfig()
 
-	app := gaia.NewGaiaApp(
+	app := atomone.NewAtomOneApp(
 		logger,
 		db,
 		nil,
 		true,
 		map[int64]bool{},
-		gaia.DefaultNodeHome,
+		atomone.DefaultNodeHome,
 		encConfig,
 		appOptions,
 		interBlockCacheOpt(),

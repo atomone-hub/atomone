@@ -21,8 +21,8 @@ func (s *IntegrationTestSuite) execQueryConsumerChains(
 	defer cancel()
 
 	s.T().Logf("Querying consumer chains for chain: %s", c.id)
-	gaiaCommand := []string{
-		gaiadBinary,
+	atomoneCommand := []string{
+		atomonedBinary,
 		"query",
 		"provider",
 		"list-consumer-chains",
@@ -31,7 +31,7 @@ func (s *IntegrationTestSuite) execQueryConsumerChains(
 		"--output=json",
 	}
 
-	s.executeGaiaTxCommand(ctx, c, gaiaCommand, valIdx, s.validateQueryConsumers(queryValidation, consumerChainID))
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.validateQueryConsumers(queryValidation, consumerChainID))
 	s.T().Logf("Successfully queried consumer chains for chain %s", c.id)
 }
 

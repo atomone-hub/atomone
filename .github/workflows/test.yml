@@ -73,7 +73,7 @@ jobs:
             **/**.go
             go.mod
             go.sum
-      - name: Build Gaia Docker Image
+      - name: Build AtomOne Docker Image
         run: make docker-build-debug
       - name: Build Hermes Docker Image
         run: make docker-build-hermes
@@ -119,7 +119,7 @@ jobs:
             **/**.go
             go.mod
             go.sum
-      - name: Install Gaia
+      - name: Install AtomOne
         run: |
           make build
         if: env.GIT_DIFF
@@ -130,53 +130,4 @@ jobs:
       - name: Test Local Network Liveness
         run: |
           ./contrib/scripts/test_localnet_liveness.sh 100 5 50 localhost
-        if: env.GIT_DIFF
-
-  upgrade-test:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: technote-space/get-diff-action@v6.0.1
-        with:
-          PATTERNS: |
-            **/**.go
-            go.mod
-            go.sum
-      - uses: actions/setup-go@v5
-        with:
-          go-version: 1.20.x
-      # the old gaiad binary version is hardcoded, need to be updated each major release.
-      - name: Install Old Gaiad
-        run: |
-          git checkout v14.0.0
-          make build
-          cp ./build/gaiad ./build/gaiadold
-          go clean -modcache
-        if: env.GIT_DIFF
-      - name: Install New Gaiad
-        run: |
-          git checkout -
-          make build
-          cp ./build/gaiad ./build/gaiadnew
-          go clean -modcache
-        if: env.GIT_DIFF
-      - name: Install Cosmovisor
-        run: |
-          go install github.com/cosmos/cosmos-sdk/cosmovisor/cmd/cosmovisor@latest
-        if: env.GIT_DIFF
-      - name: Start Old Gaiad Binary
-        run: |
-          go env GOPATH
-          ./contrib/scripts/upgrade_test_scripts/run_gaia.sh
-        if: env.GIT_DIFF
-      - name: Submit Upgrade Commands
-        run: |
-          ./contrib/scripts/upgrade_test_scripts/run_upgrade_commands.sh 15
-        if: env.GIT_DIFF
-      - name: Check for successful upgrade
-        run: |
-          ./contrib/scripts/upgrade_test_scripts/test_upgrade.sh 20 5 16 localhost
         if: env.GIT_DIFF

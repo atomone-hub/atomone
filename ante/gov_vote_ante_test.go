@@ -15,17 +15,17 @@ import (
 	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	"github.com/cosmos/gaia/v15/ante"
-	"github.com/cosmos/gaia/v15/app/helpers"
+	"github.com/atomone-hub/atomone/ante"
+	"github.com/atomone-hub/atomone/app/helpers"
 )
 
 // Test that the GovVoteDecorator rejects v1beta1 vote messages from accounts with less than 1 atom staked
 // Submitting v1beta1.VoteMsg should not be possible through the CLI, but it's still possible to craft a transaction
 func TestVoteSpamDecoratorGovV1Beta1(t *testing.T) {
-	gaiaApp := helpers.Setup(t)
-	ctx := gaiaApp.NewUncachedContext(true, tmproto.Header{})
-	decorator := ante.NewGovVoteDecorator(gaiaApp.AppCodec(), gaiaApp.StakingKeeper)
-	stakingKeeper := gaiaApp.StakingKeeper
+	atomoneApp := helpers.Setup(t)
+	ctx := atomoneApp.NewUncachedContext(true, tmproto.Header{})
+	decorator := ante.NewGovVoteDecorator(atomoneApp.AppCodec(), atomoneApp.StakingKeeper)
+	stakingKeeper := atomoneApp.StakingKeeper
 
 	// Get validator
 	valAddr1 := stakingKeeper.GetAllValidators(ctx)[0].GetOperator()
@@ -49,7 +49,7 @@ func TestVoteSpamDecoratorGovV1Beta1(t *testing.T) {
 	require.NoError(t, err)
 
 	// Get delegator (this account was created during setup)
-	addr := gaiaApp.AccountKeeper.GetAccountAddressByID(ctx, 0)
+	addr := atomoneApp.AccountKeeper.GetAccountAddressByID(ctx, 0)
 	delegator, err := sdk.AccAddressFromBech32(addr)
 	require.NoError(t, err)
 
@@ -136,10 +136,10 @@ func TestVoteSpamDecoratorGovV1Beta1(t *testing.T) {
 // Test that the GovVoteDecorator rejects v1 vote messages from accounts with less than 1 atom staked
 // Usually, only v1.VoteMsg can be submitted using the CLI.
 func TestVoteSpamDecoratorGovV1(t *testing.T) {
-	gaiaApp := helpers.Setup(t)
-	ctx := gaiaApp.NewUncachedContext(true, tmproto.Header{})
-	decorator := ante.NewGovVoteDecorator(gaiaApp.AppCodec(), gaiaApp.StakingKeeper)
-	stakingKeeper := gaiaApp.StakingKeeper
+	atomoneApp := helpers.Setup(t)
+	ctx := atomoneApp.NewUncachedContext(true, tmproto.Header{})
+	decorator := ante.NewGovVoteDecorator(atomoneApp.AppCodec(), atomoneApp.StakingKeeper)
+	stakingKeeper := atomoneApp.StakingKeeper
 
 	// Get validator
 	valAddr1 := stakingKeeper.GetAllValidators(ctx)[0].GetOperator()
@@ -163,7 +163,7 @@ func TestVoteSpamDecoratorGovV1(t *testing.T) {
 	require.NoError(t, err)
 
 	// Get delegator (this account was created during setup)
-	addr := gaiaApp.AccountKeeper.GetAccountAddressByID(ctx, 0)
+	addr := atomoneApp.AccountKeeper.GetAccountAddressByID(ctx, 0)
 	delegator, err := sdk.AccAddressFromBech32(addr)
 	require.NoError(t, err)
 

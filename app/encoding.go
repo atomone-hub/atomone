@@ -1,9 +1,9 @@
-package gaia
+package atomone
 
 import (
 	"github.com/cosmos/cosmos-sdk/std"
 
-	"github.com/cosmos/gaia/v15/app/params"
+	"github.com/atomone-hub/atomone/app/params"
 )
 
 func RegisterEncodingConfig() params.EncodingConfig {

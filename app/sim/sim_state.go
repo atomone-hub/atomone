@@ -22,8 +22,8 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	gaia "github.com/cosmos/gaia/v15/app"
-	"github.com/cosmos/gaia/v15/app/params"
+	atomone "github.com/atomone-hub/atomone/app"
+	"github.com/atomone-hub/atomone/app/params"
 )
 
 // Simulation parameter constants
@@ -158,7 +158,7 @@ func AppStateRandomizedFn(
 ) (json.RawMessage, []simtypes.Account) {
 	numAccs := int64(len(accs))
 	cdc := encConfig.Marshaler
-	genesisState := gaia.NewDefaultGenesisState(encConfig)
+	genesisState := atomone.NewDefaultGenesisState(encConfig)
 
 	// generate a random amount of initial stake coins and a random initial
 	// number of bonded accounts
@@ -225,7 +225,7 @@ func AppStateFromGenesisFileFn(r io.Reader, cdc codec.JSONCodec, genesisFile str
 		panic(err)
 	}
 
-	var appState gaia.GenesisState
+	var appState atomone.GenesisState
 	err = json.Unmarshal(genesis.AppState, &appState)
 	if err != nil {
 		panic(err)

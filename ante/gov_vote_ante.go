@@ -11,7 +11,7 @@ import (
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	gaiaerrors "github.com/cosmos/gaia/v15/types/errors"
+	atomoneerrors "github.com/atomone-hub/atomone/types/errors"
 )
 
 var (
@@ -104,7 +104,7 @@ func (g GovVoteDecorator) ValidateVoteMsgs(ctx sdk.Context, msgs []sdk.Msg) erro
 		})
 
 		if !enoughStake {
-			return errorsmod.Wrapf(gaiaerrors.ErrInsufficientStake, "insufficient stake for voting - min required %v", minStakedTokens)
+			return errorsmod.Wrapf(atomoneerrors.ErrInsufficientStake, "insufficient stake for voting - min required %v", minStakedTokens)
 		}
 
 		return nil
@@ -114,7 +114,7 @@ func (g GovVoteDecorator) ValidateVoteMsgs(ctx sdk.Context, msgs []sdk.Msg) erro
 		for _, v := range execMsg.Msgs {
 			var innerMsg sdk.Msg
 			if err := g.cdc.UnpackAny(v, &innerMsg); err != nil {
-				return errorsmod.Wrap(gaiaerrors.ErrUnauthorized, "cannot unmarshal authz exec msgs")
+				return errorsmod.Wrap(atomoneerrors.ErrUnauthorized, "cannot unmarshal authz exec msgs")
 			}
 			if err := validMsg(innerMsg); err != nil {
 				return err

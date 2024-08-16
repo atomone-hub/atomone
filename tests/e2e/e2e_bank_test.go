@@ -10,7 +10,7 @@ import (
 	authTx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
-	extensiontypes "github.com/cosmos/gaia/v15/x/metaprotocols/types"
+	extensiontypes "github.com/atomone-hub/atomone/x/metaprotocols/types"
 )
 
 func (s *IntegrationTestSuite) testBankTokenTransfer() {
@@ -105,7 +105,7 @@ func (s *IntegrationTestSuite) testBankTokenTransfer() {
 
 // tests the bank send command with populated non_critical_extension_options field
 // the Tx should succeed if the data can be properly encoded and decoded
-// the tx is signed and broadcast using gaiad tx sign and broadcast commands
+// the tx is signed and broadcast using atomoned tx sign and broadcast commands
 func (s *IntegrationTestSuite) bankSendWithNonCriticalExtensionOptions() {
 	s.Run("transfer_with_non_critical_extension_options", func() {
 		c := s.chainA

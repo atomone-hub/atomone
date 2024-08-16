@@ -18,7 +18,7 @@ SDK_PACK := $(shell go list -m github.com/cosmos/cosmos-sdk | sed  's/ /\@/g')
 TM_VERSION := $(shell go list -m github.com/cometbft/cometbft | sed 's:.* ::') # grab everything after the space in "github.com/cometbft/cometbft v0.34.7"
 DOCKER := $(shell which docker)
 BUILDDIR ?= $(CURDIR)/build
-TEST_DOCKER_REPO=cosmos/contrib-gaiatest
+TEST_DOCKER_REPO=cosmos/contrib-atomeonetest
 
 GO_SYSTEM_VERSION = $(shell go version | cut -c 14- | cut -d' ' -f1 | cut -d'.' -f1-2)
 REQUIRE_GO_VERSION = 1.21
@@ -51,7 +51,7 @@ ifeq ($(LEDGER_ENABLED),true)
   endif
 endif
 
-ifeq (cleveldb,$(findstring cleveldb,$(GAIA_BUILD_OPTIONS)))
+ifeq (cleveldb,$(findstring cleveldb,$(ATOMONE_BUILD_OPTIONS)))
   build_tags += gcc cleveldb
 endif
 build_tags += $(BUILD_TAGS)
@@ -64,17 +64,17 @@ build_tags_comma_sep := $(subst $(whitespace),$(comma),$(build_tags))
 
 # process linker flags
 
-ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=gaia \
-		  -X github.com/cosmos/cosmos-sdk/version.AppName=gaiad \
+ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=atomone \
+		  -X github.com/cosmos/cosmos-sdk/version.AppName=atomoned \
 		  -X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
 		  -X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
 		  -X "github.com/cosmos/cosmos-sdk/version.BuildTags=$(build_tags_comma_sep)" \
 			-X github.com/cometbft/cometbft/version.TMCoreSemVer=$(TM_VERSION)
 
-ifeq (cleveldb,$(findstring cleveldb,$(GAIA_BUILD_OPTIONS)))
+ifeq (cleveldb,$(findstring cleveldb,$(ATOMONE_BUILD_OPTIONS)))
   ldflags += -X github.com/cosmos/cosmos-sdk/types.DBBackend=cleveldb
 endif
-ifeq (,$(findstring nostrip,$(GAIA_BUILD_OPTIONS)))
+ifeq (,$(findstring nostrip,$(ATOMONE_BUILD_OPTIONS)))
   ldflags += -w -s
 endif
 ldflags += $(LDFLAGS)
@@ -82,7 +82,7 @@ ldflags := $(strip $(ldflags))
 
 BUILD_FLAGS := -tags "$(build_tags)" -ldflags '$(ldflags)'
 # check for nostrip option
-ifeq (,$(findstring nostrip,$(GAIA_BUILD_OPTIONS)))
+ifeq (,$(findstring nostrip,$(ATOMONE_BUILD_OPTIONS)))
   BUILD_FLAGS += -trimpath
 endif
 
@@ -97,7 +97,7 @@ include contrib/devtools/Makefile
 
 check_version:
 ifneq ($(GO_SYSTEM_VERSION), $(REQUIRE_GO_VERSION))
-	@echo "ERROR: Go version 1.21 is required for $(VERSION) of Gaia."
+	@echo "ERROR: Go version 1.21 is required for $(VERSION) of AtomOne."
 endif
 
 all: install lint run-tests test-e2e vulncheck
@@ -130,7 +130,7 @@ go.sum: go.mod
 draw-deps:
 	@# requires brew install graphviz or apt-get install graphviz
 	go install github.com/RobotsAndPencils/goviz
-	@goviz -i ./cmd/gaiad -d 2 | dot -Tpng -o dependency-graph.png
+	@goviz -i ./cmd/atomoned -d 2 | dot -Tpng -o dependency-graph.png
 
 clean:
 	rm -rf $(BUILDDIR)/ artifacts/
@@ -215,7 +215,7 @@ endif
 .PHONY: run-tests $(TEST_TARGETS)
 
 docker-build-debug:
-	@docker build -t cosmos/gaiad-e2e -f e2e.Dockerfile .
+	@docker build -t cosmos/atomoned-e2e -f e2e.Dockerfile .
 
 # TODO: Push this to the Cosmos Dockerhub so we don't have to keep building it
 # in CI.
@@ -252,16 +252,16 @@ format:
 ###############################################################################
 
 start-localnet-ci: build
-	rm -rf ~/.gaiad-liveness
-	./build/gaiad init liveness --chain-id liveness --home ~/.gaiad-liveness
-	./build/gaiad config chain-id liveness --home ~/.gaiad-liveness
-	./build/gaiad config keyring-backend test --home ~/.gaiad-liveness
-	./build/gaiad keys add val --home ~/.gaiad-liveness
-	./build/gaiad genesis add-genesis-account val 10000000000000000000000000stake --home ~/.gaiad-liveness --keyring-backend test
-	./build/gaiad genesis gentx val 1000000000stake --home ~/.gaiad-liveness --chain-id liveness
-	./build/gaiad genesis collect-gentxs --home ~/.gaiad-liveness
-	sed -i.bak'' 's/minimum-gas-prices = ""/minimum-gas-prices = "0uatom"/' ~/.gaiad-liveness/config/app.toml
-	./build/gaiad start --home ~/.gaiad-liveness --x-crisis-skip-assert-invariants
+	rm -rf ~/.atomoned-liveness
+	./build/atomoned init liveness --chain-id liveness --home ~/.atomoned-liveness
+	./build/atomoned config chain-id liveness --home ~/.atomoned-liveness
+	./build/atomoned config keyring-backend test --home ~/.atomoned-liveness
+	./build/atomoned keys add val --home ~/.atomoned-liveness
+	./build/atomoned genesis add-genesis-account val 10000000000000000000000000stake --home ~/.atomoned-liveness --keyring-backend test
+	./build/atomoned genesis gentx val 1000000000stake --home ~/.atomoned-liveness --chain-id liveness
+	./build/atomoned genesis collect-gentxs --home ~/.atomoned-liveness
+	sed -i.bak'' 's/minimum-gas-prices = ""/minimum-gas-prices = "0uatom"/' ~/.atomoned-liveness/config/app.toml
+	./build/atomoned start --home ~/.atomoned-liveness --x-crisis-skip-assert-invariants
 
 .PHONY: start-localnet-ci
 

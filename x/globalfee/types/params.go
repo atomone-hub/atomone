@@ -12,7 +12,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
-	gaiaerrors "github.com/cosmos/gaia/v15/types/errors"
+	atomoneerrors "github.com/atomone-hub/atomone/types/errors"
 )
 
 var (
@@ -36,7 +36,7 @@ var (
 	// for all the bypass msgs in a transactions.
 	// A transaction that contains only bypass message types and the gas usage does not
 	// exceed maxTotalBypassMinFeeMsgGasUsage can be accepted with a zero fee.
-	// For details, see gaiafeeante.NewFeeDecorator()
+	// For details, see atomonefeeante.NewFeeDecorator()
 	DefaultmaxTotalBypassMinFeeMsgGasUsage uint64 = 1_000_000
 )
 
@@ -84,7 +84,7 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 func validateMinimumGasPrices(i interface{}) error {
 	v, ok := i.(sdk.DecCoins)
 	if !ok {
-		return errorsmod.Wrapf(gaiaerrors.ErrInvalidType, "type: %T, expected sdk.DecCoins", i)
+		return errorsmod.Wrapf(atomoneerrors.ErrInvalidType, "type: %T, expected sdk.DecCoins", i)
 	}
 
 	dec := DecCoins(v)
@@ -97,7 +97,7 @@ type BypassMinFeeMsgTypes []string
 func validateBypassMinFeeMsgTypes(i interface{}) error {
 	bypassMinFeeMsgTypes, ok := i.([]string)
 	if !ok {
-		return errorsmod.Wrapf(gaiaerrors.ErrInvalidType, "type: %T, expected []sdk.Msg", i)
+		return errorsmod.Wrapf(atomoneerrors.ErrInvalidType, "type: %T, expected []sdk.Msg", i)
 	}
 
 	for _, msgType := range bypassMinFeeMsgTypes {
@@ -116,7 +116,7 @@ func validateBypassMinFeeMsgTypes(i interface{}) error {
 func validateMaxTotalBypassMinFeeMsgGasUsage(i interface{}) error {
 	_, ok := i.(uint64)
 	if !ok {
-		return errorsmod.Wrapf(gaiaerrors.ErrInvalidType, "type: %T, expected uint64", i)
+		return errorsmod.Wrapf(atomoneerrors.ErrInvalidType, "type: %T, expected uint64", i)
 	}
 
 	return nil

@@ -1,7 +1,6 @@
 package e2e
 
 import (
-	"bufio"
 	"bytes"
 	"context"
 	"encoding/json"
@@ -58,7 +57,7 @@ func applyOptions(chainID string, options []flagOption) map[string]interface{} {
 		flagBroadcastMode:  "sync",
 		flagGasAdjustment:  "1.5",
 		flagChainID:        chainID,
-		flagHome:           gaiaHomePath,
+		flagHome:           atomoneHomePath,
 		flagFees:           standardFees.String(),
 	}
 	for _, apply := range options {
@@ -76,19 +75,19 @@ func (s *IntegrationTestSuite) execEncode(
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	s.T().Logf("%s - Executing gaiad encoding with %v", c.id, txPath)
-	gaiaCommand := []string{
-		gaiadBinary,
+	s.T().Logf("%s - Executing atomoned encoding with %v", c.id, txPath)
+	atomoneCommand := []string{
+		atomonedBinary,
 		txCommand,
 		"encode",
 		txPath,
 	}
 	for flag, value := range opts {
-		gaiaCommand = append(gaiaCommand, fmt.Sprintf("--%s=%v", flag, value))
+		atomoneCommand = append(atomoneCommand, fmt.Sprintf("--%s=%v", flag, value))
 	}
 
 	var encoded string
-	s.executeGaiaTxCommand(ctx, c, gaiaCommand, 0, func(stdOut []byte, stdErr []byte) bool {
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, 0, func(stdOut []byte, stdErr []byte) bool {
 		if stdErr != nil {
 			return false
 		}
@@ -108,19 +107,19 @@ func (s *IntegrationTestSuite) execDecode(
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	s.T().Logf("%s - Executing gaiad decoding with %v", c.id, txPath)
-	gaiaCommand := []string{
-		gaiadBinary,
+	s.T().Logf("%s - Executing atomoned decoding with %v", c.id, txPath)
+	atomoneCommand := []string{
+		atomonedBinary,
 		txCommand,
 		"decode",
 		txPath,
 	}
 	for flag, value := range opts {
-		gaiaCommand = append(gaiaCommand, fmt.Sprintf("--%s=%v", flag, value))
+		atomoneCommand = append(atomoneCommand, fmt.Sprintf("--%s=%v", flag, value))
 	}
 
 	var decoded string
-	s.executeGaiaTxCommand(ctx, c, gaiaCommand, 0, func(stdOut []byte, stdErr []byte) bool {
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, 0, func(stdOut []byte, stdErr []byte) bool {
 		if stdErr != nil {
 			return false
 		}
@@ -142,21 +141,21 @@ func (s *IntegrationTestSuite) execVestingTx( //nolint:unused
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	s.T().Logf("%s - Executing gaiad %s with %v", c.id, method, args)
-	gaiaCommand := []string{
-		gaiadBinary,
+	s.T().Logf("%s - Executing atomoned %s with %v", c.id, method, args)
+	atomoneCommand := []string{
+		atomonedBinary,
 		txCommand,
 		vestingtypes.ModuleName,
 		method,
 		"-y",
 	}
-	gaiaCommand = append(gaiaCommand, args...)
+	atomoneCommand = append(atomoneCommand, args...)
 
 	for flag, value := range opts {
-		gaiaCommand = append(gaiaCommand, fmt.Sprintf("--%s=%v", flag, value))
+		atomoneCommand = append(atomoneCommand, fmt.Sprintf("--%s=%v", flag, value))
 	}
 
-	s.executeGaiaTxCommand(ctx, c, gaiaCommand, 0, s.defaultExecValidation(c, 0))
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, 0, s.defaultExecValidation(c, 0))
 	s.T().Logf("successfully %s with %v", method, args)
 }
 
@@ -167,7 +166,7 @@ func (s *IntegrationTestSuite) execCreatePeriodicVestingAccount( //nolint:unused
 	jsonPath string,
 	opt ...flagOption,
 ) {
-	s.T().Logf("Executing gaiad create periodic vesting account %s", c.id)
+	s.T().Logf("Executing atomoned create periodic vesting account %s", c.id)
 	s.execVestingTx(c, "create-periodic-vesting-account", []string{address, jsonPath}, opt...)
 	s.T().Logf("successfully created periodic vesting account %s with %s", address, jsonPath)
 }
@@ -180,9 +179,9 @@ func (s *IntegrationTestSuite) execUnjail(
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	s.T().Logf("Executing gaiad slashing unjail %s with options: %v", c.id, opt)
-	gaiaCommand := []string{
-		gaiadBinary,
+	s.T().Logf("Executing atomoned slashing unjail %s with options: %v", c.id, opt)
+	atomoneCommand := []string{
+		atomonedBinary,
 		txCommand,
 		slashingtypes.ModuleName,
 		"unjail",
@@ -190,10 +189,10 @@ func (s *IntegrationTestSuite) execUnjail(
 	}
 
 	for flag, value := range opts {
-		gaiaCommand = append(gaiaCommand, fmt.Sprintf("--%s=%v", flag, value))
+		atomoneCommand = append(atomoneCommand, fmt.Sprintf("--%s=%v", flag, value))
 	}
 
-	s.executeGaiaTxCommand(ctx, c, gaiaCommand, 0, s.defaultExecValidation(c, 0))
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, 0, s.defaultExecValidation(c, 0))
 	s.T().Logf("successfully unjail with options %v", opt)
 }
 
@@ -207,8 +206,8 @@ func (s *IntegrationTestSuite) execFeeGrant(c *chain, valIdx int, granter, grant
 
 	s.T().Logf("granting %s fee from %s on chain %s", grantee, granter, c.id)
 
-	gaiaCommand := []string{
-		gaiadBinary,
+	atomoneCommand := []string{
+		atomonedBinary,
 		txCommand,
 		feegrant.ModuleName,
 		"grant",
@@ -217,10 +216,10 @@ func (s *IntegrationTestSuite) execFeeGrant(c *chain, valIdx int, granter, grant
 		"-y",
 	}
 	for flag, value := range opts {
-		gaiaCommand = append(gaiaCommand, fmt.Sprintf("--%s=%v", flag, value))
+		atomoneCommand = append(atomoneCommand, fmt.Sprintf("--%s=%v", flag, value))
 	}
 
-	s.executeGaiaTxCommand(ctx, c, gaiaCommand, valIdx, s.defaultExecValidation(c, valIdx))
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx))
 }
 
 func (s *IntegrationTestSuite) execFeeGrantRevoke(c *chain, valIdx int, granter, grantee string, opt ...flagOption) {
@@ -232,8 +231,8 @@ func (s *IntegrationTestSuite) execFeeGrantRevoke(c *chain, valIdx int, granter,
 
 	s.T().Logf("revoking %s fee grant from %s on chain %s", grantee, granter, c.id)
 
-	gaiaCommand := []string{
-		gaiadBinary,
+	atomoneCommand := []string{
+		atomonedBinary,
 		txCommand,
 		feegrant.ModuleName,
 		"revoke",
@@ -242,10 +241,10 @@ func (s *IntegrationTestSuite) execFeeGrantRevoke(c *chain, valIdx int, granter,
 		"-y",
 	}
 	for flag, value := range opts {
-		gaiaCommand = append(gaiaCommand, fmt.Sprintf("--%s=%v", flag, value))
+		atomoneCommand = append(atomoneCommand, fmt.Sprintf("--%s=%v", flag, value))
 	}
 
-	s.executeGaiaTxCommand(ctx, c, gaiaCommand, valIdx, s.defaultExecValidation(c, valIdx))
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx))
 }
 
 func (s *IntegrationTestSuite) execBankSend(
@@ -268,8 +267,8 @@ func (s *IntegrationTestSuite) execBankSend(
 
 	s.T().Logf("sending %s tokens from %s to %s on chain %s", amt, from, to, c.id)
 
-	gaiaCommand := []string{
-		gaiadBinary,
+	atomoneCommand := []string{
+		atomonedBinary,
 		txCommand,
 		banktypes.ModuleName,
 		"send",
@@ -279,10 +278,10 @@ func (s *IntegrationTestSuite) execBankSend(
 		"-y",
 	}
 	for flag, value := range opts {
-		gaiaCommand = append(gaiaCommand, fmt.Sprintf("--%s=%v", flag, value))
+		atomoneCommand = append(atomoneCommand, fmt.Sprintf("--%s=%v", flag, value))
 	}
 
-	s.executeGaiaTxCommand(ctx, c, gaiaCommand, valIdx, s.expectErrExecValidation(c, valIdx, expectErr))
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.expectErrExecValidation(c, valIdx, expectErr))
 }
 
 func (s *IntegrationTestSuite) execBankMultiSend(
@@ -305,22 +304,22 @@ func (s *IntegrationTestSuite) execBankMultiSend(
 
 	s.T().Logf("sending %s tokens from %s to %s on chain %s", amt, from, to, c.id)
 
-	gaiaCommand := []string{
-		gaiadBinary,
+	atomoneCommand := []string{
+		atomonedBinary,
 		txCommand,
 		banktypes.ModuleName,
 		"multi-send",
 		from,
 	}
 
-	gaiaCommand = append(gaiaCommand, to...)
-	gaiaCommand = append(gaiaCommand, amt, "-y")
+	atomoneCommand = append(atomoneCommand, to...)
+	atomoneCommand = append(atomoneCommand, amt, "-y")
 
 	for flag, value := range opts {
-		gaiaCommand = append(gaiaCommand, fmt.Sprintf("--%s=%v", flag, value))
+		atomoneCommand = append(atomoneCommand, fmt.Sprintf("--%s=%v", flag, value))
 	}
 
-	s.executeGaiaTxCommand(ctx, c, gaiaCommand, valIdx, s.expectErrExecValidation(c, valIdx, expectErr))
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.expectErrExecValidation(c, valIdx, expectErr))
 }
 
 type txBankSend struct {
@@ -357,8 +356,8 @@ func (s *IntegrationTestSuite) execWithdrawAllRewards(c *chain, valIdx int, paye
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	gaiaCommand := []string{
-		gaiadBinary,
+	atomoneCommand := []string{
+		atomonedBinary,
 		txCommand,
 		distributiontypes.ModuleName,
 		"withdraw-all-rewards",
@@ -370,17 +369,17 @@ func (s *IntegrationTestSuite) execWithdrawAllRewards(c *chain, valIdx int, paye
 		"-y",
 	}
 
-	s.executeGaiaTxCommand(ctx, c, gaiaCommand, valIdx, s.expectErrExecValidation(c, valIdx, expectErr))
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.expectErrExecValidation(c, valIdx, expectErr))
 }
 
 func (s *IntegrationTestSuite) execDistributionFundCommunityPool(c *chain, valIdx int, from, amt, fees string) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	s.T().Logf("Executing gaiad tx distribution fund-community-pool on chain %s", c.id)
+	s.T().Logf("Executing atomoned tx distribution fund-community-pool on chain %s", c.id)
 
-	gaiaCommand := []string{
-		gaiadBinary,
+	atomoneCommand := []string{
+		atomonedBinary,
 		txCommand,
 		distributiontypes.ModuleName,
 		"fund-community-pool",
@@ -393,7 +392,7 @@ func (s *IntegrationTestSuite) execDistributionFundCommunityPool(c *chain, valId
 		"-y",
 	}
 
-	s.executeGaiaTxCommand(ctx, c, gaiaCommand, valIdx, s.defaultExecValidation(c, valIdx))
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx))
 	s.T().Logf("Successfully funded community pool")
 }
 
@@ -401,8 +400,8 @@ func (s *IntegrationTestSuite) runGovExec(c *chain, valIdx int, submitterAddr, g
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	gaiaCommand := []string{
-		gaiadBinary,
+	atomoneCommand := []string{
+		atomonedBinary,
 		txCommand,
 		govtypes.ModuleName,
 		govCommand,
@@ -418,9 +417,9 @@ func (s *IntegrationTestSuite) runGovExec(c *chain, valIdx int, submitterAddr, g
 		"-y",
 	}
 
-	gaiaCommand = concatFlags(gaiaCommand, proposalFlags, generalFlags)
-	s.T().Logf("Executing gaiad tx gov %s on chain %s", govCommand, c.id)
-	s.executeGaiaTxCommand(ctx, c, gaiaCommand, valIdx, s.defaultExecValidation(c, valIdx))
+	atomoneCommand = concatFlags(atomoneCommand, proposalFlags, generalFlags)
+	s.T().Logf("Executing atomoned tx gov %s on chain %s", govCommand, c.id)
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx))
 	s.T().Logf("Successfully executed %s", govCommand)
 }
 
@@ -429,8 +428,8 @@ func (s *IntegrationTestSuite) runGovExec(c *chain, valIdx int, submitterAddr, g
 // 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 // 	defer cancel()
 
-// 	gaiaCommand := []string{
-// 		gaiadBinary,
+// 	atomoneCommand := []string{
+// 		atomonedBinary,
 // 		keysCommand,
 // 		"add",
 // 		name,
@@ -440,8 +439,8 @@ func (s *IntegrationTestSuite) runGovExec(c *chain, valIdx int, submitterAddr, g
 // 	}
 
 // 	var addrRecord AddressResponse
-// 	s.executeGaiaTxCommand(ctx, c, gaiaCommand, valIdx, func(stdOut []byte, stdErr []byte) bool {
-// 		// Gaiad keys add by default returns payload to stdErr
+// 	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, func(stdOut []byte, stdErr []byte) bool {
+// 		// atomoned keys add by default returns payload to stdErr
 // 		if err := json.Unmarshal(stdErr, &addrRecord); err != nil {
 // 			return false
 // 		}
@@ -455,8 +454,8 @@ func (s *IntegrationTestSuite) runGovExec(c *chain, valIdx int, submitterAddr, g
 // 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 // 	defer cancel()
 
-// 	gaiaCommand := []string{
-// 		gaiadBinary,
+// 	atomoneCommand := []string{
+// 		atomonedBinary,
 // 		keysCommand,
 // 		"list",
 // 		"--keyring-backend=test",
@@ -464,7 +463,7 @@ func (s *IntegrationTestSuite) runGovExec(c *chain, valIdx int, submitterAddr, g
 // 		"--output=json",
 // 	}
 
-// 	s.executeGaiaTxCommand(ctx, c, gaiaCommand, valIdx, func([]byte, []byte) bool {
+// 	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, func([]byte, []byte) bool {
 // 		return true
 // 	})
 // }
@@ -474,10 +473,10 @@ func (s *IntegrationTestSuite) execDelegate(c *chain, valIdx int, amount, valOpe
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	s.T().Logf("Executing gaiad tx staking delegate %s", c.id)
+	s.T().Logf("Executing atomoned tx staking delegate %s", c.id)
 
-	gaiaCommand := []string{
-		gaiadBinary,
+	atomoneCommand := []string{
+		atomonedBinary,
 		txCommand,
 		stakingtypes.ModuleName,
 		"delegate",
@@ -492,7 +491,7 @@ func (s *IntegrationTestSuite) execDelegate(c *chain, valIdx int, amount, valOpe
 		"-y",
 	}
 
-	s.executeGaiaTxCommand(ctx, c, gaiaCommand, valIdx, s.defaultExecValidation(c, valIdx))
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx))
 	s.T().Logf("%s successfully delegated %s to %s", delegatorAddr, amount, valOperAddress)
 }
 
@@ -500,10 +499,10 @@ func (s *IntegrationTestSuite) execUnbondDelegation(c *chain, valIdx int, amount
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	s.T().Logf("Executing gaiad tx staking unbond %s", c.id)
+	s.T().Logf("Executing atomoned tx staking unbond %s", c.id)
 
-	gaiaCommand := []string{
-		gaiadBinary,
+	atomoneCommand := []string{
+		atomonedBinary,
 		txCommand,
 		stakingtypes.ModuleName,
 		"unbond",
@@ -518,7 +517,7 @@ func (s *IntegrationTestSuite) execUnbondDelegation(c *chain, valIdx int, amount
 		"-y",
 	}
 
-	s.executeGaiaTxCommand(ctx, c, gaiaCommand, valIdx, s.defaultExecValidation(c, valIdx))
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx))
 	s.T().Logf("%s successfully undelegated %s to %s", delegatorAddr, amount, valOperAddress)
 }
 
@@ -526,10 +525,10 @@ func (s *IntegrationTestSuite) execCancelUnbondingDelegation(c *chain, valIdx in
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	s.T().Logf("Executing gaiad tx staking cancel-unbond %s", c.id)
+	s.T().Logf("Executing atomoned tx staking cancel-unbond %s", c.id)
 
-	gaiaCommand := []string{
-		gaiadBinary,
+	atomoneCommand := []string{
+		atomonedBinary,
 		txCommand,
 		stakingtypes.ModuleName,
 		"cancel-unbond",
@@ -545,7 +544,7 @@ func (s *IntegrationTestSuite) execCancelUnbondingDelegation(c *chain, valIdx in
 		"-y",
 	}
 
-	s.executeGaiaTxCommand(ctx, c, gaiaCommand, valIdx, s.defaultExecValidation(c, valIdx))
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx))
 	s.T().Logf("%s successfully canceled unbonding %s to %s", delegatorAddr, amount, valOperAddress)
 }
 
@@ -555,10 +554,10 @@ func (s *IntegrationTestSuite) execRedelegate(c *chain, valIdx int, amount, orig
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	s.T().Logf("Executing gaiad tx staking redelegate %s", c.id)
+	s.T().Logf("Executing atomoned tx staking redelegate %s", c.id)
 
-	gaiaCommand := []string{
-		gaiadBinary,
+	atomoneCommand := []string{
+		atomonedBinary,
 		txCommand,
 		stakingtypes.ModuleName,
 		"redelegate",
@@ -575,7 +574,7 @@ func (s *IntegrationTestSuite) execRedelegate(c *chain, valIdx int, amount, orig
 		"-y",
 	}
 
-	s.executeGaiaTxCommand(ctx, c, gaiaCommand, valIdx, s.defaultExecValidation(c, valIdx))
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx))
 	s.T().Logf("%s successfully redelegated %s from %s to %s", delegatorAddr, amount, originalValOperAddress, newValOperAddress)
 }
 
@@ -590,8 +589,8 @@ func (s *IntegrationTestSuite) getLatestBlockHeight(c *chain, valIdx int) int {
 	}
 
 	var currentHeight int
-	gaiaCommand := []string{gaiadBinary, "status"}
-	s.executeGaiaTxCommand(ctx, c, gaiaCommand, valIdx, func(stdOut []byte, stdErr []byte) bool {
+	atomoneCommand := []string{atomonedBinary, "status"}
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, func(stdOut []byte, stdErr []byte) bool {
 		var (
 			err   error
 			block syncInfo
@@ -629,8 +628,8 @@ func (s *IntegrationTestSuite) execSetWithdrawAddress(
 	defer cancel()
 
 	s.T().Logf("Setting distribution withdrawal address on chain %s for %s to %s", c.id, delegatorAddress, newWithdrawalAddress)
-	gaiaCommand := []string{
-		gaiadBinary,
+	atomoneCommand := []string{
+		atomonedBinary,
 		txCommand,
 		distributiontypes.ModuleName,
 		"set-withdraw-addr",
@@ -644,7 +643,7 @@ func (s *IntegrationTestSuite) execSetWithdrawAddress(
 		"-y",
 	}
 
-	s.executeGaiaTxCommand(ctx, c, gaiaCommand, valIdx, s.defaultExecValidation(c, valIdx))
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx))
 	s.T().Logf("Successfully set new distribution withdrawal address for %s to %s", delegatorAddress, newWithdrawalAddress)
 }
 
@@ -659,8 +658,8 @@ func (s *IntegrationTestSuite) execWithdrawReward(
 	defer cancel()
 
 	s.T().Logf("Withdrawing distribution rewards on chain %s for delegator %s from %s validator", c.id, delegatorAddress, validatorAddress)
-	gaiaCommand := []string{
-		gaiadBinary,
+	atomoneCommand := []string{
+		atomonedBinary,
 		txCommand,
 		distributiontypes.ModuleName,
 		"withdraw-rewards",
@@ -676,11 +675,11 @@ func (s *IntegrationTestSuite) execWithdrawReward(
 		"-y",
 	}
 
-	s.executeGaiaTxCommand(ctx, c, gaiaCommand, valIdx, s.defaultExecValidation(c, valIdx))
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx))
 	s.T().Logf("Successfully withdrew distribution rewards for delegator %s from validator %s", delegatorAddress, validatorAddress)
 }
 
-func (s *IntegrationTestSuite) executeGaiaTxCommand(ctx context.Context, c *chain, gaiaCommand []string, valIdx int, validation func([]byte, []byte) bool) {
+func (s *IntegrationTestSuite) executeAtomoneTxCommand(ctx context.Context, c *chain, atomoneCommand []string, valIdx int, validation func([]byte, []byte) bool) {
 	if validation == nil {
 		validation = s.defaultExecValidation(s.chainA, 0)
 	}
@@ -694,7 +693,7 @@ func (s *IntegrationTestSuite) executeGaiaTxCommand(ctx context.Context, c *chai
 		AttachStderr: true,
 		Container:    s.valResources[c.id][valIdx].Container.ID,
 		User:         "nonroot",
-		Cmd:          gaiaCommand,
+		Cmd:          atomoneCommand,
 	})
 	s.Require().NoError(err)
 
@@ -714,50 +713,6 @@ func (s *IntegrationTestSuite) executeGaiaTxCommand(ctx context.Context, c *chai
 	}
 }
 
-func (s *IntegrationTestSuite) executeHermesCommand(ctx context.Context, hermesCmd []string) ([]byte, error) {
-	var outBuf bytes.Buffer
-	exec, err := s.dkrPool.Client.CreateExec(docker.CreateExecOptions{
-		Context:      ctx,
-		AttachStdout: true,
-		AttachStderr: true,
-		Container:    s.hermesResource.Container.ID,
-		User:         "root",
-		Cmd:          hermesCmd,
-	})
-	s.Require().NoError(err)
-
-	err = s.dkrPool.Client.StartExec(exec.ID, docker.StartExecOptions{
-		Context:      ctx,
-		Detach:       false,
-		OutputStream: &outBuf,
-	})
-	s.Require().NoError(err)
-
-	// Check that the stdout output contains the expected status
-	// and look for errors, e.g "insufficient fees"
-	stdOut := []byte{}
-	scanner := bufio.NewScanner(&outBuf)
-	for scanner.Scan() {
-		stdOut = scanner.Bytes()
-		var out map[string]interface{}
-		err = json.Unmarshal(stdOut, &out)
-		s.Require().NoError(err)
-		if err != nil {
-			return nil, fmt.Errorf("hermes relayer command returned failed with error: %s", err)
-		}
-		// errors are catched by observing the logs level in the stderr output
-		if lvl := out["level"]; lvl != nil && strings.ToLower(lvl.(string)) == "error" {
-			errMsg := out["fields"].(map[string]interface{})["message"]
-			return nil, fmt.Errorf("hermes relayer command failed: %s", errMsg)
-		}
-		if s := out["status"]; s != nil && s != "success" {
-			return nil, fmt.Errorf("hermes relayer command returned failed with status: %s", s)
-		}
-	}
-
-	return stdOut, nil
-}
-
 func (s *IntegrationTestSuite) expectErrExecValidation(chain *chain, valIdx int, expectErr bool) func([]byte, []byte) bool {
 	return func(stdOut []byte, stdErr []byte) bool {
 		var txResp sdk.TxResponse
@@ -770,7 +725,7 @@ func (s *IntegrationTestSuite) expectErrExecValidation(chain *chain, valIdx int,
 		// wait for the tx to be committed on chain
 		s.Require().Eventuallyf(
 			func() bool {
-				gotErr := queryGaiaTx(endpoint, txResp.TxHash) != nil
+				gotErr := queryAtomOneTx(endpoint, txResp.TxHash) != nil
 				return gotErr == expectErr
 			},
 			time.Minute,
@@ -792,7 +747,7 @@ func (s *IntegrationTestSuite) defaultExecValidation(chain *chain, valIdx int) f
 			endpoint := fmt.Sprintf("http://%s", s.valResources[chain.id][valIdx].GetHostPort("1317/tcp"))
 			s.Require().Eventually(
 				func() bool {
-					return queryGaiaTx(endpoint, txResp.TxHash) == nil
+					return queryAtomOneTx(endpoint, txResp.TxHash) == nil
 				},
 				time.Minute,
 				5*time.Second,
@@ -809,10 +764,10 @@ func (s *IntegrationTestSuite) executeValidatorBond(c *chain, valIdx int, valOpe
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	s.T().Logf("Executing gaiad tx staking validator-bond %s", c.id)
+	s.T().Logf("Executing atomoned tx staking validator-bond %s", c.id)
 
-	gaiaCommand := []string{
-		gaiadBinary,
+	atomoneCommand := []string{
+		atomonedBinary,
 		txCommand,
 		stakingtypes.ModuleName,
 		"validator-bond",
@@ -826,7 +781,7 @@ func (s *IntegrationTestSuite) executeValidatorBond(c *chain, valIdx int, valOpe
 		"-y",
 	}
 
-	s.executeGaiaTxCommand(ctx, c, gaiaCommand, valIdx, s.defaultExecValidation(c, valIdx))
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx))
 	s.T().Logf("%s successfully executed validator bond tx to %s", delegatorAddr, valOperAddress)
 }
 
@@ -834,10 +789,10 @@ func (s *IntegrationTestSuite) executeTokenizeShares(c *chain, valIdx int, amoun
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	s.T().Logf("Executing gaiad tx staking tokenize-share %s", c.id)
+	s.T().Logf("Executing atomoned tx staking tokenize-share %s", c.id)
 
-	gaiaCommand := []string{
-		gaiadBinary,
+	atomoneCommand := []string{
+		atomonedBinary,
 		txCommand,
 		stakingtypes.ModuleName,
 		"tokenize-share",
@@ -854,7 +809,7 @@ func (s *IntegrationTestSuite) executeTokenizeShares(c *chain, valIdx int, amoun
 		"-y",
 	}
 
-	s.executeGaiaTxCommand(ctx, c, gaiaCommand, valIdx, s.defaultExecValidation(c, valIdx))
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx))
 	s.T().Logf("%s successfully executed tokenize share tx from %s", delegatorAddr, valOperAddress)
 }
 
@@ -862,10 +817,10 @@ func (s *IntegrationTestSuite) executeRedeemShares(c *chain, valIdx int, amount,
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	s.T().Logf("Executing gaiad tx staking redeem-tokens %s", c.id)
+	s.T().Logf("Executing atomoned tx staking redeem-tokens %s", c.id)
 
-	gaiaCommand := []string{
-		gaiadBinary,
+	atomoneCommand := []string{
+		atomonedBinary,
 		txCommand,
 		stakingtypes.ModuleName,
 		"redeem-tokens",
@@ -880,7 +835,7 @@ func (s *IntegrationTestSuite) executeRedeemShares(c *chain, valIdx int, amount,
 		"-y",
 	}
 
-	s.executeGaiaTxCommand(ctx, c, gaiaCommand, valIdx, s.defaultExecValidation(c, valIdx))
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx))
 	s.T().Logf("%s successfully executed redeem share tx for %s", delegatorAddr, amount)
 }
 
@@ -888,10 +843,10 @@ func (s *IntegrationTestSuite) executeTransferTokenizeShareRecord(c *chain, valI
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	s.T().Logf("Executing gaiad tx staking transfer-tokenize-share-record %s", c.id)
+	s.T().Logf("Executing atomoned tx staking transfer-tokenize-share-record %s", c.id)
 
-	gaiaCommand := []string{
-		gaiadBinary,
+	atomoneCommand := []string{
+		atomonedBinary,
 		txCommand,
 		stakingtypes.ModuleName,
 		"transfer-tokenize-share-record",
@@ -906,24 +861,24 @@ func (s *IntegrationTestSuite) executeTransferTokenizeShareRecord(c *chain, valI
 		"-y",
 	}
 
-	s.executeGaiaTxCommand(ctx, c, gaiaCommand, valIdx, s.defaultExecValidation(c, valIdx))
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx))
 	s.T().Logf("%s successfully executed transfer tokenize share record for %s", owner, recordID)
 }
 
-// signTxFileOnline signs a transaction file using the gaiacli tx sign command
+// signTxFileOnline signs a transaction file using the atomoned tx sign command
 // the from flag is used to specify the keyring account to sign the transaction
 // the from account must be registered in the keyring and exist on chain (have a balance or be a genesis account)
 func (s *IntegrationTestSuite) signTxFileOnline(chain *chain, valIdx int, from string, txFilePath string) ([]byte, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	gaiaCommand := []string{
-		gaiadBinary,
+	atomoneCommand := []string{
+		atomonedBinary,
 		txCommand,
 		"sign",
-		filepath.Join(gaiaHomePath, txFilePath),
+		filepath.Join(atomoneHomePath, txFilePath),
 		fmt.Sprintf("--%s=%s", flags.FlagChainID, chain.id),
-		fmt.Sprintf("--%s=%s", flags.FlagHome, gaiaHomePath),
+		fmt.Sprintf("--%s=%s", flags.FlagHome, atomoneHomePath),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, from),
 		"--keyring-backend=test",
 		"--output=json",
@@ -938,14 +893,14 @@ func (s *IntegrationTestSuite) signTxFileOnline(chain *chain, valIdx int, from s
 		return true
 	}
 
-	s.executeGaiaTxCommand(ctx, chain, gaiaCommand, valIdx, captureOutput)
+	s.executeAtomoneTxCommand(ctx, chain, atomoneCommand, valIdx, captureOutput)
 	if len(erroutput) > 0 {
 		return nil, fmt.Errorf("failed to sign tx: %s", string(erroutput))
 	}
 	return output, nil
 }
 
-// broadcastTxFile broadcasts a signed transaction file using the gaiacli tx broadcast command
+// broadcastTxFile broadcasts a signed transaction file using the atomoned tx broadcast command
 // the from flag is used to specify the keyring account to sign the transaction
 // the from account must be registered in the keyring and exist on chain (have a balance or be a genesis account)
 func (s *IntegrationTestSuite) broadcastTxFile(chain *chain, valIdx int, from string, txFilePath string) ([]byte, error) {
@@ -953,12 +908,12 @@ func (s *IntegrationTestSuite) broadcastTxFile(chain *chain, valIdx int, from st
 	defer cancel()
 
 	broadcastTxCmd := []string{
-		gaiadBinary,
+		atomonedBinary,
 		txCommand,
 		"broadcast",
-		filepath.Join(gaiaHomePath, txFilePath),
+		filepath.Join(atomoneHomePath, txFilePath),
 		fmt.Sprintf("--%s=%s", flags.FlagChainID, chain.id),
-		fmt.Sprintf("--%s=%s", flags.FlagHome, gaiaHomePath),
+		fmt.Sprintf("--%s=%s", flags.FlagHome, atomoneHomePath),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, from),
 		"--keyring-backend=test",
 		"--output=json",
@@ -973,7 +928,7 @@ func (s *IntegrationTestSuite) broadcastTxFile(chain *chain, valIdx int, from st
 		return true
 	}
 
-	s.executeGaiaTxCommand(ctx, chain, broadcastTxCmd, valIdx, captureOutput)
+	s.executeAtomoneTxCommand(ctx, chain, broadcastTxCmd, valIdx, captureOutput)
 	if len(erroutput) > 0 {
 		return nil, fmt.Errorf("failed to sign tx: %s", string(erroutput))
 	}

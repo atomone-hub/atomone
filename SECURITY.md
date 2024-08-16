@@ -1,30 +1,21 @@
-## How to Report a Security Bug
+# Security Policy
 
-If you believe you have found a security vulnerability in Gaia, 
-you can report it to our primary vulnerability disclosure channel, the 
-[Cosmos HackerOne Bug Bounty program](https://hackerone.com/cosmos?type=team).
+All in Bits strives to contribute toward the security of our ecosystem through
+internal security practices, and by working with external security researchers
+from the community.
 
-If you prefer to report an issue via email, you may send a bug report to 
-security@interchain.io with the issue details, reproduction, impact, and other 
-information. Please submit only one unique email thread per vulnerability. 
-Any issues reported via email are ineligible for bounty rewards. 
+## Reporting a Vulnerability
 
-Artifacts from an email report are saved at the time the email is triaged. 
-Please note: our team is not able to monitor dynamic content (e.g. a Google 
-Docs link that is edited after receipt) throughout the lifecycle of a report. 
-If you would like to share additional information or modify previous 
-information, please include it in an additional reply as an additional attachment.
+If you've identified a vulnerability, please report it through one of the
+following venues:
+* Submit an advisory through GitHub: https://github.com/atomone-hub/atomone/security/advisories/new
+* Email security [at-symbol] tedermint [dot] com. If you are concerned about
+  confidentiality e.g. because of a high-severity issue, you may email us for
+  PGP or Signal contact details.
+* We provide bug bounty rewards through our program at
+  [HackenProof](https://hackenproof.com/all-in-bits). You must report via
+  HackenProof in order to be eligible for rewards.
 
-***Please DO NOT file a public issue in this repository to report a security vulnerability.*** 
+We will respond within 3 business days to all received reports. 
 
-
-## Coordinated Vulnerability Disclosure Policy and Safe Harbor
-
-For the most up-to-date version of the policies that govern vulnerability 
-disclosure, please consult the [HackerOne program page](https://hackerone.com/cosmos?type=team&view_policy=true).
-
-The policy hosted on HackerOne is the official Coordinated Vulnerability 
-Disclosure policy and Safe Harbor for the Interchain Stack, and the teams and 
-infrastructure it supports, and it supersedes previous security policies that 
-have been used in the past by individual teams and projects with targets in 
-scope of the program.
+Thank you for helping to keep our ecosystem safe!

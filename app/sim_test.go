@@ -1,4 +1,4 @@
-package gaia_test
+package atomone_test
 
 import (
 	"encoding/json"
@@ -23,15 +23,13 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 	simcli "github.com/cosmos/cosmos-sdk/x/simulation/client/cli"
 
-	"github.com/cosmos/gaia/v15/ante"
-	gaia "github.com/cosmos/gaia/v15/app"
-	// "github.com/cosmos/gaia/v11/app/helpers"
-	// "github.com/cosmos/gaia/v11/app/params"
-	"github.com/cosmos/gaia/v15/app/sim"
+	"github.com/atomone-hub/atomone/ante"
+	atomone "github.com/atomone-hub/atomone/app"
+	"github.com/atomone-hub/atomone/app/sim"
 )
 
 // AppChainID hardcoded chainID for simulation
-const AppChainID = "gaia-app"
+const AppChainID = "atomone-app"
 
 func init() {
 	sim.GetSimulatorFlags()
@@ -67,7 +65,7 @@ func TestAppStateDeterminism(t *testing.T) {
 
 	appHashList := make([]json.RawMessage, numTimesToRunPerSeed)
 	appOptions := make(simtestutil.AppOptionsMap, 0)
-	appOptions[flags.FlagHome] = gaia.DefaultNodeHome
+	appOptions[flags.FlagHome] = atomone.DefaultNodeHome
 	appOptions[server.FlagInvCheckPeriod] = sim.FlagPeriodValue
 
 	for i := 0; i < numSeeds; i++ {
@@ -86,14 +84,14 @@ func TestAppStateDeterminism(t *testing.T) {
 			}
 
 			db := dbm.NewMemDB()
-			encConfig := gaia.RegisterEncodingConfig()
-			app := gaia.NewGaiaApp(
+			encConfig := atomone.RegisterEncodingConfig()
+			app := atomone.NewAtomOneApp(
 				logger,
 				db,
 				nil,
 				true,
 				map[int64]bool{},
-				gaia.DefaultNodeHome,
+				atomone.DefaultNodeHome,
 				encConfig,
 				appOptions,
 				interBlockCacheOpt(),
@@ -115,7 +113,7 @@ func TestAppStateDeterminism(t *testing.T) {
 				t,
 				os.Stdout,
 				app.BaseApp,
-				simtestutil.AppStateFn(app.AppCodec(), app.SimulationManager(), gaia.NewDefaultGenesisState(encConfig)),
+				simtestutil.AppStateFn(app.AppCodec(), app.SimulationManager(), atomone.NewDefaultGenesisState(encConfig)),
 				simulation2.RandomAccounts, // Replace with own random account function if using keys other than secp256k1
 				simtestutil.SimulationOperations(app, app.AppCodec(), config),
 				blockedAddresses,

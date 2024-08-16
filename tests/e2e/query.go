@@ -16,10 +16,10 @@ import (
 	govtypesv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	"github.com/cosmos/gaia/v15/x/globalfee/types"
+	"github.com/atomone-hub/atomone/x/globalfee/types"
 )
 
-func queryGaiaTx(endpoint, txHash string) error {
+func queryAtomOneTx(endpoint, txHash string) error {
 	resp, err := http.Get(fmt.Sprintf("%s/cosmos/tx/v1beta1/txs/%s", endpoint, txHash))
 	if err != nil {
 		return fmt.Errorf("failed to execute HTTP request: %w", err)
@@ -46,7 +46,7 @@ func queryGaiaTx(endpoint, txHash string) error {
 
 // if coin is zero, return empty coin.
 func getSpecificBalance(endpoint, addr, denom string) (amt sdk.Coin, err error) {
-	balances, err := queryGaiaAllBalances(endpoint, addr)
+	balances, err := queryAtomOneAllBalances(endpoint, addr)
 	if err != nil {
 		return amt, err
 	}
@@ -59,7 +59,7 @@ func getSpecificBalance(endpoint, addr, denom string) (amt sdk.Coin, err error) 
 	return amt, nil
 }
 
-func queryGaiaAllBalances(endpoint, addr string) (sdk.Coins, error) {
+func queryAtomOneAllBalances(endpoint, addr string) (sdk.Coins, error) {
 	body, err := httpGet(fmt.Sprintf("%s/cosmos/bank/v1beta1/balances/%s", endpoint, addr))
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute HTTP request: %w", err)
@@ -88,7 +88,7 @@ func queryStakingParams(endpoint string) (stakingtypes.QueryParamsResponse, erro
 }
 
 func queryGlobalFeeParams(endpoint string) (types.QueryParamsResponse, error) {
-	body, err := httpGet(fmt.Sprintf("%s/gaia/globalfee/v1beta1/params", endpoint))
+	body, err := httpGet(fmt.Sprintf("%s/atomone/globalfee/v1beta1/params", endpoint))
 	if err != nil {
 		return types.QueryParamsResponse{}, fmt.Errorf("failed to execute HTTP request: %w", err)
 	}

@@ -10,12 +10,10 @@ var (
 	runFeeGrantTest               = true
 	runGlobalFeesTest             = true
 	runGovTest                    = true
-	runIBCTest                    = true
 	runSlashingTest               = true
 	runStakingAndDistributionTest = true
 	runVestingTest                = true
 	runRestInterfacesTest         = true
-	runLsmTest                    = true
 )
 
 func (s *IntegrationTestSuite) TestRestInterfaces() {
@@ -32,14 +30,6 @@ func (s *IntegrationTestSuite) TestBank() {
 	s.testBankTokenTransfer()
 	s.bankSendWithNonCriticalExtensionOptions()
 	s.failedBankSendWithNonCriticalExtensionOptions()
-}
-
-func (s *IntegrationTestSuite) TestByPassMinFee() {
-	if !runBypassMinFeeTest {
-		s.T().Skip()
-	}
-	chainAPI := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
-	s.testBypassMinFeeWithdrawReward(chainAPI)
 }
 
 func (s *IntegrationTestSuite) TestEncode() {
@@ -79,18 +69,6 @@ func (s *IntegrationTestSuite) TestGov() {
 	s.GovSoftwareUpgrade()
 	s.GovCancelSoftwareUpgrade()
 	s.GovCommunityPoolSpend()
-	s.AddRemoveConsumerChain()
-}
-
-func (s *IntegrationTestSuite) TestIBC() {
-	if !runIBCTest {
-		s.T().Skip()
-	}
-
-	s.testIBCTokenTransfer()
-	s.testMultihopIBCTokenTransfer()
-	s.testFailedMultihopIBCTokenTransfer()
-	s.testIBCBypassMsg()
 }
 
 func (s *IntegrationTestSuite) TestSlashing() {
@@ -118,11 +96,4 @@ func (s *IntegrationTestSuite) TestVesting() {
 	s.testDelayedVestingAccount(chainAAPI)
 	s.testContinuousVestingAccount(chainAAPI)
 	// s.testPeriodicVestingAccount(chainAAPI) TODO: add back when v0.45 adds the missing CLI command.
-}
-
-func (s *IntegrationTestSuite) TestLSM() {
-	if !runLsmTest {
-		s.T().Skip()
-	}
-	s.testLSM()
 }

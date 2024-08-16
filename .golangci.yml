@@ -68,7 +68,7 @@ linters-settings:
       - prefix(github.com/cosmos) # cosmos org
       - prefix(cosmossdk.io) # new modules
       - prefix(github.com/cosmos/cosmos-sdk) # cosmos sdk
-      - prefix(github.com/cosmos/gaia) # Gaia
+      - prefix(github.com/atomone-hub/atomone) # AtomOne
   dogsled:
     max-blank-identifiers: 3
   maligned:

@@ -4,7 +4,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 )
 
-const codespace = "gaia"
+const codespace = "atomone"
 
 var (
 	// ErrTxDecode is returned if we cannot parse a transaction

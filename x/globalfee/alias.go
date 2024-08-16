@@ -1,7 +1,7 @@
 package globalfee
 
 import (
-	"github.com/cosmos/gaia/v15/x/globalfee/types"
+	"github.com/atomone-hub/atomone/x/globalfee/types"
 )
 
 const (

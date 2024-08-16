@@ -16,7 +16,7 @@ func (s *IntegrationTestSuite) testEncode() {
 	_, encoded, err := buildRawTx()
 	s.Require().NoError(err)
 
-	got := s.execEncode(chain, filepath.Join(gaiaHomePath, rawTxFile))
+	got := s.execEncode(chain, filepath.Join(atomoneHomePath, rawTxFile))
 	s.T().Logf("encoded tx: %s", got)
 	s.Require().Equal(encoded, got)
 }

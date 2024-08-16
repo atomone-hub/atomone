@@ -1,9 +1,9 @@
-package gaia
+package atomone
 
 import (
 	"encoding/json"
 
-	"github.com/cosmos/gaia/v15/app/params"
+	"github.com/atomone-hub/atomone/app/params"
 )
 
 // The genesis state of the blockchain is represented here as a map of raw json

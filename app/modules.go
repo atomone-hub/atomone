@@ -1,4 +1,4 @@
-package gaia
+package atomone
 
 import (
 	pfmrouter "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v7/packetforward"
@@ -55,10 +55,10 @@ import (
 	upgradeclient "github.com/cosmos/cosmos-sdk/x/upgrade/client"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
-	gaiaappparams "github.com/cosmos/gaia/v15/app/params"
-	"github.com/cosmos/gaia/v15/x/globalfee"
-	"github.com/cosmos/gaia/v15/x/metaprotocols"
-	metaprotocolstypes "github.com/cosmos/gaia/v15/x/metaprotocols/types"
+	atomoneappparams "github.com/atomone-hub/atomone/app/params"
+	"github.com/atomone-hub/atomone/x/globalfee"
+	"github.com/atomone-hub/atomone/x/metaprotocols"
+	metaprotocolstypes "github.com/atomone-hub/atomone/x/metaprotocols/types"
 )
 
 var maccPerms = map[string][]string{
@@ -117,8 +117,8 @@ var ModuleBasics = module.NewBasicManager(
 )
 
 func appModules(
-	app *GaiaApp,
-	encodingConfig gaiaappparams.EncodingConfig,
+	app *AtomOneApp,
+	encodingConfig atomoneappparams.EncodingConfig,
 	skipGenesisInvariants bool,
 ) []module.AppModule {
 	appCodec := encodingConfig.Marshaler
@@ -159,8 +159,8 @@ func appModules(
 // simulationModules returns modules for simulation manager
 // define the order of the modules for deterministic simulations
 func simulationModules(
-	app *GaiaApp,
-	encodingConfig gaiaappparams.EncodingConfig,
+	app *AtomOneApp,
+	encodingConfig atomoneappparams.EncodingConfig,
 	_ bool,
 ) []module.AppModuleSimulation {
 	appCodec := encodingConfig.Marshaler

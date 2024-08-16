@@ -1,4 +1,4 @@
-package gaia_test
+package atomone_test
 
 import (
 	"testing"
@@ -11,8 +11,8 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
-	gaia "github.com/cosmos/gaia/v15/app"
-	gaiahelpers "github.com/cosmos/gaia/v15/app/helpers"
+	atomone "github.com/atomone-hub/atomone/app"
+	atomonehelpers "github.com/atomone-hub/atomone/app/helpers"
 )
 
 type EmptyAppOptions struct{}
@@ -21,15 +21,15 @@ func (ao EmptyAppOptions) Get(_ string) interface{} {
 	return nil
 }
 
-func TestGaiaApp_BlockedModuleAccountAddrs(t *testing.T) {
-	encConfig := gaia.RegisterEncodingConfig()
-	app := gaia.NewGaiaApp(
+func TestAtomOneApp_BlockedModuleAccountAddrs(t *testing.T) {
+	encConfig := atomone.RegisterEncodingConfig()
+	app := atomone.NewAtomOneApp(
 		log.NewNopLogger(),
 		db.NewMemDB(),
 		nil,
 		true,
 		map[int64]bool{},
-		gaia.DefaultNodeHome,
+		atomone.DefaultNodeHome,
 		encConfig,
 		EmptyAppOptions{},
 	)
@@ -40,8 +40,8 @@ func TestGaiaApp_BlockedModuleAccountAddrs(t *testing.T) {
 	require.NotContains(t, blockedAddrs, authtypes.NewModuleAddress(govtypes.ModuleName).String())
 }
 
-func TestGaiaApp_Export(t *testing.T) {
-	app := gaiahelpers.Setup(t)
+func TestAtomOneApp_Export(t *testing.T) {
+	app := atomonehelpers.Setup(t)
 	_, err := app.ExportAppStateAndValidators(true, []string{}, []string{})
 	require.NoError(t, err, "ExportAppStateAndValidators should not have an error")
 }

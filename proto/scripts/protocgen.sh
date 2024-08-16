@@ -13,5 +13,5 @@ for dir in $proto_dirs; do
 done
 cd ..
 # move proto files to the right places
-cp -r github.com/cosmos/gaia/* ./
+cp -r github.com/atomeone-hub/atomone/* ./
 rm -rf github.com

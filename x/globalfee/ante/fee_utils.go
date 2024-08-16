@@ -5,7 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	gaiaerrors "github.com/cosmos/gaia/v15/types/errors"
+	atomoneerrors "github.com/atomone-hub/atomone/types/errors"
 )
 
 // ContainZeroCoins returns true if the given coins are empty or contain zero coins,
@@ -31,7 +31,7 @@ func CombinedFeeRequirement(globalFees, minGasPrices sdk.Coins) (sdk.Coins, erro
 	// global fees should never be empty
 	// since it has a default value using the staking module's bond denom
 	if len(globalFees) == 0 {
-		return sdk.Coins{}, errorsmod.Wrapf(gaiaerrors.ErrNotFound, "global fee cannot be empty")
+		return sdk.Coins{}, errorsmod.Wrapf(atomoneerrors.ErrNotFound, "global fee cannot be empty")
 	}
 
 	// empty min_gas_price

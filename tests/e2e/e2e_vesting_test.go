@@ -60,7 +60,7 @@ func (s *IntegrationTestSuite) testDelayedVestingAccount(api string) {
 
 		// Delegate coins should succeed
 		s.execDelegate(chain, valIdx, vestingDelegationAmount.String(), valOpAddr,
-			vestingDelayedAcc.String(), gaiaHomePath, vestingDelegationFees.String())
+			vestingDelayedAcc.String(), atomoneHomePath, vestingDelegationFees.String())
 
 		// Validate delegation successful
 		s.Require().Eventually(
@@ -129,7 +129,7 @@ func (s *IntegrationTestSuite) testContinuousVestingAccount(api string) {
 
 		// Delegate coins should succeed
 		s.execDelegate(chain, valIdx, vestingDelegationAmount.String(),
-			valOpAddr, continuousVestingAcc.String(), gaiaHomePath, vestingDelegationFees.String())
+			valOpAddr, continuousVestingAcc.String(), atomoneHomePath, vestingDelegationFees.String())
 
 		// Validate delegation successful
 		s.Require().Eventually(
@@ -210,7 +210,7 @@ func (s *IntegrationTestSuite) testPeriodicVestingAccount(api string) { //nolint
 		s.execCreatePeriodicVestingAccount(
 			chain,
 			periodicVestingAddr,
-			filepath.Join(gaiaHomePath, vestingPeriodFile),
+			filepath.Join(atomoneHomePath, vestingPeriodFile),
 			withKeyValue(flagFrom, sender.String()),
 		)
 
@@ -268,7 +268,7 @@ func (s *IntegrationTestSuite) testPeriodicVestingAccount(api string) { //nolint
 
 		// Delegate coins should succeed
 		s.execDelegate(chain, valIdx, vestingDelegationAmount.String(), valOpAddr,
-			periodicVestingAddr, gaiaHomePath, vestingDelegationFees.String())
+			periodicVestingAddr, atomoneHomePath, vestingDelegationFees.String())
 
 		// Validate delegation successful
 		s.Require().Eventually(

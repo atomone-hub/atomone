@@ -24,16 +24,16 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	gaiaapp "github.com/cosmos/gaia/v15/app"
+	atomoneapp "github.com/atomone-hub/atomone/app"
 )
 
 // SimAppChainID hardcoded chainID for simulation
 const (
-	SimAppChainID = "gaia-app"
+	SimAppChainID = "atomone-app"
 )
 
 // DefaultConsensusParams defines the default Tendermint consensus params used
-// in GaiaApp testing.
+// in AtomOneApp testing.
 var DefaultConsensusParams = &tmproto.ConsensusParams{
 	Block: &tmproto.BlockParams{
 		MaxBytes: 200000,
@@ -59,7 +59,7 @@ type EmptyAppOptions struct{}
 
 func (EmptyAppOptions) Get(_ string) interface{} { return nil }
 
-func Setup(t *testing.T) *gaiaapp.GaiaApp {
+func Setup(t *testing.T) *atomoneapp.AtomOneApp {
 	t.Helper()
 
 	privVal := mock.NewPV()
@@ -84,21 +84,21 @@ func Setup(t *testing.T) *gaiaapp.GaiaApp {
 	return app
 }
 
-// SetupWithGenesisValSet initializes a new GaiaApp with a validator set and genesis accounts
+// SetupWithGenesisValSet initializes a new AtomOneApp with a validator set and genesis accounts
 // that also act as delegators. For simplicity, each validator is bonded with a delegation
-// of one consensus engine unit in the default token of the GaiaApp from first genesis
-// account. A Nop logger is set in GaiaApp.
-func SetupWithGenesisValSet(t *testing.T, valSet *tmtypes.ValidatorSet, genAccs []authtypes.GenesisAccount, balances ...banktypes.Balance) *gaiaapp.GaiaApp {
+// of one consensus engine unit in the default token of the AtomOneApp from first genesis
+// account. A Nop logger is set in AtomOneApp.
+func SetupWithGenesisValSet(t *testing.T, valSet *tmtypes.ValidatorSet, genAccs []authtypes.GenesisAccount, balances ...banktypes.Balance) *atomoneapp.AtomOneApp {
 	t.Helper()
 
-	gaiaApp, genesisState := setup()
-	genesisState = genesisStateWithValSet(t, gaiaApp, genesisState, valSet, genAccs, balances...)
+	atomoneApp, genesisState := setup()
+	genesisState = genesisStateWithValSet(t, atomoneApp, genesisState, valSet, genAccs, balances...)
 
 	stateBytes, err := json.MarshalIndent(genesisState, "", " ")
 	require.NoError(t, err)
 
 	// init chain will set the validator set and initialize the genesis accounts
-	gaiaApp.InitChain(
+	atomoneApp.InitChain(
 		abci.RequestInitChain{
 			Validators:      []abci.ValidatorUpdate{},
 			ConsensusParams: DefaultConsensusParams,
@@ -107,43 +107,43 @@ func SetupWithGenesisValSet(t *testing.T, valSet *tmtypes.ValidatorSet, genAccs 
 	)
 
 	// commit genesis changes
-	gaiaApp.Commit()
-	gaiaApp.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{
-		Height:             gaiaApp.LastBlockHeight() + 1,
-		AppHash:            gaiaApp.LastCommitID().Hash,
+	atomoneApp.Commit()
+	atomoneApp.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{
+		Height:             atomoneApp.LastBlockHeight() + 1,
+		AppHash:            atomoneApp.LastCommitID().Hash,
 		ValidatorsHash:     valSet.Hash(),
 		NextValidatorsHash: valSet.Hash(),
 	}})
 
-	return gaiaApp
+	return atomoneApp
 }
 
-func setup() (*gaiaapp.GaiaApp, gaiaapp.GenesisState) {
+func setup() (*atomoneapp.AtomOneApp, atomoneapp.GenesisState) {
 	db := dbm.NewMemDB()
 	appOptions := make(simtestutil.AppOptionsMap, 0)
 	appOptions[server.FlagInvCheckPeriod] = 5
 	appOptions[server.FlagMinGasPrices] = "0uatom"
 
-	encConfig := gaiaapp.RegisterEncodingConfig()
+	encConfig := atomoneapp.RegisterEncodingConfig()
 
-	gaiaApp := gaiaapp.NewGaiaApp(
+	atomoneApp := atomoneapp.NewAtomOneApp(
 		log.NewNopLogger(),
 		db,
 		nil,
 		true,
 		map[int64]bool{},
-		gaiaapp.DefaultNodeHome,
+		atomoneapp.DefaultNodeHome,
 		encConfig,
 		appOptions,
 	)
-	return gaiaApp, gaiaapp.NewDefaultGenesisState(encConfig)
+	return atomoneApp, atomoneapp.NewDefaultGenesisState(encConfig)
 }
 
 func genesisStateWithValSet(t *testing.T,
-	app *gaiaapp.GaiaApp, genesisState gaiaapp.GenesisState,
+	app *atomoneapp.AtomOneApp, genesisState atomoneapp.GenesisState,
 	valSet *tmtypes.ValidatorSet, genAccs []authtypes.GenesisAccount,
 	balances ...banktypes.Balance,
-) gaiaapp.GenesisState {
+) atomoneapp.GenesisState {
 	t.Helper()
 	// set genesis accounts
 	authGenesis := authtypes.NewGenesisState(authtypes.DefaultParams(), genAccs)

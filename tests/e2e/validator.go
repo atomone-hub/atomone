@@ -25,7 +25,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	gaia "github.com/cosmos/gaia/v15/app"
+	atomone "github.com/atomone-hub/atomone/app"
 )
 
 //
@@ -78,7 +78,7 @@ func (v *validator) init() error {
 		return err
 	}
 
-	appState, err := json.MarshalIndent(gaia.ModuleBasics.DefaultGenesis(cdc), "", " ")
+	appState, err := json.MarshalIndent(atomone.ModuleBasics.DefaultGenesis(cdc), "", " ")
 	if err != nil {
 		return fmt.Errorf("failed to JSON encode app genesis state: %w", err)
 	}

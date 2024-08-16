@@ -16,18 +16,18 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/tx/signing"
 	xauthsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
 
-	gaiaapp "github.com/cosmos/gaia/v15/app"
-	gaiahelpers "github.com/cosmos/gaia/v15/app/helpers"
-	gaiaparams "github.com/cosmos/gaia/v15/app/params"
-	"github.com/cosmos/gaia/v15/x/globalfee"
-	gaiafeeante "github.com/cosmos/gaia/v15/x/globalfee/ante"
-	globfeetypes "github.com/cosmos/gaia/v15/x/globalfee/types"
+	gaiaapp "github.com/atomone-hub/atomone/app"
+	atomonehelpers "github.com/atomone-hub/atomone/app/helpers"
+	gaiaparams "github.com/atomone-hub/atomone/app/params"
+	"github.com/atomone-hub/atomone/x/globalfee"
+	atomonefeeante "github.com/atomone-hub/atomone/x/globalfee/ante"
+	globfeetypes "github.com/atomone-hub/atomone/x/globalfee/types"
 )
 
 type IntegrationTestSuite struct {
 	suite.Suite
 
-	app       *gaiaapp.GaiaApp
+	app       *gaiaapp.AtomOneApp
 	ctx       sdk.Context
 	clientCtx client.Context
 	txBuilder client.TxBuilder
@@ -36,7 +36,7 @@ type IntegrationTestSuite struct {
 var testBondDenom = "uatom"
 
 func (s *IntegrationTestSuite) SetupTest() {
-	app := gaiahelpers.Setup(s.T())
+	app := atomonehelpers.Setup(s.T())
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{
 		ChainID: fmt.Sprintf("test-chain-%s", tmrand.Str(4)),
 		Height:  1,
@@ -51,7 +51,7 @@ func (s *IntegrationTestSuite) SetupTest() {
 	s.clientCtx = client.Context{}.WithTxConfig(encodingConfig.TxConfig)
 }
 
-func (s *IntegrationTestSuite) SetupTestGlobalFeeStoreAndMinGasPrice(minGasPrice []sdk.DecCoin, globalFeeParams *globfeetypes.Params) (gaiafeeante.FeeDecorator, sdk.AnteHandler) {
+func (s *IntegrationTestSuite) SetupTestGlobalFeeStoreAndMinGasPrice(minGasPrice []sdk.DecCoin, globalFeeParams *globfeetypes.Params) (atomonefeeante.FeeDecorator, sdk.AnteHandler) {
 	subspace := s.app.GetSubspace(globalfee.ModuleName)
 	subspace.SetParamSet(s.ctx, globalFeeParams)
 	s.ctx = s.ctx.WithMinGasPrices(minGasPrice).WithIsCheckTx(true)
@@ -64,7 +64,7 @@ func (s *IntegrationTestSuite) SetupTestGlobalFeeStoreAndMinGasPrice(minGasPrice
 	s.Require().NoError(err)
 
 	// build fee decorator
-	feeDecorator := gaiafeeante.NewFeeDecorator(subspace, s.app.StakingKeeper)
+	feeDecorator := atomonefeeante.NewFeeDecorator(subspace, s.app.StakingKeeper)
 
 	// chain fee decorator to antehandler
 	antehandler := sdk.ChainAnteDecorators(feeDecorator)

@@ -23,8 +23,8 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
-	gaiaparams "github.com/cosmos/gaia/v15/app/params"
-	metaprotocoltypes "github.com/cosmos/gaia/v15/x/metaprotocols/types"
+	atomoneparams "github.com/atomone-hub/atomone/app/params"
+	metaprotocoltypes "github.com/atomone-hub/atomone/x/metaprotocols/types"
 )
 
 const (
@@ -33,13 +33,13 @@ const (
 )
 
 var (
-	encodingConfig gaiaparams.EncodingConfig
+	encodingConfig atomoneparams.EncodingConfig
 	cdc            codec.Codec
 	txConfig       client.TxConfig
 )
 
 func init() {
-	encodingConfig = gaiaparams.MakeEncodingConfig()
+	encodingConfig = atomoneparams.MakeEncodingConfig()
 	banktypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 	authtypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 	authvesting.RegisterInterfaces(encodingConfig.InterfaceRegistry)
@@ -71,7 +71,7 @@ type chain struct {
 }
 
 func newChain() (*chain, error) {
-	tmpDir, err := os.MkdirTemp("", "gaia-e2e-testnet-")
+	tmpDir, err := os.MkdirTemp("", "atomone-e2e-testnet-")
 	if err != nil {
 		return nil, err
 	}
@@ -143,6 +143,6 @@ func (c *chain) createValidator(index int) *validator {
 	return &validator{
 		chain:   c,
 		index:   index,
-		moniker: fmt.Sprintf("%s-gaia-%d", c.id, index),
+		moniker: fmt.Sprintf("%s-atomone-%d", c.id, index),
 	}
 }

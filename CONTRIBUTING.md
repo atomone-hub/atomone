@@ -2,7 +2,6 @@
 
 - [Contributing](#contributing)
   - [Overview](#overview)
-    - [Responsibilities of the stewarding team](#responsibilities-of-the-stewarding-team)
     - [Ease of reviewing](#ease-of-reviewing)
     - [Workflow](#workflow)
   - [Project Board](#project-board)
@@ -13,13 +12,12 @@
     - [Pull Request Templates](#pull-request-templates)
     - [Requesting Reviews](#requesting-reviews)
     - [Updating Documentation](#updating-documentation)
-    - [Changelog](#changelog)
   - [Dependencies](#dependencies)
   - [Protobuf](#protobuf)
   - [Branching Model and Release](#branching-model-and-release)
     - [PR Targeting](#pr-targeting)
 
-Thank you for considering making contributions to Gaia! 🎉👍
+Thank you for considering making contributions to AtomOne! 🎉👍
 
 ## Overview
 
@@ -28,19 +26,9 @@ discussion or proposing code changes.
 Following the processes outlined in this document will lead to the best
 chance of getting changes merged into the codebase.
 
-### Responsibilities of the stewarding team
-
-Gaia has many stakeholders contributing and shaping the project. 
-The _Gaia stewarding team_ is composed of Informal Systems developers and 
-is responsible for stewarding this project over time.
-This means that the stewarding team needs to understand the nature of, 
-and agree to maintain, all of the changes that land on `main` or a backport branch. 
-It may cost a few days/weeks' worth of time to _submit_ a particular change, 
-but _maintaining_ that change over the years has a much higher cost that the stewarding team will bear.
-
 ### Ease of reviewing
 
- The fact that the stewarding team needs to be able to deeply understand the short-,
+ The fact that the codeowners need to be able to deeply understand the short-,
  medium- and long-term consequences of incoming changes means that changes need
  to be **easy to review**.
 
@@ -73,12 +61,12 @@ but _maintaining_ that change over the years has a much higher cost that the ste
 
 To ensure a smooth workflow for all contributors, a general procedure for contributing has been established.
 
-1. Start by browsing [existing issues](https://github.com/cosmos/gaia/issues) and [discussions](https://github.com/cosmos/gaia/discussions). If you are looking for something interesting or if you have something in your mind, there is a chance it had been discussed.
-   * Looking for a good place to start contributing? How about checking out some [good first issues](https://github.com/cosmos/gaia/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) or [bugs](https://github.com/cosmos/gaia/issues?q=is%3Aopen+is%3Aissue+label%3Abug)?
+1. Start by browsing [existing issues](https://github.com/atomone-hub/atomone/issues) and [discussions](https://github.com/atomone-hub/atomone/discussions). If you are looking for something interesting or if you have something in your mind, there is a chance it had been discussed.
+   * Looking for a good place to start contributing? How about checking out some [good first issues](https://github.com/atomone-hub/atomone/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) or [bugs](https://github.com/atomone-hub/atomone/issues?q=is%3Aopen+is%3Aissue+label%3Abug)?
 2. Determine whether a GitHub issue or discussion is more appropriate for your needs:
-   1. If you want to propose something new that requires specification or an additional design, or you would like to change a process, start with a [new discussion](https://github.com/cosmos/gaia/discussions/new/choose). With discussions, we can better handle the design process using discussion threads. A discussion usually leads to one or more issues.
-   2. If the issue you want addressed is a specific proposal or a bug, then open a [new issue](https://github.com/cosmos/gaia/issues/new/choose).
-   3. Review existing [issues](https://github.com/cosmos/gaia/issues) to find an issue you'd like to help with.
+   1. If you want to propose something new that requires specification or an additional design, or you would like to change a process, start with a [new discussion](https://github.com/atomone-hub/atomone/discussions/new/choose). With discussions, we can better handle the design process using discussion threads. A discussion usually leads to one or more issues.
+   2. If the issue you want addressed is a specific proposal or a bug, then open a [new issue](https://github.com/atomone-hub/atomone/issues/new/choose).
+   3. Review existing [issues](https://github.com/atomone-hub/atomone/issues) to find an issue you'd like to help with.
 3. Participate in thoughtful discussion on that issue.
 4. If you would like to contribute:
    1. Ensure that the proposal has been accepted.
@@ -86,7 +74,7 @@ To ensure a smooth workflow for all contributors, a general procedure for contri
       make sure to contact them to collaborate.
    3. If nobody has been assigned for the issue and you would like to work on it,
       make a comment on the issue to inform the community of your intentions
-      to begin work and please wait for an acknowledgement from the stewarding team.
+      to begin work.
 5. To submit your work as a contribution to the repository, follow standard GitHub best practices. 
    See [development procedure guidelines](#development-procedure) below.
 
@@ -96,17 +84,15 @@ PRs opened before adequate design discussion has taken place in a GitHub issue h
 
 ## Project Board
 
-We use self-organizing principles to coordinate and collaborate across organizations in structured "EPICs" that focus on specific problem domains or architectural components of Gaia. For details, see the [GitHub Project board](https://github.com/orgs/cosmos/projects/28/views/11). 
-
-The developers work in sprints, which are available in a [GitHub Project](https://github.com/orgs/cosmos/projects/28/views/2). 
+We use self-organizing principles to coordinate and collaborate across organizations in structured "EPICs" that focus on specific problem domains or architectural components of AtomOne.
 
 ## Architecture Decision Records (ADR)
 
-When proposing an architecture decision for Gaia, please start by opening an [issue](https://github.com/cosmos/gaia/issues/new/choose) or a [discussion](https://github.com/cosmos/gaia/discussions/new) with a summary of the proposal. Once the proposal has been discussed and there is rough alignment on a high-level approach to the design, you may either start development, or write an ADR.
+When proposing an architecture decision for AtomOne, please start by opening an [issue](https://github.com/atomone-hub/atomone/issues/new/choose) or a [discussion](https://github.com/atomone-hub/atomone/discussions/new) with a summary of the proposal. Once the proposal has been discussed and there is rough alignment on a high-level approach to the design, you may either start development, or write an ADR.
 
 If your architecture decision is a simple change, you may contribute directly without writing an ADR. However, if you are proposing a significant change, please include a corresponding ADR.
 
-To create an ADR, follow the [template](./docs/architecture/adr-template.md) and [doc](./docs/architecture/README.md). If you would like to see examples of how these are written, please refer to the current [ADRs](https://github.com/cosmos/gaia/tree/main/docs/architecture).
+To create an ADR, follow the [template](./docs/architecture/adr-template.md) and [doc](./docs/architecture/README.md). If you would like to see examples of how these are written, please refer to the current [ADRs](https://github.com/atomone-hub/atomone/tree/main/docs/architecture).
 
 ## Development Procedure
 
@@ -116,20 +102,20 @@ Depending on the scope of the work, we differentiate between self-contained pull
 
 **Self-contained pull requests**:
 
-* Fork the repo (core developers must create a branch directly in the Gaia repo),
+* Fork the repo (core developers must create a branch directly in the AtomOne repo),
 branch from the HEAD of `main`, make some commits, and submit a PR to `main`.
-* For developers who are core contributors and are working within the `gaia` repo, follow branch name conventions to ensure clear
+* For developers who are core contributors and are working within the `atomone` repo, follow branch name conventions to ensure clear
 ownership of branches: `{moniker}/{issue#}-branch-name`.
 * See [Branching Model](#branching-model-and-release) for more details.
 
 **Large contributions**:
 
 * Make sure that a feature branch is created in the repo.
-  This will be created by the stewarding team after design discussions. 
+  This will be created by the codeowners after design discussions. 
   The name convention for the feature branch must be `feat/{issue#}-branch-name`.
   Note that (similar to `main`) all feature branches have branch protection rules and they run the CI.
   Unlike `main`, feature branch may intermittently fail `make lint`, `make run-tests`, or `make build/install`.
-* Fork the repo (core developers must create a branch directly in the Gaia repo),
+* Fork the repo (core developers must create a branch directly in the AtomOne repo),
   branch from the HEAD of the feature branch, make some commits, and submit a PR to the feature branch.
   All PRs targeting a feature branch should follow the same guidelines in this document.
 * Once the feature is completed, submit a PR from the feature branch targeting `main`. 
@@ -140,11 +126,11 @@ will do it anyway using a pre-configured setup of the programming language mode)
 A convenience git `pre-commit` hook that runs the formatters automatically
 before each commit is available in the `contrib/githooks/` directory.
 
-**Note:** Exceptions to the above guidelines are possible, but only after prior discussions with the stewarding team. 
+**Note:** Exceptions to the above guidelines are possible, but only after prior discussions with the codeowners. 
 
 ### Testing
 
-Tests can be executed by running `make run-tests` at the top level of the Gaia repository.
+Tests can be executed by running `make run-tests` at the top level of the AtomOne repository.
 For running the e2e tests, make sure to build the docker images by running `make docker-build-all`.
 
 When testing a function under a variety of different inputs, we prefer to use
@@ -180,10 +166,11 @@ Before submitting a pull request:
 Then:
 
 1. If you have something to show, **start with a `Draft` PR**. It's good to have early validation of your work and we highly recommend this practice. A Draft PR also indicates to the community that the work is in progress.
-   Draft PRs also help the stewarding team provide early feedback and ensure the work is in the right direction.
+   Draft PRs also help the codeowners provide early feedback and ensure the work is in the right direction.
 2. When the code is complete, change your PR from `Draft` to `Ready for Review`.
 3. Go through the actions for each checkbox present in the PR template description. The PR actions are automatically provided for each new PR.
-
+4. Be sure to include a relevant changelog entry in the `Unreleased` section of `CHANGELOG.md` (see file for log format).
+ 
 PRs must have a category prefix that is based on the type of changes being made (for example, `fix`, `feat`,
 `refactor`, `docs`, and so on). The [type](https://github.com/commitizen/conventional-commit-types/blob/v3.0.0/index.json) 
 must be included in the PR title as a prefix (for example, `fix: <description>`). 
@@ -231,64 +218,7 @@ items. In addition, use the following review explanations:
 
 ### Updating Documentation
 
-If you open a PR in Gaia, it is mandatory to update the relevant documentation in `/docs`.
-
-### Changelog
-
-To manage and generate our changelog, we currently use [unclog](https://github.com/informalsystems/unclog).
-
-Every PR with types `fix`, `feat`, `deps`, and `refactor` should include a file 
-`.changelog/unreleased/${section}/[${component}/]${pr-number}-${short-description}.md`,
-where:
-
-- `section` is one of 
-  `dependencies`, `improvements`, `features`, `bug-fixes`, `state-breaking`, `api-breaking`, 
-  and _**if multiple apply, create multiple files**_, 
-  not necessarily with the same `short-description` or content;
-- `pr-number` is the PR number;
-- `short-description` is a short (4 to 6 word), hyphen separated description of the change;
-- `component` is used for changes that affect one of the components defined in the [config](.changelog/config.toml), e.g., `tests`, `globalfee`.
-
-For examples, see the [.changelog](.changelog) folder.
-
-Use `unclog` to add a changelog entry in `.changelog` (check the [requirements](https://github.com/informalsystems/unclog#requirements) first): 
-```bash
-# add a general entry
-unclog add 
-   -i "${pr-number}-${short-description}" 
-   -p "${pr-number}" 
-   -s "${section}" 
-   -m "${description}"
-
-# add a entry to a component 
-unclog add 
-   -i "${pr-number}-${short-description}" 
-   -p "${pr-number}" 
-   -c "${component}"
-   -s "${section}" 
-   -m "${description}"
-```
-where `${description}` is a detailed description of the changelog entry.
-
-For example, 
-```bash
-# add an entry for bumping IBC to v4.4.2
-unclog add -i "2554-bump-ibc" -p 2554 -s dependencies -m "Bump [ibc-go](https://github.com/cosmos/ibc-go) to [v4.4.2](https://github.com/cosmos/ibc-go/releases/tag/v4.4.2)" 
-
-# add an entry for changing the global fee module;
-# note that the entry is added to both state-breaking and api-breaking sections
-unclog add -i "2424-params" -p 2424 -c globalfee -s state-breaking -m "Add \`bypass-min-fee-msg-types\` and \`maxTotalBypassMinFeeMsgGagUsage\` to globalfee params" 
-unclog add -i "2424-params" -p 2424 -c globalfee -s api-breaking -m "Add \`bypass-min-fee-msg-types\` and \`maxTotalBypassMinFeeMsgGagUsage\` to globalfee params" 
-```
-
-**Note:** `unclog add` requires an editor. This can be set either by configuring 
-an `$EDITOR` environment variable or by manually specify an editor binary path 
-via the `--editor` flag. 
-
-**Note:** Changelog entries should answer the question: "what is important about this
-change for users to know?" or "what problem does this solve for users?". It
-should not simply be a reiteration of the title of the associated PR, unless the
-title of the PR _very_ clearly explains the benefit of a change to a user.
+If you open a PR in AtomOne, it is mandatory to update the relevant documentation in `/docs`.
 
 ## Dependencies
 
@@ -299,7 +229,7 @@ The main branch of every Cosmos repository should just build with `go get`,
 which means they should be kept up-to-date with their dependencies so we can
 get away with telling people they can just `go get` our software.
 
-When dependencies in Gaia's `go.mod` are changed, it is generally accepted practice
+When dependencies in AtomOne's `go.mod` are changed, it is generally accepted practice
 to delete `go.sum` and then run `go mod tidy`.
 
 Since some dependencies are not under our control, a third party may break our
@@ -307,7 +237,7 @@ build, in which case we can fall back on `go mod tidy -v`.
 
 ## Protobuf
 
-We use [Protocol Buffers](https://developers.google.com/protocol-buffers) along with [gogoproto](https://github.com/cosmos/gogoproto) to generate code for use in Gaia.
+We use [Protocol Buffers](https://developers.google.com/protocol-buffers) along with [gogoproto](https://github.com/cosmos/gogoproto) to generate code for use in AtomOne.
 
 For deterministic behavior around Protobuf tooling, everything is containerized using Docker. Make sure to have Docker installed on your machine, or head to [Docker's website](https://docs.docker.com/get-docker/) to install it.
 
@@ -317,7 +247,7 @@ To generate the protobuf stubs, you can run `make proto-gen`.
 
 User-facing repos should adhere to the trunk based development branching model: https://trunkbaseddevelopment.com. User branches should start with a user name, example: `{moniker}/{issue#}-branch-name`.
 
-Gaia follows [semantic versioning](https://semver.org), but with the some deviations to account for state-machine and API breaking changes. See [RELEASE_PROCESS.md](./RELEASE_PROCESS.md) for details. 
+AtomOne follows [semantic versioning](https://semver.org), but with the some deviations to account for state-machine and API breaking changes. See [RELEASE_PROCESS.md](./RELEASE_PROCESS.md) for details. 
 
 ### PR Targeting
 

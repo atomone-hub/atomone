@@ -13,8 +13,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	gaiafeeante "github.com/cosmos/gaia/v15/x/globalfee/ante"
-	globfeetypes "github.com/cosmos/gaia/v15/x/globalfee/types"
+	atomonefeeante "github.com/atomone-hub/atomone/x/globalfee/ante"
+	globfeetypes "github.com/atomone-hub/atomone/x/globalfee/types"
 )
 
 var testGasLimit uint64 = 200_000
@@ -699,7 +699,7 @@ func (s *IntegrationTestSuite) TestGetMinGasPrice() {
 		s.Run(tc.name, func() {
 			s.SetupTestGlobalFeeStoreAndMinGasPrice(tc.minGasPrice, &globfeetypes.Params{})
 
-			fees := gaiafeeante.GetMinGasPrice(s.ctx, int64(tc.feeTxGasLimit))
+			fees := atomonefeeante.GetMinGasPrice(s.ctx, int64(tc.feeTxGasLimit))
 			s.Require().True(tc.expCoins.Sort().IsEqual(fees))
 		})
 	}

@@ -23,30 +23,3 @@ pull_request_rules:
         commit_message_template: |
           {{ title }} (#{{ number }})
           {{ body }}
-
-  - name: Backport patches to the release/v12.x branch
-    conditions:
-      - base=main
-      - label=A:backport/v12.x
-    actions:
-      backport:
-        branches:
-          - release/v12.x
-
-  - name: Backport patches to the release/v13.x branch
-    conditions:
-      - base=main
-      - label=A:backport/v13.x
-    actions:
-      backport:
-        branches:
-          - release/v13.x
-
-  - name: Backport patches to the release/v14.1.x branch
-    conditions:
-      - base=main
-      - label=A:backport/v14.1.x
-    actions:
-      backport:
-        branches:
-          - release/v14.1.x

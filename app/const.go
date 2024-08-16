@@ -1,5 +1,5 @@
-package gaia
+package atomone
 
 const (
-	appName = "GaiaApp"
+	appName = "AtomOneApp"
 )
