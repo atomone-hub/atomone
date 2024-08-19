@@ -55,7 +55,6 @@ import (
 	"github.com/atomone-hub/atomone/app/keepers"
 	"github.com/atomone-hub/atomone/app/params"
 	"github.com/atomone-hub/atomone/app/upgrades"
-	"github.com/atomone-hub/atomone/x/globalfee"
 )
 
 var (
@@ -222,13 +221,11 @@ func NewAtomOneApp(
 				SignModeHandler: encodingConfig.TxConfig.SignModeHandler(),
 				SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
 			},
-			Codec:             appCodec,
-			IBCkeeper:         app.IBCKeeper,
-			GlobalFeeSubspace: app.GetSubspace(globalfee.ModuleName),
-			StakingKeeper:     app.StakingKeeper,
+			Codec:         appCodec,
+			IBCkeeper:     app.IBCKeeper,
+			StakingKeeper: app.StakingKeeper,
 			// If TxFeeChecker is nil the default ante TxFeeChecker is used
-			// so we use this no-op to keep the global fee module behaviour unchanged
-			TxFeeChecker: noOpTxFeeChecker,
+			TxFeeChecker: nil,
 		},
 	)
 	if err != nil {

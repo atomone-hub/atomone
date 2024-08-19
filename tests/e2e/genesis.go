@@ -22,8 +22,6 @@ import (
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	govlegacytypes "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-
-	globfeetypes "github.com/atomone-hub/atomone/x/globalfee/types"
 )
 
 func getGenDoc(path string) (*tmtypes.GenesisDoc, error) {
@@ -159,19 +157,6 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, gl
 		return fmt.Errorf("failed to marshal interchain accounts genesis state: %w", err)
 	}
 	appState[icatypes.ModuleName] = icaGenesisStateBz
-
-	// setup global fee in genesis
-	globfeeState := globfeetypes.GetGenesisStateFromAppState(cdc, appState)
-	minGases, err := sdk.ParseDecCoins(globfees)
-	if err != nil {
-		return fmt.Errorf("failed to parse fee coins: %w", err)
-	}
-	globfeeState.Params.MinimumGasPrices = minGases
-	globFeeStateBz, err := cdc.MarshalJSON(globfeeState)
-	if err != nil {
-		return fmt.Errorf("failed to marshal global fee genesis state: %w", err)
-	}
-	appState[globfeetypes.ModuleName] = globFeeStateBz
 
 	stakingGenState := stakingtypes.GetGenesisStateFromAppState(cdc, appState)
 	stakingGenState.Params.BondDenom = denom

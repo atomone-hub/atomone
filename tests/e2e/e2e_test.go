@@ -8,7 +8,6 @@ var (
 	runEncodeTest                 = true
 	runEvidenceTest               = true
 	runFeeGrantTest               = true
-	runGlobalFeesTest             = true
 	runGovTest                    = true
 	runSlashingTest               = true
 	runStakingAndDistributionTest = true
@@ -52,14 +51,6 @@ func (s *IntegrationTestSuite) TestFeeGrant() {
 		s.T().Skip()
 	}
 	s.testFeeGrant()
-}
-
-func (s *IntegrationTestSuite) TestGlobalFees() {
-	if !runGlobalFeesTest {
-		s.T().Skip()
-	}
-	s.testGlobalFees()
-	s.testQueryGlobalFeesInGenesis()
 }
 
 func (s *IntegrationTestSuite) TestGov() {
