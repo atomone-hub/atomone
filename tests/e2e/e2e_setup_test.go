@@ -620,7 +620,7 @@ func (s *IntegrationTestSuite) writeGovLegProposal(c *chain, height int64, name 
 	s.Require().NoError(err)
 }
 
-func (s *IntegrationTestSuite) writeLiquidStakingParamsUpdateProposal(c *chain, oldParams stakingtypes.Params) {
+func (s *IntegrationTestSuite) writeLiquidStakingParamsUpdateProposal(c *chain, oldParams stakingtypes.Params) { //nolint:unused
 	template := `
 	{
 		"messages": [
