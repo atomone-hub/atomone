@@ -217,8 +217,6 @@ endif
 docker-build-debug:
 	@docker build -t cosmos/atomoned-e2e -f e2e.Dockerfile .
 
-docker-build-all: docker-build-debug docker-build-hermes
-
 ###############################################################################
 ###                                Linting                                  ###
 ###############################################################################
@@ -275,7 +273,7 @@ test-docker-push: test-docker
 	@docker push ${TEST_DOCKER_REPO}:latest
 
 .PHONY: all build-linux install format lint go-mod-cache draw-deps clean build \
-	docker-build-debug docker-build-hermes docker-build-all
+	docker-build-debug
 
 
 ###############################################################################
