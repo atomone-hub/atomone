@@ -5,18 +5,14 @@ AtomOne is built using the [Cosmos SDK](https://github.com/cosmos/cosmos-sdk) as
 
 The following modifications have been made to the Cosmos Hub software to create AtomOne:
 
-TODO: review items
 1. Removed x/globalfee module and revert to older and simpler fee decorator
 2. Removed IBC and related modules (e.g. ICA, Packet Forwarding Middleware, etc.)
 3. Removed Interchain Security module
-4. Reverted to standard Cosmos SDK v0.46.16 without the Liquid Staking Module (LSM)
+4. Reverted to standard Cosmos SDK v0.47.10 without the Liquid Staking Module (LSM)
 5. Changed Bech32 prefixes to `atone` (see `cmd/atomoned/cmd/config.go`)
-6. Reduced hard-coded ante min-deposit percentage to 1% (see `ante/gov_ante.go:minInitialDepositFraction`)
-7. Removed ability for validators to vote on proposals with delegations, they can only use their own stake
-8. Removed community spend proposal
-9. Allowed setting different voting periods for different proposal types
+6. Removed ability for validators to vote on proposals with delegations, they can only use their own stake
 
-## Reproducible builds
+## Reproducible builds (TODO)
 
 An effort has been made to make it possible to build the exact same binary
 locally as the Github Release section. To do this, checkout to the expected
