@@ -1,21 +1,6 @@
 package atomone
 
 import (
-	pfmrouter "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v7/packetforward"
-	pfmroutertypes "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v7/packetforward/types"
-
-	ica "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts"
-	icatypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/types"
-	"github.com/cosmos/ibc-go/v7/modules/apps/transfer"
-	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
-	ibc "github.com/cosmos/ibc-go/v7/modules/core"
-	ibcclientclient "github.com/cosmos/ibc-go/v7/modules/core/02-client/client"
-	ibcexported "github.com/cosmos/ibc-go/v7/modules/core/exported"
-	ibctm "github.com/cosmos/ibc-go/v7/modules/light-clients/07-tendermint"
-	icsprovider "github.com/cosmos/interchain-security/v3/x/ccv/provider"
-	icsproviderclient "github.com/cosmos/interchain-security/v3/x/ccv/provider/client"
-	providertypes "github.com/cosmos/interchain-security/v3/x/ccv/provider/types"
-
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	authsims "github.com/cosmos/cosmos-sdk/x/auth/simulation"
@@ -64,14 +49,11 @@ import (
 var maccPerms = map[string][]string{
 	authtypes.FeeCollectorName:     nil,
 	distrtypes.ModuleName:          nil,
-	icatypes.ModuleName:            nil,
 	minttypes.ModuleName:           {authtypes.Minter},
 	stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
 	stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
 	govtypes.ModuleName:            {authtypes.Burner},
 	// liquiditytypes.ModuleName:         {authtypes.Minter, authtypes.Burner},
-	ibctransfertypes.ModuleName:       {authtypes.Minter, authtypes.Burner},
-	providertypes.ConsumerRewardsPool: nil,
 }
 
 // ModuleBasics defines the module BasicManager is in charge of setting up basic,
@@ -86,15 +68,11 @@ var ModuleBasics = module.NewBasicManager(
 	mint.AppModuleBasic{},
 	distr.AppModuleBasic{},
 	gov.NewAppModuleBasic(
+		// TODO remove since no compat needed with old gov handler system?
 		[]govclient.ProposalHandler{
 			paramsclient.ProposalHandler,
 			upgradeclient.LegacyProposalHandler,
 			upgradeclient.LegacyCancelProposalHandler,
-			ibcclientclient.UpdateClientProposalHandler,
-			ibcclientclient.UpgradeProposalHandler,
-			icsproviderclient.ConsumerAdditionProposalHandler,
-			icsproviderclient.ConsumerRemovalProposalHandler,
-			icsproviderclient.ChangeRewardDenomsProposalHandler,
 		},
 	),
 	sdkparams.AppModuleBasic{},
@@ -102,15 +80,9 @@ var ModuleBasics = module.NewBasicManager(
 	slashing.AppModuleBasic{},
 	feegrantmodule.AppModuleBasic{},
 	authzmodule.AppModuleBasic{},
-	ibc.AppModuleBasic{},
-	ibctm.AppModuleBasic{},
 	upgrade.AppModuleBasic{},
 	evidence.AppModuleBasic{},
-	transfer.AppModuleBasic{},
 	vesting.AppModuleBasic{},
-	pfmrouter.AppModuleBasic{},
-	ica.AppModuleBasic{},
-	icsprovider.AppModuleBasic{},
 	consensus.AppModuleBasic{},
 	metaprotocols.AppModuleBasic{},
 )
@@ -143,13 +115,8 @@ func appModules(
 		evidence.NewAppModule(app.EvidenceKeeper),
 		feegrantmodule.NewAppModule(appCodec, app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper, app.interfaceRegistry),
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
-		ibc.NewAppModule(app.IBCKeeper),
 		sdkparams.NewAppModule(app.ParamsKeeper),
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
-		app.TransferModule,
-		app.ICAModule,
-		app.PFMRouterModule,
-		app.ProviderModule,
 		metaprotocols.NewAppModule(),
 	}
 }
@@ -176,10 +143,6 @@ func simulationModules(
 		sdkparams.NewAppModule(app.ParamsKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
-		ibc.NewAppModule(app.IBCKeeper),
-		app.TransferModule,
-		app.ICAModule,
-		app.ProviderModule,
 	}
 }
 
@@ -209,16 +172,11 @@ func orderBeginBlockers() []string {
 		banktypes.ModuleName,
 		govtypes.ModuleName,
 		crisistypes.ModuleName,
-		ibcexported.ModuleName,
-		ibctransfertypes.ModuleName,
-		icatypes.ModuleName,
-		pfmroutertypes.ModuleName,
 		genutiltypes.ModuleName,
 		authz.ModuleName,
 		feegrant.ModuleName,
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
-		providertypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		metaprotocolstypes.ModuleName,
 	}
@@ -237,10 +195,6 @@ func orderEndBlockers() []string {
 		crisistypes.ModuleName,
 		govtypes.ModuleName,
 		stakingtypes.ModuleName,
-		ibcexported.ModuleName,
-		ibctransfertypes.ModuleName,
-		icatypes.ModuleName,
-		pfmroutertypes.ModuleName,
 		capabilitytypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
@@ -254,7 +208,6 @@ func orderEndBlockers() []string {
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
-		providertypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		metaprotocolstypes.ModuleName,
 	}
@@ -280,17 +233,12 @@ func orderInitBlockers() []string {
 		minttypes.ModuleName,
 		crisistypes.ModuleName,
 		genutiltypes.ModuleName,
-		ibctransfertypes.ModuleName,
-		ibcexported.ModuleName,
-		icatypes.ModuleName,
 		evidencetypes.ModuleName,
 		authz.ModuleName,
 		feegrant.ModuleName,
-		pfmroutertypes.ModuleName,
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
-		providertypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		metaprotocolstypes.ModuleName,
 	}

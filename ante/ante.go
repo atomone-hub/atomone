@@ -1,9 +1,6 @@
 package ante
 
 import (
-	ibcante "github.com/cosmos/ibc-go/v7/modules/core/ante"
-	ibckeeper "github.com/cosmos/ibc-go/v7/modules/core/keeper"
-
 	errorsmod "cosmossdk.io/errors"
 
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -19,7 +16,6 @@ import (
 type HandlerOptions struct {
 	ante.HandlerOptions
 	Codec         codec.BinaryCodec
-	IBCkeeper     *ibckeeper.Keeper
 	StakingKeeper *stakingkeeper.Keeper
 	TxFeeChecker  ante.TxFeeChecker
 }
@@ -34,10 +30,6 @@ func NewAnteHandler(opts HandlerOptions) (sdk.AnteHandler, error) {
 	if opts.SignModeHandler == nil {
 		return nil, errorsmod.Wrap(atomoneerrors.ErrLogic, "sign mode handler is required for AnteHandler")
 	}
-	if opts.IBCkeeper == nil {
-		return nil, errorsmod.Wrap(atomoneerrors.ErrLogic, "IBC keeper is required for AnteHandler")
-	}
-
 	if opts.StakingKeeper == nil {
 		return nil, errorsmod.Wrap(atomoneerrors.ErrNotFound, "staking param store is required for AnteHandler")
 	}
@@ -60,7 +52,6 @@ func NewAnteHandler(opts HandlerOptions) (sdk.AnteHandler, error) {
 		ante.NewSigGasConsumeDecorator(opts.AccountKeeper, sigGasConsumer),
 		ante.NewSigVerificationDecorator(opts.AccountKeeper, opts.SignModeHandler),
 		ante.NewIncrementSequenceDecorator(opts.AccountKeeper),
-		ibcante.NewRedundantRelayDecorator(opts.IBCkeeper),
 	}
 
 	return sdk.ChainAnteDecorators(anteDecorators...), nil

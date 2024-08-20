@@ -20,9 +20,6 @@ import (
 	"github.com/cometbft/cometbft/libs/log"
 	tmos "github.com/cometbft/cometbft/libs/os"
 
-	ibctesting "github.com/cosmos/ibc-go/v7/testing"
-	providertypes "github.com/cosmos/interchain-security/v3/x/ccv/provider/types"
-
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
 	errorsmod "cosmossdk.io/errors"
@@ -67,7 +64,6 @@ var (
 var (
 	_ runtime.AppI            = (*AtomOneApp)(nil)
 	_ servertypes.Application = (*AtomOneApp)(nil)
-	_ ibctesting.TestingApp   = (*AtomOneApp)(nil)
 )
 
 // AtomOneApp extends an ABCI application, but with most of its parameters exported.
@@ -222,7 +218,6 @@ func NewAtomOneApp(
 				SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
 			},
 			Codec:         appCodec,
-			IBCkeeper:     app.IBCKeeper,
 			StakingKeeper: app.StakingKeeper,
 			// If TxFeeChecker is nil the default ante TxFeeChecker is used
 			TxFeeChecker: nil,
@@ -294,9 +289,6 @@ func (app *AtomOneApp) ModuleAccountAddrs() map[string]bool {
 func (app *AtomOneApp) BlockedModuleAccountAddrs(modAccAddrs map[string]bool) map[string]bool {
 	// remove module accounts that are ALLOWED to received funds
 	delete(modAccAddrs, authtypes.NewModuleAddress(govtypes.ModuleName).String())
-
-	// Remove the ConsumerRewardsPool from the group of blocked recipient addresses in bank
-	delete(modAccAddrs, authtypes.NewModuleAddress(providertypes.ConsumerRewardsPool).String())
 
 	return modAccAddrs
 }
