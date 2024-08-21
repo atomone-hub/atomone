@@ -1,14 +1,15 @@
 #!/usr/bin/make -f
 
-BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
 COMMIT := $(shell git log -1 --format='%H')
 
 # don't override user values
 ifeq (,$(VERSION))
-  VERSION := $(shell git describe --exact-match 2>/dev/null)
+  VERSION := $(shell git describe --tags --exact-match 2>/dev/null)
   # if VERSION is empty, then populate it with branch's name and raw commit hash
   ifeq (,$(VERSION))
-    VERSION := $(BRANCH)-$(COMMIT)
+    PREVIOUS_TAG := $(shell git describe --tags --abbrev=0)
+    SHORT_COMMIT := $(shell git rev-parse --short HEAD)
+    VERSION := $(PREVIOUS_TAG)-$(SHORT_COMMIT)
   endif
 endif
 
@@ -24,6 +25,7 @@ GO_SYSTEM_VERSION = $(shell go version | cut -c 14- | cut -d' ' -f1 | cut -d'.' 
 REQUIRE_GO_VERSION = 1.21
 
 export GO111MODULE = on
+export CGO_ENABLED = 0
 
 # process build tags
 
@@ -68,7 +70,7 @@ ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=atomone \
 		  -X github.com/cosmos/cosmos-sdk/version.AppName=atomoned \
 		  -X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
 		  -X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
-		  -X "github.com/cosmos/cosmos-sdk/version.BuildTags=$(build_tags_comma_sep)" \
+		  -X github.com/cosmos/cosmos-sdk/version.BuildTags=$(build_tags_comma_sep) \
 			-X github.com/cometbft/cometbft/version.TMCoreSemVer=$(TM_VERSION)
 
 ifeq (cleveldb,$(findstring cleveldb,$(ATOMONE_BUILD_OPTIONS)))
@@ -97,7 +99,7 @@ include contrib/devtools/Makefile
 
 check_version:
 ifneq ($(GO_SYSTEM_VERSION), $(REQUIRE_GO_VERSION))
-	@echo "ERROR: Go version 1.21 is required for $(VERSION) of AtomOne."
+	@echo "ERROR: Go version $(REQUIRE_GO_VERSION) is required for $(VERSION) of AtomOne."
 endif
 
 all: install lint run-tests test-e2e vulncheck
