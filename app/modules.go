@@ -42,8 +42,6 @@ import (
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
 	atomoneappparams "github.com/atomone-hub/atomone/app/params"
-	"github.com/atomone-hub/atomone/x/metaprotocols"
-	metaprotocolstypes "github.com/atomone-hub/atomone/x/metaprotocols/types"
 )
 
 var maccPerms = map[string][]string{
@@ -84,7 +82,6 @@ var ModuleBasics = module.NewBasicManager(
 	evidence.AppModuleBasic{},
 	vesting.AppModuleBasic{},
 	consensus.AppModuleBasic{},
-	metaprotocols.AppModuleBasic{},
 )
 
 func appModules(
@@ -117,7 +114,6 @@ func appModules(
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 		sdkparams.NewAppModule(app.ParamsKeeper),
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
-		metaprotocols.NewAppModule(),
 	}
 }
 
@@ -178,7 +174,6 @@ func orderBeginBlockers() []string {
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
-		metaprotocolstypes.ModuleName,
 	}
 }
 
@@ -209,7 +204,6 @@ func orderEndBlockers() []string {
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
-		metaprotocolstypes.ModuleName,
 	}
 }
 
@@ -240,6 +234,5 @@ func orderInitBlockers() []string {
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
-		metaprotocolstypes.ModuleName,
 	}
 }

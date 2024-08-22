@@ -22,7 +22,6 @@ import (
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
 	atomoneparams "github.com/atomone-hub/atomone/app/params"
-	metaprotocoltypes "github.com/atomone-hub/atomone/x/metaprotocols/types"
 )
 
 const (
@@ -51,7 +50,6 @@ func init() {
 
 	upgradetypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 	distribtypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	metaprotocoltypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 
 	cdc = encodingConfig.Marshaler
 	txConfig = encodingConfig.TxConfig
