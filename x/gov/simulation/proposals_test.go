@@ -8,10 +8,10 @@ import (
 
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 
-	"github.com/atomone-hub/atomone/x/gov/simulation"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
+
+	"github.com/atomone-hub/atomone/x/gov/simulation"
 )
 
 func TestProposalMsgs(t *testing.T) {

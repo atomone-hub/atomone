@@ -6,8 +6,6 @@ import (
 
 	tmrand "github.com/cometbft/cometbft/libs/rand"
 
-	atomoneparams "github.com/atomone-hub/atomone/app/params"
-
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
@@ -22,6 +20,8 @@ import (
 	paramsproptypes "github.com/cosmos/cosmos-sdk/x/params/types/proposal"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+
+	atomoneparams "github.com/atomone-hub/atomone/app/params"
 )
 
 const (

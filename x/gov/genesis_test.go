@@ -7,10 +7,10 @@ import (
 
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 
-	"github.com/atomone-hub/atomone/x/gov"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	v1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
+
+	"github.com/atomone-hub/atomone/x/gov"
 )
 
 func TestImportExportQueues_ErrorUnconsistentState(t *testing.T) {

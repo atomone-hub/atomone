@@ -8,8 +8,6 @@ import (
 
 	"github.com/cometbft/cometbft/libs/log"
 
-	govkeeper "github.com/atomone-hub/atomone/x/gov/keeper"
-
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
@@ -49,6 +47,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/upgrade"
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+
+	govkeeper "github.com/atomone-hub/atomone/x/gov/keeper"
 )
 
 type AppKeepers struct {

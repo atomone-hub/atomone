@@ -6,9 +6,6 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/atomone-hub/atomone/x/gov/keeper"
-	govtestutil "github.com/atomone-hub/atomone/x/gov/testutil"
-
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
@@ -17,6 +14,9 @@ import (
 	v1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	"github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+
+	"github.com/atomone-hub/atomone/x/gov/keeper"
+	govtestutil "github.com/atomone-hub/atomone/x/gov/testutil"
 )
 
 type KeeperTestSuite struct {
