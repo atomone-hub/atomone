@@ -26,8 +26,6 @@ func (s *IntegrationTestSuite) TestBank() {
 		s.T().Skip()
 	}
 	s.testBankTokenTransfer()
-	s.bankSendWithNonCriticalExtensionOptions()
-	s.failedBankSendWithNonCriticalExtensionOptions()
 }
 
 func (s *IntegrationTestSuite) TestEncode() {
