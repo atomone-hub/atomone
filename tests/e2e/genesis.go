@@ -14,10 +14,8 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
-	govmigrv3 "github.com/cosmos/cosmos-sdk/x/gov/migrations/v3"
-	govmigrv4 "github.com/cosmos/cosmos-sdk/x/gov/migrations/v4"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	govlegacytypes "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
+	govv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
@@ -129,23 +127,16 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 	maxDepositPeriod := 10 * time.Minute
 	votingPeriod := 15 * time.Second
 
-	govStateLegacy := govlegacytypes.NewGenesisState(1,
-		govlegacytypes.NewDepositParams(sdk.NewCoins(sdk.NewCoin(denom, amnt)), maxDepositPeriod),
-		govlegacytypes.NewVotingParams(votingPeriod),
-		govlegacytypes.NewTallyParams(quorum, threshold, govlegacytypes.DefaultVetoThreshold),
+	govGenState := govv1.NewGenesisState(1,
+		govv1.NewParams(
+			sdk.NewCoins(sdk.NewCoin(denom, amnt)), maxDepositPeriod,
+			votingPeriod,
+			quorum.String(), threshold.String(), govv1.DefaultVetoThreshold.String(),
+			sdk.ZeroDec().String(),
+			false, false, true,
+		),
 	)
-
-	govStateV3, err := govmigrv3.MigrateJSON(govStateLegacy)
-	if err != nil {
-		return fmt.Errorf("failed to migrate v1beta1 gov genesis state to v3: %w", err)
-	}
-
-	govStateV4, err := govmigrv4.MigrateJSON(govStateV3)
-	if err != nil {
-		return fmt.Errorf("failed to migrate v1beta1 gov genesis state to v4: %w", err)
-	}
-
-	govGenStateBz, err := cdc.MarshalJSON(govStateV4)
+	govGenStateBz, err := cdc.MarshalJSON(govGenState)
 	if err != nil {
 		return fmt.Errorf("failed to marshal gov genesis state: %w", err)
 	}
