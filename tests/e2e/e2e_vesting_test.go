@@ -32,11 +32,11 @@ type (
 
 var (
 	genesisVestingKeys      = []string{continuousVestingKey, delayedVestingKey, lockedVestingKey, periodicVestingKey}
-	vestingAmountVested     = sdk.NewCoin(uatomDenom, sdk.NewInt(99900000000))
-	vestingAmount           = sdk.NewCoin(uatomDenom, sdk.NewInt(350000))
+	vestingAmountVested     = sdk.NewCoin(uatoneDenom, sdk.NewInt(99900000000))
+	vestingAmount           = sdk.NewCoin(uatoneDenom, sdk.NewInt(350000))
 	vestingBalance          = sdk.NewCoins(vestingAmountVested).Add(vestingAmount)
-	vestingDelegationAmount = sdk.NewCoin(uatomDenom, sdk.NewInt(500000000))
-	vestingDelegationFees   = sdk.NewCoin(uatomDenom, sdk.NewInt(1))
+	vestingDelegationAmount = sdk.NewCoin(uatoneDenom, sdk.NewInt(500000000))
+	vestingDelegationFees   = sdk.NewCoin(uatoneDenom, sdk.NewInt(1))
 )
 
 func (s *IntegrationTestSuite) testDelayedVestingAccount(api string) {
@@ -54,9 +54,9 @@ func (s *IntegrationTestSuite) testDelayedVestingAccount(api string) {
 		s.Require().NoError(err)
 
 		//	Check address balance
-		balance, err := getSpecificBalance(api, vestingDelayedAcc.String(), uatomDenom)
+		balance, err := getSpecificBalance(api, vestingDelayedAcc.String(), uatoneDenom)
 		s.Require().NoError(err)
-		s.Require().Equal(vestingBalance.AmountOf(uatomDenom), balance.Amount)
+		s.Require().Equal(vestingBalance.AmountOf(uatoneDenom), balance.Amount)
 
 		// Delegate coins should succeed
 		s.execDelegate(chain, valIdx, vestingDelegationAmount.String(), valOpAddr,
@@ -78,7 +78,7 @@ func (s *IntegrationTestSuite) testDelayedVestingAccount(api string) {
 		waitTime := acc.EndTime - time.Now().Unix()
 		if waitTime > vestingTxDelay {
 			//	Transfer coins should fail
-			balance, err := getSpecificBalance(api, vestingDelayedAcc.String(), uatomDenom)
+			balance, err := getSpecificBalance(api, vestingDelayedAcc.String(), uatoneDenom)
 			s.Require().NoError(err)
 			s.execBankSend(
 				chain,
@@ -94,7 +94,7 @@ func (s *IntegrationTestSuite) testDelayedVestingAccount(api string) {
 		}
 
 		//	Transfer coins should succeed
-		balance, err = getSpecificBalance(api, vestingDelayedAcc.String(), uatomDenom)
+		balance, err = getSpecificBalance(api, vestingDelayedAcc.String(), uatoneDenom)
 		s.Require().NoError(err)
 		s.execBankSend(
 			chain,
@@ -123,9 +123,9 @@ func (s *IntegrationTestSuite) testContinuousVestingAccount(api string) {
 		s.Require().NoError(err)
 
 		//	Check address balance
-		balance, err := getSpecificBalance(api, continuousVestingAcc.String(), uatomDenom)
+		balance, err := getSpecificBalance(api, continuousVestingAcc.String(), uatoneDenom)
 		s.Require().NoError(err)
-		s.Require().Equal(vestingBalance.AmountOf(uatomDenom), balance.Amount)
+		s.Require().Equal(vestingBalance.AmountOf(uatoneDenom), balance.Amount)
 
 		// Delegate coins should succeed
 		s.execDelegate(chain, valIdx, vestingDelegationAmount.String(),
@@ -147,7 +147,7 @@ func (s *IntegrationTestSuite) testContinuousVestingAccount(api string) {
 		waitStartTime := acc.StartTime - time.Now().Unix()
 		if waitStartTime > vestingTxDelay {
 			//	Transfer coins should fail
-			balance, err := getSpecificBalance(api, continuousVestingAcc.String(), uatomDenom)
+			balance, err := getSpecificBalance(api, continuousVestingAcc.String(), uatoneDenom)
 			s.Require().NoError(err)
 			s.execBankSend(
 				chain,
@@ -165,7 +165,7 @@ func (s *IntegrationTestSuite) testContinuousVestingAccount(api string) {
 		waitEndTime := acc.EndTime - time.Now().Unix()
 		if waitEndTime > vestingTxDelay {
 			//	Transfer coins should fail
-			balance, err := getSpecificBalance(api, continuousVestingAcc.String(), uatomDenom)
+			balance, err := getSpecificBalance(api, continuousVestingAcc.String(), uatoneDenom)
 			s.Require().NoError(err)
 			s.execBankSend(
 				chain,
@@ -181,7 +181,7 @@ func (s *IntegrationTestSuite) testContinuousVestingAccount(api string) {
 		}
 
 		//	Transfer coins should succeed
-		balance, err = getSpecificBalance(api, continuousVestingAcc.String(), uatomDenom)
+		balance, err = getSpecificBalance(api, continuousVestingAcc.String(), uatoneDenom)
 		s.Require().NoError(err)
 		s.execBankSend(
 			chain,
@@ -218,13 +218,13 @@ func (s *IntegrationTestSuite) testPeriodicVestingAccount(api string) { //nolint
 		s.Require().NoError(err)
 
 		//	Check address balance
-		balance, err := getSpecificBalance(api, periodicVestingAddr, uatomDenom)
+		balance, err := getSpecificBalance(api, periodicVestingAddr, uatoneDenom)
 		s.Require().NoError(err)
 
-		expectedBalance := sdk.NewCoin(uatomDenom, sdk.NewInt(0))
+		expectedBalance := sdk.NewCoin(uatoneDenom, sdk.NewInt(0))
 		for _, period := range acc.VestingPeriods {
-			// _, coin := ante.Find(period.Amount, uatomDenom)
-			_, coin := period.Amount.Find(uatomDenom)
+			// _, coin := ante.Find(period.Amount, uatoneDenom)
+			_, coin := period.Amount.Find(uatoneDenom)
 			expectedBalance = expectedBalance.Add(coin)
 		}
 		s.Require().Equal(expectedBalance, balance)
@@ -232,7 +232,7 @@ func (s *IntegrationTestSuite) testPeriodicVestingAccount(api string) { //nolint
 		waitStartTime := acc.StartTime - time.Now().Unix()
 		if waitStartTime > vestingTxDelay {
 			//	Transfer coins should fail
-			balance, err = getSpecificBalance(api, periodicVestingAddr, uatomDenom)
+			balance, err = getSpecificBalance(api, periodicVestingAddr, uatoneDenom)
 			s.Require().NoError(err)
 			s.execBankSend(
 				chain,
@@ -251,7 +251,7 @@ func (s *IntegrationTestSuite) testPeriodicVestingAccount(api string) { //nolint
 		waitFirstPeriod := firstPeriod - time.Now().Unix()
 		if waitFirstPeriod > vestingTxDelay {
 			//	Transfer coins should fail
-			balance, err = getSpecificBalance(api, periodicVestingAddr, uatomDenom)
+			balance, err = getSpecificBalance(api, periodicVestingAddr, uatoneDenom)
 			s.Require().NoError(err)
 			s.execBankSend(
 				chain,
@@ -284,7 +284,7 @@ func (s *IntegrationTestSuite) testPeriodicVestingAccount(api string) { //nolint
 		)
 
 		//	Transfer coins should succeed
-		balance, err = getSpecificBalance(api, periodicVestingAddr, uatomDenom)
+		balance, err = getSpecificBalance(api, periodicVestingAddr, uatoneDenom)
 		s.Require().NoError(err)
 		s.execBankSend(
 			chain,
@@ -302,7 +302,7 @@ func (s *IntegrationTestSuite) testPeriodicVestingAccount(api string) { //nolint
 			time.Sleep(time.Duration(waitSecondPeriod) * time.Second)
 
 			//	Transfer coins should succeed
-			balance, err = getSpecificBalance(api, periodicVestingAddr, uatomDenom)
+			balance, err = getSpecificBalance(api, periodicVestingAddr, uatoneDenom)
 			s.Require().NoError(err)
 			s.execBankSend(
 				chain,
@@ -323,11 +323,11 @@ func generateVestingPeriod() ([]byte, error) {
 		StartTime: time.Now().Add(time.Duration(rand.Intn(20)+95) * time.Second).Unix(),
 		Periods: []period{
 			{
-				Coins:  "850000000" + uatomDenom,
+				Coins:  "850000000" + uatoneDenom,
 				Length: 35,
 			},
 			{
-				Coins:  "2000000000" + uatomDenom,
+				Coins:  "2000000000" + uatoneDenom,
 				Length: 35,
 			},
 		},

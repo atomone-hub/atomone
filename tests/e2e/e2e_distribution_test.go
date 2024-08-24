@@ -18,12 +18,12 @@ func (s *IntegrationTestSuite) testDistribution() {
 	delegatorAddress, _ := s.chainA.genesisAccounts[2].keyInfo.GetAddress()
 
 	newWithdrawalAddress, _ := s.chainA.genesisAccounts[3].keyInfo.GetAddress()
-	fees := sdk.NewCoin(uatomDenom, sdk.NewInt(1000))
+	fees := sdk.NewCoin(uatoneDenom, sdk.NewInt(1000))
 
-	beforeBalance, err := getSpecificBalance(chainEndpoint, newWithdrawalAddress.String(), uatomDenom)
+	beforeBalance, err := getSpecificBalance(chainEndpoint, newWithdrawalAddress.String(), uatoneDenom)
 	s.Require().NoError(err)
 	if beforeBalance.IsNil() {
-		beforeBalance = sdk.NewCoin(uatomDenom, sdk.NewInt(0))
+		beforeBalance = sdk.NewCoin(uatoneDenom, sdk.NewInt(0))
 	}
 
 	s.execSetWithdrawAddress(s.chainA, 0, fees.String(), delegatorAddress.String(), newWithdrawalAddress.String(), atomoneHomePath)
@@ -43,7 +43,7 @@ func (s *IntegrationTestSuite) testDistribution() {
 	s.execWithdrawReward(s.chainA, 0, delegatorAddress.String(), valOperAddressA, atomoneHomePath)
 	s.Require().Eventually(
 		func() bool {
-			afterBalance, err := getSpecificBalance(chainEndpoint, newWithdrawalAddress.String(), uatomDenom)
+			afterBalance, err := getSpecificBalance(chainEndpoint, newWithdrawalAddress.String(), uatoneDenom)
 			s.Require().NoError(err)
 
 			return afterBalance.IsGTE(beforeBalance)
@@ -64,23 +64,23 @@ func (s *IntegrationTestSuite) fundCommunityPool() {
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
 	sender, _ := s.chainA.validators[0].keyInfo.GetAddress()
 
-	beforeDistUatomBalance, _ := getSpecificBalance(chainAAPIEndpoint, distModuleAddress, tokenAmount.Denom)
-	if beforeDistUatomBalance.IsNil() {
+	beforeDistUatoneBalance, _ := getSpecificBalance(chainAAPIEndpoint, distModuleAddress, tokenAmount.Denom)
+	if beforeDistUatoneBalance.IsNil() {
 		// Set balance to 0 if previous balance does not exist
-		beforeDistUatomBalance = sdk.NewInt64Coin(uatomDenom, 0)
+		beforeDistUatoneBalance = sdk.NewInt64Coin(uatoneDenom, 0)
 	}
 
 	s.execDistributionFundCommunityPool(s.chainA, 0, sender.String(), tokenAmount.String(), standardFees.String())
 
 	// there are still tokens being added to the community pool through block production rewards but they should be less than 500 tokens
-	marginOfErrorForBlockReward := sdk.NewInt64Coin(uatomDenom, 500)
+	marginOfErrorForBlockReward := sdk.NewInt64Coin(uatoneDenom, 500)
 
 	s.Require().Eventually(
 		func() bool {
 			afterDistPhotonBalance, err := getSpecificBalance(chainAAPIEndpoint, distModuleAddress, tokenAmount.Denom)
 			s.Require().NoErrorf(err, "Error getting balance: %s", afterDistPhotonBalance)
 
-			return afterDistPhotonBalance.Sub(beforeDistUatomBalance.Add(tokenAmount.Add(standardFees))).IsLT(marginOfErrorForBlockReward)
+			return afterDistPhotonBalance.Sub(beforeDistUatoneBalance.Add(tokenAmount.Add(standardFees))).IsLT(marginOfErrorForBlockReward)
 		},
 		15*time.Second,
 		5*time.Second,

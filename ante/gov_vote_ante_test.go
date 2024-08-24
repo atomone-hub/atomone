@@ -60,19 +60,19 @@ func TestVoteSpamDecoratorGovV1Beta1(t *testing.T) {
 		expectPass bool
 	}{
 		{
-			name:       "delegate 0 atom",
+			name:       "delegate 0 atone",
 			bondAmt:    sdk.ZeroInt(),
 			validators: []sdk.ValAddress{valAddr1},
 			expectPass: false,
 		},
 		{
-			name:       "delegate 0.1 atom",
+			name:       "delegate 0.1 atone",
 			bondAmt:    sdk.NewInt(100000),
 			validators: []sdk.ValAddress{valAddr1},
 			expectPass: false,
 		},
 		{
-			name:       "delegate 1 atom",
+			name:       "delegate 1 atone",
 			bondAmt:    sdk.NewInt(1000000),
 			validators: []sdk.ValAddress{valAddr1},
 			expectPass: true,
@@ -90,7 +90,7 @@ func TestVoteSpamDecoratorGovV1Beta1(t *testing.T) {
 			expectPass: false,
 		},
 		{
-			name:       "delegate 10 atom",
+			name:       "delegate 10 atone",
 			bondAmt:    sdk.NewInt(10000000),
 			validators: []sdk.ValAddress{valAddr1},
 			expectPass: true,
@@ -174,19 +174,19 @@ func TestVoteSpamDecoratorGovV1(t *testing.T) {
 		expectPass bool
 	}{
 		{
-			name:       "delegate 0 atom",
+			name:       "delegate 0 atone",
 			bondAmt:    sdk.ZeroInt(),
 			validators: []sdk.ValAddress{valAddr1},
 			expectPass: false,
 		},
 		{
-			name:       "delegate 0.1 atom",
+			name:       "delegate 0.1 atone",
 			bondAmt:    sdk.NewInt(100000),
 			validators: []sdk.ValAddress{valAddr1},
 			expectPass: false,
 		},
 		{
-			name:       "delegate 1 atom",
+			name:       "delegate 1 atone",
 			bondAmt:    sdk.NewInt(1000000),
 			validators: []sdk.ValAddress{valAddr1},
 			expectPass: true,
@@ -204,7 +204,7 @@ func TestVoteSpamDecoratorGovV1(t *testing.T) {
 			expectPass: false,
 		},
 		{
-			name:       "delegate 10 atom",
+			name:       "delegate 10 atone",
 			bondAmt:    sdk.NewInt(10000000),
 			validators: []sdk.ValAddress{valAddr1},
 			expectPass: true,

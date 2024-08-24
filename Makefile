@@ -255,7 +255,7 @@ start-localnet-ci: build
 	./build/atomoned genesis add-genesis-account val 10000000000000000000000000stake --home ~/.atomoned-liveness --keyring-backend test
 	./build/atomoned genesis gentx val 1000000000stake --home ~/.atomoned-liveness --chain-id liveness
 	./build/atomoned genesis collect-gentxs --home ~/.atomoned-liveness
-	sed -i.bak'' 's/minimum-gas-prices = ""/minimum-gas-prices = "0uatom"/' ~/.atomoned-liveness/config/app.toml
+	sed -i.bak'' 's/minimum-gas-prices = ""/minimum-gas-prices = "0uatone"/' ~/.atomoned-liveness/config/app.toml
 	./build/atomoned start --home ~/.atomoned-liveness --x-crisis-skip-assert-invariants
 
 .PHONY: start-localnet-ci

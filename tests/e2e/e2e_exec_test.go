@@ -606,7 +606,7 @@ func (s *IntegrationTestSuite) getLatestBlockHeight(c *chain, valIdx int) int {
 // func (s *IntegrationTestSuite) verifyBalanceChange(endpoint string, expectedAmount sdk.Coin, recipientAddress string) {
 // 	s.Require().Eventually(
 // 		func() bool {
-// 			afterAtomBalance, err := getSpecificBalance(endpoint, recipientAddress, uatomDenom)
+// 			afterAtomBalance, err := getSpecificBalance(endpoint, recipientAddress, uatoneDenom)
 // 			s.Require().NoError(err)
 
 // 			return afterAtomBalance.IsEqual(expectedAmount)
@@ -665,7 +665,7 @@ func (s *IntegrationTestSuite) execWithdrawReward(
 		"withdraw-rewards",
 		validatorAddress,
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, delegatorAddress),
-		fmt.Sprintf("--%s=%s", flags.FlagGasPrices, "300uatom"),
+		fmt.Sprintf("--%s=%s", flags.FlagGasPrices, "300uatone"),
 		fmt.Sprintf("--%s=%s", flags.FlagGas, "auto"),
 		fmt.Sprintf("--%s=%s", flags.FlagGasAdjustment, "1.5"),
 		fmt.Sprintf("--%s=%s", flags.FlagChainID, c.id),

@@ -21,26 +21,26 @@ func (s *IntegrationTestSuite) testBankTokenTransfer() {
 		bob, _ := c.genesisAccounts[2].keyInfo.GetAddress()
 		charlie, _ := c.genesisAccounts[3].keyInfo.GetAddress()
 
-		var beforeAliceUAtomBalance,
-			beforeBobUAtomBalance,
-			beforeCharlieUAtomBalance,
-			afterAliceUAtomBalance,
-			afterBobUAtomBalance,
-			afterCharlieUAtomBalance sdk.Coin
+		var beforeAliceUAtoneBalance,
+			beforeBobUAtoneBalance,
+			beforeCharlieUAtoneBalance,
+			afterAliceUAtoneBalance,
+			afterBobUAtoneBalance,
+			afterCharlieUAtoneBalance sdk.Coin
 
 		// get balances of sender and recipient accounts
 		s.Require().Eventually(
 			func() bool {
-				beforeAliceUAtomBalance, err = getSpecificBalance(chainEndpoint, alice.String(), uatomDenom)
+				beforeAliceUAtoneBalance, err = getSpecificBalance(chainEndpoint, alice.String(), uatoneDenom)
 				s.Require().NoError(err)
 
-				beforeBobUAtomBalance, err = getSpecificBalance(chainEndpoint, bob.String(), uatomDenom)
+				beforeBobUAtoneBalance, err = getSpecificBalance(chainEndpoint, bob.String(), uatoneDenom)
 				s.Require().NoError(err)
 
-				beforeCharlieUAtomBalance, err = getSpecificBalance(chainEndpoint, charlie.String(), uatomDenom)
+				beforeCharlieUAtoneBalance, err = getSpecificBalance(chainEndpoint, charlie.String(), uatoneDenom)
 				s.Require().NoError(err)
 
-				return beforeAliceUAtomBalance.IsValid() && beforeBobUAtomBalance.IsValid() && beforeCharlieUAtomBalance.IsValid()
+				return beforeAliceUAtoneBalance.IsValid() && beforeBobUAtoneBalance.IsValid() && beforeCharlieUAtoneBalance.IsValid()
 			},
 			10*time.Second,
 			5*time.Second,
@@ -52,14 +52,14 @@ func (s *IntegrationTestSuite) testBankTokenTransfer() {
 		// check that the transfer was successful
 		s.Require().Eventually(
 			func() bool {
-				afterAliceUAtomBalance, err = getSpecificBalance(chainEndpoint, alice.String(), uatomDenom)
+				afterAliceUAtoneBalance, err = getSpecificBalance(chainEndpoint, alice.String(), uatoneDenom)
 				s.Require().NoError(err)
 
-				afterBobUAtomBalance, err = getSpecificBalance(chainEndpoint, bob.String(), uatomDenom)
+				afterBobUAtoneBalance, err = getSpecificBalance(chainEndpoint, bob.String(), uatoneDenom)
 				s.Require().NoError(err)
 
-				decremented := beforeAliceUAtomBalance.Sub(tokenAmount).Sub(standardFees).IsEqual(afterAliceUAtomBalance)
-				incremented := beforeBobUAtomBalance.Add(tokenAmount).IsEqual(afterBobUAtomBalance)
+				decremented := beforeAliceUAtoneBalance.Sub(tokenAmount).Sub(standardFees).IsEqual(afterAliceUAtoneBalance)
+				incremented := beforeBobUAtoneBalance.Add(tokenAmount).IsEqual(afterBobUAtoneBalance)
 
 				return decremented && incremented
 			},
@@ -68,26 +68,26 @@ func (s *IntegrationTestSuite) testBankTokenTransfer() {
 		)
 
 		// save the updated account balances of alice and bob
-		beforeAliceUAtomBalance, beforeBobUAtomBalance = afterAliceUAtomBalance, afterBobUAtomBalance
+		beforeAliceUAtoneBalance, beforeBobUAtoneBalance = afterAliceUAtoneBalance, afterBobUAtoneBalance
 
 		// alice sends tokens to bob and charlie, at once
 		s.execBankMultiSend(s.chainA, valIdx, alice.String(), []string{bob.String(), charlie.String()}, tokenAmount.String(), standardFees.String(), false)
 
 		s.Require().Eventually(
 			func() bool {
-				afterAliceUAtomBalance, err = getSpecificBalance(chainEndpoint, alice.String(), uatomDenom)
+				afterAliceUAtoneBalance, err = getSpecificBalance(chainEndpoint, alice.String(), uatoneDenom)
 				s.Require().NoError(err)
 
-				afterBobUAtomBalance, err = getSpecificBalance(chainEndpoint, bob.String(), uatomDenom)
+				afterBobUAtoneBalance, err = getSpecificBalance(chainEndpoint, bob.String(), uatoneDenom)
 				s.Require().NoError(err)
 
-				afterCharlieUAtomBalance, err = getSpecificBalance(chainEndpoint, charlie.String(), uatomDenom)
+				afterCharlieUAtoneBalance, err = getSpecificBalance(chainEndpoint, charlie.String(), uatoneDenom)
 				s.Require().NoError(err)
 
 				// assert alice's account gets decremented the amount of tokens twice
-				decremented := beforeAliceUAtomBalance.Sub(tokenAmount).Sub(tokenAmount).Sub(standardFees).IsEqual(afterAliceUAtomBalance)
-				incremented := beforeBobUAtomBalance.Add(tokenAmount).IsEqual(afterBobUAtomBalance) &&
-					beforeCharlieUAtomBalance.Add(tokenAmount).IsEqual(afterCharlieUAtomBalance)
+				decremented := beforeAliceUAtoneBalance.Sub(tokenAmount).Sub(tokenAmount).Sub(standardFees).IsEqual(afterAliceUAtoneBalance)
+				incremented := beforeBobUAtoneBalance.Add(tokenAmount).IsEqual(afterBobUAtoneBalance) &&
+					beforeCharlieUAtoneBalance.Add(tokenAmount).IsEqual(afterCharlieUAtoneBalance)
 
 				return decremented && incremented
 			},

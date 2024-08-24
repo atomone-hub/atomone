@@ -122,7 +122,7 @@ func setup() (*atomoneapp.AtomOneApp, atomoneapp.GenesisState) {
 	db := dbm.NewMemDB()
 	appOptions := make(simtestutil.AppOptionsMap, 0)
 	appOptions[server.FlagInvCheckPeriod] = 5
-	appOptions[server.FlagMinGasPrices] = "0uatom"
+	appOptions[server.FlagMinGasPrices] = "0uatone"
 
 	encConfig := atomoneapp.RegisterEncodingConfig()
 

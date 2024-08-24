@@ -24,7 +24,7 @@ func (s *IntegrationTestSuite) testStaking() {
 
 	delegatorAddress, _ := s.chainA.genesisAccounts[2].keyInfo.GetAddress()
 
-	fees := sdk.NewCoin(uatomDenom, sdk.NewInt(1))
+	fees := sdk.NewCoin(uatoneDenom, sdk.NewInt(1))
 
 	existingDelegation := sdk.ZeroDec()
 	res, err := queryDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
@@ -33,9 +33,9 @@ func (s *IntegrationTestSuite) testStaking() {
 	}
 
 	delegationAmount := sdk.NewInt(500000000)
-	delegation := sdk.NewCoin(uatomDenom, delegationAmount) // 500 atom
+	delegation := sdk.NewCoin(uatoneDenom, delegationAmount) // 500 atom
 
-	// Alice delegate uatom to Validator A
+	// Alice delegate uatone to Validator A
 	s.execDelegate(s.chainA, 0, delegation.String(), validatorAddressA, delegatorAddress.String(), atomoneHomePath, fees.String())
 
 	// Validate delegation successful
@@ -52,9 +52,9 @@ func (s *IntegrationTestSuite) testStaking() {
 	)
 
 	redelegationAmount := delegationAmount.Quo(sdk.NewInt(2))
-	redelegation := sdk.NewCoin(uatomDenom, redelegationAmount) // 250 atom
+	redelegation := sdk.NewCoin(uatoneDenom, redelegationAmount) // 250 atom
 
-	// Alice re-delegate half of her uatom delegation from Validator A to Validator B
+	// Alice re-delegate half of her uatone delegation from Validator A to Validator B
 	s.execRedelegate(s.chainA, 0, redelegation.String(), validatorAddressA, validatorAddressB, delegatorAddress.String(), atomoneHomePath, fees.String())
 
 	// Validate re-delegation successful
@@ -83,7 +83,7 @@ func (s *IntegrationTestSuite) testStaking() {
 			s.Require().NoError(err)
 
 			currDelegationAmount = amt.TruncateInt()
-			currDelegation = sdk.NewCoin(uatomDenom, currDelegationAmount)
+			currDelegation = sdk.NewCoin(uatoneDenom, currDelegationAmount)
 
 			return currDelegation.IsValid()
 		},
@@ -91,7 +91,7 @@ func (s *IntegrationTestSuite) testStaking() {
 		5*time.Second,
 	)
 
-	// Alice unbonds all her uatom delegation from Validator A
+	// Alice unbonds all her uatone delegation from Validator A
 	s.execUnbondDelegation(s.chainA, 0, currDelegation.String(), validatorAddressA, delegatorAddress.String(), atomoneHomePath, fees.String())
 
 	var ubdDelegationEntry types.UnbondingDelegationEntry

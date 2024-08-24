@@ -49,9 +49,9 @@ const (
 	keysCommand                     = "keys"
 	atomoneHomePath                 = "/home/nonroot/.atomone"
 	photonDenom                     = "photon"
-	uatomDenom                      = "uatom"
+	uatoneDenom                     = "uatone"
 	stakeDenom                      = "stake"
-	initBalanceStr                  = "110000000000stake,100000000000000000photon,100000000000000000uatom"
+	initBalanceStr                  = "110000000000stake,100000000000000000photon,100000000000000000uatone"
 	minGasPrice                     = "0.00001"
 	gas                             = 200000
 	govProposalBlockBuffer          = 35
@@ -73,10 +73,10 @@ const (
 var (
 	atomoneConfigPath = filepath.Join(atomoneHomePath, "config")
 	stakingAmount     = sdk.NewInt(100000000000)
-	stakingAmountCoin = sdk.NewCoin(uatomDenom, stakingAmount)
-	tokenAmount       = sdk.NewCoin(uatomDenom, sdk.NewInt(3300000000)) // 3,300uatom
-	standardFees      = sdk.NewCoin(uatomDenom, sdk.NewInt(330000))     // 0.33uatom
-	depositAmount     = sdk.NewCoin(uatomDenom, sdk.NewInt(330000000))  // 3,300uatom
+	stakingAmountCoin = sdk.NewCoin(uatoneDenom, stakingAmount)
+	tokenAmount       = sdk.NewCoin(uatoneDenom, sdk.NewInt(3300000000)) // 3,300uatone
+	standardFees      = sdk.NewCoin(uatoneDenom, sdk.NewInt(330000))     // 0.33uatone
+	depositAmount     = sdk.NewCoin(uatoneDenom, sdk.NewInt(330000000))  // 3,300uatone
 	distModuleAddress = authtypes.NewModuleAddress(distrtypes.ModuleName).String()
 	govModuleAddress  = authtypes.NewModuleAddress(govtypes.ModuleName).String()
 	proposalCounter   = 0
@@ -197,7 +197,7 @@ func (s *IntegrationTestSuite) initNodes(c *chain) {
 	}
 
 	s.Require().NoError(
-		modifyGenesis(val0ConfigDir, "", initBalanceStr, addrAll, uatomDenom),
+		modifyGenesis(val0ConfigDir, "", initBalanceStr, addrAll, uatoneDenom),
 	)
 	// copy the genesis file to the remaining validators
 	for _, val := range c.validators[1:] {
@@ -336,7 +336,7 @@ func (s *IntegrationTestSuite) addGenesisVestingAndJailedAccounts(
 	}
 	stakingModuleBalances := banktypes.Balance{
 		Address: authtypes.NewModuleAddress(stakingtypes.NotBondedPoolName).String(),
-		Coins:   sdk.NewCoins(sdk.NewCoin(uatomDenom, sdk.NewInt(slashingShares))),
+		Coins:   sdk.NewCoins(sdk.NewCoin(uatoneDenom, sdk.NewInt(slashingShares))),
 	}
 	bankGenState.Balances = append(
 		bankGenState.Balances,
@@ -350,13 +350,13 @@ func (s *IntegrationTestSuite) addGenesisVestingAndJailedAccounts(
 	// update the denom metadata for the bank module
 	bankGenState.DenomMetadata = append(bankGenState.DenomMetadata, banktypes.Metadata{
 		Description: "An example stable token",
-		Display:     uatomDenom,
-		Base:        uatomDenom,
-		Symbol:      uatomDenom,
-		Name:        uatomDenom,
+		Display:     uatoneDenom,
+		Base:        uatoneDenom,
+		Symbol:      uatoneDenom,
+		Name:        uatoneDenom,
 		DenomUnits: []*banktypes.DenomUnit{
 			{
-				Denom:    uatomDenom,
+				Denom:    uatoneDenom,
 				Exponent: 0,
 			},
 		},
@@ -500,7 +500,7 @@ func (s *IntegrationTestSuite) initValidatorConfigs(c *chain) {
 		appConfig := srvconfig.DefaultConfig()
 		appConfig.API.Enable = true
 		appConfig.API.Address = "tcp://0.0.0.0:1317"
-		appConfig.MinGasPrices = fmt.Sprintf("%s%s", minGasPrice, uatomDenom)
+		appConfig.MinGasPrices = fmt.Sprintf("%s%s", minGasPrice, uatoneDenom)
 		appConfig.GRPC.Address = "0.0.0.0:9090"
 
 		srvconfig.SetConfigTemplate(srvconfig.DefaultConfigTemplate)
@@ -594,7 +594,7 @@ func (s *IntegrationTestSuite) writeGovCommunitySpendProposal(c *chain, amount s
 			}]
 		  }
 		],
-		"deposit": "100uatom",
+		"deposit": "100uatone",
 		"proposer": "Proposing validator address",
 		"metadata": "Community Pool Spend",
 		"title": "Fund Team!",
@@ -641,7 +641,7 @@ func (s *IntegrationTestSuite) writeLiquidStakingParamsUpdateProposal(c *chain, 
 		 }
 		],
 		"metadata": "ipfs://CID",
-		"deposit": "100uatom",
+		"deposit": "100uatone",
 		"title": "Update LSM Params",
 		"summary": "e2e-test updating LSM staking params"
 	   }`

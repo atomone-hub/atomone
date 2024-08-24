@@ -120,10 +120,10 @@ func (s *IntegrationTestSuite) GovCommunityPoolSpend() {
 	sender := senderAddress.String()
 	recipientAddress, _ := s.chainA.validators[1].keyInfo.GetAddress()
 	recipient := recipientAddress.String()
-	sendAmount := sdk.NewCoin(uatomDenom, sdk.NewInt(10000000)) // 10uatom
+	sendAmount := sdk.NewCoin(uatoneDenom, sdk.NewInt(10000000)) // 10uatone
 	s.writeGovCommunitySpendProposal(s.chainA, sendAmount, recipient)
 
-	beforeRecipientBalance, err := getSpecificBalance(chainAAPIEndpoint, recipient, uatomDenom)
+	beforeRecipientBalance, err := getSpecificBalance(chainAAPIEndpoint, recipient, uatoneDenom)
 	s.Require().NoError(err)
 
 	// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
@@ -135,7 +135,7 @@ func (s *IntegrationTestSuite) GovCommunityPoolSpend() {
 
 	s.Require().Eventually(
 		func() bool {
-			afterRecipientBalance, err := getSpecificBalance(chainAAPIEndpoint, recipient, uatomDenom)
+			afterRecipientBalance, err := getSpecificBalance(chainAAPIEndpoint, recipient, uatoneDenom)
 			s.Require().NoError(err)
 
 			return afterRecipientBalance.Sub(sendAmount).IsEqual(beforeRecipientBalance)
@@ -147,10 +147,10 @@ func (s *IntegrationTestSuite) GovCommunityPoolSpend() {
 
 func (s *IntegrationTestSuite) submitLegacyGovProposal(chainAAPIEndpoint, sender string, proposalID int, proposalType string, submitFlags []string, depositFlags []string, voteFlags []string, voteCommand string, withDeposit bool) {
 	s.T().Logf("Submitting Gov Proposal: %s", proposalType)
-	// min deposit of 1000uatom is required in e2e tests, otherwise the gov antehandler causes the proposal to be dropped
+	// min deposit of 1000uatone is required in e2e tests, otherwise the gov antehandler causes the proposal to be dropped
 	sflags := submitFlags
 	if withDeposit {
-		sflags = append(sflags, "--deposit=1000uatom")
+		sflags = append(sflags, "--deposit=1000uatone")
 	}
 	s.submitGovCommand(chainAAPIEndpoint, sender, proposalID, "submit-legacy-proposal", sflags, govtypesv1beta1.StatusDepositPeriod)
 	s.T().Logf("Depositing Gov Proposal: %s", proposalType)
@@ -162,7 +162,7 @@ func (s *IntegrationTestSuite) submitLegacyGovProposal(chainAAPIEndpoint, sender
 // NOTE: in SDK >= v0.47 the submit-proposal does not have a --deposit flag
 // Instead, the depoist is added to the "deposit" field of the proposal JSON (usually stored as a file)
 // you can use `atomoned tx gov draft-proposal` to create a proposal file that you can use
-// min initial deposit of 100uatom is required in e2e tests, otherwise the proposal would be dropped
+// min initial deposit of 100uatone is required in e2e tests, otherwise the proposal would be dropped
 func (s *IntegrationTestSuite) submitGovProposal(chainAAPIEndpoint, sender string, proposalID int, proposalType string, submitFlags []string, depositFlags []string, voteFlags []string, voteCommand string) {
 	s.T().Logf("Submitting Gov Proposal: %s", proposalType)
 	sflags := submitFlags
