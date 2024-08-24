@@ -180,7 +180,7 @@ func (s *IntegrationTestSuite) initNodes(c *chain) {
 	c.genesisAccounts[2]: Test Account 1
 	c.genesisAccounts[3]: Test Account 2
 	*/
-	s.Require().NoError(c.addAccountFromMnemonic(7))
+	s.Require().NoError(c.addAccountFromMnemonic(5))
 	// Initialize a genesis file for the first validator
 	val0ConfigDir := c.validators[0].configDir()
 	var addrAll []sdk.AccAddress
