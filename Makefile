@@ -208,10 +208,10 @@ $(TEST_TARGETS): run-tests
 run-tests:
 ifneq (,$(shell which tparse 2>/dev/null))
 	@echo "--> Running tests"
-	@go test -mod=readonly -json $(ARGS) $(TEST_PACKAGES) | tparse
+	@go test -v -mod=readonly -json $(ARGS) $(TEST_PACKAGES) | tparse
 else
 	@echo "--> Running tests"
-	@go test -mod=readonly $(ARGS) $(TEST_PACKAGES)
+	@go test -v -mod=readonly $(ARGS) $(TEST_PACKAGES)
 endif
 
 .PHONY: run-tests $(TEST_TARGETS)

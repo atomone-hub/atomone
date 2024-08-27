@@ -7,7 +7,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/gorilla/mux"
 	"github.com/rakyll/statik/fs"
 	"github.com/spf13/cast"
@@ -262,7 +261,10 @@ func (app *AtomOneApp) InitChainer(ctx sdk.Context, req abci.RequestInitChain) a
 	if err := tmjson.Unmarshal(req.AppStateBytes, &genesisState); err != nil {
 		panic(err)
 	}
-	fmt.Printf("genesisState: %v\n", spew.Sdump(genesisState))
+	// Print each entry in the map as a string
+	for key, value := range genesisState {
+		fmt.Printf("%s: %s\n", key, string(value))
+	}
 
 	app.UpgradeKeeper.SetModuleVersionMap(ctx, app.mm.GetVersionMap())
 
