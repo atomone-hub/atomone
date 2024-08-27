@@ -180,7 +180,7 @@ func (s *IntegrationTestSuite) initNodes(c *chain) {
 	c.genesisAccounts[2]: Test Account 1
 	c.genesisAccounts[3]: Test Account 2
 	*/
-	s.Require().NoError(c.addAccountFromMnemonic(7))
+	s.Require().NoError(c.addAccountFromMnemonic(5))
 	// Initialize a genesis file for the first validator
 	val0ConfigDir := c.validators[0].configDir()
 	var addrAll []sdk.AccAddress
@@ -552,6 +552,17 @@ func (s *IntegrationTestSuite) runValidators(c *chain, portOffset int) {
 	rpcClient, err := rpchttp.New("tcp://localhost:26657", "/websocket")
 	s.Require().NoError(err)
 
+	defer func() {
+		err = s.dkrPool.Client.Logs(docker.LogsOptions{
+			Container:    s.valResources[c.id][0].Container.ID,
+			OutputStream: os.Stdout,
+			ErrorStream:  os.Stdout,
+			Stdout:       true,
+			Stderr:       true,
+			// Follow:       true,
+		})
+		fmt.Println("ERR LOGS", err)
+	}()
 	s.Require().Eventually(
 		func() bool {
 			ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
