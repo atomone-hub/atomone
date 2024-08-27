@@ -1,13 +1,13 @@
 package atomone
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
 	"path/filepath"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/gorilla/mux"
 	"github.com/rakyll/statik/fs"
 	"github.com/spf13/cast"
@@ -262,7 +262,20 @@ func (app *AtomOneApp) InitChainer(ctx sdk.Context, req abci.RequestInitChain) a
 	if err := tmjson.Unmarshal(req.AppStateBytes, &genesisState); err != nil {
 		panic(err)
 	}
-	spew.Dump("AUTH", genesisState["auth"])
+	var m map[string]any
+	json.Unmarshal(genesisState["auth"], &m)
+	bz, _ := json.MarshalIndent(m, "  ", "")
+	fmt.Println("AUTH", string(bz))
+
+	var authGen authtypes.GenesisState
+	app.AppCodec().MustUnmarshalJSON(genesisState["auth"], &authGen)
+	accounts, err := authtypes.UnpackAccounts(authGen.Accounts)
+	if err != nil {
+		panic(err)
+	}
+	for i, acc := range accounts {
+		fmt.Println("VALIDATE", i, acc, acc.Validate())
+	}
 
 	app.UpgradeKeeper.SetModuleVersionMap(ctx, app.mm.GetVersionMap())
 

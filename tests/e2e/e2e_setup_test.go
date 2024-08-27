@@ -551,6 +551,15 @@ func (s *IntegrationTestSuite) runValidators(c *chain, portOffset int) {
 	rpcClient, err := rpchttp.New("tcp://localhost:26657", "/websocket")
 	s.Require().NoError(err)
 
+	err = s.dkrPool.Client.Logs(docker.LogsOptions{
+		Container:    s.valResources[c.id][0].Container.ID,
+		OutputStream: os.Stdout,
+		ErrorStream:  os.Stdout,
+		Stdout:       true,
+		Stderr:       true,
+		// Follow:       true,
+	})
+	fmt.Println("ERR LOGS", err)
 	defer func() {
 		err = s.dkrPool.Client.Logs(docker.LogsOptions{
 			Container:    s.valResources[c.id][0].Container.ID,
