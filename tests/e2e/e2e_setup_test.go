@@ -558,13 +558,11 @@ func (s *IntegrationTestSuite) runValidators(c *chain, portOffset int) {
 
 			status, err := rpcClient.Status(ctx)
 			if err != nil {
-				s.T().Logf("error requesting node status: %v", err)
 				return false
 			}
 
 			// let the node produce a few blocks
 			if status.SyncInfo.CatchingUp || status.SyncInfo.LatestBlockHeight < 3 {
-				s.T().Logf("node not ready")
 				return false
 			}
 			return true
@@ -573,6 +571,15 @@ func (s *IntegrationTestSuite) runValidators(c *chain, portOffset int) {
 		time.Second,
 		"AtomOne node failed to produce blocks",
 	)
+	err = s.dkrPool.Client.Logs(docker.LogsOptions{
+		Container:    s.valResources[c.id][0].Container.ID,
+		OutputStream: os.Stdout,
+		ErrorStream:  os.Stdout,
+		Stdout:       true,
+		Stderr:       true,
+		// Follow:       true,
+	})
+	fmt.Println("ERR LOGS", err)
 }
 
 func noRestart(config *docker.HostConfig) {
