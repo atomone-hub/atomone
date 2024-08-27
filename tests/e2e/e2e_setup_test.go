@@ -13,7 +13,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/atomone-hub/atomone/cmd/atomoned/cmd"
 	"github.com/ory/dockertest/v3"
+
 	// "github.com/cosmos/cosmos-sdk/crypto/hd"
 	// "github.com/cosmos/cosmos-sdk/crypto/keyring"
 	"github.com/ory/dockertest/v3/docker"
@@ -108,6 +110,9 @@ func TestIntegrationTestSuite(t *testing.T) {
 
 func (s *IntegrationTestSuite) SetupSuite() {
 	s.T().Log("setting up e2e integration test suite...")
+
+	// Setup bech32 prefix
+	cmd.InitSDKConfig()
 
 	var err error
 	s.chainA, err = newChain()
