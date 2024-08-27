@@ -79,8 +79,8 @@ var (
 	tokenAmount       = sdk.NewCoin(uatomDenom, sdk.NewInt(3300000000)) // 3,300uatom
 	standardFees      = sdk.NewCoin(uatomDenom, sdk.NewInt(330000))     // 0.33uatom
 	depositAmount     = sdk.NewCoin(uatomDenom, sdk.NewInt(330000000))  // 3,300uatom
-	distModuleAddress = authtypes.NewModuleAddress(distrtypes.ModuleName).String()
-	govModuleAddress  = authtypes.NewModuleAddress(govtypes.ModuleName).String()
+	distModuleAddress = ""                                              // note: have to set these after running InitSDKConfig so that the bech32 prefix is set
+	govModuleAddress  = ""                                              // note: have to set these after running InitSDKConfig so that the bech32 prefix is set
 	proposalCounter   = 0
 )
 
@@ -95,6 +95,8 @@ type IntegrationTestSuite struct {
 	// hermesResource *dockertest.Resource
 
 	valResources map[string][]*dockertest.Resource
+
+	initialized bool
 }
 
 type AddressResponse struct {
@@ -112,7 +114,15 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.T().Log("setting up e2e integration test suite...")
 
 	// Setup bech32 prefix
-	cmd.InitSDKConfig()
+	if !s.initialized {
+		cmd.InitSDKConfig()
+
+		// note: the config gets sealed on init, so runnig this twice will throw!
+		s.initialized = true
+	}
+
+	distModuleAddress = authtypes.NewModuleAddress(distrtypes.ModuleName).String() // note: have to set these after running InitSDKConfig so that the bech32 prefix is set
+	govModuleAddress = authtypes.NewModuleAddress(govtypes.ModuleName).String()    // note: have to set these after running InitSDKConfig so that the bech32 prefix is set
 
 	var err error
 	s.chainA, err = newChain()
