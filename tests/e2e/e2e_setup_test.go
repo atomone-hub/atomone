@@ -551,6 +551,17 @@ func (s *IntegrationTestSuite) runValidators(c *chain, portOffset int) {
 	rpcClient, err := rpchttp.New("tcp://localhost:26657", "/websocket")
 	s.Require().NoError(err)
 
+	defer func() {
+		err = s.dkrPool.Client.Logs(docker.LogsOptions{
+			Container:    s.valResources[c.id][0].Container.ID,
+			OutputStream: os.Stdout,
+			ErrorStream:  os.Stdout,
+			Stdout:       true,
+			Stderr:       true,
+			// Follow:       true,
+		})
+		fmt.Println("ERR LOGS", err)
+	}()
 	s.Require().Eventually(
 		func() bool {
 			ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
@@ -571,15 +582,6 @@ func (s *IntegrationTestSuite) runValidators(c *chain, portOffset int) {
 		time.Second,
 		"AtomOne node failed to produce blocks",
 	)
-	err = s.dkrPool.Client.Logs(docker.LogsOptions{
-		Container:    s.valResources[c.id][0].Container.ID,
-		OutputStream: os.Stdout,
-		ErrorStream:  os.Stdout,
-		Stdout:       true,
-		Stderr:       true,
-		// Follow:       true,
-	})
-	fmt.Println("ERR LOGS", err)
 }
 
 func noRestart(config *docker.HostConfig) {
