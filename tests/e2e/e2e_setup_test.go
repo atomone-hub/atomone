@@ -558,11 +558,13 @@ func (s *IntegrationTestSuite) runValidators(c *chain, portOffset int) {
 
 			status, err := rpcClient.Status(ctx)
 			if err != nil {
+				s.T().Logf("error requesting node status: %v", err)
 				return false
 			}
 
 			// let the node produce a few blocks
 			if status.SyncInfo.CatchingUp || status.SyncInfo.LatestBlockHeight < 3 {
+				s.T().Logf("node not ready")
 				return false
 			}
 			return true
