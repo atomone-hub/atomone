@@ -541,6 +541,7 @@ func (s *IntegrationTestSuite) runValidators(c *chain, portOffset int) {
 			}
 		}
 
+		fmt.Println(fmt.Sprintf("%s:%s", runOpts.Repository, runOpts.Tag))
 		resource, err := s.dkrPool.RunWithOptions(runOpts, noRestart)
 		s.Require().NoError(err)
 
