@@ -262,16 +262,6 @@ func (app *AtomOneApp) InitChainer(ctx sdk.Context, req abci.RequestInitChain) a
 		panic(err)
 	}
 
-	var authGen authtypes.GenesisState
-	app.AppCodec().MustUnmarshalJSON(genesisState["auth"], &authGen)
-	accounts, err := authtypes.UnpackAccounts(authGen.Accounts)
-	if err != nil {
-		panic(err)
-	}
-	for i, acc := range accounts {
-		fmt.Println("VALIDATE", i, acc, acc.Validate())
-	}
-
 	app.UpgradeKeeper.SetModuleVersionMap(ctx, app.mm.GetVersionMap())
 
 	return app.mm.InitGenesis(ctx, app.appCodec, genesisState)

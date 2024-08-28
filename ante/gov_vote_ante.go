@@ -15,7 +15,7 @@ import (
 )
 
 var (
-	minStakedTokens       = sdk.NewDec(1000000) // 1_000_000 uatom (or 1 atom)
+	minStakedTokens       = sdk.NewDec(1000000) // 1_000_000 uatone (or 1 atone)
 	maxDelegationsChecked = 100                 // number of delegation to check for the minStakedTokens
 )
 
