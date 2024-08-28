@@ -5,6 +5,8 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 )
 
 func (s *IntegrationTestSuite) testDistribution() {
@@ -61,6 +63,8 @@ Test Benchmarks:
 3. Verification that correct funds have been deposited to distribution module account
 */
 func (s *IntegrationTestSuite) fundCommunityPool() {
+	distModuleAddress := authtypes.NewModuleAddress(distrtypes.ModuleName).String()
+
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
 	sender, _ := s.chainA.validators[0].keyInfo.GetAddress()
 

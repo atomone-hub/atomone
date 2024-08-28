@@ -13,7 +13,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/atomone-hub/atomone/cmd/atomoned/cmd"
 	"github.com/ory/dockertest/v3"
+
 	// "github.com/cosmos/cosmos-sdk/crypto/hd"
 	// "github.com/cosmos/cosmos-sdk/crypto/keyring"
 	"github.com/ory/dockertest/v3/docker"
@@ -34,7 +36,6 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	authvesting "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
@@ -74,11 +75,9 @@ var (
 	atomoneConfigPath = filepath.Join(atomoneHomePath, "config")
 	stakingAmount     = sdk.NewInt(100000000000)
 	stakingAmountCoin = sdk.NewCoin(uatoneDenom, stakingAmount)
-	tokenAmount       = sdk.NewCoin(uatoneDenom, sdk.NewInt(3300000000)) // 3,300uatone
-	standardFees      = sdk.NewCoin(uatoneDenom, sdk.NewInt(330000))     // 0.33uatone
-	depositAmount     = sdk.NewCoin(uatoneDenom, sdk.NewInt(330000000))  // 3,300uatone
-	distModuleAddress = authtypes.NewModuleAddress(distrtypes.ModuleName).String()
-	govModuleAddress  = authtypes.NewModuleAddress(govtypes.ModuleName).String()
+	tokenAmount       = sdk.NewCoin(uatoneDenom, sdk.NewInt(3300000000)) // 3,300uatom
+	standardFees      = sdk.NewCoin(uatoneDenom, sdk.NewInt(330000))     // 0.33uatom
+	depositAmount     = sdk.NewCoin(uatoneDenom, sdk.NewInt(330000000))  // 3,300uatom
 	proposalCounter   = 0
 )
 
@@ -103,6 +102,8 @@ type AddressResponse struct {
 }
 
 func TestIntegrationTestSuite(t *testing.T) {
+	// Setup bech32 prefix
+	cmd.InitSDKConfig()
 	suite.Run(t, new(IntegrationTestSuite))
 }
 
@@ -581,6 +582,8 @@ func noRestart(config *docker.HostConfig) {
 }
 
 func (s *IntegrationTestSuite) writeGovCommunitySpendProposal(c *chain, amount sdk.Coin, recipient string) {
+	govModuleAddress := authtypes.NewModuleAddress(govtypes.ModuleName).String()
+
 	template := `
 	{
 		"messages":[
