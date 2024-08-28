@@ -1,7 +1,6 @@
 package atomone
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -262,10 +261,6 @@ func (app *AtomOneApp) InitChainer(ctx sdk.Context, req abci.RequestInitChain) a
 	if err := tmjson.Unmarshal(req.AppStateBytes, &genesisState); err != nil {
 		panic(err)
 	}
-	var m map[string]any
-	json.Unmarshal(genesisState["auth"], &m)
-	bz, _ := json.MarshalIndent(m, "  ", "")
-	fmt.Println("AUTH", string(bz))
 
 	var authGen authtypes.GenesisState
 	app.AppCodec().MustUnmarshalJSON(genesisState["auth"], &authGen)

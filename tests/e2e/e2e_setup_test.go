@@ -36,7 +36,6 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	authvesting "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
@@ -79,8 +78,6 @@ var (
 	tokenAmount       = sdk.NewCoin(uatomDenom, sdk.NewInt(3300000000)) // 3,300uatom
 	standardFees      = sdk.NewCoin(uatomDenom, sdk.NewInt(330000))     // 0.33uatom
 	depositAmount     = sdk.NewCoin(uatomDenom, sdk.NewInt(330000000))  // 3,300uatom
-	distModuleAddress = ""                                              // note: have to set these after running InitSDKConfig so that the bech32 prefix is set
-	govModuleAddress  = ""                                              // note: have to set these after running InitSDKConfig so that the bech32 prefix is set
 	proposalCounter   = 0
 )
 
@@ -95,8 +92,6 @@ type IntegrationTestSuite struct {
 	// hermesResource *dockertest.Resource
 
 	valResources map[string][]*dockertest.Resource
-
-	initialized bool
 }
 
 type AddressResponse struct {
@@ -107,22 +102,13 @@ type AddressResponse struct {
 }
 
 func TestIntegrationTestSuite(t *testing.T) {
+	// Setup bech32 prefix
+	cmd.InitSDKConfig()
 	suite.Run(t, new(IntegrationTestSuite))
 }
 
 func (s *IntegrationTestSuite) SetupSuite() {
 	s.T().Log("setting up e2e integration test suite...")
-
-	// Setup bech32 prefix
-	if !s.initialized {
-		cmd.InitSDKConfig()
-
-		// note: the config gets sealed on init, so runnig this twice will throw!
-		s.initialized = true
-	}
-
-	distModuleAddress = authtypes.NewModuleAddress(distrtypes.ModuleName).String() // note: have to set these after running InitSDKConfig so that the bech32 prefix is set
-	govModuleAddress = authtypes.NewModuleAddress(govtypes.ModuleName).String()    // note: have to set these after running InitSDKConfig so that the bech32 prefix is set
 
 	var err error
 	s.chainA, err = newChain()
@@ -195,7 +181,7 @@ func (s *IntegrationTestSuite) initNodes(c *chain) {
 	c.genesisAccounts[2]: Test Account 1
 	c.genesisAccounts[3]: Test Account 2
 	*/
-	s.Require().NoError(c.addAccountFromMnemonic(5))
+	s.Require().NoError(c.addAccountFromMnemonic(7))
 	// Initialize a genesis file for the first validator
 	val0ConfigDir := c.validators[0].configDir()
 	var addrAll []sdk.AccAddress
@@ -566,15 +552,17 @@ func (s *IntegrationTestSuite) runValidators(c *chain, portOffset int) {
 	rpcClient, err := rpchttp.New("tcp://localhost:26657", "/websocket")
 	s.Require().NoError(err)
 
-	err = s.dkrPool.Client.Logs(docker.LogsOptions{
+	if err = s.dkrPool.Client.Logs(docker.LogsOptions{
 		Container:    s.valResources[c.id][0].Container.ID,
 		OutputStream: os.Stdout,
 		ErrorStream:  os.Stdout,
 		Stdout:       true,
 		Stderr:       true,
 		// Follow:       true,
-	})
-	fmt.Println("ERR LOGS", err)
+	}); err != nil {
+		s.T().Logf("failed to tail logs for container %s: %v", s.valResources[c.id][0].Container.ID, err)
+	}
+
 	defer func() {
 		err = s.dkrPool.Client.Logs(docker.LogsOptions{
 			Container:    s.valResources[c.id][0].Container.ID,
@@ -584,7 +572,6 @@ func (s *IntegrationTestSuite) runValidators(c *chain, portOffset int) {
 			Stderr:       true,
 			// Follow:       true,
 		})
-		fmt.Println("ERR LOGS", err)
 	}()
 	s.Require().Eventually(
 		func() bool {
@@ -616,6 +603,8 @@ func noRestart(config *docker.HostConfig) {
 }
 
 func (s *IntegrationTestSuite) writeGovCommunitySpendProposal(c *chain, amount sdk.Coin, recipient string) {
+	govModuleAddress := authtypes.NewModuleAddress(govtypes.ModuleName).String()
+
 	template := `
 	{
 		"messages":[
