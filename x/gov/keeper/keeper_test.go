@@ -40,7 +40,8 @@ func (suite *KeeperTestSuite) SetupSuite() {
 }
 
 func (suite *KeeperTestSuite) reset() {
-	govKeeper, acctKeeper, bankKeeper, stakingKeeper, encCfg, ctx := setupGovKeeper(suite.T())
+	govKeeper, mocks, encCfg, ctx := setupGovKeeper(suite.T())
+	acctKeeper, bankKeeper, stakingKeeper := mocks.acctKeeper, mocks.bankKeeper, mocks.stakingKeeper
 
 	// Populate the gov account with some coins, as the TestProposal we have
 	// is a MsgSend from the gov account.
@@ -72,7 +73,7 @@ func (suite *KeeperTestSuite) reset() {
 }
 
 func TestIncrementProposalNumber(t *testing.T) {
-	govKeeper, _, _, _, _, ctx := setupGovKeeper(t)
+	govKeeper, _, _, ctx := setupGovKeeper(t)
 
 	tp := TestProposal
 	_, err := govKeeper.SubmitProposal(ctx, tp, "", "test", "summary", sdk.AccAddress("cosmos1ghekyjucln7y67ntx7cf27m9dpuxxemn4c8g4r"))
@@ -92,7 +93,7 @@ func TestIncrementProposalNumber(t *testing.T) {
 }
 
 func TestProposalQueues(t *testing.T) {
-	govKeeper, _, _, _, _, ctx := setupGovKeeper(t)
+	govKeeper, _, _, ctx := setupGovKeeper(t)
 
 	// create test proposals
 	tp := TestProposal

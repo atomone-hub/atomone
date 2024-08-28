@@ -95,12 +95,13 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 
 	// TODO: Upgrade the spec to cover all of these cases & remove pseudocode.
 	// If there is no staked coins, the proposal fails
-	if keeper.sk.TotalBondedTokens(ctx).IsZero() {
+	totalBondedTokens := keeper.sk.TotalBondedTokens(ctx)
+	if totalBondedTokens.IsZero() {
 		return false, false, tallyResults
 	}
 
 	// If there is not enough quorum of votes, the proposal fails
-	percentVoting := totalVotingPower.Quo(sdk.NewDecFromInt(keeper.sk.TotalBondedTokens(ctx)))
+	percentVoting := totalVotingPower.Quo(sdk.NewDecFromInt(totalBondedTokens))
 	quorum, _ := sdk.NewDecFromStr(params.Quorum)
 	if percentVoting.LT(quorum) {
 		return false, params.BurnVoteQuorum, tallyResults
