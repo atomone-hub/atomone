@@ -213,18 +213,18 @@ func TestTally(t *testing.T) {
 			},
 		},
 		{
-			name: "validator votes yes, inherit delegations",
+			name: "validator votes yes, don't inherit delegations",
 			setup: func(s *tallyFixture) {
 				s.delegate(s.delAddrs[0], s.valAddrs[0], 2)
 				s.delegate(s.delAddrs[1], s.valAddrs[0], 2)
 				s.validatorVote(s.valAddrs[0], v1.VoteOption_VOTE_OPTION_NO)
 			},
 			expectedPass: false,
-			expectedBurn: false,
+			expectedBurn: true, // burn because quorum not reached
 			expectedTally: v1.TallyResult{
 				YesCount:        "0",
 				AbstainCount:    "0",
-				NoCount:         "5",
+				NoCount:         "1",
 				NoWithVetoCount: "0",
 			},
 		},
