@@ -52,6 +52,7 @@ func newTallyFixture(t *testing.T, ctx sdk.Context, proposal v1.Proposal,
 		keeper:   govKeeper,
 		mocks:    mocks,
 	}
+
 	mocks.stakingKeeper.EXPECT().TotalBondedTokens(gomock.Any()).
 		DoAndReturn(func(_ context.Context) sdkmath.Int {
 			return sdkmath.NewInt(s.totalBonded)
@@ -380,4 +381,43 @@ func TestTally(t *testing.T) {
 			assert.Empty(t, govKeeper.GetVotes(ctx, proposal.Id), "votes not be removed after tally")
 		})
 	}
+}
+
+func TestTally_SelfDelegation(t *testing.T) {
+	// Set up test data
+	numVals := 10
+	numDelegators := 5
+	addrs := simtestutil.CreateRandomAccounts(numVals + numDelegators)
+	valAddrs := simtestutil.ConvertAddrsToValAddrs(addrs[:numVals])
+	delAddrs := addrs[numVals:]
+
+	govKeeper, mocks, _, ctx := setupGovKeeper(t, mockAccountKeeperExpectations)
+	params := v1.DefaultParams()
+	// Ensure params value are different than false
+	params.BurnVoteQuorum = true
+	params.BurnVoteVeto = true
+	err := govKeeper.SetParams(ctx, params)
+	require.NoError(t, err)
+
+	proposal, err := govKeeper.SubmitProposal(ctx, TestProposal, "", "title", "summary", delAddrs[1])
+	require.NoError(t, err)
+	govKeeper.ActivateVotingPeriod(ctx, proposal)
+
+	// Create a new tally fixture with self-delegation
+	s := newTallyFixture(t, ctx, proposal, valAddrs, delAddrs, govKeeper, mocks)
+
+	s.delegate(s.delAddrs[0], s.valAddrs[0], 10) // delegate tokens
+
+	// Vote
+	voteOption := v1.VoteOption_VOTE_OPTION_YES
+	s.vote(delAddrs[0], voteOption)
+	s.validatorVote(s.valAddrs[0], voteOption)
+
+	// Call Tally
+	pass, burn, tally := s.keeper.Tally(ctx, proposal)
+
+	// Assert expected results
+	assert.True(t, pass)
+	assert.False(t, burn)
+	assert.Equal(t, v1.TallyResult{YesCount: "11", AbstainCount: "0", NoCount: "0", NoWithVetoCount: "0"}, tally)
 }
