@@ -4,12 +4,12 @@ import (
 	"context"
 	"fmt"
 
-	"cosmossdk.io/errors"
-	sdkerrors "cosmossdk.io/errors"
+	sdkerrors "github.com/atomone-hub/atomone/types/errors"
+	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 
+	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	v1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	"github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 )
 

@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"strings"
 
-	sdkerrors "cosmossdk.io/errors"
+	"github.com/atomone-hub/atomone/types/errors"
+	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 
+	sdkerrors "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/gov/types"
-	v1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 )
 
 // GetDeposit gets the deposit of a specific depositor on a specific proposal
@@ -227,7 +228,7 @@ func (keeper Keeper) RefundAndDeleteDeposits(ctx sdk.Context, proposalID uint64)
 // the deposit parameters. Returns nil on success, error otherwise.
 func (keeper Keeper) validateInitialDeposit(ctx sdk.Context, initialDeposit sdk.Coins) error {
 	if !initialDeposit.IsValid() || initialDeposit.IsAnyNegative() {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, initialDeposit.String())
+		return sdkerrors.Wrapf(errors.ErrInvalidCoins, initialDeposit.String())
 	}
 
 	params := keeper.GetParams(ctx)

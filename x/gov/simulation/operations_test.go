@@ -6,7 +6,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/require"
+	"github.com/atomone-hub/atomone/x/gov/keeper"
+	"github.com/atomone-hub/atomone/x/gov/simulation"
+	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 
 	_ "github.com/cosmos/cosmos-sdk/x/auth"
 	_ "github.com/cosmos/cosmos-sdk/x/auth/tx/config"
@@ -17,7 +19,6 @@ import (
 
 	abci "github.com/cometbft/cometbft/abci/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
-
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	"github.com/cosmos/cosmos-sdk/testutil/configurator"
@@ -29,12 +30,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/bank/testutil"
 	govcodec "github.com/cosmos/cosmos-sdk/x/gov/codec"
 	"github.com/cosmos/cosmos-sdk/x/gov/types"
-	v1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	"github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
-
-	"github.com/atomone-hub/atomone/x/gov/keeper"
-	"github.com/atomone-hub/atomone/x/gov/simulation"
+	"github.com/stretchr/testify/require"
 )
 
 var (

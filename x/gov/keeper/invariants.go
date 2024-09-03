@@ -5,9 +5,10 @@ package keeper
 import (
 	"fmt"
 
+	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/gov/types"
-	v1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 )
 
 // RegisterInvariants registers all governance invariants

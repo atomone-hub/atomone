@@ -5,7 +5,6 @@ package v1
 
 import (
 	fmt "fmt"
-	v1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	proto "github.com/cosmos/gogoproto/proto"
 	io "io"
 	math "math"
@@ -28,24 +27,24 @@ type GenesisState struct {
 	// starting_proposal_id is the ID of the starting proposal.
 	StartingProposalId uint64 `protobuf:"varint,1,opt,name=starting_proposal_id,json=startingProposalId,proto3" json:"starting_proposal_id,omitempty"`
 	// deposits defines all the deposits present at genesis.
-	Deposits []*v1.Deposit `protobuf:"bytes,2,rep,name=deposits,proto3" json:"deposits,omitempty"`
+	Deposits []*Deposit `protobuf:"bytes,2,rep,name=deposits,proto3" json:"deposits,omitempty"`
 	// votes defines all the votes present at genesis.
-	Votes []*v1.Vote `protobuf:"bytes,3,rep,name=votes,proto3" json:"votes,omitempty"`
+	Votes []*Vote `protobuf:"bytes,3,rep,name=votes,proto3" json:"votes,omitempty"`
 	// proposals defines all the proposals present at genesis.
-	Proposals []*v1.Proposal `protobuf:"bytes,4,rep,name=proposals,proto3" json:"proposals,omitempty"`
+	Proposals []*Proposal `protobuf:"bytes,4,rep,name=proposals,proto3" json:"proposals,omitempty"`
 	// Deprecated: Prefer to use `params` instead.
 	// deposit_params defines all the paramaters of related to deposit.
-	DepositParams *v1.DepositParams `protobuf:"bytes,5,opt,name=deposit_params,json=depositParams,proto3" json:"deposit_params,omitempty"` // Deprecated: Do not use.
+	DepositParams *DepositParams `protobuf:"bytes,5,opt,name=deposit_params,json=depositParams,proto3" json:"deposit_params,omitempty"` // Deprecated: Do not use.
 	// Deprecated: Prefer to use `params` instead.
 	// voting_params defines all the paramaters of related to voting.
-	VotingParams *v1.VotingParams `protobuf:"bytes,6,opt,name=voting_params,json=votingParams,proto3" json:"voting_params,omitempty"` // Deprecated: Do not use.
+	VotingParams *VotingParams `protobuf:"bytes,6,opt,name=voting_params,json=votingParams,proto3" json:"voting_params,omitempty"` // Deprecated: Do not use.
 	// Deprecated: Prefer to use `params` instead.
 	// tally_params defines all the paramaters of related to tally.
-	TallyParams *v1.TallyParams `protobuf:"bytes,7,opt,name=tally_params,json=tallyParams,proto3" json:"tally_params,omitempty"` // Deprecated: Do not use.
+	TallyParams *TallyParams `protobuf:"bytes,7,opt,name=tally_params,json=tallyParams,proto3" json:"tally_params,omitempty"` // Deprecated: Do not use.
 	// params defines all the paramaters of x/gov module.
 	//
 	// Since: cosmos-sdk 0.47
-	Params *v1.Params `protobuf:"bytes,8,opt,name=params,proto3" json:"params,omitempty"`
+	Params *Params `protobuf:"bytes,8,opt,name=params,proto3" json:"params,omitempty"`
 }
 
 func (m *GenesisState) Reset()         { *m = GenesisState{} }
@@ -88,21 +87,21 @@ func (m *GenesisState) GetStartingProposalId() uint64 {
 	return 0
 }
 
-func (m *GenesisState) GetDeposits() []*v1.Deposit {
+func (m *GenesisState) GetDeposits() []*Deposit {
 	if m != nil {
 		return m.Deposits
 	}
 	return nil
 }
 
-func (m *GenesisState) GetVotes() []*v1.Vote {
+func (m *GenesisState) GetVotes() []*Vote {
 	if m != nil {
 		return m.Votes
 	}
 	return nil
 }
 
-func (m *GenesisState) GetProposals() []*v1.Proposal {
+func (m *GenesisState) GetProposals() []*Proposal {
 	if m != nil {
 		return m.Proposals
 	}
@@ -110,7 +109,7 @@ func (m *GenesisState) GetProposals() []*v1.Proposal {
 }
 
 // Deprecated: Do not use.
-func (m *GenesisState) GetDepositParams() *v1.DepositParams {
+func (m *GenesisState) GetDepositParams() *DepositParams {
 	if m != nil {
 		return m.DepositParams
 	}
@@ -118,7 +117,7 @@ func (m *GenesisState) GetDepositParams() *v1.DepositParams {
 }
 
 // Deprecated: Do not use.
-func (m *GenesisState) GetVotingParams() *v1.VotingParams {
+func (m *GenesisState) GetVotingParams() *VotingParams {
 	if m != nil {
 		return m.VotingParams
 	}
@@ -126,14 +125,14 @@ func (m *GenesisState) GetVotingParams() *v1.VotingParams {
 }
 
 // Deprecated: Do not use.
-func (m *GenesisState) GetTallyParams() *v1.TallyParams {
+func (m *GenesisState) GetTallyParams() *TallyParams {
 	if m != nil {
 		return m.TallyParams
 	}
 	return nil
 }
 
-func (m *GenesisState) GetParams() *v1.Params {
+func (m *GenesisState) GetParams() *Params {
 	if m != nil {
 		return m.Params
 	}
@@ -431,7 +430,7 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Deposits = append(m.Deposits, &v1.Deposit{})
+			m.Deposits = append(m.Deposits, &Deposit{})
 			if err := m.Deposits[len(m.Deposits)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -465,7 +464,7 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Votes = append(m.Votes, &v1.Vote{})
+			m.Votes = append(m.Votes, &Vote{})
 			if err := m.Votes[len(m.Votes)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -499,7 +498,7 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Proposals = append(m.Proposals, &v1.Proposal{})
+			m.Proposals = append(m.Proposals, &Proposal{})
 			if err := m.Proposals[len(m.Proposals)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -534,7 +533,7 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.DepositParams == nil {
-				m.DepositParams = &v1.DepositParams{}
+				m.DepositParams = &DepositParams{}
 			}
 			if err := m.DepositParams.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -570,7 +569,7 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.VotingParams == nil {
-				m.VotingParams = &v1.VotingParams{}
+				m.VotingParams = &VotingParams{}
 			}
 			if err := m.VotingParams.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -606,7 +605,7 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.TallyParams == nil {
-				m.TallyParams = &v1.TallyParams{}
+				m.TallyParams = &TallyParams{}
 			}
 			if err := m.TallyParams.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -642,7 +641,7 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.Params == nil {
-				m.Params = &v1.Params{}
+				m.Params = &Params{}
 			}
 			if err := m.Params.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err

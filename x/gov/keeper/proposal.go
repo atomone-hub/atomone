@@ -4,12 +4,12 @@ import (
 	"errors"
 	"fmt"
 
-	sdkerrors "cosmossdk.io/errors"
+	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 
+	sdkerrors "cosmossdk.io/errors"
 	"github.com/cosmos/cosmos-sdk/client"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/gov/types"
-	v1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 )
 
 // SubmitProposal creates a new proposal given an array of messages

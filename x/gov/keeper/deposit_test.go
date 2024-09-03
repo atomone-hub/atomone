@@ -3,11 +3,11 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	v1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
+	"github.com/stretchr/testify/require"
 )
 
 const (

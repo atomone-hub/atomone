@@ -11,8 +11,7 @@ import "google/protobuf/duration.proto";
 import "cosmos_proto/cosmos.proto";
 import "amino/amino.proto";
 
-// TODO: port to atomone
-option go_package = "github.com/cosmos/cosmos-sdk/x/gov/types/v1";
+option go_package = "github.com/atomone-hub/atomone/x/gov/types/v1";
 
 // VoteOption enumerates the valid vote options for a given governance proposal.
 enum VoteOption {
@@ -30,56 +29,60 @@ enum VoteOption {
 
 // WeightedVoteOption defines a unit of vote for vote split.
 message WeightedVoteOption {
-  // option defines the valid vote options, it must not contain duplicate vote options.
+  // option defines the valid vote options, it must not contain duplicate vote
+  // options.
   VoteOption option = 1;
 
   // weight is the vote weight associated with the vote option.
-  string     weight = 2 [(cosmos_proto.scalar) = "atomone.Dec"];
+  string weight = 2 [ (cosmos_proto.scalar) = "atomone.Dec" ];
 }
 
 // Deposit defines an amount deposited by an account address to an active
 // proposal.
 message Deposit {
   // proposal_id defines the unique id of the proposal.
-  uint64   proposal_id                     = 1;
-  
+  uint64 proposal_id = 1;
+
   // depositor defines the deposit addresses from the proposals.
-  string   depositor                       = 2 [(cosmos_proto.scalar) = "atomone.AddressString"];
-  
+  string depositor = 2 [ (cosmos_proto.scalar) = "atomone.AddressString" ];
+
   // amount to be deposited by depositor.
-  repeated atomone.base.v1beta1.Coin amount = 3 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
+  repeated atomone.base.v1beta1.Coin amount = 3
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
 // Proposal defines the core field members of a governance proposal.
 message Proposal {
   // id defines the unique id of the proposal.
-  uint64   id                           = 1;
+  uint64 id = 1;
 
   // messages are the arbitrary messages to be executed if the proposal passes.
   repeated google.protobuf.Any messages = 2;
 
   // status defines the proposal status.
-  ProposalStatus               status   = 3;
+  ProposalStatus status = 3;
 
   // final_tally_result is the final tally result of the proposal. When
   // querying a proposal via gRPC, this field is not populated until the
   // proposal's voting period has ended.
-  TallyResult               final_tally_result        = 4;
-  
+  TallyResult final_tally_result = 4;
+
   // submit_time is the time of proposal submission.
-  google.protobuf.Timestamp submit_time               = 5 [(gogoproto.stdtime) = true];
-  
+  google.protobuf.Timestamp submit_time = 5 [ (gogoproto.stdtime) = true ];
+
   // deposit_end_time is the end time for deposition.
-  google.protobuf.Timestamp deposit_end_time          = 6 [(gogoproto.stdtime) = true];
- 
+  google.protobuf.Timestamp deposit_end_time = 6 [ (gogoproto.stdtime) = true ];
+
   // total_deposit is the total deposit on the proposal.
-  repeated atomone.base.v1beta1.Coin total_deposit     = 7 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
-  
+  repeated atomone.base.v1beta1.Coin total_deposit = 7
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+
   // voting_start_time is the starting time to vote on a proposal.
-  google.protobuf.Timestamp         voting_start_time = 8 [(gogoproto.stdtime) = true];
- 
+  google.protobuf.Timestamp voting_start_time = 8
+      [ (gogoproto.stdtime) = true ];
+
   // voting_end_time is the end time of voting on a proposal.
-  google.protobuf.Timestamp         voting_end_time   = 9 [(gogoproto.stdtime) = true];
+  google.protobuf.Timestamp voting_end_time = 9 [ (gogoproto.stdtime) = true ];
 
   // metadata is any arbitrary metadata attached to the proposal.
   string metadata = 10;
@@ -97,7 +100,7 @@ message Proposal {
   // Proposer is the address of the proposal sumbitter
   //
   // Since: cosmos-sdk 0.47
-  string proposer = 13 [(cosmos_proto.scalar) = "atomone.AddressString"];
+  string proposer = 13 [ (cosmos_proto.scalar) = "atomone.AddressString" ];
 }
 
 // ProposalStatus enumerates the valid statuses of a proposal.
@@ -124,13 +127,13 @@ enum ProposalStatus {
 // TallyResult defines a standard tally for a governance proposal.
 message TallyResult {
   // yes_count is the number of yes votes on a proposal.
-  string yes_count          = 1 [(cosmos_proto.scalar) = "atomone.Int"];
+  string yes_count = 1 [ (cosmos_proto.scalar) = "atomone.Int" ];
   // abstain_count is the number of abstain votes on a proposal.
-  string abstain_count      = 2 [(cosmos_proto.scalar) = "atomone.Int"];
+  string abstain_count = 2 [ (cosmos_proto.scalar) = "atomone.Int" ];
   // no_count is the number of no votes on a proposal.
-  string no_count           = 3 [(cosmos_proto.scalar) = "atomone.Int"];
+  string no_count = 3 [ (cosmos_proto.scalar) = "atomone.Int" ];
   // no_with_veto_count is the number of no with veto votes on a proposal.
-  string no_with_veto_count = 4 [(cosmos_proto.scalar) = "atomone.Int"];
+  string no_with_veto_count = 4 [ (cosmos_proto.scalar) = "atomone.Int" ];
 }
 
 // Vote defines a vote on a governance proposal.
@@ -140,8 +143,8 @@ message Vote {
   uint64 proposal_id = 1;
 
   // voter is the voter address of the proposal.
-  string voter       = 2 [(cosmos_proto.scalar) = "atomone.AddressString"];
-  
+  string voter = 2 [ (cosmos_proto.scalar) = "atomone.AddressString" ];
+
   reserved 3;
 
   // options is the weighted vote options.
@@ -154,33 +157,37 @@ message Vote {
 // DepositParams defines the params for deposits on governance proposals.
 message DepositParams {
   // Minimum deposit for a proposal to enter voting period.
-  repeated atomone.base.v1beta1.Coin min_deposit = 1
-      [(gogoproto.nullable) = false, (gogoproto.jsontag) = "min_deposit,omitempty"];
+  repeated atomone.base.v1beta1.Coin min_deposit = 1 [
+    (gogoproto.nullable) = false,
+    (gogoproto.jsontag) = "min_deposit,omitempty"
+  ];
 
   // Maximum period for Atom holders to deposit on a proposal. Initial value: 2
   // months.
-  google.protobuf.Duration max_deposit_period = 2
-      [(gogoproto.stdduration) = true, (gogoproto.jsontag) = "max_deposit_period,omitempty"];
+  google.protobuf.Duration max_deposit_period = 2 [
+    (gogoproto.stdduration) = true,
+    (gogoproto.jsontag) = "max_deposit_period,omitempty"
+  ];
 }
 
 // VotingParams defines the params for voting on governance proposals.
 message VotingParams {
   // Duration of the voting period.
-  google.protobuf.Duration voting_period = 1 [(gogoproto.stdduration) = true];
+  google.protobuf.Duration voting_period = 1 [ (gogoproto.stdduration) = true ];
 }
 
 // TallyParams defines the params for tallying votes on governance proposals.
 message TallyParams {
   // Minimum percentage of total stake needed to vote for a result to be
   // considered valid.
-  string quorum = 1 [(cosmos_proto.scalar) = "atomone.Dec"];
+  string quorum = 1 [ (cosmos_proto.scalar) = "atomone.Dec" ];
 
   // Minimum proportion of Yes votes for proposal to pass. Default value: 0.5.
-  string threshold = 2 [(cosmos_proto.scalar) = "atomone.Dec"];
+  string threshold = 2 [ (cosmos_proto.scalar) = "atomone.Dec" ];
 
   // Minimum value of Veto votes to Total votes ratio for proposal to be
   // vetoed. Default value: 1/3.
-  string veto_threshold = 3 [(cosmos_proto.scalar) = "atomone.Dec"];
+  string veto_threshold = 3 [ (cosmos_proto.scalar) = "atomone.Dec" ];
 }
 
 // Params defines the parameters for the x/gov module.
@@ -188,43 +195,48 @@ message TallyParams {
 // Since: cosmos-sdk 0.47
 message Params {
   // Minimum deposit for a proposal to enter voting period.
-  repeated atomone.base.v1beta1.Coin min_deposit = 1 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
+  repeated atomone.base.v1beta1.Coin min_deposit = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 
   // Maximum period for Atom holders to deposit on a proposal. Initial value: 2
   // months.
-  google.protobuf.Duration max_deposit_period = 2 [(gogoproto.stdduration) = true];
+  google.protobuf.Duration max_deposit_period = 2
+      [ (gogoproto.stdduration) = true ];
 
   // Duration of the voting period.
-  google.protobuf.Duration voting_period = 3 [(gogoproto.stdduration) = true];
+  google.protobuf.Duration voting_period = 3 [ (gogoproto.stdduration) = true ];
 
   //  Minimum percentage of total stake needed to vote for a result to be
   //  considered valid.
-  string quorum = 4 [(cosmos_proto.scalar) = "atomone.Dec"];
+  string quorum = 4 [ (cosmos_proto.scalar) = "atomone.Dec" ];
 
   //  Minimum proportion of Yes votes for proposal to pass. Default value: 0.5.
-  string threshold = 5 [(cosmos_proto.scalar) = "atomone.Dec"];
+  string threshold = 5 [ (cosmos_proto.scalar) = "atomone.Dec" ];
 
   //  Minimum value of Veto votes to Total votes ratio for proposal to be
   //  vetoed. Default value: 1/3.
-  string veto_threshold = 6 [(cosmos_proto.scalar) = "atomone.Dec"];
+  string veto_threshold = 6 [ (cosmos_proto.scalar) = "atomone.Dec" ];
 
-  //  The ratio representing the proportion of the deposit value that must be paid at proposal submission.
-  string min_initial_deposit_ratio = 7 [(cosmos_proto.scalar) = "atomone.Dec"];
+  //  The ratio representing the proportion of the deposit value that must be
+  //  paid at proposal submission.
+  string min_initial_deposit_ratio = 7
+      [ (cosmos_proto.scalar) = "atomone.Dec" ];
 
   // burn deposits if a proposal does not meet quorum
   bool burn_vote_quorum = 13;
 
   // burn deposits if the proposal does not enter voting period
   bool burn_proposal_deposit_prevote = 14;
-  
+
   // burn deposits if quorum with vote type no_veto is met
   bool burn_vote_veto = 15;
 
-  // The ratio representing the proportion of the deposit value minimum that must be met when making a deposit.
-  // Default value: 0.01. Meaning that for a chain with a min_deposit of 100stake, a deposit of 1stake would be
+  // The ratio representing the proportion of the deposit value minimum that
+  // must be met when making a deposit. Default value: 0.01. Meaning that for a
+  // chain with a min_deposit of 100stake, a deposit of 1stake would be
   // required.
   //
   // Since: cosmos-sdk 0.50
   // NOTE: backported from v50 (https://github.com/cosmos/cosmos-sdk/pull/18146)
-  string min_deposit_ratio = 16 [(cosmos_proto.scalar) = "atomone.Dec"];
+  string min_deposit_ratio = 16 [ (cosmos_proto.scalar) = "atomone.Dec" ];
 }
