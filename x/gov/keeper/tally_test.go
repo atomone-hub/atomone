@@ -383,7 +383,7 @@ func TestTally(t *testing.T) {
 	}
 }
 
-func TestTally_SelfDelegation(t *testing.T) {
+func TestTally_Delegation(t *testing.T) {
 	// Set up test data
 	numVals := 10
 	numDelegators := 5
