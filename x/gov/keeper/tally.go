@@ -20,43 +20,23 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 	results[v1.OptionNoWithVeto] = math.LegacyZeroDec()
 
 	totalVotingPower := math.LegacyZeroDec()
-	currValidators := make(map[string]v1.ValidatorGovInfo)
+	currValidators := make(map[string]stakingtypes.ValidatorI)
 
 	// fetch all the bonded validators, insert them into currValidators
 	keeper.sk.IterateBondedValidatorsByPower(ctx, func(index int64, validator stakingtypes.ValidatorI) (stop bool) {
-		currValidators[validator.GetOperator().String()] = v1.NewValidatorGovInfo(
-			validator.GetOperator(),
-			validator.GetBondedTokens(),
-			validator.GetDelegatorShares(),
-			math.LegacyZeroDec(),
-			v1.WeightedVoteOptions{},
-		)
-
+		currValidators[validator.GetOperator().String()] = validator
 		return false
 	})
 
 	keeper.IterateVotes(ctx, proposal.Id, func(vote v1.Vote) bool {
-		// if validator, just record it in the map
 		voter := sdk.MustAccAddressFromBech32(vote.Voter)
-
-		valAddrStr := sdk.ValAddress(voter.Bytes()).String()
-		if val, ok := currValidators[valAddrStr]; ok {
-			val.Vote = vote.Options
-			currValidators[valAddrStr] = val
-		}
-
-		// iterate over all delegations from voter, deduct from any delegated-to validators
+		// iterate over all delegations from voter
 		keeper.sk.IterateDelegations(ctx, voter, func(index int64, delegation stakingtypes.DelegationI) (stop bool) {
 			valAddrStr := delegation.GetValidatorAddr().String()
 
 			if val, ok := currValidators[valAddrStr]; ok {
-				// There is no need to handle the special case that validator address equal to voter address.
-				// Because voter's voting power will tally again even if there will be deduction of voter's voting power from validator.
-				val.DelegatorDeductions = val.DelegatorDeductions.Add(delegation.GetShares())
-				currValidators[valAddrStr] = val
-
 				// delegation shares * bonded / total shares
-				votingPower := delegation.GetShares().MulInt(val.BondedTokens).Quo(val.DelegatorShares)
+				votingPower := delegation.GetShares().MulInt(val.GetBondedTokens()).Quo(val.GetDelegatorShares())
 
 				for _, option := range vote.Options {
 					weight, _ := sdk.NewDecFromStr(option.Weight)
