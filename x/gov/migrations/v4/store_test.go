@@ -5,11 +5,9 @@ import (
 	"time"
 
 	"github.com/atomone-hub/atomone/x/gov"
-	v1gov "github.com/atomone-hub/atomone/x/gov/migrations/v1"
 	v4 "github.com/atomone-hub/atomone/x/gov/migrations/v4"
 	"github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
-	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 
 	"github.com/cosmos/cosmos-sdk/testutil"
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
@@ -18,6 +16,8 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	v1gov "github.com/cosmos/cosmos-sdk/x/gov/migrations/v1"
+	"github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	"github.com/cosmos/cosmos-sdk/x/upgrade"
 	"github.com/stretchr/testify/require"
 )
