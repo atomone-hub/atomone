@@ -27,6 +27,7 @@ import (
 	tmjson "github.com/cometbft/cometbft/libs/json"
 	rpchttp "github.com/cometbft/cometbft/rpc/client/http"
 
+	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
@@ -38,7 +39,6 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 )
@@ -337,7 +337,7 @@ func (s *IntegrationTestSuite) addGenesisVestingAndJailedAccounts(
 	}
 	stakingModuleBalances := banktypes.Balance{
 		Address: authtypes.NewModuleAddress(stakingtypes.NotBondedPoolName).String(),
-		Coins:   sdk.NewCoins(sdk.NewCoin(uatoneDenom, sdk.NewInt(slashingShares))),
+		Coins:   sdk.NewCoins(sdk.NewCoin(uatoneDenom, sdk.NewInt(slashingShares+10000000))),
 	}
 	bankGenState.Balances = append(
 		bankGenState.Balances,
