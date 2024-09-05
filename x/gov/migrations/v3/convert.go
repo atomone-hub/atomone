@@ -136,7 +136,7 @@ func ConvertToLegacyDeposit(deposit *v1.Deposit) v1beta1.Deposit {
 	}
 }
 
-func convertToNewDeposits(oldDeps v1beta1.Deposits) v1.Deposits {
+func convertToNewDeposits(oldDeps v1beta1.Deposits) v1.Deposits { //nolint:unused
 	newDeps := make([]*v1.Deposit, len(oldDeps))
 	for i, oldDep := range oldDeps {
 		newDeps[i] = &v1.Deposit{
@@ -149,7 +149,7 @@ func convertToNewDeposits(oldDeps v1beta1.Deposits) v1.Deposits {
 	return newDeps
 }
 
-func convertToNewVotes(oldVotes v1beta1.Votes) (v1.Votes, error) {
+func convertToNewVotes(oldVotes v1beta1.Votes) (v1.Votes, error) { //nolint:unused
 	newVotes := make([]*v1.Vote, len(oldVotes))
 	for i, oldVote := range oldVotes {
 		var newWVOs []*v1.WeightedVoteOption
@@ -182,20 +182,20 @@ func convertToNewVotes(oldVotes v1beta1.Votes) (v1.Votes, error) {
 	return newVotes, nil
 }
 
-func convertToNewDepParams(oldDepParams v1beta1.DepositParams) v1.DepositParams {
+func convertToNewDepParams(oldDepParams v1beta1.DepositParams) v1.DepositParams { //nolint:unused
 	return v1.DepositParams{
 		MinDeposit:       oldDepParams.MinDeposit,
 		MaxDepositPeriod: &oldDepParams.MaxDepositPeriod,
 	}
 }
 
-func convertToNewVotingParams(oldVoteParams v1beta1.VotingParams) v1.VotingParams {
+func convertToNewVotingParams(oldVoteParams v1beta1.VotingParams) v1.VotingParams { //nolint:unused
 	return v1.VotingParams{
 		VotingPeriod: &oldVoteParams.VotingPeriod,
 	}
 }
 
-func convertToNewTallyParams(oldTallyParams v1beta1.TallyParams) v1.TallyParams {
+func convertToNewTallyParams(oldTallyParams v1beta1.TallyParams) v1.TallyParams { //nolint:unused
 	return v1.TallyParams{
 		Quorum:        oldTallyParams.Quorum.String(),
 		Threshold:     oldTallyParams.Threshold.String(),
@@ -203,7 +203,7 @@ func convertToNewTallyParams(oldTallyParams v1beta1.TallyParams) v1.TallyParams 
 	}
 }
 
-func convertToNewProposal(oldProp v1beta1.Proposal) (v1.Proposal, error) {
+func convertToNewProposal(oldProp v1beta1.Proposal) (v1.Proposal, error) { //nolint:unused
 	msg, err := v1.NewLegacyContent(oldProp.GetContent(), authtypes.NewModuleAddress(ModuleName).String())
 	if err != nil {
 		return v1.Proposal{}, err
@@ -233,7 +233,7 @@ func convertToNewProposal(oldProp v1beta1.Proposal) (v1.Proposal, error) {
 	}, nil
 }
 
-func convertToNewProposals(oldProps v1beta1.Proposals) (v1.Proposals, error) {
+func convertToNewProposals(oldProps v1beta1.Proposals) (v1.Proposals, error) { //nolint:unused
 	newProps := make([]*v1.Proposal, len(oldProps))
 	for i, oldProp := range oldProps {
 		p, err := convertToNewProposal(oldProp)

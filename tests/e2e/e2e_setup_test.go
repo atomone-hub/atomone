@@ -559,6 +559,7 @@ func (s *IntegrationTestSuite) runValidators(c *chain, portOffset int) {
 
 			status, err := rpcClient.Status(ctx)
 			if err != nil {
+				s.T().Logf("failed to get status: %v", err)
 				return false
 			}
 
