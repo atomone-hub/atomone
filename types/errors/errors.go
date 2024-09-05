@@ -1,7 +1,7 @@
 package errors
 
 import (
-	errorsmod "cosmossdk.io/errors"
+	errorsmod "github.com/atomone-hub/atomone/errors"
 )
 
 const codespace = "atomone"

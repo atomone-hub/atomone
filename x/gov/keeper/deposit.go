@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"strings"
 
+	sdkerrors "github.com/atomone-hub/atomone/errors"
 	"github.com/atomone-hub/atomone/types/errors"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 
-	sdkerrors "cosmossdk.io/errors"
+	"github.com/atomone-hub/atomone/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/gov/types"
 )
 
 // GetDeposit gets the deposit of a specific depositor on a specific proposal
