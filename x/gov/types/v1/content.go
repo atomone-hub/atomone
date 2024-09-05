@@ -3,11 +3,12 @@ package v1
 import (
 	"fmt"
 
-	sdkerrors "github.com/atomone-hub/atomone/types/errors"
+	"github.com/cosmos/gogoproto/proto"
 
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
-	"github.com/cosmos/gogoproto/proto"
+
+	sdkerrors "github.com/atomone-hub/atomone/types/errors"
 )
 
 // NewLegacyContent creates a new MsgExecLegacyContent from a legacy Content

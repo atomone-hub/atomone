@@ -3,10 +3,6 @@ package keepers
 import (
 	"os"
 
-	govkeeper "github.com/atomone-hub/atomone/x/gov/keeper"
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
-	govv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
-
 	// unnamed import of statik for swagger UI support
 	_ "github.com/cosmos/cosmos-sdk/client/docs/statik"
 
@@ -49,6 +45,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/upgrade"
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+
+	govkeeper "github.com/atomone-hub/atomone/x/gov/keeper"
+	govtypes "github.com/atomone-hub/atomone/x/gov/types"
+	govv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 )
 
 type AppKeepers struct {

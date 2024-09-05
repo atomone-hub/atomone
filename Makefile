@@ -223,7 +223,7 @@ docker-build-debug:
 ###                                Linting                                  ###
 ###############################################################################
 golangci_lint_cmd=golangci-lint
-golangci_version=v1.53.3
+golangci_version=v1.56.0 # note: needed to bump from v1.53.3 bc go.tmz.dev/musttag (A dep of golangci-lint) was no longer resolving
 
 lint:
 	@echo "--> Running linter"

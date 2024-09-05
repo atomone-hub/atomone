@@ -3,13 +3,13 @@ package v3
 import (
 	"fmt"
 
-	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
-
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
+
+	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 )
 
 const (

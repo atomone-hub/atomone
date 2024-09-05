@@ -1,7 +1,6 @@
 package atomone
 
 import (
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	authsims "github.com/cosmos/cosmos-sdk/x/auth/simulation"
@@ -42,6 +41,7 @@ import (
 
 	atomoneappparams "github.com/atomone-hub/atomone/app/params"
 	"github.com/atomone-hub/atomone/x/gov"
+	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 )
 
 var maccPerms = map[string][]string{

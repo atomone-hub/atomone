@@ -3,11 +3,11 @@ package keeper
 import (
 	"fmt"
 
-	sdkerrors "github.com/atomone-hub/atomone/errors"
-	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
-
-	"github.com/atomone-hub/atomone/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	sdkerrors "github.com/atomone-hub/atomone/errors"
+	"github.com/atomone-hub/atomone/x/gov/types"
+	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 )
 
 // AddVote adds a vote on a specific proposal

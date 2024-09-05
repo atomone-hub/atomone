@@ -3,15 +3,16 @@ package v1
 import (
 	"fmt"
 
-	"github.com/atomone-hub/atomone/x/gov/types"
-
 	"cosmossdk.io/math"
+
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	sdktx "github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/cosmos/cosmos-sdk/x/gov/codec"
 	"github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
+
+	"github.com/atomone-hub/atomone/x/gov/types"
 )
 
 var (
