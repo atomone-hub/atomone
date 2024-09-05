@@ -9,6 +9,7 @@ import (
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 
 	"cosmossdk.io/math"
+	"github.com/atomone-hub/atomone/x/gov/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	tmtime "github.com/cometbft/cometbft/types/time"
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -18,7 +19,6 @@ import (
 	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/atomone-hub/atomone/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/golang/mock/gomock"

@@ -5,9 +5,9 @@ import (
 	"encoding/binary"
 	"fmt"
 
+	"github.com/atomone-hub/atomone/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/types/kv"
-	"github.com/atomone-hub/atomone/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 )
 

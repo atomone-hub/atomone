@@ -11,10 +11,10 @@ import (
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 
 	"cosmossdk.io/math"
+	"github.com/atomone-hub/atomone/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/types/simulation"
-	"github.com/atomone-hub/atomone/x/gov/types"
 )
 
 // Simulation parameter constants

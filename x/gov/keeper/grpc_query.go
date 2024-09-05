@@ -6,10 +6,10 @@ import (
 	v3 "github.com/atomone-hub/atomone/x/gov/migrations/v3"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 
+	"github.com/atomone-hub/atomone/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	"github.com/atomone-hub/atomone/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

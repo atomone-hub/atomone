@@ -222,6 +222,9 @@ replace (
 	// following versions might cause unexpected behavior
 	github.com/syndtr/goleveldb => github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7
 
+	// replace broken import for golangci-lint
+	go.tmz.dev/musttag => github.com/go-simpler/musttag v0.7.0
+
 	// replace broken cosmos-sdk dep
 	nhooyr.io/websocket => github.com/coder/websocket v1.8.6
 )

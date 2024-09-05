@@ -6,9 +6,7 @@ import (
 
 const codespace = "atomone"
 
-var (
-	Register = errorsmod.Register
-)
+var Register = errorsmod.Register
 
 var (
 	// ErrTxDecode is returned if we cannot parse a transaction

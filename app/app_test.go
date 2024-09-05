@@ -8,8 +8,8 @@ import (
 	db "github.com/cometbft/cometbft-db"
 	"github.com/cometbft/cometbft/libs/log"
 
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	atomone "github.com/atomone-hub/atomone/app"
 	atomonehelpers "github.com/atomone-hub/atomone/app/helpers"
