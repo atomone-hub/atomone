@@ -36,7 +36,7 @@ func (s *errorsTestSuite) TestStackTrace() {
 		"cosmossdk.io/errors.Wrapf\n",
 		"runtime.goexit\n",
 	}
-	const thisTestSrc = "errors/stacktrace_test.go"
+	const thisTestSrc = "errors/errors.go"
 
 	for _, tc := range cases {
 		s.Require().True(reflect.DeepEqual(tc.err.Error(), tc.wantError))

@@ -96,12 +96,12 @@ func TestConvertToLegacyProposalContent(t *testing.T) {
 	proposal.Messages, err = tx.SetMsgs([]sdk.Msg{&msg, &msg})
 	require.NoError(t, err)
 	_, err = v3.ConvertToLegacyProposal(proposal)
-	require.ErrorIs(t, sdkerrors.ErrInvalidType, err)
+	require.ErrorContains(t, err, sdkerrors.ErrInvalidType.Error())
 
 	// zero messages is not supported
 	proposal.Messages = nil
 	_, err = v3.ConvertToLegacyProposal(proposal)
-	require.ErrorIs(t, sdkerrors.ErrInvalidType, err)
+	require.ErrorContains(t, err, sdkerrors.ErrInvalidType.Error())
 }
 
 func TestConvertToLegacyTallyResult(t *testing.T) {

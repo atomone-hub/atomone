@@ -127,7 +127,7 @@ func (suite *KeeperTestSuite) TestSubmitProposalReq() {
 				)
 			},
 			expErr:    true,
-			expErrMsg: "deposited 100invalid,100000stake, but gov accepts only the following denom(s): [stake]: invalid deposit denom",
+			expErrMsg: "not enough balance",
 		},
 	}
 

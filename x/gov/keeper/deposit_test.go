@@ -150,13 +150,13 @@ func TestDepositAmount(t *testing.T) {
 			name:            "bad denom",
 			deposit:         sdk.NewCoins(sdk.NewInt64Coin("euro", 10000)),
 			minDepositRatio: "0.001",
-			err:             "deposited 10000euro, but gov accepts only the following denom(s): [stake zcoin]: invalid deposit denom",
+			err:             "received 10000euro but need at least one of the following: 10000stake,10zcoin: minimum deposit is too small",
 		},
 		{
 			name:            "mix containing bad and good denom",
 			deposit:         sdk.NewCoins(sdk.NewInt64Coin("stake", 10000), sdk.NewInt64Coin("euro", 10000)),
 			minDepositRatio: "0.001",
-			err:             "deposited 10000euro,10000stake, but gov accepts only the following denom(s): [stake zcoin]: invalid deposit denom",
+			err:             "not enough balance",
 		},
 		{
 			name:            "minDepositRatio is zero",

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"sort"
 
+	"github.com/atomone-hub/atomone/x/gov/exported"
 	"github.com/atomone-hub/atomone/x/gov/types"
 	govv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 
@@ -11,7 +12,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/gov/exported"
 	v1 "github.com/cosmos/cosmos-sdk/x/gov/migrations/v1"
 )
 
@@ -37,8 +37,6 @@ func migrateParams(ctx sdk.Context, storeKey storetypes.StoreKey, legacySubspace
 		defaultParams.BurnProposalDepositPrevote,
 		defaultParams.BurnVoteQuorum,
 		defaultParams.BurnVoteVeto,
-
-		// NOTE: backport from v50
 		defaultParams.MinDepositRatio,
 	)
 

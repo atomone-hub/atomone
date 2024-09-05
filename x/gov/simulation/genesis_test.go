@@ -5,18 +5,16 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	"github.com/atomone-hub/atomone/x/gov/simulation"
+	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 
 	sdkmath "cosmossdk.io/math"
-
+	"github.com/atomone-hub/atomone/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
-	"github.com/atomone-hub/atomone/x/gov/types"
-	v1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
-
-	"github.com/atomone-hub/atomone/x/gov/simulation"
+	"github.com/stretchr/testify/require"
 )
 
 // TestRandomizedGenState tests the normal scenario of applying RandomizedGenState.

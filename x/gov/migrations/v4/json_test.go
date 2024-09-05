@@ -4,11 +4,12 @@ import (
 	"encoding/json"
 	"testing"
 
+	v4 "github.com/atomone-hub/atomone/x/gov/migrations/v4"
+	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 	"github.com/cosmos/cosmos-sdk/x/gov"
-	v4 "github.com/cosmos/cosmos-sdk/x/gov/migrations/v4"
-	v1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	"github.com/stretchr/testify/require"
 )
 

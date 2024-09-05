@@ -6,6 +6,7 @@ import (
 
 	"github.com/atomone-hub/atomone/x/gov"
 	"github.com/atomone-hub/atomone/x/gov/keeper"
+	"github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 
 	"cosmossdk.io/math"
@@ -15,7 +16,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/atomone-hub/atomone/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
@@ -39,7 +39,7 @@ func TestTickExpiredDepositPeriod(t *testing.T) {
 
 	newProposalMsg, err := v1.NewMsgSubmitProposal(
 		[]sdk.Msg{mkTestLegacyContent(t)},
-		sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 5)},
+		sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 100000)},
 		addrs[0].String(),
 		"",
 		"Proposal",
@@ -95,7 +95,7 @@ func TestTickMultipleExpiredDepositPeriod(t *testing.T) {
 
 	newProposalMsg, err := v1.NewMsgSubmitProposal(
 		[]sdk.Msg{mkTestLegacyContent(t)},
-		sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 5)},
+		sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 100000)},
 		addrs[0].String(),
 		"",
 		"Proposal",
@@ -121,7 +121,7 @@ func TestTickMultipleExpiredDepositPeriod(t *testing.T) {
 
 	newProposalMsg2, err := v1.NewMsgSubmitProposal(
 		[]sdk.Msg{mkTestLegacyContent(t)},
-		sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 5)},
+		sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 100000)},
 		addrs[0].String(),
 		"",
 		"Proposal",
@@ -182,7 +182,7 @@ func TestTickPassedDepositPeriod(t *testing.T) {
 
 	newProposalMsg, err := v1.NewMsgSubmitProposal(
 		[]sdk.Msg{mkTestLegacyContent(t)},
-		sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 5)},
+		sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 100000)},
 		addrs[0].String(),
 		"",
 		"Proposal",
@@ -208,7 +208,7 @@ func TestTickPassedDepositPeriod(t *testing.T) {
 	require.False(t, inactiveQueue.Valid())
 	inactiveQueue.Close()
 
-	newDepositMsg := v1.NewMsgDeposit(addrs[1], proposalID, sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 5)})
+	newDepositMsg := v1.NewMsgDeposit(addrs[1], proposalID, sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 100000)})
 
 	res1, err := govMsgSvr.Deposit(sdk.WrapSDKContext(ctx), newDepositMsg)
 	require.NoError(t, err)
@@ -239,7 +239,7 @@ func TestTickPassedVotingPeriod(t *testing.T) {
 	require.False(t, activeQueue.Valid())
 	activeQueue.Close()
 
-	proposalCoins := sdk.Coins{sdk.NewCoin(sdk.DefaultBondDenom, suite.StakingKeeper.TokensFromConsensusPower(ctx, 5))}
+	proposalCoins := sdk.Coins{sdk.NewCoin(sdk.DefaultBondDenom, suite.StakingKeeper.TokensFromConsensusPower(ctx, 100000))}
 	newProposalMsg, err := v1.NewMsgSubmitProposal([]sdk.Msg{mkTestLegacyContent(t)}, proposalCoins, addrs[0].String(), "", "Proposal", "description of proposal")
 	require.NoError(t, err)
 

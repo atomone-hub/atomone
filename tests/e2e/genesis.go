@@ -6,16 +6,16 @@ import (
 	"os"
 	"time"
 
-	tmtypes "github.com/cometbft/cometbft/types"
+	govtypes "github.com/atomone-hub/atomone/x/gov/types"
+	govv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 
+	tmtypes "github.com/cometbft/cometbft/types"
 	"github.com/cosmos/cosmos-sdk/server"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
-	govv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
@@ -133,7 +133,7 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 			votingPeriod,
 			quorum.String(), threshold.String(), govv1.DefaultVetoThreshold.String(),
 			sdk.ZeroDec().String(),
-			false, false, true,
+			false, false, true, govv1.DefaultMinDepositRatio.String(),
 		),
 	)
 	govGenStateBz, err := cdc.MarshalJSON(govGenState)

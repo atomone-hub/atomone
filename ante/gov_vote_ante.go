@@ -3,15 +3,15 @@ package ante
 import (
 	errorsmod "cosmossdk.io/errors"
 
+	atomoneerrors "github.com/atomone-hub/atomone/types/errors"
+	govv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
+
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/authz"
-	govv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-
-	atomoneerrors "github.com/atomone-hub/atomone/types/errors"
 )
 
 var (
