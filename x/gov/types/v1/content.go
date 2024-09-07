@@ -5,7 +5,7 @@ import (
 
 	"github.com/cosmos/gogoproto/proto"
 
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	codectypes "github.com/atomone-hub/atomone/codec/types"
 	"github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 
 	sdkerrors "github.com/atomone-hub/atomone/types/errors"

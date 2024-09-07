@@ -5,9 +5,9 @@ import (
 	"math/rand"
 	"strconv"
 
-	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
+	"github.com/atomone-hub/atomone/crypto/keys/ed25519"
+	sdk "github.com/atomone-hub/atomone/types"
 	crypto "github.com/cosmos/cosmos-sdk/crypto/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // HDPath generates an HD path based on the wallet index

@@ -6,7 +6,7 @@ import (
 
 	"golang.org/x/sync/errgroup"
 
-	"github.com/cosmos/cosmos-sdk/codec/types"
+	"github.com/atomone-hub/atomone/codec/types"
 )
 
 // NewGenesisState creates a new genesis state for the governance module

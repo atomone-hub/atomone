@@ -1,9 +1,9 @@
 package gov
 
 import (
-	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
-	govv1 "cosmossdk.io/api/cosmos/gov/v1"
-	govv1beta1 "cosmossdk.io/api/cosmos/gov/v1beta1"
+	autocliv1 "github.com/atomone-hub/atomone/api/atomone/autocli/v1"
+	govv1 "github.com/atomone-hub/atomone/api/atomone/gov/v1"
+	govv1beta1 "github.com/atomone-hub/atomone/api/atomone/gov/v1beta1"
 )
 
 // AutoCLIOptions implements the autocli.HasAutoCLIConfig interface.

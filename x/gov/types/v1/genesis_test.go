@@ -3,8 +3,8 @@ package v1_test
 import (
 	"testing"
 
+	sdk "github.com/atomone-hub/atomone/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 )
 

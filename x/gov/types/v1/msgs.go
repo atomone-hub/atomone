@@ -5,12 +5,12 @@ import (
 
 	"cosmossdk.io/math"
 
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	codectypes "github.com/atomone-hub/atomone/codec/types"
+	sdk "github.com/atomone-hub/atomone/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	sdktx "github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/cosmos/cosmos-sdk/x/gov/codec"
 	"github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
+	sdktx "github.com/stomone-hub/atomone/types/tx"
 
 	"github.com/atomone-hub/atomone/x/gov/types"
 )

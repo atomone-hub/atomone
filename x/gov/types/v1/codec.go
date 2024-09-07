@@ -1,10 +1,10 @@
 package v1
 
 import (
-	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/atomone-hub/atomone/codec"
+	codectypes "github.com/atomone-hub/atomone/codec/types"
+	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/cosmos/cosmos-sdk/codec/legacy"
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
 	authzcodec "github.com/cosmos/cosmos-sdk/x/authz/codec"
 	govcodec "github.com/cosmos/cosmos-sdk/x/gov/codec"

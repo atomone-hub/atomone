@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/atomone-hub/atomone/types"
 )
 
 const (

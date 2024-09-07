@@ -3,7 +3,7 @@ package keeper
 import (
 	"fmt"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/atomone-hub/atomone/types"
 
 	sdkerrors "github.com/atomone-hub/atomone/errors"
 	"github.com/atomone-hub/atomone/x/gov/types"

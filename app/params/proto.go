@@ -1,8 +1,8 @@
 package params
 
 import (
-	"github.com/cosmos/cosmos-sdk/codec"
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	"github.com/atomone-hub/atomone/codec"
+	codectypes "github.com/atomone-hub/atomone/codec/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/tx"
 )
 

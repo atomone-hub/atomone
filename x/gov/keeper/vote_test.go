@@ -5,8 +5,8 @@ import (
 
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 
+	sdk "github.com/atomone-hub/atomone/types"
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 )
 

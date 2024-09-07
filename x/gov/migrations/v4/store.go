@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/atomone-hub/atomone/codec"
+	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	v1 "github.com/cosmos/cosmos-sdk/x/gov/migrations/v1"
 
 	"github.com/atomone-hub/atomone/x/gov/exported"

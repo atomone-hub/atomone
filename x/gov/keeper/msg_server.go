@@ -6,7 +6,7 @@ import (
 
 	"cosmossdk.io/errors"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 
 	sdkerrors "github.com/atomone-hub/atomone/types/errors"

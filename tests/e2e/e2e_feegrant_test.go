@@ -3,7 +3,7 @@ package e2e
 import (
 	"fmt"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/atomone-hub/atomone/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 )
 

@@ -4,8 +4,8 @@
 package params
 
 import (
-	"github.com/cosmos/cosmos-sdk/codec"
-	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
+	"github.com/atomone-hub/atomone/codec"
+	cdctypes "github.com/atomone-hub/atomone/codec/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
 )
 

@@ -15,16 +15,16 @@ import (
 
 	abci "github.com/cometbft/cometbft/abci/types"
 
-	modulev1 "cosmossdk.io/api/cosmos/gov/module/v1"
 	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/depinject"
+	modulev1 "github.com/atomone-hub/atomone/api/atomone/gov/module/v1"
 
+	"github.com/atomone-hub/atomone/codec"
+	codectypes "github.com/atomone-hub/atomone/codec/types"
+	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/codec"
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	store "github.com/cosmos/cosmos-sdk/store/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"

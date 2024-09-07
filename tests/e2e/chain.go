@@ -7,11 +7,11 @@ import (
 	atomoneparams "github.com/atomone-hub/atomone/app/params"
 	govv1types "github.com/atomone-hub/atomone/x/gov/types/v1"
 
+	"github.com/atomone-hub/atomone/codec"
+	sdk "github.com/atomone-hub/atomone/types"
 	tmrand "github.com/cometbft/cometbft/libs/rand"
 	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/codec"
 	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	authvesting "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"

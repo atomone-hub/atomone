@@ -1,0 +1,6 @@
+version: v1
+plugins:
+  - name: goatomone
+    out: ../..
+    opt:
+      - plugins=grpc,Mgoogle/protobuf/any.proto=github.com/atomone-hub/atomone/codec/types

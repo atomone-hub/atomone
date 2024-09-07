@@ -3,7 +3,7 @@ package v1
 import (
 	"cosmossdk.io/math"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/atomone-hub/atomone/types"
 )
 
 // ValidatorGovInfo used for tallying

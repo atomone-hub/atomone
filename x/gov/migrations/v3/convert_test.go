@@ -9,10 +9,10 @@ import (
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 
 	"cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/tx"
+	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+	"github.com/stomone-hub/atomone/types/tx"
 	"github.com/stretchr/testify/require"
 )
 

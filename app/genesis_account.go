@@ -3,7 +3,7 @@ package atomone
 import (
 	"errors"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/atomone-hub/atomone/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
 

@@ -7,7 +7,6 @@ version: v1
 name: buf.build/atomone-hub/atomone
 deps:
   - buf.build/cosmos/gogo-proto
-  - buf.build/cosmos/cosmos-sdk:v0.47.0
   - buf.build/googleapis/googleapis
   - buf.build/cosmos/cosmos-proto
 

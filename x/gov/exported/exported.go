@@ -1,7 +1,7 @@
 package exported
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/atomone-hub/atomone/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 )
 

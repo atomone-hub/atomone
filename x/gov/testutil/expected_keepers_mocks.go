@@ -9,7 +9,7 @@ import (
 	reflect "reflect"
 
 	math "cosmossdk.io/math"
-	types "github.com/cosmos/cosmos-sdk/types"
+	types "github.com/atomone-hub/atomone/types"
 	query "github.com/cosmos/cosmos-sdk/types/query"
 	types0 "github.com/cosmos/cosmos-sdk/x/auth/types"
 	keeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
