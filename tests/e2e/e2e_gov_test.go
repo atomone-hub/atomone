@@ -6,8 +6,8 @@ import (
 	"time"
 
 	sdk "github.com/atomone-hub/atomone/types"
-	govtypesv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+	govtypesv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
+	upgradetypes "github.com/atomone-hub/atomone/x/upgrade/types"
 )
 
 /*

@@ -5,13 +5,13 @@ import (
 	"math/rand"
 	"time"
 
+	"github.com/atomone-hub/atomone/baseapp"
 	"github.com/atomone-hub/atomone/codec"
+	simtestutil "github.com/atomone-hub/atomone/testutil/sims"
 	sdk "github.com/atomone-hub/atomone/types"
-	"github.com/cosmos/cosmos-sdk/baseapp"
-	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
-	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
-	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
-	"github.com/cosmos/cosmos-sdk/x/simulation"
+	moduletestutil "github.com/atomone-hub/atomone/types/module/testutil"
+	simtypes "github.com/atomone-hub/atomone/types/simulation"
+	"github.com/atomone-hub/atomone/x/simulation"
 
 	"github.com/atomone-hub/atomone/x/gov/keeper"
 	"github.com/atomone-hub/atomone/x/gov/types"

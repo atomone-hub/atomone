@@ -8,7 +8,7 @@ import (
 	"github.com/atomone-hub/atomone/crypto/keys/ed25519"
 	"github.com/atomone-hub/atomone/crypto/keys/secp256k1"
 	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
-	sdkerrors "github.com/atomone-hub/atomone/types/errors"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // FromTmProtoPublicKey converts a TM's tmprotocrypto.PublicKey into our own PubKey.

@@ -8,16 +8,16 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/atomone-hub/atomone/client"
+	"github.com/atomone-hub/atomone/client/flags"
+	"github.com/atomone-hub/atomone/crypto/keyring"
 	sdk "github.com/atomone-hub/atomone/types"
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/crypto/keyring"
+	authtypes "github.com/atomone-hub/atomone/x/auth/types"
+	authvesting "github.com/atomone-hub/atomone/x/auth/vesting/types"
+	banktypes "github.com/atomone-hub/atomone/x/bank/types"
+	"github.com/atomone-hub/atomone/x/genutil"
+	genutiltypes "github.com/atomone-hub/atomone/x/genutil/types"
 	"github.com/cosmos/cosmos-sdk/server"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	authvesting "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/cosmos/cosmos-sdk/x/genutil"
-	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 )
 
 const (

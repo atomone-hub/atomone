@@ -7,15 +7,15 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	"github.com/atomone-hub/atomone/client/flags"
 	"github.com/atomone-hub/atomone/codec"
 	"github.com/atomone-hub/atomone/codec/types"
 	"github.com/atomone-hub/atomone/testutil/testdata"
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/types/module/testutil"
-	"github.com/cosmos/cosmos-sdk/x/auth"
-	"github.com/cosmos/cosmos-sdk/x/auth/client/cli"
-	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
-	"github.com/cosmos/cosmos-sdk/x/staking"
+	"github.com/atomone-hub/atomone/types/module/testutil"
+	"github.com/atomone-hub/atomone/x/auth"
+	"github.com/atomone-hub/atomone/x/auth/client/cli"
+	"github.com/atomone-hub/atomone/x/auth/migrations/legacytx"
+	"github.com/atomone-hub/atomone/x/staking"
 )
 
 func createTestCodec() *codec.LegacyAmino {

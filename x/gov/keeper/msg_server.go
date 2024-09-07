@@ -7,11 +7,11 @@ import (
 	"cosmossdk.io/errors"
 
 	sdk "github.com/atomone-hub/atomone/types"
-	"github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
+	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 
-	sdkerrors "github.com/atomone-hub/atomone/types/errors"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 type msgServer struct {

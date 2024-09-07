@@ -7,16 +7,16 @@ import (
 
 	_ "cosmossdk.io/api/cosmos/bank/v1beta1"
 	"cosmossdk.io/depinject"
-	clienttestutil "github.com/cosmos/cosmos-sdk/client/testutil"
-	"github.com/cosmos/cosmos-sdk/client/tx"
-	"github.com/cosmos/cosmos-sdk/codec"
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-	"github.com/cosmos/cosmos-sdk/testutil/testdata"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	typestx "github.com/cosmos/cosmos-sdk/types/tx"
-	"github.com/cosmos/cosmos-sdk/types/tx/signing"
-	"github.com/cosmos/cosmos-sdk/x/bank"
+	clienttestutil "github.com/atomone-hub/atomone/client/testutil"
+	"github.com/atomone-hub/atomone/client/tx"
+	"github.com/atomone-hub/atomone/codec"
+	codectypes "github.com/atomone-hub/atomone/codec/types"
+	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
+	"github.com/atomone-hub/atomone/testutil/testdata"
+	sdk "github.com/atomone-hub/atomone/types"
+	typestx "github.com/atomone-hub/atomone/types/tx"
+	"github.com/atomone-hub/atomone/types/tx/signing"
+	"github.com/atomone-hub/atomone/x/bank"
 )
 
 func TestAuxTxBuilder(t *testing.T) {

@@ -7,7 +7,7 @@ import (
 	fmt "fmt"
 	types "github.com/cometbft/cometbft/proto/tendermint/types"
 	version "github.com/cometbft/cometbft/proto/tendermint/version"
-	_ "github.com/cosmos/cosmos-sdk/types/tx/amino"
+	_ "github.com/atomone-hub/atomone/types/tx/amino"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	proto "github.com/cosmos/gogoproto/proto"
 	github_com_cosmos_gogoproto_types "github.com/cosmos/gogoproto/types"

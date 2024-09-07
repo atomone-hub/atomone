@@ -3,12 +3,12 @@ package legacytx
 import (
 	"fmt"
 
+	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/codec"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/tx"
 	"github.com/atomone-hub/atomone/types/tx/signing"
 	authsigning "github.com/atomone-hub/atomone/x/auth/signing"
-	"github.com/cosmos/cosmos-sdk/client"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 

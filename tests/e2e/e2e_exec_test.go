@@ -12,15 +12,15 @@ import (
 
 	"github.com/ory/dockertest/v3/docker"
 
+	"github.com/atomone-hub/atomone/client/flags"
 	sdk "github.com/atomone-hub/atomone/types"
+	vestingtypes "github.com/atomone-hub/atomone/x/auth/vesting/types"
+	banktypes "github.com/atomone-hub/atomone/x/bank/types"
+	distributiontypes "github.com/atomone-hub/atomone/x/distribution/types"
+	"github.com/atomone-hub/atomone/x/feegrant"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	distributiontypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
-	"github.com/cosmos/cosmos-sdk/x/feegrant"
+	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
 const (

@@ -3,8 +3,8 @@ package tx
 import (
 	"fmt"
 
-	"github.com/cosmos/cosmos-sdk/x/auth/signing"
-	signingtypes "github.com/stomone-hub/atomone/types/tx/signing"
+	signingtypes "github.com/atomone-hub/atomone/types/tx/signing"
+	"github.com/atomone-hub/atomone/x/auth/signing"
 )
 
 // DefaultSignModes are the default sign modes enabled for protobuf transactions.

@@ -11,16 +11,16 @@ import (
 
 	"github.com/cosmos/go-bip39"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	"github.com/cosmos/cosmos-sdk/crypto/keyring"
-	"github.com/cosmos/cosmos-sdk/crypto/keys/multisig"
-	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/tx"
-	"github.com/cosmos/cosmos-sdk/types/tx/signing"
+	"github.com/atomone-hub/atomone/client"
+	"github.com/atomone-hub/atomone/client/flags"
+	codectypes "github.com/atomone-hub/atomone/codec/types"
+	"github.com/atomone-hub/atomone/crypto/keyring"
+	"github.com/atomone-hub/atomone/crypto/keys/multisig"
+	"github.com/atomone-hub/atomone/crypto/keys/secp256k1"
+	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
+	sdk "github.com/atomone-hub/atomone/types"
+	"github.com/atomone-hub/atomone/types/tx"
+	"github.com/atomone-hub/atomone/types/tx/signing"
 )
 
 // Factory defines a client transaction factory that facilitates generating and

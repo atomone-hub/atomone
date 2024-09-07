@@ -6,9 +6,9 @@ import (
 
 	"github.com/atomone-hub/atomone/codec"
 	sdk "github.com/atomone-hub/atomone/types"
+	v1 "github.com/atomone-hub/atomone/x/gov/migrations/v1"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
-	v1 "github.com/cosmos/cosmos-sdk/x/gov/migrations/v1"
 
 	"github.com/atomone-hub/atomone/x/gov/exported"
 	"github.com/atomone-hub/atomone/x/gov/types"

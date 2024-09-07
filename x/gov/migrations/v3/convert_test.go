@@ -4,15 +4,15 @@ import (
 	"testing"
 	"time"
 
-	sdkerrors "github.com/atomone-hub/atomone/types/errors"
 	v3 "github.com/atomone-hub/atomone/x/gov/migrations/v3"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"cosmossdk.io/math"
 	sdk "github.com/atomone-hub/atomone/types"
-	"github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
-	"github.com/stomone-hub/atomone/types/tx"
+	"github.com/atomone-hub/atomone/types/tx"
+	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
+	upgradetypes "github.com/atomone-hub/atomone/x/upgrade/types"
 	"github.com/stretchr/testify/require"
 )
 

@@ -9,7 +9,7 @@ import (
 
 	sdk "github.com/atomone-hub/atomone/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
-	"github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
+	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 )
 
 func TestProposalStatus_Format(t *testing.T) {

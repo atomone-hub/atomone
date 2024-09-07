@@ -5,14 +5,14 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
+	"github.com/atomone-hub/atomone/client"
 	kmultisig "github.com/atomone-hub/atomone/crypto/keys/multisig"
+	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
+	"github.com/atomone-hub/atomone/crypto/types/multisig"
+	"github.com/atomone-hub/atomone/testutil/testdata"
 	sdk "github.com/atomone-hub/atomone/types"
-	"github.com/cosmos/cosmos-sdk/client"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-	"github.com/cosmos/cosmos-sdk/crypto/types/multisig"
-	"github.com/cosmos/cosmos-sdk/testutil/testdata"
-	"github.com/cosmos/cosmos-sdk/x/auth/signing"
-	signingtypes "github.com/stomone-hub/atomone/types/tx/signing"
+	signingtypes "github.com/atomone-hub/atomone/types/tx/signing"
+	"github.com/atomone-hub/atomone/x/auth/signing"
 )
 
 // TxConfigTestSuite provides a test suite that can be used to test that a TxConfig implementation is correct.

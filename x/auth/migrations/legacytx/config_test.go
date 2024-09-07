@@ -5,12 +5,12 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	"github.com/cosmos/cosmos-sdk/codec"
-	cryptoAmino "github.com/cosmos/cosmos-sdk/crypto/codec"
-	"github.com/cosmos/cosmos-sdk/testutil/testdata"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
-	txtestutil "github.com/cosmos/cosmos-sdk/x/auth/tx/testutil"
+	"github.com/atomone-hub/atomone/codec"
+	cryptoAmino "github.com/atomone-hub/atomone/crypto/codec"
+	"github.com/atomone-hub/atomone/testutil/testdata"
+	sdk "github.com/atomone-hub/atomone/types"
+	"github.com/atomone-hub/atomone/x/auth/migrations/legacytx"
+	txtestutil "github.com/atomone-hub/atomone/x/auth/tx/testutil"
 )
 
 func testCodec() *codec.LegacyAmino {

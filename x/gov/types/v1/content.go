@@ -6,9 +6,9 @@ import (
 	"github.com/cosmos/gogoproto/proto"
 
 	codectypes "github.com/atomone-hub/atomone/codec/types"
-	"github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
+	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 
-	sdkerrors "github.com/atomone-hub/atomone/types/errors"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // NewLegacyContent creates a new MsgExecLegacyContent from a legacy Content

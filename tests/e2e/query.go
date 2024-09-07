@@ -8,13 +8,13 @@ import (
 	"strings"
 
 	sdk "github.com/atomone-hub/atomone/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	authvesting "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	disttypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
-	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
-	govtypesv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	authtypes "github.com/atomone-hub/atomone/x/auth/types"
+	authvesting "github.com/atomone-hub/atomone/x/auth/vesting/types"
+	banktypes "github.com/atomone-hub/atomone/x/bank/types"
+	disttypes "github.com/atomone-hub/atomone/x/distribution/types"
+	evidencetypes "github.com/atomone-hub/atomone/x/evidence/types"
+	govtypesv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
+	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
 )
 
 func queryAtomOneTx(endpoint, txHash string) error {

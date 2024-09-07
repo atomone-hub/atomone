@@ -3,11 +3,11 @@ package tx
 import (
 	"fmt"
 
+	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/codec"
 	sdk "github.com/atomone-hub/atomone/types"
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/x/auth/signing"
-	signingtypes "github.com/stomone-hub/atomone/types/tx/signing"
+	signingtypes "github.com/atomone-hub/atomone/types/tx/signing"
+	"github.com/atomone-hub/atomone/x/auth/signing"
 )
 
 type config struct {

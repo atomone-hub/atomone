@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/atomone-hub/atomone/crypto/keys/internal/benchmarking"
-	"github.com/cosmos/cosmos-sdk/crypto/types"
+	"github.com/atomone-hub/atomone/crypto/types"
 )
 
 func BenchmarkKeyGeneration(b *testing.B) {

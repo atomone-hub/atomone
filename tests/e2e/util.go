@@ -3,8 +3,8 @@ package e2e
 import (
 	"fmt"
 
+	sdktx "github.com/atomone-hub/atomone/types/tx"
 	"github.com/cosmos/cosmos-sdk/codec/unknownproto"
-	sdktx "github.com/cosmos/cosmos-sdk/types/tx"
 )
 
 func decodeTx(txBytes []byte) (*sdktx.Tx, error) {

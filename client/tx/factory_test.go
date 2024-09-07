@@ -5,18 +5,18 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/crypto/hd"
-	"github.com/cosmos/cosmos-sdk/crypto/keyring"
-	"github.com/cosmos/cosmos-sdk/crypto/keys/multisig"
-	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
-	"github.com/cosmos/cosmos-sdk/crypto/types"
-	"github.com/cosmos/cosmos-sdk/testutil/testdata"
-	"github.com/cosmos/cosmos-sdk/types/tx/signing"
+	"github.com/atomone-hub/atomone/client"
+	"github.com/atomone-hub/atomone/codec"
+	"github.com/atomone-hub/atomone/crypto/hd"
+	"github.com/atomone-hub/atomone/crypto/keyring"
+	"github.com/atomone-hub/atomone/crypto/keys/multisig"
+	"github.com/atomone-hub/atomone/crypto/keys/secp256k1"
+	"github.com/atomone-hub/atomone/crypto/types"
+	"github.com/atomone-hub/atomone/testutil/testdata"
+	"github.com/atomone-hub/atomone/types/tx/signing"
 
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
+	codectypes "github.com/atomone-hub/atomone/codec/types"
+	cryptocodec "github.com/atomone-hub/atomone/crypto/codec"
 )
 
 func TestFactoryPrepare(t *testing.T) {

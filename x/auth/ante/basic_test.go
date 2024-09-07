@@ -4,13 +4,13 @@ import (
 	"strings"
 	"testing"
 
+	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
+	"github.com/atomone-hub/atomone/crypto/types/multisig"
+	"github.com/atomone-hub/atomone/testutil/testdata"
 	sdk "github.com/atomone-hub/atomone/types"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-	"github.com/cosmos/cosmos-sdk/crypto/types/multisig"
-	"github.com/cosmos/cosmos-sdk/testutil/testdata"
+	"github.com/atomone-hub/atomone/types/tx/signing"
+	"github.com/atomone-hub/atomone/x/auth/ante"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cosmos/cosmos-sdk/x/auth/ante"
-	"github.com/stomone-hub/atomone/types/tx/signing"
 	"github.com/stretchr/testify/require"
 )
 

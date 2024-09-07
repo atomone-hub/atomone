@@ -7,13 +7,13 @@ import (
 	"os"
 	"testing"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/config"
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/codec"
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
-	"github.com/cosmos/cosmos-sdk/x/staking/client/cli"
+	"github.com/atomone-hub/atomone/client"
+	"github.com/atomone-hub/atomone/client/config"
+	"github.com/atomone-hub/atomone/client/flags"
+	"github.com/atomone-hub/atomone/codec"
+	codectypes "github.com/atomone-hub/atomone/codec/types"
+	clitestutil "github.com/atomone-hub/atomone/testutil/cli"
+	"github.com/atomone-hub/atomone/x/staking/client/cli"
 	"github.com/stretchr/testify/require"
 )
 

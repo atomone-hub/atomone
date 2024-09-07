@@ -10,19 +10,19 @@ import (
 	runtimev1alpha1 "github.com/atomone-hub/atomone/api/atomone/app/runtime/v1alpha1"
 	appv1alpha1 "github.com/atomone-hub/atomone/api/atomone/app/v1alpha1"
 
+	"github.com/atomone-hub/atomone/baseapp"
+	"github.com/atomone-hub/atomone/client"
+	nodeservice "github.com/atomone-hub/atomone/client/grpc/node"
+	"github.com/atomone-hub/atomone/client/grpc/tmservice"
 	"github.com/atomone-hub/atomone/codec"
 	codectypes "github.com/atomone-hub/atomone/codec/types"
+	"github.com/atomone-hub/atomone/server/api"
+	"github.com/atomone-hub/atomone/server/config"
+	servertypes "github.com/atomone-hub/atomone/server/types"
 	sdk "github.com/atomone-hub/atomone/types"
-	"github.com/cosmos/cosmos-sdk/baseapp"
-	"github.com/cosmos/cosmos-sdk/client"
-	nodeservice "github.com/cosmos/cosmos-sdk/client/grpc/node"
-	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
-	"github.com/cosmos/cosmos-sdk/server/api"
-	"github.com/cosmos/cosmos-sdk/server/config"
-	servertypes "github.com/cosmos/cosmos-sdk/server/types"
+	"github.com/atomone-hub/atomone/types/module"
+	authtx "github.com/atomone-hub/atomone/x/auth/tx"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
-	"github.com/cosmos/cosmos-sdk/types/module"
-	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 )
 
 // App is a wrapper around BaseApp and ModuleManager that can be used in hybrid

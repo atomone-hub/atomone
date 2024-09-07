@@ -2,10 +2,10 @@ package ante
 
 import (
 	sdk "github.com/atomone-hub/atomone/types"
+	"github.com/atomone-hub/atomone/types/tx/signing"
+	authsigning "github.com/atomone-hub/atomone/x/auth/signing"
+	"github.com/atomone-hub/atomone/x/auth/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
-	"github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/stomone-hub/atomone/types/tx/signing"
 )
 
 // HandlerOptions are the options required for constructing a default SDK AnteHandler.

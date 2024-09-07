@@ -6,8 +6,8 @@ import (
 	"fmt"
 
 	"github.com/atomone-hub/atomone/codec"
+	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 	"github.com/cosmos/cosmos-sdk/types/kv"
-	"github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 
 	"github.com/atomone-hub/atomone/x/gov/types"
 )

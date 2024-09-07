@@ -8,7 +8,7 @@ import (
 	reflect "reflect"
 
 	types "github.com/atomone-hub/atomone/types"
-	types0 "github.com/cosmos/cosmos-sdk/x/auth/types"
+	types0 "github.com/atomone-hub/atomone/x/auth/types"
 	gomock "github.com/golang/mock/gomock"
 )
 

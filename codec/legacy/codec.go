@@ -2,9 +2,9 @@ package legacy
 
 import (
 	"github.com/atomone-hub/atomone/codec"
+	cryptocodec "github.com/atomone-hub/atomone/crypto/codec"
+	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
 	sdk "github.com/atomone-hub/atomone/types"
-	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 )
 
 // Cdc defines a global generic sealed Amino codec to be used throughout sdk. It

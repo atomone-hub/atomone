@@ -1,11 +1,11 @@
 package client
 
 import (
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/tx"
-	signingtypes "github.com/cosmos/cosmos-sdk/types/tx/signing"
-	"github.com/cosmos/cosmos-sdk/x/auth/signing"
+	codectypes "github.com/atomone-hub/atomone/codec/types"
+	sdk "github.com/atomone-hub/atomone/types"
+	"github.com/atomone-hub/atomone/types/tx"
+	signingtypes "github.com/atomone-hub/atomone/types/tx/signing"
+	"github.com/atomone-hub/atomone/x/auth/signing"
 )
 
 type (

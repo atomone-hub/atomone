@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	sdk "github.com/atomone-hub/atomone/types"
+	"github.com/atomone-hub/atomone/x/auth/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cosmos/cosmos-sdk/x/auth/types"
 )
 
 // TxFeeChecker check if the provided fee is enough and returns the effective fee and tx priority,

@@ -8,7 +8,7 @@ import (
 	"github.com/cosmos/gogoproto/proto"
 
 	"github.com/atomone-hub/atomone/codec/types"
-	"github.com/cosmos/cosmos-sdk/testutil/testdata"
+	"github.com/atomone-hub/atomone/testutil/testdata"
 )
 
 type errOnMarshal struct {

@@ -8,15 +8,15 @@ import (
 
 	"gotest.tools/v3/assert"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	clienttestutil "github.com/cosmos/cosmos-sdk/client/testutil"
-	"github.com/cosmos/cosmos-sdk/crypto/hd"
-	"github.com/cosmos/cosmos-sdk/crypto/keyring"
-	"github.com/cosmos/cosmos-sdk/testutil"
-	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
-	"github.com/cosmos/cosmos-sdk/testutil/testdata"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/atomone-hub/atomone/client"
+	"github.com/atomone-hub/atomone/client/flags"
+	clienttestutil "github.com/atomone-hub/atomone/client/testutil"
+	"github.com/atomone-hub/atomone/crypto/hd"
+	"github.com/atomone-hub/atomone/crypto/keyring"
+	"github.com/atomone-hub/atomone/testutil"
+	clitestutil "github.com/atomone-hub/atomone/testutil/cli"
+	"github.com/atomone-hub/atomone/testutil/testdata"
+	sdk "github.com/atomone-hub/atomone/types"
 )
 
 func cleanupKeys(t *testing.T, kb keyring.Keyring, keys ...string) func() {

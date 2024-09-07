@@ -5,16 +5,11 @@ import (
 
 	codectypes "github.com/atomone-hub/atomone/codec/types"
 	"github.com/atomone-hub/atomone/types"
+	authtypes "github.com/atomone-hub/atomone/x/auth/types"
+	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
-)
-
-const (
-	// ModuleName is the name of the module
-	ModuleName = "gov"
 )
 
 // ConvertToLegacyProposal takes a new proposal and attempts to convert it to the

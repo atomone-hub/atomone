@@ -4,10 +4,10 @@ import (
 	"fmt"
 
 	sdk "github.com/atomone-hub/atomone/types"
-	sdkerrors "github.com/atomone-hub/atomone/types/errors"
-	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
-	"github.com/cosmos/cosmos-sdk/x/auth/signing"
-	signingtypes "github.com/stomone-hub/atomone/types/tx/signing"
+	signingtypes "github.com/atomone-hub/atomone/types/tx/signing"
+	"github.com/atomone-hub/atomone/x/auth/migrations/legacytx"
+	"github.com/atomone-hub/atomone/x/auth/signing"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 const aminoNonCriticalFieldsError = "protobuf transaction contains unknown non-critical fields. This is a transaction malleability issue and SIGN_MODE_LEGACY_AMINO_JSON cannot be used."

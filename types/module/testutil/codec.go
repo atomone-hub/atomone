@@ -1,12 +1,12 @@
 package testutil
 
 import (
+	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/codec"
 	"github.com/atomone-hub/atomone/codec/types"
+	"github.com/atomone-hub/atomone/std"
 	"github.com/atomone-hub/atomone/types/module"
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/std"
-	"github.com/cosmos/cosmos-sdk/x/auth/tx"
+	"github.com/atomone-hub/atomone/x/auth/tx"
 )
 
 // TestEncodingConfig defines an encoding configuration that is used for testing

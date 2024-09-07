@@ -7,10 +7,10 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/input"
-	"github.com/cosmos/cosmos-sdk/crypto/keyring"
-	"github.com/cosmos/cosmos-sdk/crypto/types"
+	"github.com/atomone-hub/atomone/client"
+	"github.com/atomone-hub/atomone/client/input"
+	"github.com/atomone-hub/atomone/crypto/keyring"
+	"github.com/atomone-hub/atomone/crypto/types"
 )
 
 const (

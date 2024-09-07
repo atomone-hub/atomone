@@ -7,9 +7,9 @@ import (
 	v4 "github.com/atomone-hub/atomone/x/gov/migrations/v4"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
-	"github.com/cosmos/cosmos-sdk/x/gov"
+	"github.com/atomone-hub/atomone/client"
+	moduletestutil "github.com/atomone-hub/atomone/types/module/testutil"
+	"github.com/atomone-hub/atomone/x/gov"
 	"github.com/stretchr/testify/require"
 )
 

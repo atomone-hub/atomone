@@ -8,9 +8,9 @@ import (
 	sdk1 "github.com/atomone-hub/atomone/types"
 
 	sdkerrors "github.com/atomone-hub/atomone/errors"
-	"github.com/atomone-hub/atomone/types/errors"
 	"github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
+	"github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // GetDeposit gets the deposit of a specific depositor on a specific proposal

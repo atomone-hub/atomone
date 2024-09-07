@@ -4,7 +4,7 @@ import (
 	"github.com/cometbft/cometbft/libs/cli"
 	"github.com/spf13/cobra"
 
-	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/atomone-hub/atomone/client/flags"
 )
 
 // Commands registers a sub-tree of commands to interact with

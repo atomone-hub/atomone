@@ -8,9 +8,9 @@ import (
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/atomone-hub/atomone/types"
+	banktypes "github.com/atomone-hub/atomone/x/bank/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
+	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 )
 
 var (

@@ -1,10 +1,10 @@
 package signing
 
 import (
+	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
 	"github.com/atomone-hub/atomone/types"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-	"github.com/stomone-hub/atomone/types/tx"
-	"github.com/stomone-hub/atomone/types/tx/signing"
+	"github.com/atomone-hub/atomone/types/tx"
+	"github.com/atomone-hub/atomone/types/tx/signing"
 )
 
 // SigVerifiableTx defines a transaction interface for all signature verification

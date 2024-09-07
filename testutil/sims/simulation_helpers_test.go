@@ -8,8 +8,8 @@ import (
 
 	"github.com/atomone-hub/atomone/codec"
 	sdk "github.com/atomone-hub/atomone/types"
+	authtypes "github.com/atomone-hub/atomone/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/types/kv"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
 
 func TestGetSimulationLog(t *testing.T) {

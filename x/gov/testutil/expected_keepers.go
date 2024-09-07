@@ -6,8 +6,8 @@ import (
 	math "cosmossdk.io/math"
 
 	sdk "github.com/atomone-hub/atomone/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
+	authtypes "github.com/atomone-hub/atomone/x/auth/types"
+	bankkeeper "github.com/atomone-hub/atomone/x/bank/keeper"
 
 	"github.com/atomone-hub/atomone/x/gov/types"
 )

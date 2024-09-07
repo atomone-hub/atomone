@@ -6,9 +6,9 @@ import (
 	rpchttp "github.com/cometbft/cometbft/rpc/client/http"
 	"github.com/spf13/pflag"
 
-	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/atomone-hub/atomone/client/flags"
+	"github.com/atomone-hub/atomone/types/query"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cosmos/cosmos-sdk/types/query"
 )
 
 // Paginate returns the correct starting and ending index for a paginated query,

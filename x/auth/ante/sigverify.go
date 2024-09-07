@@ -10,14 +10,14 @@ import (
 	kmultisig "github.com/atomone-hub/atomone/crypto/keys/multisig"
 	"github.com/atomone-hub/atomone/crypto/keys/secp256k1"
 	"github.com/atomone-hub/atomone/crypto/keys/secp256r1"
+	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
+	"github.com/atomone-hub/atomone/crypto/types/multisig"
 	sdk "github.com/atomone-hub/atomone/types"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-	"github.com/cosmos/cosmos-sdk/crypto/types/multisig"
+	"github.com/atomone-hub/atomone/types/tx/signing"
+	"github.com/atomone-hub/atomone/x/auth/migrations/legacytx"
+	authsigning "github.com/atomone-hub/atomone/x/auth/signing"
+	"github.com/atomone-hub/atomone/x/auth/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
-	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
-	"github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/stomone-hub/atomone/types/tx/signing"
 )
 
 var (

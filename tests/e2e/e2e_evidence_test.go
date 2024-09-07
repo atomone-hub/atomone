@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/cosmos/cosmos-sdk/x/evidence/exported"
-	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
+	"github.com/atomone-hub/atomone/x/evidence/exported"
+	evidencetypes "github.com/atomone-hub/atomone/x/evidence/types"
 )
 
 func (s *IntegrationTestSuite) testEvidence() {

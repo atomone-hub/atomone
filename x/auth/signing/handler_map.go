@@ -3,7 +3,7 @@ package signing
 import (
 	"fmt"
 
-	"github.com/stomone-hub/atomone/types/tx/signing"
+	"github.com/atomone-hub/atomone/types/tx/signing"
 
 	sdk "github.com/atomone-hub/atomone/types"
 )

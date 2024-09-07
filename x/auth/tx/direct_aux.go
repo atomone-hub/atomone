@@ -5,10 +5,10 @@ import (
 
 	codectypes "github.com/atomone-hub/atomone/codec/types"
 	sdk "github.com/atomone-hub/atomone/types"
+	types "github.com/atomone-hub/atomone/types/tx"
+	signingtypes "github.com/atomone-hub/atomone/types/tx/signing"
+	"github.com/atomone-hub/atomone/x/auth/signing"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cosmos/cosmos-sdk/x/auth/signing"
-	types "github.com/stomone-hub/atomone/types/tx"
-	signingtypes "github.com/stomone-hub/atomone/types/tx/signing"
 )
 
 var _ signing.SignModeHandler = signModeDirectAuxHandler{}

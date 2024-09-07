@@ -2,7 +2,7 @@ package exported
 
 import (
 	sdk "github.com/atomone-hub/atomone/types"
-	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	paramtypes "github.com/atomone-hub/atomone/x/params/types"
 )
 
 type (

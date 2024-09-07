@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	codectypes "github.com/atomone-hub/atomone/codec/types"
+	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
 	sdk "github.com/atomone-hub/atomone/types"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 

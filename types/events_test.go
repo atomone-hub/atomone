@@ -9,8 +9,8 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	codectypes "github.com/atomone-hub/atomone/codec/types"
+	testdata "github.com/atomone-hub/atomone/testutil/testdata"
 	sdk "github.com/atomone-hub/atomone/types"
-	testdata "github.com/cosmos/cosmos-sdk/testutil/testdata"
 )
 
 type eventsTestSuite struct {

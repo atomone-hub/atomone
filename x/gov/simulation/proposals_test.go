@@ -9,7 +9,7 @@ import (
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 
 	sdk "github.com/atomone-hub/atomone/types"
-	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
+	simtypes "github.com/atomone-hub/atomone/types/simulation"
 
 	"github.com/atomone-hub/atomone/x/gov/simulation"
 )

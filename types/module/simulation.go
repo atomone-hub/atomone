@@ -10,7 +10,7 @@ import (
 
 	"github.com/atomone-hub/atomone/codec"
 	sdk "github.com/atomone-hub/atomone/types"
-	"github.com/cosmos/cosmos-sdk/types/simulation"
+	"github.com/atomone-hub/atomone/types/simulation"
 )
 
 // AppModuleSimulation defines the standard functions that every module should expose

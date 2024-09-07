@@ -7,13 +7,13 @@ import (
 	govtestutil "github.com/atomone-hub/atomone/x/gov/testutil"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 
+	"github.com/atomone-hub/atomone/baseapp"
 	"github.com/atomone-hub/atomone/codec"
+	simtestutil "github.com/atomone-hub/atomone/testutil/sims"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/gov/types"
-	"github.com/cosmos/cosmos-sdk/baseapp"
-	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
-	"github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
-	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
+	minttypes "github.com/atomone-hub/atomone/x/mint/types"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 )

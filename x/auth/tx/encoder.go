@@ -7,7 +7,7 @@ import (
 
 	"github.com/atomone-hub/atomone/codec"
 	sdk "github.com/atomone-hub/atomone/types"
-	txtypes "github.com/stomone-hub/atomone/types/tx"
+	txtypes "github.com/atomone-hub/atomone/types/tx"
 )
 
 // DefaultTxEncoder returns a default protobuf TxEncoder using the provided Marshaler

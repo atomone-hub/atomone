@@ -6,7 +6,7 @@ import (
 	"github.com/atomone-hub/atomone/codec/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/msgservice"
-	tx "github.com/cosmos/cosmos-sdk/types/tx"
+	tx "github.com/atomone-hub/atomone/types/tx"
 )
 
 func NewTestInterfaceRegistry() types.InterfaceRegistry {

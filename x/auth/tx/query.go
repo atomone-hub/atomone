@@ -10,9 +10,9 @@ import (
 
 	coretypes "github.com/cometbft/cometbft/rpc/core/types"
 
+	"github.com/atomone-hub/atomone/client"
 	codectypes "github.com/atomone-hub/atomone/codec/types"
 	sdk "github.com/atomone-hub/atomone/types"
-	"github.com/cosmos/cosmos-sdk/client"
 )
 
 // QueryTxsByEvents performs a search for transactions for a given set of events

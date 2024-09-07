@@ -11,16 +11,16 @@ import (
 	"github.com/atomone-hub/atomone/codec/legacy"
 	"github.com/atomone-hub/atomone/codec/types"
 	cryptocodec "github.com/atomone-hub/atomone/crypto/codec"
+	"github.com/atomone-hub/atomone/crypto/keyring"
 	kmultisig "github.com/atomone-hub/atomone/crypto/keys/multisig"
 	"github.com/atomone-hub/atomone/crypto/keys/secp256k1"
 	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
 	"github.com/atomone-hub/atomone/crypto/types/multisig"
 	_ "github.com/atomone-hub/atomone/runtime"
+	"github.com/atomone-hub/atomone/testutil/configurator"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/tx/signing"
 	"github.com/atomone-hub/atomone/x/auth/migrations/legacytx"
-	"github.com/cosmos/cosmos-sdk/crypto/keyring"
-	"github.com/cosmos/cosmos-sdk/testutil/configurator"
 )
 
 func TestNewMultiSig(t *testing.T) {

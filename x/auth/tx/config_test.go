@@ -7,10 +7,10 @@ import (
 
 	"github.com/atomone-hub/atomone/codec"
 	codectypes "github.com/atomone-hub/atomone/codec/types"
+	"github.com/atomone-hub/atomone/std"
+	"github.com/atomone-hub/atomone/testutil/testdata"
 	sdk "github.com/atomone-hub/atomone/types"
-	"github.com/cosmos/cosmos-sdk/std"
-	"github.com/cosmos/cosmos-sdk/testutil/testdata"
-	txtestutil "github.com/cosmos/cosmos-sdk/x/auth/tx/testutil"
+	txtestutil "github.com/atomone-hub/atomone/x/auth/tx/testutil"
 )
 
 func TestGenerator(t *testing.T) {

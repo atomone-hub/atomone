@@ -14,9 +14,9 @@ import (
 
 	"github.com/atomone-hub/atomone/crypto/keys/ed25519"
 	"github.com/atomone-hub/atomone/crypto/keys/secp256k1"
+	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
 	"github.com/atomone-hub/atomone/types"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-	"github.com/cosmos/cosmos-sdk/types/bech32/legacybech32"
+	"github.com/atomone-hub/atomone/types/bech32/legacybech32"
 )
 
 type addressTestSuite struct {

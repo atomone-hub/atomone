@@ -7,9 +7,9 @@ import (
 	"google.golang.org/grpc/status"
 
 	sdk "github.com/atomone-hub/atomone/types"
+	"github.com/atomone-hub/atomone/types/query"
+	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
-	"github.com/cosmos/cosmos-sdk/types/query"
-	"github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 
 	v3 "github.com/atomone-hub/atomone/x/gov/migrations/v3"
 	"github.com/atomone-hub/atomone/x/gov/types"

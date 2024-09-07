@@ -1,8 +1,8 @@
 package tmservice
 
 import (
+	sdk "github.com/atomone-hub/atomone/types"
 	tmprototypes "github.com/cometbft/cometbft/proto/tendermint/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // convertHeader converts tendermint header to sdk header

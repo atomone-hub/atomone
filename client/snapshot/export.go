@@ -1,8 +1,8 @@
 package snapshot
 
 import (
+	servertypes "github.com/atomone-hub/atomone/server/types"
 	"github.com/cosmos/cosmos-sdk/server"
-	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	"github.com/spf13/cobra"
 )
 

@@ -7,7 +7,7 @@ import (
 	"github.com/cosmos/gogoproto/proto"
 
 	"github.com/atomone-hub/atomone/codec"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
+	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
 )
 
 type (

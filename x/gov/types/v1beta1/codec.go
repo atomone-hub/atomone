@@ -6,9 +6,9 @@ import (
 	codectypes "github.com/atomone-hub/atomone/codec/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/msgservice"
-	authzcodec "github.com/cosmos/cosmos-sdk/x/authz/codec"
-	govcodec "github.com/cosmos/cosmos-sdk/x/gov/codec"
-	groupcodec "github.com/cosmos/cosmos-sdk/x/group/codec"
+	authzcodec "github.com/atomone-hub/atomone/x/authz/codec"
+	govcodec "github.com/atomone-hub/atomone/x/gov/codec"
+	groupcodec "github.com/atomone-hub/atomone/x/group/codec"
 )
 
 // RegisterLegacyAminoCodec registers all the necessary types and interfaces for the

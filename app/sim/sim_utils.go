@@ -9,8 +9,8 @@ import (
 
 	"github.com/atomone-hub/atomone/codec"
 	"github.com/atomone-hub/atomone/runtime"
-	"github.com/cosmos/cosmos-sdk/types/module"
-	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
+	"github.com/atomone-hub/atomone/types/module"
+	simtypes "github.com/atomone-hub/atomone/types/simulation"
 
 	atomone "github.com/atomone-hub/atomone/app"
 )

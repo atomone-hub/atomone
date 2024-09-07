@@ -1,9 +1,9 @@
 package signing
 
 import (
+	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
 	sdk "github.com/atomone-hub/atomone/types"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-	"github.com/stomone-hub/atomone/types/tx/signing"
+	"github.com/atomone-hub/atomone/types/tx/signing"
 )
 
 // SignModeHandler defines a interface to be implemented by types which will handle

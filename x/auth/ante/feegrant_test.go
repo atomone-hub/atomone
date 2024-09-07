@@ -9,20 +9,20 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 
+	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/codec"
-	"github.com/cosmos/cosmos-sdk/client"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-	"github.com/cosmos/cosmos-sdk/testutil/testdata"
+	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
+	"github.com/atomone-hub/atomone/testutil/testdata"
 
 	sdk "github.com/atomone-hub/atomone/types"
+	"github.com/atomone-hub/atomone/types/simulation"
+	"github.com/atomone-hub/atomone/types/tx/signing"
+	"github.com/atomone-hub/atomone/x/auth/ante"
+	authsign "github.com/atomone-hub/atomone/x/auth/signing"
+	"github.com/atomone-hub/atomone/x/auth/tx"
+	authtypes "github.com/atomone-hub/atomone/x/auth/types"
+	"github.com/atomone-hub/atomone/x/feegrant"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cosmos/cosmos-sdk/types/simulation"
-	"github.com/cosmos/cosmos-sdk/x/auth/ante"
-	authsign "github.com/cosmos/cosmos-sdk/x/auth/signing"
-	"github.com/cosmos/cosmos-sdk/x/auth/tx"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/cosmos/cosmos-sdk/x/feegrant"
-	"github.com/stomone-hub/atomone/types/tx/signing"
 )
 
 func TestDeductFeesNoDelegation(t *testing.T) {

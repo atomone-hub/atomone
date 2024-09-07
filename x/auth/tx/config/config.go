@@ -6,16 +6,16 @@ import (
 	txconfigv1 "cosmossdk.io/api/cosmos/tx/config/v1"
 	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/depinject"
+	"github.com/atomone-hub/atomone/baseapp"
+	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/codec"
 	"github.com/atomone-hub/atomone/runtime"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/auth/ante"
+	"github.com/atomone-hub/atomone/x/auth/posthandler"
 	"github.com/atomone-hub/atomone/x/auth/tx"
-	"github.com/cosmos/cosmos-sdk/baseapp"
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/x/auth/posthandler"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	feegrantkeeper "github.com/cosmos/cosmos-sdk/x/feegrant/keeper"
+	authtypes "github.com/atomone-hub/atomone/x/auth/types"
+	feegrantkeeper "github.com/atomone-hub/atomone/x/feegrant/keeper"
 )
 
 func init() {

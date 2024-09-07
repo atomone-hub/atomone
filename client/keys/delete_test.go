@@ -7,14 +7,14 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	clienttestutil "github.com/cosmos/cosmos-sdk/client/testutil"
-	"github.com/cosmos/cosmos-sdk/crypto/hd"
-	"github.com/cosmos/cosmos-sdk/crypto/keyring"
-	"github.com/cosmos/cosmos-sdk/testutil"
-	"github.com/cosmos/cosmos-sdk/testutil/testdata"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/atomone-hub/atomone/client"
+	"github.com/atomone-hub/atomone/client/flags"
+	clienttestutil "github.com/atomone-hub/atomone/client/testutil"
+	"github.com/atomone-hub/atomone/crypto/hd"
+	"github.com/atomone-hub/atomone/crypto/keyring"
+	"github.com/atomone-hub/atomone/testutil"
+	"github.com/atomone-hub/atomone/testutil/testdata"
+	sdk "github.com/atomone-hub/atomone/types"
 )
 
 func Test_runDeleteCmd(t *testing.T) {

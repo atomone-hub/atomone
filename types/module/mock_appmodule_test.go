@@ -1,6 +1,6 @@
 package module_test
 
-import "github.com/cosmos/cosmos-sdk/types/module"
+import "github.com/atomone-hub/atomone/types/module"
 
 // AppModuleWithAllExtensions is solely here for the purpose of generating
 // mocks to be used in module tests.

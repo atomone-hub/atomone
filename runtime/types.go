@@ -4,9 +4,9 @@ import (
 	abci "github.com/cometbft/cometbft/abci/types"
 
 	"github.com/atomone-hub/atomone/codec"
+	"github.com/atomone-hub/atomone/server/types"
 	sdk "github.com/atomone-hub/atomone/types"
-	"github.com/cosmos/cosmos-sdk/server/types"
-	"github.com/cosmos/cosmos-sdk/types/module"
+	"github.com/atomone-hub/atomone/types/module"
 )
 
 // App implements the common methods for a Cosmos SDK-based application

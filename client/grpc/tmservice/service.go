@@ -9,12 +9,12 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/cosmos/cosmos-sdk/baseapp"
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/rpc"
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-	qtypes "github.com/cosmos/cosmos-sdk/types/query"
+	"github.com/atomone-hub/atomone/baseapp"
+	"github.com/atomone-hub/atomone/client"
+	"github.com/atomone-hub/atomone/client/rpc"
+	codectypes "github.com/atomone-hub/atomone/codec/types"
+	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
+	qtypes "github.com/atomone-hub/atomone/types/query"
 	"github.com/cosmos/cosmos-sdk/version"
 )
 

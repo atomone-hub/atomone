@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/atomone-hub/atomone/client"
 )
 
 func TestPaginate(t *testing.T) {

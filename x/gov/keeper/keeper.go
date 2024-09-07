@@ -6,12 +6,12 @@ import (
 
 	"github.com/cometbft/cometbft/libs/log"
 
+	"github.com/atomone-hub/atomone/baseapp"
 	"github.com/atomone-hub/atomone/codec"
 	sdk "github.com/atomone-hub/atomone/types"
-	"github.com/cosmos/cosmos-sdk/baseapp"
+	authtypes "github.com/atomone-hub/atomone/x/auth/types"
+	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 
 	"github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"

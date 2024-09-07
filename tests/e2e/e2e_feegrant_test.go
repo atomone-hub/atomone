@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	sdk "github.com/atomone-hub/atomone/types"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	banktypes "github.com/atomone-hub/atomone/x/bank/types"
 )
 
 // /*

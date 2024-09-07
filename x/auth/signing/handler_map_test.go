@@ -7,10 +7,10 @@ import (
 
 	"github.com/atomone-hub/atomone/crypto/keys/secp256k1"
 	sdk "github.com/atomone-hub/atomone/types"
-	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
-	"github.com/cosmos/cosmos-sdk/x/auth/signing"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	signingtypes "github.com/stomone-hub/atomone/types/tx/signing"
+	signingtypes "github.com/atomone-hub/atomone/types/tx/signing"
+	"github.com/atomone-hub/atomone/x/auth/migrations/legacytx"
+	"github.com/atomone-hub/atomone/x/auth/signing"
+	banktypes "github.com/atomone-hub/atomone/x/bank/types"
 )
 
 func MakeTestHandlerMap() signing.SignModeHandler {

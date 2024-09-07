@@ -15,10 +15,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"github.com/atomone-hub/atomone/codec"
 	"github.com/atomone-hub/atomone/crypto/keys/ed25519"
 	"github.com/atomone-hub/atomone/crypto/keys/secp256k1"
-	"github.com/cosmos/cosmos-sdk/codec"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
+	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
 )
 
 type keyData struct {

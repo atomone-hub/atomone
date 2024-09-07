@@ -14,14 +14,14 @@ import (
 
 	"cosmossdk.io/math"
 
-	"github.com/cosmos/cosmos-sdk/baseapp"
-	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/atomone-hub/atomone/baseapp"
+	"github.com/atomone-hub/atomone/client/flags"
+	simtestutil "github.com/atomone-hub/atomone/testutil/sims"
+	simulation2 "github.com/atomone-hub/atomone/types/simulation"
+	"github.com/atomone-hub/atomone/x/simulation"
+	simcli "github.com/atomone-hub/atomone/x/simulation/client/cli"
 	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cosmos/cosmos-sdk/store"
-	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
-	simulation2 "github.com/cosmos/cosmos-sdk/types/simulation"
-	"github.com/cosmos/cosmos-sdk/x/simulation"
-	simcli "github.com/cosmos/cosmos-sdk/x/simulation/client/cli"
 
 	"github.com/atomone-hub/atomone/ante"
 	atomone "github.com/atomone-hub/atomone/app"

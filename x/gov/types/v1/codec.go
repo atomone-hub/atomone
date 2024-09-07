@@ -2,13 +2,13 @@ package v1
 
 import (
 	"github.com/atomone-hub/atomone/codec"
+	"github.com/atomone-hub/atomone/codec/legacy"
 	codectypes "github.com/atomone-hub/atomone/codec/types"
 	sdk "github.com/atomone-hub/atomone/types"
-	"github.com/cosmos/cosmos-sdk/codec/legacy"
-	"github.com/cosmos/cosmos-sdk/types/msgservice"
-	authzcodec "github.com/cosmos/cosmos-sdk/x/authz/codec"
-	govcodec "github.com/cosmos/cosmos-sdk/x/gov/codec"
-	groupcodec "github.com/cosmos/cosmos-sdk/x/group/codec"
+	"github.com/atomone-hub/atomone/types/msgservice"
+	authzcodec "github.com/atomone-hub/atomone/x/authz/codec"
+	govcodec "github.com/atomone-hub/atomone/x/gov/codec"
+	groupcodec "github.com/atomone-hub/atomone/x/group/codec"
 )
 
 // RegisterLegacyAminoCodec registers all the necessary types and interfaces for the

@@ -14,15 +14,15 @@ import (
 	tmtypes "github.com/cometbft/cometbft/types"
 
 	codectypes "github.com/atomone-hub/atomone/codec/types"
+	cryptocodec "github.com/atomone-hub/atomone/crypto/codec"
+	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
+	"github.com/atomone-hub/atomone/testutil/mock"
+	simtestutil "github.com/atomone-hub/atomone/testutil/sims"
 	sdk "github.com/atomone-hub/atomone/types"
-	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
+	authtypes "github.com/atomone-hub/atomone/x/auth/types"
+	banktypes "github.com/atomone-hub/atomone/x/bank/types"
+	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/server"
-	"github.com/cosmos/cosmos-sdk/testutil/mock"
-	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	atomoneapp "github.com/atomone-hub/atomone/app"
 )

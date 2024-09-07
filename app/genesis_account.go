@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	sdk "github.com/atomone-hub/atomone/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	authtypes "github.com/atomone-hub/atomone/x/auth/types"
 )
 
 var _ authtypes.GenesisAccount = (*SimGenesisAccount)(nil)

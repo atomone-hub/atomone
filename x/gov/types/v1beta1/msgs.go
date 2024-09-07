@@ -9,9 +9,9 @@ import (
 
 	codectypes "github.com/atomone-hub/atomone/codec/types"
 	sdk "github.com/atomone-hub/atomone/types"
+	"github.com/atomone-hub/atomone/x/gov/codec"
+	"github.com/atomone-hub/atomone/x/gov/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cosmos/cosmos-sdk/x/gov/codec"
-	"github.com/cosmos/cosmos-sdk/x/gov/types"
 )
 
 // Governance message types and routes

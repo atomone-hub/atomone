@@ -5,10 +5,10 @@ import (
 
 	"github.com/atomone-hub/atomone/codec"
 	sdk "github.com/atomone-hub/atomone/types"
-	"github.com/cosmos/cosmos-sdk/x/authz"
-	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
-	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	"github.com/atomone-hub/atomone/x/authz"
+	govv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
+	stakingkeeper "github.com/atomone-hub/atomone/x/staking/keeper"
+	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
 
 	atomoneerrors "github.com/atomone-hub/atomone/types/errors"
 	govv1 "github.com/atomone-hub/atomone/x/gov/types/v1"

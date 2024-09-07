@@ -12,10 +12,10 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	"github.com/atomone-hub/atomone/crypto/keys/secp256k1"
+	"github.com/atomone-hub/atomone/testutil"
+	"github.com/atomone-hub/atomone/testutil/mock"
 	"github.com/atomone-hub/atomone/types"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
-	"github.com/cosmos/cosmos-sdk/testutil"
-	"github.com/cosmos/cosmos-sdk/testutil/mock"
 )
 
 type contextTestSuite struct {

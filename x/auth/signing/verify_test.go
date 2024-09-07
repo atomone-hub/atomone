@@ -6,20 +6,20 @@ import (
 	"github.com/stretchr/testify/require"
 
 	kmultisig "github.com/atomone-hub/atomone/crypto/keys/multisig"
+	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
+	"github.com/atomone-hub/atomone/crypto/types/multisig"
+	"github.com/atomone-hub/atomone/testutil/testdata"
 	sdk "github.com/atomone-hub/atomone/types"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-	"github.com/cosmos/cosmos-sdk/crypto/types/multisig"
-	"github.com/cosmos/cosmos-sdk/testutil/testdata"
-	"github.com/cosmos/cosmos-sdk/x/auth"
-	"github.com/cosmos/cosmos-sdk/x/auth/ante"
+	"github.com/atomone-hub/atomone/x/auth"
+	"github.com/atomone-hub/atomone/x/auth/ante"
 
+	"github.com/atomone-hub/atomone/testutil"
+	moduletestutil "github.com/atomone-hub/atomone/types/module/testutil"
+	"github.com/atomone-hub/atomone/x/auth/keeper"
+	"github.com/atomone-hub/atomone/x/auth/migrations/legacytx"
+	"github.com/atomone-hub/atomone/x/auth/signing"
+	"github.com/atomone-hub/atomone/x/auth/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
-	"github.com/cosmos/cosmos-sdk/testutil"
-	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
-	"github.com/cosmos/cosmos-sdk/x/auth/keeper"
-	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
-	"github.com/cosmos/cosmos-sdk/x/auth/signing"
-	"github.com/cosmos/cosmos-sdk/x/auth/types"
 )
 
 func TestVerifySignature(t *testing.T) {

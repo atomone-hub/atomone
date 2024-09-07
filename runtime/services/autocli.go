@@ -7,7 +7,7 @@ import (
 	gogogrpc "github.com/cosmos/gogoproto/grpc"
 	"google.golang.org/grpc"
 
-	"github.com/cosmos/cosmos-sdk/types/module"
+	"github.com/atomone-hub/atomone/types/module"
 )
 
 // AutoCLIQueryService implements the cosmos.autocli.v1.Query service.

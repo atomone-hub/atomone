@@ -15,18 +15,18 @@ import (
 	"cosmossdk.io/depinject"
 	"cosmossdk.io/math"
 
+	"github.com/atomone-hub/atomone/client/flags"
 	"github.com/atomone-hub/atomone/codec"
 	codectypes "github.com/atomone-hub/atomone/codec/types"
+	cryptocodec "github.com/atomone-hub/atomone/crypto/codec"
 	"github.com/atomone-hub/atomone/crypto/keys/secp256k1"
 	"github.com/atomone-hub/atomone/runtime"
+	servertypes "github.com/atomone-hub/atomone/server/types"
+	"github.com/atomone-hub/atomone/testutil/mock"
 	sdk "github.com/atomone-hub/atomone/types"
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
-	servertypes "github.com/cosmos/cosmos-sdk/server/types"
-	"github.com/cosmos/cosmos-sdk/testutil/mock"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	authtypes "github.com/atomone-hub/atomone/x/auth/types"
+	banktypes "github.com/atomone-hub/atomone/x/bank/types"
+	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
 )
 
 const DefaultGenTxGas = 10000000

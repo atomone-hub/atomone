@@ -7,7 +7,7 @@ import (
 	"cosmossdk.io/math"
 
 	sdk "github.com/atomone-hub/atomone/types"
-	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	paramtypes "github.com/atomone-hub/atomone/x/params/types"
 )
 
 // Parameter store key

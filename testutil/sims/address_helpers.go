@@ -8,11 +8,11 @@ import (
 
 	"cosmossdk.io/math"
 	"github.com/atomone-hub/atomone/crypto/keys/ed25519"
+	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
 	sdk "github.com/atomone-hub/atomone/types"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
+	bankkeeper "github.com/atomone-hub/atomone/x/bank/keeper"
+	minttypes "github.com/atomone-hub/atomone/x/mint/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
-	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
-	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 )
 
 type GenerateAccountStrategy func(int) []sdk.AccAddress

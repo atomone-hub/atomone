@@ -10,13 +10,13 @@ import (
 	govv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 
 	sdk "github.com/atomone-hub/atomone/types"
+	authtypes "github.com/atomone-hub/atomone/x/auth/types"
+	banktypes "github.com/atomone-hub/atomone/x/bank/types"
+	"github.com/atomone-hub/atomone/x/genutil"
+	genutiltypes "github.com/atomone-hub/atomone/x/genutil/types"
+	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
 	tmtypes "github.com/cometbft/cometbft/types"
 	"github.com/cosmos/cosmos-sdk/server"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/cosmos/cosmos-sdk/x/genutil"
-	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
 func getGenDoc(path string) (*tmtypes.GenesisDoc, error) {

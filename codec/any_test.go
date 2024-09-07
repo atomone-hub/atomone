@@ -9,9 +9,9 @@ import (
 	"github.com/atomone-hub/atomone/codec/types"
 	codectypes "github.com/atomone-hub/atomone/codec/types"
 	"github.com/atomone-hub/atomone/crypto/keys/ed25519"
+	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
 	"github.com/atomone-hub/atomone/testutil/testdata"
 	"github.com/atomone-hub/atomone/types/module/testutil"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 )
 
 func NewTestInterfaceRegistry() types.InterfaceRegistry {

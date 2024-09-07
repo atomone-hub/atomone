@@ -7,7 +7,7 @@ import (
 	encoding_binary "encoding/binary"
 	fmt "fmt"
 	types "github.com/atomone-hub/atomone/codec/types"
-	tx "github.com/cosmos/cosmos-sdk/types/tx"
+	tx "github.com/atomone-hub/atomone/types/tx"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	proto "github.com/cosmos/gogoproto/proto"
 	io "io"

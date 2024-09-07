@@ -7,10 +7,10 @@ import (
 
 	codectypes "github.com/atomone-hub/atomone/codec/types"
 	sdk "github.com/atomone-hub/atomone/types"
+	sdktx "github.com/atomone-hub/atomone/types/tx"
+	"github.com/atomone-hub/atomone/x/gov/codec"
+	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cosmos/cosmos-sdk/x/gov/codec"
-	"github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
-	sdktx "github.com/stomone-hub/atomone/types/tx"
 
 	"github.com/atomone-hub/atomone/x/gov/types"
 )

@@ -9,8 +9,8 @@ import (
 	appv1alpha1 "cosmossdk.io/api/cosmos/app/v1alpha1"
 	"cosmossdk.io/core/appconfig"
 	"cosmossdk.io/depinject"
-	"github.com/cosmos/cosmos-sdk/codec"
-	_ "github.com/cosmos/cosmos-sdk/runtime"
+	"github.com/atomone-hub/atomone/codec"
+	_ "github.com/atomone-hub/atomone/runtime"
 )
 
 var TestConfig = appconfig.Compose(&appv1alpha1.Config{

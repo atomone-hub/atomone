@@ -7,7 +7,7 @@ import (
 
 	"github.com/atomone-hub/atomone/codec/types"
 	sdk "github.com/atomone-hub/atomone/types"
-	sdktx "github.com/stomone-hub/atomone/types/tx"
+	sdktx "github.com/atomone-hub/atomone/types/tx"
 )
 
 const (

@@ -8,7 +8,7 @@ import (
 	"cosmossdk.io/math"
 
 	sdk "github.com/atomone-hub/atomone/types"
-	"github.com/cosmos/cosmos-sdk/x/staking/types"
+	"github.com/atomone-hub/atomone/x/staking/types"
 )
 
 func (s *IntegrationTestSuite) testStaking() {

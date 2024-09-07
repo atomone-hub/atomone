@@ -5,10 +5,10 @@ import (
 
 	"github.com/atomone-hub/atomone/codec"
 	sdk "github.com/atomone-hub/atomone/types"
-	"github.com/cosmos/cosmos-sdk/x/auth/ante"
-	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
+	"github.com/atomone-hub/atomone/x/auth/ante"
+	stakingkeeper "github.com/atomone-hub/atomone/x/staking/keeper"
 
-	atomoneerrors "github.com/atomone-hub/atomone/types/errors"
+	atomoneerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // HandlerOptions extend the SDK's AnteHandler options by requiring the IBC

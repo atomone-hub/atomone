@@ -6,8 +6,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/cosmos/cosmos-sdk/testutil/testdata"
-	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
+	"github.com/atomone-hub/atomone/testutil/testdata"
+	"github.com/atomone-hub/atomone/x/auth/migrations/legacytx"
 )
 
 func TestStdSignatureMarshalYAML(t *testing.T) {

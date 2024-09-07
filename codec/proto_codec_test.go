@@ -16,7 +16,7 @@ import (
 	"github.com/atomone-hub/atomone/codec"
 	"github.com/atomone-hub/atomone/codec/types"
 	"github.com/atomone-hub/atomone/testutil/testdata"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	banktypes "github.com/atomone-hub/atomone/x/bank/types"
 )
 
 func createTestInterfaceRegistry() types.InterfaceRegistry {

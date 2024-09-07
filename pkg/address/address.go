@@ -3,7 +3,7 @@ package address
 import (
 	"fmt"
 
-	"github.com/cosmos/cosmos-sdk/types/bech32"
+	"github.com/atomone-hub/atomone/types/bech32"
 )
 
 // ConvertBech32Prefix convert bech32 address to specified prefix.

@@ -10,12 +10,12 @@ import (
 	runtimev1alpha1 "github.com/atomone-hub/atomone/api/atomone/app/runtime/v1alpha1"
 	appv1alpha1 "github.com/atomone-hub/atomone/api/atomone/app/v1alpha1"
 
+	"github.com/atomone-hub/atomone/baseapp"
 	"github.com/atomone-hub/atomone/codec"
 	codectypes "github.com/atomone-hub/atomone/codec/types"
-	"github.com/cosmos/cosmos-sdk/baseapp"
-	"github.com/cosmos/cosmos-sdk/std"
+	"github.com/atomone-hub/atomone/std"
+	"github.com/atomone-hub/atomone/types/module"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
-	"github.com/cosmos/cosmos-sdk/types/module"
 )
 
 // BaseAppOption is a depinject.AutoGroupType which can be used to pass

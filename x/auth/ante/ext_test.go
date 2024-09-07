@@ -4,10 +4,10 @@ import (
 	"testing"
 
 	codectypes "github.com/atomone-hub/atomone/codec/types"
+	"github.com/atomone-hub/atomone/testutil/testdata"
 	sdk "github.com/atomone-hub/atomone/types"
-	"github.com/cosmos/cosmos-sdk/testutil/testdata"
-	"github.com/cosmos/cosmos-sdk/x/auth/ante"
-	"github.com/cosmos/cosmos-sdk/x/auth/tx"
+	"github.com/atomone-hub/atomone/x/auth/ante"
+	"github.com/atomone-hub/atomone/x/auth/tx"
 	"github.com/stretchr/testify/require"
 )
 

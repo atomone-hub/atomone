@@ -4,9 +4,9 @@ import (
 	"math/rand"
 
 	sdk "github.com/atomone-hub/atomone/types"
-	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
-	"github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
-	"github.com/cosmos/cosmos-sdk/x/simulation"
+	simtypes "github.com/atomone-hub/atomone/types/simulation"
+	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
+	"github.com/atomone-hub/atomone/x/simulation"
 )
 
 // OpWeightSubmitTextProposal app params key for text proposal

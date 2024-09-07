@@ -9,13 +9,13 @@ import (
 	"github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/stretchr/testify/require"
 
+	"github.com/atomone-hub/atomone/baseapp"
+	"github.com/atomone-hub/atomone/client"
+	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
 	sdk "github.com/atomone-hub/atomone/types"
-	"github.com/cosmos/cosmos-sdk/baseapp"
-	"github.com/cosmos/cosmos-sdk/client"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-	"github.com/cosmos/cosmos-sdk/types/simulation"
-	"github.com/cosmos/cosmos-sdk/types/tx/signing"
-	authsign "github.com/cosmos/cosmos-sdk/x/auth/signing"
+	"github.com/atomone-hub/atomone/types/simulation"
+	"github.com/atomone-hub/atomone/types/tx/signing"
+	authsign "github.com/atomone-hub/atomone/x/auth/signing"
 )
 
 // GenSignedMockTx generates a signed mock transaction.

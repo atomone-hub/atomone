@@ -1,7 +1,7 @@
 package atomone
 
 import (
-	"github.com/cosmos/cosmos-sdk/std"
+	"github.com/atomone-hub/atomone/std"
 
 	"github.com/atomone-hub/atomone/app/params"
 )

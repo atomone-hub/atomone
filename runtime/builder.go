@@ -7,8 +7,8 @@ import (
 	dbm "github.com/cometbft/cometbft-db"
 	"github.com/cometbft/cometbft/libs/log"
 
-	"github.com/cosmos/cosmos-sdk/baseapp"
-	"github.com/cosmos/cosmos-sdk/types/module"
+	"github.com/atomone-hub/atomone/baseapp"
+	"github.com/atomone-hub/atomone/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 )
 

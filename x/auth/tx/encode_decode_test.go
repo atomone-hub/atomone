@@ -11,11 +11,11 @@ import (
 
 	"github.com/atomone-hub/atomone/codec"
 	codectypes "github.com/atomone-hub/atomone/codec/types"
-	"github.com/cosmos/cosmos-sdk/testutil/testdata"
+	"github.com/atomone-hub/atomone/testutil/testdata"
+	"github.com/atomone-hub/atomone/types/tx"
+	signingtypes "github.com/atomone-hub/atomone/types/tx/signing"
+	"github.com/atomone-hub/atomone/x/auth/signing"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cosmos/cosmos-sdk/x/auth/signing"
-	"github.com/stomone-hub/atomone/types/tx"
-	signingtypes "github.com/stomone-hub/atomone/types/tx/signing"
 )
 
 func TestDefaultTxDecoderError(t *testing.T) {

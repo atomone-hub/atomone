@@ -8,9 +8,9 @@ import (
 
 	"github.com/atomone-hub/atomone/crypto/keys/secp256k1"
 	"github.com/atomone-hub/atomone/crypto/keys/secp256r1"
+	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/query"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 

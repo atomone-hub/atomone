@@ -14,9 +14,9 @@ import (
 
 	"github.com/atomone-hub/atomone/codec"
 	"github.com/atomone-hub/atomone/codec/types"
+	"github.com/atomone-hub/atomone/testutil/mock"
 	sdk "github.com/atomone-hub/atomone/types"
-	"github.com/cosmos/cosmos-sdk/testutil/mock"
-	"github.com/cosmos/cosmos-sdk/types/module"
+	"github.com/atomone-hub/atomone/types/module"
 )
 
 var errFoo = errors.New("dummy")

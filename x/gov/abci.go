@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/atomone-hub/atomone/baseapp"
 	sdk "github.com/atomone-hub/atomone/types"
-	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/telemetry"
 
 	"github.com/atomone-hub/atomone/x/gov/keeper"

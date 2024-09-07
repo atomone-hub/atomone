@@ -2,7 +2,7 @@ package ante
 
 import (
 	sdk "github.com/atomone-hub/atomone/types"
-	"github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/atomone-hub/atomone/x/auth/types"
 )
 
 // AccountKeeper defines the contract needed for AccountKeeper related APIs.

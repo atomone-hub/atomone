@@ -6,12 +6,12 @@ import (
 	"github.com/stretchr/testify/require"
 
 	cdctypes "github.com/atomone-hub/atomone/codec/types"
+	"github.com/atomone-hub/atomone/testutil/testdata"
 	sdk "github.com/atomone-hub/atomone/types"
-	"github.com/cosmos/cosmos-sdk/testutil/testdata"
-	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
-	"github.com/cosmos/cosmos-sdk/x/auth/signing"
-	"github.com/stomone-hub/atomone/types/tx"
-	signingtypes "github.com/stomone-hub/atomone/types/tx/signing"
+	"github.com/atomone-hub/atomone/types/tx"
+	signingtypes "github.com/atomone-hub/atomone/types/tx/signing"
+	"github.com/atomone-hub/atomone/x/auth/migrations/legacytx"
+	"github.com/atomone-hub/atomone/x/auth/signing"
 )
 
 var (

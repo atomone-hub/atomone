@@ -17,12 +17,12 @@ import (
 	"github.com/atomone-hub/atomone/codec"
 	"github.com/atomone-hub/atomone/crypto/keys/secp256k1"
 	sdk "github.com/atomone-hub/atomone/types"
-	"github.com/cosmos/cosmos-sdk/types/module"
-	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	simcli "github.com/cosmos/cosmos-sdk/x/simulation/client/cli"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	"github.com/atomone-hub/atomone/types/module"
+	simtypes "github.com/atomone-hub/atomone/types/simulation"
+	authtypes "github.com/atomone-hub/atomone/x/auth/types"
+	banktypes "github.com/atomone-hub/atomone/x/bank/types"
+	simcli "github.com/atomone-hub/atomone/x/simulation/client/cli"
+	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
 )
 
 // Simulation parameter constants

@@ -11,9 +11,9 @@ import (
 	sdkmath "cosmossdk.io/math"
 	"github.com/atomone-hub/atomone/codec"
 	codectypes "github.com/atomone-hub/atomone/codec/types"
+	"github.com/atomone-hub/atomone/types/module"
+	simtypes "github.com/atomone-hub/atomone/types/simulation"
 	"github.com/atomone-hub/atomone/x/gov/types"
-	"github.com/cosmos/cosmos-sdk/types/module"
-	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/stretchr/testify/require"
 )
 

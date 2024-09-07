@@ -6,16 +6,16 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"cosmossdk.io/depinject"
+	"github.com/atomone-hub/atomone/client"
+	"github.com/atomone-hub/atomone/client/tx"
+	clienttx "github.com/atomone-hub/atomone/client/tx"
 	codectypes "github.com/atomone-hub/atomone/codec/types"
 	"github.com/atomone-hub/atomone/testutil/testdata"
 	sdk "github.com/atomone-hub/atomone/types"
 	txtypes "github.com/atomone-hub/atomone/types/tx"
+	"github.com/atomone-hub/atomone/types/tx/signing"
+	authsigning "github.com/atomone-hub/atomone/x/auth/signing"
 	"github.com/atomone-hub/atomone/x/auth/testutil"
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/tx"
-	clienttx "github.com/cosmos/cosmos-sdk/client/tx"
-	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
-	"github.com/stomone-hub/atomone/types/tx/signing"
 )
 
 var (

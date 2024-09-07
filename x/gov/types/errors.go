@@ -1,7 +1,7 @@
 package types
 
 import (
-	sdkerrors "github.com/atomone-hub/atomone/types/errors"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // x/gov module sentinel errors

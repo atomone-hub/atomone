@@ -6,7 +6,7 @@ package params
 import (
 	"github.com/atomone-hub/atomone/codec"
 	cdctypes "github.com/atomone-hub/atomone/codec/types"
-	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
+	"github.com/atomone-hub/atomone/x/auth/migrations/legacytx"
 )
 
 func MakeTestEncodingConfig() EncodingConfig {

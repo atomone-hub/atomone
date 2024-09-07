@@ -5,8 +5,8 @@ import (
 
 	sdk "github.com/atomone-hub/atomone/types"
 	sdk1 "github.com/atomone-hub/atomone/types"
-	"github.com/cosmos/cosmos-sdk/x/auth/types"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	"github.com/atomone-hub/atomone/x/auth/types"
+	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
 )
 
 // ParamSubspace defines the expected Subspace interface for parameters (noalias)

@@ -12,7 +12,7 @@ import (
 	tmtypes "github.com/cometbft/cometbft/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/atomone-hub/atomone/client/flags"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 

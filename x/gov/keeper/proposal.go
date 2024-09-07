@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/atomone-hub/atomone/client"
 	sdk "github.com/atomone-hub/atomone/types"
-	"github.com/cosmos/cosmos-sdk/client"
 
 	sdkerrors "github.com/atomone-hub/atomone/errors"
 	"github.com/atomone-hub/atomone/x/gov/types"
