@@ -16,13 +16,13 @@ import (
 // RegisterLegacyAminoCodec registers the necessary x/bank interfaces and concrete types
 // on the provided LegacyAmino codec. These types are used for Amino JSON serialization.
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	legacy.RegisterAminoMsg(cdc, &MsgSend{}, "cosmos-sdk/MsgSend")
-	legacy.RegisterAminoMsg(cdc, &MsgMultiSend{}, "cosmos-sdk/MsgMultiSend")
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "cosmos-sdk/x/bank/MsgUpdateParams")
-	legacy.RegisterAminoMsg(cdc, &MsgSetSendEnabled{}, "cosmos-sdk/MsgSetSendEnabled")
+	legacy.RegisterAminoMsg(cdc, &MsgSend{}, "atomone/MsgSend")
+	legacy.RegisterAminoMsg(cdc, &MsgMultiSend{}, "atomone/MsgMultiSend")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "atomone/x/bank/MsgUpdateParams")
+	legacy.RegisterAminoMsg(cdc, &MsgSetSendEnabled{}, "atomone/MsgSetSendEnabled")
 
-	cdc.RegisterConcrete(&SendAuthorization{}, "cosmos-sdk/SendAuthorization", nil)
-	cdc.RegisterConcrete(&Params{}, "cosmos-sdk/x/bank/Params", nil)
+	cdc.RegisterConcrete(&SendAuthorization{}, "atomone/SendAuthorization", nil)
+	cdc.RegisterConcrete(&Params{}, "atomone/x/bank/Params", nil)
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {

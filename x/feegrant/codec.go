@@ -15,13 +15,13 @@ import (
 // RegisterLegacyAminoCodec registers the necessary x/feegrant interfaces and concrete types
 // on the provided LegacyAmino codec. These types are used for Amino JSON serialization.
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	legacy.RegisterAminoMsg(cdc, &MsgGrantAllowance{}, "cosmos-sdk/MsgGrantAllowance")
-	legacy.RegisterAminoMsg(cdc, &MsgRevokeAllowance{}, "cosmos-sdk/MsgRevokeAllowance")
+	legacy.RegisterAminoMsg(cdc, &MsgGrantAllowance{}, "atomone/MsgGrantAllowance")
+	legacy.RegisterAminoMsg(cdc, &MsgRevokeAllowance{}, "atomone/MsgRevokeAllowance")
 
 	cdc.RegisterInterface((*FeeAllowanceI)(nil), nil)
-	cdc.RegisterConcrete(&BasicAllowance{}, "cosmos-sdk/BasicAllowance", nil)
-	cdc.RegisterConcrete(&PeriodicAllowance{}, "cosmos-sdk/PeriodicAllowance", nil)
-	cdc.RegisterConcrete(&AllowedMsgAllowance{}, "cosmos-sdk/AllowedMsgAllowance", nil)
+	cdc.RegisterConcrete(&BasicAllowance{}, "atomone/BasicAllowance", nil)
+	cdc.RegisterConcrete(&PeriodicAllowance{}, "atomone/PeriodicAllowance", nil)
+	cdc.RegisterConcrete(&AllowedMsgAllowance{}, "atomone/AllowedMsgAllowance", nil)
 }
 
 // RegisterInterfaces registers the interfaces types with the interface registry
@@ -32,7 +32,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 	)
 
 	registry.RegisterInterface(
-		"cosmos.feegrant.v1beta1.FeeAllowanceI",
+		"atomone.feegrant.v1beta1.FeeAllowanceI",
 		(*FeeAllowanceI)(nil),
 		&BasicAllowance{},
 		&PeriodicAllowance{},

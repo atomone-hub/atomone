@@ -17,15 +17,15 @@ import (
 // evidence module.
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterInterface((*exported.Evidence)(nil), nil)
-	legacy.RegisterAminoMsg(cdc, &MsgSubmitEvidence{}, "cosmos-sdk/MsgSubmitEvidence")
-	cdc.RegisterConcrete(&Equivocation{}, "cosmos-sdk/Equivocation", nil)
+	legacy.RegisterAminoMsg(cdc, &MsgSubmitEvidence{}, "atomone/MsgSubmitEvidence")
+	cdc.RegisterConcrete(&Equivocation{}, "atomone/Equivocation", nil)
 }
 
 // RegisterInterfaces registers the interfaces types with the interface registry.
 func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil), &MsgSubmitEvidence{})
 	registry.RegisterInterface(
-		"cosmos.evidence.v1beta1.Evidence",
+		"atomone.evidence.v1beta1.Evidence",
 		(*exported.Evidence)(nil),
 		&Equivocation{},
 	)

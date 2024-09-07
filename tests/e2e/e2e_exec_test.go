@@ -19,8 +19,8 @@ import (
 	distributiontypes "github.com/atomone-hub/atomone/x/distribution/types"
 	"github.com/atomone-hub/atomone/x/feegrant"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
+	slashingtypes "github.com/atomone-hub/atomone/x/slashing/types"
 	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
-	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 )
 
 const (

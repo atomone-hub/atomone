@@ -15,12 +15,12 @@ import (
 	authtypes "github.com/atomone-hub/atomone/x/auth/types"
 	vestingtypes "github.com/atomone-hub/atomone/x/auth/vesting/types"
 	banktypes "github.com/atomone-hub/atomone/x/bank/types"
+	consensustypes "github.com/atomone-hub/atomone/x/consensus/types"
 	"github.com/atomone-hub/atomone/x/feegrant"
 	genutiltypes "github.com/atomone-hub/atomone/x/genutil/types"
 	minttypes "github.com/atomone-hub/atomone/x/mint/types"
 	paramstypes "github.com/atomone-hub/atomone/x/params/types"
 	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
-	consensustypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
 
 	runtimev1alpha1 "cosmossdk.io/api/cosmos/app/runtime/v1alpha1"
 	appv1alpha1 "cosmossdk.io/api/cosmos/app/v1alpha1"

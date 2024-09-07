@@ -16,23 +16,23 @@ import (
 // These types are used for Amino JSON serialization.
 func RegisterLegacyAminoCodec(cdc *codectypes.LegacyAmino) {
 	cdc.RegisterInterface((*DecisionPolicy)(nil), nil)
-	cdc.RegisterConcrete(&ThresholdDecisionPolicy{}, "cosmos-sdk/ThresholdDecisionPolicy", nil)
-	cdc.RegisterConcrete(&PercentageDecisionPolicy{}, "cosmos-sdk/PercentageDecisionPolicy", nil)
+	cdc.RegisterConcrete(&ThresholdDecisionPolicy{}, "atomone/ThresholdDecisionPolicy", nil)
+	cdc.RegisterConcrete(&PercentageDecisionPolicy{}, "atomone/PercentageDecisionPolicy", nil)
 
-	legacy.RegisterAminoMsg(cdc, &MsgCreateGroup{}, "cosmos-sdk/MsgCreateGroup")
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateGroupMembers{}, "cosmos-sdk/MsgUpdateGroupMembers")
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateGroupAdmin{}, "cosmos-sdk/MsgUpdateGroupAdmin")
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateGroupMetadata{}, "cosmos-sdk/MsgUpdateGroupMetadata")
-	legacy.RegisterAminoMsg(cdc, &MsgCreateGroupWithPolicy{}, "cosmos-sdk/MsgCreateGroupWithPolicy")
-	legacy.RegisterAminoMsg(cdc, &MsgCreateGroupPolicy{}, "cosmos-sdk/MsgCreateGroupPolicy")
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateGroupPolicyAdmin{}, "cosmos-sdk/MsgUpdateGroupPolicyAdmin")
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateGroupPolicyDecisionPolicy{}, "cosmos-sdk/MsgUpdateGroupDecisionPolicy")
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateGroupPolicyMetadata{}, "cosmos-sdk/MsgUpdateGroupPolicyMetadata")
-	legacy.RegisterAminoMsg(cdc, &MsgSubmitProposal{}, "cosmos-sdk/group/MsgSubmitProposal")
-	legacy.RegisterAminoMsg(cdc, &MsgWithdrawProposal{}, "cosmos-sdk/group/MsgWithdrawProposal")
-	legacy.RegisterAminoMsg(cdc, &MsgVote{}, "cosmos-sdk/group/MsgVote")
-	legacy.RegisterAminoMsg(cdc, &MsgExec{}, "cosmos-sdk/group/MsgExec")
-	legacy.RegisterAminoMsg(cdc, &MsgLeaveGroup{}, "cosmos-sdk/group/MsgLeaveGroup")
+	legacy.RegisterAminoMsg(cdc, &MsgCreateGroup{}, "atomone/MsgCreateGroup")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateGroupMembers{}, "atomone/MsgUpdateGroupMembers")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateGroupAdmin{}, "atomone/MsgUpdateGroupAdmin")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateGroupMetadata{}, "atomone/MsgUpdateGroupMetadata")
+	legacy.RegisterAminoMsg(cdc, &MsgCreateGroupWithPolicy{}, "atomone/MsgCreateGroupWithPolicy")
+	legacy.RegisterAminoMsg(cdc, &MsgCreateGroupPolicy{}, "atomone/MsgCreateGroupPolicy")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateGroupPolicyAdmin{}, "atomone/MsgUpdateGroupPolicyAdmin")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateGroupPolicyDecisionPolicy{}, "atomone/MsgUpdateGroupDecisionPolicy")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateGroupPolicyMetadata{}, "atomone/MsgUpdateGroupPolicyMetadata")
+	legacy.RegisterAminoMsg(cdc, &MsgSubmitProposal{}, "atomone/group/MsgSubmitProposal")
+	legacy.RegisterAminoMsg(cdc, &MsgWithdrawProposal{}, "atomone/group/MsgWithdrawProposal")
+	legacy.RegisterAminoMsg(cdc, &MsgVote{}, "atomone/group/MsgVote")
+	legacy.RegisterAminoMsg(cdc, &MsgExec{}, "atomone/group/MsgExec")
+	legacy.RegisterAminoMsg(cdc, &MsgLeaveGroup{}, "atomone/group/MsgLeaveGroup")
 }
 
 // RegisterInterfaces registers the interfaces types with the interface registry.
@@ -57,7 +57,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 
 	registry.RegisterInterface(
-		"cosmos.group.v1.DecisionPolicy",
+		"atomone.group.v1.DecisionPolicy",
 		(*DecisionPolicy)(nil),
 		&ThresholdDecisionPolicy{},
 		&PercentageDecisionPolicy{},

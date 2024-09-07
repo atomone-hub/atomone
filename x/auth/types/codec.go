@@ -19,12 +19,12 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterInterface((*ModuleAccountI)(nil), nil)
 	cdc.RegisterInterface((*GenesisAccount)(nil), nil)
 	cdc.RegisterInterface((*AccountI)(nil), nil)
-	cdc.RegisterConcrete(&BaseAccount{}, "cosmos-sdk/BaseAccount", nil)
-	cdc.RegisterConcrete(&ModuleAccount{}, "cosmos-sdk/ModuleAccount", nil)
-	cdc.RegisterConcrete(Params{}, "cosmos-sdk/x/auth/Params", nil)
-	cdc.RegisterConcrete(&ModuleCredential{}, "cosmos-sdk/GroupAccountCredential", nil)
+	cdc.RegisterConcrete(&BaseAccount{}, "atomone/BaseAccount", nil)
+	cdc.RegisterConcrete(&ModuleAccount{}, "atomone/ModuleAccount", nil)
+	cdc.RegisterConcrete(Params{}, "atomone/x/auth/Params", nil)
+	cdc.RegisterConcrete(&ModuleCredential{}, "atomone/GroupAccountCredential", nil)
 
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "cosmos-sdk/x/auth/MsgUpdateParams")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "atomone/x/auth/MsgUpdateParams")
 
 	legacytx.RegisterLegacyAminoCodec(cdc)
 }
@@ -33,21 +33,21 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 // and creates a registry of it's concrete implementations
 func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterInterface(
-		"cosmos.auth.v1beta1.AccountI",
+		"atomoneauth.v1beta1.AccountI",
 		(*AccountI)(nil),
 		&BaseAccount{},
 		&ModuleAccount{},
 	)
 
 	registry.RegisterInterface(
-		"cosmos.auth.v1beta1.GenesisAccount",
+		"atomoneauth.v1beta1.GenesisAccount",
 		(*GenesisAccount)(nil),
 		&BaseAccount{},
 		&ModuleAccount{},
 	)
 
 	registry.RegisterInterface(
-		"cosmos.auth.v1.ModuleCredential",
+		"atomoneauth.v1.ModuleCredential",
 		(*cryptotypes.PubKey)(nil),
 		&ModuleCredential{},
 	)

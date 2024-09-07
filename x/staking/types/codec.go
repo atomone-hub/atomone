@@ -16,19 +16,19 @@ import (
 // RegisterLegacyAminoCodec registers the necessary x/staking interfaces and concrete types
 // on the provided LegacyAmino codec. These types are used for Amino JSON serialization.
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	legacy.RegisterAminoMsg(cdc, &MsgCreateValidator{}, "cosmos-sdk/MsgCreateValidator")
-	legacy.RegisterAminoMsg(cdc, &MsgEditValidator{}, "cosmos-sdk/MsgEditValidator")
-	legacy.RegisterAminoMsg(cdc, &MsgDelegate{}, "cosmos-sdk/MsgDelegate")
-	legacy.RegisterAminoMsg(cdc, &MsgUndelegate{}, "cosmos-sdk/MsgUndelegate")
-	legacy.RegisterAminoMsg(cdc, &MsgBeginRedelegate{}, "cosmos-sdk/MsgBeginRedelegate")
-	legacy.RegisterAminoMsg(cdc, &MsgCancelUnbondingDelegation{}, "cosmos-sdk/MsgCancelUnbondingDelegation")
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "cosmos-sdk/x/staking/MsgUpdateParams")
+	legacy.RegisterAminoMsg(cdc, &MsgCreateValidator{}, "atomone/MsgCreateValidator")
+	legacy.RegisterAminoMsg(cdc, &MsgEditValidator{}, "atomone/MsgEditValidator")
+	legacy.RegisterAminoMsg(cdc, &MsgDelegate{}, "atomone/MsgDelegate")
+	legacy.RegisterAminoMsg(cdc, &MsgUndelegate{}, "atomone/MsgUndelegate")
+	legacy.RegisterAminoMsg(cdc, &MsgBeginRedelegate{}, "atomone/MsgBeginRedelegate")
+	legacy.RegisterAminoMsg(cdc, &MsgCancelUnbondingDelegation{}, "atomone/MsgCancelUnbondingDelegation")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "atomone/x/staking/MsgUpdateParams")
 
 	cdc.RegisterInterface((*isStakeAuthorization_Validators)(nil), nil)
-	cdc.RegisterConcrete(&StakeAuthorization_AllowList{}, "cosmos-sdk/StakeAuthorization/AllowList", nil)
-	cdc.RegisterConcrete(&StakeAuthorization_DenyList{}, "cosmos-sdk/StakeAuthorization/DenyList", nil)
-	cdc.RegisterConcrete(&StakeAuthorization{}, "cosmos-sdk/StakeAuthorization", nil)
-	cdc.RegisterConcrete(Params{}, "cosmos-sdk/x/staking/Params", nil)
+	cdc.RegisterConcrete(&StakeAuthorization_AllowList{}, "atomone/StakeAuthorization/AllowList", nil)
+	cdc.RegisterConcrete(&StakeAuthorization_DenyList{}, "atomone/StakeAuthorization/DenyList", nil)
+	cdc.RegisterConcrete(&StakeAuthorization{}, "atomone/StakeAuthorization", nil)
+	cdc.RegisterConcrete(Params{}, "atomone/x/staking/Params", nil)
 }
 
 // RegisterInterfaces registers the x/staking interfaces types with the interface registry
