@@ -18,6 +18,7 @@ import (
 	sdkclient "github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/codec"
 	cdctypes "github.com/atomone-hub/atomone/codec/types"
+	store "github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/module"
 	simtypes "github.com/atomone-hub/atomone/types/simulation"
@@ -25,7 +26,6 @@ import (
 	"github.com/atomone-hub/atomone/x/feegrant/client/cli"
 	"github.com/atomone-hub/atomone/x/feegrant/keeper"
 	"github.com/atomone-hub/atomone/x/feegrant/simulation"
-	store "github.com/cosmos/cosmos-sdk/store/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 

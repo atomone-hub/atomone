@@ -9,6 +9,7 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	"github.com/atomone-hub/atomone/baseapp"
+	"github.com/atomone-hub/atomone/store/prefix"
 	"github.com/atomone-hub/atomone/testutil"
 	sdk "github.com/atomone-hub/atomone/types"
 	moduletestutil "github.com/atomone-hub/atomone/types/module/testutil"
@@ -16,7 +17,6 @@ import (
 	"github.com/atomone-hub/atomone/x/params/keeper"
 	"github.com/atomone-hub/atomone/x/params/types"
 	"github.com/atomone-hub/atomone/x/params/types/proposal"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
 )
 
 type KeeperTestSuite struct {

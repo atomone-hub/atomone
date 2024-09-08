@@ -7,9 +7,9 @@ import (
 	"github.com/cometbft/cometbft/libs/log"
 	"github.com/stretchr/testify/suite"
 
+	"github.com/atomone-hub/atomone/store/rootmulti"
+	"github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
-	"github.com/cosmos/cosmos-sdk/store/rootmulti"
-	"github.com/cosmos/cosmos-sdk/store/types"
 )
 
 type storeTestSuite struct {

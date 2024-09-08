@@ -19,6 +19,7 @@ import (
 	"github.com/atomone-hub/atomone/client/flags"
 	"github.com/atomone-hub/atomone/crypto/hd"
 	"github.com/atomone-hub/atomone/crypto/keyring"
+	svrcmd "github.com/atomone-hub/atomone/server/cmd"
 	"github.com/atomone-hub/atomone/testutil"
 	clitestutil "github.com/atomone-hub/atomone/testutil/cli"
 	sdk "github.com/atomone-hub/atomone/types"
@@ -26,7 +27,6 @@ import (
 	"github.com/atomone-hub/atomone/x/group"
 	groupcli "github.com/atomone-hub/atomone/x/group/client/cli"
 	groupmodule "github.com/atomone-hub/atomone/x/group/module"
-	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 )
 
 const validMetadata = "metadata"

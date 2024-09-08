@@ -11,13 +11,13 @@ import (
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/client/flags"
 	"github.com/atomone-hub/atomone/crypto/keyring"
+	"github.com/atomone-hub/atomone/server"
 	sdk "github.com/atomone-hub/atomone/types"
 	authtypes "github.com/atomone-hub/atomone/x/auth/types"
 	authvesting "github.com/atomone-hub/atomone/x/auth/vesting/types"
 	banktypes "github.com/atomone-hub/atomone/x/bank/types"
 	"github.com/atomone-hub/atomone/x/genutil"
 	genutiltypes "github.com/atomone-hub/atomone/x/genutil/types"
-	"github.com/cosmos/cosmos-sdk/server"
 )
 
 const (

@@ -19,10 +19,10 @@ import (
 	"github.com/atomone-hub/atomone/server/api"
 	"github.com/atomone-hub/atomone/server/config"
 	servertypes "github.com/atomone-hub/atomone/server/types"
+	storetypes "github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/module"
 	authtx "github.com/atomone-hub/atomone/x/auth/tx"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 )
 
 // App is a wrapper around BaseApp and ModuleManager that can be used in hybrid

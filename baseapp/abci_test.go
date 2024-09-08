@@ -16,6 +16,7 @@ import (
 
 	"github.com/atomone-hub/atomone/baseapp"
 	baseapptestutil "github.com/atomone-hub/atomone/baseapp/testutil"
+	pruningtypes "github.com/atomone-hub/atomone/store/pruning/types"
 	"github.com/atomone-hub/atomone/testutil"
 	"github.com/atomone-hub/atomone/testutil/testdata"
 	sdk "github.com/atomone-hub/atomone/types"
@@ -23,7 +24,6 @@ import (
 	"github.com/atomone-hub/atomone/x/auth/signing"
 	"github.com/cosmos/cosmos-sdk/snapshots"
 	snapshottypes "github.com/cosmos/cosmos-sdk/snapshots/types"
-	pruningtypes "github.com/cosmos/cosmos-sdk/store/pruning/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 

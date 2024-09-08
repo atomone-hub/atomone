@@ -16,8 +16,8 @@ import (
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/server/api"
 	"github.com/atomone-hub/atomone/server/config"
+	storetypes "github.com/atomone-hub/atomone/store/types"
 	"github.com/cosmos/cosmos-sdk/snapshots"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 )
 
 // ServerStartTime defines the time duration that the server need to stay running after startup

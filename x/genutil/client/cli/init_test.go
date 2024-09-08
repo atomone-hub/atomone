@@ -21,6 +21,8 @@ import (
 	"github.com/atomone-hub/atomone/codec"
 	"github.com/atomone-hub/atomone/codec/types"
 	cryptocodec "github.com/atomone-hub/atomone/crypto/codec"
+	"github.com/atomone-hub/atomone/server"
+	"github.com/atomone-hub/atomone/server/mock"
 	"github.com/atomone-hub/atomone/testutil"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/module"
@@ -28,8 +30,6 @@ import (
 	genutilcli "github.com/atomone-hub/atomone/x/genutil/client/cli"
 	genutiltest "github.com/atomone-hub/atomone/x/genutil/client/testutil"
 	"github.com/atomone-hub/atomone/x/staking"
-	"github.com/cosmos/cosmos-sdk/server"
-	"github.com/cosmos/cosmos-sdk/server/mock"
 )
 
 var testMbm = module.NewBasicManager(

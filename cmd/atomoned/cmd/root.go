@@ -16,7 +16,7 @@ import (
 	"github.com/cometbft/cometbft/libs/log"
 	tmtypes "github.com/cometbft/cometbft/types"
 
-	rosettaCmd "cosmossdk.io/tools/rosetta/cmd"
+	rosettaCmd "github.com/atomone-hub/atomone/tools/rosetta/cmd"
 
 	"github.com/atomone-hub/atomone/baseapp"
 	"github.com/atomone-hub/atomone/client"
@@ -27,17 +27,17 @@ import (
 	"github.com/atomone-hub/atomone/client/pruning"
 	"github.com/atomone-hub/atomone/client/rpc"
 	"github.com/atomone-hub/atomone/client/snapshot"
+	"github.com/atomone-hub/atomone/server"
 	serverconfig "github.com/atomone-hub/atomone/server/config"
 	servertypes "github.com/atomone-hub/atomone/server/types"
+	"github.com/atomone-hub/atomone/store"
 	sdk "github.com/atomone-hub/atomone/types"
 	authcmd "github.com/atomone-hub/atomone/x/auth/client/cli"
 	"github.com/atomone-hub/atomone/x/auth/types"
 	banktypes "github.com/atomone-hub/atomone/x/bank/types"
 	genutilcli "github.com/atomone-hub/atomone/x/genutil/client/cli"
-	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cosmos/cosmos-sdk/snapshots"
 	snapshottypes "github.com/cosmos/cosmos-sdk/snapshots/types"
-	"github.com/cosmos/cosmos-sdk/store"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 
 	atomone "github.com/atomone-hub/atomone/app"

@@ -2,10 +2,10 @@ package v2
 
 import (
 	"github.com/atomone-hub/atomone/codec"
+	"github.com/atomone-hub/atomone/store/prefix"
+	storetypes "github.com/atomone-hub/atomone/store/types"
 	"github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/feegrant"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 )
 
 func addAllowancesByExpTimeQueue(ctx types.Context, store storetypes.KVStore, cdc codec.BinaryCodec) error {

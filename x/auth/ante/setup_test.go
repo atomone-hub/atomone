@@ -6,10 +6,10 @@ import (
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 
 	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
+	storetypes "github.com/atomone-hub/atomone/store/types"
 	"github.com/atomone-hub/atomone/testutil/testdata"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/auth/ante"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/stretchr/testify/require"
 )

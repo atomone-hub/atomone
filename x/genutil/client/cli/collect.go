@@ -10,9 +10,9 @@ import (
 
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/client/flags"
+	"github.com/atomone-hub/atomone/server"
 	"github.com/atomone-hub/atomone/x/genutil"
 	"github.com/atomone-hub/atomone/x/genutil/types"
-	"github.com/cosmos/cosmos-sdk/server"
 )
 
 const flagGenTxDir = "gentx-dir"

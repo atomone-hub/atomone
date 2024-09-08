@@ -6,8 +6,8 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/atomone-hub/atomone/store/prefix"
 	"github.com/atomone-hub/atomone/types/query"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

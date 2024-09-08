@@ -7,11 +7,11 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/atomone-hub/atomone/baseapp"
+	"github.com/atomone-hub/atomone/server"
 	simtestutil "github.com/atomone-hub/atomone/testutil/sims"
 	simulation2 "github.com/atomone-hub/atomone/types/simulation"
 	"github.com/atomone-hub/atomone/x/simulation"
 	simcli "github.com/atomone-hub/atomone/x/simulation/client/cli"
-	"github.com/cosmos/cosmos-sdk/server"
 
 	atomone "github.com/atomone-hub/atomone/app"
 	"github.com/atomone-hub/atomone/app/sim"

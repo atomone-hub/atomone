@@ -7,13 +7,13 @@ import (
 
 	"cosmossdk.io/math"
 
+	"github.com/atomone-hub/atomone/store/prefix"
 	"github.com/atomone-hub/atomone/testutil"
 	sdk "github.com/atomone-hub/atomone/types"
 	moduletestutil "github.com/atomone-hub/atomone/types/module/testutil"
 	v2 "github.com/atomone-hub/atomone/x/bank/migrations/v2"
 	v3 "github.com/atomone-hub/atomone/x/bank/migrations/v3"
 	"github.com/atomone-hub/atomone/x/bank/types"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
 	"github.com/cosmos/cosmos-sdk/types/address"
 )
 

@@ -16,13 +16,13 @@ import (
 	codectypes "github.com/atomone-hub/atomone/codec/types"
 	cryptocodec "github.com/atomone-hub/atomone/crypto/codec"
 	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
+	"github.com/atomone-hub/atomone/server"
 	"github.com/atomone-hub/atomone/testutil/mock"
 	simtestutil "github.com/atomone-hub/atomone/testutil/sims"
 	sdk "github.com/atomone-hub/atomone/types"
 	authtypes "github.com/atomone-hub/atomone/x/auth/types"
 	banktypes "github.com/atomone-hub/atomone/x/bank/types"
 	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
-	"github.com/cosmos/cosmos-sdk/server"
 
 	atomoneapp "github.com/atomone-hub/atomone/app"
 )

@@ -2,10 +2,10 @@ package v3
 
 import (
 	"github.com/atomone-hub/atomone/codec"
+	storetypes "github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/distribution/exported"
 	"github.com/atomone-hub/atomone/x/distribution/types"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 )
 
 const (

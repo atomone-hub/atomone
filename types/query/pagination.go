@@ -8,7 +8,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/cosmos/cosmos-sdk/store/types"
+	"github.com/atomone-hub/atomone/store/types"
 )
 
 // DefaultPage is the default `page` number for queries.

@@ -31,6 +31,7 @@ import (
 	"github.com/atomone-hub/atomone/codec/types"
 	"github.com/atomone-hub/atomone/runtime"
 	runtimeservices "github.com/atomone-hub/atomone/runtime/services"
+	"github.com/atomone-hub/atomone/server"
 	"github.com/atomone-hub/atomone/server/api"
 	"github.com/atomone-hub/atomone/server/config"
 	servertypes "github.com/atomone-hub/atomone/server/types"
@@ -41,7 +42,6 @@ import (
 	authtx "github.com/atomone-hub/atomone/x/auth/tx"
 	authtypes "github.com/atomone-hub/atomone/x/auth/types"
 	upgradetypes "github.com/atomone-hub/atomone/x/upgrade/types"
-	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 

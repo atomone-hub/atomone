@@ -18,6 +18,7 @@ import (
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/codec"
 	codectypes "github.com/atomone-hub/atomone/codec/types"
+	store "github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/module"
 	simtypes "github.com/atomone-hub/atomone/types/simulation"
@@ -27,7 +28,6 @@ import (
 	"github.com/atomone-hub/atomone/x/auth/simulation"
 	"github.com/atomone-hub/atomone/x/auth/types"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
-	store "github.com/cosmos/cosmos-sdk/store/types"
 )
 
 // ConsensusVersion defines the current x/auth module consensus version.

@@ -25,6 +25,7 @@ import (
 	"github.com/atomone-hub/atomone/crypto/hd"
 	"github.com/atomone-hub/atomone/crypto/keyring"
 	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
+	"github.com/atomone-hub/atomone/server"
 	srvconfig "github.com/atomone-hub/atomone/server/config"
 	"github.com/atomone-hub/atomone/testutil"
 	"github.com/atomone-hub/atomone/testutil/network"
@@ -35,7 +36,6 @@ import (
 	"github.com/atomone-hub/atomone/x/genutil"
 	genutiltypes "github.com/atomone-hub/atomone/x/genutil/types"
 	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
-	"github.com/cosmos/cosmos-sdk/server"
 )
 
 var (

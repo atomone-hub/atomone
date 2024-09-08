@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/atomone-hub/atomone/codec"
+	storetypes "github.com/atomone-hub/atomone/store/types"
 	"github.com/atomone-hub/atomone/testutil"
 	sdk "github.com/atomone-hub/atomone/types"
 	moduletestutil "github.com/atomone-hub/atomone/types/module/testutil"
@@ -17,7 +18,6 @@ import (
 	groupkeeper "github.com/atomone-hub/atomone/x/group/keeper"
 	v2 "github.com/atomone-hub/atomone/x/group/migrations/v2"
 	groupmodule "github.com/atomone-hub/atomone/x/group/module"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 )
 
 var (

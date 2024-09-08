@@ -8,10 +8,10 @@ import (
 	"google.golang.org/grpc/status"
 
 	codectypes "github.com/atomone-hub/atomone/codec/types"
+	"github.com/atomone-hub/atomone/store/prefix"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/query"
 	"github.com/atomone-hub/atomone/x/feegrant"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
 )
 
 var _ feegrant.QueryServer = Keeper{}

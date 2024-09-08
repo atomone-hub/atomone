@@ -5,9 +5,9 @@ import (
 	"reflect"
 
 	"github.com/atomone-hub/atomone/codec"
+	"github.com/atomone-hub/atomone/store/prefix"
+	storetypes "github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 )
 
 const (

@@ -8,9 +8,9 @@ import (
 
 	"github.com/atomone-hub/atomone/codec"
 	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
+	storetypes "github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/auth/types"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )

@@ -3,10 +3,10 @@ package v2
 import (
 	"github.com/atomone-hub/atomone/codec"
 	"github.com/atomone-hub/atomone/internal/conv"
+	"github.com/atomone-hub/atomone/store/prefix"
+	storetypes "github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/authz"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 )
 
 // MigrateStore performs in-place store migrations from v0.45 to v0.46. The

@@ -11,12 +11,12 @@ import (
 
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/client/flags"
+	svrcmd "github.com/atomone-hub/atomone/server/cmd"
 	"github.com/atomone-hub/atomone/testutil"
 	clitestutil "github.com/atomone-hub/atomone/testutil/cli"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/bank/client/cli"
 	"github.com/atomone-hub/atomone/x/bank/types"
-	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 )
 
 func (s *CLITestSuite) TestGetBalancesCmd() {

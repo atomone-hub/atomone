@@ -3,7 +3,7 @@ package snapshot
 import (
 	"fmt"
 
-	"github.com/cosmos/cosmos-sdk/server"
+	"github.com/atomone-hub/atomone/server"
 	"github.com/spf13/cobra"
 )
 

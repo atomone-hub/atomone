@@ -7,12 +7,12 @@ import (
 
 	"golang.org/x/exp/maps"
 
+	storetypes "github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/group"
 	"github.com/atomone-hub/atomone/x/group/errors"
 	groupmath "github.com/atomone-hub/atomone/x/group/internal/math"
 	"github.com/atomone-hub/atomone/x/group/internal/orm"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 )
 
 const weightInvariant = "Group-TotalWeight"

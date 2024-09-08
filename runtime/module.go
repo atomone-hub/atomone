@@ -14,8 +14,8 @@ import (
 	"github.com/atomone-hub/atomone/codec"
 	codectypes "github.com/atomone-hub/atomone/codec/types"
 	"github.com/atomone-hub/atomone/std"
+	storetypes "github.com/atomone-hub/atomone/store/types"
 	"github.com/atomone-hub/atomone/types/module"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 )
 
 // BaseAppOption is a depinject.AutoGroupType which can be used to pass

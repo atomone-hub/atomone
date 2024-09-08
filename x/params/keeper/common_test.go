@@ -3,10 +3,10 @@ package keeper_test
 import (
 	"cosmossdk.io/depinject"
 	"github.com/atomone-hub/atomone/codec"
+	storetypes "github.com/atomone-hub/atomone/store/types"
 	sdktestutil "github.com/atomone-hub/atomone/testutil"
 	sdk "github.com/atomone-hub/atomone/types"
 	paramskeeper "github.com/atomone-hub/atomone/x/params/keeper"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	"github.com/cosmos/cosmos-sdk/x/params/testutil"
 )
 

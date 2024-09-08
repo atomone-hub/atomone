@@ -2,8 +2,8 @@ package types
 
 import (
 	"github.com/atomone-hub/atomone/baseapp"
+	storetypes "github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 )
 
 // UpgradeStoreLoader is used to prepare baseapp with a fixed StoreLoader

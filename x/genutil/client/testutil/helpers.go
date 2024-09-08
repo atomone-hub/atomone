@@ -11,10 +11,10 @@ import (
 
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/codec"
+	"github.com/atomone-hub/atomone/server"
 	"github.com/atomone-hub/atomone/testutil"
 	"github.com/atomone-hub/atomone/types/module"
 	genutilcli "github.com/atomone-hub/atomone/x/genutil/client/cli"
-	"github.com/cosmos/cosmos-sdk/server"
 )
 
 func ExecInitCmd(testMbm module.BasicManager, home string, cdc codec.Codec) error {

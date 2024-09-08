@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	"github.com/atomone-hub/atomone/codec"
+	storetypes "github.com/atomone-hub/atomone/store/types"
 	"github.com/atomone-hub/atomone/testutil"
 	sdk "github.com/atomone-hub/atomone/types"
 	moduletestutil "github.com/atomone-hub/atomone/types/module/testutil"
@@ -16,7 +17,6 @@ import (
 	"github.com/atomone-hub/atomone/x/mint/keeper"
 	minttestutil "github.com/atomone-hub/atomone/x/mint/testutil"
 	"github.com/atomone-hub/atomone/x/mint/types"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 )
 
 var minterAcc = authtypes.NewEmptyModuleAccount(types.ModuleName, authtypes.Minter)

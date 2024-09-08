@@ -7,9 +7,9 @@ import (
 
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/client/flags"
+	svrcmd "github.com/atomone-hub/atomone/server/cmd"
 	"github.com/atomone-hub/atomone/testutil"
 	"github.com/atomone-hub/atomone/x/group/client/cli"
-	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 )
 
 func (s *CLITestSuite) TestQueryGroupInfo() {

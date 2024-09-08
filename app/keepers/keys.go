@@ -1,6 +1,7 @@
 package keepers
 
 import (
+	storetypes "github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	authtypes "github.com/atomone-hub/atomone/x/auth/types"
 	authzkeeper "github.com/atomone-hub/atomone/x/authz/keeper"
@@ -15,7 +16,6 @@ import (
 	slashingtypes "github.com/atomone-hub/atomone/x/slashing/types"
 	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
 	upgradetypes "github.com/atomone-hub/atomone/x/upgrade/types"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	capabilitytypes "github.com/cosmos/cosmos-sdk/x/capability/types"
 
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"

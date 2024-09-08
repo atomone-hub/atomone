@@ -13,10 +13,10 @@ import (
 
 	"cosmossdk.io/depinject"
 	"github.com/atomone-hub/atomone/codec"
+	"github.com/atomone-hub/atomone/store"
+	storetypes "github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/params/types"
-	"github.com/cosmos/cosmos-sdk/store"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	"github.com/cosmos/cosmos-sdk/x/params/testutil"
 )
 

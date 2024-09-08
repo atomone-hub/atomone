@@ -12,8 +12,8 @@ import (
 
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/client/flags"
+	svrcmd "github.com/atomone-hub/atomone/server/cmd"
 	clitestutil "github.com/atomone-hub/atomone/testutil/cli"
-	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 
 	"github.com/atomone-hub/atomone/crypto/keyring"
 	testutilmod "github.com/atomone-hub/atomone/types/module/testutil"

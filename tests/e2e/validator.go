@@ -17,13 +17,13 @@ import (
 	"github.com/atomone-hub/atomone/crypto/hd"
 	"github.com/atomone-hub/atomone/crypto/keyring"
 	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
+	"github.com/atomone-hub/atomone/server"
 	sdk "github.com/atomone-hub/atomone/types"
 	sdktx "github.com/atomone-hub/atomone/types/tx"
 	txsigning "github.com/atomone-hub/atomone/types/tx/signing"
 	authsigning "github.com/atomone-hub/atomone/x/auth/signing"
 	"github.com/atomone-hub/atomone/x/genutil"
 	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
-	"github.com/cosmos/cosmos-sdk/server"
 
 	atomone "github.com/atomone-hub/atomone/app"
 )

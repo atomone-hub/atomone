@@ -15,6 +15,7 @@ import (
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/client/flags"
 	"github.com/atomone-hub/atomone/crypto/keyring"
+	svrcmd "github.com/atomone-hub/atomone/server/cmd"
 	clitestutil "github.com/atomone-hub/atomone/testutil/cli"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/module"
@@ -23,7 +24,6 @@ import (
 	"github.com/atomone-hub/atomone/x/genutil"
 	"github.com/atomone-hub/atomone/x/genutil/client/cli"
 	stakingcli "github.com/atomone-hub/atomone/x/staking/client/cli"
-	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 )
 
 type CLITestSuite struct {

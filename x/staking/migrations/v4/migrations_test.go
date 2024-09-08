@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/atomone-hub/atomone/codec"
+	storetypes "github.com/atomone-hub/atomone/store/types"
 	"github.com/atomone-hub/atomone/testutil"
 	"github.com/atomone-hub/atomone/testutil/sims"
 	sdk "github.com/atomone-hub/atomone/types"
@@ -15,7 +16,6 @@ import (
 	"github.com/atomone-hub/atomone/x/staking"
 	v4 "github.com/atomone-hub/atomone/x/staking/migrations/v4"
 	"github.com/atomone-hub/atomone/x/staking/types"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 )
 
 type mockSubspace struct {

@@ -18,10 +18,10 @@ import (
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/client/flags"
 	"github.com/atomone-hub/atomone/client/input"
+	"github.com/atomone-hub/atomone/server"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/module"
 	"github.com/atomone-hub/atomone/x/genutil"
-	"github.com/cosmos/cosmos-sdk/server"
 )
 
 const (

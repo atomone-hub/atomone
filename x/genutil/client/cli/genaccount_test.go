@@ -15,8 +15,8 @@ import (
 
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/client/flags"
+	"github.com/atomone-hub/atomone/server"
 	"github.com/atomone-hub/atomone/testutil/testdata"
-	"github.com/cosmos/cosmos-sdk/server"
 
 	moduletestutil "github.com/atomone-hub/atomone/types/module/testutil"
 	"github.com/atomone-hub/atomone/x/auth"

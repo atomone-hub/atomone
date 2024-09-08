@@ -12,11 +12,11 @@ import (
 
 	"github.com/atomone-hub/atomone/codec"
 	cdctypes "github.com/atomone-hub/atomone/codec/types"
+	"github.com/atomone-hub/atomone/server"
 	"github.com/atomone-hub/atomone/types"
 	bankexported "github.com/atomone-hub/atomone/x/bank/exported"
 	"github.com/atomone-hub/atomone/x/genutil"
 	gtypes "github.com/atomone-hub/atomone/x/genutil/types"
-	"github.com/cosmos/cosmos-sdk/server"
 )
 
 type doNothingUnmarshalJSON struct {

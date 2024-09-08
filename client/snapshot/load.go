@@ -10,7 +10,7 @@ import (
 	"reflect"
 	"strconv"
 
-	"github.com/cosmos/cosmos-sdk/server"
+	"github.com/atomone-hub/atomone/server"
 	"github.com/spf13/cobra"
 
 	snapshottypes "github.com/cosmos/cosmos-sdk/snapshots/types"

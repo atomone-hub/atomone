@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
+	svrcmd "github.com/atomone-hub/atomone/server/cmd"
 
 	app "github.com/atomone-hub/atomone/app"
 	"github.com/atomone-hub/atomone/cmd/atomoned/cmd"

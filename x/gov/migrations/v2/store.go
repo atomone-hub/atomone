@@ -4,11 +4,11 @@ import (
 	"fmt"
 
 	"github.com/atomone-hub/atomone/codec"
+	"github.com/atomone-hub/atomone/store/prefix"
+	storetypes "github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/gov/types"
 	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
 )
 

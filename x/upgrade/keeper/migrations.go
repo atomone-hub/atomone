@@ -3,10 +3,10 @@ package keeper
 import (
 	"encoding/binary"
 
+	"github.com/atomone-hub/atomone/store/prefix"
+	storetypes "github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/upgrade/types"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 )
 
 // Migrator is a struct for handling in-place store migrations.

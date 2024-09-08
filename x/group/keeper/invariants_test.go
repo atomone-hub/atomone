@@ -11,14 +11,14 @@ import (
 
 	"github.com/atomone-hub/atomone/codec"
 	"github.com/atomone-hub/atomone/codec/types"
-	"github.com/cosmos/cosmos-sdk/store"
+	"github.com/atomone-hub/atomone/store"
 
+	storetypes "github.com/atomone-hub/atomone/store/types"
 	"github.com/atomone-hub/atomone/testutil/testdata"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/group"
 	"github.com/atomone-hub/atomone/x/group/internal/orm"
 	"github.com/atomone-hub/atomone/x/group/keeper"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 )
 
 type invariantTestSuite struct {

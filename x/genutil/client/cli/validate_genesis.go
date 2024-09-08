@@ -8,8 +8,8 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/atomone-hub/atomone/client"
+	"github.com/atomone-hub/atomone/server"
 	"github.com/atomone-hub/atomone/types/module"
-	"github.com/cosmos/cosmos-sdk/server"
 )
 
 const chainUpgradeGuide = "https://github.com/cosmos/cosmos-sdk/blob/main/UPGRADING.md"

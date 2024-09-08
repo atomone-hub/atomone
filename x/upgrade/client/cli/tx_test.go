@@ -12,11 +12,11 @@ import (
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/client/flags"
 	"github.com/atomone-hub/atomone/crypto/keyring"
+	svrcmd "github.com/atomone-hub/atomone/server/cmd"
 	clitestutil "github.com/atomone-hub/atomone/testutil/cli"
 	testutilmod "github.com/atomone-hub/atomone/types/module/testutil"
 	"github.com/atomone-hub/atomone/x/upgrade"
 	upgradecli "github.com/atomone-hub/atomone/x/upgrade/client/cli"
-	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 )
 
 func TestModuleVersionsCLI(t *testing.T) {

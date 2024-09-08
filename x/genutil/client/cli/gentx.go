@@ -17,13 +17,13 @@ import (
 	"github.com/atomone-hub/atomone/client/flags"
 	"github.com/atomone-hub/atomone/client/tx"
 	"github.com/atomone-hub/atomone/crypto/keyring"
+	"github.com/atomone-hub/atomone/server"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/module"
 	authclient "github.com/atomone-hub/atomone/x/auth/client"
 	"github.com/atomone-hub/atomone/x/genutil"
 	"github.com/atomone-hub/atomone/x/genutil/types"
 	"github.com/atomone-hub/atomone/x/staking/client/cli"
-	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cosmos/cosmos-sdk/version"
 )
 

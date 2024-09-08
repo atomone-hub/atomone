@@ -16,12 +16,12 @@ import (
 
 	"github.com/atomone-hub/atomone/baseapp"
 	"github.com/atomone-hub/atomone/client/flags"
+	"github.com/atomone-hub/atomone/server"
+	"github.com/atomone-hub/atomone/store"
 	simtestutil "github.com/atomone-hub/atomone/testutil/sims"
 	simulation2 "github.com/atomone-hub/atomone/types/simulation"
 	"github.com/atomone-hub/atomone/x/simulation"
 	simcli "github.com/atomone-hub/atomone/x/simulation/client/cli"
-	"github.com/cosmos/cosmos-sdk/server"
-	"github.com/cosmos/cosmos-sdk/store"
 
 	"github.com/atomone-hub/atomone/ante"
 	atomone "github.com/atomone-hub/atomone/app"

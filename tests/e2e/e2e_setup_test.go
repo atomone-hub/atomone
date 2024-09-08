@@ -30,6 +30,7 @@ import (
 	codectypes "github.com/atomone-hub/atomone/codec/types"
 	"github.com/atomone-hub/atomone/crypto/hd"
 	"github.com/atomone-hub/atomone/crypto/keyring"
+	"github.com/atomone-hub/atomone/server"
 	srvconfig "github.com/atomone-hub/atomone/server/config"
 	sdk "github.com/atomone-hub/atomone/types"
 	authtypes "github.com/atomone-hub/atomone/x/auth/types"
@@ -40,7 +41,6 @@ import (
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
 	upgradetypes "github.com/atomone-hub/atomone/x/upgrade/types"
-	"github.com/cosmos/cosmos-sdk/server"
 )
 
 const (

@@ -22,6 +22,7 @@ import (
 	codectypes "github.com/atomone-hub/atomone/codec/types"
 	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
 	"github.com/atomone-hub/atomone/runtime"
+	store "github.com/atomone-hub/atomone/store/types"
 	simtestutil "github.com/atomone-hub/atomone/testutil/sims"
 	"github.com/atomone-hub/atomone/testutil/testdata"
 	sdk "github.com/atomone-hub/atomone/types"
@@ -32,7 +33,6 @@ import (
 	bankkeeper "github.com/atomone-hub/atomone/x/bank/keeper"
 	banktypes "github.com/atomone-hub/atomone/x/bank/types"
 	minttypes "github.com/atomone-hub/atomone/x/mint/types"
-	store "github.com/cosmos/cosmos-sdk/store/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 

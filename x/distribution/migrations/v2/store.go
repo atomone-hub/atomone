@@ -1,9 +1,9 @@
 package v2
 
 import (
+	storetypes "github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	v1 "github.com/atomone-hub/atomone/x/distribution/migrations/v1"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 )
 
 // MigrateStore performs in-place store migrations from v0.40 to v0.43. The

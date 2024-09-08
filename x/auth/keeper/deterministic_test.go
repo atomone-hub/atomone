@@ -11,6 +11,7 @@ import (
 
 	"github.com/atomone-hub/atomone/baseapp"
 	"github.com/atomone-hub/atomone/crypto/keys/secp256k1"
+	storetypes "github.com/atomone-hub/atomone/store/types"
 	"github.com/atomone-hub/atomone/testutil"
 	"github.com/atomone-hub/atomone/testutil/testdata"
 	sdk "github.com/atomone-hub/atomone/types"
@@ -18,7 +19,6 @@ import (
 	"github.com/atomone-hub/atomone/x/auth"
 	"github.com/atomone-hub/atomone/x/auth/keeper"
 	"github.com/atomone-hub/atomone/x/auth/types"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 )
 
 type DeterministicTestSuite struct {

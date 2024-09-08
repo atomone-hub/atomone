@@ -6,7 +6,7 @@ import (
 
 	"github.com/cometbft/cometbft/libs/log"
 
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
+	storetypes "github.com/atomone-hub/atomone/store/types"
 
 	"github.com/atomone-hub/atomone/codec"
 	sdk "github.com/atomone-hub/atomone/types"

@@ -20,7 +20,9 @@ import (
 	"github.com/atomone-hub/atomone/codec"
 	codectypes "github.com/atomone-hub/atomone/codec/types"
 	"github.com/atomone-hub/atomone/runtime"
+	"github.com/atomone-hub/atomone/server"
 	servertypes "github.com/atomone-hub/atomone/server/types"
+	store "github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/module"
 	authtypes "github.com/atomone-hub/atomone/x/auth/types"
@@ -29,8 +31,6 @@ import (
 	"github.com/atomone-hub/atomone/x/upgrade/client/cli"
 	"github.com/atomone-hub/atomone/x/upgrade/keeper"
 	"github.com/atomone-hub/atomone/x/upgrade/types"
-	"github.com/cosmos/cosmos-sdk/server"
-	store "github.com/cosmos/cosmos-sdk/store/types"
 )
 
 func init() {

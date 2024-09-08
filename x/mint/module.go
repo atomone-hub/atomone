@@ -17,6 +17,7 @@ import (
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/codec"
 	cdctypes "github.com/atomone-hub/atomone/codec/types"
+	store "github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/module"
 	simtypes "github.com/atomone-hub/atomone/types/simulation"
@@ -27,7 +28,6 @@ import (
 	"github.com/atomone-hub/atomone/x/mint/keeper"
 	"github.com/atomone-hub/atomone/x/mint/simulation"
 	"github.com/atomone-hub/atomone/x/mint/types"
-	store "github.com/cosmos/cosmos-sdk/store/types"
 )
 
 // ConsensusVersion defines the current x/mint module consensus version.

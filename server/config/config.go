@@ -7,8 +7,8 @@ import (
 	"github.com/spf13/viper"
 
 	clientflags "github.com/atomone-hub/atomone/client/flags"
+	pruningtypes "github.com/atomone-hub/atomone/store/pruning/types"
 	sdk "github.com/atomone-hub/atomone/types"
-	pruningtypes "github.com/cosmos/cosmos-sdk/store/pruning/types"
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )

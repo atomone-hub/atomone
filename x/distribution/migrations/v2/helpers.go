@@ -1,9 +1,9 @@
 package v2
 
 import (
+	"github.com/atomone-hub/atomone/store/prefix"
 	sdk "github.com/atomone-hub/atomone/types"
 	v1auth "github.com/atomone-hub/atomone/x/auth/migrations/v1"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
 	"github.com/cosmos/cosmos-sdk/types/address"
 )
 

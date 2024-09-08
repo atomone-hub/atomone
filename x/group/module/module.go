@@ -17,6 +17,7 @@ import (
 	sdkclient "github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/codec"
 	cdctypes "github.com/atomone-hub/atomone/codec/types"
+	store "github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/module"
 	simtypes "github.com/atomone-hub/atomone/types/simulation"
@@ -24,7 +25,6 @@ import (
 	"github.com/atomone-hub/atomone/x/group/client/cli"
 	"github.com/atomone-hub/atomone/x/group/keeper"
 	"github.com/atomone-hub/atomone/x/group/simulation"
-	store "github.com/cosmos/cosmos-sdk/store/types"
 )
 
 // ConsensusVersion defines the current x/group module consensus version.

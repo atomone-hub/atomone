@@ -6,10 +6,10 @@ import (
 
 	"github.com/atomone-hub/atomone/codec"
 	"github.com/atomone-hub/atomone/codec/types"
+	"github.com/atomone-hub/atomone/store/prefix"
 	"github.com/atomone-hub/atomone/testutil/testdata"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/group/errors"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
