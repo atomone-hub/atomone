@@ -5,7 +5,7 @@ import (
 	sdk "github.com/atomone-hub/atomone/types"
 	auth "github.com/atomone-hub/atomone/x/auth/types"
 	paramtypes "github.com/atomone-hub/atomone/x/params/types"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
 )
 
 // AccountKeeper expected account keeper

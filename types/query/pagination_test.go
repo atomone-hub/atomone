@@ -25,9 +25,9 @@ import (
 	bankkeeper "github.com/atomone-hub/atomone/x/bank/keeper"
 	"github.com/atomone-hub/atomone/x/bank/testutil"
 	"github.com/atomone-hub/atomone/x/bank/types"
+	_ "github.com/atomone-hub/atomone/x/params"
 	"github.com/cosmos/cosmos-sdk/types/address"
 	_ "github.com/cosmos/cosmos-sdk/x/consensus"
-	_ "github.com/cosmos/cosmos-sdk/x/params"
 )
 
 const (

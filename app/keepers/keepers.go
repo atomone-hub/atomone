@@ -17,6 +17,7 @@ import (
 	authzkeeper "github.com/atomone-hub/atomone/x/authz/keeper"
 	bankkeeper "github.com/atomone-hub/atomone/x/bank/keeper"
 	banktypes "github.com/atomone-hub/atomone/x/bank/types"
+	"github.com/atomone-hub/atomone/x/params"
 
 	//consensusparamtypes "github.com/atomone-hub/atomone/x/consensus/types"
 
@@ -40,12 +41,15 @@ import (
 	//consensusparamkeeper "github.com/cosmos/cosmos-sdk/x/consensus/keeper"
 	//crisiskeeper "github.com/cosmos/cosmos-sdk/x/crisis/keeper"
 
-	//paramskeeper "github.com/cosmos/cosmos-sdk/x/params/keeper"
+	paramskeeper "github.com/atomone-hub/atomone/x/params/keeper"
+	paramstypes "github.com/atomone-hub/atomone/x/params/types"
+	paramproposal "github.com/atomone-hub/atomone/x/params/types/proposal"
 
 	//slashingkeeper "github.com/cosmos/cosmos-sdk/x/slashing/keeper"
 
 	govkeeper "github.com/atomone-hub/atomone/x/gov/keeper"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
+	govv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 )
 
 type AppKeepers struct {
@@ -65,7 +69,7 @@ type AppKeepers struct {
 	GovKeeper   *govkeeper.Keeper
 	//CrisisKeeper          *crisiskeeper.Keeper
 	UpgradeKeeper *upgradekeeper.Keeper
-	//ParamsKeeper  paramskeeper.Keeper
+	ParamsKeeper  paramskeeper.Keeper
 	//EvidenceKeeper        evidencekeeper.Keeper
 	FeeGrantKeeper feegrantkeeper.Keeper
 	AuthzKeeper    authzkeeper.Keeper
@@ -101,12 +105,12 @@ func NewAppKeeper(
 		os.Exit(1)
 	}
 
-	//appKeepers.ParamsKeeper = initParamsKeeper(
-	//	appCodec,
-	//	legacyAmino,
-	//	appKeepers.keys[paramstypes.StoreKey],
-	//	appKeepers.tkeys[paramstypes.TStoreKey],
-	//)
+	appKeepers.ParamsKeeper = initParamsKeeper(
+		appCodec,
+		legacyAmino,
+		appKeepers.keys[paramstypes.StoreKey],
+		appKeepers.tkeys[paramstypes.TStoreKey],
+	)
 
 	// set the BaseApp's parameter store
 	//appKeepers.ConsensusParamsKeeper = consensusparamkeeper.NewKeeper(
@@ -248,7 +252,7 @@ func NewAppKeeper(
 	govRouter := govv1beta1.NewRouter()
 	govRouter.
 		AddRoute(govtypes.RouterKey, govv1beta1.ProposalHandler).
-		//AddRoute(paramproposal.RouterKey/*, params.NewParamChangeProposalHandler(appKeepers.ParamsKeeper)*/).
+		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(appKeepers.ParamsKeeper)).
 		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(appKeepers.UpgradeKeeper))
 
 	// Set legacy router for backwards compatibility with gov v1beta1
@@ -267,27 +271,27 @@ func NewAppKeeper(
 }
 
 // GetSubspace returns a param subspace for a given module name.
-//func (appKeepers *AppKeepers) GetSubspace(moduleName string) paramstypes.Subspace {
-//	subspace, ok := appKeepers.ParamsKeeper.GetSubspace(moduleName)
-//	if !ok {
-//		panic("couldn't load subspace for module: " + moduleName)
-//	}
-//	return subspace
-//}
+func (appKeepers *AppKeepers) GetSubspace(moduleName string) paramstypes.Subspace {
+	subspace, ok := appKeepers.ParamsKeeper.GetSubspace(moduleName)
+	if !ok {
+		panic("couldn't load subspace for module: " + moduleName)
+	}
+	return subspace
+}
 
 // initParamsKeeper init params keeper and its subspaces
-//func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino, key, tkey storetypes.StoreKey) paramskeeper.Keeper {
-//	paramsKeeper := paramskeeper.NewKeeper(appCodec, legacyAmino, key, tkey)
-//
-//	//nolint: staticcheck // SA1019: moduletypes.ParamKeyTable is deprecated
-//	paramsKeeper.Subspace(authtypes.ModuleName).WithKeyTable(authtypes.ParamKeyTable())
-//	paramsKeeper.Subspace(stakingtypes.ModuleName).WithKeyTable(stakingtypes.ParamKeyTable())
-//	paramsKeeper.Subspace(banktypes.ModuleName).WithKeyTable(banktypes.ParamKeyTable())         //nolint:staticcheck // SA1019
-//	paramsKeeper.Subspace(minttypes.ModuleName).WithKeyTable(minttypes.ParamKeyTable())         //nolint:staticcheck // SA1019
-//	paramsKeeper.Subspace(distrtypes.ModuleName).WithKeyTable(distrtypes.ParamKeyTable())       //nolint:staticcheck // SA1019
-//	paramsKeeper.Subspace(slashingtypes.ModuleName).WithKeyTable(slashingtypes.ParamKeyTable()) //nolint:staticcheck // SA1019
-//	paramsKeeper.Subspace(govtypes.ModuleName).WithKeyTable(govv1.ParamKeyTable())              //nolint:staticcheck // SA1019
-//	paramsKeeper.Subspace(crisistypes.ModuleName).WithKeyTable(crisistypes.ParamKeyTable())     //nolint:staticcheck // SA1019
-//
-//	return paramsKeeper
-//}
+func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino, key, tkey storetypes.StoreKey) paramskeeper.Keeper {
+	paramsKeeper := paramskeeper.NewKeeper(appCodec, legacyAmino, key, tkey)
+
+	//nolint: staticcheck // SA1019: moduletypes.ParamKeyTable is deprecated
+	paramsKeeper.Subspace(authtypes.ModuleName).WithKeyTable(authtypes.ParamKeyTable())
+	paramsKeeper.Subspace(stakingtypes.ModuleName).WithKeyTable(stakingtypes.ParamKeyTable())
+	paramsKeeper.Subspace(banktypes.ModuleName).WithKeyTable(banktypes.ParamKeyTable())   //nolint:staticcheck // SA1019
+	paramsKeeper.Subspace(minttypes.ModuleName).WithKeyTable(minttypes.ParamKeyTable())   //nolint:staticcheck // SA1019
+	paramsKeeper.Subspace(distrtypes.ModuleName).WithKeyTable(distrtypes.ParamKeyTable()) //nolint:staticcheck // SA1019
+	//paramsKeeper.Subspace(slashingtypes.ModuleName).WithKeyTable(slashingtypes.ParamKeyTable()) //nolint:staticcheck // SA1019
+	paramsKeeper.Subspace(govtypes.ModuleName).WithKeyTable(govv1.ParamKeyTable()) //nolint:staticcheck // SA1019
+	//paramsKeeper.Subspace(crisistypes.ModuleName).WithKeyTable(crisistypes.ParamKeyTable())     //nolint:staticcheck // SA1019
+
+	return paramsKeeper
+}

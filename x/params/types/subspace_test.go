@@ -16,8 +16,8 @@ import (
 	"github.com/atomone-hub/atomone/store"
 	storetypes "github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
+	"github.com/atomone-hub/atomone/x/params/testutil"
 	"github.com/atomone-hub/atomone/x/params/types"
-	"github.com/cosmos/cosmos-sdk/x/params/testutil"
 )
 
 type SubspaceTestSuite struct {

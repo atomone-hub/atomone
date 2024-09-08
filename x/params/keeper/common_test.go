@@ -7,7 +7,7 @@ import (
 	sdktestutil "github.com/atomone-hub/atomone/testutil"
 	sdk "github.com/atomone-hub/atomone/types"
 	paramskeeper "github.com/atomone-hub/atomone/x/params/keeper"
-	"github.com/cosmos/cosmos-sdk/x/params/testutil"
+	"github.com/atomone-hub/atomone/x/params/testutil"
 )
 
 func testComponents() (*codec.LegacyAmino, sdk.Context, storetypes.StoreKey, storetypes.StoreKey, paramskeeper.Keeper) {

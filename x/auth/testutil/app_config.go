@@ -7,9 +7,9 @@ import (
 	_ "github.com/atomone-hub/atomone/x/bank"
 	_ "github.com/atomone-hub/atomone/x/feegrant/module"
 	_ "github.com/atomone-hub/atomone/x/genutil"
+	_ "github.com/atomone-hub/atomone/x/params"
 	_ "github.com/atomone-hub/atomone/x/staking"
 	_ "github.com/cosmos/cosmos-sdk/x/consensus"
-	_ "github.com/cosmos/cosmos-sdk/x/params"
 
 	"cosmossdk.io/core/appconfig"
 	authtypes "github.com/atomone-hub/atomone/x/auth/types"

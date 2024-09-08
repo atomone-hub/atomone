@@ -8,9 +8,9 @@ import (
 	_ "github.com/atomone-hub/atomone/x/genutil"
 	_ "github.com/atomone-hub/atomone/x/gov"
 	_ "github.com/atomone-hub/atomone/x/mint"
+	_ "github.com/atomone-hub/atomone/x/params"
 	_ "github.com/atomone-hub/atomone/x/staking"
 	_ "github.com/cosmos/cosmos-sdk/x/consensus"
-	_ "github.com/cosmos/cosmos-sdk/x/params"
 
 	txconfigv1 "cosmossdk.io/api/cosmos/tx/config/v1"
 	"cosmossdk.io/core/appconfig"

@@ -1,5 +1,7 @@
 package cmd
 
+// DONTCOVER
+
 import (
 	"bufio"
 	"encoding/json"
@@ -8,27 +10,16 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/spf13/cobra"
-	"github.com/spf13/pflag"
-
 	tmconfig "github.com/cometbft/cometbft/config"
 	tmrand "github.com/cometbft/cometbft/libs/rand"
 	"github.com/cometbft/cometbft/types"
 	tmtime "github.com/cometbft/cometbft/types/time"
+	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 
 	"cosmossdk.io/math"
-	"github.com/atomone-hub/atomone/simapp"
 
-	"github.com/atomone-hub/atomone/client"
-	"github.com/atomone-hub/atomone/client/flags"
-	"github.com/atomone-hub/atomone/client/tx"
-	"github.com/atomone-hub/atomone/crypto/hd"
-	"github.com/atomone-hub/atomone/crypto/keyring"
-	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
-	"github.com/atomone-hub/atomone/server"
-	srvconfig "github.com/atomone-hub/atomone/server/config"
-	"github.com/atomone-hub/atomone/testutil"
-	"github.com/atomone-hub/atomone/testutil/network"
+	"cosmossdk.io/simapp"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/module"
 	authtypes "github.com/atomone-hub/atomone/x/auth/types"
@@ -36,6 +27,16 @@ import (
 	"github.com/atomone-hub/atomone/x/genutil"
 	genutiltypes "github.com/atomone-hub/atomone/x/genutil/types"
 	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/cosmos/cosmos-sdk/client/tx"
+	"github.com/cosmos/cosmos-sdk/crypto/hd"
+	"github.com/cosmos/cosmos-sdk/crypto/keyring"
+	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
+	"github.com/cosmos/cosmos-sdk/server"
+	srvconfig "github.com/cosmos/cosmos-sdk/server/config"
+	"github.com/cosmos/cosmos-sdk/testutil"
+	"github.com/cosmos/cosmos-sdk/testutil/network"
 )
 
 var (
@@ -305,7 +306,7 @@ func initTestnetFiles(
 			sdk.NewCoin(sdk.DefaultBondDenom, valTokens),
 			stakingtypes.NewDescription(nodeDirName, "", "", "", ""),
 			stakingtypes.NewCommissionRates(math.LegacyOneDec(), math.LegacyOneDec(), math.LegacyOneDec()),
-			sdk.OneInt(),
+			math.OneInt(),
 		)
 		if err != nil {
 			return err

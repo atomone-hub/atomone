@@ -7,9 +7,9 @@ import (
 	_ "github.com/atomone-hub/atomone/x/distribution"
 	_ "github.com/atomone-hub/atomone/x/genutil"
 	_ "github.com/atomone-hub/atomone/x/mint"
+	_ "github.com/atomone-hub/atomone/x/params"
 	_ "github.com/atomone-hub/atomone/x/staking"
 	_ "github.com/cosmos/cosmos-sdk/x/consensus"
-	_ "github.com/cosmos/cosmos-sdk/x/params"
 	_ "github.com/cosmos/cosmos-sdk/x/slashing"
 
 	"cosmossdk.io/core/appconfig"

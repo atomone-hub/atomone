@@ -27,8 +27,8 @@ import (
 	_ "github.com/atomone-hub/atomone/x/bank"
 	banktypes "github.com/atomone-hub/atomone/x/bank/types"
 	_ "github.com/atomone-hub/atomone/x/genutil"
+	_ "github.com/atomone-hub/atomone/x/params"
 	_ "github.com/atomone-hub/atomone/x/staking"
-	_ "github.com/cosmos/cosmos-sdk/x/params"
 )
 
 // https://github.com/improbable-eng/grpc-web/blob/master/go/grpcweb/wrapper_test.go used as a reference

@@ -36,8 +36,9 @@ import (
 	//"github.com/cosmos/cosmos-sdk/x/consensus"
 	//"github.com/cosmos/cosmos-sdk/x/crisis"
 	//"github.com/cosmos/cosmos-sdk/x/evidence"
-	//sdkparams "github.com/cosmos/cosmos-sdk/x/params"
+	sdkparams "github.com/atomone-hub/atomone/x/params"
 	paramsclient "github.com/atomone-hub/atomone/x/params/client"
+
 	//"github.com/cosmos/cosmos-sdk/x/slashing"
 
 	atomoneappparams "github.com/atomone-hub/atomone/app/params"
@@ -137,7 +138,7 @@ func simulationModules(
 		staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
 		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(distrtypes.ModuleName)),
 		//slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(slashingtypes.ModuleName)),
-		//sdkparams.NewAppModule(app.ParamsKeeper),
+		sdkparams.NewAppModule(app.ParamsKeeper),
 		//evidence.NewAppModule(app.EvidenceKeeper),
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 	}

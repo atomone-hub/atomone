@@ -21,9 +21,9 @@ import (
 	"github.com/atomone-hub/atomone/x/bank/simulation"
 	"github.com/atomone-hub/atomone/x/bank/testutil"
 	"github.com/atomone-hub/atomone/x/bank/types"
+	_ "github.com/atomone-hub/atomone/x/params"
 	_ "github.com/atomone-hub/atomone/x/staking"
 	_ "github.com/cosmos/cosmos-sdk/x/consensus"
-	_ "github.com/cosmos/cosmos-sdk/x/params"
 )
 
 type SimTestSuite struct {
