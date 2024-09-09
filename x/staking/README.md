@@ -7,7 +7,7 @@ sidebar_position: 1
 ## Abstract
 
 This paper specifies the Staking module of the Cosmos SDK that was first
-described in the [Cosmos Whitepaper](https://cosmos.network/about/whitepaper)
+described in the [Cosmos Whitepaper](https://atomone.network/about/whitepaper)
 in June 2016.
 
 The module enables Cosmos SDK-based blockchain to support an advanced
@@ -1108,7 +1108,7 @@ valset:
       rate: "0.100000000000000000"
     update_time: "2021-10-01T05:52:50.380144238Z"
   consensus_pubkey:
-    '@type': /cosmos.crypto.ed25519.PubKey
+    '@type': /atomone.crypto.ed25519.PubKey
     key: Auxs3865HpB/EfssYOzfqNhEJjzys2Fo6jD5B8tPgC8=
   delegator_shares: "10000000.000000000000000000"
   description:
@@ -1452,7 +1452,7 @@ commission:
     rate: "0.050000000000000000"
   update_time: "2021-10-01T19:24:52.663191049Z"
 consensus_pubkey:
-  '@type': /cosmos.crypto.ed25519.PubKey
+  '@type': /atomone.crypto.ed25519.PubKey
   key: sIiexdJdYWn27+7iUHQJDnkp63gq/rzUq1Y+fxoGjXc=
 delegator_shares: "32948270000.000000000000000000"
 description:
@@ -1503,7 +1503,7 @@ commission:
     rate: "0.050000000000000000"
   update_time: "2021-10-01T19:24:52.663191049Z"
 consensus_pubkey:
-  '@type': /cosmos.crypto.ed25519.PubKey
+  '@type': /atomone.crypto.ed25519.PubKey
   key: sIiexdJdYWn27+7iUHQJDnkp63gq/rzUq1Y+fxoGjXc=
 delegator_shares: "32948270000.000000000000000000"
 description:
@@ -1529,7 +1529,7 @@ description:
       rate: "0.050000000000000000"
     update_time: "2021-10-04T18:02:21.446645619Z"
   consensus_pubkey:
-    '@type': /cosmos.crypto.ed25519.PubKey
+    '@type': /atomone.crypto.ed25519.PubKey
     key: GDNpuKDmCg9GnhnsiU4fCWktuGUemjNfvpCZiqoRIYA=
   delegator_shares: "559343421.000000000000000000"
   description:
@@ -1694,7 +1694,7 @@ Example Output:
   "validators": [
     {
       "operatorAddress": "cosmosvaloper1rne8lgs98p0jqe82sgt0qr4rdn4hgvmgp9ggcc",
-      "consensusPubkey": {"@type":"/cosmos.crypto.ed25519.PubKey","key":"Auxs3865HpB/EfssYOzfqNhEJjzys2Fo6jD5B8tPgC8="},
+      "consensusPubkey": {"@type":"/atomone.crypto.ed25519.PubKey","key":"Auxs3865HpB/EfssYOzfqNhEJjzys2Fo6jD5B8tPgC8="},
       "status": "BOND_STATUS_BONDED",
       "tokens": "10000000",
       "delegatorShares": "10000000000000000000000000",
@@ -1740,7 +1740,7 @@ Example Output:
 {
   "validator": {
     "operatorAddress": "cosmosvaloper1rne8lgs98p0jqe82sgt0qr4rdn4hgvmgp9ggcc",
-    "consensusPubkey": {"@type":"/cosmos.crypto.ed25519.PubKey","key":"Auxs3865HpB/EfssYOzfqNhEJjzys2Fo6jD5B8tPgC8="},
+    "consensusPubkey": {"@type":"/atomone.crypto.ed25519.PubKey","key":"Auxs3865HpB/EfssYOzfqNhEJjzys2Fo6jD5B8tPgC8="},
     "status": "BOND_STATUS_BONDED",
     "tokens": "10000000",
     "delegatorShares": "10000000000000000000000000",
@@ -2075,7 +2075,7 @@ Example Output:
     {
       "operator_address": "cosmosvaloper1eh5mwu044gd5ntkkc2xgfg8247mgc56fww3vc8",
       "consensus_pubkey": {
-        "@type": "/cosmos.crypto.ed25519.PubKey",
+        "@type": "/atomone.crypto.ed25519.PubKey",
         "key": "UPwHWxH1zHJWGOa/m6JB3f5YjHMvPQPkVbDqqi+U7Uw="
       },
       "jailed": false,
@@ -2132,7 +2132,7 @@ Example Output:
   "validator": {
     "operator_address": "cosmosvaloper1eh5mwu044gd5ntkkc2xgfg8247mgc56fww3vc8",
     "consensus_pubkey": {
-      "@type": "/cosmos.crypto.ed25519.PubKey",
+      "@type": "/atomone.crypto.ed25519.PubKey",
       "key": "UPwHWxH1zHJWGOa/m6JB3f5YjHMvPQPkVbDqqi+U7Uw="
     },
     "jailed": false,
@@ -2207,7 +2207,7 @@ Example Output:
       {
         "operator_address": "cosmosvaloper196ax4vc0lwpxndu9dyhvca7jhxp70rmcqcnylw",
         "consensus_pubkey": {
-          "@type": "/cosmos.crypto.ed25519.PubKey",
+          "@type": "/atomone.crypto.ed25519.PubKey",
           "key": "/O7BtNW0pafwfvomgR4ZnfldwPXiFfJs9mHg3gwfv5Q="
         },
         "jailed": false,
@@ -2455,7 +2455,7 @@ Example Output:
     {
       "operator_address": "cosmosvaloper1xwazl8ftks4gn00y5x3c47auquc62ssuvynw64",
       "consensus_pubkey": {
-        "@type": "/cosmos.crypto.ed25519.PubKey",
+        "@type": "/atomone.crypto.ed25519.PubKey",
         "key": "5v4n3px3PkfNnKflSgepDnsMQR1hiNXnqOC11Y72/PQ="
       },
       "jailed": false,
@@ -2512,7 +2512,7 @@ Example Output:
   "validator": {
     "operator_address": "cosmosvaloper1xwazl8ftks4gn00y5x3c47auquc62ssuvynw64",
     "consensus_pubkey": {
-      "@type": "/cosmos.crypto.ed25519.PubKey",
+      "@type": "/atomone.crypto.ed25519.PubKey",
       "key": "5v4n3px3PkfNnKflSgepDnsMQR1hiNXnqOC11Y72/PQ="
     },
     "jailed": false,
@@ -2589,7 +2589,7 @@ Example Output:
       {
         "operator_address": "cosmosvaloper196ax4vc0lwpxndu9dyhvca7jhxp70rmcqcnylw",
         "consensus_pubkey": {
-          "@type": "/cosmos.crypto.ed25519.PubKey",
+          "@type": "/atomone.crypto.ed25519.PubKey",
           "key": "/O7BtNW0pafwfvomgR4ZnfldwPXiFfJs9mHg3gwfv5Q="
         },
         "jailed": false,
@@ -2618,7 +2618,7 @@ Example Output:
       {
         "operator_address": "cosmosvaloper1t8ehvswxjfn3ejzkjtntcyrqwvmvuknzmvtaaa",
         "consensus_pubkey": {
-          "@type": "/cosmos.crypto.ed25519.PubKey",
+          "@type": "/atomone.crypto.ed25519.PubKey",
           "key": "uExZyjNLtr2+FFIhNDAMcQ8+yTrqE7ygYTsI7khkA5Y="
         },
         "jailed": false,
@@ -2724,7 +2724,7 @@ Example Output:
     {
       "operator_address": "cosmosvaloper1q3jsx9dpfhtyqqgetwpe5tmk8f0ms5qywje8tw",
       "consensus_pubkey": {
-        "@type": "/cosmos.crypto.ed25519.PubKey",
+        "@type": "/atomone.crypto.ed25519.PubKey",
         "key": "N7BPyek2aKuNZ0N/8YsrqSDhGZmgVaYUBuddY8pwKaE="
       },
       "jailed": false,
@@ -2753,7 +2753,7 @@ Example Output:
     {
       "operator_address": "cosmosvaloper1q5ku90atkhktze83j9xjaks2p7uruag5zp6wt7",
       "consensus_pubkey": {
-        "@type": "/cosmos.crypto.ed25519.PubKey",
+        "@type": "/atomone.crypto.ed25519.PubKey",
         "key": "GDNpuKDmCg9GnhnsiU4fCWktuGUemjNfvpCZiqoRIYA="
       },
       "jailed": false,
@@ -2810,7 +2810,7 @@ Example Output:
   "validator": {
     "operator_address": "cosmosvaloper16msryt3fqlxtvsy8u5ay7wv2p8mglfg9g70e3q",
     "consensus_pubkey": {
-      "@type": "/cosmos.crypto.ed25519.PubKey",
+      "@type": "/atomone.crypto.ed25519.PubKey",
       "key": "sIiexdJdYWn27+7iUHQJDnkp63gq/rzUq1Y+fxoGjXc="
     },
     "jailed": false,

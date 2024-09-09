@@ -7,7 +7,7 @@ sidebar_position: 1
 ## Abstract
 
 This paper specifies the Governance module of the Cosmos SDK, which was first
-described in the [Cosmos Whitepaper](https://cosmos.network/about/whitepaper) in
+described in the [Cosmos Whitepaper](https://atomone.network/about/whitepaper) in
 June 2016.
 
 The module enables Cosmos SDK based blockchain to support an on-chain governance
@@ -870,7 +870,7 @@ final_tally_result:
   yes_count: "0"
 id: "1"
 messages:
-- '@type': /cosmos.bank.v1beta1.MsgSend
+- '@type': /atomone.bank.v1beta1.MsgSend
   amount:
   - amount: "10"
     denom: stake
@@ -915,7 +915,7 @@ proposals:
     yes_count: "0"
   id: "1"
   messages:
-  - '@type': /cosmos.bank.v1beta1.MsgSend
+  - '@type': /atomone.bank.v1beta1.MsgSend
     amount:
     - amount: "10"
       denom: stake
@@ -937,7 +937,7 @@ proposals:
     yes_count: "0"
   id: "2"
   messages:
-  - '@type': /cosmos.bank.v1beta1.MsgSend
+  - '@type': /atomone.bank.v1beta1.MsgSend
     amount:
     - amount: "10"
       denom: stake
@@ -1104,7 +1104,7 @@ where `proposal.json` contains:
 {
   "messages": [
     {
-      "@type": "/cosmos.bank.v1beta1.MsgSend",
+      "@type": "/atomone.bank.v1beta1.MsgSend",
       "from_address": "cosmos1...", // The gov module module address
       "to_address": "cosmos1...",
       "amount":[{"denom": "stake","amount": "10"}]
@@ -1225,7 +1225,7 @@ Example Output:
 {
   "proposal": {
     "proposalId": "1",
-    "content": {"@type":"/cosmos.gov.v1beta1.TextProposal","description":"testing, testing, 1, 2, 3","title":"Test Proposal"},
+    "content": {"@type":"/atomone.gov.v1beta1.TextProposal","description":"testing, testing, 1, 2, 3","title":"Test Proposal"},
     "status": "PROPOSAL_STATUS_VOTING_PERIOD",
     "finalTallyResult": {
       "yes": "0",
@@ -1271,7 +1271,7 @@ Example Output:
   "proposal": {
     "id": "1",
     "messages": [
-      {"@type":"/cosmos.bank.v1beta1.MsgSend","amount":[{"denom":"stake","amount":"10"}],"fromAddress":"cosmos1..","toAddress":"cosmos1.."}
+      {"@type":"/atomone.bank.v1beta1.MsgSend","amount":[{"denom":"stake","amount":"10"}],"fromAddress":"cosmos1..","toAddress":"cosmos1.."}
     ],
     "status": "PROPOSAL_STATUS_VOTING_PERIOD",
     "finalTallyResult": {
@@ -1391,7 +1391,7 @@ Example Output:
     {
       "id": "1",
       "messages": [
-        {"@type":"/cosmos.bank.v1beta1.MsgSend","amount":[{"denom":"stake","amount":"10"}],"fromAddress":"cosmos1..","toAddress":"cosmos1.."}
+        {"@type":"/atomone.bank.v1beta1.MsgSend","amount":[{"denom":"stake","amount":"10"}],"fromAddress":"cosmos1..","toAddress":"cosmos1.."}
       ],
       "status": "PROPOSAL_STATUS_VOTING_PERIOD",
       "finalTallyResult": {
@@ -1417,7 +1417,7 @@ Example Output:
     {
       "id": "2",
       "messages": [
-        {"@type":"/cosmos.bank.v1beta1.MsgSend","amount":[{"denom":"stake","amount":"10"}],"fromAddress":"cosmos1..","toAddress":"cosmos1.."}
+        {"@type":"/atomone.bank.v1beta1.MsgSend","amount":[{"denom":"stake","amount":"10"}],"fromAddress":"cosmos1..","toAddress":"cosmos1.."}
       ],
       "status": "PROPOSAL_STATUS_DEPOSIT_PERIOD",
       "finalTallyResult": {
@@ -1931,7 +1931,7 @@ Example Output:
     "id": "1",
     "messages": [
       {
-        "@type": "/cosmos.bank.v1beta1.MsgSend",
+        "@type": "/atomone.bank.v1beta1.MsgSend",
         "from_address": "cosmos1..",
         "to_address": "cosmos1..",
         "amount": [
@@ -2058,7 +2058,7 @@ Example Output:
       "id": "1",
       "messages": [
         {
-          "@type": "/cosmos.bank.v1beta1.MsgSend",
+          "@type": "/atomone.bank.v1beta1.MsgSend",
           "from_address": "cosmos1..",
           "to_address": "cosmos1..",
           "amount": [
@@ -2094,7 +2094,7 @@ Example Output:
       "id": "2",
       "messages": [
         {
-          "@type": "/cosmos.bank.v1beta1.MsgSend",
+          "@type": "/atomone.bank.v1beta1.MsgSend",
           "from_address": "cosmos1..",
           "to_address": "cosmos1..",
           "amount": [

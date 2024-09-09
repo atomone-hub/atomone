@@ -45,7 +45,7 @@ service Msg {
 // proposal Content.
 message MsgSubmitProposal {
   option (atomone.msg.v1.signer) = "proposer";
-  option (amino.name) = "cosmos-sdk/v1/MsgSubmitProposal";
+  option (amino.name) = "atomone/v1/MsgSubmitProposal";
 
   // messages are the arbitrary messages to be executed if proposal passes.
   repeated google.protobuf.Any messages = 1;
@@ -82,7 +82,7 @@ message MsgSubmitProposalResponse {
 // This ensures backwards compatibility with v1beta1.MsgSubmitProposal.
 message MsgExecLegacyContent {
   option (atomone.msg.v1.signer) = "authority";
-  option (amino.name) = "cosmos-sdk/v1/MsgExecLegacyContent";
+  option (amino.name) = "atomone/v1/MsgExecLegacyContent";
 
   // content is the proposal's content.
   google.protobuf.Any content = 1
@@ -97,7 +97,7 @@ message MsgExecLegacyContentResponse {}
 // MsgVote defines a message to cast a vote.
 message MsgVote {
   option (atomone.msg.v1.signer) = "voter";
-  option (amino.name) = "cosmos-sdk/v1/MsgVote";
+  option (amino.name) = "atomone/v1/MsgVote";
 
   // proposal_id defines the unique id of the proposal.
   uint64 proposal_id = 1
@@ -119,7 +119,7 @@ message MsgVoteResponse {}
 // MsgVoteWeighted defines a message to cast a vote.
 message MsgVoteWeighted {
   option (atomone.msg.v1.signer) = "voter";
-  option (amino.name) = "cosmos-sdk/v1/MsgVoteWeighted";
+  option (amino.name) = "atomone/v1/MsgVoteWeighted";
 
   // proposal_id defines the unique id of the proposal.
   uint64 proposal_id = 1
@@ -141,7 +141,7 @@ message MsgVoteWeightedResponse {}
 // MsgDeposit defines a message to submit a deposit to an existing proposal.
 message MsgDeposit {
   option (atomone.msg.v1.signer) = "depositor";
-  option (amino.name) = "cosmos-sdk/v1/MsgDeposit";
+  option (amino.name) = "atomone/v1/MsgDeposit";
 
   // proposal_id defines the unique id of the proposal.
   uint64 proposal_id = 1
@@ -163,7 +163,7 @@ message MsgDepositResponse {}
 // Since: cosmos-sdk 0.47
 message MsgUpdateParams {
   option (atomone.msg.v1.signer) = "authority";
-  option (amino.name) = "cosmos-sdk/x/gov/v1/MsgUpdateParams";
+  option (amino.name) = "atomone/x/gov/v1/MsgUpdateParams";
 
   // authority is the address that controls the module (defaults to x/gov unless
   // overwritten).

@@ -25,7 +25,7 @@ service Msg {
 // Since: cosmos-sdk 0.47
 message MsgUpdateParams {
   option (atomone.msg.v1.signer) = "authority";
-  option (amino.name) = "cosmos-sdk/x/auth/MsgUpdateParams";
+  option (amino.name) = "atomone/x/auth/MsgUpdateParams";
 
   // authority is the address that controls the module (defaults to x/gov unless
   // overwritten).

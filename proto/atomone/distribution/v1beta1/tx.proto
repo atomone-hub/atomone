@@ -55,7 +55,7 @@ service Msg {
 // a delegator (or validator self-delegation).
 message MsgSetWithdrawAddress {
   option (atomone.msg.v1.signer) = "delegator_address";
-  option (amino.name) = "cosmos-sdk/MsgModifyWithdrawAddress";
+  option (amino.name) = "atomone/MsgModifyWithdrawAddress";
 
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
@@ -74,7 +74,7 @@ message MsgSetWithdrawAddressResponse {}
 // from a single validator.
 message MsgWithdrawDelegatorReward {
   option (atomone.msg.v1.signer) = "delegator_address";
-  option (amino.name) = "cosmos-sdk/MsgWithdrawDelegationReward";
+  option (amino.name) = "atomone/MsgWithdrawDelegationReward";
 
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
@@ -100,7 +100,7 @@ message MsgWithdrawDelegatorRewardResponse {
 // address.
 message MsgWithdrawValidatorCommission {
   option (atomone.msg.v1.signer) = "validator_address";
-  option (amino.name) = "cosmos-sdk/MsgWithdrawValCommission";
+  option (amino.name) = "atomone/MsgWithdrawValCommission";
 
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
@@ -124,7 +124,7 @@ message MsgWithdrawValidatorCommissionResponse {
 // fund the community pool.
 message MsgFundCommunityPool {
   option (atomone.msg.v1.signer) = "depositor";
-  option (amino.name) = "cosmos-sdk/MsgFundCommunityPool";
+  option (amino.name) = "atomone/MsgFundCommunityPool";
 
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
@@ -145,7 +145,7 @@ message MsgFundCommunityPoolResponse {}
 // Since: cosmos-sdk 0.47
 message MsgUpdateParams {
   option (atomone.msg.v1.signer) = "authority";
-  option (amino.name) = "cosmos-sdk/distribution/MsgUpdateParams";
+  option (amino.name) = "atomone/distribution/MsgUpdateParams";
 
   // authority is the address that controls the module (defaults to x/gov unless
   // overwritten).
@@ -171,7 +171,7 @@ message MsgUpdateParamsResponse {}
 // Since: cosmos-sdk 0.47
 message MsgCommunityPoolSpend {
   option (atomone.msg.v1.signer) = "authority";
-  option (amino.name) = "cosmos-sdk/distr/MsgCommunityPoolSpend";
+  option (amino.name) = "atomone/distr/MsgCommunityPoolSpend";
 
   // authority is the address that controls the module (defaults to x/gov unless
   // overwritten).

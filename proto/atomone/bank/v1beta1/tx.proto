@@ -40,7 +40,7 @@ service Msg {
 // MsgSend represents a message to send coins from one account to another.
 message MsgSend {
   option (atomone.msg.v1.signer) = "from_address";
-  option (amino.name) = "cosmos-sdk/MsgSend";
+  option (amino.name) = "atomone/MsgSend";
 
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
@@ -60,7 +60,7 @@ message MsgSendResponse {}
 // MsgMultiSend represents an arbitrary multi-in, multi-out send message.
 message MsgMultiSend {
   option (atomone.msg.v1.signer) = "inputs";
-  option (amino.name) = "cosmos-sdk/MsgMultiSend";
+  option (amino.name) = "atomone/MsgMultiSend";
 
   option (gogoproto.equal) = false;
 
@@ -84,7 +84,7 @@ message MsgUpdateParams {
   // authority is the address that controls the module (defaults to x/gov unless
   // overwritten).
   string authority = 1 [ (cosmos_proto.scalar) = "atomone.AddressString" ];
-  option (amino.name) = "cosmos-sdk/x/bank/MsgUpdateParams";
+  option (amino.name) = "atomone/x/bank/MsgUpdateParams";
 
   // params defines the x/bank parameters to update.
   //
@@ -108,7 +108,7 @@ message MsgUpdateParamsResponse {}
 // Since: cosmos-sdk 0.47
 message MsgSetSendEnabled {
   option (atomone.msg.v1.signer) = "authority";
-  option (amino.name) = "cosmos-sdk/MsgSetSendEnabled";
+  option (amino.name) = "atomone/MsgSetSendEnabled";
 
   string authority = 1 [ (cosmos_proto.scalar) = "atomone.AddressString" ];
 

@@ -11,7 +11,7 @@ option go_package = "github.com/atomone-hub/atomone/x/auth/vesting/types";
 // BaseVestingAccount implements the VestingAccount interface. It contains all
 // the necessary fields needed for any vesting account implementation.
 message BaseVestingAccount {
-  option (amino.name) = "cosmos-sdk/BaseVestingAccount";
+  option (amino.name) = "atomone/BaseVestingAccount";
   option (gogoproto.goproto_getters) = false;
   option (gogoproto.goproto_stringer) = false;
 
@@ -39,7 +39,7 @@ message BaseVestingAccount {
 // ContinuousVestingAccount implements the VestingAccount interface. It
 // continuously vests by unlocking coins linearly with respect to time.
 message ContinuousVestingAccount {
-  option (amino.name) = "cosmos-sdk/ContinuousVestingAccount";
+  option (amino.name) = "atomone/ContinuousVestingAccount";
   option (gogoproto.goproto_getters) = false;
   option (gogoproto.goproto_stringer) = false;
 
@@ -52,7 +52,7 @@ message ContinuousVestingAccount {
 // coins after a specific time, but non prior. In other words, it keeps them
 // locked until a specified time.
 message DelayedVestingAccount {
-  option (amino.name) = "cosmos-sdk/DelayedVestingAccount";
+  option (amino.name) = "atomone/DelayedVestingAccount";
   option (gogoproto.goproto_getters) = false;
   option (gogoproto.goproto_stringer) = false;
 
@@ -75,7 +75,7 @@ message Period {
 // PeriodicVestingAccount implements the VestingAccount interface. It
 // periodically vests by unlocking coins during each specified period.
 message PeriodicVestingAccount {
-  option (amino.name) = "cosmos-sdk/PeriodicVestingAccount";
+  option (amino.name) = "atomone/PeriodicVestingAccount";
   option (gogoproto.goproto_getters) = false;
   option (gogoproto.goproto_stringer) = false;
 
@@ -91,7 +91,7 @@ message PeriodicVestingAccount {
 //
 // Since: cosmos-sdk 0.43
 message PermanentLockedAccount {
-  option (amino.name) = "cosmos-sdk/PermanentLockedAccount";
+  option (amino.name) = "atomone/PermanentLockedAccount";
   option (gogoproto.goproto_getters) = false;
   option (gogoproto.goproto_stringer) = false;
 

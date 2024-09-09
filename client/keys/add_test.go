@@ -122,8 +122,8 @@ func Test_runAddCmdBasic(t *testing.T) {
 }
 
 func Test_runAddCmdDryRun(t *testing.T) {
-	pubkey1 := `{"@type":"/cosmos.crypto.secp256k1.PubKey","key":"AtObiFVE4s+9+RX5SP8TN9r2mxpoaT4eGj9CJfK7VRzN"}`
-	pubkey2 := `{"@type":"/cosmos.crypto.secp256k1.PubKey","key":"A/se1vkqgdQ7VJQCM4mxN+L+ciGhnnJ4XYsQCRBMrdRi"}`
+	pubkey1 := `{"@type":"/atomone.crypto.secp256k1.PubKey","key":"AtObiFVE4s+9+RX5SP8TN9r2mxpoaT4eGj9CJfK7VRzN"}`
+	pubkey2 := `{"@type":"/atomone.crypto.secp256k1.PubKey","key":"A/se1vkqgdQ7VJQCM4mxN+L+ciGhnnJ4XYsQCRBMrdRi"}`
 	cdc := clienttestutil.MakeTestCodec(t)
 
 	testData := []struct {

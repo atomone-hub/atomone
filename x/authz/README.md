@@ -183,7 +183,7 @@ The message handling should fail if:
 
 ## Events
 
-The authz module emits proto events defined in [the Protobuf reference](https://buf.build/cosmos/cosmos-sdk/docs/main/cosmos.authz.v1beta1#cosmos.authz.v1beta1.EventGrant).
+The authz module emits proto events defined in [the Protobuf reference](https://buf.build/cosmos/cosmos-sdk/docs/main/atomone.authz.v1beta1#cosmos.authz.v1beta1.EventGrant).
 
 ## Client
 
@@ -210,7 +210,7 @@ simd query authz grants [granter-addr] [grantee-addr] [msg-type-url]? [flags]
 Example:
 
 ```bash
-simd query authz grants cosmos1.. cosmos1.. /cosmos.bank.v1beta1.MsgSend
+simd query authz grants cosmos1.. cosmos1.. /atomone.bank.v1beta1.MsgSend
 ```
 
 Example Output:
@@ -218,7 +218,7 @@ Example Output:
 ```bash
 grants:
 - authorization:
-    '@type': /cosmos.bank.v1beta1.SendAuthorization
+    '@type': /atomone.bank.v1beta1.SendAuthorization
     spend_limit:
     - amount: "100"
       denom: stake
@@ -273,7 +273,7 @@ simd tx authz revoke [grantee] [msg-type-url] --from=[granter] [flags]
 Example:
 
 ```bash
-simd tx authz revoke cosmos1.. /cosmos.bank.v1beta1.MsgSend --from=cosmos1..
+simd tx authz revoke cosmos1.. /atomone.bank.v1beta1.MsgSend --from=cosmos1..
 ```
 
 ### gRPC
@@ -292,7 +292,7 @@ Example:
 
 ```bash
 grpcurl -plaintext \
-    -d '{"granter":"cosmos1..","grantee":"cosmos1..","msg_type_url":"/cosmos.bank.v1beta1.MsgSend"}' \
+    -d '{"granter":"cosmos1..","grantee":"cosmos1..","msg_type_url":"/atomone.bank.v1beta1.MsgSend"}' \
     localhost:9090 \
     cosmos.authz.v1beta1.Query/Grants
 ```
@@ -304,7 +304,7 @@ Example Output:
   "grants": [
     {
       "authorization": {
-        "@type": "/cosmos.bank.v1beta1.SendAuthorization",
+        "@type": "/atomone.bank.v1beta1.SendAuthorization",
         "spendLimit": [
           {
             "denom":"stake",
@@ -329,7 +329,7 @@ A user can query the `authz` module using REST endpoints.
 Example:
 
 ```bash
-curl "localhost:1317/cosmos/authz/v1beta1/grants?granter=cosmos1..&grantee=cosmos1..&msg_type_url=/cosmos.bank.v1beta1.MsgSend"
+curl "localhost:1317/cosmos/authz/v1beta1/grants?granter=cosmos1..&grantee=cosmos1..&msg_type_url=/atomone.bank.v1beta1.MsgSend"
 ```
 
 Example Output:
@@ -339,7 +339,7 @@ Example Output:
   "grants": [
     {
       "authorization": {
-        "@type": "/cosmos.bank.v1beta1.SendAuthorization",
+        "@type": "/atomone.bank.v1beta1.SendAuthorization",
         "spend_limit": [
           {
             "denom": "stake",

@@ -98,7 +98,7 @@ Where proposal.json contains:
   // array of proto-JSON-encoded sdk.Msgs
   "messages": [
     {
-      "@type": "/cosmos.bank.v1beta1.MsgSend",
+      "@type": "/atomone.bank.v1beta1.MsgSend",
       "from_address": "cosmos1...",
       "to_address": "cosmos1...",
       "amount":[{"denom": "stake","amount": "10"}]

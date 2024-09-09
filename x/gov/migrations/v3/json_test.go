@@ -96,10 +96,10 @@ func TestMigrateJSON(t *testing.T) {
 			"id": "1",
 			"messages": [
 				{
-					"@type": "/cosmos.gov.v1.MsgExecLegacyContent",
+					"@type": "/atomone.gov.v1.MsgExecLegacyContent",
 					"authority": "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
 					"content": {
-						"@type": "/cosmos.gov.v1beta1.TextProposal",
+						"@type": "/atomone.gov.v1beta1.TextProposal",
 						"description": "my desc",
 						"title": "my title"
 					}

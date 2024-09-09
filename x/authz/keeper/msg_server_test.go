@@ -107,7 +107,7 @@ func (suite *TestSuite) TestGrant() {
 				})
 				suite.Require().NoError(err)
 
-				grant, err := authz.NewGrant(curBlockTime, authz.NewGenericAuthorization("/cosmos.bank.v1beta1.MsgUpdateParams"), &oneHour)
+				grant, err := authz.NewGrant(curBlockTime, authz.NewGenericAuthorization("/atomone.bank.v1beta1.MsgUpdateParams"), &oneHour)
 				suite.Require().NoError(err)
 				return &authz.MsgGrant{
 					Granter: granter.String(),

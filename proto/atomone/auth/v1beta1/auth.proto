@@ -12,7 +12,7 @@ option go_package = "github.com/atomone-hub/atomone/x/auth/types";
 // for basic account functionality. Any custom account type should extend this
 // type for additional functionality (e.g. vesting).
 message BaseAccount {
-  option (amino.name) = "cosmos-sdk/BaseAccount";
+  option (amino.name) = "atomone/BaseAccount";
   option (gogoproto.goproto_getters) = false;
   option (gogoproto.equal) = false;
   option (cosmos_proto.implements_interface) = "atomone.auth.v1beta1.AccountI";
@@ -28,7 +28,7 @@ message BaseAccount {
 
 // ModuleAccount defines an account for modules that holds coins on a pool.
 message ModuleAccount {
-  option (amino.name) = "cosmos-sdk/ModuleAccount";
+  option (amino.name) = "atomone/ModuleAccount";
   option (gogoproto.goproto_getters) = false;
   option (cosmos_proto.implements_interface) =
       "atomone.auth.v1beta1.ModuleAccountI";
@@ -54,7 +54,7 @@ message ModuleCredential {
 
 // Params defines the parameters for the auth module.
 message Params {
-  option (amino.name) = "cosmos-sdk/x/auth/Params";
+  option (amino.name) = "atomone/x/auth/Params";
   option (gogoproto.equal) = true;
 
   uint64 max_memo_characters = 1;

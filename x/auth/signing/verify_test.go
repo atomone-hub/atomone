@@ -54,7 +54,7 @@ func TestVerifySignature(t *testing.T) {
 
 	testCtx := testutil.DefaultContextWithDB(t, key, sdk.NewTransientStoreKey("transient_test"))
 	ctx := testCtx.Ctx.WithBlockHeader(tmproto.Header{})
-	encCfg.Amino.RegisterConcrete(testdata.TestMsg{}, "cosmos-sdk/Test", nil)
+	encCfg.Amino.RegisterConcrete(testdata.TestMsg{}, "atomone/Test", nil)
 
 	acc1 := accountKeeper.NewAccountWithAddress(ctx, addr)
 	_ = accountKeeper.NewAccountWithAddress(ctx, addr1)

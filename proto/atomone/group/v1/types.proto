@@ -55,7 +55,7 @@ message MemberRequest {
 message ThresholdDecisionPolicy {
   option (cosmos_proto.implements_interface) =
       "atomone.group.v1.DecisionPolicy";
-  option (amino.name) = "cosmos-sdk/ThresholdDecisionPolicy";
+  option (amino.name) = "atomone/ThresholdDecisionPolicy";
 
   // threshold is the minimum weighted sum of `YES` votes that must be met or
   // exceeded for a proposal to succeed.
@@ -74,7 +74,7 @@ message ThresholdDecisionPolicy {
 message PercentageDecisionPolicy {
   option (cosmos_proto.implements_interface) =
       "atomone.group.v1.DecisionPolicy";
-  option (amino.name) = "cosmos-sdk/PercentageDecisionPolicy";
+  option (amino.name) = "atomone/PercentageDecisionPolicy";
 
   // percentage is the minimum percentage of the weighted sum of `YES` votes
   // must meet for a proposal to succeed.

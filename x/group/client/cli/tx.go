@@ -292,7 +292,7 @@ where members.json contains:
 and policy.json contains:
 
 {
-    "@type": "/cosmos.group.v1.ThresholdDecisionPolicy",
+    "@type": "/atomone.group.v1.ThresholdDecisionPolicy",
     "threshold": "1",
     "windows": {
         "voting_period": "120h",
@@ -363,7 +363,7 @@ func MsgCreateGroupPolicyCmd() *cobra.Command {
 where policy.json contains:
 
 {
-    "@type": "/cosmos.group.v1.ThresholdDecisionPolicy",
+    "@type": "/atomone.group.v1.ThresholdDecisionPolicy",
     "threshold": "1",
     "windows": {
         "voting_period": "120h",
@@ -374,7 +374,7 @@ where policy.json contains:
 Here, we can use percentage decision policy when needed, where 0 < percentage <= 1:
 
 {
-    "@type": "/cosmos.group.v1.PercentageDecisionPolicy",
+    "@type": "/atomone.group.v1.PercentageDecisionPolicy",
     "percentage": "0.5",
     "windows": {
         "voting_period": "120h",
@@ -562,7 +562,7 @@ Parameters:
 	// array of proto-JSON-encoded sdk.Msgs
 	"messages": [
 	{
-		"@type": "/cosmos.bank.v1beta1.MsgSend",
+		"@type": "/atomone.bank.v1beta1.MsgSend",
 		"from_address": "cosmos1...",
 		"to_address": "cosmos1...",
 		"amount":[{"denom": "stake","amount": "10"}]

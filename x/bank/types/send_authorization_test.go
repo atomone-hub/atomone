@@ -27,7 +27,7 @@ func TestSendAuthorization(t *testing.T) {
 	authorization := types.NewSendAuthorization(coins1000, nil)
 
 	t.Log("verify authorization returns valid method name")
-	require.Equal(t, authorization.MsgTypeURL(), "/cosmos.bank.v1beta1.MsgSend")
+	require.Equal(t, authorization.MsgTypeURL(), "/atomone.bank.v1beta1.MsgSend")
 	require.NoError(t, authorization.ValidateBasic())
 	send := types.NewMsgSend(fromAddr, toAddr, coins1000)
 
@@ -40,7 +40,7 @@ func TestSendAuthorization(t *testing.T) {
 	require.Nil(t, resp.Updated)
 
 	authorization = types.NewSendAuthorization(coins1000, nil)
-	require.Equal(t, authorization.MsgTypeURL(), "/cosmos.bank.v1beta1.MsgSend")
+	require.Equal(t, authorization.MsgTypeURL(), "/atomone.bank.v1beta1.MsgSend")
 	require.NoError(t, authorization.ValidateBasic())
 	send = types.NewMsgSend(fromAddr, toAddr, coins500)
 	require.NoError(t, authorization.ValidateBasic())
@@ -61,7 +61,7 @@ func TestSendAuthorization(t *testing.T) {
 
 	t.Log("allow list and no address")
 	authzWithAllowList := types.NewSendAuthorization(coins1000, allowList)
-	require.Equal(t, authzWithAllowList.MsgTypeURL(), "/cosmos.bank.v1beta1.MsgSend")
+	require.Equal(t, authzWithAllowList.MsgTypeURL(), "/atomone.bank.v1beta1.MsgSend")
 	require.NoError(t, authorization.ValidateBasic())
 	send = types.NewMsgSend(fromAddr, unknownAddr, coins500)
 	require.NoError(t, authzWithAllowList.ValidateBasic())
@@ -74,7 +74,7 @@ func TestSendAuthorization(t *testing.T) {
 
 	t.Log("send to address in allow list")
 	authzWithAllowList = types.NewSendAuthorization(coins1000, allowList)
-	require.Equal(t, authzWithAllowList.MsgTypeURL(), "/cosmos.bank.v1beta1.MsgSend")
+	require.Equal(t, authzWithAllowList.MsgTypeURL(), "/atomone.bank.v1beta1.MsgSend")
 	require.NoError(t, authorization.ValidateBasic())
 	send = types.NewMsgSend(fromAddr, allowList[0], coins500)
 	require.NoError(t, authzWithAllowList.ValidateBasic())
@@ -87,7 +87,7 @@ func TestSendAuthorization(t *testing.T) {
 
 	t.Log("send everything to address not in allow list")
 	authzWithAllowList = types.NewSendAuthorization(coins1000, allowList)
-	require.Equal(t, authzWithAllowList.MsgTypeURL(), "/cosmos.bank.v1beta1.MsgSend")
+	require.Equal(t, authzWithAllowList.MsgTypeURL(), "/atomone.bank.v1beta1.MsgSend")
 	require.NoError(t, authorization.ValidateBasic())
 	send = types.NewMsgSend(fromAddr, unknownAddr, coins1000)
 	require.NoError(t, authzWithAllowList.ValidateBasic())
@@ -97,7 +97,7 @@ func TestSendAuthorization(t *testing.T) {
 
 	t.Log("send everything to address in allow list")
 	authzWithAllowList = types.NewSendAuthorization(coins1000, allowList)
-	require.Equal(t, authzWithAllowList.MsgTypeURL(), "/cosmos.bank.v1beta1.MsgSend")
+	require.Equal(t, authzWithAllowList.MsgTypeURL(), "/atomone.bank.v1beta1.MsgSend")
 	require.NoError(t, authorization.ValidateBasic())
 	send = types.NewMsgSend(fromAddr, allowList[0], coins1000)
 	require.NoError(t, authzWithAllowList.ValidateBasic())

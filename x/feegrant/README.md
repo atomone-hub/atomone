@@ -238,7 +238,7 @@ Example Output:
 
 ```yml
 allowance:
-  '@type': /cosmos.feegrant.v1beta1.BasicAllowance
+  '@type': /atomone.feegrant.v1beta1.BasicAllowance
   expiration: null
   spend_limit:
   - amount: "100"
@@ -266,7 +266,7 @@ Example Output:
 ```yml
 allowances:
 - allowance:
-    '@type': /cosmos.feegrant.v1beta1.BasicAllowance
+    '@type': /atomone.feegrant.v1beta1.BasicAllowance
     expiration: null
     spend_limit:
     - amount: "100"
@@ -348,7 +348,7 @@ Example Output:
   "allowance": {
     "granter": "cosmos1..",
     "grantee": "cosmos1..",
-    "allowance": {"@type":"/cosmos.feegrant.v1beta1.BasicAllowance","spendLimit":[{"denom":"stake","amount":"100"}]}
+    "allowance": {"@type":"/atomone.feegrant.v1beta1.BasicAllowance","spendLimit":[{"denom":"stake","amount":"100"}]}
   }
 }
 ```
@@ -378,7 +378,7 @@ Example Output:
     {
       "granter": "cosmos1..",
       "grantee": "cosmos1..",
-      "allowance": {"@type":"/cosmos.feegrant.v1beta1.BasicAllowance","spendLimit":[{"denom":"stake","amount":"100"}]}
+      "allowance": {"@type":"/atomone.feegrant.v1beta1.BasicAllowance","spendLimit":[{"denom":"stake","amount":"100"}]}
     }
   ],
   "pagination": {

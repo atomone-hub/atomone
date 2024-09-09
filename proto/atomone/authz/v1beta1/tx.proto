@@ -36,7 +36,7 @@ service Msg {
 // grantee on behalf of the granter with the provided expiration time.
 message MsgGrant {
   option (atomone.msg.v1.signer) = "granter";
-  option (amino.name) = "cosmos-sdk/MsgGrant";
+  option (amino.name) = "atomone/MsgGrant";
 
   string granter = 1 [ (cosmos_proto.scalar) = "atomone.AddressString" ];
   string grantee = 2 [ (cosmos_proto.scalar) = "atomone.AddressString" ];
@@ -53,7 +53,7 @@ message MsgExecResponse { repeated bytes results = 1; }
 // one signer corresponding to the granter of the authorization.
 message MsgExec {
   option (atomone.msg.v1.signer) = "grantee";
-  option (amino.name) = "cosmos-sdk/MsgExec";
+  option (amino.name) = "atomone/MsgExec";
 
   string grantee = 1 [ (cosmos_proto.scalar) = "atomone.AddressString" ];
   // Execute Msg.
@@ -70,7 +70,7 @@ message MsgGrantResponse {}
 // granter's account with that has been granted to the grantee.
 message MsgRevoke {
   option (atomone.msg.v1.signer) = "granter";
-  option (amino.name) = "cosmos-sdk/MsgRevoke";
+  option (amino.name) = "atomone/MsgRevoke";
 
   string granter = 1 [ (cosmos_proto.scalar) = "atomone.AddressString" ];
   string grantee = 2 [ (cosmos_proto.scalar) = "atomone.AddressString" ];

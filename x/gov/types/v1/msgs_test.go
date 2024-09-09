@@ -194,7 +194,7 @@ func TestMsgSubmitProposal_GetSignBytes(t *testing.T) {
 			[]sdk.Msg{banktypes.NewMsgSend(addrs[0], addrs[0], sdk.NewCoins())},
 			"bank/MsgSend",
 			"Proposal for a bank msg send",
-			fmt.Sprintf(`{"type":"atomone/v1/MsgSubmitProposal","value":{"initial_deposit":[],"messages":[{"type":"cosmos-sdk/MsgSend","value":{"amount":[],"from_address":"%s","to_address":"%s"}}],"summary":"Proposal for a bank msg send","title":"bank/MsgSend"}}`, addrs[0], addrs[0]),
+			fmt.Sprintf(`{"type":"atomone/v1/MsgSubmitProposal","value":{"initial_deposit":[],"messages":[{"type":"atomone/MsgSend","value":{"amount":[],"from_address":"%s","to_address":"%s"}}],"summary":"Proposal for a bank msg send","title":"bank/MsgSend"}}`, addrs[0], addrs[0]),
 		},
 	}
 

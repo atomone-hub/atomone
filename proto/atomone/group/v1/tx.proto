@@ -80,7 +80,7 @@ service Msg {
 // MsgCreateGroup is the Msg/CreateGroup request type.
 message MsgCreateGroup {
   option (atomone.msg.v1.signer) = "admin";
-  option (amino.name) = "cosmos-sdk/MsgCreateGroup";
+  option (amino.name) = "atomone/MsgCreateGroup";
 
   // admin is the account address of the group admin.
   string admin = 1 [ (cosmos_proto.scalar) = "atomone.AddressString" ];
@@ -102,7 +102,7 @@ message MsgCreateGroupResponse {
 // MsgUpdateGroupMembers is the Msg/UpdateGroupMembers request type.
 message MsgUpdateGroupMembers {
   option (atomone.msg.v1.signer) = "admin";
-  option (amino.name) = "cosmos-sdk/MsgUpdateGroupMembers";
+  option (amino.name) = "atomone/MsgUpdateGroupMembers";
 
   // admin is the account address of the group admin.
   string admin = 1 [ (cosmos_proto.scalar) = "atomone.AddressString" ];
@@ -122,7 +122,7 @@ message MsgUpdateGroupMembersResponse {}
 // MsgUpdateGroupAdmin is the Msg/UpdateGroupAdmin request type.
 message MsgUpdateGroupAdmin {
   option (atomone.msg.v1.signer) = "admin";
-  option (amino.name) = "cosmos-sdk/MsgUpdateGroupAdmin";
+  option (amino.name) = "atomone/MsgUpdateGroupAdmin";
 
   // admin is the current account address of the group admin.
   string admin = 1 [ (cosmos_proto.scalar) = "atomone.AddressString" ];
@@ -140,7 +140,7 @@ message MsgUpdateGroupAdminResponse {}
 // MsgUpdateGroupMetadata is the Msg/UpdateGroupMetadata request type.
 message MsgUpdateGroupMetadata {
   option (atomone.msg.v1.signer) = "admin";
-  option (amino.name) = "cosmos-sdk/MsgUpdateGroupMetadata";
+  option (amino.name) = "atomone/MsgUpdateGroupMetadata";
 
   // admin is the account address of the group admin.
   string admin = 1 [ (cosmos_proto.scalar) = "atomone.AddressString" ];
@@ -162,7 +162,7 @@ message MsgUpdateGroupMetadataResponse {}
 // MsgCreateGroupPolicy is the Msg/CreateGroupPolicy request type.
 message MsgCreateGroupPolicy {
   option (atomone.msg.v1.signer) = "admin";
-  option (amino.name) = "cosmos-sdk/MsgCreateGroupPolicy";
+  option (amino.name) = "atomone/MsgCreateGroupPolicy";
 
   option (gogoproto.goproto_getters) = false;
 
@@ -189,7 +189,7 @@ message MsgCreateGroupPolicyResponse {
 // MsgUpdateGroupPolicyAdmin is the Msg/UpdateGroupPolicyAdmin request type.
 message MsgUpdateGroupPolicyAdmin {
   option (atomone.msg.v1.signer) = "admin";
-  option (amino.name) = "cosmos-sdk/MsgUpdateGroupPolicyAdmin";
+  option (amino.name) = "atomone/MsgUpdateGroupPolicyAdmin";
 
   // admin is the account address of the group admin.
   string admin = 1 [ (cosmos_proto.scalar) = "atomone.AddressString" ];
@@ -209,7 +209,7 @@ message MsgUpdateGroupPolicyAdminResponse {}
 // MsgCreateGroupWithPolicy is the Msg/CreateGroupWithPolicy request type.
 message MsgCreateGroupWithPolicy {
   option (atomone.msg.v1.signer) = "admin";
-  option (amino.name) = "cosmos-sdk/MsgCreateGroupWithPolicy";
+  option (amino.name) = "atomone/MsgCreateGroupWithPolicy";
   option (gogoproto.goproto_getters) = false;
 
   // admin is the account address of the group and group policy admin.
@@ -251,7 +251,7 @@ message MsgCreateGroupWithPolicyResponse {
 // request type.
 message MsgUpdateGroupPolicyDecisionPolicy {
   option (atomone.msg.v1.signer) = "admin";
-  option (amino.name) = "cosmos-sdk/MsgUpdateGroupDecisionPolicy";
+  option (amino.name) = "atomone/MsgUpdateGroupDecisionPolicy";
 
   option (gogoproto.goproto_getters) = false;
 
@@ -275,7 +275,7 @@ message MsgUpdateGroupPolicyDecisionPolicyResponse {}
 // type.
 message MsgUpdateGroupPolicyMetadata {
   option (atomone.msg.v1.signer) = "admin";
-  option (amino.name) = "cosmos-sdk/MsgUpdateGroupPolicyMetadata";
+  option (amino.name) = "atomone/MsgUpdateGroupPolicyMetadata";
 
   // admin is the account address of the group admin.
   string admin = 1 [ (cosmos_proto.scalar) = "atomone.AddressString" ];
@@ -312,7 +312,7 @@ enum Exec {
 // MsgSubmitProposal is the Msg/SubmitProposal request type.
 message MsgSubmitProposal {
   option (atomone.msg.v1.signer) = "proposers";
-  option (amino.name) = "cosmos-sdk/group/MsgSubmitProposal";
+  option (amino.name) = "atomone/group/MsgSubmitProposal";
 
   option (gogoproto.goproto_getters) = false;
 
@@ -356,7 +356,7 @@ message MsgSubmitProposalResponse {
 // MsgWithdrawProposal is the Msg/WithdrawProposal request type.
 message MsgWithdrawProposal {
   option (atomone.msg.v1.signer) = "address";
-  option (amino.name) = "cosmos-sdk/group/MsgWithdrawProposal";
+  option (amino.name) = "atomone/group/MsgWithdrawProposal";
 
   // proposal is the unique ID of the proposal.
   uint64 proposal_id = 1;
@@ -372,7 +372,7 @@ message MsgWithdrawProposalResponse {}
 // MsgVote is the Msg/Vote request type.
 message MsgVote {
   option (atomone.msg.v1.signer) = "voter";
-  option (amino.name) = "cosmos-sdk/group/MsgVote";
+  option (amino.name) = "atomone/group/MsgVote";
 
   // proposal is the unique ID of the proposal.
   uint64 proposal_id = 1;
@@ -397,7 +397,7 @@ message MsgVoteResponse {}
 // MsgExec is the Msg/Exec request type.
 message MsgExec {
   option (atomone.msg.v1.signer) = "signer";
-  option (amino.name) = "cosmos-sdk/group/MsgExec";
+  option (amino.name) = "atomone/group/MsgExec";
 
   // proposal is the unique ID of the proposal.
   uint64 proposal_id = 1;
@@ -415,7 +415,7 @@ message MsgExecResponse {
 // MsgLeaveGroup is the Msg/LeaveGroup request type.
 message MsgLeaveGroup {
   option (atomone.msg.v1.signer) = "address";
-  option (amino.name) = "cosmos-sdk/group/MsgLeaveGroup";
+  option (amino.name) = "atomone/group/MsgLeaveGroup";
 
   // address is the account address of the group member.
   string address = 1 [ (cosmos_proto.scalar) = "atomone.AddressString" ];

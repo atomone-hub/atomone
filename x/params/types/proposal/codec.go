@@ -8,7 +8,7 @@ import (
 
 // RegisterLegacyAminoCodec registers all necessary param module types with a given LegacyAmino codec.
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&ParameterChangeProposal{}, "cosmos-sdk/ParameterChangeProposal", nil)
+	cdc.RegisterConcrete(&ParameterChangeProposal{}, "atomone/ParameterChangeProposal", nil)
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {

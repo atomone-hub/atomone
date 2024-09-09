@@ -589,7 +589,7 @@ func (s *IntegrationTestSuite) writeGovCommunitySpendProposal(c *chain, amount s
 	{
 		"messages":[
 		  {
-			"@type": "/cosmos.distribution.v1beta1.MsgCommunityPoolSpend",
+			"@type": "/atomone.distribution.v1beta1.MsgCommunityPoolSpend",
 			"authority": "%s",
 			"recipient": "%s",
 			"amount": [{
@@ -629,7 +629,7 @@ func (s *IntegrationTestSuite) writeLiquidStakingParamsUpdateProposal(c *chain, 
 	{
 		"messages": [
 		 {
-		  "@type": "/cosmos.staking.v1beta1.MsgUpdateParams",
+		  "@type": "/atomone.staking.v1beta1.MsgUpdateParams",
 		  "authority": "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
 		  "params": {
 		   "unbonding_time": "%s",

@@ -38,10 +38,10 @@ import (
 )
 
 const (
-	delegatorDelegationPath           = "/cosmos.staking.v1beta1.Query/DelegatorDelegations"
-	stakingParamsPath                 = "/cosmos.staking.v1beta1.Query/Params"
-	delegatorUnbondingDelegationsPath = "/cosmos.staking.v1beta1.Query/DelegatorUnbondingDelegations"
-	balancesPath                      = "/cosmos.bank.v1beta1.Query/AllBalances"
+	delegatorDelegationPath           = "/atomone.staking.v1beta1.Query/DelegatorDelegations"
+	stakingParamsPath                 = "/atomone.staking.v1beta1.Query/Params"
+	delegatorUnbondingDelegationsPath = "/atomone.staking.v1beta1.Query/DelegatorUnbondingDelegations"
+	balancesPath                      = "/atomone.bank.v1beta1.Query/AllBalances"
 )
 
 // We use the baseapp.QueryRouter here to do inter-module state querying.

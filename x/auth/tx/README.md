@@ -139,7 +139,7 @@ Example Output:
   "tx": {
     "body": {
       "messages": [
-        {"@type":"/cosmos.bank.v1beta1.MsgSend","amount":[{"denom":"stake","amount":"100"}],"fromAddress":"cosmos1l6vsqhh7rnwsyr2kyz3jjg3qduaz8gwgyl8275","toAddress":"cosmos158saldyg8pmxu7fwvt0d6x7jeswp4gwyklk6y3"}
+        {"@type":"/atomone.bank.v1beta1.MsgSend","amount":[{"denom":"stake","amount":"100"}],"fromAddress":"cosmos1l6vsqhh7rnwsyr2kyz3jjg3qduaz8gwgyl8275","toAddress":"cosmos158saldyg8pmxu7fwvt0d6x7jeswp4gwyklk6y3"}
       ]
     },
     "authInfo": {
@@ -166,7 +166,7 @@ grpcurl -plaintext \
     -d '{"tx": {
     "body": {
       "messages": [
-        {"@type":"/cosmos.bank.v1beta1.MsgSend","amount":[{"denom":"stake","amount":"100"}],"fromAddress":"cosmos1l6vsqhh7rnwsyr2kyz3jjg3qduaz8gwgyl8275","toAddress":"cosmos158saldyg8pmxu7fwvt0d6x7jeswp4gwyklk6y3"}
+        {"@type":"/atomone.bank.v1beta1.MsgSend","amount":[{"denom":"stake","amount":"100"}],"fromAddress":"cosmos1l6vsqhh7rnwsyr2kyz3jjg3qduaz8gwgyl8275","toAddress":"cosmos158saldyg8pmxu7fwvt0d6x7jeswp4gwyklk6y3"}
       ]
     },
     "authInfo": {
@@ -208,7 +208,7 @@ Example Output:
 
 ```json
 {
-  "aminoJson": "{\"type\":\"cosmos-sdk/StdTx\",\"value\":{\"msg\":[{\"type\":\"cosmos-sdk/MsgSend\",\"value\":{\"from_address\":\"cosmos1tszz7p2zgd7vvkahyfre4wn5xyu80rptg6v9h5\",\"to_address\":\"cosmos1tszz7p2zgd7vvkahyfre4wn5xyu80rptg6v9h5\",\"amount\":[{\"denom\":\"stake\",\"amount\":\"10\"}]}}],\"fee\":{\"amount\":[{\"denom\":\"stake\",\"amount\":\"10\"}],\"gas\":\"200000\"},\"signatures\":null,\"memo\":\"foobar\",\"timeout_height\":\"0\"}}"
+  "aminoJson": "{\"type\":\"atomone/StdTx\",\"value\":{\"msg\":[{\"type\":\"atomone/MsgSend\",\"value\":{\"from_address\":\"cosmos1tszz7p2zgd7vvkahyfre4wn5xyu80rptg6v9h5\",\"to_address\":\"cosmos1tszz7p2zgd7vvkahyfre4wn5xyu80rptg6v9h5\",\"amount\":[{\"denom\":\"stake\",\"amount\":\"10\"}]}}],\"fee\":{\"amount\":[{\"denom\":\"stake\",\"amount\":\"10\"}],\"gas\":\"200000\"},\"signatures\":null,\"memo\":\"foobar\",\"timeout_height\":\"0\"}}"
 }
 ```
 
@@ -224,7 +224,7 @@ Example:
 
 ```shell
 grpcurl -plaintext \
-    -d '{"amino_json":"{\"type\":\"cosmos-sdk/StdTx\",\"value\":{\"msg\":[{\"type\":\"cosmos-sdk/MsgSend\",\"value\":{\"from_address\":\"cosmos1tszz7p2zgd7vvkahyfre4wn5xyu80rptg6v9h5\",\"to_address\":\"cosmos1tszz7p2zgd7vvkahyfre4wn5xyu80rptg6v9h5\",\"amount\":[{\"denom\":\"stake\",\"amount\":\"10\"}]}}],\"fee\":{\"amount\":[{\"denom\":\"stake\",\"amount\":\"10\"}],\"gas\":\"200000\"},\"signatures\":null,\"memo\":\"foobar\",\"timeout_height\":\"0\"}}"}' \
+    -d '{"amino_json":"{\"type\":\"atomone/StdTx\",\"value\":{\"msg\":[{\"type\":\"atomone/MsgSend\",\"value\":{\"from_address\":\"cosmos1tszz7p2zgd7vvkahyfre4wn5xyu80rptg6v9h5\",\"to_address\":\"cosmos1tszz7p2zgd7vvkahyfre4wn5xyu80rptg6v9h5\",\"amount\":[{\"denom\":\"stake\",\"amount\":\"10\"}]}}],\"fee\":{\"amount\":[{\"denom\":\"stake\",\"amount\":\"10\"}],\"gas\":\"200000\"},\"signatures\":null,\"memo\":\"foobar\",\"timeout_height\":\"0\"}}"}' \
     localhost:9090 \
     cosmos.tx.v1beta1.Service/TxEncodeAmino
 ```

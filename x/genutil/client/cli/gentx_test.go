@@ -103,11 +103,11 @@ func (s *CLITestSuite) TestGenTxCmd() {
 			name: "valid pubkey flag",
 			args: []string{
 				fmt.Sprintf("--%s=%s", flags.FlagChainID, "test-chain-1"),
-				fmt.Sprintf("--%s={\"@type\":\"/cosmos.crypto.ed25519.PubKey\",\"key\":\"BOIkjkFruMpfOFC9oNPhiJGfmY2pHF/gwHdLDLnrnS0=\"}", stakingcli.FlagPubKey),
+				fmt.Sprintf("--%s={\"@type\":\"/atomone.crypto.ed25519.PubKey\",\"key\":\"BOIkjkFruMpfOFC9oNPhiJGfmY2pHF/gwHdLDLnrnS0=\"}", stakingcli.FlagPubKey),
 				"node0",
 				amount.String(),
 			},
-			expCmdOutput: fmt.Sprintf("--%s=test-chain-1 --%s={\"@type\":\"/cosmos.crypto.ed25519.PubKey\",\"key\":\"BOIkjkFruMpfOFC9oNPhiJGfmY2pHF/gwHdLDLnrnS0=\"} %s %s ", flags.FlagChainID, stakingcli.FlagPubKey, "node0", amount.String()),
+			expCmdOutput: fmt.Sprintf("--%s=test-chain-1 --%s={\"@type\":\"/atomone.crypto.ed25519.PubKey\",\"key\":\"BOIkjkFruMpfOFC9oNPhiJGfmY2pHF/gwHdLDLnrnS0=\"} %s %s ", flags.FlagChainID, stakingcli.FlagPubKey, "node0", amount.String()),
 		},
 	}
 

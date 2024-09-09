@@ -71,7 +71,7 @@ func (s *GRPCWebTestSuite) Test_Latest_Validators() {
 	val := s.network.Validators[0]
 	for _, contentType := range []string{grpcWebContentType} {
 		headers, trailers, responses, err := s.makeGrpcRequest(
-			"/cosmos.base.tendermint.v1beta1.Service/GetLatestValidatorSet",
+			"/atomone.base.tendermint.v1beta1.Service/GetLatestValidatorSet",
 			headerWithFlag(),
 			serializeProtoMessages([]proto.Message{&tmservice.GetLatestValidatorSetRequest{}}), false)
 
@@ -91,7 +91,7 @@ func (s *GRPCWebTestSuite) Test_Latest_Validators() {
 func (s *GRPCWebTestSuite) Test_Total_Supply() {
 	for _, contentType := range []string{grpcWebContentType} {
 		headers, trailers, responses, err := s.makeGrpcRequest(
-			"/cosmos.bank.v1beta1.Query/TotalSupply",
+			"/atomone.bank.v1beta1.Query/TotalSupply",
 			headerWithFlag(),
 			serializeProtoMessages([]proto.Message{&banktypes.QueryTotalSupplyRequest{}}), false)
 

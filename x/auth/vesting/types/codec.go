@@ -18,14 +18,14 @@ import (
 // provided LegacyAmino codec. These types are used for Amino JSON serialization
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterInterface((*exported.VestingAccount)(nil), nil)
-	cdc.RegisterConcrete(&BaseVestingAccount{}, "cosmos-sdk/BaseVestingAccount", nil)
-	cdc.RegisterConcrete(&ContinuousVestingAccount{}, "cosmos-sdk/ContinuousVestingAccount", nil)
-	cdc.RegisterConcrete(&DelayedVestingAccount{}, "cosmos-sdk/DelayedVestingAccount", nil)
-	cdc.RegisterConcrete(&PeriodicVestingAccount{}, "cosmos-sdk/PeriodicVestingAccount", nil)
-	cdc.RegisterConcrete(&PermanentLockedAccount{}, "cosmos-sdk/PermanentLockedAccount", nil)
-	legacy.RegisterAminoMsg(cdc, &MsgCreateVestingAccount{}, "cosmos-sdk/MsgCreateVestingAccount")
-	legacy.RegisterAminoMsg(cdc, &MsgCreatePermanentLockedAccount{}, "cosmos-sdk/MsgCreatePermLockedAccount")
-	legacy.RegisterAminoMsg(cdc, &MsgCreatePeriodicVestingAccount{}, "cosmos-sdk/MsgCreatePeriodVestAccount")
+	cdc.RegisterConcrete(&BaseVestingAccount{}, "atomone/BaseVestingAccount", nil)
+	cdc.RegisterConcrete(&ContinuousVestingAccount{}, "atomone/ContinuousVestingAccount", nil)
+	cdc.RegisterConcrete(&DelayedVestingAccount{}, "atomone/DelayedVestingAccount", nil)
+	cdc.RegisterConcrete(&PeriodicVestingAccount{}, "atomone/PeriodicVestingAccount", nil)
+	cdc.RegisterConcrete(&PermanentLockedAccount{}, "atomone/PermanentLockedAccount", nil)
+	legacy.RegisterAminoMsg(cdc, &MsgCreateVestingAccount{}, "atomone/MsgCreateVestingAccount")
+	legacy.RegisterAminoMsg(cdc, &MsgCreatePermanentLockedAccount{}, "atomone/MsgCreatePermLockedAccount")
+	legacy.RegisterAminoMsg(cdc, &MsgCreatePeriodicVestingAccount{}, "atomone/MsgCreatePeriodVestAccount")
 }
 
 // RegisterInterface associates protoName with AccountI and VestingAccount

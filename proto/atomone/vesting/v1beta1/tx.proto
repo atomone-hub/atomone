@@ -36,7 +36,7 @@ service Msg {
 // account.
 message MsgCreateVestingAccount {
   option (atomone.msg.v1.signer) = "from_address";
-  option (amino.name) = "cosmos-sdk/MsgCreateVestingAccount";
+  option (amino.name) = "atomone/MsgCreateVestingAccount";
 
   option (gogoproto.equal) = true;
 
@@ -63,7 +63,7 @@ message MsgCreateVestingAccountResponse {}
 // Since: cosmos-sdk 0.46
 message MsgCreatePermanentLockedAccount {
   option (atomone.msg.v1.signer) = "from_address";
-  option (amino.name) = "cosmos-sdk/MsgCreatePermLockedAccount";
+  option (amino.name) = "atomone/MsgCreatePermLockedAccount";
   option (gogoproto.equal) = true;
 
   string from_address = 1 [ (gogoproto.moretags) = "yaml:\"from_address\"" ];
@@ -87,7 +87,7 @@ message MsgCreatePermanentLockedAccountResponse {}
 // Since: cosmos-sdk 0.46
 message MsgCreatePeriodicVestingAccount {
   option (atomone.msg.v1.signer) = "from_address";
-  option (amino.name) = "cosmos-sdk/MsgCreatePeriodicVestingAccount";
+  option (amino.name) = "atomone/MsgCreatePeriodicVestingAccount";
 
   option (gogoproto.equal) = false;
 

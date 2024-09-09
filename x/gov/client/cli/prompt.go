@@ -34,15 +34,15 @@ var suggestedProposalTypes = []proposalType{
 	},
 	{
 		Name:    "community-pool-spend",
-		MsgType: "/cosmos.distribution.v1beta1.MsgCommunityPoolSpend",
+		MsgType: "/atomone.distribution.v1beta1.MsgCommunityPoolSpend",
 	},
 	{
 		Name:    "software-upgrade",
-		MsgType: "/cosmos.upgrade.v1beta1.MsgSoftwareUpgrade",
+		MsgType: "/atomone.upgrade.v1beta1.MsgSoftwareUpgrade",
 	},
 	{
 		Name:    "cancel-software-upgrade",
-		MsgType: "/cosmos.upgrade.v1beta1.MsgCancelUpgrade",
+		MsgType: "/atomone.upgrade.v1beta1.MsgCancelUpgrade",
 	},
 	{
 		Name:    proposalOther,

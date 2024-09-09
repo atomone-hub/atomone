@@ -55,7 +55,7 @@ message MsgCreateValidator {
   // is expected to sign, otherwise both are.
   option (atomone.msg.v1.signer) = "delegator_address";
   option (atomone.msg.v1.signer) = "validator_address";
-  option (amino.name) = "cosmos-sdk/MsgCreateValidator";
+  option (amino.name) = "atomone/MsgCreateValidator";
 
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
@@ -85,7 +85,7 @@ message MsgCreateValidatorResponse {}
 // MsgEditValidator defines a SDK message for editing an existing validator.
 message MsgEditValidator {
   option (atomone.msg.v1.signer) = "validator_address";
-  option (amino.name) = "cosmos-sdk/MsgEditValidator";
+  option (amino.name) = "atomone/MsgEditValidator";
 
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
@@ -116,7 +116,7 @@ message MsgEditValidatorResponse {}
 // from a delegator to a validator.
 message MsgDelegate {
   option (atomone.msg.v1.signer) = "delegator_address";
-  option (amino.name) = "cosmos-sdk/MsgDelegate";
+  option (amino.name) = "atomone/MsgDelegate";
 
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
@@ -136,7 +136,7 @@ message MsgDelegateResponse {}
 // of coins from a delegator and source validator to a destination validator.
 message MsgBeginRedelegate {
   option (atomone.msg.v1.signer) = "delegator_address";
-  option (amino.name) = "cosmos-sdk/MsgBeginRedelegate";
+  option (amino.name) = "atomone/MsgBeginRedelegate";
 
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
@@ -164,7 +164,7 @@ message MsgBeginRedelegateResponse {
 // delegate and a validator.
 message MsgUndelegate {
   option (atomone.msg.v1.signer) = "delegator_address";
-  option (amino.name) = "cosmos-sdk/MsgUndelegate";
+  option (amino.name) = "atomone/MsgUndelegate";
 
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
@@ -192,7 +192,7 @@ message MsgUndelegateResponse {
 // Since: cosmos-sdk 0.46
 message MsgCancelUnbondingDelegation {
   option (atomone.msg.v1.signer) = "delegator_address";
-  option (amino.name) = "cosmos-sdk/MsgCancelUnbondingDelegation";
+  option (amino.name) = "atomone/MsgCancelUnbondingDelegation";
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
@@ -217,7 +217,7 @@ message MsgCancelUnbondingDelegationResponse {}
 // Since: cosmos-sdk 0.47
 message MsgUpdateParams {
   option (atomone.msg.v1.signer) = "authority";
-  option (amino.name) = "cosmos-sdk/x/staking/MsgUpdateParams";
+  option (amino.name) = "atomone/x/staking/MsgUpdateParams";
 
   // authority is the address that controls the module (defaults to x/gov unless
   // overwritten).

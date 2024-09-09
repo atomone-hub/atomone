@@ -211,7 +211,7 @@ func TestTxValidateBasic(t *testing.T) {
 func TestDefaultTxEncoder(t *testing.T) {
 	cdc := codec.NewLegacyAmino()
 	sdk.RegisterLegacyAminoCodec(cdc)
-	cdc.RegisterConcrete(testdata.TestMsg{}, "cosmos-sdk/Test", nil)
+	cdc.RegisterConcrete(testdata.TestMsg{}, "atomone/Test", nil)
 	encoder := DefaultTxEncoder(cdc)
 
 	msgs := []sdk.Msg{testdata.NewTestMsg(addr)}

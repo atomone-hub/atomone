@@ -26,7 +26,7 @@ service Msg {
 // of fees from the account of Granter.
 message MsgGrantAllowance {
   option (atomone.msg.v1.signer) = "granter";
-  option (amino.name) = "cosmos-sdk/MsgGrantAllowance";
+  option (amino.name) = "atomone/MsgGrantAllowance";
 
   // granter is the address of the user granting an allowance of their funds.
   string granter = 1 [ (cosmos_proto.scalar) = "atomone.AddressString" ];
@@ -48,7 +48,7 @@ message MsgGrantAllowanceResponse {}
 // MsgRevokeAllowance removes any existing Allowance from Granter to Grantee.
 message MsgRevokeAllowance {
   option (atomone.msg.v1.signer) = "granter";
-  option (amino.name) = "cosmos-sdk/MsgRevokeAllowance";
+  option (amino.name) = "atomone/MsgRevokeAllowance";
 
   // granter is the address of the user granting an allowance of their funds.
   string granter = 1 [ (cosmos_proto.scalar) = "atomone.AddressString" ];

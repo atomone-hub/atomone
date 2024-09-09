@@ -32,7 +32,7 @@ service Msg {
 // Since: cosmos-sdk 0.46
 message MsgSoftwareUpgrade {
   option (atomone.msg.v1.signer) = "authority";
-  option (amino.name) = "cosmos-sdk/MsgSoftwareUpgrade";
+  option (amino.name) = "atomone/MsgSoftwareUpgrade";
 
   // authority is the address that controls the module (defaults to x/gov unless
   // overwritten).
@@ -52,7 +52,7 @@ message MsgSoftwareUpgradeResponse {}
 // Since: cosmos-sdk 0.46
 message MsgCancelUpgrade {
   option (atomone.msg.v1.signer) = "authority";
-  option (amino.name) = "cosmos-sdk/MsgCancelUpgrade";
+  option (amino.name) = "atomone/MsgCancelUpgrade";
 
   // authority is the address that controls the module (defaults to x/gov unless
   // overwritten).

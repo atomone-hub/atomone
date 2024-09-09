@@ -367,7 +367,7 @@ message Redelegation {
 
 // Params defines the parameters for the x/staking module.
 message Params {
-  option (amino.name) = "cosmos-sdk/x/staking/Params";
+  option (amino.name) = "atomone/x/staking/Params";
   option (gogoproto.equal) = true;
   option (gogoproto.goproto_stringer) = false;
 

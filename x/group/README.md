@@ -518,56 +518,56 @@ The group module emits the following events:
 
 | Type                             | Attribute Key | Attribute Value                  |
 | -------------------------------- | ------------- | -------------------------------- |
-| message                          | action        | /cosmos.group.v1.Msg/CreateGroup |
+| message                          | action        | /atomone.group.v1.Msg/CreateGroup |
 | cosmos.group.v1.EventCreateGroup | group_id      | {groupId}                        |
 
 ### EventUpdateGroup
 
 | Type                             | Attribute Key | Attribute Value                                            |
 | -------------------------------- | ------------- | ---------------------------------------------------------- |
-| message                          | action        | /cosmos.group.v1.Msg/UpdateGroup{Admin\|Metadata\|Members} |
+| message                          | action        | /atomone.group.v1.Msg/UpdateGroup{Admin\|Metadata\|Members} |
 | cosmos.group.v1.EventUpdateGroup | group_id      | {groupId}                                                  |
 
 ### EventCreateGroupPolicy
 
 | Type                                   | Attribute Key | Attribute Value                        |
 | -------------------------------------- | ------------- | -------------------------------------- |
-| message                                | action        | /cosmos.group.v1.Msg/CreateGroupPolicy |
+| message                                | action        | /atomone.group.v1.Msg/CreateGroupPolicy |
 | cosmos.group.v1.EventCreateGroupPolicy | address       | {groupPolicyAddress}                   |
 
 ### EventUpdateGroupPolicy
 
 | Type                                   | Attribute Key | Attribute Value                                                         |
 | -------------------------------------- | ------------- | ----------------------------------------------------------------------- |
-| message                                | action        | /cosmos.group.v1.Msg/UpdateGroupPolicy{Admin\|Metadata\|DecisionPolicy} |
+| message                                | action        | /atomone.group.v1.Msg/UpdateGroupPolicy{Admin\|Metadata\|DecisionPolicy} |
 | cosmos.group.v1.EventUpdateGroupPolicy | address       | {groupPolicyAddress}                                                    |
 
 ### EventCreateProposal
 
 | Type                                | Attribute Key | Attribute Value                     |
 | ----------------------------------- | ------------- | ----------------------------------- |
-| message                             | action        | /cosmos.group.v1.Msg/CreateProposal |
+| message                             | action        | /atomone.group.v1.Msg/CreateProposal |
 | cosmos.group.v1.EventCreateProposal | proposal_id   | {proposalId}                        |
 
 ### EventWithdrawProposal
 
 | Type                                  | Attribute Key | Attribute Value                       |
 | ------------------------------------- | ------------- | ------------------------------------- |
-| message                               | action        | /cosmos.group.v1.Msg/WithdrawProposal |
+| message                               | action        | /atomone.group.v1.Msg/WithdrawProposal |
 | cosmos.group.v1.EventWithdrawProposal | proposal_id   | {proposalId}                          |
 
 ### EventVote
 
 | Type                      | Attribute Key | Attribute Value           |
 | ------------------------- | ------------- | ------------------------- |
-| message                   | action        | /cosmos.group.v1.Msg/Vote |
+| message                   | action        | /atomone.group.v1.Msg/Vote |
 | cosmos.group.v1.EventVote | proposal_id   | {proposalId}              |
 
 ## EventExec
 
 | Type                      | Attribute Key | Attribute Value           |
 | ------------------------- | ------------- | ------------------------- |
-| message                   | action        | /cosmos.group.v1.Msg/Exec |
+| message                   | action        | /atomone.group.v1.Msg/Exec |
 | cosmos.group.v1.EventExec | proposal_id   | {proposalId}              |
 | cosmos.group.v1.EventExec | logs          | {logs_string}             |
 
@@ -575,7 +575,7 @@ The group module emits the following events:
 
 | Type                            | Attribute Key | Attribute Value                 |
 | ------------------------------- | ------------- | ------------------------------- |
-| message                         | action        | /cosmos.group.v1.Msg/LeaveGroup |
+| message                         | action        | /atomone.group.v1.Msg/LeaveGroup |
 | cosmos.group.v1.EventLeaveGroup | proposal_id   | {proposalId}                    |
 | cosmos.group.v1.EventLeaveGroup | address       | {address}                       |
 
@@ -583,7 +583,7 @@ The group module emits the following events:
 
 | Type                                | Attribute Key | Attribute Value                 |
 |-------------------------------------|---------------|---------------------------------|
-| message                             | action        | /cosmos.group.v1.Msg/LeaveGroup |
+| message                             | action        | /atomone.group.v1.Msg/LeaveGroup |
 | cosmos.group.v1.EventProposalPruned | proposal_id   | {proposalId}                    |
 | cosmos.group.v1.EventProposalPruned | status        | {ProposalStatus}                |
 | cosmos.group.v1.EventProposalPruned | tally_result  | {TallyResult}                   |
@@ -647,7 +647,7 @@ Example Output:
 address: cosmos1..
 admin: cosmos1..
 decision_policy:
-  '@type': /cosmos.group.v1.ThresholdDecisionPolicy
+  '@type': /atomone.group.v1.ThresholdDecisionPolicy
   threshold: "1"
   windows:
       min_execution_period: 0s
@@ -744,7 +744,7 @@ group_policies:
 - address: cosmos1..
   admin: cosmos1..
   decision_policy:
-    '@type': /cosmos.group.v1.ThresholdDecisionPolicy
+    '@type': /atomone.group.v1.ThresholdDecisionPolicy
     threshold: "1"
     windows:
       min_execution_period: 0s
@@ -755,7 +755,7 @@ group_policies:
 - address: cosmos1..
   admin: cosmos1..
   decision_policy:
-    '@type': /cosmos.group.v1.ThresholdDecisionPolicy
+    '@type': /atomone.group.v1.ThresholdDecisionPolicy
     threshold: "1"
     windows:
       min_execution_period: 0s
@@ -789,7 +789,7 @@ group_policies:
 - address: cosmos1..
   admin: cosmos1..
   decision_policy:
-    '@type': /cosmos.group.v1.ThresholdDecisionPolicy
+    '@type': /atomone.group.v1.ThresholdDecisionPolicy
     threshold: "1"
     windows:
       min_execution_period: 0s
@@ -800,7 +800,7 @@ group_policies:
 - address: cosmos1..
   admin: cosmos1..
   decision_policy:
-    '@type': /cosmos.group.v1.ThresholdDecisionPolicy
+    '@type': /atomone.group.v1.ThresholdDecisionPolicy
     threshold: "1"
     windows:
       min_execution_period: 0s
@@ -837,7 +837,7 @@ proposal:
   group_version: "1"
   metadata: AQ==
   msgs:
-  - '@type': /cosmos.bank.v1beta1.MsgSend
+  - '@type': /atomone.bank.v1beta1.MsgSend
     amount:
     - amount: "100000000"
       denom: stake
@@ -888,7 +888,7 @@ proposals:
   group_version: "1"
   metadata: AQ==
   msgs:
-  - '@type': /cosmos.bank.v1beta1.MsgSend
+  - '@type': /atomone.bank.v1beta1.MsgSend
     amount:
     - amount: "100000000"
       denom: stake
@@ -1069,7 +1069,7 @@ simd tx group create-group-policy [admin] [group-id] [metadata] [decision-policy
 Example:
 
 ```bash
-simd tx group create-group-policy cosmos1.. 1 "AQ==" '{"@type":"/cosmos.group.v1.ThresholdDecisionPolicy", "threshold":"1", "windows": {"voting_period": "120h", "min_execution_period": "0s"}}'
+simd tx group create-group-policy cosmos1.. 1 "AQ==" '{"@type":"/atomone.group.v1.ThresholdDecisionPolicy", "threshold":"1", "windows": {"voting_period": "120h", "min_execution_period": "0s"}}'
 ```
 
 #### create-group-with-policy
@@ -1083,7 +1083,7 @@ simd tx group create-group-with-policy [admin] [group-metadata] [group-policy-me
 Example:
 
 ```bash
-simd tx group create-group-with-policy cosmos1.. "AQ==" "AQ==" members.json '{"@type":"/cosmos.group.v1.ThresholdDecisionPolicy", "threshold":"1", "windows": {"voting_period": "120h", "min_execution_period": "0s"}}'
+simd tx group create-group-with-policy cosmos1.. "AQ==" "AQ==" members.json '{"@type":"/atomone.group.v1.ThresholdDecisionPolicy", "threshold":"1", "windows": {"voting_period": "120h", "min_execution_period": "0s"}}'
 ```
 
 #### update-group-policy-admin
@@ -1125,7 +1125,7 @@ simd  tx group update-group-policy-decision-policy [admin] [group-policy-account
 Example:
 
 ```bash
-simd tx group update-group-policy-decision-policy cosmos1.. cosmos1.. '{"@type":"/cosmos.group.v1.ThresholdDecisionPolicy", "threshold":"2", "windows": {"voting_period": "120h", "min_execution_period": "0s"}}'
+simd tx group update-group-policy-decision-policy cosmos1.. cosmos1.. '{"@type":"/atomone.group.v1.ThresholdDecisionPolicy", "threshold":"2", "windows": {"voting_period": "120h", "min_execution_period": "0s"}}'
 ```
 
 #### submit-proposal
@@ -1255,7 +1255,7 @@ Example Output:
     "groupId": "1",
     "admin": "cosmos1..",
     "version": "1",
-    "decisionPolicy": {"@type":"/cosmos.group.v1.ThresholdDecisionPolicy","threshold":"1","windows": {"voting_period": "120h", "min_execution_period": "0s"}},
+    "decisionPolicy": {"@type":"/atomone.group.v1.ThresholdDecisionPolicy","threshold":"1","windows": {"voting_period": "120h", "min_execution_period": "0s"}},
   }
 }
 ```
@@ -1367,14 +1367,14 @@ Example Output:
       "groupId": "1",
       "admin": "cosmos1..",
       "version": "1",
-      "decisionPolicy": {"@type":"/cosmos.group.v1.ThresholdDecisionPolicy","threshold":"1","windows":{"voting_period": "120h", "min_execution_period": "0s"}},
+      "decisionPolicy": {"@type":"/atomone.group.v1.ThresholdDecisionPolicy","threshold":"1","windows":{"voting_period": "120h", "min_execution_period": "0s"}},
     },
     {
       "address": "cosmos1..",
       "groupId": "1",
       "admin": "cosmos1..",
       "version": "1",
-      "decisionPolicy": {"@type":"/cosmos.group.v1.ThresholdDecisionPolicy","threshold":"1","windows":{"voting_period": "120h", "min_execution_period": "0s"}},
+      "decisionPolicy": {"@type":"/atomone.group.v1.ThresholdDecisionPolicy","threshold":"1","windows":{"voting_period": "120h", "min_execution_period": "0s"}},
     }
   ],
   "pagination": {
@@ -1408,14 +1408,14 @@ Example Output:
       "groupId": "1",
       "admin": "cosmos1..",
       "version": "1",
-      "decisionPolicy": {"@type":"/cosmos.group.v1.ThresholdDecisionPolicy","threshold":"1","windows":{"voting_period": "120h", "min_execution_period": "0s"}},
+      "decisionPolicy": {"@type":"/atomone.group.v1.ThresholdDecisionPolicy","threshold":"1","windows":{"voting_period": "120h", "min_execution_period": "0s"}},
     },
     {
       "address": "cosmos1..",
       "groupId": "1",
       "admin": "cosmos1..",
       "version": "1",
-      "decisionPolicy": {"@type":"/cosmos.group.v1.ThresholdDecisionPolicy","threshold":"1","windows":{"voting_period": "120h", "min_execution_period": "0s"}},
+      "decisionPolicy": {"@type":"/atomone.group.v1.ThresholdDecisionPolicy","threshold":"1","windows":{"voting_period": "120h", "min_execution_period": "0s"}},
     }
   ],
   "pagination": {
@@ -1466,7 +1466,7 @@ Example Output:
     },
     "executorResult": "EXECUTOR_RESULT_NOT_RUN",
     "messages": [
-      {"@type":"/cosmos.bank.v1beta1.MsgSend","amount":[{"denom":"stake","amount":"100000000"}],"fromAddress":"cosmos1..","toAddress":"cosmos1.."}
+      {"@type":"/atomone.bank.v1beta1.MsgSend","amount":[{"denom":"stake","amount":"100000000"}],"fromAddress":"cosmos1..","toAddress":"cosmos1.."}
     ],
     "title": "Title",
     "summary": "Summary",
@@ -1517,7 +1517,7 @@ Example Output:
       },
       "executorResult": "EXECUTOR_RESULT_NOT_RUN",
       "messages": [
-        {"@type":"/cosmos.bank.v1beta1.MsgSend","amount":[{"denom":"stake","amount":"100000000"}],"fromAddress":"cosmos1..","toAddress":"cosmos1.."}
+        {"@type":"/atomone.bank.v1beta1.MsgSend","amount":[{"denom":"stake","amount":"100000000"}],"fromAddress":"cosmos1..","toAddress":"cosmos1.."}
       ],
       "title": "Title",
       "summary": "Summary",
@@ -1680,7 +1680,7 @@ Example Output:
     "metadata": "AQ==",
     "version": "1",
     "decision_policy": {
-      "@type": "/cosmos.group.v1.ThresholdDecisionPolicy",
+      "@type": "/atomone.group.v1.ThresholdDecisionPolicy",
       "threshold": "1",
       "windows": {
         "voting_period": "120h",
@@ -1800,7 +1800,7 @@ Example Output:
       "metadata": "AQ==",
       "version": "1",
       "decision_policy": {
-        "@type": "/cosmos.group.v1.ThresholdDecisionPolicy",
+        "@type": "/atomone.group.v1.ThresholdDecisionPolicy",
         "threshold": "1",
         "windows": {
           "voting_period": "120h",
@@ -1815,7 +1815,7 @@ Example Output:
       "metadata": "AQ==",
       "version": "1",
       "decision_policy": {
-        "@type": "/cosmos.group.v1.ThresholdDecisionPolicy",
+        "@type": "/atomone.group.v1.ThresholdDecisionPolicy",
         "threshold": "1",
         "windows": {
           "voting_period": "120h",
@@ -1857,7 +1857,7 @@ Example Output:
       "metadata": "AQ==",
       "version": "1",
       "decision_policy": {
-        "@type": "/cosmos.group.v1.ThresholdDecisionPolicy",
+        "@type": "/atomone.group.v1.ThresholdDecisionPolicy",
         "threshold": "1",
         "windows": {
           "voting_period": "120h",
@@ -1872,7 +1872,7 @@ Example Output:
       "metadata": "AQ==",
       "version": "1",
       "decision_policy": {
-        "@type": "/cosmos.group.v1.ThresholdDecisionPolicy",
+        "@type": "/atomone.group.v1.ThresholdDecisionPolicy",
         "threshold": "1",
         "windows": {
           "voting_period": "120h",
@@ -1930,7 +1930,7 @@ Example Output:
     "executor_result": "EXECUTOR_RESULT_NOT_RUN",
     "messages": [
       {
-        "@type": "/cosmos.bank.v1beta1.MsgSend",
+        "@type": "/atomone.bank.v1beta1.MsgSend",
         "from_address": "cosmos1..",
         "to_address": "cosmos1..",
         "amount": [
@@ -1991,7 +1991,7 @@ Example Output:
       "executor_result": "EXECUTOR_RESULT_NOT_RUN",
       "messages": [
         {
-          "@type": "/cosmos.bank.v1beta1.MsgSend",
+          "@type": "/atomone.bank.v1beta1.MsgSend",
           "from_address": "cosmos1..",
           "to_address": "cosmos1..",
           "amount": [

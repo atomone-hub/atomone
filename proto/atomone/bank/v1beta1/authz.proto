@@ -15,7 +15,7 @@ option go_package = "github.com/atomone-hub/atomone/x/bank/types";
 message SendAuthorization {
   option (cosmos_proto.implements_interface) =
       "atomone.authz.v1beta1.Authorization";
-  option (amino.name) = "cosmos-sdk/SendAuthorization";
+  option (amino.name) = "atomone/SendAuthorization";
 
   repeated atomone.base.v1beta1.Coin spend_limit = 1 [
     (gogoproto.nullable) = false,

@@ -18,7 +18,7 @@ func TestRegisterAminoMsg(t *testing.T) {
 		expPanic bool
 	}{
 		"all good": {
-			msgName: "cosmos-sdk/Test",
+			msgName: "atomone/Test",
 		},
 		"msgName too long": {
 			msgName:  strings.Repeat("a", 40),

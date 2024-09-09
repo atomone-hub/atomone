@@ -22567,7 +22567,7 @@ paths:
         '200':
           description: A successful response.
           schema:
-            $ref: '#/definitions/cosmos.tx.v1beta1.TxDecodeResponse'
+            $ref: '#/definitions/atomone.tx.v1beta1.TxDecodeResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -23225,7 +23225,7 @@ paths:
           in: body
           required: true
           schema:
-            $ref: '#/definitions/cosmos.tx.v1beta1.TxEncodeRequest'
+            $ref: '#/definitions/atomone.tx.v1beta1.TxEncodeRequest'
       tags:
         - Service
   /cosmos/tx/v1beta1/encode/amino:
@@ -23927,7 +23927,7 @@ paths:
           in: body
           required: true
           schema:
-            $ref: '#/definitions/cosmos.tx.v1beta1.SimulateRequest'
+            $ref: '#/definitions/atomone.tx.v1beta1.SimulateRequest'
       tags:
         - Service
   /cosmos/tx/v1beta1/txs:
@@ -23938,7 +23938,7 @@ paths:
         '200':
           description: A successful response.
           schema:
-            $ref: '#/definitions/cosmos.tx.v1beta1.GetTxsEventResponse'
+            $ref: '#/definitions/atomone.tx.v1beta1.GetTxsEventResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -24800,7 +24800,7 @@ paths:
         '200':
           description: A successful response.
           schema:
-            $ref: '#/definitions/cosmos.tx.v1beta1.GetBlockWithTxsResponse'
+            $ref: '#/definitions/atomone.tx.v1beta1.GetBlockWithTxsResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -25065,7 +25065,7 @@ paths:
         '200':
           description: A successful response.
           schema:
-            $ref: '#/definitions/cosmos.tx.v1beta1.GetTxResponse'
+            $ref: '#/definitions/atomone.tx.v1beta1.GetTxResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -52968,7 +52968,7 @@ definitions:
       signer_infos:
         type: array
         items:
-          $ref: '#/definitions/cosmos.tx.v1beta1.SignerInfo'
+          $ref: '#/definitions/atomone.tx.v1beta1.SignerInfo'
         description: >-
           signer_infos defines the signing modes for the required signers. The
           number
@@ -53501,7 +53501,7 @@ definitions:
       txs:
         type: array
         items:
-          $ref: '#/definitions/cosmos.tx.v1beta1.Tx'
+          $ref: '#/definitions/atomone.tx.v1beta1.Tx'
         description: txs are the transactions in the block.
       block_id:
         type: object
@@ -54077,7 +54077,7 @@ definitions:
     type: object
     properties:
       tx:
-        $ref: '#/definitions/cosmos.tx.v1beta1.Tx'
+        $ref: '#/definitions/atomone.tx.v1beta1.Tx'
         description: tx is the queried transaction.
       tx_response:
         type: object
@@ -54394,7 +54394,7 @@ definitions:
       txs:
         type: array
         items:
-          $ref: '#/definitions/cosmos.tx.v1beta1.Tx'
+          $ref: '#/definitions/atomone.tx.v1beta1.Tx'
         description: txs is the list of queried transactions.
       tx_responses:
         type: array
@@ -54816,7 +54816,7 @@ definitions:
 
               Since: cosmos-sdk 0.45.2
       multi:
-        $ref: '#/definitions/cosmos.tx.v1beta1.ModeInfo.Multi'
+        $ref: '#/definitions/atomone.tx.v1beta1.ModeInfo.Multi'
         title: multi represents a nested multisig signer
     description: ModeInfo describes the signing mode of a single or nested multisig signer.
   cosmos.tx.v1beta1.ModeInfo.Multi:
@@ -54844,7 +54844,7 @@ definitions:
       mode_infos:
         type: array
         items:
-          $ref: '#/definitions/cosmos.tx.v1beta1.ModeInfo'
+          $ref: '#/definitions/atomone.tx.v1beta1.ModeInfo'
         title: |-
           mode_infos is the corresponding modes of the signers of the multisig
           which could include nested multisig public keys
@@ -55100,7 +55100,7 @@ definitions:
                 "value": "1.212s"
               }
       mode_info:
-        $ref: '#/definitions/cosmos.tx.v1beta1.ModeInfo'
+        $ref: '#/definitions/atomone.tx.v1beta1.ModeInfo'
         title: |-
           mode_info describes the signing mode of the signer and is a nested
           structure to support nested multisig pubkey's
@@ -55121,7 +55121,7 @@ definitions:
     type: object
     properties:
       tx:
-        $ref: '#/definitions/cosmos.tx.v1beta1.Tx'
+        $ref: '#/definitions/atomone.tx.v1beta1.Tx'
         description: |-
           tx is the transaction to simulate.
           Deprecated. Send raw tx bytes instead.
@@ -55995,7 +55995,7 @@ definitions:
               and can't be handled, they will be ignored
         description: TxBody is the body of a transaction that all signers sign over.
       auth_info:
-        $ref: '#/definitions/cosmos.tx.v1beta1.AuthInfo'
+        $ref: '#/definitions/atomone.tx.v1beta1.AuthInfo'
         title: |-
           auth_info is the authorization related content of the transaction,
           specifically signers, signer modes and fee
@@ -56598,7 +56598,7 @@ definitions:
     type: object
     properties:
       tx:
-        $ref: '#/definitions/cosmos.tx.v1beta1.Tx'
+        $ref: '#/definitions/atomone.tx.v1beta1.Tx'
         description: tx is the decoded transaction.
     description: |-
       TxDecodeResponse is the response type for the
@@ -56630,7 +56630,7 @@ definitions:
     type: object
     properties:
       tx:
-        $ref: '#/definitions/cosmos.tx.v1beta1.Tx'
+        $ref: '#/definitions/atomone.tx.v1beta1.Tx'
         description: tx is the transaction to encode.
     description: |-
       TxEncodeRequest is the request type for the Service.TxEncode

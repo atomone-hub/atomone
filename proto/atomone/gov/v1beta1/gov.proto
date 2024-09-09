@@ -54,7 +54,7 @@ message WeightedVoteOption {
 // manually updated in case of approval.
 message TextProposal {
   option (cosmos_proto.implements_interface) = "atomone.gov.v1beta1.Content";
-  option (amino.name) = "cosmos-sdk/TextProposal";
+  option (amino.name) = "atomone/TextProposal";
 
   option (gogoproto.equal) = true;
 

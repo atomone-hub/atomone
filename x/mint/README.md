@@ -243,7 +243,7 @@ A user can query the `mint` module using gRPC endpoints.
 The `AnnualProvisions` endpoint allow users to query the current minting annual provisions value
 
 ```shell
-/cosmos.mint.v1beta1.Query/AnnualProvisions
+/atomone.mint.v1beta1.Query/AnnualProvisions
 ```
 
 Example:
@@ -265,7 +265,7 @@ Example Output:
 The `Inflation` endpoint allow users to query the current minting inflation value
 
 ```shell
-/cosmos.mint.v1beta1.Query/Inflation
+/atomone.mint.v1beta1.Query/Inflation
 ```
 
 Example:
@@ -287,7 +287,7 @@ Example Output:
 The `Params` endpoint allow users to query the current minting parameters
 
 ```shell
-/cosmos.mint.v1beta1.Query/Params
+/atomone.mint.v1beta1.Query/Params
 ```
 
 Example:

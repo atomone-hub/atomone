@@ -139,22 +139,22 @@ func TestParseSubmitProposal(t *testing.T) {
 {
 	"messages": [
 		{
-			"@type": "/cosmos.bank.v1beta1.MsgSend",
+			"@type": "/atomone.bank.v1beta1.MsgSend",
 			"from_address": "%s",
 			"to_address": "%s",
 			"amount":[{"denom": "stake","amount": "10"}]
 		},
 		{
-			"@type": "/cosmos.staking.v1beta1.MsgDelegate",
+			"@type": "/atomone.staking.v1beta1.MsgDelegate",
 			"delegator_address": "%s",
 			"validator_address": "%s",
 			"amount":{"denom": "stake","amount": "10"}
 		},
 		{
-			"@type": "/cosmos.gov.v1.MsgExecLegacyContent",
+			"@type": "/atomone.gov.v1.MsgExecLegacyContent",
 			"authority": "%s",
 			"content": {
-				"@type": "/cosmos.gov.v1beta1.TextProposal",
+				"@type": "/atomone.gov.v1beta1.TextProposal",
 				"title": "My awesome title",
 				"description": "My awesome description"
 			}

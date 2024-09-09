@@ -264,11 +264,11 @@ simd query auth account cosmos1...
 Example Output:
 
 ```bash
-'@type': /cosmos.auth.v1beta1.BaseAccount
+'@type': /atomone.auth.v1beta1.BaseAccount
 account_number: "0"
 address: cosmos1zwg6tpl8aw4rawv8sgag9086lpw5hv33u5ctr2
 pub_key:
-  '@type': /cosmos.crypto.secp256k1.PubKey
+  '@type': /atomone.crypto.secp256k1.PubKey
   key: ApDrE38zZdd7wLmFS9YmqO684y5DG6fjZ4rVeihF/AQD
 sequence: "1"
 ```
@@ -291,14 +291,14 @@ Example Output:
 
 ```bash
 accounts:
-- '@type': /cosmos.auth.v1beta1.BaseAccount
+- '@type': /atomone.auth.v1beta1.BaseAccount
   account_number: "0"
   address: cosmos1zwg6tpl8aw4rawv8sgag9086lpw5hv33u5ctr2
   pub_key:
-    '@type': /cosmos.crypto.secp256k1.PubKey
+    '@type': /atomone.crypto.secp256k1.PubKey
     key: ApDrE38zZdd7wLmFS9YmqO684y5DG6fjZ4rVeihF/AQD
   sequence: "1"
-- '@type': /cosmos.auth.v1beta1.ModuleAccount
+- '@type': /atomone.auth.v1beta1.ModuleAccount
   base_account:
     account_number: "8"
     address: cosmos1yl6hdjhmkf37639730gffanpzndzdpmhwlkfhr
@@ -308,7 +308,7 @@ accounts:
   permissions:
   - minter
   - burner
-- '@type': /cosmos.auth.v1beta1.ModuleAccount
+- '@type': /atomone.auth.v1beta1.ModuleAccount
   base_account:
     account_number: "4"
     address: cosmos1fl48vsnmsdzcv85q5d2q4z5ajdha8yu34mf0eh
@@ -318,7 +318,7 @@ accounts:
   permissions:
   - burner
   - staking
-- '@type': /cosmos.auth.v1beta1.ModuleAccount
+- '@type': /atomone.auth.v1beta1.ModuleAccount
   base_account:
     account_number: "5"
     address: cosmos1tygms3xhhs3yv487phx3dw4a95jn7t7lpm470r
@@ -328,7 +328,7 @@ accounts:
   permissions:
   - burner
   - staking
-- '@type': /cosmos.auth.v1beta1.ModuleAccount
+- '@type': /atomone.auth.v1beta1.ModuleAccount
   base_account:
     account_number: "6"
     address: cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn
@@ -337,7 +337,7 @@ accounts:
   name: gov
   permissions:
   - burner
-- '@type': /cosmos.auth.v1beta1.ModuleAccount
+- '@type': /atomone.auth.v1beta1.ModuleAccount
   base_account:
     account_number: "3"
     address: cosmos1jv65s3grqf6v6jl3dp4t6c9t9rk99cd88lyufl
@@ -345,12 +345,12 @@ accounts:
     sequence: "0"
   name: distribution
   permissions: []
-- '@type': /cosmos.auth.v1beta1.BaseAccount
+- '@type': /atomone.auth.v1beta1.BaseAccount
   account_number: "1"
   address: cosmos147k3r7v2tvwqhcmaxcfql7j8rmkrlsemxshd3j
   pub_key: null
   sequence: "0"
-- '@type': /cosmos.auth.v1beta1.ModuleAccount
+- '@type': /atomone.auth.v1beta1.ModuleAccount
   base_account:
     account_number: "7"
     address: cosmos1m3h30wlvsf8llruxtpukdvsy0km2kum8g38c8q
@@ -359,7 +359,7 @@ accounts:
   name: mint
   permissions:
   - minter
-- '@type': /cosmos.auth.v1beta1.ModuleAccount
+- '@type': /atomone.auth.v1beta1.ModuleAccount
   base_account:
     account_number: "2"
     address: cosmos17xpfvakm2amg962yls6f84z3kell8c5lserqta
@@ -519,10 +519,10 @@ Example Output:
 ```bash
 {
   "account":{
-    "@type":"/cosmos.auth.v1beta1.BaseAccount",
+    "@type":"/atomone.auth.v1beta1.BaseAccount",
     "address":"cosmos1zwg6tpl8aw4rawv8sgag9086lpw5hv33u5ctr2",
     "pubKey":{
-      "@type":"/cosmos.crypto.secp256k1.PubKey",
+      "@type":"/atomone.crypto.secp256k1.PubKey",
       "key":"ApDrE38zZdd7wLmFS9YmqO684y5DG6fjZ4rVeihF/AQD"
     },
     "sequence":"1"
@@ -552,16 +552,16 @@ Example Output:
 {
    "accounts":[
       {
-         "@type":"/cosmos.auth.v1beta1.BaseAccount",
+         "@type":"/atomone.auth.v1beta1.BaseAccount",
          "address":"cosmos1zwg6tpl8aw4rawv8sgag9086lpw5hv33u5ctr2",
          "pubKey":{
-            "@type":"/cosmos.crypto.secp256k1.PubKey",
+            "@type":"/atomone.crypto.secp256k1.PubKey",
             "key":"ApDrE38zZdd7wLmFS9YmqO684y5DG6fjZ4rVeihF/AQD"
          },
          "sequence":"1"
       },
       {
-         "@type":"/cosmos.auth.v1beta1.ModuleAccount",
+         "@type":"/atomone.auth.v1beta1.ModuleAccount",
          "baseAccount":{
             "address":"cosmos1yl6hdjhmkf37639730gffanpzndzdpmhwlkfhr",
             "accountNumber":"8"
@@ -573,7 +573,7 @@ Example Output:
          ]
       },
       {
-         "@type":"/cosmos.auth.v1beta1.ModuleAccount",
+         "@type":"/atomone.auth.v1beta1.ModuleAccount",
          "baseAccount":{
             "address":"cosmos1fl48vsnmsdzcv85q5d2q4z5ajdha8yu34mf0eh",
             "accountNumber":"4"
@@ -585,7 +585,7 @@ Example Output:
          ]
       },
       {
-         "@type":"/cosmos.auth.v1beta1.ModuleAccount",
+         "@type":"/atomone.auth.v1beta1.ModuleAccount",
          "baseAccount":{
             "address":"cosmos1tygms3xhhs3yv487phx3dw4a95jn7t7lpm470r",
             "accountNumber":"5"
@@ -597,7 +597,7 @@ Example Output:
          ]
       },
       {
-         "@type":"/cosmos.auth.v1beta1.ModuleAccount",
+         "@type":"/atomone.auth.v1beta1.ModuleAccount",
          "baseAccount":{
             "address":"cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
             "accountNumber":"6"
@@ -608,7 +608,7 @@ Example Output:
          ]
       },
       {
-         "@type":"/cosmos.auth.v1beta1.ModuleAccount",
+         "@type":"/atomone.auth.v1beta1.ModuleAccount",
          "baseAccount":{
             "address":"cosmos1jv65s3grqf6v6jl3dp4t6c9t9rk99cd88lyufl",
             "accountNumber":"3"
@@ -616,12 +616,12 @@ Example Output:
          "name":"distribution"
       },
       {
-         "@type":"/cosmos.auth.v1beta1.BaseAccount",
+         "@type":"/atomone.auth.v1beta1.BaseAccount",
          "accountNumber":"1",
          "address":"cosmos147k3r7v2tvwqhcmaxcfql7j8rmkrlsemxshd3j"
       },
       {
-         "@type":"/cosmos.auth.v1beta1.ModuleAccount",
+         "@type":"/atomone.auth.v1beta1.ModuleAccount",
          "baseAccount":{
             "address":"cosmos1m3h30wlvsf8llruxtpukdvsy0km2kum8g38c8q",
             "accountNumber":"7"
@@ -632,7 +632,7 @@ Example Output:
          ]
       },
       {
-         "@type":"/cosmos.auth.v1beta1.ModuleAccount",
+         "@type":"/atomone.auth.v1beta1.ModuleAccount",
          "baseAccount":{
             "address":"cosmos17xpfvakm2amg962yls6f84z3kell8c5lserqta",
             "accountNumber":"2"

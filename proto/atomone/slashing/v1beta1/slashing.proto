@@ -41,7 +41,7 @@ message ValidatorSigningInfo {
 
 // Params represents the parameters used for by the slashing module.
 message Params {
-  option (amino.name) = "cosmos-sdk/x/slashing/Params";
+  option (amino.name) = "atomone/x/slashing/Params";
 
   int64 signed_blocks_window = 1;
   bytes min_signed_per_window = 2 [

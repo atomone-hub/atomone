@@ -999,7 +999,7 @@ func TestMsgSubmitProposalGetSignBytes(t *testing.T) {
 		{
 			"MsgSend",
 			[]sdk.Msg{banktypes.NewMsgSend(member1, member1, sdk.NewCoins())},
-			fmt.Sprintf(`{"type":"cosmos-sdk/group/MsgSubmitProposal","value":{"messages":[{"type":"cosmos-sdk/MsgSend","value":{"amount":[],"from_address":"%s","to_address":"%s"}}],"proposers":[""],"summary":"This is a test","title":"MsgSend"}}`, member1, member1),
+			fmt.Sprintf(`{"type":"atomone/group/MsgSubmitProposal","value":{"messages":[{"type":"atomone/MsgSend","value":{"amount":[],"from_address":"%s","to_address":"%s"}}],"proposers":[""],"summary":"This is a test","title":"MsgSend"}}`, member1, member1),
 		},
 	}
 
@@ -1226,7 +1226,7 @@ func TestAmino(t *testing.T) {
 	out, err := cdc.Amino.MarshalJSON(group.MsgSubmitProposal{Proposers: []string{member1.String()}})
 	require.NoError(t, err)
 	require.Equal(t,
-		`{"type":"cosmos-sdk/group/MsgSubmitProposal","value":{"proposers":["cosmos1d4jk6cn9wgcsj540xq"]}}`,
+		`{"type":"atomone/group/MsgSubmitProposal","value":{"proposers":["cosmos1d4jk6cn9wgcsj540xq"]}}`,
 		string(out),
 	)
 }

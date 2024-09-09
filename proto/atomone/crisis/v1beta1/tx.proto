@@ -26,7 +26,7 @@ service Msg {
 // MsgVerifyInvariant represents a message to verify a particular invariance.
 message MsgVerifyInvariant {
   option (atomone.msg.v1.signer) = "sender";
-  option (amino.name) = "cosmos-sdk/MsgVerifyInvariant";
+  option (amino.name) = "atomone/MsgVerifyInvariant";
 
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
@@ -50,7 +50,7 @@ message MsgVerifyInvariantResponse {}
 // Since: cosmos-sdk 0.47
 message MsgUpdateParams {
   option (atomone.msg.v1.signer) = "authority";
-  option (amino.name) = "cosmos-sdk/x/crisis/MsgUpdateParams";
+  option (amino.name) = "atomone/x/crisis/MsgUpdateParams";
 
   // authority is the address that controls the module (defaults to x/gov unless
   // overwritten).

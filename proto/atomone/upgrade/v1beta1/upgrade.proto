@@ -12,7 +12,7 @@ option (gogoproto.goproto_getters_all) = false;
 
 // Plan specifies information about a planned upgrade and when it should occur.
 message Plan {
-  option (amino.name) = "cosmos-sdk/Plan";
+  option (amino.name) = "atomone/Plan";
   option (gogoproto.equal) = true;
   option (gogoproto.goproto_stringer) = false;
 
@@ -55,7 +55,7 @@ message Plan {
 message SoftwareUpgradeProposal {
   option deprecated = true;
   option (cosmos_proto.implements_interface) = "atomone.gov.v1beta1.Content";
-  option (amino.name) = "cosmos-sdk/SoftwareUpgradeProposal";
+  option (amino.name) = "atomone/SoftwareUpgradeProposal";
   option (gogoproto.equal) = true;
   option (gogoproto.goproto_stringer) = false;
 
@@ -76,7 +76,7 @@ message SoftwareUpgradeProposal {
 message CancelSoftwareUpgradeProposal {
   option deprecated = true;
   option (cosmos_proto.implements_interface) = "atomone.gov.v1beta1.Content";
-  option (amino.name) = "cosmos-sdk/CancelSoftwareUpgradeProposal";
+  option (amino.name) = "atomone/CancelSoftwareUpgradeProposal";
   option (gogoproto.equal) = true;
   option (gogoproto.goproto_stringer) = false;
 

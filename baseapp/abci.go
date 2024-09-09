@@ -535,7 +535,7 @@ func (app *BaseApp) Query(req abci.RequestQuery) (res abci.ResponseQuery) {
 	telemetry.IncrCounter(1, "query", req.Path)
 	defer telemetry.MeasureSince(time.Now(), req.Path)
 
-	if req.Path == "/cosmos.tx.v1beta1.Service/BroadcastTx" {
+	if req.Path == "/atomone.tx.v1beta1.Service/BroadcastTx" {
 		return sdkerrors.QueryResult(sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "can't route a broadcast tx message"), app.trace)
 	}
 

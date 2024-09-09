@@ -11,7 +11,7 @@ func Test_ParseCLIProposal(t *testing.T) {
 			"group_policy_address": "cosmos15r295x4994egvckteam9skazy9kvfvzpak4naf",
 			"messages": [
 			  {
-				"@type": "/cosmos.bank.v1beta1.MsgSend",
+				"@type": "/atomone.bank.v1beta1.MsgSend",
 				"from_address": "cosmos15r295x4994egvckteam9skazy9kvfvzpak4naf",
 				"to_address": "cosmos15r295x4994egvckteam9skazy9kvfvzpak4naf",
 				"amount":[{"denom": "stake","amount": "10"}]

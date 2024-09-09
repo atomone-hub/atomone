@@ -7,7 +7,7 @@ sidebar_position: 1
 ## Abstract
 
 This section specifies the slashing module of the Cosmos SDK, which implements functionality
-first outlined in the [Cosmos Whitepaper](https://cosmos.network/about/whitepaper) in June 2016.
+first outlined in the [Cosmos Whitepaper](https://atomone.network/about/whitepaper) in June 2016.
 
 The slashing module enables Cosmos SDK-based blockchains to disincentivize any attributable action
 by a protocol-recognized actor with value at stake by penalizing them ("slashing").
@@ -568,7 +568,7 @@ simd query slashing signing-infos [flags]
 Example:
 
 ```shell
-simd query slashing signing-info '{"@type":"/cosmos.crypto.ed25519.PubKey","key":"Auxs3865HpB/EfssYOzfqNhEJjzys6jD5B6tPgC8="}'
+simd query slashing signing-info '{"@type":"/atomone.crypto.ed25519.PubKey","key":"Auxs3865HpB/EfssYOzfqNhEJjzys6jD5B6tPgC8="}'
 
 ```
 
