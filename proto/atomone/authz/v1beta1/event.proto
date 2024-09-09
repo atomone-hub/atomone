@@ -1,0 +1,27 @@
+// Since: cosmos-sdk 0.43
+syntax = "proto3";
+package atomone.authz.v1beta1;
+
+import "cosmos_proto/cosmos.proto";
+
+option go_package = "github.com/atomone-hub/atomone/x/authz";
+
+// EventGrant is emitted on Msg/Grant
+message EventGrant {
+  // Msg type URL for which an autorization is granted
+  string msg_type_url = 2;
+  // Granter account address
+  string granter = 3 [ (cosmos_proto.scalar) = "atomone.AddressString" ];
+  // Grantee account address
+  string grantee = 4 [ (cosmos_proto.scalar) = "atomone.AddressString" ];
+}
+
+// EventRevoke is emitted on Msg/Revoke
+message EventRevoke {
+  // Msg type URL for which an autorization is revoked
+  string msg_type_url = 2;
+  // Granter account address
+  string granter = 3 [ (cosmos_proto.scalar) = "atomone.AddressString" ];
+  // Grantee account address
+  string grantee = 4 [ (cosmos_proto.scalar) = "atomone.AddressString" ];
+}

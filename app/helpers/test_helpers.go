@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"encoding/json"
+	"errors"
 	"testing"
 	"time"
 
@@ -13,6 +14,7 @@ import (
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	tmtypes "github.com/cometbft/cometbft/types"
 
+	"github.com/atomone-hub/atomone/baseapp"
 	codectypes "github.com/atomone-hub/atomone/codec/types"
 	cryptocodec "github.com/atomone-hub/atomone/crypto/codec"
 	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
@@ -26,6 +28,8 @@ import (
 
 	atomoneapp "github.com/atomone-hub/atomone/app"
 )
+
+var ParamStoreKey = []byte("paramstore")
 
 // SimAppChainID hardcoded chainID for simulation
 const (
@@ -84,6 +88,46 @@ func Setup(t *testing.T) *atomoneapp.AtomOneApp {
 	return app
 }
 
+type paramStore struct {
+	db *dbm.MemDB
+}
+
+func (ps *paramStore) Set(_ sdk.Context, value *tmproto.ConsensusParams) {
+	bz, err := json.Marshal(value)
+	if err != nil {
+		panic(err)
+	}
+
+	ps.db.Set(ParamStoreKey, bz)
+}
+
+func (ps *paramStore) Has(_ sdk.Context) bool {
+	ok, err := ps.db.Has(ParamStoreKey)
+	if err != nil {
+		panic(err)
+	}
+
+	return ok
+}
+
+func (ps paramStore) Get(ctx sdk.Context) (*tmproto.ConsensusParams, error) {
+	bz, err := ps.db.Get(ParamStoreKey)
+	if err != nil {
+		panic(err)
+	}
+
+	if len(bz) == 0 {
+		return nil, errors.New("params not found")
+	}
+
+	var params tmproto.ConsensusParams
+	if err := json.Unmarshal(bz, &params); err != nil {
+		panic(err)
+	}
+
+	return &params, nil
+}
+
 // SetupWithGenesisValSet initializes a new AtomOneApp with a validator set and genesis accounts
 // that also act as delegators. For simplicity, each validator is bonded with a delegation
 // of one consensus engine unit in the default token of the AtomOneApp from first genesis
@@ -118,6 +162,10 @@ func SetupWithGenesisValSet(t *testing.T, valSet *tmtypes.ValidatorSet, genAccs 
 	return atomoneApp
 }
 
+func setParamStore(pStore *paramStore) func(*baseapp.BaseApp) {
+	return func(app *baseapp.BaseApp) { app.SetParamStore(pStore) }
+}
+
 func setup() (*atomoneapp.AtomOneApp, atomoneapp.GenesisState) {
 	db := dbm.NewMemDB()
 	appOptions := make(simtestutil.AppOptionsMap, 0)
@@ -126,6 +174,9 @@ func setup() (*atomoneapp.AtomOneApp, atomoneapp.GenesisState) {
 
 	encConfig := atomoneapp.RegisterEncodingConfig()
 
+	baseappOptions := []func(*baseapp.BaseApp){
+		setParamStore(&paramStore{db: dbm.NewMemDB()}),
+	}
 	atomoneApp := atomoneapp.NewAtomOneApp(
 		log.NewNopLogger(),
 		db,
@@ -135,6 +186,7 @@ func setup() (*atomoneapp.AtomOneApp, atomoneapp.GenesisState) {
 		atomoneapp.DefaultNodeHome,
 		encConfig,
 		appOptions,
+		baseappOptions...,
 	)
 	return atomoneApp, atomoneapp.NewDefaultGenesisState(encConfig)
 }

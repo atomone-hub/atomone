@@ -7,7 +7,6 @@ import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/any.proto";
 import "google/protobuf/duration.proto";
-// TODO: port to atomone
 import "cosmos_proto/cosmos.proto";
 import "amino/amino.proto";
 
@@ -238,5 +237,5 @@ message Params {
   //
   // Since: cosmos-sdk 0.50
   // NOTE: backported from v50 (https://github.com/cosmos/cosmos-sdk/pull/18146)
-  string min_deposit_ratio = 16 [ (cosmos_proto.scalar) = "atomone.Dec" ];
+  string min_deposit_ratio = 16 [ (cosmos_proto.scalar) = "cosmos.Dec" ];
 }

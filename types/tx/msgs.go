@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	msgResponseInterfaceProtoName = "cosmos.tx.v1beta1.MsgResponse"
+	msgResponseInterfaceProtoName = "atomone.tx.v1beta1.MsgResponse"
 )
 
 // MsgResponse is the interface all Msg server handlers' response types need to

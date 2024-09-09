@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package atomone.evidence.module.v1;
+
+import "atomone/app/v1alpha1/module.proto";
+
+// Module is the config object of the evidence module.
+message Module {
+  option (atomone.app.v1alpha1.module) = {
+    go_import : "github.com/atomone-hub/atomone/x/evidence"
+  };
+}

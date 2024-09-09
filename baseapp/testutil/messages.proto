@@ -6,20 +6,20 @@ import "google/protobuf/any.proto";
 option go_package = "github.com/atomone-hub/atomone/baseapp/testutil";
 
 message MsgCounter {
-  int64 counter         = 1;
-  bool  fail_on_handler = 2;
+  int64 counter = 1;
+  bool fail_on_handler = 2;
 }
 
 message MsgCounter2 {
-  int64 counter         = 1;
-  bool  fail_on_handler = 2;
+  int64 counter = 1;
+  bool fail_on_handler = 2;
 }
 
 message MsgCreateCounterResponse {}
 
 message MsgKeyValue {
-  bytes  key    = 1;
-  bytes  value  = 2;
+  bytes key = 1;
+  bytes value = 2;
   string signer = 3;
 }
 
@@ -33,6 +33,4 @@ service Counter2 {
   rpc IncrementCounter(MsgCounter2) returns (MsgCreateCounterResponse);
 }
 
-service KeyValue {
-  rpc Set(MsgKeyValue) returns (MsgCreateKeyValueResponse);
-}
+service KeyValue { rpc Set(MsgKeyValue) returns (MsgCreateKeyValueResponse); }

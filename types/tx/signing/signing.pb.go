@@ -27,7 +27,7 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 // SignMode represents a signing mode with its own security guarantees.
 //
 // This enum should be considered a registry of all known sign modes
-// in the atomone. ecosystem. Apps are not expected to support all known
+// in the Cosmos ecosystem. Apps are not expected to support all known
 // sign modes. Apps that would like to support custom  sign modes are
 // encouraged to open a small PR against this file to add a new case
 // to this SignMode enum describing their sign mode so that different
@@ -50,13 +50,13 @@ const (
 	// require signers signing over other signers' `signer_info`. It also allows
 	// for adding Tips in transactions.
 	//
-	// Since: atomone.-sdk 0.46
+	// Since: cosmos-sdk 0.46
 	SignMode_SIGN_MODE_DIRECT_AUX SignMode = 3
 	// SIGN_MODE_LEGACY_AMINO_JSON is a backwards compatibility mode which uses
 	// Amino JSON and will be removed in the future.
 	SignMode_SIGN_MODE_LEGACY_AMINO_JSON SignMode = 127
-	// SIGN_MODE_EIP_191 specifies the sign mode for EIP 191 signing on the
-	// atomone. SDK. Ref: https://eips.ethereum.org/EIPS/eip-191
+	// SIGN_MODE_EIP_191 specifies the sign mode for EIP 191 signing on the Cosmos
+	// SDK. Ref: https://eips.ethereum.org/EIPS/eip-191
 	//
 	// Currently, SIGN_MODE_EIP_191 is registered as a SignMode enum variant,
 	// but is not implemented on the SDK by default. To enable EIP-191, you need
@@ -64,7 +64,7 @@ const (
 	// `SignModeHandler` for EIP-191. The SDK may decide to fully support
 	// EIP-191 in the future.
 	//
-	// Since: atomone.-sdk 0.45.2
+	// Since: cosmos-sdk 0.45.2
 	SignMode_SIGN_MODE_EIP_191 SignMode = 191
 )
 

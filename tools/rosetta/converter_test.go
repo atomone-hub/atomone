@@ -108,7 +108,7 @@ func (s *ConverterTestSuite) TestFromRosettaOpsToTxErrors() {
 
 	s.Run("codec type but not sdk.Msg", func() {
 		op := &rosettatypes.Operation{
-			Type: "cosmos.crypto.ed25519.PubKey",
+			Type: "atomone.crypto.ed25519.PubKey",
 		}
 
 		_, err := s.c.ToSDK().UnsignedTx([]*rosettatypes.Operation{op})

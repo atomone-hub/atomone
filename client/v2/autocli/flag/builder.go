@@ -32,7 +32,7 @@ func (b *Builder) init() {
 
 	if b.scalarFlagTypes == nil {
 		b.scalarFlagTypes = map[string]Type{}
-		b.scalarFlagTypes["cosmos.AddressString"] = addressStringType{}
+		b.scalarFlagTypes["atomone.AddressString"] = addressStringType{}
 	}
 }
 

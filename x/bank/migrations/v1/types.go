@@ -63,7 +63,7 @@ type SupplyI interface {
 // RegisterInterfaces registers interfaces required for the v1 migrations.
 func RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 	registry.RegisterInterface(
-		"cosmos.bank.v1beta1.SupplyI",
+		"atomone.bank.v1beta1.SupplyI",
 		(*SupplyI)(nil),
 		&types.Supply{},
 	)

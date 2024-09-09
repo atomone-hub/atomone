@@ -5,7 +5,7 @@ package atomone.reflection.v1;
 import "google/protobuf/descriptor.proto";
 import "atomone/query/v1/query.proto";
 
-// Package atomone.reflection.v1 provides support for inspecting protobuf
+// package atomone.reflection.v1 provides support for inspecting protobuf
 // file descriptors.
 service ReflectionService {
   // FileDescriptors queries all the file descriptors in the app in order

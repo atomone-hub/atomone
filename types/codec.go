@@ -7,7 +7,7 @@ import (
 
 const (
 	// MsgInterfaceProtoName defines the protobuf name of the cosmos Msg interface
-	MsgInterfaceProtoName = "cosmos.base.v1beta1.Msg"
+	MsgInterfaceProtoName = "atomone.base.v1beta1.Msg"
 )
 
 // RegisterLegacyAminoCodec registers the sdk message type.

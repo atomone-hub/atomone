@@ -11,7 +11,8 @@ option go_package = "github.com/atomone-hub/atomone/x/auth/types";
 // GenesisState defines the auth module's genesis state.
 message GenesisState {
   // params defines all the parameters of the module.
-  Params params = 1 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
+  Params params = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 
   // accounts are the accounts present at genesis.
   repeated google.protobuf.Any accounts = 2;

@@ -33,7 +33,7 @@ import (
 	minttypes "github.com/atomone-hub/atomone/x/mint/types"
 )
 
-var EventProposalPruned = "cosmos.group.v1.EventProposalPruned"
+var EventProposalPruned = "atomone.group.v1.EventProposalPruned"
 
 const minExecutionPeriod = 5 * time.Second
 

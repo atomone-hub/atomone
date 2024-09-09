@@ -334,8 +334,8 @@ func (s *TestSuite) TestDispatchedEvents() {
 	events = events[len(events)-2:]
 
 	requiredEvents := map[string]bool{
-		"cosmos.authz.v1beta1.EventGrant":  true,
-		"cosmos.authz.v1beta1.EventRevoke": true,
+		"atomone.authz.v1beta1.EventGrant":  true,
+		"atomone.authz.v1beta1.EventRevoke": true,
 	}
 	for _, e := range events {
 		requiredEvents[e.Type] = true

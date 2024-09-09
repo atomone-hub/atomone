@@ -16,7 +16,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const n1 = "cosmos.info"
+const n1 = "atomone.info"
 
 type MigrationTestSuite struct {
 	suite.Suite

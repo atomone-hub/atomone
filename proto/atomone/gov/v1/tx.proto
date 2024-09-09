@@ -21,12 +21,14 @@ service Msg {
 
   // ExecLegacyContent defines a Msg to be in included in a MsgSubmitProposal
   // to execute a legacy content-based proposal.
-  rpc ExecLegacyContent(MsgExecLegacyContent) returns (MsgExecLegacyContentResponse);
+  rpc ExecLegacyContent(MsgExecLegacyContent)
+      returns (MsgExecLegacyContentResponse);
 
   // Vote defines a method to add a vote on a specific proposal.
   rpc Vote(MsgVote) returns (MsgVoteResponse);
 
-  // VoteWeighted defines a method to add a weighted vote on a specific proposal.
+  // VoteWeighted defines a method to add a weighted vote on a specific
+  // proposal.
   rpc VoteWeighted(MsgVoteWeighted) returns (MsgVoteWeightedResponse);
 
   // Deposit defines a method to add deposit on a specific proposal.
@@ -43,17 +45,19 @@ service Msg {
 // proposal Content.
 message MsgSubmitProposal {
   option (atomone.msg.v1.signer) = "proposer";
-  option (amino.name)           = "atomone/v1/MsgSubmitProposal";
+  option (amino.name) = "cosmos-sdk/v1/MsgSubmitProposal";
 
   // messages are the arbitrary messages to be executed if proposal passes.
-  repeated google.protobuf.Any messages             = 1;
+  repeated google.protobuf.Any messages = 1;
 
-  // initial_deposit is the deposit value that must be paid at proposal submission.
-  repeated atomone.base.v1beta1.Coin initial_deposit = 2 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
-  
+  // initial_deposit is the deposit value that must be paid at proposal
+  // submission.
+  repeated atomone.base.v1beta1.Coin initial_deposit = 2
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+
   // proposer is the account address of the proposer.
-  string                            proposer        = 3 [(cosmos_proto.scalar) = "atomone.AddressString"];
-  
+  string proposer = 3 [ (cosmos_proto.scalar) = "atomone.AddressString" ];
+
   // metadata is any arbitrary metadata attached to the proposal.
   string metadata = 4;
 
@@ -78,10 +82,11 @@ message MsgSubmitProposalResponse {
 // This ensures backwards compatibility with v1beta1.MsgSubmitProposal.
 message MsgExecLegacyContent {
   option (atomone.msg.v1.signer) = "authority";
-  option (amino.name)           = "atomone/v1/MsgExecLegacyContent";
+  option (amino.name) = "cosmos-sdk/v1/MsgExecLegacyContent";
 
   // content is the proposal's content.
-  google.protobuf.Any content = 1 [(cosmos_proto.accepts_interface) = "atomone.gov.v1beta1.Content"];
+  google.protobuf.Any content = 1
+      [ (cosmos_proto.accepts_interface) = "atomone.gov.v1beta1.Content" ];
   // authority must be the gov module address.
   string authority = 2;
 }
@@ -92,19 +97,20 @@ message MsgExecLegacyContentResponse {}
 // MsgVote defines a message to cast a vote.
 message MsgVote {
   option (atomone.msg.v1.signer) = "voter";
-  option (amino.name)           = "atomone/v1/MsgVote";
+  option (amino.name) = "cosmos-sdk/v1/MsgVote";
 
   // proposal_id defines the unique id of the proposal.
-  uint64     proposal_id = 1 [(gogoproto.jsontag) = "proposal_id", (amino.dont_omitempty) = true];
-  
+  uint64 proposal_id = 1
+      [ (gogoproto.jsontag) = "proposal_id", (amino.dont_omitempty) = true ];
+
   // voter is the voter address for the proposal.
-  string     voter       = 2 [(cosmos_proto.scalar) = "atomone.AddressString"];
-  
+  string voter = 2 [ (cosmos_proto.scalar) = "atomone.AddressString" ];
+
   // option defines the vote option.
-  VoteOption option      = 3;
-  
+  VoteOption option = 3;
+
   // metadata is any arbitrary metadata attached to the Vote.
-  string     metadata    = 4;
+  string metadata = 4;
 }
 
 // MsgVoteResponse defines the Msg/Vote response type.
@@ -113,19 +119,20 @@ message MsgVoteResponse {}
 // MsgVoteWeighted defines a message to cast a vote.
 message MsgVoteWeighted {
   option (atomone.msg.v1.signer) = "voter";
-  option (amino.name)           = "atomone/v1/MsgVoteWeighted";
+  option (amino.name) = "cosmos-sdk/v1/MsgVoteWeighted";
 
   // proposal_id defines the unique id of the proposal.
-  uint64                      proposal_id = 1 [(gogoproto.jsontag) = "proposal_id", (amino.dont_omitempty) = true];
-  
+  uint64 proposal_id = 1
+      [ (gogoproto.jsontag) = "proposal_id", (amino.dont_omitempty) = true ];
+
   // voter is the voter address for the proposal.
-  string                      voter       = 2 [(cosmos_proto.scalar) = "atomone.AddressString"];
-  
+  string voter = 2 [ (cosmos_proto.scalar) = "atomone.AddressString" ];
+
   // options defines the weighted vote options.
-  repeated WeightedVoteOption options     = 3;
+  repeated WeightedVoteOption options = 3;
 
   // metadata is any arbitrary metadata attached to the VoteWeighted.
-  string                      metadata    = 4;
+  string metadata = 4;
 }
 
 // MsgVoteWeightedResponse defines the Msg/VoteWeighted response type.
@@ -134,16 +141,18 @@ message MsgVoteWeightedResponse {}
 // MsgDeposit defines a message to submit a deposit to an existing proposal.
 message MsgDeposit {
   option (atomone.msg.v1.signer) = "depositor";
-  option (amino.name)           = "atomone/v1/MsgDeposit";
+  option (amino.name) = "cosmos-sdk/v1/MsgDeposit";
 
   // proposal_id defines the unique id of the proposal.
-  uint64   proposal_id                     = 1 [(gogoproto.jsontag) = "proposal_id", (amino.dont_omitempty) = true];
-  
+  uint64 proposal_id = 1
+      [ (gogoproto.jsontag) = "proposal_id", (amino.dont_omitempty) = true ];
+
   // depositor defines the deposit addresses from the proposals.
-  string   depositor                       = 2 [(cosmos_proto.scalar) = "atomone.AddressString"];
-  
+  string depositor = 2 [ (cosmos_proto.scalar) = "atomone.AddressString" ];
+
   // amount to be deposited by depositor.
-  repeated atomone.base.v1beta1.Coin amount = 3 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
+  repeated atomone.base.v1beta1.Coin amount = 3
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
 // MsgDepositResponse defines the Msg/Deposit response type.
@@ -154,15 +163,17 @@ message MsgDepositResponse {}
 // Since: cosmos-sdk 0.47
 message MsgUpdateParams {
   option (atomone.msg.v1.signer) = "authority";
-  option (amino.name)           = "atomone/x/gov/v1/MsgUpdateParams";
+  option (amino.name) = "cosmos-sdk/x/gov/v1/MsgUpdateParams";
 
-  // authority is the address that controls the module (defaults to x/gov unless overwritten).
-  string authority = 1 [(cosmos_proto.scalar) = "atomone.AddressString"];
+  // authority is the address that controls the module (defaults to x/gov unless
+  // overwritten).
+  string authority = 1 [ (cosmos_proto.scalar) = "atomone.AddressString" ];
 
   // params defines the x/gov parameters to update.
   //
   // NOTE: All parameters must be supplied.
-  Params params = 2 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
+  Params params = 2
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
 // MsgUpdateParamsResponse defines the response structure for executing a

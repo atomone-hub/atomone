@@ -2,11 +2,9 @@ syntax = "proto3";
 package atomone.base.v1beta1;
 
 import "gogoproto/gogo.proto";
-// TODO: port to atomone
 import "cosmos_proto/cosmos.proto";
 import "amino/amino.proto";
 
-// TODO: port to atomone
 option go_package = "github.com/atomone-hub/atomone/types";
 option (gogoproto.goproto_stringer_all) = false;
 option (gogoproto.stringer_all) = false;
