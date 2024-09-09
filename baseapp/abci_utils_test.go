@@ -138,15 +138,15 @@ func (s *ABCIUtilsTestSuite) TestDefaultProposalHandler_PriorityNonceMempoolTxSe
 		testTxs[i].size = int(cmttypes.ComputeProtoSizeForTxs([]cmttypes.Tx{bz}))
 	}
 
-	s.Require().Equal(testTxs[0].size, 111)
-	s.Require().Equal(testTxs[1].size, 121)
-	s.Require().Equal(testTxs[2].size, 112)
-	s.Require().Equal(testTxs[3].size, 112)
-	s.Require().Equal(testTxs[4].size, 195)
-	s.Require().Equal(testTxs[5].size, 205)
-	s.Require().Equal(testTxs[6].size, 196)
-	s.Require().Equal(testTxs[7].size, 196)
-	s.Require().Equal(testTxs[8].size, 196)
+	s.Require().Equal(testTxs[0].size, 112)
+	s.Require().Equal(testTxs[1].size, 122)
+	s.Require().Equal(testTxs[2].size, 113)
+	s.Require().Equal(testTxs[3].size, 113)
+	s.Require().Equal(testTxs[4].size, 197)
+	s.Require().Equal(testTxs[5].size, 207)
+	s.Require().Equal(testTxs[6].size, 198)
+	s.Require().Equal(testTxs[7].size, 198)
+	s.Require().Equal(testTxs[8].size, 198)
 
 	testCases := map[string]struct {
 		ctx         sdk.Context

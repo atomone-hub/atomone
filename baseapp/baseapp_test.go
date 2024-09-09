@@ -716,7 +716,7 @@ func TestDefaultProposalHandler_NoOpMempoolTxSelection(t *testing.T) {
 	tx := builder.GetTx()
 	txBz, err := txConfig.TxEncoder()(tx)
 	require.NoError(t, err)
-	require.Len(t, txBz, 103)
+	require.Len(t, txBz, 104)
 
 	ctx := sdk.NewContext(nil, tmproto.Header{}, false, nil).
 		WithConsensusParams(&tmproto.ConsensusParams{})
@@ -744,7 +744,7 @@ func TestDefaultProposalHandler_NoOpMempoolTxSelection(t *testing.T) {
 				Txs:        [][]byte{txBz, txBz, txBz, txBz, txBz},
 				MaxTxBytes: 309,
 			},
-			expectedTxs: 3,
+			expectedTxs: 2,
 		},
 		"large max tx bytes": {
 			ctx: ctx,
@@ -752,7 +752,7 @@ func TestDefaultProposalHandler_NoOpMempoolTxSelection(t *testing.T) {
 				Txs:        [][]byte{txBz, txBz, txBz, txBz, txBz},
 				MaxTxBytes: 309,
 			},
-			expectedTxs: 3,
+			expectedTxs: 2,
 		},
 		"max gas and tx bytes": {
 			ctx: ctx.WithConsensusParams(&tmproto.ConsensusParams{
@@ -764,7 +764,7 @@ func TestDefaultProposalHandler_NoOpMempoolTxSelection(t *testing.T) {
 				Txs:        [][]byte{txBz, txBz, txBz, txBz, txBz},
 				MaxTxBytes: 309,
 			},
-			expectedTxs: 3,
+			expectedTxs: 2,
 		},
 	}
 

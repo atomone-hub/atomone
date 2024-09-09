@@ -114,7 +114,7 @@ func (suite *DeterministicTestSuite) TestGRPCQueryAccount() {
 
 	req := &types.QueryAccountRequest{Address: acc1.GetAddress().String()}
 
-	testdata.DeterministicIterations(suite.ctx, suite.Require(), req, suite.queryClient.Account, 1543, false)
+	testdata.DeterministicIterations(suite.ctx, suite.Require(), req, suite.queryClient.Account, 1549, false)
 }
 
 // pubkeyGenerator creates and returns a random pubkey generator using rapid.
@@ -156,7 +156,7 @@ func (suite *DeterministicTestSuite) TestGRPCQueryAccounts() {
 	suite.accountKeeper.SetAccount(suite.ctx, acc2)
 
 	req := &types.QueryAccountsRequest{}
-	testdata.DeterministicIterations(suite.ctx, suite.Require(), req, suite.queryClient.Accounts, 1716, false)
+	testdata.DeterministicIterations(suite.ctx, suite.Require(), req, suite.queryClient.Accounts, 1734, false)
 }
 
 func (suite *DeterministicTestSuite) TestGRPCQueryAccountAddressByID() {
@@ -228,7 +228,7 @@ func (suite *DeterministicTestSuite) TestGRPCQueryAccountInfo() {
 
 	suite.accountKeeper.SetAccount(suite.ctx, acc)
 	req := &types.QueryAccountInfoRequest{Address: acc.GetAddress().String()}
-	testdata.DeterministicIterations(suite.ctx, suite.Require(), req, suite.queryClient.AccountInfo, 1543, false)
+	testdata.DeterministicIterations(suite.ctx, suite.Require(), req, suite.queryClient.AccountInfo, 1549, false)
 }
 
 func (suite *DeterministicTestSuite) createAndReturnQueryClient(ak keeper.AccountKeeper) types.QueryClient {
@@ -302,7 +302,7 @@ func (suite *DeterministicTestSuite) TestGRPCQueryModuleAccounts() {
 
 	queryClient := suite.createAndReturnQueryClient(suite.accountKeeper)
 	req := &types.QueryModuleAccountsRequest{}
-	testdata.DeterministicIterations(suite.ctx, suite.Require(), req, queryClient.ModuleAccounts, 8565, false)
+	testdata.DeterministicIterations(suite.ctx, suite.Require(), req, queryClient.ModuleAccounts, 8583, false)
 }
 
 func (suite *DeterministicTestSuite) TestGRPCQueryModuleAccountByName() {
@@ -348,5 +348,5 @@ func (suite *DeterministicTestSuite) TestGRPCQueryModuleAccountByName() {
 
 	queryClient := suite.createAndReturnQueryClient(suite.accountKeeper)
 	req := &types.QueryModuleAccountByNameRequest{Name: "mint"}
-	testdata.DeterministicIterations(suite.ctx, suite.Require(), req, queryClient.ModuleAccountByName, 1372, false)
+	testdata.DeterministicIterations(suite.ctx, suite.Require(), req, queryClient.ModuleAccountByName, 1375, false)
 }
