@@ -19,7 +19,7 @@ import (
 	banktypes "github.com/atomone-hub/atomone/x/bank/types"
 	"github.com/atomone-hub/atomone/x/params"
 
-	// consensusparamtypes "github.com/atomone-hub/atomone/x/consensus/types"
+	consensusparamtypes "github.com/atomone-hub/atomone/x/consensus/types"
 
 	"github.com/atomone-hub/atomone/store/streaming"
 	storetypes "github.com/atomone-hub/atomone/store/types"
@@ -36,16 +36,20 @@ import (
 	upgradekeeper "github.com/atomone-hub/atomone/x/upgrade/keeper"
 	upgradetypes "github.com/atomone-hub/atomone/x/upgrade/types"
 
-	// capabilitykeeper "github.com/atomone-hub/atomone/x/capability/keeper"
-	// capabilitytypes "github.com/atomone-hub/atomone/x/capability/types"
-	// consensusparamkeeper "github.com/atomone-hub/atomone/x/consensus/keeper"
-	// crisiskeeper "github.com/atomone-hub/atomone/x/crisis/keeper"
+	capabilitykeeper "github.com/atomone-hub/atomone/x/capability/keeper"
+	capabilitytypes "github.com/atomone-hub/atomone/x/capability/types"
+	consensusparamkeeper "github.com/atomone-hub/atomone/x/consensus/keeper"
+	crisiskeeper "github.com/atomone-hub/atomone/x/crisis/keeper"
+	crisistypes "github.com/atomone-hub/atomone/x/crisis/types"
+
+	evidencekeeper "github.com/atomone-hub/atomone/x/evidence/keeper"
 
 	paramskeeper "github.com/atomone-hub/atomone/x/params/keeper"
 	paramstypes "github.com/atomone-hub/atomone/x/params/types"
 	paramproposal "github.com/atomone-hub/atomone/x/params/types/proposal"
 
-	// slashingkeeper "github.com/atomone-hub/atomone/x/slashing/keeper"
+	slashingkeeper "github.com/atomone-hub/atomone/x/slashing/keeper"
+	slashingtypes "github.com/atomone-hub/atomone/x/slashing/types"
 
 	govkeeper "github.com/atomone-hub/atomone/x/gov/keeper"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
@@ -59,21 +63,21 @@ type AppKeepers struct {
 	memKeys map[string]*storetypes.MemoryStoreKey
 
 	// keepers
-	AccountKeeper authkeeper.AccountKeeper
-	BankKeeper    bankkeeper.Keeper
-	// CapabilityKeeper      *capabilitykeeper.Keeper
-	StakingKeeper *stakingkeeper.Keeper
-	// SlashingKeeper        slashingkeeper.Keeper
-	MintKeeper  mintkeeper.Keeper
-	DistrKeeper distrkeeper.Keeper
-	GovKeeper   *govkeeper.Keeper
-	// CrisisKeeper          *crisiskeeper.Keeper
-	UpgradeKeeper *upgradekeeper.Keeper
-	ParamsKeeper  paramskeeper.Keeper
-	// EvidenceKeeper        evidencekeeper.Keeper
-	FeeGrantKeeper feegrantkeeper.Keeper
-	AuthzKeeper    authzkeeper.Keeper
-	// ConsensusParamsKeeper consensusparamkeeper.Keeper
+	AccountKeeper         authkeeper.AccountKeeper
+	BankKeeper            bankkeeper.Keeper
+	CapabilityKeeper      *capabilitykeeper.Keeper
+	StakingKeeper         *stakingkeeper.Keeper
+	SlashingKeeper        slashingkeeper.Keeper
+	MintKeeper            mintkeeper.Keeper
+	DistrKeeper           distrkeeper.Keeper
+	GovKeeper             *govkeeper.Keeper
+	CrisisKeeper          *crisiskeeper.Keeper
+	UpgradeKeeper         *upgradekeeper.Keeper
+	ParamsKeeper          paramskeeper.Keeper
+	EvidenceKeeper        evidencekeeper.Keeper
+	FeeGrantKeeper        feegrantkeeper.Keeper
+	AuthzKeeper           authzkeeper.Keeper
+	ConsensusParamsKeeper consensusparamkeeper.Keeper
 }
 
 func NewAppKeeper(
@@ -113,33 +117,33 @@ func NewAppKeeper(
 	)
 
 	// set the BaseApp's parameter store
-	//appKeepers.ConsensusParamsKeeper = consensusparamkeeper.NewKeeper(
-	//	appCodec,
-	//	appKeepers.keys[consensusparamtypes.StoreKey],
-	//	authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	//)
-	//bApp.SetParamStore(&appKeepers.ConsensusParamsKeeper)
+	appKeepers.ConsensusParamsKeeper = consensusparamkeeper.NewKeeper(
+		appCodec,
+		appKeepers.keys[consensusparamtypes.StoreKey],
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+	bApp.SetParamStore(&appKeepers.ConsensusParamsKeeper)
 
 	// add capability keeper and ScopeToModule for ibc module
 	// TODO remove if no IBC ?
-	//appKeepers.CapabilityKeeper = capabilitykeeper.NewKeeper(
-	//	appCodec,
-	//	appKeepers.keys[capabilitytypes.StoreKey],
-	//	appKeepers.memKeys[capabilitytypes.MemStoreKey],
-	//)
+	appKeepers.CapabilityKeeper = capabilitykeeper.NewKeeper(
+		appCodec,
+		appKeepers.keys[capabilitytypes.StoreKey],
+		appKeepers.memKeys[capabilitytypes.MemStoreKey],
+	)
 
 	// Applications that wish to enforce statically created ScopedKeepers should call `Seal` after creating
 	// their scoped modules in `NewApp` with `ScopeToModule`
 	// appKeepers.CapabilityKeeper.Seal()
 
-	//appKeepers.CrisisKeeper = crisiskeeper.NewKeeper(
-	//	appCodec,
-	//	appKeepers.keys[crisistypes.StoreKey],
-	//	invCheckPeriod,
-	//	appKeepers.BankKeeper,
-	//	authtypes.FeeCollectorName,
-	//	authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	//)
+	appKeepers.CrisisKeeper = crisiskeeper.NewKeeper(
+		appCodec,
+		appKeepers.keys[crisistypes.StoreKey],
+		invCheckPeriod,
+		appKeepers.BankKeeper,
+		authtypes.FeeCollectorName,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
 
 	// Add normal keepers
 	appKeepers.AccountKeeper = authkeeper.NewAccountKeeper(
@@ -200,13 +204,13 @@ func NewAppKeeper(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	//appKeepers.SlashingKeeper = slashingkeeper.NewKeeper(
-	//	appCodec,
-	//	legacyAmino,
-	//	appKeepers.keys[slashingtypes.StoreKey],
-	//	appKeepers.StakingKeeper,
-	//	authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	//)
+	appKeepers.SlashingKeeper = slashingkeeper.NewKeeper(
+		appCodec,
+		legacyAmino,
+		appKeepers.keys[slashingtypes.StoreKey],
+		appKeepers.StakingKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
 
 	// register the staking hooks
 	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
@@ -286,12 +290,12 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	//nolint: staticcheck // SA1019: moduletypes.ParamKeyTable is deprecated
 	paramsKeeper.Subspace(authtypes.ModuleName).WithKeyTable(authtypes.ParamKeyTable())
 	paramsKeeper.Subspace(stakingtypes.ModuleName).WithKeyTable(stakingtypes.ParamKeyTable())
-	paramsKeeper.Subspace(banktypes.ModuleName).WithKeyTable(banktypes.ParamKeyTable())   //nolint:staticcheck // SA1019
-	paramsKeeper.Subspace(minttypes.ModuleName).WithKeyTable(minttypes.ParamKeyTable())   //nolint:staticcheck // SA1019
-	paramsKeeper.Subspace(distrtypes.ModuleName).WithKeyTable(distrtypes.ParamKeyTable()) //nolint:staticcheck // SA1019
-	// paramsKeeper.Subspace(slashingtypes.ModuleName).WithKeyTable(slashingtypes.ParamKeyTable()) //nolint:staticcheck // SA1019
-	paramsKeeper.Subspace(govtypes.ModuleName).WithKeyTable(govv1.ParamKeyTable()) //nolint:staticcheck // SA1019
-	// paramsKeeper.Subspace(crisistypes.ModuleName).WithKeyTable(crisistypes.ParamKeyTable())     //nolint:staticcheck // SA1019
+	paramsKeeper.Subspace(banktypes.ModuleName).WithKeyTable(banktypes.ParamKeyTable())         //nolint:staticcheck // SA1019
+	paramsKeeper.Subspace(minttypes.ModuleName).WithKeyTable(minttypes.ParamKeyTable())         //nolint:staticcheck // SA1019
+	paramsKeeper.Subspace(distrtypes.ModuleName).WithKeyTable(distrtypes.ParamKeyTable())       //nolint:staticcheck // SA1019
+	paramsKeeper.Subspace(slashingtypes.ModuleName).WithKeyTable(slashingtypes.ParamKeyTable()) //nolint:staticcheck // SA1019
+	paramsKeeper.Subspace(govtypes.ModuleName).WithKeyTable(govv1.ParamKeyTable())              //nolint:staticcheck // SA1019
+	paramsKeeper.Subspace(crisistypes.ModuleName).WithKeyTable(crisistypes.ParamKeyTable())     //nolint:staticcheck // SA1019
 
 	return paramsKeeper
 }
