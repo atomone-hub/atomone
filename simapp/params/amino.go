@@ -4,9 +4,9 @@
 package params
 
 import (
+	"github.com/atomone-hub/atomone/codec"
+	"github.com/atomone-hub/atomone/codec/types"
 	"github.com/atomone-hub/atomone/x/auth/migrations/legacytx"
-	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/codec/types"
 )
 
 // MakeTestEncodingConfig creates an EncodingConfig for an amino based test configuration.

@@ -4,10 +4,10 @@ import (
 	"testing"
 	"time"
 
-	"cosmossdk.io/simapp"
+	"github.com/atomone-hub/atomone/crypto/keys/secp256k1"
+	"github.com/atomone-hub/atomone/simapp"
 	sdk "github.com/atomone-hub/atomone/types"
 	authtypes "github.com/atomone-hub/atomone/x/auth/types"
-	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 
 	"github.com/cometbft/cometbft/crypto"
 	"github.com/stretchr/testify/require"

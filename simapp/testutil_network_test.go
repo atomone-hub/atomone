@@ -6,8 +6,8 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	"cosmossdk.io/simapp"
-	"github.com/cosmos/cosmos-sdk/testutil/network"
+	"github.com/atomone-hub/atomone/simapp"
+	"github.com/atomone-hub/atomone/testutil/network"
 )
 
 type IntegrationTestSuite struct {

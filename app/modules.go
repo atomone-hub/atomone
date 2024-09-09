@@ -31,15 +31,15 @@ import (
 	upgradeclient "github.com/atomone-hub/atomone/x/upgrade/client"
 	upgradetypes "github.com/atomone-hub/atomone/x/upgrade/types"
 
-	//"github.com/cosmos/cosmos-sdk/x/capability"
-	capabilitytypes "github.com/cosmos/cosmos-sdk/x/capability/types"
-	//"github.com/cosmos/cosmos-sdk/x/consensus"
-	//"github.com/cosmos/cosmos-sdk/x/crisis"
-	//"github.com/cosmos/cosmos-sdk/x/evidence"
+	//"github.com/atomone-hub/atomone/x/capability"
+	capabilitytypes "github.com/atomone-hub/atomone/x/capability/types"
+	//"github.com/atomone-hub/atomone/x/consensus"
+	//"github.com/atomone-hub/atomone/x/crisis"
+	//"github.com/atomone-hub/atomone/x/evidence"
 	sdkparams "github.com/atomone-hub/atomone/x/params"
 	paramsclient "github.com/atomone-hub/atomone/x/params/client"
 
-	//"github.com/cosmos/cosmos-sdk/x/slashing"
+	//"github.com/atomone-hub/atomone/x/slashing"
 
 	atomoneappparams "github.com/atomone-hub/atomone/app/params"
 	"github.com/atomone-hub/atomone/x/gov"

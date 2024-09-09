@@ -54,11 +54,11 @@ import (
 	authtypes "github.com/atomone-hub/atomone/x/auth/types"
 	_ "github.com/atomone-hub/atomone/x/bank"
 	banktypes "github.com/atomone-hub/atomone/x/bank/types"
+	_ "github.com/atomone-hub/atomone/x/consensus"
 	"github.com/atomone-hub/atomone/x/genutil"
 	_ "github.com/atomone-hub/atomone/x/params"
 	_ "github.com/atomone-hub/atomone/x/staking"
 	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
-	_ "github.com/cosmos/cosmos-sdk/x/consensus"
 )
 
 // package-wide network lock to only allow one test network at a time

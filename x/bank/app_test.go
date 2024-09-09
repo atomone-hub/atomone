@@ -21,11 +21,11 @@ import (
 	bankkeeper "github.com/atomone-hub/atomone/x/bank/keeper"
 	"github.com/atomone-hub/atomone/x/bank/testutil"
 	"github.com/atomone-hub/atomone/x/bank/types"
+	_ "github.com/atomone-hub/atomone/x/consensus"
 	_ "github.com/atomone-hub/atomone/x/gov"
 	govv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	_ "github.com/atomone-hub/atomone/x/params"
 	_ "github.com/atomone-hub/atomone/x/staking"
-	_ "github.com/cosmos/cosmos-sdk/x/consensus"
 )
 
 type (

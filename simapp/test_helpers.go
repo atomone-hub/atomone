@@ -17,19 +17,19 @@ import (
 	"cosmossdk.io/math"
 
 	bam "github.com/atomone-hub/atomone/baseapp"
+	"github.com/atomone-hub/atomone/client/flags"
+	"github.com/atomone-hub/atomone/crypto/keys/secp256k1"
+	"github.com/atomone-hub/atomone/server"
+	servertypes "github.com/atomone-hub/atomone/server/types"
+	pruningtypes "github.com/atomone-hub/atomone/store/pruning/types"
+	"github.com/atomone-hub/atomone/testutil/mock"
+	"github.com/atomone-hub/atomone/testutil/network"
+	simtestutil "github.com/atomone-hub/atomone/testutil/sims"
 	sdk "github.com/atomone-hub/atomone/types"
+	"github.com/atomone-hub/atomone/types/module/testutil"
 	authtypes "github.com/atomone-hub/atomone/x/auth/types"
 	banktypes "github.com/atomone-hub/atomone/x/bank/types"
 	minttypes "github.com/atomone-hub/atomone/x/mint/types"
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
-	"github.com/cosmos/cosmos-sdk/server"
-	servertypes "github.com/cosmos/cosmos-sdk/server/types"
-	pruningtypes "github.com/cosmos/cosmos-sdk/store/pruning/types"
-	"github.com/cosmos/cosmos-sdk/testutil/mock"
-	"github.com/cosmos/cosmos-sdk/testutil/network"
-	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
-	"github.com/cosmos/cosmos-sdk/types/module/testutil"
 )
 
 // SetupOptions defines arguments that are passed into `Simapp` constructor.

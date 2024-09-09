@@ -5,11 +5,11 @@ import (
 	_ "github.com/atomone-hub/atomone/x/auth/tx/config"
 	_ "github.com/atomone-hub/atomone/x/auth/vesting"
 	_ "github.com/atomone-hub/atomone/x/bank"
+	_ "github.com/atomone-hub/atomone/x/consensus"
 	_ "github.com/atomone-hub/atomone/x/feegrant/module"
 	_ "github.com/atomone-hub/atomone/x/genutil"
 	_ "github.com/atomone-hub/atomone/x/params"
 	_ "github.com/atomone-hub/atomone/x/staking"
-	_ "github.com/cosmos/cosmos-sdk/x/consensus"
 
 	"cosmossdk.io/core/appconfig"
 	authtypes "github.com/atomone-hub/atomone/x/auth/types"

@@ -10,9 +10,9 @@ import (
 
 	_ "github.com/atomone-hub/atomone/x/auth"
 	_ "github.com/atomone-hub/atomone/x/bank"
+	_ "github.com/atomone-hub/atomone/x/consensus"
 	_ "github.com/atomone-hub/atomone/x/params"
 	_ "github.com/atomone-hub/atomone/x/staking"
-	_ "github.com/cosmos/cosmos-sdk/x/consensus"
 
 	"cosmossdk.io/math"
 

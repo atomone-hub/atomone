@@ -36,16 +36,16 @@ import (
 	upgradekeeper "github.com/atomone-hub/atomone/x/upgrade/keeper"
 	upgradetypes "github.com/atomone-hub/atomone/x/upgrade/types"
 
-	//capabilitykeeper "github.com/cosmos/cosmos-sdk/x/capability/keeper"
-	//capabilitytypes "github.com/cosmos/cosmos-sdk/x/capability/types"
-	//consensusparamkeeper "github.com/cosmos/cosmos-sdk/x/consensus/keeper"
-	//crisiskeeper "github.com/cosmos/cosmos-sdk/x/crisis/keeper"
+	//capabilitykeeper "github.com/atomone-hub/atomone/x/capability/keeper"
+	//capabilitytypes "github.com/atomone-hub/atomone/x/capability/types"
+	//consensusparamkeeper "github.com/atomone-hub/atomone/x/consensus/keeper"
+	//crisiskeeper "github.com/atomone-hub/atomone/x/crisis/keeper"
 
 	paramskeeper "github.com/atomone-hub/atomone/x/params/keeper"
 	paramstypes "github.com/atomone-hub/atomone/x/params/types"
 	paramproposal "github.com/atomone-hub/atomone/x/params/types/proposal"
 
-	//slashingkeeper "github.com/cosmos/cosmos-sdk/x/slashing/keeper"
+	//slashingkeeper "github.com/atomone-hub/atomone/x/slashing/keeper"
 
 	govkeeper "github.com/atomone-hub/atomone/x/gov/keeper"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"

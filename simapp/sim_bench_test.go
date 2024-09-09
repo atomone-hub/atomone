@@ -9,12 +9,12 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/atomone-hub/atomone/baseapp"
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/server"
-	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
-	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
-	"github.com/cosmos/cosmos-sdk/x/simulation"
-	simcli "github.com/cosmos/cosmos-sdk/x/simulation/client/cli"
+	"github.com/atomone-hub/atomone/client/flags"
+	"github.com/atomone-hub/atomone/server"
+	simtestutil "github.com/atomone-hub/atomone/testutil/sims"
+	simtypes "github.com/atomone-hub/atomone/types/simulation"
+	"github.com/atomone-hub/atomone/x/simulation"
+	simcli "github.com/atomone-hub/atomone/x/simulation/client/cli"
 )
 
 // Profile with:

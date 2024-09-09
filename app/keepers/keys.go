@@ -6,6 +6,7 @@ import (
 	authtypes "github.com/atomone-hub/atomone/x/auth/types"
 	authzkeeper "github.com/atomone-hub/atomone/x/authz/keeper"
 	banktypes "github.com/atomone-hub/atomone/x/bank/types"
+	capabilitytypes "github.com/atomone-hub/atomone/x/capability/types"
 	consensusparamtypes "github.com/atomone-hub/atomone/x/consensus/types"
 	crisistypes "github.com/atomone-hub/atomone/x/crisis/types"
 	distrtypes "github.com/atomone-hub/atomone/x/distribution/types"
@@ -16,7 +17,6 @@ import (
 	slashingtypes "github.com/atomone-hub/atomone/x/slashing/types"
 	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
 	upgradetypes "github.com/atomone-hub/atomone/x/upgrade/types"
-	capabilitytypes "github.com/cosmos/cosmos-sdk/x/capability/types"
 
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 )

@@ -5,12 +5,12 @@ import (
 	_ "github.com/atomone-hub/atomone/x/auth/tx/config"
 	_ "github.com/atomone-hub/atomone/x/authz/module"
 	_ "github.com/atomone-hub/atomone/x/bank"
+	_ "github.com/atomone-hub/atomone/x/consensus"
 	_ "github.com/atomone-hub/atomone/x/genutil"
 	_ "github.com/atomone-hub/atomone/x/gov"
 	_ "github.com/atomone-hub/atomone/x/mint"
 	_ "github.com/atomone-hub/atomone/x/params"
 	_ "github.com/atomone-hub/atomone/x/staking"
-	_ "github.com/cosmos/cosmos-sdk/x/consensus"
 
 	txconfigv1 "cosmossdk.io/api/cosmos/tx/config/v1"
 	"cosmossdk.io/core/appconfig"

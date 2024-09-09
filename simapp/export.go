@@ -7,11 +7,11 @@ import (
 
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 
+	servertypes "github.com/atomone-hub/atomone/server/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	slashingtypes "github.com/atomone-hub/atomone/x/slashing/types"
+	"github.com/atomone-hub/atomone/x/staking"
 	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
-	servertypes "github.com/cosmos/cosmos-sdk/server/types"
-	"github.com/cosmos/cosmos-sdk/x/staking"
 )
 
 // ExportAppStateAndValidators exports the state of the application for a genesis

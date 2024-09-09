@@ -6,11 +6,11 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"cosmossdk.io/simapp"
-	"cosmossdk.io/simapp/simd/cmd"
+	"github.com/atomone-hub/atomone/client/flags"
+	svrcmd "github.com/atomone-hub/atomone/server/cmd"
+	"github.com/atomone-hub/atomone/simapp"
+	"github.com/atomone-hub/atomone/simapp/simd/cmd"
 	"github.com/atomone-hub/atomone/x/genutil/client/cli"
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 )
 
 func TestInitCmd(t *testing.T) {

@@ -19,7 +19,17 @@ import (
 
 	"cosmossdk.io/math"
 
-	"cosmossdk.io/simapp"
+	"github.com/atomone-hub/atomone/client"
+	"github.com/atomone-hub/atomone/client/flags"
+	"github.com/atomone-hub/atomone/client/tx"
+	"github.com/atomone-hub/atomone/crypto/hd"
+	"github.com/atomone-hub/atomone/crypto/keyring"
+	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
+	"github.com/atomone-hub/atomone/server"
+	srvconfig "github.com/atomone-hub/atomone/server/config"
+	"github.com/atomone-hub/atomone/simapp"
+	"github.com/atomone-hub/atomone/testutil"
+	"github.com/atomone-hub/atomone/testutil/network"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/module"
 	authtypes "github.com/atomone-hub/atomone/x/auth/types"
@@ -27,16 +37,6 @@ import (
 	"github.com/atomone-hub/atomone/x/genutil"
 	genutiltypes "github.com/atomone-hub/atomone/x/genutil/types"
 	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/client/tx"
-	"github.com/cosmos/cosmos-sdk/crypto/hd"
-	"github.com/cosmos/cosmos-sdk/crypto/keyring"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-	"github.com/cosmos/cosmos-sdk/server"
-	srvconfig "github.com/cosmos/cosmos-sdk/server/config"
-	"github.com/cosmos/cosmos-sdk/testutil"
-	"github.com/cosmos/cosmos-sdk/testutil/network"
 )
 
 var (

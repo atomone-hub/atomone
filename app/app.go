@@ -41,9 +41,9 @@ import (
 	"github.com/atomone-hub/atomone/x/auth/ante"
 	authtx "github.com/atomone-hub/atomone/x/auth/tx"
 	authtypes "github.com/atomone-hub/atomone/x/auth/types"
+	"github.com/atomone-hub/atomone/x/crisis"
 	upgradetypes "github.com/atomone-hub/atomone/x/upgrade/types"
 	"github.com/cosmos/cosmos-sdk/version"
-	"github.com/cosmos/cosmos-sdk/x/crisis"
 
 	atomoneante "github.com/atomone-hub/atomone/ante"
 	"github.com/atomone-hub/atomone/app/keepers"

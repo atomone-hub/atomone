@@ -9,16 +9,16 @@ import (
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/require"
 
-	"cosmossdk.io/simapp"
+	"github.com/atomone-hub/atomone/client"
+	"github.com/atomone-hub/atomone/client/flags"
+	"github.com/atomone-hub/atomone/server"
+	"github.com/atomone-hub/atomone/simapp"
+	moduletestutil "github.com/atomone-hub/atomone/types/module/testutil"
 	"github.com/atomone-hub/atomone/x/auth"
 	banktypes "github.com/atomone-hub/atomone/x/bank/types"
 	genutiltest "github.com/atomone-hub/atomone/x/genutil/client/testutil"
 	genutiltypes "github.com/atomone-hub/atomone/x/genutil/types"
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/server"
-	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
-	"github.com/cosmos/cosmos-sdk/x/staking"
+	"github.com/atomone-hub/atomone/x/staking"
 )
 
 func Test_TestnetCmd(t *testing.T) {

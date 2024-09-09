@@ -49,13 +49,13 @@ import (
 	authtypes "github.com/atomone-hub/atomone/x/auth/types"
 	_ "github.com/atomone-hub/atomone/x/bank"
 	banktypes "github.com/atomone-hub/atomone/x/bank/types"
+	_ "github.com/atomone-hub/atomone/x/consensus"
 	_ "github.com/atomone-hub/atomone/x/mint"
 	minttypes "github.com/atomone-hub/atomone/x/mint/types"
 	_ "github.com/atomone-hub/atomone/x/params"
 	_ "github.com/atomone-hub/atomone/x/staking"
 	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	_ "github.com/cosmos/cosmos-sdk/x/consensus"
 )
 
 var (

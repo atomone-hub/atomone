@@ -35,10 +35,10 @@ import (
 	authcmd "github.com/atomone-hub/atomone/x/auth/client/cli"
 	"github.com/atomone-hub/atomone/x/auth/types"
 	banktypes "github.com/atomone-hub/atomone/x/bank/types"
+	"github.com/atomone-hub/atomone/x/crisis"
 	genutilcli "github.com/atomone-hub/atomone/x/genutil/client/cli"
 	"github.com/cosmos/cosmos-sdk/snapshots"
 	snapshottypes "github.com/cosmos/cosmos-sdk/snapshots/types"
-	"github.com/cosmos/cosmos-sdk/x/crisis"
 
 	atomone "github.com/atomone-hub/atomone/app"
 	"github.com/atomone-hub/atomone/app/params"

@@ -5,11 +5,11 @@ import (
 	_ "github.com/atomone-hub/atomone/x/auth"
 	_ "github.com/atomone-hub/atomone/x/auth/tx/config"
 	_ "github.com/atomone-hub/atomone/x/bank"
+	_ "github.com/atomone-hub/atomone/x/consensus"
 	_ "github.com/atomone-hub/atomone/x/genutil"
 	_ "github.com/atomone-hub/atomone/x/mint"
 	_ "github.com/atomone-hub/atomone/x/params"
 	_ "github.com/atomone-hub/atomone/x/staking"
-	_ "github.com/cosmos/cosmos-sdk/x/consensus"
 
 	authtypes "github.com/atomone-hub/atomone/x/auth/types"
 	banktypes "github.com/atomone-hub/atomone/x/bank/types"
