@@ -13,7 +13,7 @@ import (
 	_ "github.com/atomone-hub/atomone/x/staking"
 
 	txconfigv1 "cosmossdk.io/api/cosmos/tx/config/v1"
-	"cosmossdk.io/core/appconfig"
+	"github.com/atomone-hub/atomone/core/appconfig"
 	authtypes "github.com/atomone-hub/atomone/x/auth/types"
 	"github.com/atomone-hub/atomone/x/authz"
 	banktypes "github.com/atomone-hub/atomone/x/bank/types"

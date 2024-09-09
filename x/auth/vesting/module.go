@@ -16,7 +16,7 @@ import (
 	"github.com/atomone-hub/atomone/types/module"
 
 	modulev1 "cosmossdk.io/api/cosmos/vesting/module/v1"
-	"cosmossdk.io/core/appmodule"
+	"github.com/atomone-hub/atomone/core/appmodule"
 
 	"github.com/atomone-hub/atomone/x/auth/keeper"
 	"github.com/atomone-hub/atomone/x/auth/vesting/client/cli"

@@ -25,7 +25,7 @@ import (
 	txconfigv1 "cosmossdk.io/api/cosmos/tx/config/v1"
 	upgrademodulev1 "cosmossdk.io/api/cosmos/upgrade/module/v1"
 	vestingmodulev1 "cosmossdk.io/api/cosmos/vesting/module/v1"
-	"cosmossdk.io/core/appconfig"
+	"github.com/atomone-hub/atomone/core/appconfig"
 	"google.golang.org/protobuf/types/known/durationpb"
 
 	authtypes "github.com/atomone-hub/atomone/x/auth/types"

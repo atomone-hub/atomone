@@ -9,7 +9,7 @@ import (
 	gwruntime "github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 
-	"cosmossdk.io/core/appmodule"
+	"github.com/atomone-hub/atomone/core/appmodule"
 
 	modulev1 "cosmossdk.io/api/cosmos/feegrant/module/v1"
 

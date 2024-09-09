@@ -33,7 +33,7 @@ import (
 	"fmt"
 	"sort"
 
-	"cosmossdk.io/core/appmodule"
+	"github.com/atomone-hub/atomone/core/appmodule"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"

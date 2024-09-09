@@ -1,7 +1,7 @@
 package testutil
 
 import (
-	"cosmossdk.io/core/appconfig"
+	"github.com/atomone-hub/atomone/core/appconfig"
 	_ "github.com/atomone-hub/atomone/x/auth"
 	_ "github.com/atomone-hub/atomone/x/auth/tx/config"
 	_ "github.com/atomone-hub/atomone/x/bank"

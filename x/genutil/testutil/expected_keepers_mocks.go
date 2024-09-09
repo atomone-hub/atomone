@@ -8,11 +8,11 @@ import (
 	json "encoding/json"
 	reflect "reflect"
 
-	types "github.com/cometbft/cometbft/abci/types"
 	codec "github.com/atomone-hub/atomone/codec"
 	types0 "github.com/atomone-hub/atomone/types"
 	types1 "github.com/atomone-hub/atomone/x/auth/types"
 	exported "github.com/atomone-hub/atomone/x/bank/exported"
+	types "github.com/cometbft/cometbft/abci/types"
 	gomock "github.com/golang/mock/gomock"
 )
 

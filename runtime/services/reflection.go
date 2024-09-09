@@ -6,7 +6,7 @@ import (
 	"context"
 	"io"
 
-	reflectionv1 "github.com/atomone-hub/atomone/api/atomone/reflection/v1"
+	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
 	"github.com/cosmos/gogoproto/proto"
 	"golang.org/x/exp/slices"
 	protov2 "google.golang.org/protobuf/proto"

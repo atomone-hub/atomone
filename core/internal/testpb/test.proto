@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package testpb;
+
+import "cosmos/app/v1alpha1/module.proto";
+
+message TestRuntimeModule {
+  option (cosmos.app.v1alpha1.module) = {
+    go_import: "github.com/atomone-hub/atomone/core/internal/testpb"
+  };
+}
+
+message TestModuleA {
+  option (cosmos.app.v1alpha1.module) = {
+    go_import: "github.com/atomone-hub/atomone/core/internal/testpb"
+  };
+}
+
+message TestModuleB {
+  option (cosmos.app.v1alpha1.module) = {
+    go_import: "github.com/atomone-hub/atomone/core/internal/testpb"
+  };
+}
+
+message TestUnregisteredModule {
+  option (cosmos.app.v1alpha1.module) = {
+    go_import: "github.com/atomone-hub/atomone/core/internal/testpb"
+  };
+}
+
+message TestNoModuleOptionModule {}
+
+message TestNoGoImportModule {
+  option (cosmos.app.v1alpha1.module) = {
+  };
+}

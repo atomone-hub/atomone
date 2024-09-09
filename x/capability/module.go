@@ -8,7 +8,7 @@ import (
 	gwruntime "github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 
-	"cosmossdk.io/core/appmodule"
+	"github.com/atomone-hub/atomone/core/appmodule"
 
 	abci "github.com/cometbft/cometbft/abci/types"
 

@@ -8,12 +8,12 @@ import (
 	json "encoding/json"
 	reflect "reflect"
 
-	types "github.com/cometbft/cometbft/abci/types"
 	client "github.com/atomone-hub/atomone/client"
 	codec "github.com/atomone-hub/atomone/codec"
 	types0 "github.com/atomone-hub/atomone/codec/types"
 	types1 "github.com/atomone-hub/atomone/types"
 	module "github.com/atomone-hub/atomone/types/module"
+	types "github.com/cometbft/cometbft/abci/types"
 	gomock "github.com/golang/mock/gomock"
 	runtime "github.com/grpc-ecosystem/grpc-gateway/runtime"
 	cobra "github.com/spf13/cobra"

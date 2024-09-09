@@ -5,7 +5,7 @@ package atomone.autocli.v1;
 import "atomone/autocli/v1/options.proto";
 import "atomone/query/v1/query.proto";
 
-option go_package = "github.com/atomone-hub/atomone/api/atomone/base/cli/v1;cliv1";
+option go_package = "cosmossdk.io/api/cosmos/base/cli/v1;cliv1";
 
 // RemoteInfoService provides clients with the information they need
 // to build dynamically CLI clients for remote chains.

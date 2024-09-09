@@ -7,9 +7,9 @@ import (
 
 	runtimev1alpha1 "cosmossdk.io/api/cosmos/app/runtime/v1alpha1"
 	appv1alpha1 "cosmossdk.io/api/cosmos/app/v1alpha1"
-	"cosmossdk.io/core/appconfig"
 	"cosmossdk.io/depinject"
 	"github.com/atomone-hub/atomone/codec"
+	"github.com/atomone-hub/atomone/core/appconfig"
 	_ "github.com/atomone-hub/atomone/runtime"
 )
 

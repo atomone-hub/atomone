@@ -11,7 +11,7 @@ import (
 
 	"cosmossdk.io/depinject"
 
-	"cosmossdk.io/core/appmodule"
+	"github.com/atomone-hub/atomone/core/appmodule"
 
 	modulev1 "cosmossdk.io/api/cosmos/auth/module/v1"
 

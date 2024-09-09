@@ -7,8 +7,8 @@ import (
 	"time"
 
 	modulev1 "cosmossdk.io/api/cosmos/bank/module/v1"
-	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/depinject"
+	"github.com/atomone-hub/atomone/core/appmodule"
 	abci "github.com/cometbft/cometbft/abci/types"
 	gwruntime "github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"

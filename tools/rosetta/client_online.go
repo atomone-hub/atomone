@@ -201,7 +201,6 @@ func (c *Client) BlockByHash(ctx context.Context, hash string) (crgtypes.BlockRe
 
 func (c *Client) BlockByHeight(ctx context.Context, height *int64) (crgtypes.BlockResponse, error) {
 	height, err := c.getHeight(ctx, height)
-
 	if err != nil {
 		return crgtypes.BlockResponse{}, crgerrs.WrapError(crgerrs.ErrBadGateway, err.Error())
 	}

@@ -16,8 +16,8 @@ import (
 	"golang.org/x/exp/maps"
 
 	modulev1 "cosmossdk.io/api/cosmos/staking/module/v1"
-	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/depinject"
+	"github.com/atomone-hub/atomone/core/appmodule"
 
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/codec"
