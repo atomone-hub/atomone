@@ -44,9 +44,9 @@ modules:
 modules:
 - name: a
   config:
-    "@type": cosmos.app.v1alpha1.Config # this is not actually a module config type!
+    "@type": atomone.app.v1alpha1.Config # this is not actually a module config type!
 `))
-	expectContainerErrorContains(t, opt, "does not have the option cosmos.app.v1alpha1.module")
+	expectContainerErrorContains(t, opt, "no module registered for type URL atomone.app.v1alpha1.Config")
 	expectContainerErrorContains(t, opt, "registered modules are")
 	expectContainerErrorContains(t, opt, "testpb.TestModuleA")
 
@@ -111,7 +111,7 @@ modules:
   config:
    "@type": testpb.TestNoGoImportModule
 `))
-	expectContainerErrorContains(t, opt, "module should have the option cosmos.app.v1alpha1.module")
+	expectContainerErrorContains(t, opt, "module should have the option atomone.app.v1alpha1.module")
 
 	internal.ModuleRegistry = map[reflect.Type]*internal.ModuleInitializer{} // reset module registry
 	appmodule.Register(&testpb.TestNoGoImportModule{})

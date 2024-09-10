@@ -11,7 +11,7 @@ echo 1 abc {}
 
 Flags:
       --a-bool                                                               
-      --a-coin cosmos.base.v1beta1.Coin (json)                               
+      --a-coin atomone.base.v1beta1.Coin (json)                              
       --a-message testpb.AMessage (json)                                     
       --an-address string                                                    
       --an-enum Enum (unspecified | one | two | five | neg-three)             (default unspecified)
@@ -24,11 +24,7 @@ Flags:
   -h, --help                                                                 help for echo
       --i-32 int32                                                           some random int32
       --i-64 int                                                             
-      --page-count-total                                                     
-      --page-key bytesBase64                                                 
-      --page-limit uint                                                      
-      --page-offset uint                                                     
-      --page-reverse                                                         
+      --page atomone.base.query.v1beta1.PageRequest (json)                   
   -s, --shorthand-deprecated-field string                                     (DEPRECATED: bad idea)
       --some-messages testpb.AMessage (json) (repeated)                      
       --str string                                                           
