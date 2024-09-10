@@ -1,8 +1,9 @@
 package codec
 
 import (
-	"github.com/cosmos/gogoproto/proto"
 	"sigs.k8s.io/yaml"
+
+	"github.com/cosmos/gogoproto/proto"
 )
 
 // MarshalYAML marshals toPrint using JSONCodec to leverage specialized MarshalJSON methods

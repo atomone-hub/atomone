@@ -16,8 +16,11 @@ import (
 	"github.com/cometbft/cometbft/libs/log"
 	tmtypes "github.com/cometbft/cometbft/types"
 
-	rosettaCmd "github.com/atomone-hub/atomone/tools/rosetta/cmd"
+	"github.com/cosmos/cosmos-sdk/snapshots"
+	snapshottypes "github.com/cosmos/cosmos-sdk/snapshots/types"
 
+	atomone "github.com/atomone-hub/atomone/app"
+	"github.com/atomone-hub/atomone/app/params"
 	"github.com/atomone-hub/atomone/baseapp"
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/client/config"
@@ -31,17 +34,13 @@ import (
 	serverconfig "github.com/atomone-hub/atomone/server/config"
 	servertypes "github.com/atomone-hub/atomone/server/types"
 	"github.com/atomone-hub/atomone/store"
+	rosettaCmd "github.com/atomone-hub/atomone/tools/rosetta/cmd"
 	sdk "github.com/atomone-hub/atomone/types"
 	authcmd "github.com/atomone-hub/atomone/x/auth/client/cli"
 	"github.com/atomone-hub/atomone/x/auth/types"
 	banktypes "github.com/atomone-hub/atomone/x/bank/types"
 	"github.com/atomone-hub/atomone/x/crisis"
 	genutilcli "github.com/atomone-hub/atomone/x/genutil/client/cli"
-	"github.com/cosmos/cosmos-sdk/snapshots"
-	snapshottypes "github.com/cosmos/cosmos-sdk/snapshots/types"
-
-	atomone "github.com/atomone-hub/atomone/app"
-	"github.com/atomone-hub/atomone/app/params"
 )
 
 // NewRootCmd creates a new root command for simd. It is called once in the

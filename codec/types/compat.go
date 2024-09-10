@@ -5,10 +5,10 @@ import (
 	"reflect"
 	"runtime/debug"
 
+	amino "github.com/tendermint/go-amino"
+
 	"github.com/cosmos/gogoproto/jsonpb"
 	"github.com/cosmos/gogoproto/proto"
-
-	amino "github.com/tendermint/go-amino"
 )
 
 type anyCompat struct {

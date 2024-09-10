@@ -1,8 +1,9 @@
 package codec
 
 import (
-	"github.com/cosmos/gogoproto/proto"
 	"google.golang.org/grpc/encoding"
+
+	"github.com/cosmos/gogoproto/proto"
 
 	"github.com/atomone-hub/atomone/codec/types"
 )

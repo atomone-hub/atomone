@@ -1,8 +1,9 @@
 package autocli
 
 import (
-	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 	"github.com/spf13/cobra"
+
+	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 
 	"github.com/atomone-hub/atomone/core/appmodule"
 )

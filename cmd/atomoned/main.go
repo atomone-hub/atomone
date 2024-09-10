@@ -3,11 +3,10 @@ package main
 import (
 	"os"
 
-	"github.com/atomone-hub/atomone/server"
-	svrcmd "github.com/atomone-hub/atomone/server/cmd"
-
 	app "github.com/atomone-hub/atomone/app"
 	"github.com/atomone-hub/atomone/cmd/atomoned/cmd"
+	"github.com/atomone-hub/atomone/server"
+	svrcmd "github.com/atomone-hub/atomone/server/cmd"
 )
 
 func main() {

@@ -3,11 +3,13 @@ package flag
 import (
 	"context"
 
-	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
-	cosmos_proto "github.com/cosmos/cosmos-proto"
 	"github.com/spf13/pflag"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
+
+	cosmos_proto "github.com/cosmos/cosmos-proto"
+
+	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 
 	"github.com/atomone-hub/atomone/client/v2/internal/util"
 )

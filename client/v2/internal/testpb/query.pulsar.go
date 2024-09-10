@@ -4071,6 +4071,7 @@ var (
 		(*v1beta11.PageRequest)(nil),  // 7: cosmos.base.query.v1beta1.PageRequest
 	}
 )
+
 var file_testpb_query_proto_depIdxs = []int32{
 	4,  // 0: testpb.EchoRequest.timestamp:type_name -> google.protobuf.Timestamp
 	5,  // 1: testpb.EchoRequest.duration:type_name -> google.protobuf.Duration

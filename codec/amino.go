@@ -7,8 +7,9 @@ import (
 	"fmt"
 	"io"
 
-	tmtypes "github.com/cometbft/cometbft/types"
 	amino "github.com/tendermint/go-amino"
+
+	tmtypes "github.com/cometbft/cometbft/types"
 
 	"github.com/atomone-hub/atomone/codec/types"
 )

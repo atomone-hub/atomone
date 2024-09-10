@@ -17,7 +17,6 @@ import (
 	tmtime "github.com/cometbft/cometbft/types/time"
 
 	"cosmossdk.io/math"
-	"github.com/atomone-hub/atomone/simapp"
 
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/client/flags"
@@ -27,6 +26,7 @@ import (
 	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
 	"github.com/atomone-hub/atomone/server"
 	srvconfig "github.com/atomone-hub/atomone/server/config"
+	"github.com/atomone-hub/atomone/simapp"
 	"github.com/atomone-hub/atomone/testutil"
 	"github.com/atomone-hub/atomone/testutil/network"
 	sdk "github.com/atomone-hub/atomone/types"
