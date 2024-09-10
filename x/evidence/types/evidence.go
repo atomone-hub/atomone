@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"time"
 
+	"sigs.k8s.io/yaml"
+
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cometbft/cometbft/crypto/tmhash"
 	tmbytes "github.com/cometbft/cometbft/libs/bytes"
-	"sigs.k8s.io/yaml"
 
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/evidence/exported"

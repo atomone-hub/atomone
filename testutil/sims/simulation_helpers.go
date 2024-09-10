@@ -5,14 +5,16 @@ import (
 	"fmt"
 	"os"
 
+	dbm "github.com/cometbft/cometbft-db"
+	"github.com/cometbft/cometbft/libs/log"
+
+	"github.com/cosmos/cosmos-sdk/types/kv"
+
 	"github.com/atomone-hub/atomone/codec"
 	"github.com/atomone-hub/atomone/runtime"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/module"
 	simtypes "github.com/atomone-hub/atomone/types/simulation"
-	dbm "github.com/cometbft/cometbft-db"
-	"github.com/cometbft/cometbft/libs/log"
-	"github.com/cosmos/cosmos-sdk/types/kv"
 )
 
 // SetupSimulation creates the config, db (levelDB), temporary directory and logger for the simulation tests.

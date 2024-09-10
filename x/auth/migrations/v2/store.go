@@ -21,11 +21,15 @@ import (
 	"errors"
 	"fmt"
 
-	abci "github.com/cometbft/cometbft/abci/types"
-	"github.com/cosmos/gogoproto/grpc"
-	"github.com/cosmos/gogoproto/proto"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
+	abci "github.com/cometbft/cometbft/abci/types"
+
+	"github.com/cosmos/gogoproto/grpc"
+	"github.com/cosmos/gogoproto/proto"
+
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/atomone-hub/atomone/baseapp"
 	sdk "github.com/atomone-hub/atomone/types"
@@ -34,7 +38,6 @@ import (
 	vestingtypes "github.com/atomone-hub/atomone/x/auth/vesting/types"
 	banktypes "github.com/atomone-hub/atomone/x/bank/types"
 	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 const (

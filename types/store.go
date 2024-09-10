@@ -5,8 +5,9 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/atomone-hub/atomone/store/types"
 	"github.com/cosmos/cosmos-sdk/types/kv"
+
+	"github.com/atomone-hub/atomone/store/types"
 )
 
 type (

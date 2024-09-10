@@ -11,10 +11,9 @@ import (
 	storetypes "github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	authtypes "github.com/atomone-hub/atomone/x/auth/types"
-	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
-
 	"github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
+	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 )
 
 // Keeper defines the governance module Keeper
@@ -224,7 +223,7 @@ func (keeper Keeper) InactiveProposalQueueIterator(ctx sdk.Context, endTime time
 // is greater than a pre-defined MaxMetadataLen.
 func (keeper Keeper) assertMetadataLength(metadata string) error {
 	if metadata != "" && uint64(len(metadata)) > keeper.config.MaxMetadataLen {
-		return types.ErrMetadataTooLong.Wrapf("got metadata with length %d", len(metadata)) //nolint: staticcheck
+		return types.ErrMetadataTooLong.Wrapf("got metadata with length %d", len(metadata)) 
 	}
 	return nil
 }

@@ -8,18 +8,21 @@ import (
 	"sync"
 	"time"
 
-	"github.com/cometbft/cometbft/libs/log"
-	tmrpcserver "github.com/cometbft/cometbft/rpc/jsonrpc/server"
-	gateway "github.com/cosmos/gogogateway"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
+	"github.com/cometbft/cometbft/libs/log"
+	tmrpcserver "github.com/cometbft/cometbft/rpc/jsonrpc/server"
+
+	gateway "github.com/cosmos/gogogateway"
+
+	"github.com/cosmos/cosmos-sdk/telemetry"
+	grpctypes "github.com/cosmos/cosmos-sdk/types/grpc"
+
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/codec/legacy"
 	"github.com/atomone-hub/atomone/server/config"
-	"github.com/cosmos/cosmos-sdk/telemetry"
-	grpctypes "github.com/cosmos/cosmos-sdk/types/grpc"
 )
 
 // Server defines the server's API interface.

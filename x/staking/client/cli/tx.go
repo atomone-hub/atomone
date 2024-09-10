@@ -6,10 +6,13 @@ import (
 	"strconv"
 	"strings"
 
-	"cosmossdk.io/math"
-
 	"github.com/spf13/cobra"
 	flag "github.com/spf13/pflag"
+
+	"cosmossdk.io/math"
+
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/cosmos/cosmos-sdk/version"
 
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/client/flags"
@@ -17,8 +20,6 @@ import (
 	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/staking/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cosmos/cosmos-sdk/version"
 )
 
 // default values

@@ -8,11 +8,10 @@ import (
 	"github.com/coinbase/rosetta-sdk-go/types"
 	"github.com/spf13/pflag"
 
-	crg "github.com/atomone-hub/atomone/tools/rosetta/lib/server"
-
 	clientflags "github.com/atomone-hub/atomone/client/flags"
 	"github.com/atomone-hub/atomone/codec"
 	codectypes "github.com/atomone-hub/atomone/codec/types"
+	crg "github.com/atomone-hub/atomone/tools/rosetta/lib/server"
 	sdk "github.com/atomone-hub/atomone/types"
 )
 

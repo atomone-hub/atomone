@@ -1,9 +1,10 @@
 package testutil
 
 import (
-	"cosmossdk.io/math"
 	tmcrypto "github.com/cometbft/cometbft/crypto"
 	tmtypes "github.com/cometbft/cometbft/types"
+
+	"cosmossdk.io/math"
 
 	cryptocodec "github.com/atomone-hub/atomone/crypto/codec"
 	"github.com/atomone-hub/atomone/x/staking/types"

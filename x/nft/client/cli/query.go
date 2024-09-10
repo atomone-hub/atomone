@@ -6,12 +6,13 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/cosmos/cosmos-sdk/version"
+
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/client/flags"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/nft"
-	"github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cosmos/cosmos-sdk/version"
 )
 
 // Flag names and values
@@ -167,7 +168,7 @@ $ %s query %s nfts <class-id> --owner=<owner>
 			}
 
 			if len(owner) == 0 && len(classID) == 0 {
-				return errors.ErrInvalidRequest.Wrap("must provide at least one of classID or owner") //nolint: staticcheck
+				return errors.ErrInvalidRequest.Wrap("must provide at least one of classID or owner") 
 			}
 
 			request := &nft.QueryNFTsRequest{

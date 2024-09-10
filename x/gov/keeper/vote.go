@@ -3,9 +3,8 @@ package keeper
 import (
 	"fmt"
 
-	sdk "github.com/atomone-hub/atomone/types"
-
 	sdkerrors "github.com/atomone-hub/atomone/errors"
+	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 )
@@ -15,7 +14,7 @@ func (keeper Keeper) AddVote(ctx sdk.Context, proposalID uint64, voterAddr sdk.A
 	// Check if proposal is in voting period.
 	store := ctx.KVStore(keeper.storeKey)
 	if !store.Has(types.VotingPeriodProposalKey(proposalID)) {
-		return sdkerrors.Wrapf(types.ErrInactiveProposal, "%d", proposalID) //nolint: staticcheck
+		return sdkerrors.Wrapf(types.ErrInactiveProposal, "%d", proposalID) 
 	}
 
 	err := keeper.assertMetadataLength(metadata)
@@ -25,7 +24,7 @@ func (keeper Keeper) AddVote(ctx sdk.Context, proposalID uint64, voterAddr sdk.A
 
 	for _, option := range options {
 		if !v1.ValidWeightedVoteOption(*option) {
-			return sdkerrors.Wrap(types.ErrInvalidVote, option.String()) //nolint: staticcheck
+			return sdkerrors.Wrap(types.ErrInvalidVote, option.String()) 
 		}
 	}
 

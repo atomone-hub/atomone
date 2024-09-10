@@ -5,13 +5,14 @@ import (
 	"encoding/binary"
 	"fmt"
 
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	sdk "github.com/atomone-hub/atomone/types"
 	authtypes "github.com/atomone-hub/atomone/x/auth/types"
 	"github.com/atomone-hub/atomone/x/group"
 	"github.com/atomone-hub/atomone/x/group/errors"
 	"github.com/atomone-hub/atomone/x/group/internal/math"
 	"github.com/atomone-hub/atomone/x/group/internal/orm"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 var _ group.MsgServer = Keeper{}
@@ -886,7 +887,7 @@ func (k Keeper) getGroupMember(ctx sdk.Context, member *group.GroupMember) (*gro
 	case err == nil:
 		break
 	case sdkerrors.ErrNotFound.Is(err):
-		return nil, sdkerrors.ErrNotFound.Wrapf("%s is not part of group %d", member.Member.Address, member.GroupId) //nolint: staticcheck
+		return nil, sdkerrors.ErrNotFound.Wrapf("%s is not part of group %d", member.Member.Address, member.GroupId) 
 	default:
 		return nil, err
 	}

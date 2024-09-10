@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"cosmossdk.io/math"
-	sdk "github.com/atomone-hub/atomone/types"
 
+	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/distribution/types"
 	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
 )

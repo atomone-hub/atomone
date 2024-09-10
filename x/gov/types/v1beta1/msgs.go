@@ -3,15 +3,18 @@ package v1beta1
 import (
 	"fmt"
 
-	"cosmossdk.io/math"
-	"github.com/cosmos/gogoproto/proto"
 	"sigs.k8s.io/yaml"
+
+	"github.com/cosmos/gogoproto/proto"
+
+	"cosmossdk.io/math"
+
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	codectypes "github.com/atomone-hub/atomone/codec/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/gov/codec"
 	"github.com/atomone-hub/atomone/x/gov/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // Governance message types and routes
@@ -93,7 +96,7 @@ func (m MsgSubmitProposal) Type() string { return TypeMsgSubmitProposal }
 // ValidateBasic implements the sdk.Msg interface.
 func (m MsgSubmitProposal) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(m.Proposer); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proposer address: %s", err) //nolint: staticcheck
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proposer address: %s", err) 
 	}
 	if !m.InitialDeposit.IsValid() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, m.InitialDeposit.String()) //nolint: staticcheck
@@ -156,7 +159,7 @@ func (msg MsgDeposit) Type() string { return TypeMsgDeposit }
 // ValidateBasic implements the sdk.Msg interface.
 func (msg MsgDeposit) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Depositor); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid depositor address: %s", err) //nolint: staticcheck
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid depositor address: %s", err) 
 	}
 	if !msg.Amount.IsValid() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, msg.Amount.String()) //nolint: staticcheck
@@ -202,7 +205,7 @@ func (msg MsgVote) Type() string { return TypeMsgVote }
 // ValidateBasic implements the sdk.Msg interface.
 func (msg MsgVote) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Voter); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid voter address: %s", err) //nolint: staticcheck
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid voter address: %s", err) 
 	}
 	if !ValidVoteOption(msg.Option) {
 		return sdkerrors.Wrap(types.ErrInvalidVote, msg.Option.String()) //nolint: staticcheck
@@ -245,7 +248,7 @@ func (msg MsgVoteWeighted) Type() string { return TypeMsgVoteWeighted }
 // ValidateBasic implements the sdk.Msg interface.
 func (msg MsgVoteWeighted) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Voter); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid voter address: %s", err) //nolint: staticcheck
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid voter address: %s", err) 
 	}
 	if len(msg.Options) == 0 {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, WeightedVoteOptions(msg.Options).String()) //nolint: staticcheck

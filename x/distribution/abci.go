@@ -5,10 +5,11 @@ import (
 
 	abci "github.com/cometbft/cometbft/abci/types"
 
+	"github.com/cosmos/cosmos-sdk/telemetry"
+
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/distribution/keeper"
 	"github.com/atomone-hub/atomone/x/distribution/types"
-	"github.com/cosmos/cosmos-sdk/telemetry"
 )
 
 // BeginBlocker sets the proposer for determining distribution during endblock

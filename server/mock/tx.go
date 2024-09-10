@@ -4,12 +4,12 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/atomone-hub/atomone/x/auth/signing"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	txsigning "github.com/atomone-hub/atomone/types/tx/signing"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/atomone-hub/atomone/x/auth/signing"
 )
 
 // An sdk.Tx which is its own sdk.Msg.

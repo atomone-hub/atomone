@@ -1,13 +1,13 @@
 package cli
 
 import (
+	"github.com/spf13/cobra"
+
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/types/module"
 	banktypes "github.com/atomone-hub/atomone/x/bank/types"
 	"github.com/atomone-hub/atomone/x/genutil"
 	genutiltypes "github.com/atomone-hub/atomone/x/genutil/types"
-
-	"github.com/spf13/cobra"
 )
 
 // GenesisCoreCommand adds core sdk's sub-commands into genesis command:

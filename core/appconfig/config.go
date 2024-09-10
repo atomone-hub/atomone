@@ -12,7 +12,6 @@ import (
 	"sigs.k8s.io/yaml"
 
 	appv1alpha1 "cosmossdk.io/api/cosmos/app/v1alpha1"
-
 	"cosmossdk.io/depinject"
 
 	"github.com/atomone-hub/atomone/core/internal"

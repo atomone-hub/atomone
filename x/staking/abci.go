@@ -5,10 +5,11 @@ import (
 
 	abci "github.com/cometbft/cometbft/abci/types"
 
+	"github.com/cosmos/cosmos-sdk/telemetry"
+
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/staking/keeper"
 	"github.com/atomone-hub/atomone/x/staking/types"
-	"github.com/cosmos/cosmos-sdk/telemetry"
 )
 
 // BeginBlocker will persist the current header and validator set as a historical entry

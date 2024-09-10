@@ -5,19 +5,22 @@ import (
 	"io"
 	"time"
 
+	"github.com/spf13/cobra"
+
 	dbm "github.com/cometbft/cometbft-db"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cometbft/cometbft/libs/log"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	tmtypes "github.com/cometbft/cometbft/types"
+
 	"github.com/cosmos/gogoproto/grpc"
-	"github.com/spf13/cobra"
+
+	"github.com/cosmos/cosmos-sdk/snapshots"
 
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/server/api"
 	"github.com/atomone-hub/atomone/server/config"
 	storetypes "github.com/atomone-hub/atomone/store/types"
-	"github.com/cosmos/cosmos-sdk/snapshots"
 )
 
 // ServerStartTime defines the time duration that the server need to stay running after startup

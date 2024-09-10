@@ -3,9 +3,10 @@ package keeper
 import (
 	"encoding/binary"
 
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/staking/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // IncrementUnbondingID increments and returns a unique ID for an unbonding operation

@@ -11,11 +11,10 @@ import (
 	sdk "github.com/atomone-hub/atomone/types"
 	moduletestutil "github.com/atomone-hub/atomone/types/module/testutil"
 	simtypes "github.com/atomone-hub/atomone/types/simulation"
-	"github.com/atomone-hub/atomone/x/simulation"
-
 	"github.com/atomone-hub/atomone/x/gov/keeper"
 	"github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
+	"github.com/atomone-hub/atomone/x/simulation"
 )
 
 var initialProposalID = uint64(100000000000000)

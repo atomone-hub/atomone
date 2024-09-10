@@ -7,12 +7,13 @@ import (
 	"io"
 	"reflect"
 
-	"github.com/cosmos/gogoproto/proto"
 	"google.golang.org/grpc"
 	proto2 "google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protodesc"
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/types/descriptorpb"
+
+	"github.com/cosmos/gogoproto/proto"
 
 	codectypes "github.com/atomone-hub/atomone/codec/types"
 	sdk "github.com/atomone-hub/atomone/types"

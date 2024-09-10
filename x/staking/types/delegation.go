@@ -6,10 +6,12 @@ import (
 	"strings"
 	"time"
 
+	"sigs.k8s.io/yaml"
+
 	"cosmossdk.io/math"
+
 	"github.com/atomone-hub/atomone/codec"
 	sdk "github.com/atomone-hub/atomone/types"
-	"sigs.k8s.io/yaml"
 )
 
 // Implements Delegation interface

@@ -6,10 +6,9 @@ package errors
 import (
 	"fmt"
 
+	"github.com/coinbase/rosetta-sdk-go/types"
 	grpccodes "google.golang.org/grpc/codes"
 	grpcstatus "google.golang.org/grpc/status"
-
-	"github.com/coinbase/rosetta-sdk-go/types"
 )
 
 // ListErrors lists all the registered errors

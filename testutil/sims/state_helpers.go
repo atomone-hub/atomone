@@ -8,11 +8,12 @@ import (
 	"os"
 	"time"
 
+	tmjson "github.com/cometbft/cometbft/libs/json"
+	tmtypes "github.com/cometbft/cometbft/types"
+
 	"github.com/cosmos/gogoproto/proto"
 
 	"cosmossdk.io/math"
-	tmjson "github.com/cometbft/cometbft/libs/json"
-	tmtypes "github.com/cometbft/cometbft/types"
 
 	"github.com/atomone-hub/atomone/codec"
 	"github.com/atomone-hub/atomone/crypto/keys/secp256k1"

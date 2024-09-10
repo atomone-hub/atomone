@@ -6,8 +6,9 @@ import (
 	"strings"
 	"time"
 
-	"cosmossdk.io/math"
 	"sigs.k8s.io/yaml"
+
+	"cosmossdk.io/math"
 
 	"github.com/atomone-hub/atomone/codec"
 	sdk "github.com/atomone-hub/atomone/types"

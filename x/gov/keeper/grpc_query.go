@@ -9,11 +9,10 @@ import (
 	"github.com/atomone-hub/atomone/store/prefix"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/query"
-	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
-
 	v3 "github.com/atomone-hub/atomone/x/gov/migrations/v3"
 	"github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
+	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 )
 
 var _ v1.QueryServer = Keeper{}

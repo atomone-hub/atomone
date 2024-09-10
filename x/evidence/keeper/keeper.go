@@ -6,13 +6,14 @@ import (
 	tmbytes "github.com/cometbft/cometbft/libs/bytes"
 	"github.com/cometbft/cometbft/libs/log"
 
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	"github.com/atomone-hub/atomone/codec"
 	"github.com/atomone-hub/atomone/store/prefix"
 	storetypes "github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/evidence/exported"
 	"github.com/atomone-hub/atomone/x/evidence/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // Keeper defines the evidence module's keeper. The keeper is responsible for

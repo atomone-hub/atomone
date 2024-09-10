@@ -3,8 +3,9 @@ package group
 import (
 	"fmt"
 
-	"github.com/atomone-hub/atomone/codec/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
+	"github.com/atomone-hub/atomone/codec/types"
 )
 
 // NewGenesisState creates a new genesis state with default values.

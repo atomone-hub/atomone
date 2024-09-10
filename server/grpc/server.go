@@ -7,6 +7,8 @@ import (
 
 	"google.golang.org/grpc"
 
+	_ "github.com/atomone-hub/atomone/types/tx/amino" // Import amino.proto file for reflection
+
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/codec"
 	"github.com/atomone-hub/atomone/server/config"
@@ -14,7 +16,6 @@ import (
 	reflection "github.com/atomone-hub/atomone/server/grpc/reflection/v2alpha1"
 	"github.com/atomone-hub/atomone/server/types"
 	sdk "github.com/atomone-hub/atomone/types"
-	_ "github.com/atomone-hub/atomone/types/tx/amino" // Import amino.proto file for reflection
 )
 
 // StartGRPCServer starts a gRPC server on the given address.

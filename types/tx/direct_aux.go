@@ -1,25 +1,26 @@
 package tx
 
 import (
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	codectypes "github.com/atomone-hub/atomone/codec/types"
 	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
 	"github.com/atomone-hub/atomone/types/tx/signing"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // ValidateBasic performs stateless validation of the sign doc.
 func (s *SignDocDirectAux) ValidateBasic() error {
 	if len(s.BodyBytes) == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrap("body bytes cannot be empty") //nolint: staticcheck
+		return sdkerrors.ErrInvalidRequest.Wrap("body bytes cannot be empty") 
 	}
 
 	if s.PublicKey == nil {
-		return sdkerrors.ErrInvalidPubKey.Wrap("public key cannot be empty") //nolint: staticcheck
+		return sdkerrors.ErrInvalidPubKey.Wrap("public key cannot be empty") 
 	}
 
 	if s.Tip != nil {
 		if s.Tip.Tipper == "" {
-			return sdkerrors.ErrInvalidRequest.Wrap("tipper cannot be empty") //nolint: staticcheck
+			return sdkerrors.ErrInvalidRequest.Wrap("tipper cannot be empty") 
 		}
 	}
 
@@ -34,15 +35,15 @@ func (s *SignDocDirectAux) UnpackInterfaces(unpacker codectypes.AnyUnpacker) err
 // ValidateBasic performs stateless validation of the auxiliary tx.
 func (a *AuxSignerData) ValidateBasic() error {
 	if a.Address == "" {
-		return sdkerrors.ErrInvalidRequest.Wrapf("address cannot be empty") //nolint: staticcheck
+		return sdkerrors.ErrInvalidRequest.Wrapf("address cannot be empty") 
 	}
 
 	if a.Mode != signing.SignMode_SIGN_MODE_DIRECT_AUX && a.Mode != signing.SignMode_SIGN_MODE_LEGACY_AMINO_JSON {
-		return sdkerrors.ErrInvalidRequest.Wrapf("AuxTxBuilder can only sign with %s or %s", signing.SignMode_SIGN_MODE_DIRECT_AUX, signing.SignMode_SIGN_MODE_LEGACY_AMINO_JSON) //nolint: staticcheck
+		return sdkerrors.ErrInvalidRequest.Wrapf("AuxTxBuilder can only sign with %s or %s", signing.SignMode_SIGN_MODE_DIRECT_AUX, signing.SignMode_SIGN_MODE_LEGACY_AMINO_JSON) 
 	}
 
 	if len(a.Sig) == 0 {
-		return sdkerrors.ErrNoSignatures.Wrap("signature cannot be empty") //nolint: staticcheck
+		return sdkerrors.ErrNoSignatures.Wrap("signature cannot be empty") 
 	}
 
 	return a.GetSignDoc().ValidateBasic()
@@ -52,7 +53,7 @@ func (a *AuxSignerData) ValidateBasic() error {
 func (a *AuxSignerData) GetSignatureV2() (signing.SignatureV2, error) {
 	pk, ok := a.SignDoc.PublicKey.GetCachedValue().(cryptotypes.PubKey)
 	if !ok {
-		return signing.SignatureV2{}, sdkerrors.ErrInvalidType.Wrapf("expected %T, got %T", (cryptotypes.PubKey)(nil), pk) //nolint: staticcheck
+		return signing.SignatureV2{}, sdkerrors.ErrInvalidType.Wrapf("expected %T, got %T", (cryptotypes.PubKey)(nil), pk) 
 	}
 
 	return signing.SignatureV2{

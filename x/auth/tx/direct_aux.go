@@ -3,12 +3,13 @@ package tx
 import (
 	"fmt"
 
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	codectypes "github.com/atomone-hub/atomone/codec/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	types "github.com/atomone-hub/atomone/types/tx"
 	signingtypes "github.com/atomone-hub/atomone/types/tx/signing"
 	"github.com/atomone-hub/atomone/x/auth/signing"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 var _ signing.SignModeHandler = signModeDirectAuxHandler{}
@@ -54,7 +55,7 @@ func (signModeDirectAuxHandler) GetSignBytes(
 	// Fee payer cannot use SIGN_MODE_DIRECT_AUX, because SIGN_MODE_DIRECT_AUX
 	// does not sign over fees, which would create malleability issues.
 	if feePayer == data.Address {
-		return nil, sdkerrors.ErrUnauthorized.Wrapf("fee payer %s cannot sign with %s", feePayer, signingtypes.SignMode_SIGN_MODE_DIRECT_AUX) //nolint: staticcheck
+		return nil, sdkerrors.ErrUnauthorized.Wrapf("fee payer %s cannot sign with %s", feePayer, signingtypes.SignMode_SIGN_MODE_DIRECT_AUX) 
 	}
 
 	signDocDirectAux := types.SignDocDirectAux{

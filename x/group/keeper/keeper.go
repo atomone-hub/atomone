@@ -6,6 +6,8 @@ import (
 
 	"github.com/cometbft/cometbft/libs/log"
 
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	"github.com/atomone-hub/atomone/baseapp"
 	"github.com/atomone-hub/atomone/codec"
 	storetypes "github.com/atomone-hub/atomone/store/types"
@@ -13,7 +15,6 @@ import (
 	"github.com/atomone-hub/atomone/x/group"
 	"github.com/atomone-hub/atomone/x/group/errors"
 	"github.com/atomone-hub/atomone/x/group/internal/orm"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 const (

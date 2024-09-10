@@ -1,9 +1,10 @@
 package keeper
 
 import (
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/slashing/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // Unjail calls the staking Unjail function to unjail a validator if the

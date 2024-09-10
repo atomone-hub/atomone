@@ -3,8 +3,9 @@ package iavl
 import (
 	"fmt"
 
-	"github.com/atomone-hub/atomone/store/types"
 	"github.com/cosmos/iavl"
+
+	"github.com/atomone-hub/atomone/store/types"
 )
 
 var (

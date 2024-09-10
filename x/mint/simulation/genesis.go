@@ -8,6 +8,7 @@ import (
 	"math/rand"
 
 	"cosmossdk.io/math"
+
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/module"
 	"github.com/atomone-hub/atomone/x/mint/types"

@@ -9,7 +9,6 @@ import (
 	"github.com/atomone-hub/atomone/types/module"
 	simtypes "github.com/atomone-hub/atomone/types/simulation"
 	banktypes "github.com/atomone-hub/atomone/x/bank/types"
-
 	"github.com/atomone-hub/atomone/x/group"
 )
 

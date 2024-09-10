@@ -7,9 +7,10 @@ import (
 	dbm "github.com/cometbft/cometbft-db"
 	abci "github.com/cometbft/cometbft/abci/types"
 
-	pruningtypes "github.com/atomone-hub/atomone/store/pruning/types"
 	snapshottypes "github.com/cosmos/cosmos-sdk/snapshots/types"
 	"github.com/cosmos/cosmos-sdk/types/kv"
+
+	pruningtypes "github.com/atomone-hub/atomone/store/pruning/types"
 )
 
 type Store interface {

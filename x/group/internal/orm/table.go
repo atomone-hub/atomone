@@ -4,12 +4,13 @@ import (
 	"bytes"
 	"reflect"
 
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	"github.com/atomone-hub/atomone/codec"
 	"github.com/atomone-hub/atomone/store/prefix"
 	"github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/group/errors"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 var (
@@ -38,7 +39,7 @@ type table struct {
 // newTable creates a new table
 func newTable(prefix [2]byte, model codec.ProtoMarshaler, cdc codec.Codec) (*table, error) {
 	if model == nil {
-		return nil, errors.ErrORMInvalidArgument.Wrap("Model must not be nil") //nolint: staticcheck
+		return nil, errors.ErrORMInvalidArgument.Wrap("Model must not be nil") 
 	}
 	tp := reflect.TypeOf(model)
 	if tp.Kind() == reflect.Ptr {

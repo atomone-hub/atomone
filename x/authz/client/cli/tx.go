@@ -8,6 +8,8 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/cosmos/cosmos-sdk/version"
+
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/client/flags"
 	"github.com/atomone-hub/atomone/client/tx"
@@ -16,7 +18,6 @@ import (
 	"github.com/atomone-hub/atomone/x/authz"
 	bank "github.com/atomone-hub/atomone/x/bank/types"
 	staking "github.com/atomone-hub/atomone/x/staking/types"
-	"github.com/cosmos/cosmos-sdk/version"
 )
 
 // Flag names and values

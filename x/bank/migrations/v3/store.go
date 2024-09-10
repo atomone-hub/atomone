@@ -1,14 +1,16 @@
 package v3
 
 import (
+	"github.com/cometbft/cometbft/libs/log"
+
+	"github.com/cosmos/cosmos-sdk/types/address"
+
 	"github.com/atomone-hub/atomone/codec"
 	"github.com/atomone-hub/atomone/store/prefix"
 	storetypes "github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	v2 "github.com/atomone-hub/atomone/x/bank/migrations/v2"
 	"github.com/atomone-hub/atomone/x/bank/types"
-	"github.com/cometbft/cometbft/libs/log"
-	"github.com/cosmos/cosmos-sdk/types/address"
 )
 
 // MigrateStore performs in-place store migrations from v0.43 to v0.45. The

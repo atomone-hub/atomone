@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"reflect"
 
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	"github.com/atomone-hub/atomone/codec"
 	"github.com/atomone-hub/atomone/types/query"
 	"github.com/atomone-hub/atomone/x/group/errors"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // defaultPageLimit is the default limit value for pagination requests.
@@ -61,10 +62,10 @@ type LimitedIterator struct {
 // max can be 0 or any positive number
 func LimitIterator(parent Iterator, max int) (*LimitedIterator, error) {
 	if max < 0 {
-		return nil, errors.ErrORMInvalidArgument.Wrap("quantity must not be negative") //nolint: staticcheck
+		return nil, errors.ErrORMInvalidArgument.Wrap("quantity must not be negative") 
 	}
 	if parent == nil {
-		return nil, errors.ErrORMInvalidArgument.Wrap("parent iterator must not be nil") //nolint: staticcheck
+		return nil, errors.ErrORMInvalidArgument.Wrap("parent iterator must not be nil") 
 	}
 	return &LimitedIterator{remainingCount: max, parentIterator: parent}, nil
 }

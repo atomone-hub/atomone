@@ -7,9 +7,10 @@ import (
 	dbm "github.com/cometbft/cometbft-db"
 	"github.com/cometbft/cometbft/libs/log"
 
+	"github.com/cosmos/cosmos-sdk/version"
+
 	"github.com/atomone-hub/atomone/baseapp"
 	"github.com/atomone-hub/atomone/types/module"
-	"github.com/cosmos/cosmos-sdk/version"
 )
 
 // AppBuilder is a type that is injected into a container by the runtime module

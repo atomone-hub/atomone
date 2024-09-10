@@ -6,9 +6,10 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/spf13/cobra"
+
 	tmjson "github.com/cometbft/cometbft/libs/json"
 	tmtypes "github.com/cometbft/cometbft/types"
-	"github.com/spf13/cobra"
 
 	"github.com/atomone-hub/atomone/client/flags"
 	"github.com/atomone-hub/atomone/server/types"

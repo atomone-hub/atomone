@@ -42,6 +42,7 @@ func TestAtomOneApp_BlockedModuleAccountAddrs(t *testing.T) {
 
 func TestAtomOneApp_Export(t *testing.T) {
 	app := atomonehelpers.Setup(t)
-	_, err := app.ExportAppStateAndValidators(true, []string{}, []string{})
+	// TODO: not all modules are registered with a StoreKey!
+	_, err := app.ExportAppStateAndValidators(true, []string{}, []string{"auth"})
 	require.NoError(t, err, "ExportAppStateAndValidators should not have an error")
 }

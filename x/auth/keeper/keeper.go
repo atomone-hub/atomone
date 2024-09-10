@@ -4,15 +4,17 @@ import (
 	"fmt"
 
 	"github.com/cometbft/cometbft/libs/log"
+
 	gogotypes "github.com/cosmos/gogoproto/types"
+
+	"github.com/cosmos/cosmos-sdk/types/address"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/atomone-hub/atomone/codec"
 	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
 	storetypes "github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/auth/types"
-	"github.com/cosmos/cosmos-sdk/types/address"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // AccountKeeperI is the interface contract that x/auth's keeper implements.

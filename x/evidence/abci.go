@@ -6,10 +6,11 @@ import (
 
 	abci "github.com/cometbft/cometbft/abci/types"
 
+	"github.com/cosmos/cosmos-sdk/telemetry"
+
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/evidence/keeper"
 	"github.com/atomone-hub/atomone/x/evidence/types"
-	"github.com/cosmos/cosmos-sdk/telemetry"
 )
 
 // BeginBlocker iterates through and handles any newly discovered evidence of

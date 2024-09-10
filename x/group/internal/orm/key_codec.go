@@ -3,8 +3,9 @@ package orm
 import (
 	"fmt"
 
-	"github.com/atomone-hub/atomone/x/group/errors"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
+	"github.com/atomone-hub/atomone/x/group/errors"
 )
 
 // MaxBytesLen is the maximum allowed length for a key part of type []byte

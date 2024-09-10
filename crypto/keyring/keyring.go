@@ -11,8 +11,13 @@ import (
 	"strings"
 
 	"github.com/99designs/keyring"
-	tmcrypto "github.com/cometbft/cometbft/crypto"
 	"github.com/pkg/errors"
+
+	tmcrypto "github.com/cometbft/cometbft/crypto"
+
+	"github.com/cosmos/go-bip39"
+
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/atomone-hub/atomone/client/input"
 	"github.com/atomone-hub/atomone/codec"
@@ -22,8 +27,6 @@ import (
 	"github.com/atomone-hub/atomone/crypto/ledger"
 	"github.com/atomone-hub/atomone/crypto/types"
 	sdk "github.com/atomone-hub/atomone/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cosmos/go-bip39"
 )
 
 // Backend options for Keyring
@@ -325,7 +328,7 @@ func (ks keystore) ImportPrivKey(uid, armor, passphrase string) error {
 
 	privKey, _, err := crypto.UnarmorDecryptPrivKey(armor, passphrase)
 	if err != nil {
-		return errors.Wrap(err, "failed to decrypt private key") //nolint: staticcheck
+		return errors.Wrap(err, "failed to decrypt private key") 
 	}
 
 	_, err = ks.writeLocalKey(uid, privKey)

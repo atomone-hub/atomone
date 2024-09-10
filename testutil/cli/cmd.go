@@ -4,8 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	cli2 "github.com/cometbft/cometbft/libs/cli"
 	"github.com/spf13/cobra"
+
+	cli2 "github.com/cometbft/cometbft/libs/cli"
 
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/testutil"

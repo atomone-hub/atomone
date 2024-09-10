@@ -4,10 +4,11 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/spf13/viper"
+
 	tmcfg "github.com/cometbft/cometbft/config"
 	"github.com/cometbft/cometbft/libs/cli"
 	"github.com/cometbft/cometbft/libs/log"
-	"github.com/spf13/viper"
 
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/codec"

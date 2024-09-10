@@ -3,10 +3,11 @@ package testutil
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	dbm "github.com/cometbft/cometbft-db"
 	"github.com/cometbft/cometbft/libs/log"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
-	"github.com/stretchr/testify/assert"
 
 	"github.com/atomone-hub/atomone/store"
 	storetypes "github.com/atomone-hub/atomone/store/types"

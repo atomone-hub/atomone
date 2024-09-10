@@ -6,9 +6,10 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/params/types/proposal"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 var _ proposal.QueryServer = Keeper{}

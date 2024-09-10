@@ -3,8 +3,9 @@ package v2
 import (
 	"time"
 
-	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
+
+	sdk "github.com/atomone-hub/atomone/types"
 )
 
 var (

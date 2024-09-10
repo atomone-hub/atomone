@@ -25,20 +25,20 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 	// Cosmos-SDK modules each have a "key" that allows the application to reference what they've stored on the chain.
 	appKeepers.keys = sdk.NewKVStoreKeys(
 		authtypes.StoreKey,
-		banktypes.StoreKey,
-		stakingtypes.StoreKey,
-		crisistypes.StoreKey,
-		minttypes.StoreKey,
-		distrtypes.StoreKey,
-		slashingtypes.StoreKey,
-		govtypes.StoreKey,
-		paramstypes.StoreKey,
-		upgradetypes.StoreKey,
-		evidencetypes.StoreKey,
-		capabilitytypes.StoreKey,
-		feegrant.StoreKey,
 		authzkeeper.StoreKey,
+		banktypes.StoreKey,
+		capabilitytypes.StoreKey,
 		consensusparamtypes.StoreKey,
+		crisistypes.StoreKey,
+		distrtypes.StoreKey,
+		evidencetypes.StoreKey,
+		feegrant.StoreKey,
+		govtypes.StoreKey,
+		minttypes.StoreKey,
+		paramstypes.StoreKey,
+		stakingtypes.StoreKey,
+		slashingtypes.StoreKey,
+		upgradetypes.StoreKey,
 	)
 
 	// Define transient store keys

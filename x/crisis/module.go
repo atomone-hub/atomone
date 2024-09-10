@@ -5,18 +5,21 @@ import (
 	"fmt"
 	"time"
 
-	abci "github.com/cometbft/cometbft/abci/types"
 	gwruntime "github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 
+	abci "github.com/cometbft/cometbft/abci/types"
+
 	modulev1 "cosmossdk.io/api/cosmos/crisis/module/v1"
 	"cosmossdk.io/depinject"
-	"github.com/atomone-hub/atomone/core/appmodule"
+
+	"github.com/cosmos/cosmos-sdk/telemetry"
 
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/codec"
 	codectypes "github.com/atomone-hub/atomone/codec/types"
+	"github.com/atomone-hub/atomone/core/appmodule"
 	"github.com/atomone-hub/atomone/server"
 	servertypes "github.com/atomone-hub/atomone/server/types"
 	store "github.com/atomone-hub/atomone/store/types"
@@ -28,7 +31,6 @@ import (
 	"github.com/atomone-hub/atomone/x/crisis/keeper"
 	"github.com/atomone-hub/atomone/x/crisis/types"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
-	"github.com/cosmos/cosmos-sdk/telemetry"
 )
 
 // ConsensusVersion defines the current x/crisis module consensus version.

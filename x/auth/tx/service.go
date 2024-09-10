@@ -6,11 +6,14 @@ import (
 	"regexp"
 	"strings"
 
-	gogogrpc "github.com/cosmos/gogoproto/grpc"
 	"github.com/golang/protobuf/proto" //nolint:staticcheck
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
+	gogogrpc "github.com/cosmos/gogoproto/grpc"
+
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/client/grpc/tmservice"
@@ -19,7 +22,6 @@ import (
 	"github.com/atomone-hub/atomone/types/query"
 	txtypes "github.com/atomone-hub/atomone/types/tx"
 	"github.com/atomone-hub/atomone/x/auth/migrations/legacytx"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // baseAppSimulateFn is the signature of the Baseapp#Simulate function.
@@ -189,7 +191,7 @@ func (s txServer) GetBlockWithTxs(ctx context.Context, req *txtypes.GetBlockWith
 	currentHeight := sdkCtx.BlockHeight()
 
 	if req.Height < 1 || req.Height > currentHeight {
-		return nil, sdkerrors.ErrInvalidHeight.Wrapf("requested height %d but height must not be less than 1 "+ //nolint: staticcheck
+		return nil, sdkerrors.ErrInvalidHeight.Wrapf("requested height %d but height must not be less than 1 "+ 
 			"or greater than the current height %d", req.Height, currentHeight)
 	}
 
@@ -211,7 +213,7 @@ func (s txServer) GetBlockWithTxs(ctx context.Context, req *txtypes.GetBlockWith
 	blockTxsLn := uint64(len(blockTxs))
 	txs := make([]*txtypes.Tx, 0, limit)
 	if offset >= blockTxsLn && blockTxsLn != 0 {
-		return nil, sdkerrors.ErrInvalidRequest.Wrapf("out of range: cannot paginate %d txs with offset %d and limit %d", blockTxsLn, offset, limit) //nolint: staticcheck
+		return nil, sdkerrors.ErrInvalidRequest.Wrapf("out of range: cannot paginate %d txs with offset %d and limit %d", blockTxsLn, offset, limit) 
 	}
 	decodeTxAt := func(i uint64) error {
 		tx := blockTxs[i]
@@ -221,7 +223,7 @@ func (s txServer) GetBlockWithTxs(ctx context.Context, req *txtypes.GetBlockWith
 		}
 		p, ok := txb.(protoTxProvider)
 		if !ok {
-			return sdkerrors.ErrTxDecode.Wrapf("could not cast %T to %T", txb, txtypes.Tx{}) //nolint: staticcheck
+			return sdkerrors.ErrTxDecode.Wrapf("could not cast %T to %T", txb, txtypes.Tx{}) 
 		}
 		txs = append(txs, p.GetProtoTx())
 		return nil

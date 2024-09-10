@@ -3,8 +3,9 @@ package keeper
 import (
 	"fmt"
 
-	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/libs/log"
+
+	"cosmossdk.io/math"
 
 	"github.com/atomone-hub/atomone/codec"
 	storetypes "github.com/atomone-hub/atomone/store/types"

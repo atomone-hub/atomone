@@ -5,6 +5,9 @@ package server
 import (
 	"fmt"
 
+	"github.com/spf13/cobra"
+	"sigs.k8s.io/yaml"
+
 	"github.com/cometbft/cometbft/light"
 	"github.com/cometbft/cometbft/node"
 	"github.com/cometbft/cometbft/p2p"
@@ -14,8 +17,6 @@ import (
 	"github.com/cometbft/cometbft/statesync"
 	"github.com/cometbft/cometbft/store"
 	tversion "github.com/cometbft/cometbft/version"
-	"github.com/spf13/cobra"
-	"sigs.k8s.io/yaml"
 
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/client/flags"

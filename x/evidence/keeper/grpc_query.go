@@ -8,13 +8,12 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/atomone-hub/atomone/store/prefix"
-	"github.com/atomone-hub/atomone/types/query"
-
 	proto "github.com/cosmos/gogoproto/proto"
 
 	codectypes "github.com/atomone-hub/atomone/codec/types"
+	"github.com/atomone-hub/atomone/store/prefix"
 	sdk "github.com/atomone-hub/atomone/types"
+	"github.com/atomone-hub/atomone/types/query"
 	"github.com/atomone-hub/atomone/x/evidence/types"
 )
 

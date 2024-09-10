@@ -8,14 +8,19 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/pkg/errors"
+
 	dbm "github.com/cometbft/cometbft-db"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cometbft/cometbft/libs/log"
 	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
+
 	protoio "github.com/cosmos/gogoproto/io"
 	gogotypes "github.com/cosmos/gogoproto/types"
 	iavltree "github.com/cosmos/iavl"
-	"github.com/pkg/errors"
+
+	snapshottypes "github.com/cosmos/cosmos-sdk/snapshots/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/atomone-hub/atomone/store/cachemulti"
 	"github.com/atomone-hub/atomone/store/dbadapter"
@@ -27,8 +32,6 @@ import (
 	"github.com/atomone-hub/atomone/store/tracekv"
 	"github.com/atomone-hub/atomone/store/transient"
 	"github.com/atomone-hub/atomone/store/types"
-	snapshottypes "github.com/cosmos/cosmos-sdk/snapshots/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 const (
@@ -249,7 +252,7 @@ func (rs *Store) loadVersion(ver int64, upgrades *types.StoreUpgrades) error {
 
 		store, err := rs.loadCommitStoreFromParams(key, commitID, storeParams)
 		if err != nil {
-			return errors.Wrap(err, "failed to load store") //nolint: staticcheck
+			return errors.Wrap(err, "failed to load store") 
 		}
 
 		newStores[key] = store
@@ -257,7 +260,7 @@ func (rs *Store) loadVersion(ver int64, upgrades *types.StoreUpgrades) error {
 		// If it was deleted, remove all data
 		if upgrades.IsDeleted(key.Name()) {
 			if err := deleteKVStore(types.KVStore(store)); err != nil {
-				return errors.Wrapf(err, "failed to delete store %s", key.Name()) //nolint: staticcheck
+				return errors.Wrapf(err, "failed to delete store %s", key.Name()) 
 			}
 			rs.removalMap[key] = true
 		} else if oldName := upgrades.RenamedFrom(key.Name()); oldName != "" {
@@ -269,12 +272,12 @@ func (rs *Store) loadVersion(ver int64, upgrades *types.StoreUpgrades) error {
 			// load from the old name
 			oldStore, err := rs.loadCommitStoreFromParams(oldKey, rs.getCommitID(infos, oldName), oldParams)
 			if err != nil {
-				return errors.Wrapf(err, "failed to load old store %s", oldName) //nolint: staticcheck
+				return errors.Wrapf(err, "failed to load old store %s", oldName) 
 			}
 
 			// move all data
 			if err := moveKVStoreData(types.KVStore(oldStore), types.KVStore(store)); err != nil {
-				return errors.Wrapf(err, "failed to move store %s -> %s", oldName, key.Name()) //nolint: staticcheck
+				return errors.Wrapf(err, "failed to move store %s -> %s", oldName, key.Name()) 
 			}
 
 			// add the old key so its deletion is committed
@@ -1052,14 +1055,14 @@ func (rs *Store) GetCommitInfo(ver int64) (*types.CommitInfo, error) {
 
 	bz, err := rs.db.Get([]byte(cInfoKey))
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to get commit info") //nolint: staticcheck
+		return nil, errors.Wrap(err, "failed to get commit info") 
 	} else if bz == nil {
 		return nil, errors.New("no commit info found")
 	}
 
 	cInfo := &types.CommitInfo{}
 	if err = cInfo.Unmarshal(bz); err != nil {
-		return nil, errors.Wrap(err, "failed unmarshal commit info") //nolint: staticcheck
+		return nil, errors.Wrap(err, "failed unmarshal commit info") 
 	}
 
 	return cInfo, nil

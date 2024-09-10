@@ -7,12 +7,13 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/query"
 	"github.com/atomone-hub/atomone/x/group"
 	"github.com/atomone-hub/atomone/x/group/errors"
 	"github.com/atomone-hub/atomone/x/group/internal/orm"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 var _ group.QueryServer = Keeper{}

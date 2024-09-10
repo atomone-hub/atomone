@@ -11,6 +11,9 @@ import (
 
 	"github.com/cometbft/cometbft/libs/log"
 
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/cosmos/cosmos-sdk/types/kv"
+
 	"github.com/atomone-hub/atomone/codec"
 	"github.com/atomone-hub/atomone/store/prefix"
 	storetypes "github.com/atomone-hub/atomone/store/types"
@@ -18,8 +21,6 @@ import (
 	"github.com/atomone-hub/atomone/types/module"
 	xp "github.com/atomone-hub/atomone/x/upgrade/exported"
 	"github.com/atomone-hub/atomone/x/upgrade/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cosmos/cosmos-sdk/types/kv"
 )
 
 // Deprecated: UpgradeInfoFileName file to store upgrade information

@@ -6,13 +6,15 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/hdevalence/ed25519consensus"
+
 	"github.com/cometbft/cometbft/crypto"
 	"github.com/cometbft/cometbft/crypto/tmhash"
-	"github.com/hdevalence/ed25519consensus"
+
+	"github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/atomone-hub/atomone/codec"
 	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
-	"github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 //-------------------------------------

@@ -6,12 +6,13 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	"github.com/atomone-hub/atomone/store/prefix"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/query"
 	"github.com/atomone-hub/atomone/x/distribution/types"
 	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 var _ types.QueryServer = Querier{}

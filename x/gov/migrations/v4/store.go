@@ -8,9 +8,8 @@ import (
 	"github.com/atomone-hub/atomone/store/prefix"
 	storetypes "github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
-	v1 "github.com/atomone-hub/atomone/x/gov/migrations/v1"
-
 	"github.com/atomone-hub/atomone/x/gov/exported"
+	v1 "github.com/atomone-hub/atomone/x/gov/migrations/v1"
 	"github.com/atomone-hub/atomone/x/gov/types"
 	govv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 )

@@ -5,13 +5,15 @@ import (
 	"strings"
 	"time"
 
-	"github.com/cosmos/gogoproto/proto"
 	"sigs.k8s.io/yaml"
+
+	"github.com/cosmos/gogoproto/proto"
+
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	codectypes "github.com/atomone-hub/atomone/codec/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/gov/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // DefaultStartingProposalID is 1

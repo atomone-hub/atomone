@@ -5,11 +5,11 @@ import (
 	"encoding/binary"
 	"fmt"
 
-	"github.com/atomone-hub/atomone/codec"
-	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 	"github.com/cosmos/cosmos-sdk/types/kv"
 
+	"github.com/atomone-hub/atomone/codec"
 	"github.com/atomone-hub/atomone/x/gov/types"
+	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 )
 
 // NewDecodeStore returns a decoder function closure that unmarshals the KVPair's

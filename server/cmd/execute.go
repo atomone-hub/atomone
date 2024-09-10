@@ -3,9 +3,10 @@ package cmd
 import (
 	"context"
 
+	"github.com/spf13/cobra"
+
 	tmcfg "github.com/cometbft/cometbft/config"
 	tmcli "github.com/cometbft/cometbft/libs/cli"
-	"github.com/spf13/cobra"
 
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/client/flags"

@@ -6,6 +6,7 @@ import (
 	"sort"
 
 	abci "github.com/cometbft/cometbft/abci/types"
+
 	gogotypes "github.com/cosmos/gogoproto/types"
 
 	"cosmossdk.io/math"

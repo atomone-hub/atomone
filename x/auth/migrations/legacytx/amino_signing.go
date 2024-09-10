@@ -3,12 +3,13 @@ package legacytx
 import (
 	"fmt"
 
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	"github.com/atomone-hub/atomone/codec"
 	"github.com/atomone-hub/atomone/crypto/types/multisig"
 	sdk "github.com/atomone-hub/atomone/types"
 	signingtypes "github.com/atomone-hub/atomone/types/tx/signing"
 	"github.com/atomone-hub/atomone/x/auth/signing"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // stdTxSignModeHandler is a SignModeHandler that handles SIGN_MODE_LEGACY_AMINO_JSON
@@ -80,7 +81,7 @@ func MultiSignatureDataToAminoMultisignature(cdc *codec.LegacyAmino, mSig *signi
 		var err error
 		sigs[i], err = SignatureDataToAminoSignature(cdc, mSig.Signatures[i])
 		if err != nil {
-			return multisig.AminoMultisignature{}, sdkerrors.Wrapf(err, "Unable to convert Signature Data to signature %d", i) //nolint: staticcheck
+			return multisig.AminoMultisignature{}, sdkerrors.Wrapf(err, "Unable to convert Signature Data to signature %d", i) 
 		}
 	}
 

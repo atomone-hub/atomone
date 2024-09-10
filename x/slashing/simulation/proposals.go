@@ -4,11 +4,12 @@ import (
 	"math/rand"
 	"time"
 
+	"github.com/cosmos/cosmos-sdk/types/address"
+
 	sdk "github.com/atomone-hub/atomone/types"
 	simtypes "github.com/atomone-hub/atomone/types/simulation"
 	"github.com/atomone-hub/atomone/x/simulation"
 	"github.com/atomone-hub/atomone/x/slashing/types"
-	"github.com/cosmos/cosmos-sdk/types/address"
 )
 
 // Simulation operation weights constants

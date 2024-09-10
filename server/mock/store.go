@@ -4,12 +4,14 @@ import (
 	"io"
 
 	dbm "github.com/cometbft/cometbft-db"
+
 	protoio "github.com/cosmos/gogoproto/io"
+
+	snapshottypes "github.com/cosmos/cosmos-sdk/snapshots/types"
 
 	pruningtypes "github.com/atomone-hub/atomone/store/pruning/types"
 	storetypes "github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
-	snapshottypes "github.com/cosmos/cosmos-sdk/snapshots/types"
 )
 
 var _ sdk.MultiStore = multiStore{}

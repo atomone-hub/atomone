@@ -1,9 +1,10 @@
 package types
 
 import (
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/authz"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // TODO: Revisit this once we have propoer gas fee framework.
@@ -70,7 +71,7 @@ func (a StakeAuthorization) Accept(ctx sdk.Context, msg sdk.Msg) (authz.AcceptRe
 		validatorAddress = msg.ValidatorDstAddress
 		amount = msg.Amount
 	default:
-		return authz.AcceptResponse{}, sdkerrors.ErrInvalidRequest.Wrap("unknown msg type") //nolint: staticcheck
+		return authz.AcceptResponse{}, sdkerrors.ErrInvalidRequest.Wrap("unknown msg type") 
 	}
 
 	isValidatorExists := false
@@ -87,12 +88,12 @@ func (a StakeAuthorization) Accept(ctx sdk.Context, msg sdk.Msg) (authz.AcceptRe
 	for _, validator := range denyList {
 		ctx.GasMeter().ConsumeGas(gasCostPerIteration, "stake authorization")
 		if validator == validatorAddress {
-			return authz.AcceptResponse{}, sdkerrors.ErrUnauthorized.Wrapf("cannot delegate/undelegate to %s validator", validator) //nolint: staticcheck
+			return authz.AcceptResponse{}, sdkerrors.ErrUnauthorized.Wrapf("cannot delegate/undelegate to %s validator", validator) 
 		}
 	}
 
 	if len(allowedList) > 0 && !isValidatorExists {
-		return authz.AcceptResponse{}, sdkerrors.ErrUnauthorized.Wrapf("cannot delegate/undelegate to %s validator", validatorAddress) //nolint: staticcheck
+		return authz.AcceptResponse{}, sdkerrors.ErrUnauthorized.Wrapf("cannot delegate/undelegate to %s validator", validatorAddress) 
 	}
 
 	if a.MaxTokens == nil {
@@ -117,11 +118,11 @@ func (a StakeAuthorization) Accept(ctx sdk.Context, msg sdk.Msg) (authz.AcceptRe
 
 func validateAllowAndDenyValidators(allowed []sdk.ValAddress, denied []sdk.ValAddress) ([]string, []string, error) {
 	if len(allowed) == 0 && len(denied) == 0 {
-		return nil, nil, sdkerrors.ErrInvalidRequest.Wrap("both allowed & deny list cannot be empty") //nolint: staticcheck
+		return nil, nil, sdkerrors.ErrInvalidRequest.Wrap("both allowed & deny list cannot be empty") 
 	}
 
 	if len(allowed) > 0 && len(denied) > 0 {
-		return nil, nil, sdkerrors.ErrInvalidRequest.Wrap("cannot set both allowed & deny list") //nolint: staticcheck
+		return nil, nil, sdkerrors.ErrInvalidRequest.Wrap("cannot set both allowed & deny list") 
 	}
 
 	allowedValidators := make([]string, len(allowed))

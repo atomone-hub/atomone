@@ -3,9 +3,10 @@ package proofs
 import (
 	"sort"
 
+	"golang.org/x/exp/maps"
+
 	"github.com/cometbft/cometbft/libs/rand"
 	tmcrypto "github.com/cometbft/cometbft/proto/tendermint/crypto"
-	"golang.org/x/exp/maps"
 
 	sdkmaps "github.com/atomone-hub/atomone/store/internal/maps"
 )

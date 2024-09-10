@@ -6,10 +6,11 @@ import (
 
 	abci "github.com/cometbft/cometbft/abci/types"
 
+	"github.com/cosmos/cosmos-sdk/telemetry"
+
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/upgrade/keeper"
 	"github.com/atomone-hub/atomone/x/upgrade/types"
-	"github.com/cosmos/cosmos-sdk/telemetry"
 )
 
 // BeginBlock will check if there is a scheduled plan and if it is ready to be executed.

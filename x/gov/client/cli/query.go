@@ -7,13 +7,14 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/cosmos/cosmos-sdk/version"
+
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/client/flags"
 	sdk "github.com/atomone-hub/atomone/types"
 	gcutils "github.com/atomone-hub/atomone/x/gov/client/utils"
 	"github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
-	"github.com/cosmos/cosmos-sdk/version"
 )
 
 // GetQueryCmd returns the cli query commands for this module

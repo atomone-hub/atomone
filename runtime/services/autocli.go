@@ -3,9 +3,11 @@ package services
 import (
 	"context"
 
-	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
-	gogogrpc "github.com/cosmos/gogoproto/grpc"
 	"google.golang.org/grpc"
+
+	gogogrpc "github.com/cosmos/gogoproto/grpc"
+
+	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 
 	"github.com/atomone-hub/atomone/types/module"
 )

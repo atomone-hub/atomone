@@ -3,9 +3,10 @@ package feegrant
 import (
 	"github.com/cosmos/gogoproto/proto"
 
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	"github.com/atomone-hub/atomone/codec/types"
 	sdk "github.com/atomone-hub/atomone/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 var _ types.UnpackInterfacesMessage = &Grant{}

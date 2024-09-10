@@ -8,9 +8,10 @@ import (
 	grpc "google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 
+	grpctypes "github.com/cosmos/cosmos-sdk/types/grpc"
+
 	"github.com/atomone-hub/atomone/client"
 	sdk "github.com/atomone-hub/atomone/types"
-	grpctypes "github.com/cosmos/cosmos-sdk/types/grpc"
 )
 
 var (

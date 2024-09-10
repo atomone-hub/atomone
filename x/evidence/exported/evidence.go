@@ -2,6 +2,7 @@ package exported
 
 import (
 	tmbytes "github.com/cometbft/cometbft/libs/bytes"
+
 	"github.com/cosmos/gogoproto/proto"
 
 	sdk "github.com/atomone-hub/atomone/types"

@@ -11,6 +11,8 @@ import (
 
 	"github.com/cosmos/gogoproto/jsonpb"
 
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/client/tx"
 	"github.com/atomone-hub/atomone/codec"
@@ -18,7 +20,6 @@ import (
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/tx/signing"
 	"github.com/atomone-hub/atomone/x/auth/migrations/legacytx"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // GasEstimateResponse defines a response definition for tx gas estimation.

@@ -1,11 +1,12 @@
 package keeper
 
 import (
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/group"
 	"github.com/atomone-hub/atomone/x/group/errors"
 	"github.com/atomone-hub/atomone/x/group/internal/orm"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // Tally is a function that tallies a proposal by iterating through its votes,

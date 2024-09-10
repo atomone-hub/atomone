@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	sdk "github.com/atomone-hub/atomone/types"
-
 	"github.com/atomone-hub/atomone/x/gov/keeper"
 	"github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"

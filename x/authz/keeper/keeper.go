@@ -7,7 +7,10 @@ import (
 
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cometbft/cometbft/libs/log"
+
 	"github.com/cosmos/gogoproto/proto"
+
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/atomone-hub/atomone/baseapp"
 	"github.com/atomone-hub/atomone/codec"
@@ -15,7 +18,6 @@ import (
 	storetypes "github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/authz"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // TODO: Revisit this once we have propoer gas fee framework.
@@ -65,7 +67,7 @@ func (k Keeper) update(ctx sdk.Context, grantee sdk.AccAddress, granter sdk.AccA
 
 	msg, ok := updated.(proto.Message)
 	if !ok {
-		return sdkerrors.ErrPackAny.Wrapf("cannot proto marshal %T", updated) //nolint: staticcheck
+		return sdkerrors.ErrPackAny.Wrapf("cannot proto marshal %T", updated) 
 	}
 
 	any, err := codectypes.NewAnyWithValue(msg)
@@ -134,7 +136,7 @@ func (k Keeper) DispatchActions(ctx sdk.Context, grantee sdk.AccAddress, msgs []
 
 		handler := k.router.Handler(msg)
 		if handler == nil {
-			return nil, sdkerrors.ErrUnknownRequest.Wrapf("unrecognized message route: %s", sdk.MsgTypeURL(msg)) //nolint: staticcheck
+			return nil, sdkerrors.ErrUnknownRequest.Wrapf("unrecognized message route: %s", sdk.MsgTypeURL(msg)) 
 		}
 
 		msgResp, err := handler(ctx, msg)

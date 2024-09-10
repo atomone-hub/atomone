@@ -3,13 +3,14 @@ package orm
 import (
 	"bytes"
 
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	"github.com/atomone-hub/atomone/codec"
 	"github.com/atomone-hub/atomone/store/prefix"
 	"github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/query"
 	"github.com/atomone-hub/atomone/x/group/errors"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // indexer creates and modifies the second MultiKeyIndex based on the operations and changes on the primary object.
@@ -45,17 +46,17 @@ func NewIndex(tb Indexable, prefix byte, indexerF IndexerFunc, indexKey interfac
 func newIndex(tb Indexable, prefix byte, indexer *Indexer, indexerF IndexerFunc, indexKey interface{}) (MultiKeyIndex, error) {
 	rowGetter := tb.RowGetter()
 	if rowGetter == nil {
-		return MultiKeyIndex{}, errors.ErrORMInvalidArgument.Wrap("rowGetter must not be nil") //nolint: staticcheck
+		return MultiKeyIndex{}, errors.ErrORMInvalidArgument.Wrap("rowGetter must not be nil") 
 	}
 	if indexKey == nil {
-		return MultiKeyIndex{}, errors.ErrORMInvalidArgument.Wrap("indexKey must not be nil") //nolint: staticcheck
+		return MultiKeyIndex{}, errors.ErrORMInvalidArgument.Wrap("indexKey must not be nil") 
 	}
 
 	// Verify indexKey type is bytes, string or uint64
 	switch indexKey.(type) {
 	case []byte, string, uint64:
 	default:
-		return MultiKeyIndex{}, errors.ErrORMInvalidArgument.Wrap("indexKey must be []byte, string or uint64") //nolint: staticcheck
+		return MultiKeyIndex{}, errors.ErrORMInvalidArgument.Wrap("indexKey must be []byte, string or uint64") 
 	}
 
 	idx := MultiKeyIndex{

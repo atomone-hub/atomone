@@ -1,9 +1,10 @@
 package keeper
 
 import (
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/nft"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // SaveClass defines a method for creating a new nft class

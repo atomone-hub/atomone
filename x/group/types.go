@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"time"
 
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	"github.com/atomone-hub/atomone/codec"
 	codectypes "github.com/atomone-hub/atomone/codec/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/group/errors"
 	"github.com/atomone-hub/atomone/x/group/internal/math"
 	"github.com/atomone-hub/atomone/x/group/internal/orm"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // DecisionPolicyResult is the result of whether a proposal passes or not a
@@ -275,7 +276,7 @@ func (g *GroupPolicyInfo) SetDecisionPolicy(decisionPolicy DecisionPolicy) error
 func (g GroupPolicyInfo) GetDecisionPolicy() (DecisionPolicy, error) {
 	decisionPolicy, ok := g.DecisionPolicy.GetCachedValue().(DecisionPolicy)
 	if !ok {
-		return nil, sdkerrors.ErrInvalidType.Wrapf("expected %T, got %T", (DecisionPolicy)(nil), g.DecisionPolicy.GetCachedValue()) //nolint: staticcheck
+		return nil, sdkerrors.ErrInvalidType.Wrapf("expected %T, got %T", (DecisionPolicy)(nil), g.DecisionPolicy.GetCachedValue()) 
 	}
 
 	return decisionPolicy, nil

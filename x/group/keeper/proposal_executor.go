@@ -4,11 +4,13 @@ import (
 	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
+
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	"github.com/atomone-hub/atomone/baseapp"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/group"
 	"github.com/atomone-hub/atomone/x/group/errors"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // doExecuteMsgs routes the messages to the registered handlers. Messages are limited to those that require no authZ or
@@ -17,7 +19,7 @@ func (s Keeper) doExecuteMsgs(ctx sdk.Context, router *baseapp.MsgServiceRouter,
 	// Ensure it's not too early to execute the messages.
 	minExecutionDate := proposal.SubmitTime.Add(decisionPolicy.GetMinExecutionPeriod())
 	if ctx.BlockTime().Before(minExecutionDate) {
-		return nil, errors.ErrInvalid.Wrapf("must wait until %s to execute proposal %d", minExecutionDate, proposal.Id) //nolint: staticcheck
+		return nil, errors.ErrInvalid.Wrapf("must wait until %s to execute proposal %d", minExecutionDate, proposal.Id) 
 	}
 
 	// Ensure it's not too late to execute the messages.
@@ -27,7 +29,7 @@ func (s Keeper) doExecuteMsgs(ctx sdk.Context, router *baseapp.MsgServiceRouter,
 	// this simple and cheap check.
 	expiryDate := proposal.VotingPeriodEnd.Add(s.config.MaxExecutionPeriod)
 	if expiryDate.Before(ctx.BlockTime()) {
-		return nil, errors.ErrExpired.Wrapf("proposal expired on %s", expiryDate) //nolint: staticcheck
+		return nil, errors.ErrExpired.Wrapf("proposal expired on %s", expiryDate) 
 	}
 
 	msgs, err := proposal.GetMsgs()
@@ -42,11 +44,11 @@ func (s Keeper) doExecuteMsgs(ctx sdk.Context, router *baseapp.MsgServiceRouter,
 	for i, msg := range msgs {
 		handler := s.router.Handler(msg)
 		if handler == nil {
-			return nil, errorsmod.Wrapf(errors.ErrInvalid, "no message handler found for %q", sdk.MsgTypeURL(msg)) //nolint: staticcheck
+			return nil, errorsmod.Wrapf(errors.ErrInvalid, "no message handler found for %q", sdk.MsgTypeURL(msg)) 
 		}
 		r, err := handler(ctx, msg)
 		if err != nil {
-			return nil, errorsmod.Wrapf(err, "message %s at position %d", sdk.MsgTypeURL(msg), i) //nolint: staticcheck
+			return nil, errorsmod.Wrapf(err, "message %s at position %d", sdk.MsgTypeURL(msg), i) 
 		}
 		// Handler should always return non-nil sdk.Result.
 		if r == nil {
@@ -68,7 +70,7 @@ func ensureMsgAuthZ(msgs []sdk.Msg, groupPolicyAcc sdk.AccAddress) error {
 		// but we prefer to loop through all GetSigners just to be sure.
 		for _, acct := range msgs[i].GetSigners() {
 			if !groupPolicyAcc.Equals(acct) {
-				return errorsmod.Wrapf(sdkerrors.ErrUnauthorized, "msg does not have group policy authorization; expected %s, got %s", groupPolicyAcc.String(), acct.String()) //nolint: staticcheck
+				return errorsmod.Wrapf(sdkerrors.ErrUnauthorized, "msg does not have group policy authorization; expected %s, got %s", groupPolicyAcc.String(), acct.String()) 
 			}
 		}
 	}

@@ -4,8 +4,9 @@ import (
 	"bytes"
 	"errors"
 
-	"github.com/atomone-hub/atomone/store/types"
 	"github.com/tidwall/btree"
+
+	"github.com/atomone-hub/atomone/store/types"
 )
 
 const (

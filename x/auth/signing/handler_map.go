@@ -3,9 +3,8 @@ package signing
 import (
 	"fmt"
 
-	"github.com/atomone-hub/atomone/types/tx/signing"
-
 	sdk "github.com/atomone-hub/atomone/types"
+	"github.com/atomone-hub/atomone/types/tx/signing"
 )
 
 // SignModeHandlerMap is SignModeHandler that aggregates multiple SignModeHandler's into

@@ -1,6 +1,8 @@
 package ante
 
 import (
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	"github.com/atomone-hub/atomone/codec/legacy"
 	"github.com/atomone-hub/atomone/crypto/keys/multisig"
 	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
@@ -8,7 +10,6 @@ import (
 	"github.com/atomone-hub/atomone/types/tx/signing"
 	"github.com/atomone-hub/atomone/x/auth/migrations/legacytx"
 	authsigning "github.com/atomone-hub/atomone/x/auth/signing"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // ValidateBasicDecorator will call tx.ValidateBasic and return any non-nil error.

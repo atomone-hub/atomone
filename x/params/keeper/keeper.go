@@ -1,12 +1,13 @@
 package keeper
 
 import (
+	"github.com/cometbft/cometbft/libs/log"
+
 	"github.com/atomone-hub/atomone/codec"
 	storetypes "github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/params/types"
 	"github.com/atomone-hub/atomone/x/params/types/proposal"
-	"github.com/cometbft/cometbft/libs/log"
 )
 
 // Keeper of the global paramstore

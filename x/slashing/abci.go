@@ -5,10 +5,11 @@ import (
 
 	abci "github.com/cometbft/cometbft/abci/types"
 
+	"github.com/cosmos/cosmos-sdk/telemetry"
+
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/slashing/keeper"
 	"github.com/atomone-hub/atomone/x/slashing/types"
-	"github.com/cosmos/cosmos-sdk/telemetry"
 )
 
 // BeginBlocker check for infraction evidence or downtime of validators

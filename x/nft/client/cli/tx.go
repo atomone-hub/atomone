@@ -6,11 +6,12 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/cosmos/cosmos-sdk/version"
+
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/client/flags"
 	"github.com/atomone-hub/atomone/client/tx"
 	"github.com/atomone-hub/atomone/x/nft"
-	"github.com/cosmos/cosmos-sdk/version"
 )
 
 // GetTxCmd returns the transaction commands for this module

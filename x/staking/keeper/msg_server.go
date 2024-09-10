@@ -9,12 +9,13 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
+	"github.com/cosmos/cosmos-sdk/telemetry"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	"github.com/atomone-hub/atomone/x/staking/types"
-	"github.com/cosmos/cosmos-sdk/telemetry"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 type msgServer struct {
@@ -430,15 +431,15 @@ func (k msgServer) CancelUnbondingDelegation(goCtx context.Context, msg *types.M
 		}
 	}
 	if unbondEntryIndex == -1 {
-		return nil, sdkerrors.ErrNotFound.Wrapf("unbonding delegation entry is not found at block height %d", msg.CreationHeight) //nolint: staticcheck
+		return nil, sdkerrors.ErrNotFound.Wrapf("unbonding delegation entry is not found at block height %d", msg.CreationHeight) 
 	}
 
 	if unbondEntry.Balance.LT(msg.Amount.Amount) {
-		return nil, sdkerrors.ErrInvalidRequest.Wrap("amount is greater than the unbonding delegation entry balance") //nolint: staticcheck
+		return nil, sdkerrors.ErrInvalidRequest.Wrap("amount is greater than the unbonding delegation entry balance") 
 	}
 
 	if unbondEntry.CompletionTime.Before(ctx.BlockTime()) {
-		return nil, sdkerrors.ErrInvalidRequest.Wrap("unbonding delegation is already processed") //nolint: staticcheck
+		return nil, sdkerrors.ErrInvalidRequest.Wrap("unbonding delegation is already processed") 
 	}
 
 	// delegate back the unbonding delegation amount to the validator

@@ -3,11 +3,12 @@ package tx
 import (
 	"fmt"
 
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	sdk "github.com/atomone-hub/atomone/types"
 	signingtypes "github.com/atomone-hub/atomone/types/tx/signing"
 	"github.com/atomone-hub/atomone/x/auth/migrations/legacytx"
 	"github.com/atomone-hub/atomone/x/auth/signing"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 const aminoNonCriticalFieldsError = "protobuf transaction contains unknown non-critical fields. This is a transaction malleability issue and SIGN_MODE_LEGACY_AMINO_JSON cannot be used."

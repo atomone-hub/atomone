@@ -1,9 +1,10 @@
 package keeper
 
 import (
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/nft"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // BatchMint defines a method for minting a batch of nfts

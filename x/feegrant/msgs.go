@@ -3,10 +3,11 @@ package feegrant
 import (
 	"github.com/cosmos/gogoproto/proto"
 
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	"github.com/atomone-hub/atomone/codec/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/auth/migrations/legacytx"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 var (
@@ -39,10 +40,10 @@ func NewMsgGrantAllowance(feeAllowance FeeAllowanceI, granter, grantee sdk.AccAd
 // ValidateBasic implements the sdk.Msg interface.
 func (msg MsgGrantAllowance) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Granter); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid granter address: %s", err) //nolint: staticcheck
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid granter address: %s", err) 
 	}
 	if _, err := sdk.AccAddressFromBech32(msg.Grantee); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", err) //nolint: staticcheck
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", err) 
 	}
 	if msg.Grantee == msg.Granter {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "cannot self-grant fee authorization") //nolint: staticcheck
@@ -103,10 +104,10 @@ func NewMsgRevokeAllowance(granter sdk.AccAddress, grantee sdk.AccAddress) MsgRe
 // ValidateBasic implements the sdk.Msg interface.
 func (msg MsgRevokeAllowance) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Granter); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid granter address: %s", err) //nolint: staticcheck
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid granter address: %s", err) 
 	}
 	if _, err := sdk.AccAddressFromBech32(msg.Grantee); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", err) //nolint: staticcheck
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", err) 
 	}
 	if msg.Grantee == msg.Granter {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "addresses must be different") //nolint: staticcheck

@@ -7,10 +7,11 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/cosmos/cosmos-sdk/types/kv"
+
 	sdk "github.com/atomone-hub/atomone/types"
 	v1auth "github.com/atomone-hub/atomone/x/auth/migrations/v1"
 	"github.com/atomone-hub/atomone/x/staking/types"
-	"github.com/cosmos/cosmos-sdk/types/kv"
 )
 
 // Staking params default values

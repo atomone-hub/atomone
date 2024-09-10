@@ -3,8 +3,9 @@ package types
 import (
 	"fmt"
 
-	sdk "github.com/atomone-hub/atomone/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
+	sdk "github.com/atomone-hub/atomone/types"
 )
 
 // TypeMsgCreateVestingAccount defines the type value for a MsgCreateVestingAccount.
@@ -44,10 +45,10 @@ func (msg MsgCreateVestingAccount) Type() string { return TypeMsgCreateVestingAc
 // ValidateBasic Implements Msg.
 func (msg MsgCreateVestingAccount) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.FromAddress); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid 'from' address: %s", err) //nolint: staticcheck
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid 'from' address: %s", err) 
 	}
 	if _, err := sdk.AccAddressFromBech32(msg.ToAddress); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid 'to' address: %s", err) //nolint: staticcheck
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid 'to' address: %s", err) 
 	}
 
 	if !msg.Amount.IsValid() {
@@ -97,18 +98,18 @@ func (msg MsgCreatePermanentLockedAccount) Type() string { return TypeMsgCreateP
 // ValidateBasic Implements Msg.
 func (msg MsgCreatePermanentLockedAccount) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.FromAddress); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid sender address: %s", err) //nolint: staticcheck
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid sender address: %s", err) 
 	}
 	if _, err := sdk.AccAddressFromBech32(msg.ToAddress); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid recipient address: %s", err) //nolint: staticcheck
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid recipient address: %s", err) 
 	}
 
 	if !msg.Amount.IsValid() {
-		return sdkerrors.ErrInvalidCoins.Wrap(msg.Amount.String()) //nolint: staticcheck
+		return sdkerrors.ErrInvalidCoins.Wrap(msg.Amount.String()) 
 	}
 
 	if !msg.Amount.IsAllPositive() {
-		return sdkerrors.ErrInvalidCoins.Wrap(msg.Amount.String()) //nolint: staticcheck
+		return sdkerrors.ErrInvalidCoins.Wrap(msg.Amount.String()) 
 	}
 
 	return nil
@@ -183,11 +184,11 @@ func (msg MsgCreatePeriodicVestingAccount) ValidateBasic() error {
 
 	for i, period := range msg.VestingPeriods {
 		if !period.Amount.IsValid() {
-			return sdkerrors.ErrInvalidCoins.Wrap(period.Amount.String()) //nolint: staticcheck
+			return sdkerrors.ErrInvalidCoins.Wrap(period.Amount.String()) 
 		}
 
 		if !period.Amount.IsAllPositive() {
-			return sdkerrors.ErrInvalidCoins.Wrap(period.Amount.String()) //nolint: staticcheck
+			return sdkerrors.ErrInvalidCoins.Wrap(period.Amount.String()) 
 		}
 
 		if period.Length < 1 {

@@ -6,10 +6,11 @@ import (
 
 	gogotypes "github.com/cosmos/gogoproto/types"
 
+	"github.com/cosmos/cosmos-sdk/types/kv"
+
 	"github.com/atomone-hub/atomone/codec"
 	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
 	"github.com/atomone-hub/atomone/x/slashing/types"
-	"github.com/cosmos/cosmos-sdk/types/kv"
 )
 
 // NewDecodeStore returns a decoder function closure that unmarshals the KVPair's

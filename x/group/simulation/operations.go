@@ -15,10 +15,9 @@ import (
 	simtypes "github.com/atomone-hub/atomone/types/simulation"
 	"github.com/atomone-hub/atomone/x/auth/tx"
 	authtypes "github.com/atomone-hub/atomone/x/auth/types"
+	"github.com/atomone-hub/atomone/x/group"
 	"github.com/atomone-hub/atomone/x/group/keeper"
 	"github.com/atomone-hub/atomone/x/simulation"
-
-	"github.com/atomone-hub/atomone/x/group"
 )
 
 var initialGroupID = uint64(100000000000000)

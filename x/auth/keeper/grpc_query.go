@@ -6,14 +6,13 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/atomone-hub/atomone/store/prefix"
-	"github.com/atomone-hub/atomone/types/query"
-
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
 	codectypes "github.com/atomone-hub/atomone/codec/types"
+	"github.com/atomone-hub/atomone/store/prefix"
 	sdk "github.com/atomone-hub/atomone/types"
+	"github.com/atomone-hub/atomone/types/query"
 	"github.com/atomone-hub/atomone/x/auth/types"
 )
 

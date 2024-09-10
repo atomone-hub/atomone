@@ -21,6 +21,7 @@ import (
 	txconfigv1 "cosmossdk.io/api/cosmos/tx/config/v1"
 	vestingmodulev1 "cosmossdk.io/api/cosmos/vesting/module/v1"
 	"cosmossdk.io/depinject"
+
 	"github.com/atomone-hub/atomone/core/appconfig"
 )
 

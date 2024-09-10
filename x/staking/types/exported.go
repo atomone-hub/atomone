@@ -1,8 +1,9 @@
 package types
 
 import (
-	"cosmossdk.io/math"
 	tmprotocrypto "github.com/cometbft/cometbft/proto/tendermint/crypto"
+
+	"cosmossdk.io/math"
 
 	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
 	sdk "github.com/atomone-hub/atomone/types"

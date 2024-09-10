@@ -1,11 +1,12 @@
 package upgrade
 
 import (
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	sdk "github.com/atomone-hub/atomone/types"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 	"github.com/atomone-hub/atomone/x/upgrade/keeper"
 	"github.com/atomone-hub/atomone/x/upgrade/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // NewSoftwareUpgradeProposalHandler creates a governance handler to manage new proposal types.

@@ -1,8 +1,9 @@
 package types
 
 import (
-	sdk "github.com/atomone-hub/atomone/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
+	sdk "github.com/atomone-hub/atomone/types"
 )
 
 const (
@@ -45,7 +46,7 @@ func (msg MsgVerifyInvariant) GetSignBytes() []byte {
 // quick validity check
 func (msg MsgVerifyInvariant) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Sender); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid sender address: %s", err) //nolint: staticcheck
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid sender address: %s", err) 
 	}
 	return nil
 }

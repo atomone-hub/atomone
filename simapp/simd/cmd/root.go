@@ -5,16 +5,12 @@ import (
 	"io"
 	"os"
 
-	rosettaCmd "github.com/atomone-hub/atomone/tools/rosetta/cmd"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 
 	dbm "github.com/cometbft/cometbft-db"
 	tmcfg "github.com/cometbft/cometbft/config"
 	"github.com/cometbft/cometbft/libs/log"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
-
-	"github.com/atomone-hub/atomone/simapp"
-	"github.com/atomone-hub/atomone/simapp/params"
 
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/client/config"
@@ -27,7 +23,10 @@ import (
 	"github.com/atomone-hub/atomone/server"
 	serverconfig "github.com/atomone-hub/atomone/server/config"
 	servertypes "github.com/atomone-hub/atomone/server/types"
+	"github.com/atomone-hub/atomone/simapp"
+	"github.com/atomone-hub/atomone/simapp/params"
 	simtestutil "github.com/atomone-hub/atomone/testutil/sims"
+	rosettaCmd "github.com/atomone-hub/atomone/tools/rosetta/cmd"
 	sdk "github.com/atomone-hub/atomone/types"
 	authcmd "github.com/atomone-hub/atomone/x/auth/client/cli"
 	"github.com/atomone-hub/atomone/x/auth/types"

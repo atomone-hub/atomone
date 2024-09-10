@@ -6,14 +6,16 @@ import (
 	"context"
 	"io"
 
-	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
-	"github.com/cosmos/gogoproto/proto"
 	"golang.org/x/exp/slices"
 	protov2 "google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protodesc"
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/reflect/protoregistry"
 	"google.golang.org/protobuf/types/descriptorpb"
+
+	"github.com/cosmos/gogoproto/proto"
+
+	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
 )
 
 // ReflectionService implements the cosmos.reflection.v1 service.

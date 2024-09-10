@@ -5,6 +5,7 @@ import (
 
 	txconfigv1 "cosmossdk.io/api/cosmos/tx/config/v1"
 	"cosmossdk.io/depinject"
+
 	"github.com/atomone-hub/atomone/baseapp"
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/codec"

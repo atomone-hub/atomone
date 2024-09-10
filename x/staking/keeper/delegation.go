@@ -6,9 +6,11 @@ import (
 	"time"
 
 	"cosmossdk.io/math"
+
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/staking/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // GetDelegation returns a specific delegation.

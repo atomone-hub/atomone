@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/coinbase/rosetta-sdk-go/types"
+
 	"github.com/cosmos/rosetta-sdk-go/server"
 )
 

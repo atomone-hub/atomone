@@ -1,8 +1,9 @@
 package keeper
 
 import (
-	"cosmossdk.io/math"
 	abci "github.com/cometbft/cometbft/abci/types"
+
+	"cosmossdk.io/math"
 
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/distribution/types"

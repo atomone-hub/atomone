@@ -7,12 +7,14 @@ import (
 	"time"
 
 	"github.com/coinbase/rosetta-sdk-go/types"
+
+	"github.com/cometbft/cometbft/libs/log"
+
 	assert "github.com/cosmos/rosetta-sdk-go/asserter"
 	"github.com/cosmos/rosetta-sdk-go/server"
 
 	"github.com/atomone-hub/atomone/tools/rosetta/lib/internal/service"
 	crgtypes "github.com/atomone-hub/atomone/tools/rosetta/lib/types"
-	"github.com/cometbft/cometbft/libs/log"
 )
 
 const (

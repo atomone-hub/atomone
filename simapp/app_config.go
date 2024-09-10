@@ -3,6 +3,8 @@ package simapp
 import (
 	"time"
 
+	"google.golang.org/protobuf/types/known/durationpb"
+
 	runtimev1alpha1 "cosmossdk.io/api/cosmos/app/runtime/v1alpha1"
 	appv1alpha1 "cosmossdk.io/api/cosmos/app/v1alpha1"
 	authmodulev1 "cosmossdk.io/api/cosmos/auth/module/v1"
@@ -25,9 +27,8 @@ import (
 	txconfigv1 "cosmossdk.io/api/cosmos/tx/config/v1"
 	upgrademodulev1 "cosmossdk.io/api/cosmos/upgrade/module/v1"
 	vestingmodulev1 "cosmossdk.io/api/cosmos/vesting/module/v1"
-	"github.com/atomone-hub/atomone/core/appconfig"
-	"google.golang.org/protobuf/types/known/durationpb"
 
+	"github.com/atomone-hub/atomone/core/appconfig"
 	authtypes "github.com/atomone-hub/atomone/x/auth/types"
 	vestingtypes "github.com/atomone-hub/atomone/x/auth/vesting/types"
 	"github.com/atomone-hub/atomone/x/authz"

@@ -9,9 +9,12 @@ import (
 	"os"
 	"path/filepath"
 
-	tmtypes "github.com/cometbft/cometbft/types"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+
+	tmtypes "github.com/cometbft/cometbft/types"
+
+	"github.com/cosmos/cosmos-sdk/version"
 
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/client/flags"
@@ -24,7 +27,6 @@ import (
 	"github.com/atomone-hub/atomone/x/genutil"
 	"github.com/atomone-hub/atomone/x/genutil/types"
 	"github.com/atomone-hub/atomone/x/staking/client/cli"
-	"github.com/cosmos/cosmos-sdk/version"
 )
 
 // GenTxCmd builds the application's gentx command.
@@ -66,7 +68,7 @@ $ %s gentx my-key-name 1000000stake --home=/path/to/home/dir --keyring-backend=o
 
 			nodeID, valPubKey, err := genutil.InitializeNodeValidatorFiles(serverCtx.Config)
 			if err != nil {
-				return errors.Wrap(err, "failed to initialize node validator files") //nolint: staticcheck
+				return errors.Wrap(err, "failed to initialize node validator files") 
 			}
 
 			// read --nodeID, if empty take it from priv_validator.json
@@ -77,22 +79,22 @@ $ %s gentx my-key-name 1000000stake --home=/path/to/home/dir --keyring-backend=o
 			// read --pubkey, if empty take it from priv_validator.json
 			if pkStr, _ := cmd.Flags().GetString(cli.FlagPubKey); pkStr != "" {
 				if err := clientCtx.Codec.UnmarshalInterfaceJSON([]byte(pkStr), &valPubKey); err != nil {
-					return errors.Wrap(err, "failed to unmarshal validator public key") //nolint: staticcheck
+					return errors.Wrap(err, "failed to unmarshal validator public key") 
 				}
 			}
 
 			genDoc, err := tmtypes.GenesisDocFromFile(config.GenesisFile())
 			if err != nil {
-				return errors.Wrapf(err, "failed to read genesis doc file %s", config.GenesisFile()) //nolint: staticcheck
+				return errors.Wrapf(err, "failed to read genesis doc file %s", config.GenesisFile()) 
 			}
 
 			var genesisState map[string]json.RawMessage
 			if err = json.Unmarshal(genDoc.AppState, &genesisState); err != nil {
-				return errors.Wrap(err, "failed to unmarshal genesis state") //nolint: staticcheck
+				return errors.Wrap(err, "failed to unmarshal genesis state") 
 			}
 
 			if err = mbm.ValidateGenesis(cdc, txEncCfg, genesisState); err != nil {
-				return errors.Wrap(err, "failed to validate genesis state") //nolint: staticcheck
+				return errors.Wrap(err, "failed to validate genesis state") 
 			}
 
 			inBuf := bufio.NewReader(cmd.InOrStdin())
@@ -100,7 +102,7 @@ $ %s gentx my-key-name 1000000stake --home=/path/to/home/dir --keyring-backend=o
 			name := args[0]
 			key, err := clientCtx.Keyring.Key(name)
 			if err != nil {
-				return errors.Wrapf(err, "failed to fetch '%s' from the keyring", name) //nolint: staticcheck
+				return errors.Wrapf(err, "failed to fetch '%s' from the keyring", name) 
 			}
 
 			moniker := config.Moniker
@@ -111,13 +113,13 @@ $ %s gentx my-key-name 1000000stake --home=/path/to/home/dir --keyring-backend=o
 			// set flags for creating a gentx
 			createValCfg, err := cli.PrepareConfigForTxCreateValidator(cmd.Flags(), moniker, nodeID, genDoc.ChainID, valPubKey)
 			if err != nil {
-				return errors.Wrap(err, "error creating configuration to create validator msg") //nolint: staticcheck
+				return errors.Wrap(err, "error creating configuration to create validator msg") 
 			}
 
 			amount := args[1]
 			coins, err := sdk.ParseCoinsNormalized(amount)
 			if err != nil {
-				return errors.Wrap(err, "failed to parse coins") //nolint: staticcheck
+				return errors.Wrap(err, "failed to parse coins") 
 			}
 			addr, err := key.GetAddress()
 			if err != nil {
@@ -125,7 +127,7 @@ $ %s gentx my-key-name 1000000stake --home=/path/to/home/dir --keyring-backend=o
 			}
 			err = genutil.ValidateAccountInGenesis(genesisState, genBalIterator, addr, coins, cdc)
 			if err != nil {
-				return errors.Wrap(err, "failed to validate account in genesis") //nolint: staticcheck
+				return errors.Wrap(err, "failed to validate account in genesis") 
 			}
 
 			txFactory, err := tx.NewFactoryCLI(clientCtx, cmd.Flags())
@@ -155,7 +157,7 @@ $ %s gentx my-key-name 1000000stake --home=/path/to/home/dir --keyring-backend=o
 			// create a 'create-validator' message
 			txBldr, msg, err := cli.BuildCreateValidatorMsg(clientCtx, createValCfg, txFactory, true)
 			if err != nil {
-				return errors.Wrap(err, "failed to build create-validator message") //nolint: staticcheck
+				return errors.Wrap(err, "failed to build create-validator message") 
 			}
 
 			if key.GetType() == keyring.TypeOffline || key.GetType() == keyring.TypeMulti {
@@ -172,13 +174,13 @@ $ %s gentx my-key-name 1000000stake --home=/path/to/home/dir --keyring-backend=o
 			}
 
 			if err = txBldr.PrintUnsignedTx(clientCtx, msg); err != nil {
-				return errors.Wrap(err, "failed to print unsigned std tx") //nolint: staticcheck
+				return errors.Wrap(err, "failed to print unsigned std tx") 
 			}
 
 			// read the transaction
 			stdTx, err := readUnsignedGenTxFile(clientCtx, w)
 			if err != nil {
-				return errors.Wrap(err, "failed to read unsigned gen tx file") //nolint: staticcheck
+				return errors.Wrap(err, "failed to read unsigned gen tx file") 
 			}
 
 			// sign the transaction and write it to the output file
@@ -189,19 +191,19 @@ $ %s gentx my-key-name 1000000stake --home=/path/to/home/dir --keyring-backend=o
 
 			err = authclient.SignTx(txFactory, clientCtx, name, txBuilder, true, true)
 			if err != nil {
-				return errors.Wrap(err, "failed to sign std tx") //nolint: staticcheck
+				return errors.Wrap(err, "failed to sign std tx") 
 			}
 
 			outputDocument, _ := cmd.Flags().GetString(flags.FlagOutputDocument)
 			if outputDocument == "" {
 				outputDocument, err = makeOutputFilepath(config.RootDir, nodeID)
 				if err != nil {
-					return errors.Wrap(err, "failed to create output file path") //nolint: staticcheck
+					return errors.Wrap(err, "failed to create output file path") 
 				}
 			}
 
 			if err := writeSignedGenTx(clientCtx, outputDocument, stdTx); err != nil {
-				return errors.Wrap(err, "failed to write signed gen tx") //nolint: staticcheck
+				return errors.Wrap(err, "failed to write signed gen tx") 
 			}
 
 			cmd.PrintErrf("Genesis transaction written to %q\n", outputDocument)

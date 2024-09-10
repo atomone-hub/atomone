@@ -4,8 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/cosmos/gogoproto/proto"
 	"google.golang.org/grpc"
+
+	"github.com/cosmos/gogoproto/proto"
 
 	codectypes "github.com/atomone-hub/atomone/codec/types"
 	sdk "github.com/atomone-hub/atomone/types"

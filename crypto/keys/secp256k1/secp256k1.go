@@ -9,12 +9,14 @@ import (
 	"math/big"
 
 	secp256k1 "github.com/btcsuite/btcd/btcec/v2"
-	"github.com/cometbft/cometbft/crypto"
 	"golang.org/x/crypto/ripemd160" //nolint: staticcheck
+
+	"github.com/cometbft/cometbft/crypto"
+
+	"github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/atomone-hub/atomone/codec"
 	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
-	"github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 var (

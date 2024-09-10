@@ -7,12 +7,13 @@ import (
 	"io"
 	"reflect"
 
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	"github.com/atomone-hub/atomone/codec"
 	"github.com/atomone-hub/atomone/store/prefix"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/query"
 	"github.com/atomone-hub/atomone/x/group/errors"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // Unique identifier of a persistent table.

@@ -2,6 +2,7 @@ package types
 
 import (
 	"cosmossdk.io/math"
+
 	sdk "github.com/atomone-hub/atomone/types"
 	auth "github.com/atomone-hub/atomone/x/auth/types"
 	paramtypes "github.com/atomone-hub/atomone/x/params/types"

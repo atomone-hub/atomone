@@ -3,10 +3,11 @@ package keeper
 import (
 	"context"
 
+	"github.com/cosmos/cosmos-sdk/types/errors"
+
 	sdk "github.com/atomone-hub/atomone/types"
 	gov "github.com/atomone-hub/atomone/x/gov/types"
 	"github.com/atomone-hub/atomone/x/upgrade/types"
-	"github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 type msgServer struct {

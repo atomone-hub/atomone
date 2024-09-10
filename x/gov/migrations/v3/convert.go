@@ -3,13 +3,13 @@ package v3
 import (
 	"fmt"
 
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	codectypes "github.com/atomone-hub/atomone/codec/types"
 	"github.com/atomone-hub/atomone/types"
 	authtypes "github.com/atomone-hub/atomone/x/auth/types"
-	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
+	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 )
 
 // ConvertToLegacyProposal takes a new proposal and attempts to convert it to the
@@ -50,7 +50,7 @@ func ConvertToLegacyProposal(proposal v1.Proposal) (v1beta1.Proposal, error) {
 		return v1beta1.Proposal{}, err
 	}
 	if len(msgs) != 1 {
-		return v1beta1.Proposal{}, sdkerrors.ErrInvalidType.Wrap("can't convert a gov/v1 Proposal to gov/v1beta1 Proposal when amount of proposal messages not exactly one") //nolint: staticcheck
+		return v1beta1.Proposal{}, sdkerrors.ErrInvalidType.Wrap("can't convert a gov/v1 Proposal to gov/v1beta1 Proposal when amount of proposal messages not exactly one") 
 	}
 	if legacyMsg, ok := msgs[0].(*v1.MsgExecLegacyContent); ok {
 		// check that the content struct can be unmarshalled
@@ -131,7 +131,7 @@ func ConvertToLegacyDeposit(deposit *v1.Deposit) v1beta1.Deposit {
 	}
 }
 
-func convertToNewDeposits(oldDeps v1beta1.Deposits) v1.Deposits { //nolint:unused
+func convertToNewDeposits(oldDeps v1beta1.Deposits) v1.Deposits { 
 	newDeps := make([]*v1.Deposit, len(oldDeps))
 	for i, oldDep := range oldDeps {
 		newDeps[i] = &v1.Deposit{
@@ -144,7 +144,7 @@ func convertToNewDeposits(oldDeps v1beta1.Deposits) v1.Deposits { //nolint:unuse
 	return newDeps
 }
 
-func convertToNewVotes(oldVotes v1beta1.Votes) (v1.Votes, error) { //nolint:unused
+func convertToNewVotes(oldVotes v1beta1.Votes) (v1.Votes, error) { 
 	newVotes := make([]*v1.Vote, len(oldVotes))
 	for i, oldVote := range oldVotes {
 		var newWVOs []*v1.WeightedVoteOption
@@ -177,20 +177,20 @@ func convertToNewVotes(oldVotes v1beta1.Votes) (v1.Votes, error) { //nolint:unus
 	return newVotes, nil
 }
 
-func convertToNewDepParams(oldDepParams v1beta1.DepositParams) v1.DepositParams { //nolint:unused
+func convertToNewDepParams(oldDepParams v1beta1.DepositParams) v1.DepositParams { 
 	return v1.DepositParams{
 		MinDeposit:       oldDepParams.MinDeposit,
 		MaxDepositPeriod: &oldDepParams.MaxDepositPeriod,
 	}
 }
 
-func convertToNewVotingParams(oldVoteParams v1beta1.VotingParams) v1.VotingParams { //nolint:unused
+func convertToNewVotingParams(oldVoteParams v1beta1.VotingParams) v1.VotingParams { 
 	return v1.VotingParams{
 		VotingPeriod: &oldVoteParams.VotingPeriod,
 	}
 }
 
-func convertToNewTallyParams(oldTallyParams v1beta1.TallyParams) v1.TallyParams { //nolint:unused
+func convertToNewTallyParams(oldTallyParams v1beta1.TallyParams) v1.TallyParams { 
 	return v1.TallyParams{
 		Quorum:        oldTallyParams.Quorum.String(),
 		Threshold:     oldTallyParams.Threshold.String(),
@@ -198,7 +198,7 @@ func convertToNewTallyParams(oldTallyParams v1beta1.TallyParams) v1.TallyParams 
 	}
 }
 
-func convertToNewProposal(oldProp v1beta1.Proposal) (v1.Proposal, error) { //nolint:unused
+func convertToNewProposal(oldProp v1beta1.Proposal) (v1.Proposal, error) { 
 	msg, err := v1.NewLegacyContent(oldProp.GetContent(), authtypes.NewModuleAddress(ModuleName).String())
 	if err != nil {
 		return v1.Proposal{}, err
@@ -228,7 +228,7 @@ func convertToNewProposal(oldProp v1beta1.Proposal) (v1.Proposal, error) { //nol
 	}, nil
 }
 
-func convertToNewProposals(oldProps v1beta1.Proposals) (v1.Proposals, error) { //nolint:unused
+func convertToNewProposals(oldProps v1beta1.Proposals) (v1.Proposals, error) { 
 	newProps := make([]*v1.Proposal, len(oldProps))
 	for i, oldProp := range oldProps {
 		p, err := convertToNewProposal(oldProp)

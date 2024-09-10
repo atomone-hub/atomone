@@ -8,9 +8,10 @@ import (
 
 	"github.com/coinbase/rosetta-sdk-go/types"
 
+	"github.com/cometbft/cometbft/libs/log"
+
 	crgerrs "github.com/atomone-hub/atomone/tools/rosetta/lib/errors"
 	crgtypes "github.com/atomone-hub/atomone/tools/rosetta/lib/types"
-	"github.com/cometbft/cometbft/libs/log"
 )
 
 // genesisBlockFetchTimeout defines a timeout to fetch the genesis block

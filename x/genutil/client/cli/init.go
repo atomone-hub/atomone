@@ -7,13 +7,15 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/pkg/errors"
+	"github.com/spf13/cobra"
+
 	cfg "github.com/cometbft/cometbft/config"
 	"github.com/cometbft/cometbft/libs/cli"
 	tmrand "github.com/cometbft/cometbft/libs/rand"
 	"github.com/cometbft/cometbft/types"
+
 	"github.com/cosmos/go-bip39"
-	"github.com/pkg/errors"
-	"github.com/spf13/cobra"
 
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/client/flags"
@@ -136,7 +138,7 @@ func InitCmd(mbm module.BasicManager, defaultNodeHome string) *cobra.Command {
 
 			appState, err := json.MarshalIndent(appGenState, "", " ")
 			if err != nil {
-				return errors.Wrap(err, "Failed to marshal default genesis state") //nolint: staticcheck
+				return errors.Wrap(err, "Failed to marshal default genesis state") 
 			}
 
 			genDoc := &types.GenesisDoc{}
@@ -147,7 +149,7 @@ func InitCmd(mbm module.BasicManager, defaultNodeHome string) *cobra.Command {
 			} else {
 				genDoc, err = types.GenesisDocFromFile(genFile)
 				if err != nil {
-					return errors.Wrap(err, "Failed to read genesis doc from file") //nolint: staticcheck
+					return errors.Wrap(err, "Failed to read genesis doc from file") 
 				}
 			}
 
@@ -157,7 +159,7 @@ func InitCmd(mbm module.BasicManager, defaultNodeHome string) *cobra.Command {
 			genDoc.InitialHeight = initHeight
 
 			if err = genutil.ExportGenesisFile(genDoc, genFile); err != nil {
-				return errors.Wrap(err, "Failed to export genesis file") //nolint: staticcheck
+				return errors.Wrap(err, "Failed to export genesis file") 
 			}
 
 			toPrint := newPrintInfo(config.Moniker, chainID, nodeID, "", appState)

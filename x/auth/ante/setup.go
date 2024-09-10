@@ -3,9 +3,10 @@ package ante
 import (
 	"fmt"
 
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/auth/migrations/legacytx"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 var _ GasTx = (*legacytx.StdTx)(nil) // assert StdTx implements GasTx

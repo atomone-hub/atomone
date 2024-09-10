@@ -5,10 +5,11 @@ import (
 
 	"github.com/cosmos/gogoproto/proto"
 
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	"github.com/atomone-hub/atomone/codec/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/evidence/exported"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // Message types for the evidence module
@@ -46,7 +47,7 @@ func (m MsgSubmitEvidence) Type() string { return TypeMsgSubmitEvidence }
 // ValidateBasic performs basic (non-state-dependant) validation on a MsgSubmitEvidence.
 func (m MsgSubmitEvidence) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(m.Submitter); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid submitter address: %s", err) //nolint: staticcheck
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid submitter address: %s", err) 
 	}
 
 	evi := m.GetEvidence()

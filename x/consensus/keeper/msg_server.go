@@ -5,10 +5,11 @@ import (
 
 	tmtypes "github.com/cometbft/cometbft/types"
 
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/consensus/types"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 type msgServer struct {

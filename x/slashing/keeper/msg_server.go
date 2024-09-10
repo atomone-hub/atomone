@@ -3,10 +3,11 @@ package keeper
 import (
 	"context"
 
+	"github.com/cosmos/cosmos-sdk/types/errors"
+
 	sdk "github.com/atomone-hub/atomone/types"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	"github.com/atomone-hub/atomone/x/slashing/types"
-	"github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 var _ types.MsgServer = msgServer{}

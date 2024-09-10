@@ -3,9 +3,10 @@ package service
 import (
 	"context"
 
+	"github.com/coinbase/rosetta-sdk-go/types"
+
 	"github.com/atomone-hub/atomone/tools/rosetta/lib/errors"
 	crgtypes "github.com/atomone-hub/atomone/tools/rosetta/lib/types"
-	"github.com/coinbase/rosetta-sdk-go/types"
 )
 
 // AccountBalance retrieves the account balance of an address

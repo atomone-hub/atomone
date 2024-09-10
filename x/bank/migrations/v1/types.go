@@ -1,12 +1,14 @@
 package v1
 
 import (
+	"github.com/golang/protobuf/proto"
+
+	"github.com/cosmos/cosmos-sdk/types/kv"
+
 	codectypes "github.com/atomone-hub/atomone/codec/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	v1auth "github.com/atomone-hub/atomone/x/auth/migrations/v1"
 	"github.com/atomone-hub/atomone/x/bank/types"
-	"github.com/cosmos/cosmos-sdk/types/kv"
-	"github.com/golang/protobuf/proto"
 )
 
 const (

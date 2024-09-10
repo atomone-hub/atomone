@@ -1,6 +1,8 @@
 package v2
 
 import (
+	"github.com/cosmos/cosmos-sdk/types/address"
+
 	"github.com/atomone-hub/atomone/store/prefix"
 	storetypes "github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
@@ -8,7 +10,6 @@ import (
 	v2distribution "github.com/atomone-hub/atomone/x/distribution/migrations/v2"
 	v1 "github.com/atomone-hub/atomone/x/staking/migrations/v1"
 	"github.com/atomone-hub/atomone/x/staking/types"
-	"github.com/cosmos/cosmos-sdk/types/address"
 )
 
 // migratePrefixAddressAddressAddress is a helper function that migrates all keys of format:

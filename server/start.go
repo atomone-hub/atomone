@@ -11,16 +11,20 @@ import (
 	"runtime/pprof"
 	"time"
 
+	"github.com/spf13/cobra"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+
 	"github.com/cometbft/cometbft/abci/server"
 	tcmd "github.com/cometbft/cometbft/cmd/cometbft/commands"
 	"github.com/cometbft/cometbft/node"
 	"github.com/cometbft/cometbft/p2p"
 	pvm "github.com/cometbft/cometbft/privval"
 	"github.com/cometbft/cometbft/proxy"
+	rpchttp "github.com/cometbft/cometbft/rpc/client/http"
 	"github.com/cometbft/cometbft/rpc/client/local"
-	"github.com/spf13/cobra"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
+
+	"github.com/cosmos/cosmos-sdk/telemetry"
 
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/client/flags"
@@ -34,9 +38,6 @@ import (
 	crgserver "github.com/atomone-hub/atomone/tools/rosetta/lib/server"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/mempool"
-	"github.com/cosmos/cosmos-sdk/telemetry"
-
-	rpchttp "github.com/cometbft/cometbft/rpc/client/http"
 )
 
 const (
@@ -543,7 +544,7 @@ func startAPIserver(config serverconfig.Config, genDocProvider node.GenesisDocPr
 				maxRecvMsgSize = serverconfig.DefaultGRPCMaxRecvMsgSize
 			}
 
-			grpcClient, err := grpc.Dial( //nolint: staticcheck
+			grpcClient, err := grpc.Dial( 
 				config.GRPC.Address,
 				grpc.WithTransportCredentials(insecure.NewCredentials()),
 				grpc.WithDefaultCallOptions(

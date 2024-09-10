@@ -3,13 +3,14 @@ package legacytx
 import (
 	"fmt"
 
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/codec"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/tx"
 	"github.com/atomone-hub/atomone/types/tx/signing"
 	authsigning "github.com/atomone-hub/atomone/x/auth/signing"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // StdTxBuilder wraps StdTx to implement to the context.TxBuilder interface.
@@ -79,7 +80,7 @@ func (s *StdTxBuilder) SetFeePayer(_ sdk.AccAddress) {}
 
 // AddAuxSignerData returns an error for StdTxBuilder.
 func (s *StdTxBuilder) AddAuxSignerData(_ tx.AuxSignerData) error {
-	return sdkerrors.ErrLogic.Wrap("cannot use AuxSignerData with StdTxBuilder") //nolint: staticcheck
+	return sdkerrors.ErrLogic.Wrap("cannot use AuxSignerData with StdTxBuilder") 
 }
 
 // StdTxConfig is a context.TxConfig for StdTx
@@ -188,14 +189,14 @@ type Unmarshaler func(bytes []byte, ptr interface{}) error
 func mkDecoder(unmarshaler Unmarshaler) sdk.TxDecoder {
 	return func(txBytes []byte) (sdk.Tx, error) {
 		if len(txBytes) == 0 {
-			return nil, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "tx bytes are empty") //nolint: staticcheck
+			return nil, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "tx bytes are empty") 
 		}
 		tx := StdTx{}
 		// StdTx.Msg is an interface. The concrete types
 		// are registered by MakeTxCodec
 		err := unmarshaler(txBytes, &tx)
 		if err != nil {
-			return nil, sdkerrors.Wrap(sdkerrors.ErrTxDecode, err.Error()) //nolint: staticcheck
+			return nil, sdkerrors.Wrap(sdkerrors.ErrTxDecode, err.Error()) 
 		}
 		return tx, nil
 	}

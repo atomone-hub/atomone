@@ -1,10 +1,11 @@
 package keeper
 
 import (
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	"github.com/atomone-hub/atomone/store/prefix"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/nft"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // Mint defines a method for minting a new nft

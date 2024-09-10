@@ -2,6 +2,7 @@ package types // noalias
 
 import (
 	"cosmossdk.io/math"
+
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/auth/types"
 )

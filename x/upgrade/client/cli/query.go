@@ -5,10 +5,11 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/cosmos/cosmos-sdk/types/errors"
+
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/client/flags"
 	"github.com/atomone-hub/atomone/x/upgrade/types"
-	"github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // GetQueryCmd returns the parent command for all x/upgrade CLI query commands.

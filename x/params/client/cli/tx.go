@@ -6,13 +6,14 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/cosmos/cosmos-sdk/version"
+
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/client/tx"
 	sdk "github.com/atomone-hub/atomone/types"
 	govv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 	paramscutils "github.com/atomone-hub/atomone/x/params/client/utils"
 	paramproposal "github.com/atomone-hub/atomone/x/params/types/proposal"
-	"github.com/cosmos/cosmos-sdk/version"
 )
 
 // NewSubmitParamChangeProposalTxCmd returns a CLI command handler for creating

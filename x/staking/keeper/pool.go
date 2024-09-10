@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"cosmossdk.io/math"
+
 	sdk "github.com/atomone-hub/atomone/types"
 	authtypes "github.com/atomone-hub/atomone/x/auth/types"
 	"github.com/atomone-hub/atomone/x/staking/types"

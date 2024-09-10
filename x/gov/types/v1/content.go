@@ -5,10 +5,10 @@ import (
 
 	"github.com/cosmos/gogoproto/proto"
 
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	codectypes "github.com/atomone-hub/atomone/codec/types"
 	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
-
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // NewLegacyContent creates a new MsgExecLegacyContent from a legacy Content
@@ -32,7 +32,7 @@ func NewLegacyContent(content v1beta1.Content, authority string) (*MsgExecLegacy
 func LegacyContentFromMessage(msg *MsgExecLegacyContent) (v1beta1.Content, error) {
 	content, ok := msg.Content.GetCachedValue().(v1beta1.Content)
 	if !ok {
-		return nil, sdkerrors.ErrInvalidType.Wrapf("expected %T, got %T", (*v1beta1.Content)(nil), msg.Content.GetCachedValue()) //nolint: staticcheck
+		return nil, sdkerrors.ErrInvalidType.Wrapf("expected %T, got %T", (*v1beta1.Content)(nil), msg.Content.GetCachedValue()) 
 	}
 
 	return content, nil

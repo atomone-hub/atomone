@@ -5,12 +5,13 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/cosmos/cosmos-sdk/version"
+
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/client/flags"
 	"github.com/atomone-hub/atomone/client/tx"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/bank/types"
-	"github.com/cosmos/cosmos-sdk/version"
 )
 
 var FlagSplit = "split"

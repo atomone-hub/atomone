@@ -12,6 +12,7 @@ import (
 	"github.com/cometbft/cometbft/p2p"
 	"github.com/cometbft/cometbft/privval"
 	tmtypes "github.com/cometbft/cometbft/types"
+
 	"github.com/cosmos/go-bip39"
 
 	cryptocodec "github.com/atomone-hub/atomone/crypto/codec"

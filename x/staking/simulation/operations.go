@@ -5,6 +5,7 @@ import (
 	"math/rand"
 
 	"cosmossdk.io/math"
+
 	"github.com/atomone-hub/atomone/baseapp"
 	"github.com/atomone-hub/atomone/codec"
 	"github.com/atomone-hub/atomone/testutil"

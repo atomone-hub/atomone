@@ -4,9 +4,10 @@ import (
 	"bytes"
 	"fmt"
 
+	"github.com/cosmos/cosmos-sdk/types/kv"
+
 	"github.com/atomone-hub/atomone/x/evidence/exported"
 	"github.com/atomone-hub/atomone/x/evidence/types"
-	"github.com/cosmos/cosmos-sdk/types/kv"
 )
 
 type EvidenceUnmarshaler interface {

@@ -4,9 +4,10 @@ import (
 	"encoding/binary"
 	"time"
 
-	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
 	"github.com/cosmos/cosmos-sdk/types/kv"
+
+	sdk "github.com/atomone-hub/atomone/types"
 )
 
 const (

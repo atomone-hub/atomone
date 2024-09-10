@@ -8,6 +8,9 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
+	"github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/cosmos/cosmos-sdk/version"
+
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/client/flags"
 	"github.com/atomone-hub/atomone/client/tx"
@@ -19,8 +22,6 @@ import (
 	authclient "github.com/atomone-hub/atomone/x/auth/client"
 	"github.com/atomone-hub/atomone/x/auth/migrations/legacytx"
 	"github.com/atomone-hub/atomone/x/auth/signing"
-	"github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cosmos/cosmos-sdk/version"
 )
 
 // BroadcastReq defines a tx broadcasting request.

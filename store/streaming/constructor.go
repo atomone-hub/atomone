@@ -7,8 +7,9 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/cometbft/cometbft/libs/log"
 	"github.com/spf13/cast"
+
+	"github.com/cometbft/cometbft/libs/log"
 
 	"github.com/atomone-hub/atomone/baseapp"
 	"github.com/atomone-hub/atomone/client/flags"

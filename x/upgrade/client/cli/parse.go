@@ -1,10 +1,11 @@
 package cli
 
 import (
+	"github.com/spf13/pflag"
+
 	"github.com/atomone-hub/atomone/x/gov/client/cli"
 	gov "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 	"github.com/atomone-hub/atomone/x/upgrade/types"
-	"github.com/spf13/pflag"
 )
 
 func parseArgsToContent(fs *pflag.FlagSet, name string) (gov.Content, error) {

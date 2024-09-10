@@ -3,13 +3,15 @@ package types
 import (
 	"fmt"
 
+	ics23 "github.com/confio/ics23/go"
+
 	"github.com/cometbft/cometbft/crypto/merkle"
 	tmmerkle "github.com/cometbft/cometbft/proto/tendermint/crypto"
-	ics23 "github.com/confio/ics23/go"
+
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	sdkmaps "github.com/atomone-hub/atomone/store/internal/maps"
 	sdkproofs "github.com/atomone-hub/atomone/store/internal/proofs"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 const (

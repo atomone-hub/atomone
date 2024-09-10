@@ -1,7 +1,10 @@
 package v2
 
 import (
+	"github.com/cometbft/cometbft/libs/log"
+
 	"cosmossdk.io/math"
+
 	"github.com/atomone-hub/atomone/codec"
 	"github.com/atomone-hub/atomone/store/prefix"
 	storetypes "github.com/atomone-hub/atomone/store/types"
@@ -9,7 +12,6 @@ import (
 	v1auth "github.com/atomone-hub/atomone/x/auth/migrations/v1"
 	v1 "github.com/atomone-hub/atomone/x/bank/migrations/v1"
 	"github.com/atomone-hub/atomone/x/bank/types"
-	"github.com/cometbft/cometbft/libs/log"
 )
 
 // migrateSupply migrates the supply to be stored by denom key instead in a

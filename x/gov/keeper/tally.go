@@ -4,9 +4,8 @@ import (
 	"cosmossdk.io/math"
 
 	sdk "github.com/atomone-hub/atomone/types"
-	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
-
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
+	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
 )
 
 // TODO: Break into several smaller functions for clarity

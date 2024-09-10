@@ -3,9 +3,10 @@ package keeper
 import (
 	"context"
 
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/authz"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 var _ authz.MsgServer = Keeper{}
@@ -37,7 +38,7 @@ func (k Keeper) Grant(goCtx context.Context, msg *authz.MsgGrant) (*authz.MsgGra
 
 	t := authorization.MsgTypeURL()
 	if k.router.HandlerByTypeURL(t) == nil {
-		return nil, sdkerrors.ErrInvalidType.Wrapf("%s doesn't exist.", t) //nolint: staticcheck
+		return nil, sdkerrors.ErrInvalidType.Wrapf("%s doesn't exist.", t) 
 	}
 
 	err = k.SaveGrant(ctx, grantee, granter, authorization, msg.Grant.Expiration)

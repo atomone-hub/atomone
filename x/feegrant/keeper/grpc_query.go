@@ -3,9 +3,10 @@ package keeper
 import (
 	"context"
 
-	"github.com/cosmos/gogoproto/proto"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
+	"github.com/cosmos/gogoproto/proto"
 
 	codectypes "github.com/atomone-hub/atomone/codec/types"
 	"github.com/atomone-hub/atomone/store/prefix"

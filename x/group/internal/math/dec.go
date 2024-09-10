@@ -6,8 +6,9 @@ import (
 
 	"github.com/cockroachdb/apd/v2"
 
-	"github.com/atomone-hub/atomone/x/group/errors"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
+	"github.com/atomone-hub/atomone/x/group/errors"
 )
 
 // Dec is a wrapper struct around apd.Decimal that does no mutation of apd.Decimal's when performing
@@ -23,10 +24,10 @@ type Dec struct {
 func NewPositiveDecFromString(s string) (Dec, error) {
 	d, err := NewDecFromString(s)
 	if err != nil {
-		return Dec{}, errors.ErrInvalidDecString.Wrap(err.Error()) //nolint: staticcheck
+		return Dec{}, errors.ErrInvalidDecString.Wrap(err.Error()) 
 	}
 	if !d.IsPositive() {
-		return Dec{}, errors.ErrInvalidDecString.Wrapf("expected a positive decimal, got %s", s) //nolint: staticcheck
+		return Dec{}, errors.ErrInvalidDecString.Wrapf("expected a positive decimal, got %s", s) 
 	}
 	return d, nil
 }
@@ -34,10 +35,10 @@ func NewPositiveDecFromString(s string) (Dec, error) {
 func NewNonNegativeDecFromString(s string) (Dec, error) {
 	d, err := NewDecFromString(s)
 	if err != nil {
-		return Dec{}, errors.ErrInvalidDecString.Wrap(err.Error()) //nolint: staticcheck
+		return Dec{}, errors.ErrInvalidDecString.Wrap(err.Error()) 
 	}
 	if d.IsNegative() {
-		return Dec{}, errors.ErrInvalidDecString.Wrapf("expected a non-negative decimal, got %s", s) //nolint: staticcheck
+		return Dec{}, errors.ErrInvalidDecString.Wrapf("expected a non-negative decimal, got %s", s) 
 	}
 	return d, nil
 }
@@ -51,11 +52,11 @@ func (x Dec) IsPositive() bool {
 func NewDecFromString(s string) (Dec, error) {
 	d, _, err := apd.NewFromString(s)
 	if err != nil {
-		return Dec{}, errors.ErrInvalidDecString.Wrap(err.Error()) //nolint: staticcheck
+		return Dec{}, errors.ErrInvalidDecString.Wrap(err.Error()) 
 	}
 
 	if d.Form != apd.Finite {
-		return Dec{}, errors.ErrInvalidDecString.Wrapf("expected a finite decimal, got %s", s) //nolint: staticcheck
+		return Dec{}, errors.ErrInvalidDecString.Wrapf("expected a finite decimal, got %s", s) 
 	}
 
 	return Dec{*d}, nil

@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/atomone-hub/atomone/client"
 	"github.com/gorilla/mux"
 	"github.com/rakyll/statik/fs"
 
 	_ "github.com/atomone-hub/atomone/client/docs/statik"
+
+	"github.com/atomone-hub/atomone/client"
 )
 
 // RegisterSwaggerAPI provides a common function which registers swagger route with API Server

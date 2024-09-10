@@ -2,6 +2,7 @@ package types
 
 import (
 	tmcrypto "github.com/cometbft/cometbft/crypto"
+
 	proto "github.com/cosmos/gogoproto/proto"
 )
 

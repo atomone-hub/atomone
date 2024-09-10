@@ -3,9 +3,8 @@ package exported
 import (
 	"time"
 
-	"github.com/atomone-hub/atomone/x/auth/types"
-
 	sdk "github.com/atomone-hub/atomone/types"
+	"github.com/atomone-hub/atomone/x/auth/types"
 )
 
 // VestingAccount defines an account type that vests coins via a vesting schedule.

@@ -7,11 +7,12 @@ import (
 	"fmt"
 	"path/filepath"
 
+	"google.golang.org/grpc"
+
 	db "github.com/cometbft/cometbft-db"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cometbft/cometbft/libs/log"
 	"github.com/cometbft/cometbft/types"
-	"google.golang.org/grpc"
 
 	bam "github.com/atomone-hub/atomone/baseapp"
 	"github.com/atomone-hub/atomone/codec"

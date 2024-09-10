@@ -3,10 +3,12 @@
 package simapp
 
 import (
-	_ "embed"
 	"io"
 	"os"
 	"path/filepath"
+
+	_ "embed"
+	_ "github.com/atomone-hub/atomone/x/auth/tx/config" // import for side-effects
 
 	dbm "github.com/cometbft/cometbft-db"
 	"github.com/cometbft/cometbft/libs/log"
@@ -29,7 +31,6 @@ import (
 	"github.com/atomone-hub/atomone/x/auth"
 	authkeeper "github.com/atomone-hub/atomone/x/auth/keeper"
 	authsims "github.com/atomone-hub/atomone/x/auth/simulation"
-	_ "github.com/atomone-hub/atomone/x/auth/tx/config" // import for side-effects
 	authtypes "github.com/atomone-hub/atomone/x/auth/types"
 	"github.com/atomone-hub/atomone/x/auth/vesting"
 	authzkeeper "github.com/atomone-hub/atomone/x/authz/keeper"

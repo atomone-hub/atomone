@@ -20,7 +20,6 @@ import (
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 
-	"cosmossdk.io/log"
 	dbm "github.com/cometbft/cometbft-db"
 	tmcmd "github.com/cometbft/cometbft/cmd/cometbft/commands"
 	tmcfg "github.com/cometbft/cometbft/config"
@@ -28,6 +27,12 @@ import (
 	"github.com/cometbft/cometbft/node"
 	tmstore "github.com/cometbft/cometbft/store"
 	tmtypes "github.com/cometbft/cometbft/types"
+
+	"cosmossdk.io/log"
+
+	"github.com/cosmos/cosmos-sdk/snapshots"
+	snapshottypes "github.com/cosmos/cosmos-sdk/snapshots/types"
+	"github.com/cosmos/cosmos-sdk/version"
 
 	"github.com/atomone-hub/atomone/baseapp"
 	"github.com/atomone-hub/atomone/client/flags"
@@ -37,9 +42,6 @@ import (
 	"github.com/atomone-hub/atomone/store"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/mempool"
-	"github.com/cosmos/cosmos-sdk/snapshots"
-	snapshottypes "github.com/cosmos/cosmos-sdk/snapshots/types"
-	"github.com/cosmos/cosmos-sdk/version"
 )
 
 // DONTCOVER

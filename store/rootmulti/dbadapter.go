@@ -2,9 +2,8 @@ package rootmulti
 
 import (
 	"github.com/atomone-hub/atomone/store/dbadapter"
-	"github.com/atomone-hub/atomone/store/types"
-
 	pruningtypes "github.com/atomone-hub/atomone/store/pruning/types"
+	"github.com/atomone-hub/atomone/store/types"
 )
 
 var commithash = []byte("FAKE_HASH")

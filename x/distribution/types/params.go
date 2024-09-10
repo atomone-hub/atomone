@@ -3,8 +3,9 @@ package types
 import (
 	"fmt"
 
-	"cosmossdk.io/math"
 	"sigs.k8s.io/yaml"
+
+	"cosmossdk.io/math"
 
 	sdk "github.com/atomone-hub/atomone/types"
 )

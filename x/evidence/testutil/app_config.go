@@ -11,17 +11,6 @@ import (
 	_ "github.com/atomone-hub/atomone/x/slashing"
 	_ "github.com/atomone-hub/atomone/x/staking"
 
-	"github.com/atomone-hub/atomone/core/appconfig"
-	authtypes "github.com/atomone-hub/atomone/x/auth/types"
-	banktypes "github.com/atomone-hub/atomone/x/bank/types"
-	consensustypes "github.com/atomone-hub/atomone/x/consensus/types"
-	evidencetypes "github.com/atomone-hub/atomone/x/evidence/types"
-	genutiltypes "github.com/atomone-hub/atomone/x/genutil/types"
-	minttypes "github.com/atomone-hub/atomone/x/mint/types"
-	paramstypes "github.com/atomone-hub/atomone/x/params/types"
-	slashingtypes "github.com/atomone-hub/atomone/x/slashing/types"
-	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
-
 	runtimev1alpha1 "cosmossdk.io/api/cosmos/app/runtime/v1alpha1"
 	appv1alpha1 "cosmossdk.io/api/cosmos/app/v1alpha1"
 	authmodulev1 "cosmossdk.io/api/cosmos/auth/module/v1"
@@ -33,6 +22,17 @@ import (
 	slashingmodulev1 "cosmossdk.io/api/cosmos/slashing/module/v1"
 	stakingmodulev1 "cosmossdk.io/api/cosmos/staking/module/v1"
 	txconfigv1 "cosmossdk.io/api/cosmos/tx/config/v1"
+
+	"github.com/atomone-hub/atomone/core/appconfig"
+	authtypes "github.com/atomone-hub/atomone/x/auth/types"
+	banktypes "github.com/atomone-hub/atomone/x/bank/types"
+	consensustypes "github.com/atomone-hub/atomone/x/consensus/types"
+	evidencetypes "github.com/atomone-hub/atomone/x/evidence/types"
+	genutiltypes "github.com/atomone-hub/atomone/x/genutil/types"
+	minttypes "github.com/atomone-hub/atomone/x/mint/types"
+	paramstypes "github.com/atomone-hub/atomone/x/params/types"
+	slashingtypes "github.com/atomone-hub/atomone/x/slashing/types"
+	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
 )
 
 var AppConfig = appconfig.Compose(&appv1alpha1.Config{

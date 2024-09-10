@@ -6,10 +6,11 @@ import (
 
 	gogotypes "github.com/cosmos/gogoproto/types"
 
+	"github.com/cosmos/cosmos-sdk/types/kv"
+
 	"github.com/atomone-hub/atomone/codec"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/auth/types"
-	"github.com/cosmos/cosmos-sdk/types/kv"
 )
 
 type AuthUnmarshaler interface {

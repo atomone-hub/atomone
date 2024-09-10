@@ -6,10 +6,13 @@ import (
 	"sort"
 	"time"
 
-	tmjson "github.com/cometbft/cometbft/libs/json"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"golang.org/x/exp/maps"
+
+	tmjson "github.com/cometbft/cometbft/libs/json"
+
+	"github.com/cosmos/cosmos-sdk/version"
 
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/client/flags"
@@ -18,7 +21,6 @@ import (
 	v046 "github.com/atomone-hub/atomone/x/genutil/migrations/v046"
 	v047 "github.com/atomone-hub/atomone/x/genutil/migrations/v047"
 	"github.com/atomone-hub/atomone/x/genutil/types"
-	"github.com/cosmos/cosmos-sdk/version"
 )
 
 const flagGenesisTime = "genesis-time"
@@ -92,7 +94,7 @@ func MigrateHandler(cmd *cobra.Command, args []string, migrations types.Migratio
 
 	var initialState types.AppMap
 	if err := json.Unmarshal(genDoc.AppState, &initialState); err != nil {
-		return errors.Wrap(err, "failed to JSON unmarshal initial genesis state") //nolint: staticcheck
+		return errors.Wrap(err, "failed to JSON unmarshal initial genesis state") 
 	}
 
 	migrationFunc := migrations[target]
@@ -105,7 +107,7 @@ func MigrateHandler(cmd *cobra.Command, args []string, migrations types.Migratio
 
 	genDoc.AppState, err = json.Marshal(newGenState)
 	if err != nil {
-		return errors.Wrap(err, "failed to JSON marshal migrated genesis state") //nolint: staticcheck
+		return errors.Wrap(err, "failed to JSON marshal migrated genesis state") 
 	}
 
 	genesisTime, _ := cmd.Flags().GetString(flagGenesisTime)
@@ -114,7 +116,7 @@ func MigrateHandler(cmd *cobra.Command, args []string, migrations types.Migratio
 
 		err := t.UnmarshalText([]byte(genesisTime))
 		if err != nil {
-			return errors.Wrap(err, "failed to unmarshal genesis time") //nolint: staticcheck
+			return errors.Wrap(err, "failed to unmarshal genesis time") 
 		}
 
 		genDoc.GenesisTime = t
@@ -127,12 +129,12 @@ func MigrateHandler(cmd *cobra.Command, args []string, migrations types.Migratio
 
 	bz, err := tmjson.Marshal(genDoc)
 	if err != nil {
-		return errors.Wrap(err, "failed to marshal genesis doc") //nolint: staticcheck
+		return errors.Wrap(err, "failed to marshal genesis doc") 
 	}
 
 	sortedBz, err := sdk.SortJSON(bz)
 	if err != nil {
-		return errors.Wrap(err, "failed to sort JSON genesis doc") //nolint: staticcheck
+		return errors.Wrap(err, "failed to sort JSON genesis doc") 
 	}
 
 	cmd.Println(string(sortedBz))

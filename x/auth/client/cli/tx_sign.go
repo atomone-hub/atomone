@@ -11,7 +11,6 @@ import (
 	"github.com/atomone-hub/atomone/client/tx"
 	kmultisig "github.com/atomone-hub/atomone/crypto/keys/multisig"
 	sdk "github.com/atomone-hub/atomone/types"
-
 	authclient "github.com/atomone-hub/atomone/x/auth/client"
 )
 

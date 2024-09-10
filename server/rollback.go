@@ -3,8 +3,9 @@ package server
 import (
 	"fmt"
 
-	tmcmd "github.com/cometbft/cometbft/cmd/cometbft/commands"
 	"github.com/spf13/cobra"
+
+	tmcmd "github.com/cometbft/cometbft/cmd/cometbft/commands"
 
 	"github.com/atomone-hub/atomone/client/flags"
 	"github.com/atomone-hub/atomone/server/types"

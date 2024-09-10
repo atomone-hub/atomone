@@ -6,13 +6,13 @@ import (
 
 	"github.com/cometbft/cometbft/libs/log"
 
-	storetypes "github.com/atomone-hub/atomone/store/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/atomone-hub/atomone/codec"
+	storetypes "github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/auth/ante"
 	"github.com/atomone-hub/atomone/x/feegrant"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // Keeper manages state of all fee grants, as well as calculating approval.
@@ -195,7 +195,7 @@ func (k Keeper) getGrant(ctx sdk.Context, granter sdk.AccAddress, grantee sdk.Ac
 	key := feegrant.FeeAllowanceKey(granter, grantee)
 	bz := store.Get(key)
 	if len(bz) == 0 {
-		return nil, sdkerrors.ErrNotFound.Wrap("fee-grant not found") //nolint: staticcheck
+		return nil, sdkerrors.ErrNotFound.Wrap("fee-grant not found") 
 	}
 
 	var feegrant feegrant.Grant

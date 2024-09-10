@@ -2,6 +2,7 @@ package secp256r1
 
 import (
 	tmcrypto "github.com/cometbft/cometbft/crypto"
+
 	"github.com/cosmos/gogoproto/proto"
 
 	ecdsa "github.com/atomone-hub/atomone/crypto/keys/internal/ecdsa"

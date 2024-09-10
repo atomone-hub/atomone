@@ -5,11 +5,12 @@ import (
 
 	"github.com/armon/go-metrics"
 
+	"github.com/cosmos/cosmos-sdk/telemetry"
+	"github.com/cosmos/cosmos-sdk/types/errors"
+
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/distribution/types"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
-	"github.com/cosmos/cosmos-sdk/telemetry"
-	"github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 type msgServer struct {

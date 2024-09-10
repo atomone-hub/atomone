@@ -1,11 +1,12 @@
 package v2
 
 import (
+	"github.com/cosmos/cosmos-sdk/types/errors"
+
 	"github.com/atomone-hub/atomone/codec"
 	storetypes "github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/crisis/exported"
-	"github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 const (
@@ -27,7 +28,7 @@ func MigrateStore(ctx sdk.Context, storeKey storetypes.StoreKey, legacySubspace 
 	legacySubspace.Get(ctx, ConstantFee, &currConstantFee)
 
 	if !currConstantFee.IsValid() {
-		return errors.ErrInvalidCoins.Wrap("constant fee") //nolint: staticcheck
+		return errors.ErrInvalidCoins.Wrap("constant fee") 
 	}
 
 	bz, err := cdc.Marshal(&currConstantFee)

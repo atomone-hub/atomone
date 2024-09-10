@@ -7,11 +7,10 @@ import (
 	"strconv"
 	"strings"
 
-	sdk "github.com/atomone-hub/atomone/types"
-
 	"github.com/coinbase/rosetta-sdk-go/types"
 
 	"github.com/atomone-hub/atomone/tools/rosetta/lib/errors"
+	sdk "github.com/atomone-hub/atomone/types"
 )
 
 // ConstructionCombine Combine creates a network-specific transaction from an unsigned transaction

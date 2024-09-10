@@ -1,9 +1,10 @@
 package types
 
 import (
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/authz"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // TODO: Revisit this once we have proper gas fee framework.
@@ -30,12 +31,12 @@ func (a SendAuthorization) MsgTypeURL() string {
 func (a SendAuthorization) Accept(ctx sdk.Context, msg sdk.Msg) (authz.AcceptResponse, error) {
 	mSend, ok := msg.(*MsgSend)
 	if !ok {
-		return authz.AcceptResponse{}, sdkerrors.ErrInvalidType.Wrap("type mismatch") //nolint: staticcheck
+		return authz.AcceptResponse{}, sdkerrors.ErrInvalidType.Wrap("type mismatch") 
 	}
 
 	limitLeft, isNegative := a.SpendLimit.SafeSub(mSend.Amount...)
 	if isNegative {
-		return authz.AcceptResponse{}, sdkerrors.ErrInsufficientFunds.Wrapf("requested amount is more than spend limit") //nolint: staticcheck
+		return authz.AcceptResponse{}, sdkerrors.ErrInsufficientFunds.Wrapf("requested amount is more than spend limit") 
 	}
 
 	isAddrExists := false
@@ -50,7 +51,7 @@ func (a SendAuthorization) Accept(ctx sdk.Context, msg sdk.Msg) (authz.AcceptRes
 	}
 
 	if len(allowedList) > 0 && !isAddrExists {
-		return authz.AcceptResponse{}, sdkerrors.ErrUnauthorized.Wrapf("cannot send to %s address", toAddr) //nolint: staticcheck
+		return authz.AcceptResponse{}, sdkerrors.ErrUnauthorized.Wrapf("cannot send to %s address", toAddr) 
 	}
 
 	if limitLeft.IsZero() {
@@ -63,10 +64,10 @@ func (a SendAuthorization) Accept(ctx sdk.Context, msg sdk.Msg) (authz.AcceptRes
 // ValidateBasic implements Authorization.ValidateBasic.
 func (a SendAuthorization) ValidateBasic() error {
 	if len(a.SpendLimit) == 0 {
-		return sdkerrors.ErrInvalidCoins.Wrap("spend limit cannot be nil") //nolint: staticcheck
+		return sdkerrors.ErrInvalidCoins.Wrap("spend limit cannot be nil") 
 	}
 	if !a.SpendLimit.IsAllPositive() {
-		return sdkerrors.ErrInvalidCoins.Wrapf("spend limit must be positive") //nolint: staticcheck
+		return sdkerrors.ErrInvalidCoins.Wrapf("spend limit must be positive") 
 	}
 
 	found := make(map[string]bool, 0)

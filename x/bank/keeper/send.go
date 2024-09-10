@@ -5,14 +5,15 @@ import (
 
 	gogotypes "github.com/cosmos/gogoproto/types"
 
+	"github.com/cosmos/cosmos-sdk/telemetry"
+	"github.com/cosmos/cosmos-sdk/types/address"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	"github.com/atomone-hub/atomone/codec"
 	"github.com/atomone-hub/atomone/store/prefix"
 	storetypes "github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/bank/types"
-	"github.com/cosmos/cosmos-sdk/telemetry"
-	"github.com/cosmos/cosmos-sdk/types/address"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // SendKeeper defines a module interface that facilitates the transfer of coins
@@ -378,7 +379,7 @@ func (k BaseSendKeeper) IsSendEnabledCoins(ctx sdk.Context, coins ...sdk.Coin) e
 
 	for _, coin := range coins {
 		if !k.getSendEnabledOrDefault(store, coin.Denom, defaultVal) {
-			return types.ErrSendDisabled.Wrapf("%s transfers are currently disabled", coin.Denom) //nolint: staticcheck
+			return types.ErrSendDisabled.Wrapf("%s transfers are currently disabled", coin.Denom) 
 		}
 	}
 

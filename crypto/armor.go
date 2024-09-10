@@ -6,14 +6,16 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/cometbft/cometbft/crypto"
 	"golang.org/x/crypto/openpgp/armor" //nolint:staticcheck
 
-	"github.com/atomone-hub/atomone/codec/legacy"
-	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
+	"github.com/cometbft/cometbft/crypto"
+
 	"github.com/cosmos/cosmos-sdk/crypto/keys/bcrypt"
 	"github.com/cosmos/cosmos-sdk/crypto/xsalsa20symmetric"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
+	"github.com/atomone-hub/atomone/codec/legacy"
+	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
 )
 
 const (

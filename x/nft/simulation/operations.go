@@ -10,10 +10,9 @@ import (
 	sdk "github.com/atomone-hub/atomone/types"
 	simtypes "github.com/atomone-hub/atomone/types/simulation"
 	"github.com/atomone-hub/atomone/x/auth/tx"
-	"github.com/atomone-hub/atomone/x/simulation"
-
 	"github.com/atomone-hub/atomone/x/nft"
 	"github.com/atomone-hub/atomone/x/nft/keeper"
+	"github.com/atomone-hub/atomone/x/simulation"
 )
 
 const (

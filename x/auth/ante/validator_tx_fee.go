@@ -4,8 +4,10 @@ import (
 	"math"
 
 	sdkmath "cosmossdk.io/math"
-	sdk "github.com/atomone-hub/atomone/types"
+
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
+	sdk "github.com/atomone-hub/atomone/types"
 )
 
 // checkTxFeeWithValidatorMinGasPrices implements the default fee logic, where the minimum price per

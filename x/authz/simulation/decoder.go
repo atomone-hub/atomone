@@ -4,10 +4,11 @@ import (
 	"bytes"
 	"fmt"
 
+	"github.com/cosmos/cosmos-sdk/types/kv"
+
 	"github.com/atomone-hub/atomone/codec"
 	"github.com/atomone-hub/atomone/x/authz"
 	"github.com/atomone-hub/atomone/x/authz/keeper"
-	"github.com/cosmos/cosmos-sdk/types/kv"
 )
 
 // NewDecodeStore returns a decoder function closure that umarshals the KVPair's

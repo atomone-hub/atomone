@@ -4,6 +4,9 @@ import (
 	"fmt"
 
 	"cosmossdk.io/math"
+
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	"github.com/atomone-hub/atomone/codec"
 	"github.com/atomone-hub/atomone/internal/conv"
 	"github.com/atomone-hub/atomone/store/prefix"
@@ -12,7 +15,6 @@ import (
 	"github.com/atomone-hub/atomone/types/query"
 	authtypes "github.com/atomone-hub/atomone/x/auth/types"
 	"github.com/atomone-hub/atomone/x/bank/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 var _ Keeper = (*BaseKeeper)(nil)

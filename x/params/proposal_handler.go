@@ -3,11 +3,12 @@ package params
 import (
 	"fmt"
 
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	sdk "github.com/atomone-hub/atomone/types"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 	"github.com/atomone-hub/atomone/x/params/keeper"
 	"github.com/atomone-hub/atomone/x/params/types/proposal"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // NewParamChangeProposalHandler creates a new governance Handler for a ParamChangeProposal

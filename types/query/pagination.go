@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"math"
 
-	db "github.com/cometbft/cometbft-db"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
+	db "github.com/cometbft/cometbft-db"
 
 	"github.com/atomone-hub/atomone/store/types"
 )

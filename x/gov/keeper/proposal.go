@@ -5,9 +5,8 @@ import (
 	"fmt"
 
 	"github.com/atomone-hub/atomone/client"
-	sdk "github.com/atomone-hub/atomone/types"
-
 	sdkerrors "github.com/atomone-hub/atomone/errors"
+	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 )
@@ -41,7 +40,7 @@ func (keeper Keeper) SubmitProposal(ctx sdk.Context, messages []sdk.Msg, metadat
 
 		// perform a basic validation of the message
 		if err := msg.ValidateBasic(); err != nil {
-			return v1.Proposal{}, sdkerrors.Wrap(types.ErrInvalidProposalMsg, err.Error()) //nolint: staticcheck
+			return v1.Proposal{}, sdkerrors.Wrap(types.ErrInvalidProposalMsg, err.Error()) 
 		}
 
 		signers := msg.GetSigners()
@@ -51,13 +50,13 @@ func (keeper Keeper) SubmitProposal(ctx sdk.Context, messages []sdk.Msg, metadat
 
 		// assert that the governance module account is the only signer of the messages
 		if !signers[0].Equals(keeper.GetGovernanceAccount(ctx).GetAddress()) {
-			return v1.Proposal{}, sdkerrors.Wrapf(types.ErrInvalidSigner, signers[0].String()) //nolint: staticcheck
+			return v1.Proposal{}, sdkerrors.Wrapf(types.ErrInvalidSigner, signers[0].String()) 
 		}
 
 		// use the msg service router to see that there is a valid route for that message.
 		handler := keeper.router.Handler(msg)
 		if handler == nil {
-			return v1.Proposal{}, sdkerrors.Wrap(types.ErrUnroutableProposalMsg, sdk.MsgTypeURL(msg)) //nolint: staticcheck
+			return v1.Proposal{}, sdkerrors.Wrap(types.ErrUnroutableProposalMsg, sdk.MsgTypeURL(msg)) 
 		}
 
 		// Only if it's a MsgExecLegacyContent do we try to execute the
@@ -71,7 +70,7 @@ func (keeper Keeper) SubmitProposal(ctx sdk.Context, messages []sdk.Msg, metadat
 				if errors.Is(types.ErrNoProposalHandlerExists, err) {
 					return v1.Proposal{}, err
 				}
-				return v1.Proposal{}, sdkerrors.Wrap(types.ErrInvalidProposalContent, err.Error()) //nolint: staticcheck
+				return v1.Proposal{}, sdkerrors.Wrap(types.ErrInvalidProposalContent, err.Error()) 
 			}
 		}
 
@@ -246,7 +245,7 @@ func (keeper Keeper) GetProposalID(ctx sdk.Context) (proposalID uint64, err erro
 	store := ctx.KVStore(keeper.storeKey)
 	bz := store.Get(types.ProposalIDKey)
 	if bz == nil {
-		return 0, sdkerrors.Wrap(types.ErrInvalidGenesis, "initial proposal ID hasn't been set") //nolint: staticcheck
+		return 0, sdkerrors.Wrap(types.ErrInvalidGenesis, "initial proposal ID hasn't been set") 
 	}
 
 	proposalID = types.GetProposalIDFromBytes(bz)

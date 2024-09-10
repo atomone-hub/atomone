@@ -3,10 +3,10 @@ package cache
 import (
 	"fmt"
 
+	lru "github.com/hashicorp/golang-lru"
+
 	"github.com/atomone-hub/atomone/store/cachekv"
 	"github.com/atomone-hub/atomone/store/types"
-
-	lru "github.com/hashicorp/golang-lru"
 )
 
 var (

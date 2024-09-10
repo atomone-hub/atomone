@@ -6,11 +6,12 @@ import (
 
 	"github.com/spf13/viper"
 
+	"github.com/cosmos/cosmos-sdk/telemetry"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	clientflags "github.com/atomone-hub/atomone/client/flags"
 	pruningtypes "github.com/atomone-hub/atomone/store/pruning/types"
 	sdk "github.com/atomone-hub/atomone/types"
-	"github.com/cosmos/cosmos-sdk/telemetry"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 const (
@@ -362,10 +363,10 @@ func GetConfig(v *viper.Viper) (Config, error) {
 // ValidateBasic returns an error if min-gas-prices field is empty in BaseConfig. Otherwise, it returns nil.
 func (c Config) ValidateBasic() error {
 	if c.BaseConfig.MinGasPrices == "" {
-		return sdkerrors.ErrAppConfig.Wrap("set min gas price in app.toml or flag or env variable") //nolint: staticcheck
+		return sdkerrors.ErrAppConfig.Wrap("set min gas price in app.toml or flag or env variable") 
 	}
 	if c.Pruning == pruningtypes.PruningOptionEverything && c.StateSync.SnapshotInterval > 0 {
-		return sdkerrors.ErrAppConfig.Wrapf( //nolint: staticcheck
+		return sdkerrors.ErrAppConfig.Wrapf( 
 			"cannot enable state sync snapshots with '%s' pruning setting", pruningtypes.PruningOptionEverything,
 		)
 	}

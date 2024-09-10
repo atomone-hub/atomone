@@ -8,16 +8,17 @@ import (
 	gwruntime "github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 
-	"github.com/atomone-hub/atomone/core/appmodule"
-
 	abci "github.com/cometbft/cometbft/abci/types"
 
 	modulev1 "cosmossdk.io/api/cosmos/capability/module/v1"
 	"cosmossdk.io/depinject"
 
+	"github.com/cosmos/cosmos-sdk/telemetry"
+
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/codec"
 	cdctypes "github.com/atomone-hub/atomone/codec/types"
+	"github.com/atomone-hub/atomone/core/appmodule"
 	store "github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/module"
@@ -25,7 +26,6 @@ import (
 	"github.com/atomone-hub/atomone/x/capability/keeper"
 	"github.com/atomone-hub/atomone/x/capability/simulation"
 	"github.com/atomone-hub/atomone/x/capability/types"
-	"github.com/cosmos/cosmos-sdk/telemetry"
 )
 
 var (

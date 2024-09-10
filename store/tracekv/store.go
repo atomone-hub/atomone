@@ -5,8 +5,9 @@ import (
 	"encoding/json"
 	"io"
 
-	"github.com/atomone-hub/atomone/store/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
+
+	"github.com/atomone-hub/atomone/store/types"
 )
 
 const (

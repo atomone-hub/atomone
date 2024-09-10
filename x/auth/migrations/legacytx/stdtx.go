@@ -2,13 +2,15 @@ package legacytx
 
 import (
 	"cosmossdk.io/math"
+
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	"github.com/atomone-hub/atomone/codec/legacy"
 	codectypes "github.com/atomone-hub/atomone/codec/types"
 	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/tx"
 	"github.com/atomone-hub/atomone/types/tx/signing"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // Interface implementation checks
@@ -113,13 +115,13 @@ func (stdTx StdTx) ValidateBasic() error {
 	stdSigs := stdTx.GetSignatures()
 
 	if stdTx.Fee.Gas > tx.MaxGasWanted {
-		return sdkerrors.Wrapf( //nolint: staticcheck
+		return sdkerrors.Wrapf( 
 			sdkerrors.ErrInvalidRequest,
 			"invalid gas supplied; %d > %d", stdTx.Fee.Gas, tx.MaxGasWanted,
 		)
 	}
 	if stdTx.Fee.Amount.IsAnyNegative() {
-		return sdkerrors.Wrapf( //nolint: staticcheck
+		return sdkerrors.Wrapf( 
 			sdkerrors.ErrInsufficientFee,
 			"invalid fee provided: %s", stdTx.Fee.Amount,
 		)
@@ -128,7 +130,7 @@ func (stdTx StdTx) ValidateBasic() error {
 		return sdkerrors.ErrNoSignatures
 	}
 	if len(stdSigs) != len(stdTx.GetSigners()) {
-		return sdkerrors.Wrapf( //nolint: staticcheck
+		return sdkerrors.Wrapf( 
 			sdkerrors.ErrUnauthorized,
 			"wrong number of signers; expected %d, got %d", len(stdTx.GetSigners()), len(stdSigs),
 		)
@@ -196,7 +198,7 @@ func (tx StdTx) GetSignaturesV2() ([]signing.SignatureV2, error) {
 		var err error
 		res[i], err = StdSignatureToSignatureV2(legacy.Cdc, sig)
 		if err != nil {
-			return nil, sdkerrors.Wrapf(err, "Unable to convert signature %v to V2", sig) //nolint: staticcheck
+			return nil, sdkerrors.Wrapf(err, "Unable to convert signature %v to V2", sig) 
 		}
 	}
 

@@ -8,11 +8,11 @@ import (
 	runtimev1alpha1 "cosmossdk.io/api/cosmos/app/runtime/v1alpha1"
 	appv1alpha1 "cosmossdk.io/api/cosmos/app/v1alpha1"
 	"cosmossdk.io/depinject"
-	"github.com/atomone-hub/atomone/core/appmodule"
 
 	"github.com/atomone-hub/atomone/baseapp"
 	"github.com/atomone-hub/atomone/codec"
 	codectypes "github.com/atomone-hub/atomone/codec/types"
+	"github.com/atomone-hub/atomone/core/appmodule"
 	"github.com/atomone-hub/atomone/std"
 	storetypes "github.com/atomone-hub/atomone/store/types"
 	"github.com/atomone-hub/atomone/types/module"

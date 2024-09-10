@@ -6,6 +6,8 @@ import (
 
 	"sigs.k8s.io/yaml"
 
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	"github.com/atomone-hub/atomone/codec"
 	"github.com/atomone-hub/atomone/codec/legacy"
 	codectypes "github.com/atomone-hub/atomone/codec/types"
@@ -14,7 +16,6 @@ import (
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/tx"
 	"github.com/atomone-hub/atomone/types/tx/signing"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // LegacyMsg defines the old interface a message must fulfill, containing
@@ -175,7 +176,7 @@ func pubKeySigToSigData(cdc *codec.LegacyAmino, key cryptotypes.PubKey, sig []by
 		if bitArray.GetIndex(i) {
 			data, err := pubKeySigToSigData(cdc, pubKeys[i], multiSig.Sigs[sigIdx])
 			if err != nil {
-				return nil, sdkerrors.Wrapf(err, "Unable to convert Signature to SigData %d", sigIdx) //nolint: staticcheck
+				return nil, sdkerrors.Wrapf(err, "Unable to convert Signature to SigData %d", sigIdx) 
 			}
 
 			sigDatas[sigIdx] = data

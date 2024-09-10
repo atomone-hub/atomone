@@ -7,7 +7,6 @@ import (
 	"github.com/coinbase/rosetta-sdk-go/types"
 
 	crgerrs "github.com/atomone-hub/atomone/tools/rosetta/lib/errors"
-
 	sdk "github.com/atomone-hub/atomone/types"
 )
 

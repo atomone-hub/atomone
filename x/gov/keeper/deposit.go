@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"strings"
 
-	sdk "github.com/atomone-hub/atomone/types"
-	sdk1 "github.com/atomone-hub/atomone/types"
+	"github.com/cosmos/cosmos-sdk/types/errors"
 
 	sdkerrors "github.com/atomone-hub/atomone/errors"
+	sdk "github.com/atomone-hub/atomone/types"
+	sdk1 "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
-	"github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // GetDeposit gets the deposit of a specific depositor on a specific proposal
@@ -114,12 +114,12 @@ func (keeper Keeper) AddDeposit(ctx sdk.Context, proposalID uint64, depositorAdd
 	// Checks to see if proposal exists
 	proposal, ok := keeper.GetProposal(ctx, proposalID)
 	if !ok {
-		return false, sdkerrors.Wrapf(types.ErrUnknownProposal, "%d", proposalID) //nolint: staticcheck
+		return false, sdkerrors.Wrapf(types.ErrUnknownProposal, "%d", proposalID) 
 	}
 
 	// Check if proposal is still depositable
 	if (proposal.Status != v1.StatusDepositPeriod) && (proposal.Status != v1.StatusVotingPeriod) {
-		return false, sdkerrors.Wrapf(types.ErrInactiveProposal, "%d", proposalID) //nolint: staticcheck
+		return false, sdkerrors.Wrapf(types.ErrInactiveProposal, "%d", proposalID) 
 	}
 
 	// NOTE: backported from v50
@@ -159,7 +159,7 @@ func (keeper Keeper) AddDeposit(ctx sdk.Context, proposalID uint64, depositorAdd
 
 		// the threshold must be met with at least one denom, if not, return the list of minimum deposits
 		if !depositThresholdMet {
-			return false, sdkerrors.Wrapf(types.ErrMinDepositTooSmall, "received %s but need at least one of the following: %s", depositAmount, strings.Join(thresholds, ",")) //nolint: staticcheck
+			return false, sdkerrors.Wrapf(types.ErrMinDepositTooSmall, "received %s but need at least one of the following: %s", depositAmount, strings.Join(thresholds, ",")) 
 		}
 	}
 
@@ -229,7 +229,7 @@ func (keeper Keeper) RefundAndDeleteDeposits(ctx sdk.Context, proposalID uint64)
 // the deposit parameters. Returns nil on success, error otherwise.
 func (keeper Keeper) validateInitialDeposit(ctx sdk.Context, initialDeposit sdk1.Coins) error {
 	if !initialDeposit.IsValid() || initialDeposit.IsAnyNegative() {
-		return sdkerrors.Wrapf(errors.ErrInvalidCoins, initialDeposit.String()) //nolint: staticcheck
+		return sdkerrors.Wrapf(errors.ErrInvalidCoins, initialDeposit.String()) 
 	}
 
 	params := keeper.GetParams(ctx)
@@ -245,7 +245,7 @@ func (keeper Keeper) validateInitialDeposit(ctx sdk.Context, initialDeposit sdk1
 		minDepositCoins[i].Amount = sdk.NewDecFromInt(minDepositCoins[i].Amount).Mul(minInitialDepositRatio).RoundInt()
 	}
 	if !initialDeposit.IsAllGTE(minDepositCoins) {
-		return sdkerrors.Wrapf(types.ErrMinDepositTooSmall, "was (%s), need (%s)", initialDeposit, minDepositCoins) //nolint: staticcheck
+		return sdkerrors.Wrapf(types.ErrMinDepositTooSmall, "was (%s), need (%s)", initialDeposit, minDepositCoins) 
 	}
 	return nil
 }

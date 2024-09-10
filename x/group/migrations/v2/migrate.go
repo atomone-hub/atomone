@@ -4,12 +4,13 @@ import (
 	"encoding/binary"
 	"fmt"
 
+	"github.com/cosmos/cosmos-sdk/types/address"
+
 	storetypes "github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	authtypes "github.com/atomone-hub/atomone/x/auth/types"
 	"github.com/atomone-hub/atomone/x/group"
 	"github.com/atomone-hub/atomone/x/group/internal/orm"
-	"github.com/cosmos/cosmos-sdk/types/address"
 )
 
 const (

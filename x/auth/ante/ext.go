@@ -1,9 +1,10 @@
 package ante
 
 import (
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	codectypes "github.com/atomone-hub/atomone/codec/types"
 	sdk "github.com/atomone-hub/atomone/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 type HasExtensionOptionsTx interface {

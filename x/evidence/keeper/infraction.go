@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	sdk "github.com/atomone-hub/atomone/types"
-
 	"github.com/atomone-hub/atomone/x/evidence/types"
 	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
 )

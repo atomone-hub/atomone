@@ -13,7 +13,6 @@ import (
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/module"
 	"github.com/atomone-hub/atomone/types/simulation"
-
 	"github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 )

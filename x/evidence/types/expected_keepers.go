@@ -3,10 +3,9 @@ package types
 import (
 	"time"
 
-	"github.com/atomone-hub/atomone/x/auth/types"
-
 	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
 	sdk "github.com/atomone-hub/atomone/types"
+	"github.com/atomone-hub/atomone/x/auth/types"
 	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
 )
 

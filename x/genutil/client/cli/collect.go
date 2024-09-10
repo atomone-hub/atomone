@@ -4,9 +4,10 @@ import (
 	"encoding/json"
 	"path/filepath"
 
-	tmtypes "github.com/cometbft/cometbft/types"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+
+	tmtypes "github.com/cometbft/cometbft/types"
 
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/client/flags"
@@ -33,12 +34,12 @@ func CollectGenTxsCmd(genBalIterator types.GenesisBalancesIterator, defaultNodeH
 
 			nodeID, valPubKey, err := genutil.InitializeNodeValidatorFiles(config)
 			if err != nil {
-				return errors.Wrap(err, "failed to initialize node validator files") //nolint: staticcheck
+				return errors.Wrap(err, "failed to initialize node validator files") 
 			}
 
 			genDoc, err := tmtypes.GenesisDocFromFile(config.GenesisFile())
 			if err != nil {
-				return errors.Wrap(err, "failed to read genesis doc from file") //nolint: staticcheck
+				return errors.Wrap(err, "failed to read genesis doc from file") 
 			}
 
 			genTxDir, _ := cmd.Flags().GetString(flagGenTxDir)
@@ -54,7 +55,7 @@ func CollectGenTxsCmd(genBalIterator types.GenesisBalancesIterator, defaultNodeH
 				clientCtx.TxConfig,
 				config, initCfg, *genDoc, genBalIterator, validator)
 			if err != nil {
-				return errors.Wrap(err, "failed to get genesis app state from config") //nolint: staticcheck
+				return errors.Wrap(err, "failed to get genesis app state from config") 
 			}
 
 			toPrint.AppMessage = appMessage

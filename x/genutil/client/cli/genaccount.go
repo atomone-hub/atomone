@@ -4,14 +4,14 @@ import (
 	"bufio"
 	"fmt"
 
+	"github.com/spf13/cobra"
+
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/client/flags"
 	"github.com/atomone-hub/atomone/crypto/keyring"
 	"github.com/atomone-hub/atomone/server"
 	sdk "github.com/atomone-hub/atomone/types"
 	auth "github.com/atomone-hub/atomone/x/auth/helpers"
-
-	"github.com/spf13/cobra"
 )
 
 const (

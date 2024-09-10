@@ -6,12 +6,12 @@ import (
 
 	"cosmossdk.io/errors"
 
-	sdk "github.com/atomone-hub/atomone/types"
-	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
+	sdk "github.com/atomone-hub/atomone/types"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 )
 
 type msgServer struct {
@@ -86,22 +86,22 @@ func (k msgServer) ExecLegacyContent(goCtx context.Context, msg *v1.MsgExecLegac
 
 	govAcct := k.GetGovernanceAccount(ctx).GetAddress().String()
 	if govAcct != msg.Authority {
-		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "expected %s got %s", govAcct, msg.Authority) //nolint: staticcheck
+		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "expected %s got %s", govAcct, msg.Authority) 
 	}
 
 	content, err := v1.LegacyContentFromMessage(msg)
 	if err != nil {
-		return nil, errors.Wrapf(govtypes.ErrInvalidProposalContent, "%+v", err) //nolint: staticcheck
+		return nil, errors.Wrapf(govtypes.ErrInvalidProposalContent, "%+v", err) 
 	}
 
 	// Ensure that the content has a respective handler
 	if !k.Keeper.legacyRouter.HasRoute(content.ProposalRoute()) {
-		return nil, errors.Wrap(govtypes.ErrNoProposalHandlerExists, content.ProposalRoute()) //nolint: staticcheck
+		return nil, errors.Wrap(govtypes.ErrNoProposalHandlerExists, content.ProposalRoute()) 
 	}
 
 	handler := k.Keeper.legacyRouter.GetRoute(content.ProposalRoute())
 	if err := handler(ctx, content); err != nil {
-		return nil, errors.Wrapf(govtypes.ErrInvalidProposalContent, "failed to run legacy handler %s, %+v", content.ProposalRoute(), err) //nolint: staticcheck
+		return nil, errors.Wrapf(govtypes.ErrInvalidProposalContent, "failed to run legacy handler %s, %+v", content.ProposalRoute(), err) 
 	}
 
 	return &v1.MsgExecLegacyContentResponse{}, nil
@@ -167,7 +167,7 @@ func (k msgServer) Deposit(goCtx context.Context, msg *v1.MsgDeposit) (*v1.MsgDe
 // UpdateParams implements the MsgServer.UpdateParams method.
 func (k msgServer) UpdateParams(goCtx context.Context, msg *v1.MsgUpdateParams) (*v1.MsgUpdateParamsResponse, error) {
 	if k.authority != msg.Authority {
-		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority) //nolint: staticcheck
+		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority) 
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
@@ -181,7 +181,7 @@ func (k msgServer) UpdateParams(goCtx context.Context, msg *v1.MsgUpdateParams) 
 // validateDeposit validates the deposit amount, do not use for initial deposit.
 func validateDeposit(amount sdk.Coins) error {
 	if !amount.IsValid() || !amount.IsAllPositive() {
-		return sdkerrors.ErrInvalidCoins.Wrap(amount.String()) //nolint: staticcheck
+		return sdkerrors.ErrInvalidCoins.Wrap(amount.String()) 
 	}
 
 	return nil

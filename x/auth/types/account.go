@@ -7,16 +7,19 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/cometbft/cometbft/crypto"
-	"github.com/cosmos/gogoproto/proto"
 	"sigs.k8s.io/yaml"
+
+	"github.com/cometbft/cometbft/crypto"
+
+	"github.com/cosmos/gogoproto/proto"
+
+	"github.com/cosmos/cosmos-sdk/types/address"
 
 	"github.com/atomone-hub/atomone/codec"
 	codectypes "github.com/atomone-hub/atomone/codec/types"
 	cryptocodec "github.com/atomone-hub/atomone/crypto/codec"
 	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
 	sdk "github.com/atomone-hub/atomone/types"
-	"github.com/cosmos/cosmos-sdk/types/address"
 )
 
 var (

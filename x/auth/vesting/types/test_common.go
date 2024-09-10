@@ -4,7 +4,6 @@ import (
 	"github.com/atomone-hub/atomone/crypto/keys/secp256k1"
 	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
 	"github.com/atomone-hub/atomone/testutil/testdata"
-
 	sdk "github.com/atomone-hub/atomone/types"
 )
 

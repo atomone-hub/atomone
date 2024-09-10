@@ -6,6 +6,8 @@ import (
 	"encoding/hex"
 	"fmt"
 
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	"github.com/atomone-hub/atomone/crypto/keys/ed25519"
 	kmultisig "github.com/atomone-hub/atomone/crypto/keys/multisig"
 	"github.com/atomone-hub/atomone/crypto/keys/secp256k1"
@@ -17,7 +19,6 @@ import (
 	"github.com/atomone-hub/atomone/x/auth/migrations/legacytx"
 	authsigning "github.com/atomone-hub/atomone/x/auth/signing"
 	"github.com/atomone-hub/atomone/x/auth/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 var (
@@ -507,6 +508,6 @@ func signatureDataToBz(data signing.SignatureData) ([][]byte, error) {
 
 		return sigs, nil
 	default:
-		return nil, sdkerrors.ErrInvalidType.Wrapf("unexpected signature data type %T", data) //nolint: staticcheck
+		return nil, sdkerrors.ErrInvalidType.Wrapf("unexpected signature data type %T", data) 
 	}
 }

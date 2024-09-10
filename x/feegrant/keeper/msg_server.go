@@ -3,10 +3,10 @@ package keeper
 import (
 	"context"
 
-	sdk "github.com/atomone-hub/atomone/types"
-
-	"github.com/atomone-hub/atomone/x/feegrant"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
+	sdk "github.com/atomone-hub/atomone/types"
+	"github.com/atomone-hub/atomone/x/feegrant"
 )
 
 type msgServer struct {

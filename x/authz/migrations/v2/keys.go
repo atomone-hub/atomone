@@ -3,10 +3,11 @@ package v2
 import (
 	"time"
 
-	"github.com/atomone-hub/atomone/internal/conv"
-	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
 	"github.com/cosmos/cosmos-sdk/types/kv"
+
+	"github.com/atomone-hub/atomone/internal/conv"
+	sdk "github.com/atomone-hub/atomone/types"
 )
 
 // Keys for store prefixes

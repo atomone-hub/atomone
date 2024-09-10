@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"cosmossdk.io/math"
+
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/module"
 	"github.com/atomone-hub/atomone/types/simulation"

@@ -1,8 +1,9 @@
 package exported
 
 import (
-	sdk "github.com/atomone-hub/atomone/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+
+	sdk "github.com/atomone-hub/atomone/types"
 )
 
 type (

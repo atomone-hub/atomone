@@ -3,10 +3,9 @@ package tx
 import (
 	"fmt"
 
-	signingtypes "github.com/atomone-hub/atomone/types/tx/signing"
-
 	sdk "github.com/atomone-hub/atomone/types"
 	types "github.com/atomone-hub/atomone/types/tx"
+	signingtypes "github.com/atomone-hub/atomone/types/tx/signing"
 	"github.com/atomone-hub/atomone/x/auth/signing"
 )
 

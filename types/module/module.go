@@ -33,17 +33,19 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/atomone-hub/atomone/core/appmodule"
-	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 	"golang.org/x/exp/maps"
 
+	abci "github.com/cometbft/cometbft/abci/types"
+
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/codec"
 	codectypes "github.com/atomone-hub/atomone/codec/types"
+	"github.com/atomone-hub/atomone/core/appmodule"
 	sdk "github.com/atomone-hub/atomone/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // AppModuleBasic is the standard form for basic non-dependant elements of an application module.

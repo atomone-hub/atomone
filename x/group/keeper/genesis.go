@@ -5,10 +5,11 @@ import (
 
 	abci "github.com/cometbft/cometbft/abci/types"
 
+	"github.com/cosmos/cosmos-sdk/types/errors"
+
 	"github.com/atomone-hub/atomone/codec"
 	"github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/group"
-	"github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // InitGenesis initializes the group module's genesis state.

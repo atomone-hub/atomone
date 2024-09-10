@@ -5,9 +5,10 @@ import (
 
 	"github.com/cosmos/gogoproto/grpc"
 
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	"github.com/atomone-hub/atomone/codec"
 	sdk "github.com/atomone-hub/atomone/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // Configurator provides the hooks to allow modules to configure and register

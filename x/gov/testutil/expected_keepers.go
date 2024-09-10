@@ -8,7 +8,6 @@ import (
 	sdk "github.com/atomone-hub/atomone/types"
 	authtypes "github.com/atomone-hub/atomone/x/auth/types"
 	bankkeeper "github.com/atomone-hub/atomone/x/bank/keeper"
-
 	"github.com/atomone-hub/atomone/x/gov/types"
 )
 

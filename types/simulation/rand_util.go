@@ -8,6 +8,7 @@ import (
 	"unsafe"
 
 	"cosmossdk.io/math"
+
 	sdk "github.com/atomone-hub/atomone/types"
 )
 

@@ -5,19 +5,20 @@ import (
 	"encoding/json"
 	"fmt"
 
-	abci "github.com/cometbft/cometbft/abci/types"
 	gwruntime "github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 
-	"github.com/atomone-hub/atomone/core/appmodule"
+	abci "github.com/cometbft/cometbft/abci/types"
 
 	modulev1 "cosmossdk.io/api/cosmos/feegrant/module/v1"
-
 	"cosmossdk.io/depinject"
+
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	sdkclient "github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/codec"
 	cdctypes "github.com/atomone-hub/atomone/codec/types"
+	"github.com/atomone-hub/atomone/core/appmodule"
 	store "github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/module"
@@ -26,7 +27,6 @@ import (
 	"github.com/atomone-hub/atomone/x/feegrant/client/cli"
 	"github.com/atomone-hub/atomone/x/feegrant/keeper"
 	"github.com/atomone-hub/atomone/x/feegrant/simulation"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 var (
