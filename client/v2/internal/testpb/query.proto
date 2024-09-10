@@ -5,8 +5,8 @@ package testpb;
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/duration.proto";
 import "cosmos_proto/cosmos.proto";
-import "cosmos/base/query/v1beta1/pagination.proto";
-import "cosmos/base/v1beta1/coin.proto";
+import "atomone/base/query/v1beta1/pagination.proto";
+import "atomone/base/v1beta1/coin.proto";
 
 service Query {
   // Echo returns the request in the response
@@ -26,9 +26,9 @@ message EchoRequest {
   bool a_bool = 15;
   Enum an_enum = 16;
   AMessage a_message = 17;
-  cosmos.base.v1beta1.Coin a_coin = 18;
+  atomone.base.v1beta1.Coin a_coin = 18;
   string an_address = 19 [ (cosmos_proto.scalar) = "atomone.AddressString" ];
-  cosmos.base.query.v1beta1.PageRequest page = 20;
+  atomone.base.query.v1beta1.PageRequest page = 20;
   repeated bool bools = 21;
   repeated uint32 uints = 22;
   repeated string strings = 23;
@@ -38,7 +38,7 @@ message EchoRequest {
 
   int32 positional1 = 27;
   string positional2 = 28;
-  repeated cosmos.base.v1beta1.Coin positional3_varargs = 29;
+  repeated atomone.base.v1beta1.Coin positional3_varargs = 29;
 
   string deprecated_field = 30;
   string shorthand_deprecated_field = 31;

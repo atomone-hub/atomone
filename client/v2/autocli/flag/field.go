@@ -26,7 +26,8 @@ func (b *Builder) addFieldFlag(ctx context.Context, flagSet *pflag.FlagSet, fiel
 		opts = &autocliv1.FlagOptions{}
 	}
 
-	if field.Kind() == protoreflect.MessageKind && field.Message().FullName() == "atomone.base.query.v1beta1.PageRequest" {
+	// TODO: change to atomone.base.query.v1beta1.PageRequest
+	if field.Kind() == protoreflect.MessageKind && field.Message().FullName() == "cosmos.base.query.v1beta1.PageRequest" {
 		hasValue, err := b.bindPageRequest(ctx, flagSet, field)
 		return "", hasValue, err
 	}

@@ -13,7 +13,7 @@ Flags:
       --a-bool                                                               
       --a-coin cosmos.base.v1beta1.Coin (json)                               
       --a-message testpb.AMessage (json)                                     
-      --an-address bech32 account address key name                           
+      --an-address string                                                    
       --an-enum Enum (unspecified | one | two | five | neg-three)             (default unspecified)
       --bools bools                                                           (default [])
       --bz bytesBase64                                                       
@@ -34,7 +34,7 @@ Flags:
       --str string                                                           
       --strings strings                                                      
       --timestamp timestamp (RFC 3339)                                       
-      --u-64 uint[=5]                                                        some random uint64
+      --u-64 uint                                                            
   -u, --uint32 uint32                                                        some random uint32
       --uints uints                                                           (default [])
   -v, --version                                                              version for echo

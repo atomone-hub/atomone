@@ -1,5 +1,5 @@
 tx:
-  service: cosmos.bank.v1beta1.Msg
+  service: atomone.bank.v1beta1.Msg
   rpc_command_options:
     - rpc_method: Send
       use: send [from_key_or_address] [to_address] [amount...]
@@ -9,7 +9,7 @@ tx:
         - proto_field: amount
           varargs: true
 query:
-  service: cosmos.bank.v1beta1.Query
+  service: atomone.bank.v1beta1.Query
   rpc_command_options:
     - rpc_method: Balance
       use: balance [address] [denom]
