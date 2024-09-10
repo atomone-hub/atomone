@@ -15,7 +15,7 @@ import (
 
 	"github.com/cosmos/gogoproto/proto"
 
-	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
+	reflectionv1 "github.com/atomone-hub/atomone/api/atomone/reflection/v1"
 )
 
 // ReflectionService implements the cosmos.reflection.v1 service.

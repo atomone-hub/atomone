@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
+	autocliv1 "github.com/atomone-hub/atomone/api/atomone/autocli/v1"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"

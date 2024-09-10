@@ -5,11 +5,6 @@ package types
 
 import (
 	fmt "fmt"
-	io "io"
-	math "math"
-	math_bits "math/bits"
-	time "time"
-
 	types "github.com/atomone-hub/atomone/codec/types"
 	_ "github.com/atomone-hub/atomone/types/tx/amino"
 	_ "github.com/cosmos/cosmos-proto"
@@ -17,15 +12,17 @@ import (
 	proto "github.com/cosmos/gogoproto/proto"
 	github_com_cosmos_gogoproto_types "github.com/cosmos/gogoproto/types"
 	_ "google.golang.org/protobuf/types/known/timestamppb"
+	io "io"
+	math "math"
+	math_bits "math/bits"
+	time "time"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ = proto.Marshal
-	_ = fmt.Errorf
-	_ = math.Inf
-	_ = time.Kitchen
-)
+var _ = proto.Marshal
+var _ = fmt.Errorf
+var _ = math.Inf
+var _ = time.Kitchen
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -63,11 +60,9 @@ func (*Plan) ProtoMessage() {}
 func (*Plan) Descriptor() ([]byte, []int) {
 	return fileDescriptor_968830dce341b7a9, []int{0}
 }
-
 func (m *Plan) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *Plan) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_Plan.Marshal(b, m, deterministic)
@@ -80,15 +75,12 @@ func (m *Plan) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-
 func (m *Plan) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Plan.Merge(m, src)
 }
-
 func (m *Plan) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *Plan) XXX_DiscardUnknown() {
 	xxx_messageInfo_Plan.DiscardUnknown(m)
 }
@@ -115,11 +107,9 @@ func (*SoftwareUpgradeProposal) ProtoMessage() {}
 func (*SoftwareUpgradeProposal) Descriptor() ([]byte, []int) {
 	return fileDescriptor_968830dce341b7a9, []int{1}
 }
-
 func (m *SoftwareUpgradeProposal) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *SoftwareUpgradeProposal) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_SoftwareUpgradeProposal.Marshal(b, m, deterministic)
@@ -132,15 +122,12 @@ func (m *SoftwareUpgradeProposal) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return b[:n], nil
 	}
 }
-
 func (m *SoftwareUpgradeProposal) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_SoftwareUpgradeProposal.Merge(m, src)
 }
-
 func (m *SoftwareUpgradeProposal) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *SoftwareUpgradeProposal) XXX_DiscardUnknown() {
 	xxx_messageInfo_SoftwareUpgradeProposal.DiscardUnknown(m)
 }
@@ -165,11 +152,9 @@ func (*CancelSoftwareUpgradeProposal) ProtoMessage() {}
 func (*CancelSoftwareUpgradeProposal) Descriptor() ([]byte, []int) {
 	return fileDescriptor_968830dce341b7a9, []int{2}
 }
-
 func (m *CancelSoftwareUpgradeProposal) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *CancelSoftwareUpgradeProposal) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_CancelSoftwareUpgradeProposal.Marshal(b, m, deterministic)
@@ -182,15 +167,12 @@ func (m *CancelSoftwareUpgradeProposal) XXX_Marshal(b []byte, deterministic bool
 		return b[:n], nil
 	}
 }
-
 func (m *CancelSoftwareUpgradeProposal) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_CancelSoftwareUpgradeProposal.Merge(m, src)
 }
-
 func (m *CancelSoftwareUpgradeProposal) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *CancelSoftwareUpgradeProposal) XXX_DiscardUnknown() {
 	xxx_messageInfo_CancelSoftwareUpgradeProposal.DiscardUnknown(m)
 }
@@ -213,11 +195,9 @@ func (*ModuleVersion) ProtoMessage()    {}
 func (*ModuleVersion) Descriptor() ([]byte, []int) {
 	return fileDescriptor_968830dce341b7a9, []int{3}
 }
-
 func (m *ModuleVersion) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *ModuleVersion) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ModuleVersion.Marshal(b, m, deterministic)
@@ -230,15 +210,12 @@ func (m *ModuleVersion) XXX_Marshal(b []byte, deterministic bool) ([]byte, error
 		return b[:n], nil
 	}
 }
-
 func (m *ModuleVersion) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ModuleVersion.Merge(m, src)
 }
-
 func (m *ModuleVersion) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *ModuleVersion) XXX_DiscardUnknown() {
 	xxx_messageInfo_ModuleVersion.DiscardUnknown(m)
 }
@@ -330,7 +307,6 @@ func (this *Plan) Equal(that interface{}) bool {
 	}
 	return true
 }
-
 func (this *SoftwareUpgradeProposal) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
@@ -361,7 +337,6 @@ func (this *SoftwareUpgradeProposal) Equal(that interface{}) bool {
 	}
 	return true
 }
-
 func (this *CancelSoftwareUpgradeProposal) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
@@ -389,7 +364,6 @@ func (this *CancelSoftwareUpgradeProposal) Equal(that interface{}) bool {
 	}
 	return true
 }
-
 func (this *ModuleVersion) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
@@ -417,7 +391,6 @@ func (this *ModuleVersion) Equal(that interface{}) bool {
 	}
 	return true
 }
-
 func (m *Plan) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -610,7 +583,6 @@ func encodeVarintUpgrade(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-
 func (m *Plan) Size() (n int) {
 	if m == nil {
 		return 0
@@ -692,11 +664,9 @@ func (m *ModuleVersion) Size() (n int) {
 func sovUpgrade(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
-
 func sozUpgrade(x uint64) (n int) {
 	return sovUpgrade(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-
 func (m *Plan) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -899,7 +869,6 @@ func (m *Plan) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *SoftwareUpgradeProposal) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1047,7 +1016,6 @@ func (m *SoftwareUpgradeProposal) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *CancelSoftwareUpgradeProposal) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1162,7 +1130,6 @@ func (m *CancelSoftwareUpgradeProposal) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *ModuleVersion) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1264,7 +1231,6 @@ func (m *ModuleVersion) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func skipUpgrade(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

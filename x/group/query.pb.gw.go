@@ -25,15 +25,13 @@ import (
 )
 
 // Suppress "imported and not used" errors
-var (
-	_ codes.Code
-	_ io.Reader
-	_ status.Status
-	_ = runtime.String
-	_ = utilities.NewDoubleArray
-	_ = descriptor.ForMessage
-	_ = metadata.Join
-)
+var _ codes.Code
+var _ io.Reader
+var _ status.Status
+var _ = runtime.String
+var _ = utilities.NewDoubleArray
+var _ = descriptor.ForMessage
+var _ = metadata.Join
 
 func request_Query_GroupInfo_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq QueryGroupInfoRequest
@@ -52,12 +50,14 @@ func request_Query_GroupInfo_0(ctx context.Context, marshaler runtime.Marshaler,
 	}
 
 	protoReq.GroupId, err = runtime.Uint64(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "group_id", err)
 	}
 
 	msg, err := client.GroupInfo(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_Query_GroupInfo_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -77,12 +77,14 @@ func local_request_Query_GroupInfo_0(ctx context.Context, marshaler runtime.Mars
 	}
 
 	protoReq.GroupId, err = runtime.Uint64(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "group_id", err)
 	}
 
 	msg, err := server.GroupInfo(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_Query_GroupPolicyInfo_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -102,12 +104,14 @@ func request_Query_GroupPolicyInfo_0(ctx context.Context, marshaler runtime.Mars
 	}
 
 	protoReq.Address, err = runtime.String(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "address", err)
 	}
 
 	msg, err := client.GroupPolicyInfo(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_Query_GroupPolicyInfo_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -127,15 +131,19 @@ func local_request_Query_GroupPolicyInfo_0(ctx context.Context, marshaler runtim
 	}
 
 	protoReq.Address, err = runtime.String(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "address", err)
 	}
 
 	msg, err := server.GroupPolicyInfo(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
-var filter_Query_GroupMembers_0 = &utilities.DoubleArray{Encoding: map[string]int{"group_id": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+var (
+	filter_Query_GroupMembers_0 = &utilities.DoubleArray{Encoding: map[string]int{"group_id": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+)
 
 func request_Query_GroupMembers_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq QueryGroupMembersRequest
@@ -154,6 +162,7 @@ func request_Query_GroupMembers_0(ctx context.Context, marshaler runtime.Marshal
 	}
 
 	protoReq.GroupId, err = runtime.Uint64(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "group_id", err)
 	}
@@ -167,6 +176,7 @@ func request_Query_GroupMembers_0(ctx context.Context, marshaler runtime.Marshal
 
 	msg, err := client.GroupMembers(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_Query_GroupMembers_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -186,6 +196,7 @@ func local_request_Query_GroupMembers_0(ctx context.Context, marshaler runtime.M
 	}
 
 	protoReq.GroupId, err = runtime.Uint64(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "group_id", err)
 	}
@@ -199,9 +210,12 @@ func local_request_Query_GroupMembers_0(ctx context.Context, marshaler runtime.M
 
 	msg, err := server.GroupMembers(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
-var filter_Query_GroupsByAdmin_0 = &utilities.DoubleArray{Encoding: map[string]int{"admin": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+var (
+	filter_Query_GroupsByAdmin_0 = &utilities.DoubleArray{Encoding: map[string]int{"admin": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+)
 
 func request_Query_GroupsByAdmin_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq QueryGroupsByAdminRequest
@@ -220,6 +234,7 @@ func request_Query_GroupsByAdmin_0(ctx context.Context, marshaler runtime.Marsha
 	}
 
 	protoReq.Admin, err = runtime.String(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "admin", err)
 	}
@@ -233,6 +248,7 @@ func request_Query_GroupsByAdmin_0(ctx context.Context, marshaler runtime.Marsha
 
 	msg, err := client.GroupsByAdmin(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_Query_GroupsByAdmin_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -252,6 +268,7 @@ func local_request_Query_GroupsByAdmin_0(ctx context.Context, marshaler runtime.
 	}
 
 	protoReq.Admin, err = runtime.String(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "admin", err)
 	}
@@ -265,9 +282,12 @@ func local_request_Query_GroupsByAdmin_0(ctx context.Context, marshaler runtime.
 
 	msg, err := server.GroupsByAdmin(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
-var filter_Query_GroupPoliciesByGroup_0 = &utilities.DoubleArray{Encoding: map[string]int{"group_id": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+var (
+	filter_Query_GroupPoliciesByGroup_0 = &utilities.DoubleArray{Encoding: map[string]int{"group_id": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+)
 
 func request_Query_GroupPoliciesByGroup_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq QueryGroupPoliciesByGroupRequest
@@ -286,6 +306,7 @@ func request_Query_GroupPoliciesByGroup_0(ctx context.Context, marshaler runtime
 	}
 
 	protoReq.GroupId, err = runtime.Uint64(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "group_id", err)
 	}
@@ -299,6 +320,7 @@ func request_Query_GroupPoliciesByGroup_0(ctx context.Context, marshaler runtime
 
 	msg, err := client.GroupPoliciesByGroup(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_Query_GroupPoliciesByGroup_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -318,6 +340,7 @@ func local_request_Query_GroupPoliciesByGroup_0(ctx context.Context, marshaler r
 	}
 
 	protoReq.GroupId, err = runtime.Uint64(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "group_id", err)
 	}
@@ -331,9 +354,12 @@ func local_request_Query_GroupPoliciesByGroup_0(ctx context.Context, marshaler r
 
 	msg, err := server.GroupPoliciesByGroup(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
-var filter_Query_GroupPoliciesByAdmin_0 = &utilities.DoubleArray{Encoding: map[string]int{"admin": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+var (
+	filter_Query_GroupPoliciesByAdmin_0 = &utilities.DoubleArray{Encoding: map[string]int{"admin": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+)
 
 func request_Query_GroupPoliciesByAdmin_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq QueryGroupPoliciesByAdminRequest
@@ -352,6 +378,7 @@ func request_Query_GroupPoliciesByAdmin_0(ctx context.Context, marshaler runtime
 	}
 
 	protoReq.Admin, err = runtime.String(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "admin", err)
 	}
@@ -365,6 +392,7 @@ func request_Query_GroupPoliciesByAdmin_0(ctx context.Context, marshaler runtime
 
 	msg, err := client.GroupPoliciesByAdmin(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_Query_GroupPoliciesByAdmin_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -384,6 +412,7 @@ func local_request_Query_GroupPoliciesByAdmin_0(ctx context.Context, marshaler r
 	}
 
 	protoReq.Admin, err = runtime.String(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "admin", err)
 	}
@@ -397,6 +426,7 @@ func local_request_Query_GroupPoliciesByAdmin_0(ctx context.Context, marshaler r
 
 	msg, err := server.GroupPoliciesByAdmin(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_Query_Proposal_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -416,12 +446,14 @@ func request_Query_Proposal_0(ctx context.Context, marshaler runtime.Marshaler, 
 	}
 
 	protoReq.ProposalId, err = runtime.Uint64(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "proposal_id", err)
 	}
 
 	msg, err := client.Proposal(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_Query_Proposal_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -441,15 +473,19 @@ func local_request_Query_Proposal_0(ctx context.Context, marshaler runtime.Marsh
 	}
 
 	protoReq.ProposalId, err = runtime.Uint64(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "proposal_id", err)
 	}
 
 	msg, err := server.Proposal(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
-var filter_Query_ProposalsByGroupPolicy_0 = &utilities.DoubleArray{Encoding: map[string]int{"address": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+var (
+	filter_Query_ProposalsByGroupPolicy_0 = &utilities.DoubleArray{Encoding: map[string]int{"address": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+)
 
 func request_Query_ProposalsByGroupPolicy_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq QueryProposalsByGroupPolicyRequest
@@ -468,6 +504,7 @@ func request_Query_ProposalsByGroupPolicy_0(ctx context.Context, marshaler runti
 	}
 
 	protoReq.Address, err = runtime.String(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "address", err)
 	}
@@ -481,6 +518,7 @@ func request_Query_ProposalsByGroupPolicy_0(ctx context.Context, marshaler runti
 
 	msg, err := client.ProposalsByGroupPolicy(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_Query_ProposalsByGroupPolicy_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -500,6 +538,7 @@ func local_request_Query_ProposalsByGroupPolicy_0(ctx context.Context, marshaler
 	}
 
 	protoReq.Address, err = runtime.String(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "address", err)
 	}
@@ -513,6 +552,7 @@ func local_request_Query_ProposalsByGroupPolicy_0(ctx context.Context, marshaler
 
 	msg, err := server.ProposalsByGroupPolicy(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_Query_VoteByProposalVoter_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -532,6 +572,7 @@ func request_Query_VoteByProposalVoter_0(ctx context.Context, marshaler runtime.
 	}
 
 	protoReq.ProposalId, err = runtime.Uint64(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "proposal_id", err)
 	}
@@ -542,12 +583,14 @@ func request_Query_VoteByProposalVoter_0(ctx context.Context, marshaler runtime.
 	}
 
 	protoReq.Voter, err = runtime.String(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "voter", err)
 	}
 
 	msg, err := client.VoteByProposalVoter(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_Query_VoteByProposalVoter_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -567,6 +610,7 @@ func local_request_Query_VoteByProposalVoter_0(ctx context.Context, marshaler ru
 	}
 
 	protoReq.ProposalId, err = runtime.Uint64(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "proposal_id", err)
 	}
@@ -577,15 +621,19 @@ func local_request_Query_VoteByProposalVoter_0(ctx context.Context, marshaler ru
 	}
 
 	protoReq.Voter, err = runtime.String(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "voter", err)
 	}
 
 	msg, err := server.VoteByProposalVoter(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
-var filter_Query_VotesByProposal_0 = &utilities.DoubleArray{Encoding: map[string]int{"proposal_id": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+var (
+	filter_Query_VotesByProposal_0 = &utilities.DoubleArray{Encoding: map[string]int{"proposal_id": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+)
 
 func request_Query_VotesByProposal_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq QueryVotesByProposalRequest
@@ -604,6 +652,7 @@ func request_Query_VotesByProposal_0(ctx context.Context, marshaler runtime.Mars
 	}
 
 	protoReq.ProposalId, err = runtime.Uint64(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "proposal_id", err)
 	}
@@ -617,6 +666,7 @@ func request_Query_VotesByProposal_0(ctx context.Context, marshaler runtime.Mars
 
 	msg, err := client.VotesByProposal(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_Query_VotesByProposal_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -636,6 +686,7 @@ func local_request_Query_VotesByProposal_0(ctx context.Context, marshaler runtim
 	}
 
 	protoReq.ProposalId, err = runtime.Uint64(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "proposal_id", err)
 	}
@@ -649,9 +700,12 @@ func local_request_Query_VotesByProposal_0(ctx context.Context, marshaler runtim
 
 	msg, err := server.VotesByProposal(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
-var filter_Query_VotesByVoter_0 = &utilities.DoubleArray{Encoding: map[string]int{"voter": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+var (
+	filter_Query_VotesByVoter_0 = &utilities.DoubleArray{Encoding: map[string]int{"voter": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+)
 
 func request_Query_VotesByVoter_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq QueryVotesByVoterRequest
@@ -670,6 +724,7 @@ func request_Query_VotesByVoter_0(ctx context.Context, marshaler runtime.Marshal
 	}
 
 	protoReq.Voter, err = runtime.String(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "voter", err)
 	}
@@ -683,6 +738,7 @@ func request_Query_VotesByVoter_0(ctx context.Context, marshaler runtime.Marshal
 
 	msg, err := client.VotesByVoter(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_Query_VotesByVoter_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -702,6 +758,7 @@ func local_request_Query_VotesByVoter_0(ctx context.Context, marshaler runtime.M
 	}
 
 	protoReq.Voter, err = runtime.String(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "voter", err)
 	}
@@ -715,9 +772,12 @@ func local_request_Query_VotesByVoter_0(ctx context.Context, marshaler runtime.M
 
 	msg, err := server.VotesByVoter(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
-var filter_Query_GroupsByMember_0 = &utilities.DoubleArray{Encoding: map[string]int{"address": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+var (
+	filter_Query_GroupsByMember_0 = &utilities.DoubleArray{Encoding: map[string]int{"address": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+)
 
 func request_Query_GroupsByMember_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq QueryGroupsByMemberRequest
@@ -736,6 +796,7 @@ func request_Query_GroupsByMember_0(ctx context.Context, marshaler runtime.Marsh
 	}
 
 	protoReq.Address, err = runtime.String(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "address", err)
 	}
@@ -749,6 +810,7 @@ func request_Query_GroupsByMember_0(ctx context.Context, marshaler runtime.Marsh
 
 	msg, err := client.GroupsByMember(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_Query_GroupsByMember_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -768,6 +830,7 @@ func local_request_Query_GroupsByMember_0(ctx context.Context, marshaler runtime
 	}
 
 	protoReq.Address, err = runtime.String(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "address", err)
 	}
@@ -781,6 +844,7 @@ func local_request_Query_GroupsByMember_0(ctx context.Context, marshaler runtime
 
 	msg, err := server.GroupsByMember(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_Query_TallyResult_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -800,12 +864,14 @@ func request_Query_TallyResult_0(ctx context.Context, marshaler runtime.Marshale
 	}
 
 	protoReq.ProposalId, err = runtime.Uint64(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "proposal_id", err)
 	}
 
 	msg, err := client.TallyResult(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_Query_TallyResult_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -825,15 +891,19 @@ func local_request_Query_TallyResult_0(ctx context.Context, marshaler runtime.Ma
 	}
 
 	protoReq.ProposalId, err = runtime.Uint64(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "proposal_id", err)
 	}
 
 	msg, err := server.TallyResult(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
-var filter_Query_Groups_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+var (
+	filter_Query_Groups_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+)
 
 func request_Query_Groups_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq QueryGroupsRequest
@@ -848,6 +918,7 @@ func request_Query_Groups_0(ctx context.Context, marshaler runtime.Marshaler, cl
 
 	msg, err := client.Groups(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_Query_Groups_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -863,6 +934,7 @@ func local_request_Query_Groups_0(ctx context.Context, marshaler runtime.Marshal
 
 	msg, err := server.Groups(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 // RegisterQueryHandlerServer registers the http handlers for service Query to "mux".
@@ -870,6 +942,7 @@ func local_request_Query_Groups_0(ctx context.Context, marshaler runtime.Marshal
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterQueryHandlerFromEndpoint instead.
 func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, server QueryServer) error {
+
 	mux.Handle("GET", pattern_Query_GroupInfo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -890,6 +963,7 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		}
 
 		forward_Query_GroupInfo_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_GroupPolicyInfo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -912,6 +986,7 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		}
 
 		forward_Query_GroupPolicyInfo_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_GroupMembers_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -934,6 +1009,7 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		}
 
 		forward_Query_GroupMembers_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_GroupsByAdmin_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -956,6 +1032,7 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		}
 
 		forward_Query_GroupsByAdmin_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_GroupPoliciesByGroup_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -978,6 +1055,7 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		}
 
 		forward_Query_GroupPoliciesByGroup_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_GroupPoliciesByAdmin_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1000,6 +1078,7 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		}
 
 		forward_Query_GroupPoliciesByAdmin_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_Proposal_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1022,6 +1101,7 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		}
 
 		forward_Query_Proposal_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_ProposalsByGroupPolicy_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1044,6 +1124,7 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		}
 
 		forward_Query_ProposalsByGroupPolicy_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_VoteByProposalVoter_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1066,6 +1147,7 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		}
 
 		forward_Query_VoteByProposalVoter_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_VotesByProposal_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1088,6 +1170,7 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		}
 
 		forward_Query_VotesByProposal_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_VotesByVoter_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1110,6 +1193,7 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		}
 
 		forward_Query_VotesByVoter_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_GroupsByMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1132,6 +1216,7 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		}
 
 		forward_Query_GroupsByMember_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_TallyResult_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1154,6 +1239,7 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		}
 
 		forward_Query_TallyResult_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_Groups_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1176,6 +1262,7 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		}
 
 		forward_Query_Groups_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	return nil
@@ -1184,7 +1271,7 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 // RegisterQueryHandlerFromEndpoint is same as RegisterQueryHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterQueryHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.Dial(endpoint, opts...) //nolint: staticcheck
+	conn, err := grpc.Dial(endpoint, opts...)
 	if err != nil {
 		return err
 	}
@@ -1218,6 +1305,7 @@ func RegisterQueryHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
 // "QueryClient" to call the correct interceptors.
 func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, client QueryClient) error {
+
 	mux.Handle("GET", pattern_Query_GroupInfo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -1235,6 +1323,7 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 		}
 
 		forward_Query_GroupInfo_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_GroupPolicyInfo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1254,6 +1343,7 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 		}
 
 		forward_Query_GroupPolicyInfo_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_GroupMembers_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1273,6 +1363,7 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 		}
 
 		forward_Query_GroupMembers_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_GroupsByAdmin_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1292,6 +1383,7 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 		}
 
 		forward_Query_GroupsByAdmin_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_GroupPoliciesByGroup_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1311,6 +1403,7 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 		}
 
 		forward_Query_GroupPoliciesByGroup_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_GroupPoliciesByAdmin_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1330,6 +1423,7 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 		}
 
 		forward_Query_GroupPoliciesByAdmin_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_Proposal_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1349,6 +1443,7 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 		}
 
 		forward_Query_Proposal_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_ProposalsByGroupPolicy_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1368,6 +1463,7 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 		}
 
 		forward_Query_ProposalsByGroupPolicy_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_VoteByProposalVoter_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1387,6 +1483,7 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 		}
 
 		forward_Query_VoteByProposalVoter_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_VotesByProposal_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1406,6 +1503,7 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 		}
 
 		forward_Query_VotesByProposal_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_VotesByVoter_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1425,6 +1523,7 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 		}
 
 		forward_Query_VotesByVoter_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_GroupsByMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1444,6 +1543,7 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 		}
 
 		forward_Query_GroupsByMember_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_TallyResult_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1463,6 +1563,7 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 		}
 
 		forward_Query_TallyResult_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_Groups_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1482,6 +1583,7 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 		}
 
 		forward_Query_Groups_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	return nil

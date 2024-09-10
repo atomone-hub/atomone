@@ -5,11 +5,6 @@ package authz
 
 import (
 	fmt "fmt"
-	io "io"
-	math "math"
-	math_bits "math/bits"
-	time "time"
-
 	types "github.com/atomone-hub/atomone/codec/types"
 	_ "github.com/atomone-hub/atomone/types/tx/amino"
 	_ "github.com/cosmos/cosmos-proto"
@@ -17,15 +12,17 @@ import (
 	proto "github.com/cosmos/gogoproto/proto"
 	github_com_cosmos_gogoproto_types "github.com/cosmos/gogoproto/types"
 	_ "google.golang.org/protobuf/types/known/timestamppb"
+	io "io"
+	math "math"
+	math_bits "math/bits"
+	time "time"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ = proto.Marshal
-	_ = fmt.Errorf
-	_ = math.Inf
-	_ = time.Kitchen
-)
+var _ = proto.Marshal
+var _ = fmt.Errorf
+var _ = math.Inf
+var _ = time.Kitchen
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -47,11 +44,9 @@ func (*GenericAuthorization) ProtoMessage()    {}
 func (*GenericAuthorization) Descriptor() ([]byte, []int) {
 	return fileDescriptor_96ac952831204a7d, []int{0}
 }
-
 func (m *GenericAuthorization) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *GenericAuthorization) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_GenericAuthorization.Marshal(b, m, deterministic)
@@ -64,15 +59,12 @@ func (m *GenericAuthorization) XXX_Marshal(b []byte, deterministic bool) ([]byte
 		return b[:n], nil
 	}
 }
-
 func (m *GenericAuthorization) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GenericAuthorization.Merge(m, src)
 }
-
 func (m *GenericAuthorization) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *GenericAuthorization) XXX_DiscardUnknown() {
 	xxx_messageInfo_GenericAuthorization.DiscardUnknown(m)
 }
@@ -95,11 +87,9 @@ func (*Grant) ProtoMessage()    {}
 func (*Grant) Descriptor() ([]byte, []int) {
 	return fileDescriptor_96ac952831204a7d, []int{1}
 }
-
 func (m *Grant) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *Grant) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_Grant.Marshal(b, m, deterministic)
@@ -112,15 +102,12 @@ func (m *Grant) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-
 func (m *Grant) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Grant.Merge(m, src)
 }
-
 func (m *Grant) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *Grant) XXX_DiscardUnknown() {
 	xxx_messageInfo_Grant.DiscardUnknown(m)
 }
@@ -142,11 +129,9 @@ func (*GrantAuthorization) ProtoMessage()    {}
 func (*GrantAuthorization) Descriptor() ([]byte, []int) {
 	return fileDescriptor_96ac952831204a7d, []int{2}
 }
-
 func (m *GrantAuthorization) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *GrantAuthorization) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_GrantAuthorization.Marshal(b, m, deterministic)
@@ -159,15 +144,12 @@ func (m *GrantAuthorization) XXX_Marshal(b []byte, deterministic bool) ([]byte, 
 		return b[:n], nil
 	}
 }
-
 func (m *GrantAuthorization) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GrantAuthorization.Merge(m, src)
 }
-
 func (m *GrantAuthorization) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *GrantAuthorization) XXX_DiscardUnknown() {
 	xxx_messageInfo_GrantAuthorization.DiscardUnknown(m)
 }
@@ -186,11 +168,9 @@ func (*GrantQueueItem) ProtoMessage()    {}
 func (*GrantQueueItem) Descriptor() ([]byte, []int) {
 	return fileDescriptor_96ac952831204a7d, []int{3}
 }
-
 func (m *GrantQueueItem) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *GrantQueueItem) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_GrantQueueItem.Marshal(b, m, deterministic)
@@ -203,15 +183,12 @@ func (m *GrantQueueItem) XXX_Marshal(b []byte, deterministic bool) ([]byte, erro
 		return b[:n], nil
 	}
 }
-
 func (m *GrantQueueItem) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GrantQueueItem.Merge(m, src)
 }
-
 func (m *GrantQueueItem) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *GrantQueueItem) XXX_DiscardUnknown() {
 	xxx_messageInfo_GrantQueueItem.DiscardUnknown(m)
 }
@@ -437,7 +414,6 @@ func encodeVarintAuthz(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-
 func (m *GenericAuthorization) Size() (n int) {
 	if m == nil {
 		return 0
@@ -511,11 +487,9 @@ func (m *GrantQueueItem) Size() (n int) {
 func sovAuthz(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
-
 func sozAuthz(x uint64) (n int) {
 	return sovAuthz(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-
 func (m *GenericAuthorization) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -598,7 +572,6 @@ func (m *GenericAuthorization) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *Grant) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -721,7 +694,6 @@ func (m *Grant) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *GrantAuthorization) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -908,7 +880,6 @@ func (m *GrantAuthorization) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *GrantQueueItem) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -991,7 +962,6 @@ func (m *GrantQueueItem) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func skipAuthz(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

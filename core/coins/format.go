@@ -5,9 +5,9 @@ import (
 	"sort"
 	"strings"
 
-	bankv1beta1 "cosmossdk.io/api/cosmos/bank/v1beta1"
-	basev1beta1 "cosmossdk.io/api/cosmos/base/v1beta1"
 	"cosmossdk.io/math"
+	bankv1beta1 "github.com/atomone-hub/atomone/api/atomone/bank/v1beta1"
+	basev1beta1 "github.com/atomone-hub/atomone/api/atomone/base/v1beta1"
 )
 
 // formatCoin formats a sdk.Coin into a value-rendered string, using the

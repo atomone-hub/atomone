@@ -6,10 +6,6 @@ package types
 import (
 	context "context"
 	fmt "fmt"
-	io "io"
-	math "math"
-	math_bits "math/bits"
-
 	_ "github.com/atomone-hub/atomone/types/msgservice"
 	_ "github.com/atomone-hub/atomone/types/tx/amino"
 	_ "github.com/cosmos/cosmos-proto"
@@ -19,14 +15,15 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	io "io"
+	math "math"
+	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ = proto.Marshal
-	_ = fmt.Errorf
-	_ = math.Inf
-)
+var _ = proto.Marshal
+var _ = fmt.Errorf
+var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -51,11 +48,9 @@ func (*MsgSoftwareUpgrade) ProtoMessage()    {}
 func (*MsgSoftwareUpgrade) Descriptor() ([]byte, []int) {
 	return fileDescriptor_c6a411219a916e42, []int{0}
 }
-
 func (m *MsgSoftwareUpgrade) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *MsgSoftwareUpgrade) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgSoftwareUpgrade.Marshal(b, m, deterministic)
@@ -68,15 +63,12 @@ func (m *MsgSoftwareUpgrade) XXX_Marshal(b []byte, deterministic bool) ([]byte, 
 		return b[:n], nil
 	}
 }
-
 func (m *MsgSoftwareUpgrade) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgSoftwareUpgrade.Merge(m, src)
 }
-
 func (m *MsgSoftwareUpgrade) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *MsgSoftwareUpgrade) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgSoftwareUpgrade.DiscardUnknown(m)
 }
@@ -100,7 +92,8 @@ func (m *MsgSoftwareUpgrade) GetPlan() Plan {
 // MsgSoftwareUpgradeResponse is the Msg/SoftwareUpgrade response type.
 //
 // Since: cosmos-sdk 0.46
-type MsgSoftwareUpgradeResponse struct{}
+type MsgSoftwareUpgradeResponse struct {
+}
 
 func (m *MsgSoftwareUpgradeResponse) Reset()         { *m = MsgSoftwareUpgradeResponse{} }
 func (m *MsgSoftwareUpgradeResponse) String() string { return proto.CompactTextString(m) }
@@ -108,11 +101,9 @@ func (*MsgSoftwareUpgradeResponse) ProtoMessage()    {}
 func (*MsgSoftwareUpgradeResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_c6a411219a916e42, []int{1}
 }
-
 func (m *MsgSoftwareUpgradeResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *MsgSoftwareUpgradeResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgSoftwareUpgradeResponse.Marshal(b, m, deterministic)
@@ -125,15 +116,12 @@ func (m *MsgSoftwareUpgradeResponse) XXX_Marshal(b []byte, deterministic bool) (
 		return b[:n], nil
 	}
 }
-
 func (m *MsgSoftwareUpgradeResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgSoftwareUpgradeResponse.Merge(m, src)
 }
-
 func (m *MsgSoftwareUpgradeResponse) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *MsgSoftwareUpgradeResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgSoftwareUpgradeResponse.DiscardUnknown(m)
 }
@@ -155,11 +143,9 @@ func (*MsgCancelUpgrade) ProtoMessage()    {}
 func (*MsgCancelUpgrade) Descriptor() ([]byte, []int) {
 	return fileDescriptor_c6a411219a916e42, []int{2}
 }
-
 func (m *MsgCancelUpgrade) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *MsgCancelUpgrade) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgCancelUpgrade.Marshal(b, m, deterministic)
@@ -172,15 +158,12 @@ func (m *MsgCancelUpgrade) XXX_Marshal(b []byte, deterministic bool) ([]byte, er
 		return b[:n], nil
 	}
 }
-
 func (m *MsgCancelUpgrade) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgCancelUpgrade.Merge(m, src)
 }
-
 func (m *MsgCancelUpgrade) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *MsgCancelUpgrade) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgCancelUpgrade.DiscardUnknown(m)
 }
@@ -197,7 +180,8 @@ func (m *MsgCancelUpgrade) GetAuthority() string {
 // MsgCancelUpgradeResponse is the Msg/CancelUpgrade response type.
 //
 // Since: cosmos-sdk 0.46
-type MsgCancelUpgradeResponse struct{}
+type MsgCancelUpgradeResponse struct {
+}
 
 func (m *MsgCancelUpgradeResponse) Reset()         { *m = MsgCancelUpgradeResponse{} }
 func (m *MsgCancelUpgradeResponse) String() string { return proto.CompactTextString(m) }
@@ -205,11 +189,9 @@ func (*MsgCancelUpgradeResponse) ProtoMessage()    {}
 func (*MsgCancelUpgradeResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_c6a411219a916e42, []int{3}
 }
-
 func (m *MsgCancelUpgradeResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *MsgCancelUpgradeResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgCancelUpgradeResponse.Marshal(b, m, deterministic)
@@ -222,15 +204,12 @@ func (m *MsgCancelUpgradeResponse) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
-
 func (m *MsgCancelUpgradeResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgCancelUpgradeResponse.Merge(m, src)
 }
-
 func (m *MsgCancelUpgradeResponse) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *MsgCancelUpgradeResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgCancelUpgradeResponse.DiscardUnknown(m)
 }
@@ -277,10 +256,8 @@ var fileDescriptor_c6a411219a916e42 = []byte{
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ context.Context
-	_ grpc.ClientConn
-)
+var _ context.Context
+var _ grpc.ClientConn
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
@@ -343,12 +320,12 @@ type MsgServer interface {
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
-type UnimplementedMsgServer struct{}
+type UnimplementedMsgServer struct {
+}
 
 func (*UnimplementedMsgServer) SoftwareUpgrade(ctx context.Context, req *MsgSoftwareUpgrade) (*MsgSoftwareUpgradeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SoftwareUpgrade not implemented")
 }
-
 func (*UnimplementedMsgServer) CancelUpgrade(ctx context.Context, req *MsgCancelUpgrade) (*MsgCancelUpgradeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CancelUpgrade not implemented")
 }
@@ -537,7 +514,6 @@ func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-
 func (m *MsgSoftwareUpgrade) Size() (n int) {
 	if m == nil {
 		return 0
@@ -587,11 +563,9 @@ func (m *MsgCancelUpgradeResponse) Size() (n int) {
 func sovTx(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
-
 func sozTx(x uint64) (n int) {
 	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-
 func (m *MsgSoftwareUpgrade) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -707,7 +681,6 @@ func (m *MsgSoftwareUpgrade) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *MsgSoftwareUpgradeResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -758,7 +731,6 @@ func (m *MsgSoftwareUpgradeResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *MsgCancelUpgrade) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -841,7 +813,6 @@ func (m *MsgCancelUpgrade) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *MsgCancelUpgradeResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -892,7 +863,6 @@ func (m *MsgCancelUpgradeResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func skipTx(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

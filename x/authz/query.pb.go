@@ -6,10 +6,6 @@ package authz
 import (
 	context "context"
 	fmt "fmt"
-	io "io"
-	math "math"
-	math_bits "math/bits"
-
 	query "github.com/atomone-hub/atomone/types/query"
 	_ "github.com/cosmos/cosmos-proto"
 	grpc1 "github.com/cosmos/gogoproto/grpc"
@@ -18,14 +14,15 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	io "io"
+	math "math"
+	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ = proto.Marshal
-	_ = fmt.Errorf
-	_ = math.Inf
-)
+var _ = proto.Marshal
+var _ = fmt.Errorf
+var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -50,11 +47,9 @@ func (*QueryGrantsRequest) ProtoMessage()    {}
 func (*QueryGrantsRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4431351c5af8b4ad, []int{0}
 }
-
 func (m *QueryGrantsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *QueryGrantsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryGrantsRequest.Marshal(b, m, deterministic)
@@ -67,15 +62,12 @@ func (m *QueryGrantsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, 
 		return b[:n], nil
 	}
 }
-
 func (m *QueryGrantsRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryGrantsRequest.Merge(m, src)
 }
-
 func (m *QueryGrantsRequest) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *QueryGrantsRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryGrantsRequest.DiscardUnknown(m)
 }
@@ -125,11 +117,9 @@ func (*QueryGrantsResponse) ProtoMessage()    {}
 func (*QueryGrantsResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4431351c5af8b4ad, []int{1}
 }
-
 func (m *QueryGrantsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *QueryGrantsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryGrantsResponse.Marshal(b, m, deterministic)
@@ -142,15 +132,12 @@ func (m *QueryGrantsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte,
 		return b[:n], nil
 	}
 }
-
 func (m *QueryGrantsResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryGrantsResponse.Merge(m, src)
 }
-
 func (m *QueryGrantsResponse) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *QueryGrantsResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryGrantsResponse.DiscardUnknown(m)
 }
@@ -185,11 +172,9 @@ func (*QueryGranterGrantsRequest) ProtoMessage()    {}
 func (*QueryGranterGrantsRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4431351c5af8b4ad, []int{2}
 }
-
 func (m *QueryGranterGrantsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *QueryGranterGrantsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryGranterGrantsRequest.Marshal(b, m, deterministic)
@@ -202,15 +187,12 @@ func (m *QueryGranterGrantsRequest) XXX_Marshal(b []byte, deterministic bool) ([
 		return b[:n], nil
 	}
 }
-
 func (m *QueryGranterGrantsRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryGranterGrantsRequest.Merge(m, src)
 }
-
 func (m *QueryGranterGrantsRequest) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *QueryGranterGrantsRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryGranterGrantsRequest.DiscardUnknown(m)
 }
@@ -246,11 +228,9 @@ func (*QueryGranterGrantsResponse) ProtoMessage()    {}
 func (*QueryGranterGrantsResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4431351c5af8b4ad, []int{3}
 }
-
 func (m *QueryGranterGrantsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *QueryGranterGrantsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryGranterGrantsResponse.Marshal(b, m, deterministic)
@@ -263,15 +243,12 @@ func (m *QueryGranterGrantsResponse) XXX_Marshal(b []byte, deterministic bool) (
 		return b[:n], nil
 	}
 }
-
 func (m *QueryGranterGrantsResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryGranterGrantsResponse.Merge(m, src)
 }
-
 func (m *QueryGranterGrantsResponse) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *QueryGranterGrantsResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryGranterGrantsResponse.DiscardUnknown(m)
 }
@@ -306,11 +283,9 @@ func (*QueryGranteeGrantsRequest) ProtoMessage()    {}
 func (*QueryGranteeGrantsRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4431351c5af8b4ad, []int{4}
 }
-
 func (m *QueryGranteeGrantsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *QueryGranteeGrantsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryGranteeGrantsRequest.Marshal(b, m, deterministic)
@@ -323,15 +298,12 @@ func (m *QueryGranteeGrantsRequest) XXX_Marshal(b []byte, deterministic bool) ([
 		return b[:n], nil
 	}
 }
-
 func (m *QueryGranteeGrantsRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryGranteeGrantsRequest.Merge(m, src)
 }
-
 func (m *QueryGranteeGrantsRequest) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *QueryGranteeGrantsRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryGranteeGrantsRequest.DiscardUnknown(m)
 }
@@ -367,11 +339,9 @@ func (*QueryGranteeGrantsResponse) ProtoMessage()    {}
 func (*QueryGranteeGrantsResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4431351c5af8b4ad, []int{5}
 }
-
 func (m *QueryGranteeGrantsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *QueryGranteeGrantsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryGranteeGrantsResponse.Marshal(b, m, deterministic)
@@ -384,15 +354,12 @@ func (m *QueryGranteeGrantsResponse) XXX_Marshal(b []byte, deterministic bool) (
 		return b[:n], nil
 	}
 }
-
 func (m *QueryGranteeGrantsResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryGranteeGrantsResponse.Merge(m, src)
 }
-
 func (m *QueryGranteeGrantsResponse) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *QueryGranteeGrantsResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryGranteeGrantsResponse.DiscardUnknown(m)
 }
@@ -463,10 +430,8 @@ var fileDescriptor_4431351c5af8b4ad = []byte{
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ context.Context
-	_ grpc.ClientConn
-)
+var _ context.Context
+var _ grpc.ClientConn
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
@@ -538,16 +503,15 @@ type QueryServer interface {
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
-type UnimplementedQueryServer struct{}
+type UnimplementedQueryServer struct {
+}
 
 func (*UnimplementedQueryServer) Grants(ctx context.Context, req *QueryGrantsRequest) (*QueryGrantsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Grants not implemented")
 }
-
 func (*UnimplementedQueryServer) GranterGrants(ctx context.Context, req *QueryGranterGrantsRequest) (*QueryGranterGrantsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GranterGrants not implemented")
 }
-
 func (*UnimplementedQueryServer) GranteeGrants(ctx context.Context, req *QueryGranteeGrantsRequest) (*QueryGranteeGrantsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GranteeGrants not implemented")
 }
@@ -929,7 +893,6 @@ func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-
 func (m *QueryGrantsRequest) Size() (n int) {
 	if m == nil {
 		return 0
@@ -1049,11 +1012,9 @@ func (m *QueryGranteeGrantsResponse) Size() (n int) {
 func sovQuery(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
-
 func sozQuery(x uint64) (n int) {
 	return sovQuery(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-
 func (m *QueryGrantsRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1236,7 +1197,6 @@ func (m *QueryGrantsRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *QueryGrantsResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1357,7 +1317,6 @@ func (m *QueryGrantsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *QueryGranterGrantsRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1476,7 +1435,6 @@ func (m *QueryGranterGrantsRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *QueryGranterGrantsResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1597,7 +1555,6 @@ func (m *QueryGranterGrantsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *QueryGranteeGrantsRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1716,7 +1673,6 @@ func (m *QueryGranteeGrantsRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *QueryGranteeGrantsResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1837,7 +1793,6 @@ func (m *QueryGranteeGrantsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func skipQuery(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

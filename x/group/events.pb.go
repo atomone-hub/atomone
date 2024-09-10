@@ -5,20 +5,17 @@ package group
 
 import (
 	fmt "fmt"
+	_ "github.com/cosmos/cosmos-proto"
+	proto "github.com/cosmos/gogoproto/proto"
 	io "io"
 	math "math"
 	math_bits "math/bits"
-
-	_ "github.com/cosmos/cosmos-proto"
-	proto "github.com/cosmos/gogoproto/proto"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ = proto.Marshal
-	_ = fmt.Errorf
-	_ = math.Inf
-)
+var _ = proto.Marshal
+var _ = fmt.Errorf
+var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -38,11 +35,9 @@ func (*EventCreateGroup) ProtoMessage()    {}
 func (*EventCreateGroup) Descriptor() ([]byte, []int) {
 	return fileDescriptor_1ff531426cee09ab, []int{0}
 }
-
 func (m *EventCreateGroup) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *EventCreateGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_EventCreateGroup.Marshal(b, m, deterministic)
@@ -55,15 +50,12 @@ func (m *EventCreateGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, er
 		return b[:n], nil
 	}
 }
-
 func (m *EventCreateGroup) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_EventCreateGroup.Merge(m, src)
 }
-
 func (m *EventCreateGroup) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *EventCreateGroup) XXX_DiscardUnknown() {
 	xxx_messageInfo_EventCreateGroup.DiscardUnknown(m)
 }
@@ -89,11 +81,9 @@ func (*EventUpdateGroup) ProtoMessage()    {}
 func (*EventUpdateGroup) Descriptor() ([]byte, []int) {
 	return fileDescriptor_1ff531426cee09ab, []int{1}
 }
-
 func (m *EventUpdateGroup) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *EventUpdateGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_EventUpdateGroup.Marshal(b, m, deterministic)
@@ -106,15 +96,12 @@ func (m *EventUpdateGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, er
 		return b[:n], nil
 	}
 }
-
 func (m *EventUpdateGroup) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_EventUpdateGroup.Merge(m, src)
 }
-
 func (m *EventUpdateGroup) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *EventUpdateGroup) XXX_DiscardUnknown() {
 	xxx_messageInfo_EventUpdateGroup.DiscardUnknown(m)
 }
@@ -140,11 +127,9 @@ func (*EventCreateGroupPolicy) ProtoMessage()    {}
 func (*EventCreateGroupPolicy) Descriptor() ([]byte, []int) {
 	return fileDescriptor_1ff531426cee09ab, []int{2}
 }
-
 func (m *EventCreateGroupPolicy) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *EventCreateGroupPolicy) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_EventCreateGroupPolicy.Marshal(b, m, deterministic)
@@ -157,15 +142,12 @@ func (m *EventCreateGroupPolicy) XXX_Marshal(b []byte, deterministic bool) ([]by
 		return b[:n], nil
 	}
 }
-
 func (m *EventCreateGroupPolicy) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_EventCreateGroupPolicy.Merge(m, src)
 }
-
 func (m *EventCreateGroupPolicy) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *EventCreateGroupPolicy) XXX_DiscardUnknown() {
 	xxx_messageInfo_EventCreateGroupPolicy.DiscardUnknown(m)
 }
@@ -191,11 +173,9 @@ func (*EventUpdateGroupPolicy) ProtoMessage()    {}
 func (*EventUpdateGroupPolicy) Descriptor() ([]byte, []int) {
 	return fileDescriptor_1ff531426cee09ab, []int{3}
 }
-
 func (m *EventUpdateGroupPolicy) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *EventUpdateGroupPolicy) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_EventUpdateGroupPolicy.Marshal(b, m, deterministic)
@@ -208,15 +188,12 @@ func (m *EventUpdateGroupPolicy) XXX_Marshal(b []byte, deterministic bool) ([]by
 		return b[:n], nil
 	}
 }
-
 func (m *EventUpdateGroupPolicy) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_EventUpdateGroupPolicy.Merge(m, src)
 }
-
 func (m *EventUpdateGroupPolicy) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *EventUpdateGroupPolicy) XXX_DiscardUnknown() {
 	xxx_messageInfo_EventUpdateGroupPolicy.DiscardUnknown(m)
 }
@@ -242,11 +219,9 @@ func (*EventSubmitProposal) ProtoMessage()    {}
 func (*EventSubmitProposal) Descriptor() ([]byte, []int) {
 	return fileDescriptor_1ff531426cee09ab, []int{4}
 }
-
 func (m *EventSubmitProposal) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *EventSubmitProposal) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_EventSubmitProposal.Marshal(b, m, deterministic)
@@ -259,15 +234,12 @@ func (m *EventSubmitProposal) XXX_Marshal(b []byte, deterministic bool) ([]byte,
 		return b[:n], nil
 	}
 }
-
 func (m *EventSubmitProposal) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_EventSubmitProposal.Merge(m, src)
 }
-
 func (m *EventSubmitProposal) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *EventSubmitProposal) XXX_DiscardUnknown() {
 	xxx_messageInfo_EventSubmitProposal.DiscardUnknown(m)
 }
@@ -293,11 +265,9 @@ func (*EventWithdrawProposal) ProtoMessage()    {}
 func (*EventWithdrawProposal) Descriptor() ([]byte, []int) {
 	return fileDescriptor_1ff531426cee09ab, []int{5}
 }
-
 func (m *EventWithdrawProposal) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *EventWithdrawProposal) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_EventWithdrawProposal.Marshal(b, m, deterministic)
@@ -310,15 +280,12 @@ func (m *EventWithdrawProposal) XXX_Marshal(b []byte, deterministic bool) ([]byt
 		return b[:n], nil
 	}
 }
-
 func (m *EventWithdrawProposal) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_EventWithdrawProposal.Merge(m, src)
 }
-
 func (m *EventWithdrawProposal) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *EventWithdrawProposal) XXX_DiscardUnknown() {
 	xxx_messageInfo_EventWithdrawProposal.DiscardUnknown(m)
 }
@@ -344,11 +311,9 @@ func (*EventVote) ProtoMessage()    {}
 func (*EventVote) Descriptor() ([]byte, []int) {
 	return fileDescriptor_1ff531426cee09ab, []int{6}
 }
-
 func (m *EventVote) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *EventVote) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_EventVote.Marshal(b, m, deterministic)
@@ -361,15 +326,12 @@ func (m *EventVote) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-
 func (m *EventVote) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_EventVote.Merge(m, src)
 }
-
 func (m *EventVote) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *EventVote) XXX_DiscardUnknown() {
 	xxx_messageInfo_EventVote.DiscardUnknown(m)
 }
@@ -399,11 +361,9 @@ func (*EventExec) ProtoMessage()    {}
 func (*EventExec) Descriptor() ([]byte, []int) {
 	return fileDescriptor_1ff531426cee09ab, []int{7}
 }
-
 func (m *EventExec) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *EventExec) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_EventExec.Marshal(b, m, deterministic)
@@ -416,15 +376,12 @@ func (m *EventExec) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-
 func (m *EventExec) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_EventExec.Merge(m, src)
 }
-
 func (m *EventExec) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *EventExec) XXX_DiscardUnknown() {
 	xxx_messageInfo_EventExec.DiscardUnknown(m)
 }
@@ -466,11 +423,9 @@ func (*EventLeaveGroup) ProtoMessage()    {}
 func (*EventLeaveGroup) Descriptor() ([]byte, []int) {
 	return fileDescriptor_1ff531426cee09ab, []int{8}
 }
-
 func (m *EventLeaveGroup) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *EventLeaveGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_EventLeaveGroup.Marshal(b, m, deterministic)
@@ -483,15 +438,12 @@ func (m *EventLeaveGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, err
 		return b[:n], nil
 	}
 }
-
 func (m *EventLeaveGroup) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_EventLeaveGroup.Merge(m, src)
 }
-
 func (m *EventLeaveGroup) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *EventLeaveGroup) XXX_DiscardUnknown() {
 	xxx_messageInfo_EventLeaveGroup.DiscardUnknown(m)
 }
@@ -529,11 +481,9 @@ func (*EventProposalPruned) ProtoMessage()    {}
 func (*EventProposalPruned) Descriptor() ([]byte, []int) {
 	return fileDescriptor_1ff531426cee09ab, []int{9}
 }
-
 func (m *EventProposalPruned) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *EventProposalPruned) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_EventProposalPruned.Marshal(b, m, deterministic)
@@ -546,15 +496,12 @@ func (m *EventProposalPruned) XXX_Marshal(b []byte, deterministic bool) ([]byte,
 		return b[:n], nil
 	}
 }
-
 func (m *EventProposalPruned) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_EventProposalPruned.Merge(m, src)
 }
-
 func (m *EventProposalPruned) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *EventProposalPruned) XXX_DiscardUnknown() {
 	xxx_messageInfo_EventProposalPruned.DiscardUnknown(m)
 }
@@ -960,7 +907,6 @@ func encodeVarintEvents(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-
 func (m *EventCreateGroup) Size() (n int) {
 	if m == nil {
 		return 0
@@ -1104,11 +1050,9 @@ func (m *EventProposalPruned) Size() (n int) {
 func sovEvents(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
-
 func sozEvents(x uint64) (n int) {
 	return sovEvents(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-
 func (m *EventCreateGroup) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1178,7 +1122,6 @@ func (m *EventCreateGroup) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *EventUpdateGroup) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1248,7 +1191,6 @@ func (m *EventUpdateGroup) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *EventCreateGroupPolicy) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1331,7 +1273,6 @@ func (m *EventCreateGroupPolicy) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *EventUpdateGroupPolicy) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1414,7 +1355,6 @@ func (m *EventUpdateGroupPolicy) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *EventSubmitProposal) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1484,7 +1424,6 @@ func (m *EventSubmitProposal) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *EventWithdrawProposal) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1554,7 +1493,6 @@ func (m *EventWithdrawProposal) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *EventVote) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1624,7 +1562,6 @@ func (m *EventVote) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *EventExec) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1745,7 +1682,6 @@ func (m *EventExec) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *EventLeaveGroup) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1847,7 +1783,6 @@ func (m *EventLeaveGroup) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *EventProposalPruned) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1972,7 +1907,6 @@ func (m *EventProposalPruned) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func skipEvents(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

@@ -3,7 +3,7 @@ package services
 import (
 	"context"
 
-	appv1alpha1 "cosmossdk.io/api/cosmos/app/v1alpha1"
+	appv1alpha1 "github.com/atomone-hub/atomone/api/atomone/app/v1alpha1"
 )
 
 // AppQueryService implements the cosmos.app.v1alpha1.Query service

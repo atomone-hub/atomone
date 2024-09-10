@@ -5,11 +5,6 @@ package group
 
 import (
 	fmt "fmt"
-	io "io"
-	math "math"
-	math_bits "math/bits"
-	time "time"
-
 	types "github.com/atomone-hub/atomone/codec/types"
 	_ "github.com/atomone-hub/atomone/types/tx/amino"
 	_ "github.com/cosmos/cosmos-proto"
@@ -18,15 +13,17 @@ import (
 	github_com_cosmos_gogoproto_types "github.com/cosmos/gogoproto/types"
 	_ "google.golang.org/protobuf/types/known/durationpb"
 	_ "google.golang.org/protobuf/types/known/timestamppb"
+	io "io"
+	math "math"
+	math_bits "math/bits"
+	time "time"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ = proto.Marshal
-	_ = fmt.Errorf
-	_ = math.Inf
-	_ = time.Kitchen
-)
+var _ = proto.Marshal
+var _ = fmt.Errorf
+var _ = math.Inf
+var _ = time.Kitchen
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -178,11 +175,9 @@ func (*Member) ProtoMessage()    {}
 func (*Member) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ac9b629158bd9733, []int{0}
 }
-
 func (m *Member) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *Member) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_Member.Marshal(b, m, deterministic)
@@ -195,15 +190,12 @@ func (m *Member) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-
 func (m *Member) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Member.Merge(m, src)
 }
-
 func (m *Member) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *Member) XXX_DiscardUnknown() {
 	xxx_messageInfo_Member.DiscardUnknown(m)
 }
@@ -256,11 +248,9 @@ func (*MemberRequest) ProtoMessage()    {}
 func (*MemberRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ac9b629158bd9733, []int{1}
 }
-
 func (m *MemberRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *MemberRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MemberRequest.Marshal(b, m, deterministic)
@@ -273,15 +263,12 @@ func (m *MemberRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error
 		return b[:n], nil
 	}
 }
-
 func (m *MemberRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MemberRequest.Merge(m, src)
 }
-
 func (m *MemberRequest) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *MemberRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_MemberRequest.DiscardUnknown(m)
 }
@@ -329,11 +316,9 @@ func (*ThresholdDecisionPolicy) ProtoMessage()    {}
 func (*ThresholdDecisionPolicy) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ac9b629158bd9733, []int{2}
 }
-
 func (m *ThresholdDecisionPolicy) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *ThresholdDecisionPolicy) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ThresholdDecisionPolicy.Marshal(b, m, deterministic)
@@ -346,15 +331,12 @@ func (m *ThresholdDecisionPolicy) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return b[:n], nil
 	}
 }
-
 func (m *ThresholdDecisionPolicy) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ThresholdDecisionPolicy.Merge(m, src)
 }
-
 func (m *ThresholdDecisionPolicy) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *ThresholdDecisionPolicy) XXX_DiscardUnknown() {
 	xxx_messageInfo_ThresholdDecisionPolicy.DiscardUnknown(m)
 }
@@ -395,11 +377,9 @@ func (*PercentageDecisionPolicy) ProtoMessage()    {}
 func (*PercentageDecisionPolicy) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ac9b629158bd9733, []int{3}
 }
-
 func (m *PercentageDecisionPolicy) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *PercentageDecisionPolicy) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_PercentageDecisionPolicy.Marshal(b, m, deterministic)
@@ -412,15 +392,12 @@ func (m *PercentageDecisionPolicy) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
-
 func (m *PercentageDecisionPolicy) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_PercentageDecisionPolicy.Merge(m, src)
 }
-
 func (m *PercentageDecisionPolicy) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *PercentageDecisionPolicy) XXX_DiscardUnknown() {
 	xxx_messageInfo_PercentageDecisionPolicy.DiscardUnknown(m)
 }
@@ -466,11 +443,9 @@ func (*DecisionPolicyWindows) ProtoMessage()    {}
 func (*DecisionPolicyWindows) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ac9b629158bd9733, []int{4}
 }
-
 func (m *DecisionPolicyWindows) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *DecisionPolicyWindows) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_DecisionPolicyWindows.Marshal(b, m, deterministic)
@@ -483,15 +458,12 @@ func (m *DecisionPolicyWindows) XXX_Marshal(b []byte, deterministic bool) ([]byt
 		return b[:n], nil
 	}
 }
-
 func (m *DecisionPolicyWindows) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_DecisionPolicyWindows.Merge(m, src)
 }
-
 func (m *DecisionPolicyWindows) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *DecisionPolicyWindows) XXX_DiscardUnknown() {
 	xxx_messageInfo_DecisionPolicyWindows.DiscardUnknown(m)
 }
@@ -537,11 +509,9 @@ func (*GroupInfo) ProtoMessage()    {}
 func (*GroupInfo) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ac9b629158bd9733, []int{5}
 }
-
 func (m *GroupInfo) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *GroupInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_GroupInfo.Marshal(b, m, deterministic)
@@ -554,15 +524,12 @@ func (m *GroupInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-
 func (m *GroupInfo) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GroupInfo.Merge(m, src)
 }
-
 func (m *GroupInfo) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *GroupInfo) XXX_DiscardUnknown() {
 	xxx_messageInfo_GroupInfo.DiscardUnknown(m)
 }
@@ -625,11 +592,9 @@ func (*GroupMember) ProtoMessage()    {}
 func (*GroupMember) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ac9b629158bd9733, []int{6}
 }
-
 func (m *GroupMember) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *GroupMember) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_GroupMember.Marshal(b, m, deterministic)
@@ -642,15 +607,12 @@ func (m *GroupMember) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return b[:n], nil
 	}
 }
-
 func (m *GroupMember) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GroupMember.Merge(m, src)
 }
-
 func (m *GroupMember) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *GroupMember) XXX_DiscardUnknown() {
 	xxx_messageInfo_GroupMember.DiscardUnknown(m)
 }
@@ -699,11 +661,9 @@ func (*GroupPolicyInfo) ProtoMessage()    {}
 func (*GroupPolicyInfo) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ac9b629158bd9733, []int{7}
 }
-
 func (m *GroupPolicyInfo) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *GroupPolicyInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_GroupPolicyInfo.Marshal(b, m, deterministic)
@@ -716,15 +676,12 @@ func (m *GroupPolicyInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, err
 		return b[:n], nil
 	}
 }
-
 func (m *GroupPolicyInfo) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GroupPolicyInfo.Merge(m, src)
 }
-
 func (m *GroupPolicyInfo) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *GroupPolicyInfo) XXX_DiscardUnknown() {
 	xxx_messageInfo_GroupPolicyInfo.DiscardUnknown(m)
 }
@@ -792,11 +749,9 @@ func (*Proposal) ProtoMessage()    {}
 func (*Proposal) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ac9b629158bd9733, []int{8}
 }
-
 func (m *Proposal) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *Proposal) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_Proposal.Marshal(b, m, deterministic)
@@ -809,15 +764,12 @@ func (m *Proposal) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-
 func (m *Proposal) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Proposal.Merge(m, src)
 }
-
 func (m *Proposal) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *Proposal) XXX_DiscardUnknown() {
 	xxx_messageInfo_Proposal.DiscardUnknown(m)
 }
@@ -842,11 +794,9 @@ func (*TallyResult) ProtoMessage()    {}
 func (*TallyResult) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ac9b629158bd9733, []int{9}
 }
-
 func (m *TallyResult) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *TallyResult) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_TallyResult.Marshal(b, m, deterministic)
@@ -859,15 +809,12 @@ func (m *TallyResult) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return b[:n], nil
 	}
 }
-
 func (m *TallyResult) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_TallyResult.Merge(m, src)
 }
-
 func (m *TallyResult) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *TallyResult) XXX_DiscardUnknown() {
 	xxx_messageInfo_TallyResult.DiscardUnknown(m)
 }
@@ -894,11 +841,9 @@ func (*Vote) ProtoMessage()    {}
 func (*Vote) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ac9b629158bd9733, []int{10}
 }
-
 func (m *Vote) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *Vote) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_Vote.Marshal(b, m, deterministic)
@@ -911,15 +856,12 @@ func (m *Vote) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-
 func (m *Vote) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Vote.Merge(m, src)
 }
-
 func (m *Vote) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *Vote) XXX_DiscardUnknown() {
 	xxx_messageInfo_Vote.DiscardUnknown(m)
 }
@@ -1112,7 +1054,6 @@ func (this *GroupPolicyInfo) Equal(that interface{}) bool {
 	}
 	return true
 }
-
 func (m *Member) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -1750,7 +1691,6 @@ func encodeVarintTypes(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-
 func (m *Member) Size() (n int) {
 	if m == nil {
 		return 0
@@ -2031,11 +1971,9 @@ func (m *Vote) Size() (n int) {
 func sovTypes(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
-
 func sozTypes(x uint64) (n int) {
 	return sovTypes(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-
 func (m *Member) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2215,7 +2153,6 @@ func (m *Member) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *MemberRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2362,7 +2299,6 @@ func (m *MemberRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *ThresholdDecisionPolicy) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2481,7 +2417,6 @@ func (m *ThresholdDecisionPolicy) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *PercentageDecisionPolicy) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2600,7 +2535,6 @@ func (m *PercentageDecisionPolicy) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *DecisionPolicyWindows) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2717,7 +2651,6 @@ func (m *DecisionPolicyWindows) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *GroupInfo) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2935,7 +2868,6 @@ func (m *GroupInfo) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *GroupMember) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3041,7 +2973,6 @@ func (m *GroupMember) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *GroupPolicyInfo) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3295,7 +3226,6 @@ func (m *GroupPolicyInfo) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *Proposal) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3734,7 +3664,6 @@ func (m *Proposal) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *TallyResult) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3913,7 +3842,6 @@ func (m *TallyResult) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *Vote) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -4099,7 +4027,6 @@ func (m *Vote) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func skipTypes(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

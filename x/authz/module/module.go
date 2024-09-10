@@ -10,8 +10,8 @@ import (
 
 	abci "github.com/cometbft/cometbft/abci/types"
 
-	modulev1 "cosmossdk.io/api/cosmos/authz/module/v1"
 	"cosmossdk.io/depinject"
+	modulev1 "github.com/atomone-hub/atomone/api/atomone/authz/module/v1"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 

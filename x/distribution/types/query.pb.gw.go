@@ -25,15 +25,13 @@ import (
 )
 
 // Suppress "imported and not used" errors
-var (
-	_ codes.Code
-	_ io.Reader
-	_ status.Status
-	_ = runtime.String
-	_ = utilities.NewDoubleArray
-	_ = descriptor.ForMessage
-	_ = metadata.Join
-)
+var _ codes.Code
+var _ io.Reader
+var _ status.Status
+var _ = runtime.String
+var _ = utilities.NewDoubleArray
+var _ = descriptor.ForMessage
+var _ = metadata.Join
 
 func request_Query_Params_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq QueryParamsRequest
@@ -41,6 +39,7 @@ func request_Query_Params_0(ctx context.Context, marshaler runtime.Marshaler, cl
 
 	msg, err := client.Params(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_Query_Params_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -49,6 +48,7 @@ func local_request_Query_Params_0(ctx context.Context, marshaler runtime.Marshal
 
 	msg, err := server.Params(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_Query_ValidatorDistributionInfo_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -68,12 +68,14 @@ func request_Query_ValidatorDistributionInfo_0(ctx context.Context, marshaler ru
 	}
 
 	protoReq.ValidatorAddress, err = runtime.String(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "validator_address", err)
 	}
 
 	msg, err := client.ValidatorDistributionInfo(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_Query_ValidatorDistributionInfo_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -93,12 +95,14 @@ func local_request_Query_ValidatorDistributionInfo_0(ctx context.Context, marsha
 	}
 
 	protoReq.ValidatorAddress, err = runtime.String(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "validator_address", err)
 	}
 
 	msg, err := server.ValidatorDistributionInfo(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_Query_ValidatorOutstandingRewards_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -118,12 +122,14 @@ func request_Query_ValidatorOutstandingRewards_0(ctx context.Context, marshaler 
 	}
 
 	protoReq.ValidatorAddress, err = runtime.String(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "validator_address", err)
 	}
 
 	msg, err := client.ValidatorOutstandingRewards(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_Query_ValidatorOutstandingRewards_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -143,12 +149,14 @@ func local_request_Query_ValidatorOutstandingRewards_0(ctx context.Context, mars
 	}
 
 	protoReq.ValidatorAddress, err = runtime.String(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "validator_address", err)
 	}
 
 	msg, err := server.ValidatorOutstandingRewards(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_Query_ValidatorCommission_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -168,12 +176,14 @@ func request_Query_ValidatorCommission_0(ctx context.Context, marshaler runtime.
 	}
 
 	protoReq.ValidatorAddress, err = runtime.String(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "validator_address", err)
 	}
 
 	msg, err := client.ValidatorCommission(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_Query_ValidatorCommission_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -193,15 +203,19 @@ func local_request_Query_ValidatorCommission_0(ctx context.Context, marshaler ru
 	}
 
 	protoReq.ValidatorAddress, err = runtime.String(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "validator_address", err)
 	}
 
 	msg, err := server.ValidatorCommission(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
-var filter_Query_ValidatorSlashes_0 = &utilities.DoubleArray{Encoding: map[string]int{"validator_address": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+var (
+	filter_Query_ValidatorSlashes_0 = &utilities.DoubleArray{Encoding: map[string]int{"validator_address": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+)
 
 func request_Query_ValidatorSlashes_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq QueryValidatorSlashesRequest
@@ -220,6 +234,7 @@ func request_Query_ValidatorSlashes_0(ctx context.Context, marshaler runtime.Mar
 	}
 
 	protoReq.ValidatorAddress, err = runtime.String(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "validator_address", err)
 	}
@@ -233,6 +248,7 @@ func request_Query_ValidatorSlashes_0(ctx context.Context, marshaler runtime.Mar
 
 	msg, err := client.ValidatorSlashes(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_Query_ValidatorSlashes_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -252,6 +268,7 @@ func local_request_Query_ValidatorSlashes_0(ctx context.Context, marshaler runti
 	}
 
 	protoReq.ValidatorAddress, err = runtime.String(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "validator_address", err)
 	}
@@ -265,6 +282,7 @@ func local_request_Query_ValidatorSlashes_0(ctx context.Context, marshaler runti
 
 	msg, err := server.ValidatorSlashes(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_Query_DelegationRewards_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -284,6 +302,7 @@ func request_Query_DelegationRewards_0(ctx context.Context, marshaler runtime.Ma
 	}
 
 	protoReq.DelegatorAddress, err = runtime.String(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "delegator_address", err)
 	}
@@ -294,12 +313,14 @@ func request_Query_DelegationRewards_0(ctx context.Context, marshaler runtime.Ma
 	}
 
 	protoReq.ValidatorAddress, err = runtime.String(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "validator_address", err)
 	}
 
 	msg, err := client.DelegationRewards(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_Query_DelegationRewards_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -319,6 +340,7 @@ func local_request_Query_DelegationRewards_0(ctx context.Context, marshaler runt
 	}
 
 	protoReq.DelegatorAddress, err = runtime.String(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "delegator_address", err)
 	}
@@ -329,12 +351,14 @@ func local_request_Query_DelegationRewards_0(ctx context.Context, marshaler runt
 	}
 
 	protoReq.ValidatorAddress, err = runtime.String(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "validator_address", err)
 	}
 
 	msg, err := server.DelegationRewards(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_Query_DelegationTotalRewards_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -354,12 +378,14 @@ func request_Query_DelegationTotalRewards_0(ctx context.Context, marshaler runti
 	}
 
 	protoReq.DelegatorAddress, err = runtime.String(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "delegator_address", err)
 	}
 
 	msg, err := client.DelegationTotalRewards(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_Query_DelegationTotalRewards_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -379,12 +405,14 @@ func local_request_Query_DelegationTotalRewards_0(ctx context.Context, marshaler
 	}
 
 	protoReq.DelegatorAddress, err = runtime.String(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "delegator_address", err)
 	}
 
 	msg, err := server.DelegationTotalRewards(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_Query_DelegatorValidators_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -404,12 +432,14 @@ func request_Query_DelegatorValidators_0(ctx context.Context, marshaler runtime.
 	}
 
 	protoReq.DelegatorAddress, err = runtime.String(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "delegator_address", err)
 	}
 
 	msg, err := client.DelegatorValidators(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_Query_DelegatorValidators_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -429,12 +459,14 @@ func local_request_Query_DelegatorValidators_0(ctx context.Context, marshaler ru
 	}
 
 	protoReq.DelegatorAddress, err = runtime.String(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "delegator_address", err)
 	}
 
 	msg, err := server.DelegatorValidators(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_Query_DelegatorWithdrawAddress_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -454,12 +486,14 @@ func request_Query_DelegatorWithdrawAddress_0(ctx context.Context, marshaler run
 	}
 
 	protoReq.DelegatorAddress, err = runtime.String(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "delegator_address", err)
 	}
 
 	msg, err := client.DelegatorWithdrawAddress(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_Query_DelegatorWithdrawAddress_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -479,12 +513,14 @@ func local_request_Query_DelegatorWithdrawAddress_0(ctx context.Context, marshal
 	}
 
 	protoReq.DelegatorAddress, err = runtime.String(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "delegator_address", err)
 	}
 
 	msg, err := server.DelegatorWithdrawAddress(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_Query_CommunityPool_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -493,6 +529,7 @@ func request_Query_CommunityPool_0(ctx context.Context, marshaler runtime.Marsha
 
 	msg, err := client.CommunityPool(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_Query_CommunityPool_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -501,6 +538,7 @@ func local_request_Query_CommunityPool_0(ctx context.Context, marshaler runtime.
 
 	msg, err := server.CommunityPool(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 // RegisterQueryHandlerServer registers the http handlers for service Query to "mux".
@@ -508,6 +546,7 @@ func local_request_Query_CommunityPool_0(ctx context.Context, marshaler runtime.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterQueryHandlerFromEndpoint instead.
 func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, server QueryServer) error {
+
 	mux.Handle("GET", pattern_Query_Params_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -528,6 +567,7 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		}
 
 		forward_Query_Params_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_ValidatorDistributionInfo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -550,6 +590,7 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		}
 
 		forward_Query_ValidatorDistributionInfo_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_ValidatorOutstandingRewards_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -572,6 +613,7 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		}
 
 		forward_Query_ValidatorOutstandingRewards_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_ValidatorCommission_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -594,6 +636,7 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		}
 
 		forward_Query_ValidatorCommission_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_ValidatorSlashes_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -616,6 +659,7 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		}
 
 		forward_Query_ValidatorSlashes_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_DelegationRewards_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -638,6 +682,7 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		}
 
 		forward_Query_DelegationRewards_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_DelegationTotalRewards_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -660,6 +705,7 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		}
 
 		forward_Query_DelegationTotalRewards_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_DelegatorValidators_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -682,6 +728,7 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		}
 
 		forward_Query_DelegatorValidators_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_DelegatorWithdrawAddress_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -704,6 +751,7 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		}
 
 		forward_Query_DelegatorWithdrawAddress_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_CommunityPool_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -726,6 +774,7 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		}
 
 		forward_Query_CommunityPool_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	return nil
@@ -734,7 +783,7 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 // RegisterQueryHandlerFromEndpoint is same as RegisterQueryHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterQueryHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.Dial(endpoint, opts...) //nolint: staticcheck
+	conn, err := grpc.Dial(endpoint, opts...)
 	if err != nil {
 		return err
 	}
@@ -768,6 +817,7 @@ func RegisterQueryHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
 // "QueryClient" to call the correct interceptors.
 func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, client QueryClient) error {
+
 	mux.Handle("GET", pattern_Query_Params_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -785,6 +835,7 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 		}
 
 		forward_Query_Params_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_ValidatorDistributionInfo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -804,6 +855,7 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 		}
 
 		forward_Query_ValidatorDistributionInfo_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_ValidatorOutstandingRewards_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -823,6 +875,7 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 		}
 
 		forward_Query_ValidatorOutstandingRewards_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_ValidatorCommission_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -842,6 +895,7 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 		}
 
 		forward_Query_ValidatorCommission_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_ValidatorSlashes_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -861,6 +915,7 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 		}
 
 		forward_Query_ValidatorSlashes_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_DelegationRewards_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -880,6 +935,7 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 		}
 
 		forward_Query_DelegationRewards_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_DelegationTotalRewards_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -899,6 +955,7 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 		}
 
 		forward_Query_DelegationTotalRewards_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_DelegatorValidators_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -918,6 +975,7 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 		}
 
 		forward_Query_DelegatorValidators_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_DelegatorWithdrawAddress_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -937,6 +995,7 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 		}
 
 		forward_Query_DelegatorWithdrawAddress_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Query_CommunityPool_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -956,6 +1015,7 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 		}
 
 		forward_Query_CommunityPool_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	return nil

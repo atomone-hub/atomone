@@ -6,10 +6,6 @@ package types
 import (
 	context "context"
 	fmt "fmt"
-	io "io"
-	math "math"
-	math_bits "math/bits"
-
 	types "github.com/atomone-hub/atomone/types"
 	_ "github.com/atomone-hub/atomone/types/msgservice"
 	_ "github.com/atomone-hub/atomone/types/tx/amino"
@@ -20,14 +16,15 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	io "io"
+	math "math"
+	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ = proto.Marshal
-	_ = fmt.Errorf
-	_ = math.Inf
-)
+var _ = proto.Marshal
+var _ = fmt.Errorf
+var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -52,11 +49,9 @@ func (*MsgVerifyInvariant) ProtoMessage()    {}
 func (*MsgVerifyInvariant) Descriptor() ([]byte, []int) {
 	return fileDescriptor_b3360f990c0da03f, []int{0}
 }
-
 func (m *MsgVerifyInvariant) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *MsgVerifyInvariant) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgVerifyInvariant.Marshal(b, m, deterministic)
@@ -69,15 +64,12 @@ func (m *MsgVerifyInvariant) XXX_Marshal(b []byte, deterministic bool) ([]byte, 
 		return b[:n], nil
 	}
 }
-
 func (m *MsgVerifyInvariant) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgVerifyInvariant.Merge(m, src)
 }
-
 func (m *MsgVerifyInvariant) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *MsgVerifyInvariant) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgVerifyInvariant.DiscardUnknown(m)
 }
@@ -85,7 +77,8 @@ func (m *MsgVerifyInvariant) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgVerifyInvariant proto.InternalMessageInfo
 
 // MsgVerifyInvariantResponse defines the Msg/VerifyInvariant response type.
-type MsgVerifyInvariantResponse struct{}
+type MsgVerifyInvariantResponse struct {
+}
 
 func (m *MsgVerifyInvariantResponse) Reset()         { *m = MsgVerifyInvariantResponse{} }
 func (m *MsgVerifyInvariantResponse) String() string { return proto.CompactTextString(m) }
@@ -93,11 +86,9 @@ func (*MsgVerifyInvariantResponse) ProtoMessage()    {}
 func (*MsgVerifyInvariantResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_b3360f990c0da03f, []int{1}
 }
-
 func (m *MsgVerifyInvariantResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *MsgVerifyInvariantResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgVerifyInvariantResponse.Marshal(b, m, deterministic)
@@ -110,15 +101,12 @@ func (m *MsgVerifyInvariantResponse) XXX_Marshal(b []byte, deterministic bool) (
 		return b[:n], nil
 	}
 }
-
 func (m *MsgVerifyInvariantResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgVerifyInvariantResponse.Merge(m, src)
 }
-
 func (m *MsgVerifyInvariantResponse) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *MsgVerifyInvariantResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgVerifyInvariantResponse.DiscardUnknown(m)
 }
@@ -142,11 +130,9 @@ func (*MsgUpdateParams) ProtoMessage()    {}
 func (*MsgUpdateParams) Descriptor() ([]byte, []int) {
 	return fileDescriptor_b3360f990c0da03f, []int{2}
 }
-
 func (m *MsgUpdateParams) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *MsgUpdateParams) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgUpdateParams.Marshal(b, m, deterministic)
@@ -159,15 +145,12 @@ func (m *MsgUpdateParams) XXX_Marshal(b []byte, deterministic bool) ([]byte, err
 		return b[:n], nil
 	}
 }
-
 func (m *MsgUpdateParams) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgUpdateParams.Merge(m, src)
 }
-
 func (m *MsgUpdateParams) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *MsgUpdateParams) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgUpdateParams.DiscardUnknown(m)
 }
@@ -192,7 +175,8 @@ func (m *MsgUpdateParams) GetConstantFee() types.Coin {
 // MsgUpdateParams message.
 //
 // Since: cosmos-sdk 0.47
-type MsgUpdateParamsResponse struct{}
+type MsgUpdateParamsResponse struct {
+}
 
 func (m *MsgUpdateParamsResponse) Reset()         { *m = MsgUpdateParamsResponse{} }
 func (m *MsgUpdateParamsResponse) String() string { return proto.CompactTextString(m) }
@@ -200,11 +184,9 @@ func (*MsgUpdateParamsResponse) ProtoMessage()    {}
 func (*MsgUpdateParamsResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_b3360f990c0da03f, []int{3}
 }
-
 func (m *MsgUpdateParamsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *MsgUpdateParamsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgUpdateParamsResponse.Marshal(b, m, deterministic)
@@ -217,15 +199,12 @@ func (m *MsgUpdateParamsResponse) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return b[:n], nil
 	}
 }
-
 func (m *MsgUpdateParamsResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgUpdateParamsResponse.Merge(m, src)
 }
-
 func (m *MsgUpdateParamsResponse) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *MsgUpdateParamsResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgUpdateParamsResponse.DiscardUnknown(m)
 }
@@ -278,10 +257,8 @@ var fileDescriptor_b3360f990c0da03f = []byte{
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ context.Context
-	_ grpc.ClientConn
-)
+var _ context.Context
+var _ grpc.ClientConn
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
@@ -338,12 +315,12 @@ type MsgServer interface {
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
-type UnimplementedMsgServer struct{}
+type UnimplementedMsgServer struct {
+}
 
 func (*UnimplementedMsgServer) VerifyInvariant(ctx context.Context, req *MsgVerifyInvariant) (*MsgVerifyInvariantResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyInvariant not implemented")
 }
-
 func (*UnimplementedMsgServer) UpdateParams(ctx context.Context, req *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
 }
@@ -546,7 +523,6 @@ func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-
 func (m *MsgVerifyInvariant) Size() (n int) {
 	if m == nil {
 		return 0
@@ -604,11 +580,9 @@ func (m *MsgUpdateParamsResponse) Size() (n int) {
 func sovTx(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
-
 func sozTx(x uint64) (n int) {
 	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-
 func (m *MsgVerifyInvariant) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -755,7 +729,6 @@ func (m *MsgVerifyInvariant) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *MsgVerifyInvariantResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -806,7 +779,6 @@ func (m *MsgVerifyInvariantResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *MsgUpdateParams) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -922,7 +894,6 @@ func (m *MsgUpdateParams) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *MsgUpdateParamsResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -973,7 +944,6 @@ func (m *MsgUpdateParamsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func skipTx(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

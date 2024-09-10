@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/pflag"
 	"google.golang.org/protobuf/reflect/protoreflect"
 
-	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
+	autocliv1 "github.com/atomone-hub/atomone/api/atomone/autocli/v1"
 )
 
 func (b *Builder) AddMessageFlags(ctx context.Context, flagSet *pflag.FlagSet, messageType protoreflect.MessageType, commandOptions *autocliv1.RpcCommandOptions) (*MessageBinder, error) {

@@ -1,9 +1,9 @@
 package runtime
 
 import (
-	appv1alpha1 "cosmossdk.io/api/cosmos/app/v1alpha1"
-	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
-	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
+	appv1alpha1 "github.com/atomone-hub/atomone/api/atomone/app/v1alpha1"
+	autocliv1 "github.com/atomone-hub/atomone/api/atomone/autocli/v1"
+	reflectionv1 "github.com/atomone-hub/atomone/api/atomone/reflection/v1"
 
 	"github.com/atomone-hub/atomone/runtime/services"
 )

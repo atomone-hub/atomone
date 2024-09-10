@@ -8,8 +8,8 @@ import (
 
 	abci "github.com/cometbft/cometbft/abci/types"
 
-	runtimev1alpha1 "cosmossdk.io/api/cosmos/app/runtime/v1alpha1"
-	appv1alpha1 "cosmossdk.io/api/cosmos/app/v1alpha1"
+	runtimev1alpha1 "github.com/atomone-hub/atomone/api/atomone/app/runtime/v1alpha1"
+	appv1alpha1 "github.com/atomone-hub/atomone/api/atomone/app/v1alpha1"
 
 	"github.com/atomone-hub/atomone/baseapp"
 	"github.com/atomone-hub/atomone/client"

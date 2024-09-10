@@ -5,20 +5,17 @@ package types
 
 import (
 	fmt "fmt"
+	_ "github.com/cosmos/gogoproto/gogoproto"
+	proto "github.com/cosmos/gogoproto/proto"
 	io "io"
 	math "math"
 	math_bits "math/bits"
-
-	_ "github.com/cosmos/gogoproto/gogoproto"
-	proto "github.com/cosmos/gogoproto/proto"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ = proto.Marshal
-	_ = fmt.Errorf
-	_ = math.Inf
-)
+var _ = proto.Marshal
+var _ = fmt.Errorf
+var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -40,11 +37,9 @@ func (*MultiSignature) ProtoMessage()    {}
 func (*MultiSignature) Descriptor() ([]byte, []int) {
 	return fileDescriptor_0684060873e67d1e, []int{0}
 }
-
 func (m *MultiSignature) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *MultiSignature) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MultiSignature.Marshal(b, m, deterministic)
@@ -57,15 +52,12 @@ func (m *MultiSignature) XXX_Marshal(b []byte, deterministic bool) ([]byte, erro
 		return b[:n], nil
 	}
 }
-
 func (m *MultiSignature) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MultiSignature.Merge(m, src)
 }
-
 func (m *MultiSignature) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *MultiSignature) XXX_DiscardUnknown() {
 	xxx_messageInfo_MultiSignature.DiscardUnknown(m)
 }
@@ -93,11 +85,9 @@ func (*CompactBitArray) ProtoMessage() {}
 func (*CompactBitArray) Descriptor() ([]byte, []int) {
 	return fileDescriptor_0684060873e67d1e, []int{1}
 }
-
 func (m *CompactBitArray) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *CompactBitArray) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_CompactBitArray.Marshal(b, m, deterministic)
@@ -110,15 +100,12 @@ func (m *CompactBitArray) XXX_Marshal(b []byte, deterministic bool) ([]byte, err
 		return b[:n], nil
 	}
 }
-
 func (m *CompactBitArray) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_CompactBitArray.Merge(m, src)
 }
-
 func (m *CompactBitArray) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *CompactBitArray) XXX_DiscardUnknown() {
 	xxx_messageInfo_CompactBitArray.DiscardUnknown(m)
 }
@@ -251,7 +238,6 @@ func encodeVarintMultisig(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-
 func (m *MultiSignature) Size() (n int) {
 	if m == nil {
 		return 0
@@ -289,11 +275,9 @@ func (m *CompactBitArray) Size() (n int) {
 func sovMultisig(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
-
 func sozMultisig(x uint64) (n int) {
 	return sovMultisig(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-
 func (m *MultiSignature) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -377,7 +361,6 @@ func (m *MultiSignature) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *CompactBitArray) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -481,7 +464,6 @@ func (m *CompactBitArray) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func skipMultisig(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

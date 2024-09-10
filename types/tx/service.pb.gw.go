@@ -25,15 +25,13 @@ import (
 )
 
 // Suppress "imported and not used" errors
-var (
-	_ codes.Code
-	_ io.Reader
-	_ status.Status
-	_ = runtime.String
-	_ = utilities.NewDoubleArray
-	_ = descriptor.ForMessage
-	_ = metadata.Join
-)
+var _ codes.Code
+var _ io.Reader
+var _ status.Status
+var _ = runtime.String
+var _ = utilities.NewDoubleArray
+var _ = descriptor.ForMessage
+var _ = metadata.Join
 
 func request_Service_Simulate_0(ctx context.Context, marshaler runtime.Marshaler, client ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq SimulateRequest
@@ -49,6 +47,7 @@ func request_Service_Simulate_0(ctx context.Context, marshaler runtime.Marshaler
 
 	msg, err := client.Simulate(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_Service_Simulate_0(ctx context.Context, marshaler runtime.Marshaler, server ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -65,6 +64,7 @@ func local_request_Service_Simulate_0(ctx context.Context, marshaler runtime.Mar
 
 	msg, err := server.Simulate(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_Service_GetTx_0(ctx context.Context, marshaler runtime.Marshaler, client ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -84,12 +84,14 @@ func request_Service_GetTx_0(ctx context.Context, marshaler runtime.Marshaler, c
 	}
 
 	protoReq.Hash, err = runtime.String(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "hash", err)
 	}
 
 	msg, err := client.GetTx(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_Service_GetTx_0(ctx context.Context, marshaler runtime.Marshaler, server ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -109,12 +111,14 @@ func local_request_Service_GetTx_0(ctx context.Context, marshaler runtime.Marsha
 	}
 
 	protoReq.Hash, err = runtime.String(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "hash", err)
 	}
 
 	msg, err := server.GetTx(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_Service_BroadcastTx_0(ctx context.Context, marshaler runtime.Marshaler, client ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -131,6 +135,7 @@ func request_Service_BroadcastTx_0(ctx context.Context, marshaler runtime.Marsha
 
 	msg, err := client.BroadcastTx(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_Service_BroadcastTx_0(ctx context.Context, marshaler runtime.Marshaler, server ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -147,9 +152,12 @@ func local_request_Service_BroadcastTx_0(ctx context.Context, marshaler runtime.
 
 	msg, err := server.BroadcastTx(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
-var filter_Service_GetTxsEvent_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+var (
+	filter_Service_GetTxsEvent_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+)
 
 func request_Service_GetTxsEvent_0(ctx context.Context, marshaler runtime.Marshaler, client ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetTxsEventRequest
@@ -164,6 +172,7 @@ func request_Service_GetTxsEvent_0(ctx context.Context, marshaler runtime.Marsha
 
 	msg, err := client.GetTxsEvent(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_Service_GetTxsEvent_0(ctx context.Context, marshaler runtime.Marshaler, server ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -179,9 +188,12 @@ func local_request_Service_GetTxsEvent_0(ctx context.Context, marshaler runtime.
 
 	msg, err := server.GetTxsEvent(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
-var filter_Service_GetBlockWithTxs_0 = &utilities.DoubleArray{Encoding: map[string]int{"height": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+var (
+	filter_Service_GetBlockWithTxs_0 = &utilities.DoubleArray{Encoding: map[string]int{"height": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+)
 
 func request_Service_GetBlockWithTxs_0(ctx context.Context, marshaler runtime.Marshaler, client ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetBlockWithTxsRequest
@@ -200,6 +212,7 @@ func request_Service_GetBlockWithTxs_0(ctx context.Context, marshaler runtime.Ma
 	}
 
 	protoReq.Height, err = runtime.Int64(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "height", err)
 	}
@@ -213,6 +226,7 @@ func request_Service_GetBlockWithTxs_0(ctx context.Context, marshaler runtime.Ma
 
 	msg, err := client.GetBlockWithTxs(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_Service_GetBlockWithTxs_0(ctx context.Context, marshaler runtime.Marshaler, server ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -232,6 +246,7 @@ func local_request_Service_GetBlockWithTxs_0(ctx context.Context, marshaler runt
 	}
 
 	protoReq.Height, err = runtime.Int64(val)
+
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "height", err)
 	}
@@ -245,6 +260,7 @@ func local_request_Service_GetBlockWithTxs_0(ctx context.Context, marshaler runt
 
 	msg, err := server.GetBlockWithTxs(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_Service_TxDecode_0(ctx context.Context, marshaler runtime.Marshaler, client ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -261,6 +277,7 @@ func request_Service_TxDecode_0(ctx context.Context, marshaler runtime.Marshaler
 
 	msg, err := client.TxDecode(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_Service_TxDecode_0(ctx context.Context, marshaler runtime.Marshaler, server ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -277,6 +294,7 @@ func local_request_Service_TxDecode_0(ctx context.Context, marshaler runtime.Mar
 
 	msg, err := server.TxDecode(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_Service_TxEncode_0(ctx context.Context, marshaler runtime.Marshaler, client ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -293,6 +311,7 @@ func request_Service_TxEncode_0(ctx context.Context, marshaler runtime.Marshaler
 
 	msg, err := client.TxEncode(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_Service_TxEncode_0(ctx context.Context, marshaler runtime.Marshaler, server ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -309,6 +328,7 @@ func local_request_Service_TxEncode_0(ctx context.Context, marshaler runtime.Mar
 
 	msg, err := server.TxEncode(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_Service_TxEncodeAmino_0(ctx context.Context, marshaler runtime.Marshaler, client ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -325,6 +345,7 @@ func request_Service_TxEncodeAmino_0(ctx context.Context, marshaler runtime.Mars
 
 	msg, err := client.TxEncodeAmino(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_Service_TxEncodeAmino_0(ctx context.Context, marshaler runtime.Marshaler, server ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -341,6 +362,7 @@ func local_request_Service_TxEncodeAmino_0(ctx context.Context, marshaler runtim
 
 	msg, err := server.TxEncodeAmino(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_Service_TxDecodeAmino_0(ctx context.Context, marshaler runtime.Marshaler, client ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -357,6 +379,7 @@ func request_Service_TxDecodeAmino_0(ctx context.Context, marshaler runtime.Mars
 
 	msg, err := client.TxDecodeAmino(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_Service_TxDecodeAmino_0(ctx context.Context, marshaler runtime.Marshaler, server ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -373,6 +396,7 @@ func local_request_Service_TxDecodeAmino_0(ctx context.Context, marshaler runtim
 
 	msg, err := server.TxDecodeAmino(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 // RegisterServiceHandlerServer registers the http handlers for service Service to "mux".
@@ -380,6 +404,7 @@ func local_request_Service_TxDecodeAmino_0(ctx context.Context, marshaler runtim
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterServiceHandlerFromEndpoint instead.
 func RegisterServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ServiceServer) error {
+
 	mux.Handle("POST", pattern_Service_Simulate_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -400,6 +425,7 @@ func RegisterServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		}
 
 		forward_Service_Simulate_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Service_GetTx_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -422,6 +448,7 @@ func RegisterServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		}
 
 		forward_Service_GetTx_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_Service_BroadcastTx_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -444,6 +471,7 @@ func RegisterServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		}
 
 		forward_Service_BroadcastTx_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Service_GetTxsEvent_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -466,6 +494,7 @@ func RegisterServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		}
 
 		forward_Service_GetTxsEvent_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Service_GetBlockWithTxs_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -488,6 +517,7 @@ func RegisterServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		}
 
 		forward_Service_GetBlockWithTxs_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_Service_TxDecode_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -510,6 +540,7 @@ func RegisterServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		}
 
 		forward_Service_TxDecode_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_Service_TxEncode_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -532,6 +563,7 @@ func RegisterServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		}
 
 		forward_Service_TxEncode_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_Service_TxEncodeAmino_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -554,6 +586,7 @@ func RegisterServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		}
 
 		forward_Service_TxEncodeAmino_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_Service_TxDecodeAmino_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -576,6 +609,7 @@ func RegisterServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		}
 
 		forward_Service_TxDecodeAmino_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	return nil
@@ -584,7 +618,7 @@ func RegisterServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 // RegisterServiceHandlerFromEndpoint is same as RegisterServiceHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.Dial(endpoint, opts...) //nolint: staticcheck
+	conn, err := grpc.Dial(endpoint, opts...)
 	if err != nil {
 		return err
 	}
@@ -618,6 +652,7 @@ func RegisterServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *gr
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
 // "ServiceClient" to call the correct interceptors.
 func RegisterServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client ServiceClient) error {
+
 	mux.Handle("POST", pattern_Service_Simulate_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -635,6 +670,7 @@ func RegisterServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		}
 
 		forward_Service_Simulate_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Service_GetTx_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -654,6 +690,7 @@ func RegisterServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		}
 
 		forward_Service_GetTx_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_Service_BroadcastTx_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -673,6 +710,7 @@ func RegisterServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		}
 
 		forward_Service_BroadcastTx_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Service_GetTxsEvent_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -692,6 +730,7 @@ func RegisterServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		}
 
 		forward_Service_GetTxsEvent_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("GET", pattern_Service_GetBlockWithTxs_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -711,6 +750,7 @@ func RegisterServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		}
 
 		forward_Service_GetBlockWithTxs_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_Service_TxDecode_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -730,6 +770,7 @@ func RegisterServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		}
 
 		forward_Service_TxDecode_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_Service_TxEncode_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -749,6 +790,7 @@ func RegisterServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		}
 
 		forward_Service_TxEncode_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_Service_TxEncodeAmino_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -768,6 +810,7 @@ func RegisterServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		}
 
 		forward_Service_TxEncodeAmino_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_Service_TxDecodeAmino_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -787,6 +830,7 @@ func RegisterServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		}
 
 		forward_Service_TxDecodeAmino_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	return nil

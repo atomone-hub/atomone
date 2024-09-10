@@ -5,24 +5,21 @@ package types
 
 import (
 	fmt "fmt"
-	io "io"
-	math "math"
-	math_bits "math/bits"
-
 	github_com_atomone_hub_atomone_types "github.com/atomone-hub/atomone/types"
 	types "github.com/atomone-hub/atomone/types"
 	_ "github.com/atomone-hub/atomone/types/tx/amino"
 	_ "github.com/cosmos/cosmos-proto"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	proto "github.com/cosmos/gogoproto/proto"
+	io "io"
+	math "math"
+	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ = proto.Marshal
-	_ = fmt.Errorf
-	_ = math.Inf
-)
+var _ = proto.Marshal
+var _ = fmt.Errorf
+var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -46,11 +43,9 @@ func (*DelegatorWithdrawInfo) ProtoMessage()    {}
 func (*DelegatorWithdrawInfo) Descriptor() ([]byte, []int) {
 	return fileDescriptor_7acf9190d444c000, []int{0}
 }
-
 func (m *DelegatorWithdrawInfo) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *DelegatorWithdrawInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_DelegatorWithdrawInfo.Marshal(b, m, deterministic)
@@ -63,15 +58,12 @@ func (m *DelegatorWithdrawInfo) XXX_Marshal(b []byte, deterministic bool) ([]byt
 		return b[:n], nil
 	}
 }
-
 func (m *DelegatorWithdrawInfo) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_DelegatorWithdrawInfo.Merge(m, src)
 }
-
 func (m *DelegatorWithdrawInfo) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *DelegatorWithdrawInfo) XXX_DiscardUnknown() {
 	xxx_messageInfo_DelegatorWithdrawInfo.DiscardUnknown(m)
 }
@@ -92,11 +84,9 @@ func (*ValidatorOutstandingRewardsRecord) ProtoMessage()    {}
 func (*ValidatorOutstandingRewardsRecord) Descriptor() ([]byte, []int) {
 	return fileDescriptor_7acf9190d444c000, []int{1}
 }
-
 func (m *ValidatorOutstandingRewardsRecord) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *ValidatorOutstandingRewardsRecord) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ValidatorOutstandingRewardsRecord.Marshal(b, m, deterministic)
@@ -109,15 +99,12 @@ func (m *ValidatorOutstandingRewardsRecord) XXX_Marshal(b []byte, deterministic 
 		return b[:n], nil
 	}
 }
-
 func (m *ValidatorOutstandingRewardsRecord) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ValidatorOutstandingRewardsRecord.Merge(m, src)
 }
-
 func (m *ValidatorOutstandingRewardsRecord) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *ValidatorOutstandingRewardsRecord) XXX_DiscardUnknown() {
 	xxx_messageInfo_ValidatorOutstandingRewardsRecord.DiscardUnknown(m)
 }
@@ -139,11 +126,9 @@ func (*ValidatorAccumulatedCommissionRecord) ProtoMessage()    {}
 func (*ValidatorAccumulatedCommissionRecord) Descriptor() ([]byte, []int) {
 	return fileDescriptor_7acf9190d444c000, []int{2}
 }
-
 func (m *ValidatorAccumulatedCommissionRecord) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *ValidatorAccumulatedCommissionRecord) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ValidatorAccumulatedCommissionRecord.Marshal(b, m, deterministic)
@@ -156,15 +141,12 @@ func (m *ValidatorAccumulatedCommissionRecord) XXX_Marshal(b []byte, determinist
 		return b[:n], nil
 	}
 }
-
 func (m *ValidatorAccumulatedCommissionRecord) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ValidatorAccumulatedCommissionRecord.Merge(m, src)
 }
-
 func (m *ValidatorAccumulatedCommissionRecord) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *ValidatorAccumulatedCommissionRecord) XXX_DiscardUnknown() {
 	xxx_messageInfo_ValidatorAccumulatedCommissionRecord.DiscardUnknown(m)
 }
@@ -188,11 +170,9 @@ func (*ValidatorHistoricalRewardsRecord) ProtoMessage()    {}
 func (*ValidatorHistoricalRewardsRecord) Descriptor() ([]byte, []int) {
 	return fileDescriptor_7acf9190d444c000, []int{3}
 }
-
 func (m *ValidatorHistoricalRewardsRecord) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *ValidatorHistoricalRewardsRecord) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ValidatorHistoricalRewardsRecord.Marshal(b, m, deterministic)
@@ -205,15 +185,12 @@ func (m *ValidatorHistoricalRewardsRecord) XXX_Marshal(b []byte, deterministic b
 		return b[:n], nil
 	}
 }
-
 func (m *ValidatorHistoricalRewardsRecord) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ValidatorHistoricalRewardsRecord.Merge(m, src)
 }
-
 func (m *ValidatorHistoricalRewardsRecord) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *ValidatorHistoricalRewardsRecord) XXX_DiscardUnknown() {
 	xxx_messageInfo_ValidatorHistoricalRewardsRecord.DiscardUnknown(m)
 }
@@ -234,11 +211,9 @@ func (*ValidatorCurrentRewardsRecord) ProtoMessage()    {}
 func (*ValidatorCurrentRewardsRecord) Descriptor() ([]byte, []int) {
 	return fileDescriptor_7acf9190d444c000, []int{4}
 }
-
 func (m *ValidatorCurrentRewardsRecord) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *ValidatorCurrentRewardsRecord) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ValidatorCurrentRewardsRecord.Marshal(b, m, deterministic)
@@ -251,15 +226,12 @@ func (m *ValidatorCurrentRewardsRecord) XXX_Marshal(b []byte, deterministic bool
 		return b[:n], nil
 	}
 }
-
 func (m *ValidatorCurrentRewardsRecord) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ValidatorCurrentRewardsRecord.Merge(m, src)
 }
-
 func (m *ValidatorCurrentRewardsRecord) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *ValidatorCurrentRewardsRecord) XXX_DiscardUnknown() {
 	xxx_messageInfo_ValidatorCurrentRewardsRecord.DiscardUnknown(m)
 }
@@ -282,11 +254,9 @@ func (*DelegatorStartingInfoRecord) ProtoMessage()    {}
 func (*DelegatorStartingInfoRecord) Descriptor() ([]byte, []int) {
 	return fileDescriptor_7acf9190d444c000, []int{5}
 }
-
 func (m *DelegatorStartingInfoRecord) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *DelegatorStartingInfoRecord) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_DelegatorStartingInfoRecord.Marshal(b, m, deterministic)
@@ -299,15 +269,12 @@ func (m *DelegatorStartingInfoRecord) XXX_Marshal(b []byte, deterministic bool) 
 		return b[:n], nil
 	}
 }
-
 func (m *DelegatorStartingInfoRecord) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_DelegatorStartingInfoRecord.Merge(m, src)
 }
-
 func (m *DelegatorStartingInfoRecord) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *DelegatorStartingInfoRecord) XXX_DiscardUnknown() {
 	xxx_messageInfo_DelegatorStartingInfoRecord.DiscardUnknown(m)
 }
@@ -332,11 +299,9 @@ func (*ValidatorSlashEventRecord) ProtoMessage()    {}
 func (*ValidatorSlashEventRecord) Descriptor() ([]byte, []int) {
 	return fileDescriptor_7acf9190d444c000, []int{6}
 }
-
 func (m *ValidatorSlashEventRecord) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *ValidatorSlashEventRecord) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ValidatorSlashEventRecord.Marshal(b, m, deterministic)
@@ -349,15 +314,12 @@ func (m *ValidatorSlashEventRecord) XXX_Marshal(b []byte, deterministic bool) ([
 		return b[:n], nil
 	}
 }
-
 func (m *ValidatorSlashEventRecord) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ValidatorSlashEventRecord.Merge(m, src)
 }
-
 func (m *ValidatorSlashEventRecord) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *ValidatorSlashEventRecord) XXX_DiscardUnknown() {
 	xxx_messageInfo_ValidatorSlashEventRecord.DiscardUnknown(m)
 }
@@ -394,11 +356,9 @@ func (*GenesisState) ProtoMessage()    {}
 func (*GenesisState) Descriptor() ([]byte, []int) {
 	return fileDescriptor_7acf9190d444c000, []int{7}
 }
-
 func (m *GenesisState) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *GenesisState) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_GenesisState.Marshal(b, m, deterministic)
@@ -411,15 +371,12 @@ func (m *GenesisState) XXX_Marshal(b []byte, deterministic bool) ([]byte, error)
 		return b[:n], nil
 	}
 }
-
 func (m *GenesisState) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GenesisState.Merge(m, src)
 }
-
 func (m *GenesisState) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *GenesisState) XXX_DiscardUnknown() {
 	xxx_messageInfo_GenesisState.DiscardUnknown(m)
 }
@@ -965,7 +922,6 @@ func encodeVarintGenesis(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-
 func (m *DelegatorWithdrawInfo) Size() (n int) {
 	if m == nil {
 		return 0
@@ -1152,11 +1108,9 @@ func (m *GenesisState) Size() (n int) {
 func sovGenesis(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
-
 func sozGenesis(x uint64) (n int) {
 	return sovGenesis(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-
 func (m *DelegatorWithdrawInfo) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1271,7 +1225,6 @@ func (m *DelegatorWithdrawInfo) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *ValidatorOutstandingRewardsRecord) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1388,7 +1341,6 @@ func (m *ValidatorOutstandingRewardsRecord) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *ValidatorAccumulatedCommissionRecord) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1504,7 +1456,6 @@ func (m *ValidatorAccumulatedCommissionRecord) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *ValidatorHistoricalRewardsRecord) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1639,7 +1590,6 @@ func (m *ValidatorHistoricalRewardsRecord) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *ValidatorCurrentRewardsRecord) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1755,7 +1705,6 @@ func (m *ValidatorCurrentRewardsRecord) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *DelegatorStartingInfoRecord) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1903,7 +1852,6 @@ func (m *DelegatorStartingInfoRecord) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *ValidatorSlashEventRecord) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2057,7 +2005,6 @@ func (m *ValidatorSlashEventRecord) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *GenesisState) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2444,7 +2391,6 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func skipGenesis(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

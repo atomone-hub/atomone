@@ -7,7 +7,7 @@ import (
 	reflect "reflect"
 	sync "sync"
 
-	_ "cosmossdk.io/api/cosmos/app/v1alpha1"
+	_ "github.com/atomone-hub/atomone/api/atomone/app/v1alpha1"
 
 	runtime "github.com/cosmos/cosmos-proto/runtime"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"

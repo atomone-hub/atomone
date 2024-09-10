@@ -7,14 +7,6 @@ import (
 	bytes "bytes"
 	compress_gzip "compress/gzip"
 	fmt "fmt"
-	io "io"
-	io_ioutil "io/ioutil"
-	math "math"
-	math_bits "math/bits"
-	reflect "reflect"
-	strings "strings"
-	time "time"
-
 	types1 "github.com/atomone-hub/atomone/codec/types"
 	github_com_atomone_hub_atomone_types "github.com/atomone-hub/atomone/types"
 	types2 "github.com/atomone-hub/atomone/types"
@@ -29,15 +21,20 @@ import (
 	github_com_cosmos_gogoproto_types "github.com/cosmos/gogoproto/types"
 	_ "google.golang.org/protobuf/types/known/durationpb"
 	_ "google.golang.org/protobuf/types/known/timestamppb"
+	io "io"
+	io_ioutil "io/ioutil"
+	math "math"
+	math_bits "math/bits"
+	reflect "reflect"
+	strings "strings"
+	time "time"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ = proto.Marshal
-	_ = fmt.Errorf
-	_ = math.Inf
-	_ = time.Kitchen
-)
+var _ = proto.Marshal
+var _ = fmt.Errorf
+var _ = math.Inf
+var _ = time.Kitchen
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -128,11 +125,9 @@ func (*HistoricalInfo) ProtoMessage()    {}
 func (*HistoricalInfo) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ea2176f79a7dc8df, []int{0}
 }
-
 func (m *HistoricalInfo) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *HistoricalInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_HistoricalInfo.Marshal(b, m, deterministic)
@@ -145,15 +140,12 @@ func (m *HistoricalInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, erro
 		return b[:n], nil
 	}
 }
-
 func (m *HistoricalInfo) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_HistoricalInfo.Merge(m, src)
 }
-
 func (m *HistoricalInfo) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *HistoricalInfo) XXX_DiscardUnknown() {
 	xxx_messageInfo_HistoricalInfo.DiscardUnknown(m)
 }
@@ -192,11 +184,9 @@ func (*CommissionRates) ProtoMessage() {}
 func (*CommissionRates) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ea2176f79a7dc8df, []int{1}
 }
-
 func (m *CommissionRates) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *CommissionRates) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_CommissionRates.Marshal(b, m, deterministic)
@@ -209,15 +199,12 @@ func (m *CommissionRates) XXX_Marshal(b []byte, deterministic bool) ([]byte, err
 		return b[:n], nil
 	}
 }
-
 func (m *CommissionRates) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_CommissionRates.Merge(m, src)
 }
-
 func (m *CommissionRates) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *CommissionRates) XXX_DiscardUnknown() {
 	xxx_messageInfo_CommissionRates.DiscardUnknown(m)
 }
@@ -238,11 +225,9 @@ func (*Commission) ProtoMessage() {}
 func (*Commission) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ea2176f79a7dc8df, []int{2}
 }
-
 func (m *Commission) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *Commission) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_Commission.Marshal(b, m, deterministic)
@@ -255,15 +240,12 @@ func (m *Commission) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-
 func (m *Commission) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Commission.Merge(m, src)
 }
-
 func (m *Commission) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *Commission) XXX_DiscardUnknown() {
 	xxx_messageInfo_Commission.DiscardUnknown(m)
 }
@@ -296,11 +278,9 @@ func (*Description) ProtoMessage() {}
 func (*Description) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ea2176f79a7dc8df, []int{3}
 }
-
 func (m *Description) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *Description) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_Description.Marshal(b, m, deterministic)
@@ -313,15 +293,12 @@ func (m *Description) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return b[:n], nil
 	}
 }
-
 func (m *Description) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Description.Merge(m, src)
 }
-
 func (m *Description) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *Description) XXX_DiscardUnknown() {
 	xxx_messageInfo_Description.DiscardUnknown(m)
 }
@@ -415,11 +392,9 @@ func (*Validator) ProtoMessage() {}
 func (*Validator) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ea2176f79a7dc8df, []int{4}
 }
-
 func (m *Validator) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *Validator) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_Validator.Marshal(b, m, deterministic)
@@ -432,15 +407,12 @@ func (m *Validator) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-
 func (m *Validator) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Validator.Merge(m, src)
 }
-
 func (m *Validator) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *Validator) XXX_DiscardUnknown() {
 	xxx_messageInfo_Validator.DiscardUnknown(m)
 }
@@ -457,11 +429,9 @@ func (*ValAddresses) ProtoMessage() {}
 func (*ValAddresses) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ea2176f79a7dc8df, []int{5}
 }
-
 func (m *ValAddresses) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *ValAddresses) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ValAddresses.Marshal(b, m, deterministic)
@@ -474,15 +444,12 @@ func (m *ValAddresses) XXX_Marshal(b []byte, deterministic bool) ([]byte, error)
 		return b[:n], nil
 	}
 }
-
 func (m *ValAddresses) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ValAddresses.Merge(m, src)
 }
-
 func (m *ValAddresses) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *ValAddresses) XXX_DiscardUnknown() {
 	xxx_messageInfo_ValAddresses.DiscardUnknown(m)
 }
@@ -509,11 +476,9 @@ func (*DVPair) ProtoMessage() {}
 func (*DVPair) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ea2176f79a7dc8df, []int{6}
 }
-
 func (m *DVPair) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *DVPair) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_DVPair.Marshal(b, m, deterministic)
@@ -526,15 +491,12 @@ func (m *DVPair) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-
 func (m *DVPair) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_DVPair.Merge(m, src)
 }
-
 func (m *DVPair) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *DVPair) XXX_DiscardUnknown() {
 	xxx_messageInfo_DVPair.DiscardUnknown(m)
 }
@@ -552,11 +514,9 @@ func (*DVPairs) ProtoMessage()    {}
 func (*DVPairs) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ea2176f79a7dc8df, []int{7}
 }
-
 func (m *DVPairs) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *DVPairs) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_DVPairs.Marshal(b, m, deterministic)
@@ -569,15 +529,12 @@ func (m *DVPairs) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-
 func (m *DVPairs) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_DVPairs.Merge(m, src)
 }
-
 func (m *DVPairs) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *DVPairs) XXX_DiscardUnknown() {
 	xxx_messageInfo_DVPairs.DiscardUnknown(m)
 }
@@ -606,11 +563,9 @@ func (*DVVTriplet) ProtoMessage() {}
 func (*DVVTriplet) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ea2176f79a7dc8df, []int{8}
 }
-
 func (m *DVVTriplet) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *DVVTriplet) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_DVVTriplet.Marshal(b, m, deterministic)
@@ -623,15 +578,12 @@ func (m *DVVTriplet) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-
 func (m *DVVTriplet) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_DVVTriplet.Merge(m, src)
 }
-
 func (m *DVVTriplet) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *DVVTriplet) XXX_DiscardUnknown() {
 	xxx_messageInfo_DVVTriplet.DiscardUnknown(m)
 }
@@ -649,11 +601,9 @@ func (*DVVTriplets) ProtoMessage()    {}
 func (*DVVTriplets) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ea2176f79a7dc8df, []int{9}
 }
-
 func (m *DVVTriplets) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *DVVTriplets) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_DVVTriplets.Marshal(b, m, deterministic)
@@ -666,15 +616,12 @@ func (m *DVVTriplets) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return b[:n], nil
 	}
 }
-
 func (m *DVVTriplets) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_DVVTriplets.Merge(m, src)
 }
-
 func (m *DVVTriplets) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *DVVTriplets) XXX_DiscardUnknown() {
 	xxx_messageInfo_DVVTriplets.DiscardUnknown(m)
 }
@@ -705,11 +652,9 @@ func (*Delegation) ProtoMessage() {}
 func (*Delegation) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ea2176f79a7dc8df, []int{10}
 }
-
 func (m *Delegation) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *Delegation) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_Delegation.Marshal(b, m, deterministic)
@@ -722,15 +667,12 @@ func (m *Delegation) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-
 func (m *Delegation) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Delegation.Merge(m, src)
 }
-
 func (m *Delegation) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *Delegation) XXX_DiscardUnknown() {
 	xxx_messageInfo_Delegation.DiscardUnknown(m)
 }
@@ -753,11 +695,9 @@ func (*UnbondingDelegation) ProtoMessage() {}
 func (*UnbondingDelegation) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ea2176f79a7dc8df, []int{11}
 }
-
 func (m *UnbondingDelegation) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *UnbondingDelegation) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_UnbondingDelegation.Marshal(b, m, deterministic)
@@ -770,15 +710,12 @@ func (m *UnbondingDelegation) XXX_Marshal(b []byte, deterministic bool) ([]byte,
 		return b[:n], nil
 	}
 }
-
 func (m *UnbondingDelegation) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_UnbondingDelegation.Merge(m, src)
 }
-
 func (m *UnbondingDelegation) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *UnbondingDelegation) XXX_DiscardUnknown() {
 	xxx_messageInfo_UnbondingDelegation.DiscardUnknown(m)
 }
@@ -808,11 +745,9 @@ func (*UnbondingDelegationEntry) ProtoMessage() {}
 func (*UnbondingDelegationEntry) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ea2176f79a7dc8df, []int{12}
 }
-
 func (m *UnbondingDelegationEntry) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *UnbondingDelegationEntry) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_UnbondingDelegationEntry.Marshal(b, m, deterministic)
@@ -825,15 +760,12 @@ func (m *UnbondingDelegationEntry) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
-
 func (m *UnbondingDelegationEntry) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_UnbondingDelegationEntry.Merge(m, src)
 }
-
 func (m *UnbondingDelegationEntry) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *UnbondingDelegationEntry) XXX_DiscardUnknown() {
 	xxx_messageInfo_UnbondingDelegationEntry.DiscardUnknown(m)
 }
@@ -891,11 +823,9 @@ func (*RedelegationEntry) ProtoMessage() {}
 func (*RedelegationEntry) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ea2176f79a7dc8df, []int{13}
 }
-
 func (m *RedelegationEntry) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *RedelegationEntry) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_RedelegationEntry.Marshal(b, m, deterministic)
@@ -908,15 +838,12 @@ func (m *RedelegationEntry) XXX_Marshal(b []byte, deterministic bool) ([]byte, e
 		return b[:n], nil
 	}
 }
-
 func (m *RedelegationEntry) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_RedelegationEntry.Merge(m, src)
 }
-
 func (m *RedelegationEntry) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *RedelegationEntry) XXX_DiscardUnknown() {
 	xxx_messageInfo_RedelegationEntry.DiscardUnknown(m)
 }
@@ -971,11 +898,9 @@ func (*Redelegation) ProtoMessage() {}
 func (*Redelegation) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ea2176f79a7dc8df, []int{14}
 }
-
 func (m *Redelegation) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *Redelegation) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_Redelegation.Marshal(b, m, deterministic)
@@ -988,15 +913,12 @@ func (m *Redelegation) XXX_Marshal(b []byte, deterministic bool) ([]byte, error)
 		return b[:n], nil
 	}
 }
-
 func (m *Redelegation) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Redelegation.Merge(m, src)
 }
-
 func (m *Redelegation) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *Redelegation) XXX_DiscardUnknown() {
 	xxx_messageInfo_Redelegation.DiscardUnknown(m)
 }
@@ -1026,11 +948,9 @@ func (*Params) ProtoMessage() {}
 func (*Params) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ea2176f79a7dc8df, []int{15}
 }
-
 func (m *Params) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *Params) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_Params.Marshal(b, m, deterministic)
@@ -1043,15 +963,12 @@ func (m *Params) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-
 func (m *Params) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Params.Merge(m, src)
 }
-
 func (m *Params) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *Params) XXX_DiscardUnknown() {
 	xxx_messageInfo_Params.DiscardUnknown(m)
 }
@@ -1105,11 +1022,9 @@ func (*DelegationResponse) ProtoMessage() {}
 func (*DelegationResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ea2176f79a7dc8df, []int{16}
 }
-
 func (m *DelegationResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *DelegationResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_DelegationResponse.Marshal(b, m, deterministic)
@@ -1122,15 +1037,12 @@ func (m *DelegationResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, 
 		return b[:n], nil
 	}
 }
-
 func (m *DelegationResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_DelegationResponse.Merge(m, src)
 }
-
 func (m *DelegationResponse) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *DelegationResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_DelegationResponse.DiscardUnknown(m)
 }
@@ -1165,11 +1077,9 @@ func (*RedelegationEntryResponse) ProtoMessage()    {}
 func (*RedelegationEntryResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ea2176f79a7dc8df, []int{17}
 }
-
 func (m *RedelegationEntryResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *RedelegationEntryResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_RedelegationEntryResponse.Marshal(b, m, deterministic)
@@ -1182,15 +1092,12 @@ func (m *RedelegationEntryResponse) XXX_Marshal(b []byte, deterministic bool) ([
 		return b[:n], nil
 	}
 }
-
 func (m *RedelegationEntryResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_RedelegationEntryResponse.Merge(m, src)
 }
-
 func (m *RedelegationEntryResponse) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *RedelegationEntryResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_RedelegationEntryResponse.DiscardUnknown(m)
 }
@@ -1218,11 +1125,9 @@ func (*RedelegationResponse) ProtoMessage()    {}
 func (*RedelegationResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ea2176f79a7dc8df, []int{18}
 }
-
 func (m *RedelegationResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *RedelegationResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_RedelegationResponse.Marshal(b, m, deterministic)
@@ -1235,15 +1140,12 @@ func (m *RedelegationResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte
 		return b[:n], nil
 	}
 }
-
 func (m *RedelegationResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_RedelegationResponse.Merge(m, src)
 }
-
 func (m *RedelegationResponse) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *RedelegationResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_RedelegationResponse.DiscardUnknown(m)
 }
@@ -1277,11 +1179,9 @@ func (*Pool) ProtoMessage()    {}
 func (*Pool) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ea2176f79a7dc8df, []int{19}
 }
-
 func (m *Pool) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *Pool) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_Pool.Marshal(b, m, deterministic)
@@ -1294,15 +1194,12 @@ func (m *Pool) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-
 func (m *Pool) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Pool.Merge(m, src)
 }
-
 func (m *Pool) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *Pool) XXX_DiscardUnknown() {
 	xxx_messageInfo_Pool.DiscardUnknown(m)
 }
@@ -1322,11 +1219,9 @@ func (*ValidatorUpdates) ProtoMessage()    {}
 func (*ValidatorUpdates) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ea2176f79a7dc8df, []int{20}
 }
-
 func (m *ValidatorUpdates) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *ValidatorUpdates) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ValidatorUpdates.Marshal(b, m, deterministic)
@@ -1339,15 +1234,12 @@ func (m *ValidatorUpdates) XXX_Marshal(b []byte, deterministic bool) ([]byte, er
 		return b[:n], nil
 	}
 }
-
 func (m *ValidatorUpdates) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ValidatorUpdates.Merge(m, src)
 }
-
 func (m *ValidatorUpdates) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *ValidatorUpdates) XXX_DiscardUnknown() {
 	xxx_messageInfo_ValidatorUpdates.DiscardUnknown(m)
 }
@@ -1517,10 +1409,9 @@ var fileDescriptor_ea2176f79a7dc8df = []byte{
 func (this *Pool) Description() (desc *github_com_cosmos_gogoproto_protoc_gen_gogo_descriptor.FileDescriptorSet) {
 	return StakingDescription()
 }
-
 func StakingDescription() (desc *github_com_cosmos_gogoproto_protoc_gen_gogo_descriptor.FileDescriptorSet) {
 	d := &github_com_cosmos_gogoproto_protoc_gen_gogo_descriptor.FileDescriptorSet{}
-	gzipped := []byte{
+	var gzipped = []byte{
 		// 10935 bytes of a gzipped FileDescriptorSet
 		0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe4, 0x7d, 0x6b, 0x90, 0x1c, 0xc7,
 		0x79, 0xd8, 0xed, 0xe3, 0xf6, 0xf1, 0xed, 0x6b, 0xae, 0xef, 0x00, 0x1c, 0x16, 0x24, 0xee, 0x38,
@@ -2221,7 +2112,6 @@ func StakingDescription() (desc *github_com_cosmos_gogoproto_protoc_gen_gogo_des
 	}
 	return d
 }
-
 func (this *CommissionRates) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
@@ -2252,7 +2142,6 @@ func (this *CommissionRates) Equal(that interface{}) bool {
 	}
 	return true
 }
-
 func (this *Commission) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
@@ -2280,7 +2169,6 @@ func (this *Commission) Equal(that interface{}) bool {
 	}
 	return true
 }
-
 func (this *Description) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
@@ -2317,7 +2205,6 @@ func (this *Description) Equal(that interface{}) bool {
 	}
 	return true
 }
-
 func (this *UnbondingDelegationEntry) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
@@ -2357,7 +2244,6 @@ func (this *UnbondingDelegationEntry) Equal(that interface{}) bool {
 	}
 	return true
 }
-
 func (this *RedelegationEntry) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
@@ -2397,7 +2283,6 @@ func (this *RedelegationEntry) Equal(that interface{}) bool {
 	}
 	return true
 }
-
 func (this *Params) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
@@ -2437,7 +2322,6 @@ func (this *Params) Equal(that interface{}) bool {
 	}
 	return true
 }
-
 func (this *RedelegationEntryResponse) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
@@ -2465,7 +2349,6 @@ func (this *RedelegationEntryResponse) Equal(that interface{}) bool {
 	}
 	return true
 }
-
 func (this *Pool) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
@@ -2493,7 +2376,6 @@ func (this *Pool) Equal(that interface{}) bool {
 	}
 	return true
 }
-
 func (m *HistoricalInfo) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -3598,7 +3480,6 @@ func encodeVarintStaking(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-
 func (m *HistoricalInfo) Size() (n int) {
 	if m == nil {
 		return 0
@@ -4021,23 +3902,19 @@ func (m *ValidatorUpdates) Size() (n int) {
 func sovStaking(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
-
 func sozStaking(x uint64) (n int) {
 	return sovStaking(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-
 func (this *ValAddresses) String() string {
 	if this == nil {
 		return "nil"
 	}
-	s := strings.Join([]string{
-		`&ValAddresses{`,
+	s := strings.Join([]string{`&ValAddresses{`,
 		`Addresses:` + fmt.Sprintf("%v", this.Addresses) + `,`,
 		`}`,
 	}, "")
 	return s
 }
-
 func valueToStringStaking(v interface{}) string {
 	rv := reflect.ValueOf(v)
 	if rv.IsNil() {
@@ -4046,7 +3923,6 @@ func valueToStringStaking(v interface{}) string {
 	pv := reflect.Indirect(rv).Interface()
 	return fmt.Sprintf("*%v", pv)
 }
-
 func (m *HistoricalInfo) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -4164,7 +4040,6 @@ func (m *HistoricalInfo) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *CommissionRates) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -4317,7 +4192,6 @@ func (m *CommissionRates) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *Commission) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -4434,7 +4308,6 @@ func (m *Commission) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *Description) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -4645,7 +4518,6 @@ func (m *Description) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *Validator) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -5118,7 +4990,6 @@ func (m *Validator) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *ValAddresses) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -5201,7 +5072,6 @@ func (m *ValAddresses) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *DVPair) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -5316,7 +5186,6 @@ func (m *DVPair) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *DVPairs) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -5401,7 +5270,6 @@ func (m *DVPairs) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *DVVTriplet) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -5548,7 +5416,6 @@ func (m *DVVTriplet) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *DVVTriplets) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -5633,7 +5500,6 @@ func (m *DVVTriplets) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *Delegation) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -5782,7 +5648,6 @@ func (m *Delegation) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *UnbondingDelegation) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -5931,7 +5796,6 @@ func (m *UnbondingDelegation) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *UnbondingDelegationEntry) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -6140,7 +6004,6 @@ func (m *UnbondingDelegationEntry) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *RedelegationEntry) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -6349,7 +6212,6 @@ func (m *RedelegationEntry) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *Redelegation) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -6530,7 +6392,6 @@ func (m *Redelegation) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *Params) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -6737,7 +6598,6 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *DelegationResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -6854,7 +6714,6 @@ func (m *DelegationResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *RedelegationEntryResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -6972,7 +6831,6 @@ func (m *RedelegationEntryResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *RedelegationResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -7090,7 +6948,6 @@ func (m *RedelegationResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *Pool) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -7209,7 +7066,6 @@ func (m *Pool) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *ValidatorUpdates) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -7294,7 +7150,6 @@ func (m *ValidatorUpdates) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func skipStaking(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

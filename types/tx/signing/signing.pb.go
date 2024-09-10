@@ -5,21 +5,18 @@ package signing
 
 import (
 	fmt "fmt"
-	io "io"
-	math "math"
-	math_bits "math/bits"
-
 	types "github.com/atomone-hub/atomone/codec/types"
 	types1 "github.com/atomone-hub/atomone/crypto/types"
 	proto "github.com/cosmos/gogoproto/proto"
+	io "io"
+	math "math"
+	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ = proto.Marshal
-	_ = fmt.Errorf
-	_ = math.Inf
-)
+var _ = proto.Marshal
+var _ = fmt.Errorf
+var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -109,11 +106,9 @@ func (*SignatureDescriptors) ProtoMessage()    {}
 func (*SignatureDescriptors) Descriptor() ([]byte, []int) {
 	return fileDescriptor_f0d2cd8a84bc7f1d, []int{0}
 }
-
 func (m *SignatureDescriptors) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *SignatureDescriptors) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_SignatureDescriptors.Marshal(b, m, deterministic)
@@ -126,15 +121,12 @@ func (m *SignatureDescriptors) XXX_Marshal(b []byte, deterministic bool) ([]byte
 		return b[:n], nil
 	}
 }
-
 func (m *SignatureDescriptors) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_SignatureDescriptors.Merge(m, src)
 }
-
 func (m *SignatureDescriptors) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *SignatureDescriptors) XXX_DiscardUnknown() {
 	xxx_messageInfo_SignatureDescriptors.DiscardUnknown(m)
 }
@@ -168,11 +160,9 @@ func (*SignatureDescriptor) ProtoMessage()    {}
 func (*SignatureDescriptor) Descriptor() ([]byte, []int) {
 	return fileDescriptor_f0d2cd8a84bc7f1d, []int{1}
 }
-
 func (m *SignatureDescriptor) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *SignatureDescriptor) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_SignatureDescriptor.Marshal(b, m, deterministic)
@@ -185,15 +175,12 @@ func (m *SignatureDescriptor) XXX_Marshal(b []byte, deterministic bool) ([]byte,
 		return b[:n], nil
 	}
 }
-
 func (m *SignatureDescriptor) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_SignatureDescriptor.Merge(m, src)
 }
-
 func (m *SignatureDescriptor) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *SignatureDescriptor) XXX_DiscardUnknown() {
 	xxx_messageInfo_SignatureDescriptor.DiscardUnknown(m)
 }
@@ -239,11 +226,9 @@ func (*SignatureDescriptor_Data) ProtoMessage()    {}
 func (*SignatureDescriptor_Data) Descriptor() ([]byte, []int) {
 	return fileDescriptor_f0d2cd8a84bc7f1d, []int{1, 0}
 }
-
 func (m *SignatureDescriptor_Data) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *SignatureDescriptor_Data) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_SignatureDescriptor_Data.Marshal(b, m, deterministic)
@@ -256,15 +241,12 @@ func (m *SignatureDescriptor_Data) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
-
 func (m *SignatureDescriptor_Data) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_SignatureDescriptor_Data.Merge(m, src)
 }
-
 func (m *SignatureDescriptor_Data) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *SignatureDescriptor_Data) XXX_DiscardUnknown() {
 	xxx_messageInfo_SignatureDescriptor_Data.DiscardUnknown(m)
 }
@@ -330,11 +312,9 @@ func (*SignatureDescriptor_Data_Single) ProtoMessage()    {}
 func (*SignatureDescriptor_Data_Single) Descriptor() ([]byte, []int) {
 	return fileDescriptor_f0d2cd8a84bc7f1d, []int{1, 0, 0}
 }
-
 func (m *SignatureDescriptor_Data_Single) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *SignatureDescriptor_Data_Single) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_SignatureDescriptor_Data_Single.Marshal(b, m, deterministic)
@@ -347,15 +327,12 @@ func (m *SignatureDescriptor_Data_Single) XXX_Marshal(b []byte, deterministic bo
 		return b[:n], nil
 	}
 }
-
 func (m *SignatureDescriptor_Data_Single) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_SignatureDescriptor_Data_Single.Merge(m, src)
 }
-
 func (m *SignatureDescriptor_Data_Single) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *SignatureDescriptor_Data_Single) XXX_DiscardUnknown() {
 	xxx_messageInfo_SignatureDescriptor_Data_Single.DiscardUnknown(m)
 }
@@ -390,11 +367,9 @@ func (*SignatureDescriptor_Data_Multi) ProtoMessage()    {}
 func (*SignatureDescriptor_Data_Multi) Descriptor() ([]byte, []int) {
 	return fileDescriptor_f0d2cd8a84bc7f1d, []int{1, 0, 1}
 }
-
 func (m *SignatureDescriptor_Data_Multi) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *SignatureDescriptor_Data_Multi) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_SignatureDescriptor_Data_Multi.Marshal(b, m, deterministic)
@@ -407,15 +382,12 @@ func (m *SignatureDescriptor_Data_Multi) XXX_Marshal(b []byte, deterministic boo
 		return b[:n], nil
 	}
 }
-
 func (m *SignatureDescriptor_Data_Multi) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_SignatureDescriptor_Data_Multi.Merge(m, src)
 }
-
 func (m *SignatureDescriptor_Data_Multi) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *SignatureDescriptor_Data_Multi) XXX_DiscardUnknown() {
 	xxx_messageInfo_SignatureDescriptor_Data_Multi.DiscardUnknown(m)
 }
@@ -631,7 +603,6 @@ func (m *SignatureDescriptor_Data_Single_) MarshalToSizedBuffer(dAtA []byte) (in
 	}
 	return len(dAtA) - i, nil
 }
-
 func (m *SignatureDescriptor_Data_Multi_) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
@@ -653,7 +624,6 @@ func (m *SignatureDescriptor_Data_Multi_) MarshalToSizedBuffer(dAtA []byte) (int
 	}
 	return len(dAtA) - i, nil
 }
-
 func (m *SignatureDescriptor_Data_Single) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -749,7 +719,6 @@ func encodeVarintSigning(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-
 func (m *SignatureDescriptors) Size() (n int) {
 	if m == nil {
 		return 0
@@ -809,7 +778,6 @@ func (m *SignatureDescriptor_Data_Single_) Size() (n int) {
 	}
 	return n
 }
-
 func (m *SignatureDescriptor_Data_Multi_) Size() (n int) {
 	if m == nil {
 		return 0
@@ -822,7 +790,6 @@ func (m *SignatureDescriptor_Data_Multi_) Size() (n int) {
 	}
 	return n
 }
-
 func (m *SignatureDescriptor_Data_Single) Size() (n int) {
 	if m == nil {
 		return 0
@@ -861,11 +828,9 @@ func (m *SignatureDescriptor_Data_Multi) Size() (n int) {
 func sovSigning(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
-
 func sozSigning(x uint64) (n int) {
 	return sovSigning(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-
 func (m *SignatureDescriptors) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -950,7 +915,6 @@ func (m *SignatureDescriptors) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *SignatureDescriptor) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1092,7 +1056,6 @@ func (m *SignatureDescriptor) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *SignatureDescriptor_Data) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1213,7 +1176,6 @@ func (m *SignatureDescriptor_Data) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *SignatureDescriptor_Data_Single) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1317,7 +1279,6 @@ func (m *SignatureDescriptor_Data_Single) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *SignatureDescriptor_Data_Multi) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1438,7 +1399,6 @@ func (m *SignatureDescriptor_Data_Multi) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func skipSigning(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

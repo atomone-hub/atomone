@@ -6,10 +6,6 @@ package types
 import (
 	context "context"
 	fmt "fmt"
-	io "io"
-	math "math"
-	math_bits "math/bits"
-
 	types "github.com/atomone-hub/atomone/codec/types"
 	query "github.com/atomone-hub/atomone/types/query"
 	_ "github.com/cosmos/cosmos-proto"
@@ -20,14 +16,15 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	io "io"
+	math "math"
+	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ = proto.Marshal
-	_ = fmt.Errorf
-	_ = math.Inf
-)
+var _ = proto.Marshal
+var _ = fmt.Errorf
+var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -49,11 +46,9 @@ func (*QueryAccountsRequest) ProtoMessage()    {}
 func (*QueryAccountsRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_be42e526c743a849, []int{0}
 }
-
 func (m *QueryAccountsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *QueryAccountsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryAccountsRequest.Marshal(b, m, deterministic)
@@ -66,15 +61,12 @@ func (m *QueryAccountsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte
 		return b[:n], nil
 	}
 }
-
 func (m *QueryAccountsRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryAccountsRequest.Merge(m, src)
 }
-
 func (m *QueryAccountsRequest) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *QueryAccountsRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryAccountsRequest.DiscardUnknown(m)
 }
@@ -104,11 +96,9 @@ func (*QueryAccountsResponse) ProtoMessage()    {}
 func (*QueryAccountsResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_be42e526c743a849, []int{1}
 }
-
 func (m *QueryAccountsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *QueryAccountsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryAccountsResponse.Marshal(b, m, deterministic)
@@ -121,15 +111,12 @@ func (m *QueryAccountsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byt
 		return b[:n], nil
 	}
 }
-
 func (m *QueryAccountsResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryAccountsResponse.Merge(m, src)
 }
-
 func (m *QueryAccountsResponse) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *QueryAccountsResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryAccountsResponse.DiscardUnknown(m)
 }
@@ -162,11 +149,9 @@ func (*QueryAccountRequest) ProtoMessage()    {}
 func (*QueryAccountRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_be42e526c743a849, []int{2}
 }
-
 func (m *QueryAccountRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *QueryAccountRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryAccountRequest.Marshal(b, m, deterministic)
@@ -179,15 +164,12 @@ func (m *QueryAccountRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte,
 		return b[:n], nil
 	}
 }
-
 func (m *QueryAccountRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryAccountRequest.Merge(m, src)
 }
-
 func (m *QueryAccountRequest) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *QueryAccountRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryAccountRequest.DiscardUnknown(m)
 }
@@ -206,11 +188,9 @@ func (*QueryAccountResponse) ProtoMessage()    {}
 func (*QueryAccountResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_be42e526c743a849, []int{3}
 }
-
 func (m *QueryAccountResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *QueryAccountResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryAccountResponse.Marshal(b, m, deterministic)
@@ -223,15 +203,12 @@ func (m *QueryAccountResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte
 		return b[:n], nil
 	}
 }
-
 func (m *QueryAccountResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryAccountResponse.Merge(m, src)
 }
-
 func (m *QueryAccountResponse) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *QueryAccountResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryAccountResponse.DiscardUnknown(m)
 }
@@ -246,7 +223,8 @@ func (m *QueryAccountResponse) GetAccount() *types.Any {
 }
 
 // QueryParamsRequest is the request type for the Query/Params RPC method.
-type QueryParamsRequest struct{}
+type QueryParamsRequest struct {
+}
 
 func (m *QueryParamsRequest) Reset()         { *m = QueryParamsRequest{} }
 func (m *QueryParamsRequest) String() string { return proto.CompactTextString(m) }
@@ -254,11 +232,9 @@ func (*QueryParamsRequest) ProtoMessage()    {}
 func (*QueryParamsRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_be42e526c743a849, []int{4}
 }
-
 func (m *QueryParamsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *QueryParamsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryParamsRequest.Marshal(b, m, deterministic)
@@ -271,15 +247,12 @@ func (m *QueryParamsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, 
 		return b[:n], nil
 	}
 }
-
 func (m *QueryParamsRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryParamsRequest.Merge(m, src)
 }
-
 func (m *QueryParamsRequest) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *QueryParamsRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryParamsRequest.DiscardUnknown(m)
 }
@@ -298,11 +271,9 @@ func (*QueryParamsResponse) ProtoMessage()    {}
 func (*QueryParamsResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_be42e526c743a849, []int{5}
 }
-
 func (m *QueryParamsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *QueryParamsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryParamsResponse.Marshal(b, m, deterministic)
@@ -315,15 +286,12 @@ func (m *QueryParamsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte,
 		return b[:n], nil
 	}
 }
-
 func (m *QueryParamsResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryParamsResponse.Merge(m, src)
 }
-
 func (m *QueryParamsResponse) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *QueryParamsResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryParamsResponse.DiscardUnknown(m)
 }
@@ -341,7 +309,8 @@ func (m *QueryParamsResponse) GetParams() Params {
 // RPC method.
 //
 // Since: cosmos-sdk 0.46
-type QueryModuleAccountsRequest struct{}
+type QueryModuleAccountsRequest struct {
+}
 
 func (m *QueryModuleAccountsRequest) Reset()         { *m = QueryModuleAccountsRequest{} }
 func (m *QueryModuleAccountsRequest) String() string { return proto.CompactTextString(m) }
@@ -349,11 +318,9 @@ func (*QueryModuleAccountsRequest) ProtoMessage()    {}
 func (*QueryModuleAccountsRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_be42e526c743a849, []int{6}
 }
-
 func (m *QueryModuleAccountsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *QueryModuleAccountsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryModuleAccountsRequest.Marshal(b, m, deterministic)
@@ -366,15 +333,12 @@ func (m *QueryModuleAccountsRequest) XXX_Marshal(b []byte, deterministic bool) (
 		return b[:n], nil
 	}
 }
-
 func (m *QueryModuleAccountsRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryModuleAccountsRequest.Merge(m, src)
 }
-
 func (m *QueryModuleAccountsRequest) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *QueryModuleAccountsRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryModuleAccountsRequest.DiscardUnknown(m)
 }
@@ -395,11 +359,9 @@ func (*QueryModuleAccountsResponse) ProtoMessage()    {}
 func (*QueryModuleAccountsResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_be42e526c743a849, []int{7}
 }
-
 func (m *QueryModuleAccountsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *QueryModuleAccountsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryModuleAccountsResponse.Marshal(b, m, deterministic)
@@ -412,15 +374,12 @@ func (m *QueryModuleAccountsResponse) XXX_Marshal(b []byte, deterministic bool) 
 		return b[:n], nil
 	}
 }
-
 func (m *QueryModuleAccountsResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryModuleAccountsResponse.Merge(m, src)
 }
-
 func (m *QueryModuleAccountsResponse) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *QueryModuleAccountsResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryModuleAccountsResponse.DiscardUnknown(m)
 }
@@ -446,11 +405,9 @@ func (*QueryModuleAccountByNameRequest) ProtoMessage()    {}
 func (*QueryModuleAccountByNameRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_be42e526c743a849, []int{8}
 }
-
 func (m *QueryModuleAccountByNameRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *QueryModuleAccountByNameRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryModuleAccountByNameRequest.Marshal(b, m, deterministic)
@@ -463,15 +420,12 @@ func (m *QueryModuleAccountByNameRequest) XXX_Marshal(b []byte, deterministic bo
 		return b[:n], nil
 	}
 }
-
 func (m *QueryModuleAccountByNameRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryModuleAccountByNameRequest.Merge(m, src)
 }
-
 func (m *QueryModuleAccountByNameRequest) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *QueryModuleAccountByNameRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryModuleAccountByNameRequest.DiscardUnknown(m)
 }
@@ -497,11 +451,9 @@ func (*QueryModuleAccountByNameResponse) ProtoMessage()    {}
 func (*QueryModuleAccountByNameResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_be42e526c743a849, []int{9}
 }
-
 func (m *QueryModuleAccountByNameResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *QueryModuleAccountByNameResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryModuleAccountByNameResponse.Marshal(b, m, deterministic)
@@ -514,15 +466,12 @@ func (m *QueryModuleAccountByNameResponse) XXX_Marshal(b []byte, deterministic b
 		return b[:n], nil
 	}
 }
-
 func (m *QueryModuleAccountByNameResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryModuleAccountByNameResponse.Merge(m, src)
 }
-
 func (m *QueryModuleAccountByNameResponse) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *QueryModuleAccountByNameResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryModuleAccountByNameResponse.DiscardUnknown(m)
 }
@@ -539,7 +488,8 @@ func (m *QueryModuleAccountByNameResponse) GetAccount() *types.Any {
 // Bech32PrefixRequest is the request type for Bech32Prefix rpc method.
 //
 // Since: cosmos-sdk 0.46
-type Bech32PrefixRequest struct{}
+type Bech32PrefixRequest struct {
+}
 
 func (m *Bech32PrefixRequest) Reset()         { *m = Bech32PrefixRequest{} }
 func (m *Bech32PrefixRequest) String() string { return proto.CompactTextString(m) }
@@ -547,11 +497,9 @@ func (*Bech32PrefixRequest) ProtoMessage()    {}
 func (*Bech32PrefixRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_be42e526c743a849, []int{10}
 }
-
 func (m *Bech32PrefixRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *Bech32PrefixRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_Bech32PrefixRequest.Marshal(b, m, deterministic)
@@ -564,15 +512,12 @@ func (m *Bech32PrefixRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte,
 		return b[:n], nil
 	}
 }
-
 func (m *Bech32PrefixRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Bech32PrefixRequest.Merge(m, src)
 }
-
 func (m *Bech32PrefixRequest) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *Bech32PrefixRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_Bech32PrefixRequest.DiscardUnknown(m)
 }
@@ -592,11 +537,9 @@ func (*Bech32PrefixResponse) ProtoMessage()    {}
 func (*Bech32PrefixResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_be42e526c743a849, []int{11}
 }
-
 func (m *Bech32PrefixResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *Bech32PrefixResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_Bech32PrefixResponse.Marshal(b, m, deterministic)
@@ -609,15 +552,12 @@ func (m *Bech32PrefixResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte
 		return b[:n], nil
 	}
 }
-
 func (m *Bech32PrefixResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Bech32PrefixResponse.Merge(m, src)
 }
-
 func (m *Bech32PrefixResponse) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *Bech32PrefixResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_Bech32PrefixResponse.DiscardUnknown(m)
 }
@@ -644,11 +584,9 @@ func (*AddressBytesToStringRequest) ProtoMessage()    {}
 func (*AddressBytesToStringRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_be42e526c743a849, []int{12}
 }
-
 func (m *AddressBytesToStringRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *AddressBytesToStringRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_AddressBytesToStringRequest.Marshal(b, m, deterministic)
@@ -661,15 +599,12 @@ func (m *AddressBytesToStringRequest) XXX_Marshal(b []byte, deterministic bool) 
 		return b[:n], nil
 	}
 }
-
 func (m *AddressBytesToStringRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_AddressBytesToStringRequest.Merge(m, src)
 }
-
 func (m *AddressBytesToStringRequest) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *AddressBytesToStringRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_AddressBytesToStringRequest.DiscardUnknown(m)
 }
@@ -697,11 +632,9 @@ func (*AddressBytesToStringResponse) ProtoMessage()    {}
 func (*AddressBytesToStringResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_be42e526c743a849, []int{13}
 }
-
 func (m *AddressBytesToStringResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *AddressBytesToStringResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_AddressBytesToStringResponse.Marshal(b, m, deterministic)
@@ -714,15 +647,12 @@ func (m *AddressBytesToStringResponse) XXX_Marshal(b []byte, deterministic bool)
 		return b[:n], nil
 	}
 }
-
 func (m *AddressBytesToStringResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_AddressBytesToStringResponse.Merge(m, src)
 }
-
 func (m *AddressBytesToStringResponse) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *AddressBytesToStringResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_AddressBytesToStringResponse.DiscardUnknown(m)
 }
@@ -749,11 +679,9 @@ func (*AddressStringToBytesRequest) ProtoMessage()    {}
 func (*AddressStringToBytesRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_be42e526c743a849, []int{14}
 }
-
 func (m *AddressStringToBytesRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *AddressStringToBytesRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_AddressStringToBytesRequest.Marshal(b, m, deterministic)
@@ -766,15 +694,12 @@ func (m *AddressStringToBytesRequest) XXX_Marshal(b []byte, deterministic bool) 
 		return b[:n], nil
 	}
 }
-
 func (m *AddressStringToBytesRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_AddressStringToBytesRequest.Merge(m, src)
 }
-
 func (m *AddressStringToBytesRequest) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *AddressStringToBytesRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_AddressStringToBytesRequest.DiscardUnknown(m)
 }
@@ -802,11 +727,9 @@ func (*AddressStringToBytesResponse) ProtoMessage()    {}
 func (*AddressStringToBytesResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_be42e526c743a849, []int{15}
 }
-
 func (m *AddressStringToBytesResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *AddressStringToBytesResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_AddressStringToBytesResponse.Marshal(b, m, deterministic)
@@ -819,15 +742,12 @@ func (m *AddressStringToBytesResponse) XXX_Marshal(b []byte, deterministic bool)
 		return b[:n], nil
 	}
 }
-
 func (m *AddressStringToBytesResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_AddressStringToBytesResponse.Merge(m, src)
 }
-
 func (m *AddressStringToBytesResponse) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *AddressStringToBytesResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_AddressStringToBytesResponse.DiscardUnknown(m)
 }
@@ -864,11 +784,9 @@ func (*QueryAccountAddressByIDRequest) ProtoMessage()    {}
 func (*QueryAccountAddressByIDRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_be42e526c743a849, []int{16}
 }
-
 func (m *QueryAccountAddressByIDRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *QueryAccountAddressByIDRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryAccountAddressByIDRequest.Marshal(b, m, deterministic)
@@ -881,15 +799,12 @@ func (m *QueryAccountAddressByIDRequest) XXX_Marshal(b []byte, deterministic boo
 		return b[:n], nil
 	}
 }
-
 func (m *QueryAccountAddressByIDRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryAccountAddressByIDRequest.Merge(m, src)
 }
-
 func (m *QueryAccountAddressByIDRequest) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *QueryAccountAddressByIDRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryAccountAddressByIDRequest.DiscardUnknown(m)
 }
@@ -925,11 +840,9 @@ func (*QueryAccountAddressByIDResponse) ProtoMessage()    {}
 func (*QueryAccountAddressByIDResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_be42e526c743a849, []int{17}
 }
-
 func (m *QueryAccountAddressByIDResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *QueryAccountAddressByIDResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryAccountAddressByIDResponse.Marshal(b, m, deterministic)
@@ -942,15 +855,12 @@ func (m *QueryAccountAddressByIDResponse) XXX_Marshal(b []byte, deterministic bo
 		return b[:n], nil
 	}
 }
-
 func (m *QueryAccountAddressByIDResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryAccountAddressByIDResponse.Merge(m, src)
 }
-
 func (m *QueryAccountAddressByIDResponse) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *QueryAccountAddressByIDResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryAccountAddressByIDResponse.DiscardUnknown(m)
 }
@@ -978,11 +888,9 @@ func (*QueryAccountInfoRequest) ProtoMessage()    {}
 func (*QueryAccountInfoRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_be42e526c743a849, []int{18}
 }
-
 func (m *QueryAccountInfoRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *QueryAccountInfoRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryAccountInfoRequest.Marshal(b, m, deterministic)
@@ -995,15 +903,12 @@ func (m *QueryAccountInfoRequest) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return b[:n], nil
 	}
 }
-
 func (m *QueryAccountInfoRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryAccountInfoRequest.Merge(m, src)
 }
-
 func (m *QueryAccountInfoRequest) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *QueryAccountInfoRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryAccountInfoRequest.DiscardUnknown(m)
 }
@@ -1031,11 +936,9 @@ func (*QueryAccountInfoResponse) ProtoMessage()    {}
 func (*QueryAccountInfoResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_be42e526c743a849, []int{19}
 }
-
 func (m *QueryAccountInfoResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *QueryAccountInfoResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryAccountInfoResponse.Marshal(b, m, deterministic)
@@ -1048,15 +951,12 @@ func (m *QueryAccountInfoResponse) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
-
 func (m *QueryAccountInfoResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryAccountInfoResponse.Merge(m, src)
 }
-
 func (m *QueryAccountInfoResponse) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *QueryAccountInfoResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryAccountInfoResponse.DiscardUnknown(m)
 }
@@ -1167,10 +1067,8 @@ var fileDescriptor_be42e526c743a849 = []byte{
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ context.Context
-	_ grpc.ClientConn
-)
+var _ context.Context
+var _ grpc.ClientConn
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
@@ -1359,44 +1257,36 @@ type QueryServer interface {
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
-type UnimplementedQueryServer struct{}
+type UnimplementedQueryServer struct {
+}
 
 func (*UnimplementedQueryServer) Accounts(ctx context.Context, req *QueryAccountsRequest) (*QueryAccountsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Accounts not implemented")
 }
-
 func (*UnimplementedQueryServer) Account(ctx context.Context, req *QueryAccountRequest) (*QueryAccountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Account not implemented")
 }
-
 func (*UnimplementedQueryServer) AccountAddressByID(ctx context.Context, req *QueryAccountAddressByIDRequest) (*QueryAccountAddressByIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AccountAddressByID not implemented")
 }
-
 func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
-
 func (*UnimplementedQueryServer) ModuleAccounts(ctx context.Context, req *QueryModuleAccountsRequest) (*QueryModuleAccountsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ModuleAccounts not implemented")
 }
-
 func (*UnimplementedQueryServer) ModuleAccountByName(ctx context.Context, req *QueryModuleAccountByNameRequest) (*QueryModuleAccountByNameResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ModuleAccountByName not implemented")
 }
-
 func (*UnimplementedQueryServer) Bech32Prefix(ctx context.Context, req *Bech32PrefixRequest) (*Bech32PrefixResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Bech32Prefix not implemented")
 }
-
 func (*UnimplementedQueryServer) AddressBytesToString(ctx context.Context, req *AddressBytesToStringRequest) (*AddressBytesToStringResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddressBytesToString not implemented")
 }
-
 func (*UnimplementedQueryServer) AddressStringToBytes(ctx context.Context, req *AddressStringToBytesRequest) (*AddressStringToBytesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddressStringToBytes not implemented")
 }
-
 func (*UnimplementedQueryServer) AccountInfo(ctx context.Context, req *QueryAccountInfoRequest) (*QueryAccountInfoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AccountInfo not implemented")
 }
@@ -2276,7 +2166,6 @@ func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-
 func (m *QueryAccountsRequest) Size() (n int) {
 	if m == nil {
 		return 0
@@ -2536,11 +2425,9 @@ func (m *QueryAccountInfoResponse) Size() (n int) {
 func sovQuery(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
-
 func sozQuery(x uint64) (n int) {
 	return sovQuery(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-
 func (m *QueryAccountsRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2627,7 +2514,6 @@ func (m *QueryAccountsRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *QueryAccountsResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2748,7 +2634,6 @@ func (m *QueryAccountsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *QueryAccountRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2831,7 +2716,6 @@ func (m *QueryAccountRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *QueryAccountResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2918,7 +2802,6 @@ func (m *QueryAccountResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *QueryParamsRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2969,7 +2852,6 @@ func (m *QueryParamsRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *QueryParamsResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3053,7 +2935,6 @@ func (m *QueryParamsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *QueryModuleAccountsRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3104,7 +2985,6 @@ func (m *QueryModuleAccountsRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *QueryModuleAccountsResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3189,7 +3069,6 @@ func (m *QueryModuleAccountsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *QueryModuleAccountByNameRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3272,7 +3151,6 @@ func (m *QueryModuleAccountByNameRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *QueryModuleAccountByNameResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3359,7 +3237,6 @@ func (m *QueryModuleAccountByNameResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *Bech32PrefixRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3410,7 +3287,6 @@ func (m *Bech32PrefixRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *Bech32PrefixResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3493,7 +3369,6 @@ func (m *Bech32PrefixResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *AddressBytesToStringRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3578,7 +3453,6 @@ func (m *AddressBytesToStringRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *AddressBytesToStringResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3661,7 +3535,6 @@ func (m *AddressBytesToStringResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *AddressStringToBytesRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3744,7 +3617,6 @@ func (m *AddressStringToBytesRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *AddressStringToBytesResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3829,7 +3701,6 @@ func (m *AddressStringToBytesResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *QueryAccountAddressByIDRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3918,7 +3789,6 @@ func (m *QueryAccountAddressByIDRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *QueryAccountAddressByIDResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -4001,7 +3871,6 @@ func (m *QueryAccountAddressByIDResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *QueryAccountInfoRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -4084,7 +3953,6 @@ func (m *QueryAccountInfoRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *QueryAccountInfoResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -4171,7 +4039,6 @@ func (m *QueryAccountInfoResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func skipQuery(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

@@ -5,20 +5,17 @@ package types
 
 import (
 	fmt "fmt"
+	types "github.com/cometbft/cometbft/abci/types"
+	proto "github.com/cosmos/gogoproto/proto"
 	io "io"
 	math "math"
 	math_bits "math/bits"
-
-	types "github.com/cometbft/cometbft/abci/types"
-	proto "github.com/cosmos/gogoproto/proto"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ = proto.Marshal
-	_ = fmt.Errorf
-	_ = math.Inf
-)
+var _ = proto.Marshal
+var _ = fmt.Errorf
+var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -44,11 +41,9 @@ func (*StoreKVPair) ProtoMessage()    {}
 func (*StoreKVPair) Descriptor() ([]byte, []int) {
 	return fileDescriptor_abfc1b9137bd3266, []int{0}
 }
-
 func (m *StoreKVPair) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *StoreKVPair) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_StoreKVPair.Marshal(b, m, deterministic)
@@ -61,15 +56,12 @@ func (m *StoreKVPair) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return b[:n], nil
 	}
 }
-
 func (m *StoreKVPair) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_StoreKVPair.Merge(m, src)
 }
-
 func (m *StoreKVPair) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *StoreKVPair) XXX_DiscardUnknown() {
 	xxx_messageInfo_StoreKVPair.DiscardUnknown(m)
 }
@@ -121,11 +113,9 @@ func (*BlockMetadata) ProtoMessage()    {}
 func (*BlockMetadata) Descriptor() ([]byte, []int) {
 	return fileDescriptor_abfc1b9137bd3266, []int{1}
 }
-
 func (m *BlockMetadata) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *BlockMetadata) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_BlockMetadata.Marshal(b, m, deterministic)
@@ -138,15 +128,12 @@ func (m *BlockMetadata) XXX_Marshal(b []byte, deterministic bool) ([]byte, error
 		return b[:n], nil
 	}
 }
-
 func (m *BlockMetadata) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_BlockMetadata.Merge(m, src)
 }
-
 func (m *BlockMetadata) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *BlockMetadata) XXX_DiscardUnknown() {
 	xxx_messageInfo_BlockMetadata.DiscardUnknown(m)
 }
@@ -207,11 +194,9 @@ func (*BlockMetadata_DeliverTx) ProtoMessage()    {}
 func (*BlockMetadata_DeliverTx) Descriptor() ([]byte, []int) {
 	return fileDescriptor_abfc1b9137bd3266, []int{1, 0}
 }
-
 func (m *BlockMetadata_DeliverTx) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *BlockMetadata_DeliverTx) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_BlockMetadata_DeliverTx.Marshal(b, m, deterministic)
@@ -224,15 +209,12 @@ func (m *BlockMetadata_DeliverTx) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return b[:n], nil
 	}
 }
-
 func (m *BlockMetadata_DeliverTx) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_BlockMetadata_DeliverTx.Merge(m, src)
 }
-
 func (m *BlockMetadata_DeliverTx) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *BlockMetadata_DeliverTx) XXX_DiscardUnknown() {
 	xxx_messageInfo_BlockMetadata_DeliverTx.DiscardUnknown(m)
 }
@@ -506,7 +488,6 @@ func encodeVarintListening(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-
 func (m *StoreKVPair) Size() (n int) {
 	if m == nil {
 		return 0
@@ -586,11 +567,9 @@ func (m *BlockMetadata_DeliverTx) Size() (n int) {
 func sovListening(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
-
 func sozListening(x uint64) (n int) {
 	return sovListening(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-
 func (m *StoreKVPair) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -761,7 +740,6 @@ func (m *StoreKVPair) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *BlockMetadata) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1026,7 +1004,6 @@ func (m *BlockMetadata) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *BlockMetadata_DeliverTx) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1149,7 +1126,6 @@ func (m *BlockMetadata_DeliverTx) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func skipListening(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

@@ -7,8 +7,8 @@ import (
 	reflect "reflect"
 	sync "sync"
 
-	v1beta11 "cosmossdk.io/api/cosmos/base/query/v1beta1"
-	v1beta1 "cosmossdk.io/api/cosmos/base/v1beta1"
+	v1beta11 "github.com/atomone-hub/atomone/api/atomone/base/query/v1beta1"
+	v1beta1 "github.com/atomone-hub/atomone/api/atomone/base/v1beta1"
 
 	_ "github.com/cosmos/cosmos-proto"
 	runtime "github.com/cosmos/cosmos-proto/runtime"

@@ -6,24 +6,21 @@ package types
 import (
 	context "context"
 	fmt "fmt"
-	io "io"
-	math "math"
-	math_bits "math/bits"
-
 	grpc1 "github.com/cosmos/gogoproto/grpc"
 	proto "github.com/cosmos/gogoproto/proto"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	io "io"
+	math "math"
+	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ = proto.Marshal
-	_ = fmt.Errorf
-	_ = math.Inf
-)
+var _ = proto.Marshal
+var _ = fmt.Errorf
+var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -33,7 +30,8 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // QueryCurrentPlanRequest is the request type for the Query/CurrentPlan RPC
 // method.
-type QueryCurrentPlanRequest struct{}
+type QueryCurrentPlanRequest struct {
+}
 
 func (m *QueryCurrentPlanRequest) Reset()         { *m = QueryCurrentPlanRequest{} }
 func (m *QueryCurrentPlanRequest) String() string { return proto.CompactTextString(m) }
@@ -41,11 +39,9 @@ func (*QueryCurrentPlanRequest) ProtoMessage()    {}
 func (*QueryCurrentPlanRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_dc4d1ae147d94c74, []int{0}
 }
-
 func (m *QueryCurrentPlanRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *QueryCurrentPlanRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryCurrentPlanRequest.Marshal(b, m, deterministic)
@@ -58,15 +54,12 @@ func (m *QueryCurrentPlanRequest) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return b[:n], nil
 	}
 }
-
 func (m *QueryCurrentPlanRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryCurrentPlanRequest.Merge(m, src)
 }
-
 func (m *QueryCurrentPlanRequest) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *QueryCurrentPlanRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryCurrentPlanRequest.DiscardUnknown(m)
 }
@@ -86,11 +79,9 @@ func (*QueryCurrentPlanResponse) ProtoMessage()    {}
 func (*QueryCurrentPlanResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_dc4d1ae147d94c74, []int{1}
 }
-
 func (m *QueryCurrentPlanResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *QueryCurrentPlanResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryCurrentPlanResponse.Marshal(b, m, deterministic)
@@ -103,15 +94,12 @@ func (m *QueryCurrentPlanResponse) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
-
 func (m *QueryCurrentPlanResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryCurrentPlanResponse.Merge(m, src)
 }
-
 func (m *QueryCurrentPlanResponse) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *QueryCurrentPlanResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryCurrentPlanResponse.DiscardUnknown(m)
 }
@@ -138,11 +126,9 @@ func (*QueryAppliedPlanRequest) ProtoMessage()    {}
 func (*QueryAppliedPlanRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_dc4d1ae147d94c74, []int{2}
 }
-
 func (m *QueryAppliedPlanRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *QueryAppliedPlanRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryAppliedPlanRequest.Marshal(b, m, deterministic)
@@ -155,15 +141,12 @@ func (m *QueryAppliedPlanRequest) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return b[:n], nil
 	}
 }
-
 func (m *QueryAppliedPlanRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryAppliedPlanRequest.Merge(m, src)
 }
-
 func (m *QueryAppliedPlanRequest) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *QueryAppliedPlanRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryAppliedPlanRequest.DiscardUnknown(m)
 }
@@ -190,11 +173,9 @@ func (*QueryAppliedPlanResponse) ProtoMessage()    {}
 func (*QueryAppliedPlanResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_dc4d1ae147d94c74, []int{3}
 }
-
 func (m *QueryAppliedPlanResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *QueryAppliedPlanResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryAppliedPlanResponse.Marshal(b, m, deterministic)
@@ -207,15 +188,12 @@ func (m *QueryAppliedPlanResponse) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
-
 func (m *QueryAppliedPlanResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryAppliedPlanResponse.Merge(m, src)
 }
-
 func (m *QueryAppliedPlanResponse) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *QueryAppliedPlanResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryAppliedPlanResponse.DiscardUnknown(m)
 }
@@ -245,11 +223,9 @@ func (*QueryUpgradedConsensusStateRequest) ProtoMessage()    {}
 func (*QueryUpgradedConsensusStateRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_dc4d1ae147d94c74, []int{4}
 }
-
 func (m *QueryUpgradedConsensusStateRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *QueryUpgradedConsensusStateRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryUpgradedConsensusStateRequest.Marshal(b, m, deterministic)
@@ -262,15 +238,12 @@ func (m *QueryUpgradedConsensusStateRequest) XXX_Marshal(b []byte, deterministic
 		return b[:n], nil
 	}
 }
-
 func (m *QueryUpgradedConsensusStateRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryUpgradedConsensusStateRequest.Merge(m, src)
 }
-
 func (m *QueryUpgradedConsensusStateRequest) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *QueryUpgradedConsensusStateRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryUpgradedConsensusStateRequest.DiscardUnknown(m)
 }
@@ -299,11 +272,9 @@ func (*QueryUpgradedConsensusStateResponse) ProtoMessage()    {}
 func (*QueryUpgradedConsensusStateResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_dc4d1ae147d94c74, []int{5}
 }
-
 func (m *QueryUpgradedConsensusStateResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *QueryUpgradedConsensusStateResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryUpgradedConsensusStateResponse.Marshal(b, m, deterministic)
@@ -316,15 +287,12 @@ func (m *QueryUpgradedConsensusStateResponse) XXX_Marshal(b []byte, deterministi
 		return b[:n], nil
 	}
 }
-
 func (m *QueryUpgradedConsensusStateResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryUpgradedConsensusStateResponse.Merge(m, src)
 }
-
 func (m *QueryUpgradedConsensusStateResponse) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *QueryUpgradedConsensusStateResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryUpgradedConsensusStateResponse.DiscardUnknown(m)
 }
@@ -355,11 +323,9 @@ func (*QueryModuleVersionsRequest) ProtoMessage()    {}
 func (*QueryModuleVersionsRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_dc4d1ae147d94c74, []int{6}
 }
-
 func (m *QueryModuleVersionsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *QueryModuleVersionsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryModuleVersionsRequest.Marshal(b, m, deterministic)
@@ -372,15 +338,12 @@ func (m *QueryModuleVersionsRequest) XXX_Marshal(b []byte, deterministic bool) (
 		return b[:n], nil
 	}
 }
-
 func (m *QueryModuleVersionsRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryModuleVersionsRequest.Merge(m, src)
 }
-
 func (m *QueryModuleVersionsRequest) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *QueryModuleVersionsRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryModuleVersionsRequest.DiscardUnknown(m)
 }
@@ -409,11 +372,9 @@ func (*QueryModuleVersionsResponse) ProtoMessage()    {}
 func (*QueryModuleVersionsResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_dc4d1ae147d94c74, []int{7}
 }
-
 func (m *QueryModuleVersionsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *QueryModuleVersionsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryModuleVersionsResponse.Marshal(b, m, deterministic)
@@ -426,15 +387,12 @@ func (m *QueryModuleVersionsResponse) XXX_Marshal(b []byte, deterministic bool) 
 		return b[:n], nil
 	}
 }
-
 func (m *QueryModuleVersionsResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryModuleVersionsResponse.Merge(m, src)
 }
-
 func (m *QueryModuleVersionsResponse) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *QueryModuleVersionsResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryModuleVersionsResponse.DiscardUnknown(m)
 }
@@ -451,7 +409,8 @@ func (m *QueryModuleVersionsResponse) GetModuleVersions() []*ModuleVersion {
 // QueryAuthorityRequest is the request type for Query/Authority
 //
 // Since: cosmos-sdk 0.46
-type QueryAuthorityRequest struct{}
+type QueryAuthorityRequest struct {
+}
 
 func (m *QueryAuthorityRequest) Reset()         { *m = QueryAuthorityRequest{} }
 func (m *QueryAuthorityRequest) String() string { return proto.CompactTextString(m) }
@@ -459,11 +418,9 @@ func (*QueryAuthorityRequest) ProtoMessage()    {}
 func (*QueryAuthorityRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_dc4d1ae147d94c74, []int{8}
 }
-
 func (m *QueryAuthorityRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *QueryAuthorityRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryAuthorityRequest.Marshal(b, m, deterministic)
@@ -476,15 +433,12 @@ func (m *QueryAuthorityRequest) XXX_Marshal(b []byte, deterministic bool) ([]byt
 		return b[:n], nil
 	}
 }
-
 func (m *QueryAuthorityRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryAuthorityRequest.Merge(m, src)
 }
-
 func (m *QueryAuthorityRequest) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *QueryAuthorityRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryAuthorityRequest.DiscardUnknown(m)
 }
@@ -504,11 +458,9 @@ func (*QueryAuthorityResponse) ProtoMessage()    {}
 func (*QueryAuthorityResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_dc4d1ae147d94c74, []int{9}
 }
-
 func (m *QueryAuthorityResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *QueryAuthorityResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryAuthorityResponse.Marshal(b, m, deterministic)
@@ -521,15 +473,12 @@ func (m *QueryAuthorityResponse) XXX_Marshal(b []byte, deterministic bool) ([]by
 		return b[:n], nil
 	}
 }
-
 func (m *QueryAuthorityResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryAuthorityResponse.Merge(m, src)
 }
-
 func (m *QueryAuthorityResponse) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *QueryAuthorityResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryAuthorityResponse.DiscardUnknown(m)
 }
@@ -606,10 +555,8 @@ var fileDescriptor_dc4d1ae147d94c74 = []byte{
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ context.Context
-	_ grpc.ClientConn
-)
+var _ context.Context
+var _ grpc.ClientConn
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
@@ -718,24 +665,21 @@ type QueryServer interface {
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
-type UnimplementedQueryServer struct{}
+type UnimplementedQueryServer struct {
+}
 
 func (*UnimplementedQueryServer) CurrentPlan(ctx context.Context, req *QueryCurrentPlanRequest) (*QueryCurrentPlanResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CurrentPlan not implemented")
 }
-
 func (*UnimplementedQueryServer) AppliedPlan(ctx context.Context, req *QueryAppliedPlanRequest) (*QueryAppliedPlanResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AppliedPlan not implemented")
 }
-
 func (*UnimplementedQueryServer) UpgradedConsensusState(ctx context.Context, req *QueryUpgradedConsensusStateRequest) (*QueryUpgradedConsensusStateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpgradedConsensusState not implemented")
 }
-
 func (*UnimplementedQueryServer) ModuleVersions(ctx context.Context, req *QueryModuleVersionsRequest) (*QueryModuleVersionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ModuleVersions not implemented")
 }
-
 func (*UnimplementedQueryServer) Authority(ctx context.Context, req *QueryAuthorityRequest) (*QueryAuthorityResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Authority not implemented")
 }
@@ -1168,7 +1112,6 @@ func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-
 func (m *QueryCurrentPlanRequest) Size() (n int) {
 	if m == nil {
 		return 0
@@ -1294,11 +1237,9 @@ func (m *QueryAuthorityResponse) Size() (n int) {
 func sovQuery(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
-
 func sozQuery(x uint64) (n int) {
 	return sovQuery(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-
 func (m *QueryCurrentPlanRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1349,7 +1290,6 @@ func (m *QueryCurrentPlanRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *QueryCurrentPlanResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1436,7 +1376,6 @@ func (m *QueryCurrentPlanResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *QueryAppliedPlanRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1519,7 +1458,6 @@ func (m *QueryAppliedPlanRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *QueryAppliedPlanResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1589,7 +1527,6 @@ func (m *QueryAppliedPlanResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *QueryUpgradedConsensusStateRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1659,7 +1596,6 @@ func (m *QueryUpgradedConsensusStateRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *QueryUpgradedConsensusStateResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1744,7 +1680,6 @@ func (m *QueryUpgradedConsensusStateResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *QueryModuleVersionsRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1827,7 +1762,6 @@ func (m *QueryModuleVersionsRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *QueryModuleVersionsResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1912,7 +1846,6 @@ func (m *QueryModuleVersionsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *QueryAuthorityRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1963,7 +1896,6 @@ func (m *QueryAuthorityRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *QueryAuthorityResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2046,7 +1978,6 @@ func (m *QueryAuthorityResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func skipQuery(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

@@ -6,10 +6,6 @@ package types
 import (
 	context "context"
 	fmt "fmt"
-	io "io"
-	math "math"
-	math_bits "math/bits"
-
 	types "github.com/atomone-hub/atomone/codec/types"
 	query "github.com/atomone-hub/atomone/types/query"
 	github_com_cometbft_cometbft_libs_bytes "github.com/cometbft/cometbft/libs/bytes"
@@ -20,14 +16,15 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	io "io"
+	math "math"
+	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ = proto.Marshal
-	_ = fmt.Errorf
-	_ = math.Inf
-)
+var _ = proto.Marshal
+var _ = fmt.Errorf
+var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -52,11 +49,9 @@ func (*QueryEvidenceRequest) ProtoMessage()    {}
 func (*QueryEvidenceRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_504ce884957b584b, []int{0}
 }
-
 func (m *QueryEvidenceRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *QueryEvidenceRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryEvidenceRequest.Marshal(b, m, deterministic)
@@ -69,15 +64,12 @@ func (m *QueryEvidenceRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte
 		return b[:n], nil
 	}
 }
-
 func (m *QueryEvidenceRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryEvidenceRequest.Merge(m, src)
 }
-
 func (m *QueryEvidenceRequest) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *QueryEvidenceRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryEvidenceRequest.DiscardUnknown(m)
 }
@@ -111,11 +103,9 @@ func (*QueryEvidenceResponse) ProtoMessage()    {}
 func (*QueryEvidenceResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_504ce884957b584b, []int{1}
 }
-
 func (m *QueryEvidenceResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *QueryEvidenceResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryEvidenceResponse.Marshal(b, m, deterministic)
@@ -128,15 +118,12 @@ func (m *QueryEvidenceResponse) XXX_Marshal(b []byte, deterministic bool) ([]byt
 		return b[:n], nil
 	}
 }
-
 func (m *QueryEvidenceResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryEvidenceResponse.Merge(m, src)
 }
-
 func (m *QueryEvidenceResponse) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *QueryEvidenceResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryEvidenceResponse.DiscardUnknown(m)
 }
@@ -163,11 +150,9 @@ func (*QueryAllEvidenceRequest) ProtoMessage()    {}
 func (*QueryAllEvidenceRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_504ce884957b584b, []int{2}
 }
-
 func (m *QueryAllEvidenceRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *QueryAllEvidenceRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryAllEvidenceRequest.Marshal(b, m, deterministic)
@@ -180,15 +165,12 @@ func (m *QueryAllEvidenceRequest) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return b[:n], nil
 	}
 }
-
 func (m *QueryAllEvidenceRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryAllEvidenceRequest.Merge(m, src)
 }
-
 func (m *QueryAllEvidenceRequest) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *QueryAllEvidenceRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryAllEvidenceRequest.DiscardUnknown(m)
 }
@@ -217,11 +199,9 @@ func (*QueryAllEvidenceResponse) ProtoMessage()    {}
 func (*QueryAllEvidenceResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_504ce884957b584b, []int{3}
 }
-
 func (m *QueryAllEvidenceResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *QueryAllEvidenceResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryAllEvidenceResponse.Marshal(b, m, deterministic)
@@ -234,15 +214,12 @@ func (m *QueryAllEvidenceResponse) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
-
 func (m *QueryAllEvidenceResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryAllEvidenceResponse.Merge(m, src)
 }
-
 func (m *QueryAllEvidenceResponse) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *QueryAllEvidenceResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryAllEvidenceResponse.DiscardUnknown(m)
 }
@@ -309,10 +286,8 @@ var fileDescriptor_504ce884957b584b = []byte{
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ context.Context
-	_ grpc.ClientConn
-)
+var _ context.Context
+var _ grpc.ClientConn
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
@@ -363,12 +338,12 @@ type QueryServer interface {
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
-type UnimplementedQueryServer struct{}
+type UnimplementedQueryServer struct {
+}
 
 func (*UnimplementedQueryServer) Evidence(ctx context.Context, req *QueryEvidenceRequest) (*QueryEvidenceResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Evidence not implemented")
 }
-
 func (*UnimplementedQueryServer) AllEvidence(ctx context.Context, req *QueryAllEvidenceRequest) (*QueryAllEvidenceResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AllEvidence not implemented")
 }
@@ -597,7 +572,6 @@ func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-
 func (m *QueryEvidenceRequest) Size() (n int) {
 	if m == nil {
 		return 0
@@ -663,11 +637,9 @@ func (m *QueryAllEvidenceResponse) Size() (n int) {
 func sovQuery(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
-
 func sozQuery(x uint64) (n int) {
 	return sovQuery(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-
 func (m *QueryEvidenceRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -784,7 +756,6 @@ func (m *QueryEvidenceRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *QueryEvidenceResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -871,7 +842,6 @@ func (m *QueryEvidenceResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *QueryAllEvidenceRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -958,7 +928,6 @@ func (m *QueryAllEvidenceRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *QueryAllEvidenceResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1079,7 +1048,6 @@ func (m *QueryAllEvidenceResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func skipQuery(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

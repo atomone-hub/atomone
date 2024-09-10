@@ -3,7 +3,7 @@ package autocli
 import (
 	"fmt"
 
-	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
+	autocliv1 "github.com/atomone-hub/atomone/api/atomone/autocli/v1"
 	"github.com/iancoleman/strcase"
 	"github.com/spf13/cobra"
 	"google.golang.org/protobuf/encoding/protojson"

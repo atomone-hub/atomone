@@ -11,8 +11,8 @@ import (
 	"google.golang.org/protobuf/types/known/anypb"
 	"sigs.k8s.io/yaml"
 
-	appv1alpha1 "cosmossdk.io/api/cosmos/app/v1alpha1"
 	"cosmossdk.io/depinject"
+	appv1alpha1 "github.com/atomone-hub/atomone/api/atomone/app/v1alpha1"
 
 	"github.com/atomone-hub/atomone/core/internal"
 )

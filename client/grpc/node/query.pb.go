@@ -6,24 +6,21 @@ package node
 import (
 	context "context"
 	fmt "fmt"
-	io "io"
-	math "math"
-	math_bits "math/bits"
-
 	grpc1 "github.com/cosmos/gogoproto/grpc"
 	proto "github.com/cosmos/gogoproto/proto"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	io "io"
+	math "math"
+	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ = proto.Marshal
-	_ = fmt.Errorf
-	_ = math.Inf
-)
+var _ = proto.Marshal
+var _ = fmt.Errorf
+var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -32,7 +29,8 @@ var (
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // ConfigRequest defines the request structure for the Config gRPC query.
-type ConfigRequest struct{}
+type ConfigRequest struct {
+}
 
 func (m *ConfigRequest) Reset()         { *m = ConfigRequest{} }
 func (m *ConfigRequest) String() string { return proto.CompactTextString(m) }
@@ -40,11 +38,9 @@ func (*ConfigRequest) ProtoMessage()    {}
 func (*ConfigRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_33b40a9ba81843af, []int{0}
 }
-
 func (m *ConfigRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *ConfigRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ConfigRequest.Marshal(b, m, deterministic)
@@ -57,15 +53,12 @@ func (m *ConfigRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error
 		return b[:n], nil
 	}
 }
-
 func (m *ConfigRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConfigRequest.Merge(m, src)
 }
-
 func (m *ConfigRequest) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *ConfigRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConfigRequest.DiscardUnknown(m)
 }
@@ -83,11 +76,9 @@ func (*ConfigResponse) ProtoMessage()    {}
 func (*ConfigResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_33b40a9ba81843af, []int{1}
 }
-
 func (m *ConfigResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *ConfigResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ConfigResponse.Marshal(b, m, deterministic)
@@ -100,15 +91,12 @@ func (m *ConfigResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, erro
 		return b[:n], nil
 	}
 }
-
 func (m *ConfigResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConfigResponse.Merge(m, src)
 }
-
 func (m *ConfigResponse) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *ConfigResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConfigResponse.DiscardUnknown(m)
 }
@@ -154,10 +142,8 @@ var fileDescriptor_33b40a9ba81843af = []byte{
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ context.Context
-	_ grpc.ClientConn
-)
+var _ context.Context
+var _ grpc.ClientConn
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
@@ -195,7 +181,8 @@ type ServiceServer interface {
 }
 
 // UnimplementedServiceServer can be embedded to have forward compatible implementations.
-type UnimplementedServiceServer struct{}
+type UnimplementedServiceServer struct {
+}
 
 func (*UnimplementedServiceServer) Config(ctx context.Context, req *ConfigRequest) (*ConfigResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Config not implemented")
@@ -300,7 +287,6 @@ func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-
 func (m *ConfigRequest) Size() (n int) {
 	if m == nil {
 		return 0
@@ -326,11 +312,9 @@ func (m *ConfigResponse) Size() (n int) {
 func sovQuery(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
-
 func sozQuery(x uint64) (n int) {
 	return sovQuery(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-
 func (m *ConfigRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -381,7 +365,6 @@ func (m *ConfigRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *ConfigResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -464,7 +447,6 @@ func (m *ConfigResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func skipQuery(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

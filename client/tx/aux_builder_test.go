@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	_ "cosmossdk.io/api/cosmos/bank/v1beta1"
 	"cosmossdk.io/depinject"
+	_ "github.com/atomone-hub/atomone/api/atomone/bank/v1beta1"
 	clienttestutil "github.com/atomone-hub/atomone/client/testutil"
 	"github.com/atomone-hub/atomone/client/tx"
 	"github.com/atomone-hub/atomone/codec"

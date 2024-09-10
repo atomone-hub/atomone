@@ -10,7 +10,7 @@ import (
 	sort "sort"
 	sync "sync"
 
-	v1beta1 "cosmossdk.io/api/cosmos/tx/v1beta1"
+	v1beta1 "github.com/atomone-hub/atomone/api/atomone/tx/v1beta1"
 
 	runtime "github.com/cosmos/cosmos-proto/runtime"
 	_ "github.com/cosmos/gogoproto/gogoproto"

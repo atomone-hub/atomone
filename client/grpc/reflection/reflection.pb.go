@@ -6,24 +6,21 @@ package reflection
 import (
 	context "context"
 	fmt "fmt"
-	io "io"
-	math "math"
-	math_bits "math/bits"
-
 	grpc1 "github.com/cosmos/gogoproto/grpc"
 	proto "github.com/cosmos/gogoproto/proto"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	io "io"
+	math "math"
+	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ = proto.Marshal
-	_ = fmt.Errorf
-	_ = math.Inf
-)
+var _ = proto.Marshal
+var _ = fmt.Errorf
+var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -32,7 +29,8 @@ var (
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // ListAllInterfacesRequest is the request type of the ListAllInterfaces RPC.
-type ListAllInterfacesRequest struct{}
+type ListAllInterfacesRequest struct {
+}
 
 func (m *ListAllInterfacesRequest) Reset()         { *m = ListAllInterfacesRequest{} }
 func (m *ListAllInterfacesRequest) String() string { return proto.CompactTextString(m) }
@@ -40,11 +38,9 @@ func (*ListAllInterfacesRequest) ProtoMessage()    {}
 func (*ListAllInterfacesRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_17dfaccca43aaf55, []int{0}
 }
-
 func (m *ListAllInterfacesRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *ListAllInterfacesRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ListAllInterfacesRequest.Marshal(b, m, deterministic)
@@ -57,15 +53,12 @@ func (m *ListAllInterfacesRequest) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
-
 func (m *ListAllInterfacesRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ListAllInterfacesRequest.Merge(m, src)
 }
-
 func (m *ListAllInterfacesRequest) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *ListAllInterfacesRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_ListAllInterfacesRequest.DiscardUnknown(m)
 }
@@ -84,11 +77,9 @@ func (*ListAllInterfacesResponse) ProtoMessage()    {}
 func (*ListAllInterfacesResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_17dfaccca43aaf55, []int{1}
 }
-
 func (m *ListAllInterfacesResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *ListAllInterfacesResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ListAllInterfacesResponse.Marshal(b, m, deterministic)
@@ -101,15 +92,12 @@ func (m *ListAllInterfacesResponse) XXX_Marshal(b []byte, deterministic bool) ([
 		return b[:n], nil
 	}
 }
-
 func (m *ListAllInterfacesResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ListAllInterfacesResponse.Merge(m, src)
 }
-
 func (m *ListAllInterfacesResponse) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *ListAllInterfacesResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_ListAllInterfacesResponse.DiscardUnknown(m)
 }
@@ -136,11 +124,9 @@ func (*ListImplementationsRequest) ProtoMessage()    {}
 func (*ListImplementationsRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_17dfaccca43aaf55, []int{2}
 }
-
 func (m *ListImplementationsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *ListImplementationsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ListImplementationsRequest.Marshal(b, m, deterministic)
@@ -153,15 +139,12 @@ func (m *ListImplementationsRequest) XXX_Marshal(b []byte, deterministic bool) (
 		return b[:n], nil
 	}
 }
-
 func (m *ListImplementationsRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ListImplementationsRequest.Merge(m, src)
 }
-
 func (m *ListImplementationsRequest) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *ListImplementationsRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_ListImplementationsRequest.DiscardUnknown(m)
 }
@@ -187,11 +170,9 @@ func (*ListImplementationsResponse) ProtoMessage()    {}
 func (*ListImplementationsResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_17dfaccca43aaf55, []int{3}
 }
-
 func (m *ListImplementationsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *ListImplementationsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ListImplementationsResponse.Marshal(b, m, deterministic)
@@ -204,15 +185,12 @@ func (m *ListImplementationsResponse) XXX_Marshal(b []byte, deterministic bool) 
 		return b[:n], nil
 	}
 }
-
 func (m *ListImplementationsResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ListImplementationsResponse.Merge(m, src)
 }
-
 func (m *ListImplementationsResponse) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *ListImplementationsResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_ListImplementationsResponse.DiscardUnknown(m)
 }
@@ -267,10 +245,8 @@ var fileDescriptor_17dfaccca43aaf55 = []byte{
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ context.Context
-	_ grpc.ClientConn
-)
+var _ context.Context
+var _ grpc.ClientConn
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
@@ -325,12 +301,12 @@ type ReflectionServiceServer interface {
 }
 
 // UnimplementedReflectionServiceServer can be embedded to have forward compatible implementations.
-type UnimplementedReflectionServiceServer struct{}
+type UnimplementedReflectionServiceServer struct {
+}
 
 func (*UnimplementedReflectionServiceServer) ListAllInterfaces(ctx context.Context, req *ListAllInterfacesRequest) (*ListAllInterfacesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListAllInterfaces not implemented")
 }
-
 func (*UnimplementedReflectionServiceServer) ListImplementations(ctx context.Context, req *ListImplementationsRequest) (*ListImplementationsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListImplementations not implemented")
 }
@@ -520,7 +496,6 @@ func encodeVarintReflection(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-
 func (m *ListAllInterfacesRequest) Size() (n int) {
 	if m == nil {
 		return 0
@@ -576,11 +551,9 @@ func (m *ListImplementationsResponse) Size() (n int) {
 func sovReflection(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
-
 func sozReflection(x uint64) (n int) {
 	return sovReflection(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-
 func (m *ListAllInterfacesRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -631,7 +604,6 @@ func (m *ListAllInterfacesRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *ListAllInterfacesResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -714,7 +686,6 @@ func (m *ListAllInterfacesResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *ListImplementationsRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -797,7 +768,6 @@ func (m *ListImplementationsRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *ListImplementationsResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -880,7 +850,6 @@ func (m *ListImplementationsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func skipReflection(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

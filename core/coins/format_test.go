@@ -5,8 +5,8 @@ import (
 	"os"
 	"testing"
 
-	bankv1beta1 "cosmossdk.io/api/cosmos/bank/v1beta1"
-	basev1beta1 "cosmossdk.io/api/cosmos/base/v1beta1"
+	bankv1beta1 "github.com/atomone-hub/atomone/api/atomone/bank/v1beta1"
+	basev1beta1 "github.com/atomone-hub/atomone/api/atomone/base/v1beta1"
 	"github.com/atomone-hub/atomone/core/coins"
 	"github.com/stretchr/testify/require"
 )

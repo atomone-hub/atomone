@@ -6,10 +6,6 @@ package types
 import (
 	context "context"
 	fmt "fmt"
-	io "io"
-	math "math"
-	math_bits "math/bits"
-
 	_ "github.com/atomone-hub/atomone/types/msgservice"
 	_ "github.com/atomone-hub/atomone/types/tx/amino"
 	_ "github.com/cosmos/cosmos-proto"
@@ -19,14 +15,15 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	io "io"
+	math "math"
+	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ = proto.Marshal
-	_ = fmt.Errorf
-	_ = math.Inf
-)
+var _ = proto.Marshal
+var _ = fmt.Errorf
+var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -45,11 +42,9 @@ func (*MsgUnjail) ProtoMessage()    {}
 func (*MsgUnjail) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6ad8c08303776182, []int{0}
 }
-
 func (m *MsgUnjail) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *MsgUnjail) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgUnjail.Marshal(b, m, deterministic)
@@ -62,15 +57,12 @@ func (m *MsgUnjail) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-
 func (m *MsgUnjail) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgUnjail.Merge(m, src)
 }
-
 func (m *MsgUnjail) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *MsgUnjail) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgUnjail.DiscardUnknown(m)
 }
@@ -78,7 +70,8 @@ func (m *MsgUnjail) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgUnjail proto.InternalMessageInfo
 
 // MsgUnjailResponse defines the Msg/Unjail response type
-type MsgUnjailResponse struct{}
+type MsgUnjailResponse struct {
+}
 
 func (m *MsgUnjailResponse) Reset()         { *m = MsgUnjailResponse{} }
 func (m *MsgUnjailResponse) String() string { return proto.CompactTextString(m) }
@@ -86,11 +79,9 @@ func (*MsgUnjailResponse) ProtoMessage()    {}
 func (*MsgUnjailResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6ad8c08303776182, []int{1}
 }
-
 func (m *MsgUnjailResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *MsgUnjailResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgUnjailResponse.Marshal(b, m, deterministic)
@@ -103,15 +94,12 @@ func (m *MsgUnjailResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, e
 		return b[:n], nil
 	}
 }
-
 func (m *MsgUnjailResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgUnjailResponse.Merge(m, src)
 }
-
 func (m *MsgUnjailResponse) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *MsgUnjailResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgUnjailResponse.DiscardUnknown(m)
 }
@@ -137,11 +125,9 @@ func (*MsgUpdateParams) ProtoMessage()    {}
 func (*MsgUpdateParams) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6ad8c08303776182, []int{2}
 }
-
 func (m *MsgUpdateParams) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *MsgUpdateParams) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgUpdateParams.Marshal(b, m, deterministic)
@@ -154,15 +140,12 @@ func (m *MsgUpdateParams) XXX_Marshal(b []byte, deterministic bool) ([]byte, err
 		return b[:n], nil
 	}
 }
-
 func (m *MsgUpdateParams) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgUpdateParams.Merge(m, src)
 }
-
 func (m *MsgUpdateParams) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *MsgUpdateParams) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgUpdateParams.DiscardUnknown(m)
 }
@@ -187,7 +170,8 @@ func (m *MsgUpdateParams) GetParams() Params {
 // MsgUpdateParams message.
 //
 // Since: cosmos-sdk 0.47
-type MsgUpdateParamsResponse struct{}
+type MsgUpdateParamsResponse struct {
+}
 
 func (m *MsgUpdateParamsResponse) Reset()         { *m = MsgUpdateParamsResponse{} }
 func (m *MsgUpdateParamsResponse) String() string { return proto.CompactTextString(m) }
@@ -195,11 +179,9 @@ func (*MsgUpdateParamsResponse) ProtoMessage()    {}
 func (*MsgUpdateParamsResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6ad8c08303776182, []int{3}
 }
-
 func (m *MsgUpdateParamsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *MsgUpdateParamsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgUpdateParamsResponse.Marshal(b, m, deterministic)
@@ -212,15 +194,12 @@ func (m *MsgUpdateParamsResponse) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return b[:n], nil
 	}
 }
-
 func (m *MsgUpdateParamsResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgUpdateParamsResponse.Merge(m, src)
 }
-
 func (m *MsgUpdateParamsResponse) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *MsgUpdateParamsResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgUpdateParamsResponse.DiscardUnknown(m)
 }
@@ -293,7 +272,6 @@ func (this *MsgUnjail) Equal(that interface{}) bool {
 	}
 	return true
 }
-
 func (this *MsgUnjailResponse) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
@@ -315,7 +293,6 @@ func (this *MsgUnjailResponse) Equal(that interface{}) bool {
 	}
 	return true
 }
-
 func (this *MsgUpdateParams) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
@@ -343,7 +320,6 @@ func (this *MsgUpdateParams) Equal(that interface{}) bool {
 	}
 	return true
 }
-
 func (this *MsgUpdateParamsResponse) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
@@ -367,10 +343,8 @@ func (this *MsgUpdateParamsResponse) Equal(that interface{}) bool {
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ context.Context
-	_ grpc.ClientConn
-)
+var _ context.Context
+var _ grpc.ClientConn
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
@@ -431,12 +405,12 @@ type MsgServer interface {
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
-type UnimplementedMsgServer struct{}
+type UnimplementedMsgServer struct {
+}
 
 func (*UnimplementedMsgServer) Unjail(ctx context.Context, req *MsgUnjail) (*MsgUnjailResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Unjail not implemented")
 }
-
 func (*UnimplementedMsgServer) UpdateParams(ctx context.Context, req *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
 }
@@ -625,7 +599,6 @@ func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-
 func (m *MsgUnjail) Size() (n int) {
 	if m == nil {
 		return 0
@@ -675,11 +648,9 @@ func (m *MsgUpdateParamsResponse) Size() (n int) {
 func sovTx(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
-
 func sozTx(x uint64) (n int) {
 	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-
 func (m *MsgUnjail) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -762,7 +733,6 @@ func (m *MsgUnjail) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *MsgUnjailResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -813,7 +783,6 @@ func (m *MsgUnjailResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *MsgUpdateParams) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -929,7 +898,6 @@ func (m *MsgUpdateParams) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *MsgUpdateParamsResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -980,7 +948,6 @@ func (m *MsgUpdateParamsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func skipTx(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

@@ -3,8 +3,8 @@ package tx
 import (
 	"fmt"
 
-	txconfigv1 "cosmossdk.io/api/cosmos/tx/config/v1"
 	"cosmossdk.io/depinject"
+	txconfigv1 "github.com/atomone-hub/atomone/api/atomone/tx/config/v1"
 
 	"github.com/atomone-hub/atomone/baseapp"
 	"github.com/atomone-hub/atomone/client"

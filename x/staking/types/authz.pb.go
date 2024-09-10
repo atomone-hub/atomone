@@ -5,23 +5,20 @@ package types
 
 import (
 	fmt "fmt"
-	io "io"
-	math "math"
-	math_bits "math/bits"
-
 	types "github.com/atomone-hub/atomone/types"
 	_ "github.com/atomone-hub/atomone/types/tx/amino"
 	_ "github.com/cosmos/cosmos-proto"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	proto "github.com/cosmos/gogoproto/proto"
+	io "io"
+	math "math"
+	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ = proto.Marshal
-	_ = fmt.Errorf
-	_ = math.Inf
-)
+var _ = proto.Marshal
+var _ = fmt.Errorf
+var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -93,11 +90,9 @@ func (*StakeAuthorization) ProtoMessage()    {}
 func (*StakeAuthorization) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ef5e6282e47a8857, []int{0}
 }
-
 func (m *StakeAuthorization) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *StakeAuthorization) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_StakeAuthorization.Marshal(b, m, deterministic)
@@ -110,15 +105,12 @@ func (m *StakeAuthorization) XXX_Marshal(b []byte, deterministic bool) ([]byte, 
 		return b[:n], nil
 	}
 }
-
 func (m *StakeAuthorization) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_StakeAuthorization.Merge(m, src)
 }
-
 func (m *StakeAuthorization) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *StakeAuthorization) XXX_DiscardUnknown() {
 	xxx_messageInfo_StakeAuthorization.DiscardUnknown(m)
 }
@@ -195,11 +187,9 @@ func (*StakeAuthorization_Validators) ProtoMessage()    {}
 func (*StakeAuthorization_Validators) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ef5e6282e47a8857, []int{0, 0}
 }
-
 func (m *StakeAuthorization_Validators) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *StakeAuthorization_Validators) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_StakeAuthorization_Validators.Marshal(b, m, deterministic)
@@ -212,15 +202,12 @@ func (m *StakeAuthorization_Validators) XXX_Marshal(b []byte, deterministic bool
 		return b[:n], nil
 	}
 }
-
 func (m *StakeAuthorization_Validators) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_StakeAuthorization_Validators.Merge(m, src)
 }
-
 func (m *StakeAuthorization_Validators) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *StakeAuthorization_Validators) XXX_DiscardUnknown() {
 	xxx_messageInfo_StakeAuthorization_Validators.DiscardUnknown(m)
 }
@@ -350,7 +337,6 @@ func (m *StakeAuthorization_AllowList) MarshalToSizedBuffer(dAtA []byte) (int, e
 	}
 	return len(dAtA) - i, nil
 }
-
 func (m *StakeAuthorization_DenyList) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
@@ -372,7 +358,6 @@ func (m *StakeAuthorization_DenyList) MarshalToSizedBuffer(dAtA []byte) (int, er
 	}
 	return len(dAtA) - i, nil
 }
-
 func (m *StakeAuthorization_Validators) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -416,7 +401,6 @@ func encodeVarintAuthz(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-
 func (m *StakeAuthorization) Size() (n int) {
 	if m == nil {
 		return 0
@@ -448,7 +432,6 @@ func (m *StakeAuthorization_AllowList) Size() (n int) {
 	}
 	return n
 }
-
 func (m *StakeAuthorization_DenyList) Size() (n int) {
 	if m == nil {
 		return 0
@@ -461,7 +444,6 @@ func (m *StakeAuthorization_DenyList) Size() (n int) {
 	}
 	return n
 }
-
 func (m *StakeAuthorization_Validators) Size() (n int) {
 	if m == nil {
 		return 0
@@ -480,11 +462,9 @@ func (m *StakeAuthorization_Validators) Size() (n int) {
 func sovAuthz(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
-
 func sozAuthz(x uint64) (n int) {
 	return sovAuthz(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-
 func (m *StakeAuthorization) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -660,7 +640,6 @@ func (m *StakeAuthorization) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *StakeAuthorization_Validators) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -743,7 +722,6 @@ func (m *StakeAuthorization_Validators) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func skipAuthz(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0
