@@ -213,7 +213,7 @@ func TestTally(t *testing.T) {
 			},
 		},
 		{
-			name: "validator votes yes, don't inherit delegations",
+			name: "validator votes yes, doesn't inherit delegations",
 			setup: func(s *tallyFixture) {
 				s.delegate(s.delAddrs[0], s.valAddrs[0], 2)
 				s.delegate(s.delAddrs[1], s.valAddrs[0], 2)
