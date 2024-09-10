@@ -13,6 +13,8 @@ import (
 
 	"cosmossdk.io/math"
 
+	atomone "github.com/atomone-hub/atomone/app"
+	"github.com/atomone-hub/atomone/app/params"
 	"github.com/atomone-hub/atomone/codec"
 	"github.com/atomone-hub/atomone/crypto/keys/secp256k1"
 	sdk "github.com/atomone-hub/atomone/types"
@@ -21,9 +23,6 @@ import (
 	authtypes "github.com/atomone-hub/atomone/x/auth/types"
 	banktypes "github.com/atomone-hub/atomone/x/bank/types"
 	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
-
-	atomone "github.com/atomone-hub/atomone/app"
-	"github.com/atomone-hub/atomone/app/params"
 )
 
 // Simulation parameter constants

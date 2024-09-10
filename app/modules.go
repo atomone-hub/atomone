@@ -1,6 +1,7 @@
 package atomone
 
 import (
+	atomoneappparams "github.com/atomone-hub/atomone/app/params"
 	"github.com/atomone-hub/atomone/types/module"
 	"github.com/atomone-hub/atomone/x/auth"
 	authsims "github.com/atomone-hub/atomone/x/auth/simulation"
@@ -11,39 +12,35 @@ import (
 	authzmodule "github.com/atomone-hub/atomone/x/authz/module"
 	"github.com/atomone-hub/atomone/x/bank"
 	banktypes "github.com/atomone-hub/atomone/x/bank/types"
+	"github.com/atomone-hub/atomone/x/capability"
+	capabilitytypes "github.com/atomone-hub/atomone/x/capability/types"
+	"github.com/atomone-hub/atomone/x/consensus"
 	consensusparamtypes "github.com/atomone-hub/atomone/x/consensus/types"
+	"github.com/atomone-hub/atomone/x/crisis"
 	crisistypes "github.com/atomone-hub/atomone/x/crisis/types"
 	distr "github.com/atomone-hub/atomone/x/distribution"
 	distrtypes "github.com/atomone-hub/atomone/x/distribution/types"
+	"github.com/atomone-hub/atomone/x/evidence"
 	evidencetypes "github.com/atomone-hub/atomone/x/evidence/types"
 	"github.com/atomone-hub/atomone/x/feegrant"
 	feegrantmodule "github.com/atomone-hub/atomone/x/feegrant/module"
 	"github.com/atomone-hub/atomone/x/genutil"
 	genutiltypes "github.com/atomone-hub/atomone/x/genutil/types"
+	"github.com/atomone-hub/atomone/x/gov"
 	govclient "github.com/atomone-hub/atomone/x/gov/client"
+	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	"github.com/atomone-hub/atomone/x/mint"
 	minttypes "github.com/atomone-hub/atomone/x/mint/types"
+	sdkparams "github.com/atomone-hub/atomone/x/params"
+	paramsclient "github.com/atomone-hub/atomone/x/params/client"
 	paramstypes "github.com/atomone-hub/atomone/x/params/types"
+	"github.com/atomone-hub/atomone/x/slashing"
 	slashingtypes "github.com/atomone-hub/atomone/x/slashing/types"
 	"github.com/atomone-hub/atomone/x/staking"
 	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
 	"github.com/atomone-hub/atomone/x/upgrade"
 	upgradeclient "github.com/atomone-hub/atomone/x/upgrade/client"
 	upgradetypes "github.com/atomone-hub/atomone/x/upgrade/types"
-
-	"github.com/atomone-hub/atomone/x/capability"
-	capabilitytypes "github.com/atomone-hub/atomone/x/capability/types"
-	"github.com/atomone-hub/atomone/x/consensus"
-	"github.com/atomone-hub/atomone/x/crisis"
-	"github.com/atomone-hub/atomone/x/evidence"
-	sdkparams "github.com/atomone-hub/atomone/x/params"
-	paramsclient "github.com/atomone-hub/atomone/x/params/client"
-
-	"github.com/atomone-hub/atomone/x/slashing"
-
-	atomoneappparams "github.com/atomone-hub/atomone/app/params"
-	"github.com/atomone-hub/atomone/x/gov"
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 )
 
 var maccPerms = map[string][]string{

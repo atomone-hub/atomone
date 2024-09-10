@@ -54,21 +54,21 @@ func (t *Tx) ValidateBasic() error {
 	}
 
 	if fee.GasLimit > MaxGasWanted {
-		return sdkerrors.Wrapf(
+		return sdkerrors.Wrapf( //nolint: staticcheck
 			sdkerrors.ErrInvalidRequest,
 			"invalid gas supplied; %d > %d", fee.GasLimit, MaxGasWanted,
 		)
 	}
 
 	if fee.Amount.IsAnyNil() {
-		return sdkerrors.Wrapf(
+		return sdkerrors.Wrapf( //nolint: staticcheck
 			sdkerrors.ErrInsufficientFee,
 			"invalid fee provided: null",
 		)
 	}
 
 	if fee.Amount.IsAnyNegative() {
-		return sdkerrors.Wrapf(
+		return sdkerrors.Wrapf( //nolint: staticcheck
 			sdkerrors.ErrInsufficientFee,
 			"invalid fee provided: %s", fee.Amount,
 		)
@@ -77,7 +77,7 @@ func (t *Tx) ValidateBasic() error {
 	if fee.Payer != "" {
 		_, err := sdk.AccAddressFromBech32(fee.Payer)
 		if err != nil {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid fee payer address (%s)", err)
+			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid fee payer address (%s)", err) //nolint: staticcheck
 		}
 	}
 
@@ -88,7 +88,7 @@ func (t *Tx) ValidateBasic() error {
 	}
 
 	if len(sigs) != len(t.GetSigners()) {
-		return sdkerrors.Wrapf(
+		return sdkerrors.Wrapf( //nolint: staticcheck
 			sdkerrors.ErrUnauthorized,
 			"wrong number of signers; expected %d, got %d", len(t.GetSigners()), len(sigs),
 		)

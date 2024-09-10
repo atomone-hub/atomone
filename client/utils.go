@@ -3,12 +3,14 @@ package client
 import (
 	"encoding/base64"
 
-	rpchttp "github.com/cometbft/cometbft/rpc/client/http"
 	"github.com/spf13/pflag"
+
+	rpchttp "github.com/cometbft/cometbft/rpc/client/http"
+
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/atomone-hub/atomone/client/flags"
 	"github.com/atomone-hub/atomone/types/query"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // Paginate returns the correct starting and ending index for a paginated query,
@@ -57,7 +59,7 @@ func ReadPageRequest(flagSet *pflag.FlagSet) (*query.PageRequest, error) {
 	reverse, _ := flagSet.GetBool(flags.FlagReverse)
 
 	if page > 1 && offset > 0 {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "page and offset cannot be used together")
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "page and offset cannot be used together") //nolint: staticcheck
 	}
 
 	if page > 1 {

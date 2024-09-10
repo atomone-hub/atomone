@@ -3,8 +3,9 @@ package node
 import (
 	context "context"
 
-	gogogrpc "github.com/cosmos/gogoproto/grpc"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+
+	gogogrpc "github.com/cosmos/gogoproto/grpc"
 
 	"github.com/atomone-hub/atomone/client"
 	sdk "github.com/atomone-hub/atomone/types"

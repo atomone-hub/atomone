@@ -248,7 +248,7 @@ func (k Keeper) unbondingDelegationEntryCanComplete(ctx sdk.Context, id uint64) 
 
 	// The entry must be on hold
 	if !ubd.Entries[i].OnHold() {
-		return sdkerrors.Wrapf(
+		return sdkerrors.Wrapf( //nolint: staticcheck
 			types.ErrUnbondingOnHoldRefCountNegative,
 			"undelegation unbondingID(%d), expecting UnbondingOnHoldRefCount > 0, got %T",
 			id, ubd.Entries[i].UnbondingOnHoldRefCount,
@@ -306,7 +306,7 @@ func (k Keeper) redelegationEntryCanComplete(ctx sdk.Context, id uint64) error {
 
 	// The entry must be on hold
 	if !red.Entries[i].OnHold() {
-		return sdkerrors.Wrapf(
+		return sdkerrors.Wrapf( //nolint: staticcheck
 			types.ErrUnbondingOnHoldRefCountNegative,
 			"redelegation unbondingID(%d), expecting UnbondingOnHoldRefCount > 0, got %T",
 			id, red.Entries[i].UnbondingOnHoldRefCount,
@@ -340,7 +340,7 @@ func (k Keeper) validatorUnbondingCanComplete(ctx sdk.Context, id uint64) error 
 	}
 
 	if val.UnbondingOnHoldRefCount <= 0 {
-		return sdkerrors.Wrapf(
+		return sdkerrors.Wrapf( //nolint: staticcheck
 			types.ErrUnbondingOnHoldRefCountNegative,
 			"val(%s), expecting UnbondingOnHoldRefCount > 0, got %T",
 			val.OperatorAddress, val.UnbondingOnHoldRefCount,

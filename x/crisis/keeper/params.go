@@ -20,7 +20,7 @@ func (k *Keeper) GetConstantFee(ctx sdk.Context) (constantFee sdk.Coin) {
 // GetConstantFee set's the constant fee in the store
 func (k *Keeper) SetConstantFee(ctx sdk.Context, constantFee sdk.Coin) error {
 	if !constantFee.IsValid() || constantFee.IsNegative() {
-		return errors.Wrapf(errors.ErrInvalidCoins, "negative or invalid constant fee: %s", constantFee)
+		return errors.Wrapf(errors.ErrInvalidCoins, "negative or invalid constant fee: %s", constantFee) //nolint: staticcheck
 	}
 
 	store := ctx.KVStore(k.storeKey)

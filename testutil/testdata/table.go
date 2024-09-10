@@ -10,7 +10,7 @@ func (g TableModel) PrimaryKeyFields() []interface{} {
 
 func (g TableModel) ValidateBasic() error {
 	if g.Name == "" {
-		return errors.Wrap(ErrTest, "name")
+		return errors.Wrap(ErrTest, "name") //nolint: staticcheck
 	}
 	return nil
 }

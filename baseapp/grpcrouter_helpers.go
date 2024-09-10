@@ -4,9 +4,11 @@ import (
 	gocontext "context"
 	"fmt"
 
-	abci "github.com/cometbft/cometbft/abci/types"
-	gogogrpc "github.com/cosmos/gogoproto/grpc"
 	"google.golang.org/grpc"
+
+	abci "github.com/cometbft/cometbft/abci/types"
+
+	gogogrpc "github.com/cosmos/gogoproto/grpc"
 
 	"github.com/atomone-hub/atomone/codec/types"
 	sdk "github.com/atomone-hub/atomone/types"

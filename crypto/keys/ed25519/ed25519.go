@@ -209,7 +209,7 @@ func (pubKey PubKey) MarshalAmino() ([]byte, error) {
 // UnmarshalAmino overrides Amino binary marshalling.
 func (pubKey *PubKey) UnmarshalAmino(bz []byte) error {
 	if len(bz) != PubKeySize {
-		return errors.Wrap(errors.ErrInvalidPubKey, "invalid pubkey size")
+		return errors.Wrap(errors.ErrInvalidPubKey, "invalid pubkey size") //nolint: staticcheck
 	}
 	pubKey.Key = bz
 

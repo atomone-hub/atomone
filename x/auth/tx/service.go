@@ -189,7 +189,7 @@ func (s txServer) GetBlockWithTxs(ctx context.Context, req *txtypes.GetBlockWith
 	currentHeight := sdkCtx.BlockHeight()
 
 	if req.Height < 1 || req.Height > currentHeight {
-		return nil, sdkerrors.ErrInvalidHeight.Wrapf("requested height %d but height must not be less than 1 "+
+		return nil, sdkerrors.ErrInvalidHeight.Wrapf("requested height %d but height must not be less than 1 "+ //nolint: staticcheck
 			"or greater than the current height %d", req.Height, currentHeight)
 	}
 
@@ -211,7 +211,7 @@ func (s txServer) GetBlockWithTxs(ctx context.Context, req *txtypes.GetBlockWith
 	blockTxsLn := uint64(len(blockTxs))
 	txs := make([]*txtypes.Tx, 0, limit)
 	if offset >= blockTxsLn && blockTxsLn != 0 {
-		return nil, sdkerrors.ErrInvalidRequest.Wrapf("out of range: cannot paginate %d txs with offset %d and limit %d", blockTxsLn, offset, limit)
+		return nil, sdkerrors.ErrInvalidRequest.Wrapf("out of range: cannot paginate %d txs with offset %d and limit %d", blockTxsLn, offset, limit) //nolint: staticcheck
 	}
 	decodeTxAt := func(i uint64) error {
 		tx := blockTxs[i]
@@ -221,7 +221,7 @@ func (s txServer) GetBlockWithTxs(ctx context.Context, req *txtypes.GetBlockWith
 		}
 		p, ok := txb.(protoTxProvider)
 		if !ok {
-			return sdkerrors.ErrTxDecode.Wrapf("could not cast %T to %T", txb, txtypes.Tx{})
+			return sdkerrors.ErrTxDecode.Wrapf("could not cast %T to %T", txb, txtypes.Tx{}) //nolint: staticcheck
 		}
 		txs = append(txs, p.GetProtoTx())
 		return nil

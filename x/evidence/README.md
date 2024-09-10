@@ -154,15 +154,15 @@ as follows:
 ```go
 func SubmitEvidence(ctx Context, evidence Evidence) error {
   if _, ok := GetEvidence(ctx, evidence.Hash()); ok {
-    return sdkerrors.Wrap(types.ErrEvidenceExists, evidence.Hash().String())
+    return sdkerrors.Wrap(types.ErrEvidenceExists, evidence.Hash().String()) //nolint: staticcheck
   }
   if !router.HasRoute(evidence.Route()) {
-    return sdkerrors.Wrap(types.ErrNoEvidenceHandlerExists, evidence.Route())
+    return sdkerrors.Wrap(types.ErrNoEvidenceHandlerExists, evidence.Route()) //nolint: staticcheck
   }
 
   handler := router.GetRoute(evidence.Route())
   if err := handler(ctx, evidence); err != nil {
-    return sdkerrors.Wrap(types.ErrInvalidEvidence, err.Error())
+    return sdkerrors.Wrap(types.ErrInvalidEvidence, err.Error()) //nolint: staticcheck
   }
 
   ctx.EventManager().EmitEvent(

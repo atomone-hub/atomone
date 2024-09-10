@@ -168,11 +168,11 @@ func VerifyAddressFormat(bz []byte) error {
 	}
 
 	if len(bz) == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrUnknownAddress, "addresses cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrUnknownAddress, "addresses cannot be empty") //nolint: staticcheck
 	}
 
 	if len(bz) > address.MaxAddrLen {
-		return sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "address max length is %d, got %d", address.MaxAddrLen, len(bz))
+		return sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "address max length is %d, got %d", address.MaxAddrLen, len(bz)) //nolint: staticcheck
 	}
 
 	return nil

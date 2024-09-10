@@ -32,7 +32,7 @@ func NewLegacyContent(content v1beta1.Content, authority string) (*MsgExecLegacy
 func LegacyContentFromMessage(msg *MsgExecLegacyContent) (v1beta1.Content, error) {
 	content, ok := msg.Content.GetCachedValue().(v1beta1.Content)
 	if !ok {
-		return nil, sdkerrors.ErrInvalidType.Wrapf("expected %T, got %T", (*v1beta1.Content)(nil), msg.Content.GetCachedValue())
+		return nil, sdkerrors.ErrInvalidType.Wrapf("expected %T, got %T", (*v1beta1.Content)(nil), msg.Content.GetCachedValue()) //nolint: staticcheck
 	}
 
 	return content, nil

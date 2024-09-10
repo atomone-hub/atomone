@@ -9,7 +9,7 @@ import (
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 
-	"cosmossdk.io/client/v2/internal/util"
+	"github.com/atomone-hub/atomone/client/v2/internal/util"
 )
 
 // namingOptions specifies internal naming options for flags.

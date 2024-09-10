@@ -233,7 +233,7 @@ func (k BaseSendKeeper) SendCoins(ctx sdk.Context, fromAddr sdk.AccAddress, toAd
 // A coin_spent event is emitted after.
 func (k BaseSendKeeper) subUnlockedCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) error {
 	if !amt.IsValid() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, amt.String())
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, amt.String()) //nolint: staticcheck
 	}
 
 	lockedCoins := k.LockedCoins(ctx, addr)
@@ -244,12 +244,12 @@ func (k BaseSendKeeper) subUnlockedCoins(ctx sdk.Context, addr sdk.AccAddress, a
 
 		spendable, hasNeg := sdk.Coins{balance}.SafeSub(locked)
 		if hasNeg {
-			return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds,
+			return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds, //nolint: staticcheck
 				"locked amount exceeds account balance funds: %s > %s", locked, balance)
 		}
 
 		if _, hasNeg := spendable.SafeSub(coin); hasNeg {
-			return sdkerrors.Wrapf(
+			return sdkerrors.Wrapf( //nolint: staticcheck
 				sdkerrors.ErrInsufficientFunds,
 				"spendable balance %s is smaller than %s",
 				spendable, coin,
@@ -274,7 +274,7 @@ func (k BaseSendKeeper) subUnlockedCoins(ctx sdk.Context, addr sdk.AccAddress, a
 // amt is invalid. It emits a coin received event.
 func (k BaseSendKeeper) addCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) error {
 	if !amt.IsValid() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, amt.String())
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, amt.String()) //nolint: staticcheck
 	}
 
 	for _, coin := range amt {
@@ -304,7 +304,7 @@ func (k BaseSendKeeper) initBalances(ctx sdk.Context, addr sdk.AccAddress, balan
 	for i := range balances {
 		balance := balances[i]
 		if !balance.IsValid() {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, balance.String())
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, balance.String()) //nolint: staticcheck
 		}
 
 		// x/bank invariants prohibit persistence of zero balances
@@ -336,7 +336,7 @@ func (k BaseSendKeeper) initBalances(ctx sdk.Context, addr sdk.AccAddress, balan
 // setBalance sets the coin balance for an account by address.
 func (k BaseSendKeeper) setBalance(ctx sdk.Context, addr sdk.AccAddress, balance sdk.Coin) error {
 	if !balance.IsValid() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, balance.String())
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, balance.String()) //nolint: staticcheck
 	}
 
 	accountStore := k.getAccountStore(ctx, addr)
@@ -378,7 +378,7 @@ func (k BaseSendKeeper) IsSendEnabledCoins(ctx sdk.Context, coins ...sdk.Coin) e
 
 	for _, coin := range coins {
 		if !k.getSendEnabledOrDefault(store, coin.Denom, defaultVal) {
-			return types.ErrSendDisabled.Wrapf("%s transfers are currently disabled", coin.Denom)
+			return types.ErrSendDisabled.Wrapf("%s transfers are currently disabled", coin.Denom) //nolint: staticcheck
 		}
 	}
 

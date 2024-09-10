@@ -56,7 +56,7 @@ func (k Keeper) GrantAllowance(ctx sdk.Context, granter, grantee sdk.AccAddress,
 
 	// If we didn't find any grant, we don't return any error.
 	// All other kinds of errors are returned.
-	if err != nil && !sdkerrors.IsOf(err, sdkerrors.ErrNotFound) {
+	if err != nil && !sdkerrors.IsOf(err, sdkerrors.ErrNotFound) { //nolint: staticcheck
 		return err
 	}
 
@@ -78,7 +78,7 @@ func (k Keeper) GrantAllowance(ctx sdk.Context, granter, grantee sdk.AccAddress,
 		return err
 
 	case newExp != nil && newExp.Before(ctx.BlockTime()):
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "expiration is before current block time")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "expiration is before current block time") //nolint: staticcheck
 
 	case oldExp == nil && newExp != nil:
 		// when old oldExp is nil there won't be any key added before to queue.
@@ -195,7 +195,7 @@ func (k Keeper) getGrant(ctx sdk.Context, granter sdk.AccAddress, grantee sdk.Ac
 	key := feegrant.FeeAllowanceKey(granter, grantee)
 	bz := store.Get(key)
 	if len(bz) == 0 {
-		return nil, sdkerrors.ErrNotFound.Wrap("fee-grant not found")
+		return nil, sdkerrors.ErrNotFound.Wrap("fee-grant not found") //nolint: staticcheck
 	}
 
 	var feegrant feegrant.Grant

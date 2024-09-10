@@ -13,19 +13,19 @@ func (s *errorsTestSuite) TestStackTrace() {
 		wantError string
 	}{
 		"New gives us a stacktrace": {
-			err:       Wrap(ErrNoSignatures, "name"),
+			err:       Wrap(ErrNoSignatures, "name"), //nolint: staticcheck
 			wantError: "name: no signatures supplied",
 		},
 		"Wrapping stderr gives us a stacktrace": {
-			err:       Wrap(fmt.Errorf("foo"), "standard"),
+			err:       Wrap(fmt.Errorf("foo"), "standard"), //nolint: staticcheck
 			wantError: "standard: foo",
 		},
 		"Wrapping pkg/errors gives us clean stacktrace": {
-			err:       Wrap(errors.New("bar"), "pkg"),
+			err:       Wrap(errors.New("bar"), "pkg"), //nolint: staticcheck
 			wantError: "pkg: bar",
 		},
 		"Wrapping inside another function is still clean": {
-			err:       Wrap(fmt.Errorf("indirect"), "do the do"),
+			err:       Wrap(fmt.Errorf("indirect"), "do the do"), //nolint: staticcheck
 			wantError: "do the do: indirect",
 		},
 	}

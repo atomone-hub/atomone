@@ -4,8 +4,11 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/cometbft/cometbft/libs/cli"
 	"github.com/spf13/cobra"
+
+	"github.com/cometbft/cometbft/libs/cli"
+
+	sdkerr "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/crypto/keyring"
@@ -13,7 +16,6 @@ import (
 	"github.com/atomone-hub/atomone/crypto/ledger"
 	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
 	sdk "github.com/atomone-hub/atomone/types"
-	sdkerr "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 const (
@@ -173,7 +175,7 @@ func fetchKey(kb keyring.Keyring, keyref string) (*keyring.Record, error) {
 	// if the key is not there or if we have a problem with a keyring itself then we move to a
 	// fallback: searching for key by address.
 
-	if err == nil || !sdkerr.IsOf(err, sdkerr.ErrIO, sdkerr.ErrKeyNotFound) {
+	if err == nil || !sdkerr.IsOf(err, sdkerr.ErrIO, sdkerr.ErrKeyNotFound) { //nolint: staticcheck
 		return k, err
 	}
 
@@ -183,7 +185,7 @@ func fetchKey(kb keyring.Keyring, keyref string) (*keyring.Record, error) {
 	}
 
 	k, err = kb.KeyByAddress(accAddr)
-	return k, sdkerr.Wrap(err, "Invalid key")
+	return k, sdkerr.Wrap(err, "Invalid key") //nolint: staticcheck
 }
 
 func validateMultisigThreshold(k, nKeys int) error {

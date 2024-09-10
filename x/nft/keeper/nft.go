@@ -10,11 +10,11 @@ import (
 // Mint defines a method for minting a new nft
 func (k Keeper) Mint(ctx sdk.Context, token nft.NFT, receiver sdk.AccAddress) error {
 	if !k.HasClass(ctx, token.ClassId) {
-		return sdkerrors.Wrap(nft.ErrClassNotExists, token.ClassId)
+		return sdkerrors.Wrap(nft.ErrClassNotExists, token.ClassId) //nolint: staticcheck
 	}
 
 	if k.HasNFT(ctx, token.ClassId, token.Id) {
-		return sdkerrors.Wrap(nft.ErrNFTExists, token.Id)
+		return sdkerrors.Wrap(nft.ErrNFTExists, token.Id) //nolint: staticcheck
 	}
 
 	k.mintWithNoCheck(ctx, token, receiver)
@@ -40,11 +40,11 @@ func (k Keeper) mintWithNoCheck(ctx sdk.Context, token nft.NFT, receiver sdk.Acc
 // Note: When the upper module uses this method, it needs to authenticate nft
 func (k Keeper) Burn(ctx sdk.Context, classID string, nftID string) error {
 	if !k.HasClass(ctx, classID) {
-		return sdkerrors.Wrap(nft.ErrClassNotExists, classID)
+		return sdkerrors.Wrap(nft.ErrClassNotExists, classID) //nolint: staticcheck
 	}
 
 	if !k.HasNFT(ctx, classID, nftID) {
-		return sdkerrors.Wrap(nft.ErrNFTNotExists, nftID)
+		return sdkerrors.Wrap(nft.ErrNFTNotExists, nftID) //nolint: staticcheck
 	}
 
 	k.burnWithNoCheck(ctx, classID, nftID)
@@ -73,11 +73,11 @@ func (k Keeper) burnWithNoCheck(ctx sdk.Context, classID string, nftID string) e
 // Note: When the upper module uses this method, it needs to authenticate nft
 func (k Keeper) Update(ctx sdk.Context, token nft.NFT) error {
 	if !k.HasClass(ctx, token.ClassId) {
-		return sdkerrors.Wrap(nft.ErrClassNotExists, token.ClassId)
+		return sdkerrors.Wrap(nft.ErrClassNotExists, token.ClassId) //nolint: staticcheck
 	}
 
 	if !k.HasNFT(ctx, token.ClassId, token.Id) {
-		return sdkerrors.Wrap(nft.ErrNFTNotExists, token.Id)
+		return sdkerrors.Wrap(nft.ErrNFTNotExists, token.Id) //nolint: staticcheck
 	}
 	k.updateWithNoCheck(ctx, token)
 	return nil
@@ -98,11 +98,11 @@ func (k Keeper) Transfer(ctx sdk.Context,
 	receiver sdk.AccAddress,
 ) error {
 	if !k.HasClass(ctx, classID) {
-		return sdkerrors.Wrap(nft.ErrClassNotExists, classID)
+		return sdkerrors.Wrap(nft.ErrClassNotExists, classID) //nolint: staticcheck
 	}
 
 	if !k.HasNFT(ctx, classID, nftID) {
-		return sdkerrors.Wrap(nft.ErrNFTNotExists, nftID)
+		return sdkerrors.Wrap(nft.ErrNFTNotExists, nftID) //nolint: staticcheck
 	}
 
 	k.transferWithNoCheck(ctx, classID, nftID, receiver)

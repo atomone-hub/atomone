@@ -5,19 +5,22 @@ package types
 
 import (
 	fmt "fmt"
+	io "io"
+	math "math"
+	math_bits "math/bits"
+
 	_ "github.com/atomone-hub/atomone/types/tx/amino"
 	_ "github.com/cosmos/cosmos-proto"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	proto "github.com/cosmos/gogoproto/proto"
-	io "io"
-	math "math"
-	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
+var (
+	_ = proto.Marshal
+	_ = fmt.Errorf
+	_ = math.Inf
+)
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -39,9 +42,11 @@ func (*Coin) ProtoMessage() {}
 func (*Coin) Descriptor() ([]byte, []int) {
 	return fileDescriptor_b94a3d51f940e116, []int{0}
 }
+
 func (m *Coin) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *Coin) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_Coin.Marshal(b, m, deterministic)
@@ -54,12 +59,15 @@ func (m *Coin) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
+
 func (m *Coin) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Coin.Merge(m, src)
 }
+
 func (m *Coin) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *Coin) XXX_DiscardUnknown() {
 	xxx_messageInfo_Coin.DiscardUnknown(m)
 }
@@ -87,9 +95,11 @@ func (*DecCoin) ProtoMessage() {}
 func (*DecCoin) Descriptor() ([]byte, []int) {
 	return fileDescriptor_b94a3d51f940e116, []int{1}
 }
+
 func (m *DecCoin) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *DecCoin) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_DecCoin.Marshal(b, m, deterministic)
@@ -102,12 +112,15 @@ func (m *DecCoin) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
+
 func (m *DecCoin) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_DecCoin.Merge(m, src)
 }
+
 func (m *DecCoin) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *DecCoin) XXX_DiscardUnknown() {
 	xxx_messageInfo_DecCoin.DiscardUnknown(m)
 }
@@ -131,9 +144,11 @@ func (*IntProto) ProtoMessage() {}
 func (*IntProto) Descriptor() ([]byte, []int) {
 	return fileDescriptor_b94a3d51f940e116, []int{2}
 }
+
 func (m *IntProto) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *IntProto) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_IntProto.Marshal(b, m, deterministic)
@@ -146,12 +161,15 @@ func (m *IntProto) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
+
 func (m *IntProto) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_IntProto.Merge(m, src)
 }
+
 func (m *IntProto) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *IntProto) XXX_DiscardUnknown() {
 	xxx_messageInfo_IntProto.DiscardUnknown(m)
 }
@@ -168,9 +186,11 @@ func (*DecProto) ProtoMessage() {}
 func (*DecProto) Descriptor() ([]byte, []int) {
 	return fileDescriptor_b94a3d51f940e116, []int{3}
 }
+
 func (m *DecProto) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *DecProto) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_DecProto.Marshal(b, m, deterministic)
@@ -183,12 +203,15 @@ func (m *DecProto) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
+
 func (m *DecProto) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_DecProto.Merge(m, src)
 }
+
 func (m *DecProto) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *DecProto) XXX_DiscardUnknown() {
 	xxx_messageInfo_DecProto.DiscardUnknown(m)
 }
@@ -255,6 +278,7 @@ func (this *Coin) Equal(that interface{}) bool {
 	}
 	return true
 }
+
 func (this *DecCoin) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
@@ -282,6 +306,7 @@ func (this *DecCoin) Equal(that interface{}) bool {
 	}
 	return true
 }
+
 func (m *Coin) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -439,6 +464,7 @@ func encodeVarintCoin(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+
 func (m *Coin) Size() (n int) {
 	if m == nil {
 		return 0
@@ -494,9 +520,11 @@ func (m *DecProto) Size() (n int) {
 func sovCoin(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
+
 func sozCoin(x uint64) (n int) {
 	return sovCoin(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
+
 func (m *Coin) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -613,6 +641,7 @@ func (m *Coin) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *DecCoin) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -729,6 +758,7 @@ func (m *DecCoin) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *IntProto) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -813,6 +843,7 @@ func (m *IntProto) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *DecProto) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -897,6 +928,7 @@ func (m *DecProto) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func skipCoin(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

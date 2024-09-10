@@ -31,7 +31,7 @@ func (a *AllowedMsgAllowance) UnpackInterfaces(unpacker types.AnyUnpacker) error
 func NewAllowedMsgAllowance(allowance FeeAllowanceI, allowedMsgs []string) (*AllowedMsgAllowance, error) {
 	msg, ok := allowance.(proto.Message)
 	if !ok {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrPackAny, "cannot proto marshal %T", msg)
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrPackAny, "cannot proto marshal %T", msg) //nolint: staticcheck
 	}
 	any, err := types.NewAnyWithValue(msg)
 	if err != nil {
@@ -48,7 +48,7 @@ func NewAllowedMsgAllowance(allowance FeeAllowanceI, allowedMsgs []string) (*All
 func (a *AllowedMsgAllowance) GetAllowance() (FeeAllowanceI, error) {
 	allowance, ok := a.Allowance.GetCachedValue().(FeeAllowanceI)
 	if !ok {
-		return nil, sdkerrors.Wrap(ErrNoAllowance, "failed to get allowance")
+		return nil, sdkerrors.Wrap(ErrNoAllowance, "failed to get allowance") //nolint: staticcheck
 	}
 
 	return allowance, nil
@@ -59,7 +59,7 @@ func (a *AllowedMsgAllowance) SetAllowance(allowance FeeAllowanceI) error {
 	var err error
 	a.Allowance, err = types.NewAnyWithValue(allowance.(proto.Message))
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrPackAny, "cannot proto marshal %T", allowance)
+		return sdkerrors.Wrapf(sdkerrors.ErrPackAny, "cannot proto marshal %T", allowance) //nolint: staticcheck
 	}
 
 	return nil
@@ -111,10 +111,10 @@ func (a *AllowedMsgAllowance) allMsgTypesAllowed(ctx sdk.Context, msgs []sdk.Msg
 // ValidateBasic implements FeeAllowance and enforces basic sanity checks
 func (a *AllowedMsgAllowance) ValidateBasic() error {
 	if a.Allowance == nil {
-		return sdkerrors.Wrap(ErrNoAllowance, "allowance should not be empty")
+		return sdkerrors.Wrap(ErrNoAllowance, "allowance should not be empty") //nolint: staticcheck
 	}
 	if len(a.AllowedMessages) == 0 {
-		return sdkerrors.Wrap(ErrNoMessages, "allowed messages shouldn't be empty")
+		return sdkerrors.Wrap(ErrNoMessages, "allowed messages shouldn't be empty") //nolint: staticcheck
 	}
 
 	allowance, err := a.GetAllowance()

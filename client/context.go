@@ -7,10 +7,11 @@ import (
 	"io"
 	"os"
 
-	"github.com/cosmos/gogoproto/proto"
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
 	"sigs.k8s.io/yaml"
+
+	"github.com/cosmos/gogoproto/proto"
 
 	"github.com/atomone-hub/atomone/codec"
 	codectypes "github.com/atomone-hub/atomone/codec/types"

@@ -22,7 +22,7 @@ var (
 func NewMsgGrantAllowance(feeAllowance FeeAllowanceI, granter, grantee sdk.AccAddress) (*MsgGrantAllowance, error) {
 	msg, ok := feeAllowance.(proto.Message)
 	if !ok {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrPackAny, "cannot proto marshal %T", msg)
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrPackAny, "cannot proto marshal %T", msg) //nolint: staticcheck
 	}
 	any, err := types.NewAnyWithValue(msg)
 	if err != nil {
@@ -39,13 +39,13 @@ func NewMsgGrantAllowance(feeAllowance FeeAllowanceI, granter, grantee sdk.AccAd
 // ValidateBasic implements the sdk.Msg interface.
 func (msg MsgGrantAllowance) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Granter); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid granter address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid granter address: %s", err) //nolint: staticcheck
 	}
 	if _, err := sdk.AccAddressFromBech32(msg.Grantee); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", err) //nolint: staticcheck
 	}
 	if msg.Grantee == msg.Granter {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "cannot self-grant fee authorization")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "cannot self-grant fee authorization") //nolint: staticcheck
 	}
 	allowance, err := msg.GetFeeAllowanceI()
 	if err != nil {
@@ -80,7 +80,7 @@ func (msg MsgGrantAllowance) GetSignBytes() []byte {
 func (msg MsgGrantAllowance) GetFeeAllowanceI() (FeeAllowanceI, error) {
 	allowance, ok := msg.Allowance.GetCachedValue().(FeeAllowanceI)
 	if !ok {
-		return nil, sdkerrors.Wrap(ErrNoAllowance, "failed to get allowance")
+		return nil, sdkerrors.Wrap(ErrNoAllowance, "failed to get allowance") //nolint: staticcheck
 	}
 
 	return allowance, nil
@@ -103,13 +103,13 @@ func NewMsgRevokeAllowance(granter sdk.AccAddress, grantee sdk.AccAddress) MsgRe
 // ValidateBasic implements the sdk.Msg interface.
 func (msg MsgRevokeAllowance) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Granter); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid granter address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid granter address: %s", err) //nolint: staticcheck
 	}
 	if _, err := sdk.AccAddressFromBech32(msg.Grantee); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", err) //nolint: staticcheck
 	}
 	if msg.Grantee == msg.Granter {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "addresses must be different")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "addresses must be different") //nolint: staticcheck
 	}
 
 	return nil

@@ -4,13 +4,15 @@ import (
 	"context"
 	"fmt"
 
+	"google.golang.org/grpc"
+
 	gogogrpc "github.com/cosmos/gogoproto/grpc"
 	"github.com/cosmos/gogoproto/proto"
-	"google.golang.org/grpc"
+
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	codectypes "github.com/atomone-hub/atomone/codec/types"
 	sdk "github.com/atomone-hub/atomone/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // MsgServiceRouter routes fully-qualified Msg service methods to their handler.
@@ -143,7 +145,7 @@ func (msr *MsgServiceRouter) RegisterService(sd *grpc.ServiceDesc, handler inter
 
 			resMsg, ok := res.(proto.Message)
 			if !ok {
-				return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "Expecting proto.Message, got %T", resMsg)
+				return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "Expecting proto.Message, got %T", resMsg) //nolint: staticcheck
 			}
 
 			return sdk.WrapServiceResult(ctx, resMsg, err)

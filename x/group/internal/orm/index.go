@@ -45,17 +45,17 @@ func NewIndex(tb Indexable, prefix byte, indexerF IndexerFunc, indexKey interfac
 func newIndex(tb Indexable, prefix byte, indexer *Indexer, indexerF IndexerFunc, indexKey interface{}) (MultiKeyIndex, error) {
 	rowGetter := tb.RowGetter()
 	if rowGetter == nil {
-		return MultiKeyIndex{}, errors.ErrORMInvalidArgument.Wrap("rowGetter must not be nil")
+		return MultiKeyIndex{}, errors.ErrORMInvalidArgument.Wrap("rowGetter must not be nil") //nolint: staticcheck
 	}
 	if indexKey == nil {
-		return MultiKeyIndex{}, errors.ErrORMInvalidArgument.Wrap("indexKey must not be nil")
+		return MultiKeyIndex{}, errors.ErrORMInvalidArgument.Wrap("indexKey must not be nil") //nolint: staticcheck
 	}
 
 	// Verify indexKey type is bytes, string or uint64
 	switch indexKey.(type) {
 	case []byte, string, uint64:
 	default:
-		return MultiKeyIndex{}, errors.ErrORMInvalidArgument.Wrap("indexKey must be []byte, string or uint64")
+		return MultiKeyIndex{}, errors.ErrORMInvalidArgument.Wrap("indexKey must be []byte, string or uint64") //nolint: staticcheck
 	}
 
 	idx := MultiKeyIndex{
@@ -176,7 +176,7 @@ func getStartEndBz(startI interface{}, endI interface{}) ([]byte, []byte, error)
 	}
 
 	if start != nil && end != nil && bytes.Compare(start, end) >= 0 {
-		return nil, nil, sdkerrors.Wrap(errors.ErrORMInvalidArgument, "start must be less than end")
+		return nil, nil, sdkerrors.Wrap(errors.ErrORMInvalidArgument, "start must be less than end") //nolint: staticcheck
 	}
 
 	return start, end, nil

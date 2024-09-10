@@ -41,7 +41,7 @@ func (keeper Keeper) SubmitProposal(ctx sdk.Context, messages []sdk.Msg, metadat
 
 		// perform a basic validation of the message
 		if err := msg.ValidateBasic(); err != nil {
-			return v1.Proposal{}, sdkerrors.Wrap(types.ErrInvalidProposalMsg, err.Error())
+			return v1.Proposal{}, sdkerrors.Wrap(types.ErrInvalidProposalMsg, err.Error()) //nolint: staticcheck
 		}
 
 		signers := msg.GetSigners()
@@ -51,13 +51,13 @@ func (keeper Keeper) SubmitProposal(ctx sdk.Context, messages []sdk.Msg, metadat
 
 		// assert that the governance module account is the only signer of the messages
 		if !signers[0].Equals(keeper.GetGovernanceAccount(ctx).GetAddress()) {
-			return v1.Proposal{}, sdkerrors.Wrapf(types.ErrInvalidSigner, signers[0].String())
+			return v1.Proposal{}, sdkerrors.Wrapf(types.ErrInvalidSigner, signers[0].String()) //nolint: staticcheck
 		}
 
 		// use the msg service router to see that there is a valid route for that message.
 		handler := keeper.router.Handler(msg)
 		if handler == nil {
-			return v1.Proposal{}, sdkerrors.Wrap(types.ErrUnroutableProposalMsg, sdk.MsgTypeURL(msg))
+			return v1.Proposal{}, sdkerrors.Wrap(types.ErrUnroutableProposalMsg, sdk.MsgTypeURL(msg)) //nolint: staticcheck
 		}
 
 		// Only if it's a MsgExecLegacyContent do we try to execute the
@@ -71,7 +71,7 @@ func (keeper Keeper) SubmitProposal(ctx sdk.Context, messages []sdk.Msg, metadat
 				if errors.Is(types.ErrNoProposalHandlerExists, err) {
 					return v1.Proposal{}, err
 				}
-				return v1.Proposal{}, sdkerrors.Wrap(types.ErrInvalidProposalContent, err.Error())
+				return v1.Proposal{}, sdkerrors.Wrap(types.ErrInvalidProposalContent, err.Error()) //nolint: staticcheck
 			}
 		}
 
@@ -246,7 +246,7 @@ func (keeper Keeper) GetProposalID(ctx sdk.Context) (proposalID uint64, err erro
 	store := ctx.KVStore(keeper.storeKey)
 	bz := store.Get(types.ProposalIDKey)
 	if bz == nil {
-		return 0, sdkerrors.Wrap(types.ErrInvalidGenesis, "initial proposal ID hasn't been set")
+		return 0, sdkerrors.Wrap(types.ErrInvalidGenesis, "initial proposal ID hasn't been set") //nolint: staticcheck
 	}
 
 	proposalID = types.GetProposalIDFromBytes(bz)

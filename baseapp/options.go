@@ -6,13 +6,14 @@ import (
 
 	dbm "github.com/cometbft/cometbft-db"
 
+	"github.com/cosmos/cosmos-sdk/snapshots"
+	snapshottypes "github.com/cosmos/cosmos-sdk/snapshots/types"
+
 	"github.com/atomone-hub/atomone/codec/types"
 	"github.com/atomone-hub/atomone/store"
 	pruningtypes "github.com/atomone-hub/atomone/store/pruning/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/mempool"
-	"github.com/cosmos/cosmos-sdk/snapshots"
-	snapshottypes "github.com/cosmos/cosmos-sdk/snapshots/types"
 )
 
 // File for storing in-package BaseApp optional functions,

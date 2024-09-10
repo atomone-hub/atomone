@@ -1,8 +1,9 @@
 package snapshot
 
 import (
-	servertypes "github.com/atomone-hub/atomone/server/types"
 	"github.com/spf13/cobra"
+
+	servertypes "github.com/atomone-hub/atomone/server/types"
 )
 
 // Cmd returns the snapshots group command

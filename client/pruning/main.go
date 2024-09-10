@@ -8,13 +8,14 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
+	dbm "github.com/cometbft/cometbft-db"
+	"github.com/cometbft/cometbft/libs/log"
+
 	"github.com/atomone-hub/atomone/client/flags"
 	"github.com/atomone-hub/atomone/server"
 	servertypes "github.com/atomone-hub/atomone/server/types"
 	pruningtypes "github.com/atomone-hub/atomone/store/pruning/types"
 	"github.com/atomone-hub/atomone/store/rootmulti"
-	dbm "github.com/cometbft/cometbft-db"
-	"github.com/cometbft/cometbft/libs/log"
 )
 
 const FlagAppDBBackend = "app-db-backend"

@@ -25,7 +25,7 @@ func (bc bech32Codec) StringToBytes(text string) ([]byte, error) {
 	}
 
 	if hrp != bc.bech32Prefix {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrLogic, "hrp does not match bech32Prefix")
+		return nil, sdkerrors.Wrap(sdkerrors.ErrLogic, "hrp does not match bech32Prefix") //nolint: staticcheck
 	}
 
 	if err := sdk.VerifyAddressFormat(bz); err != nil {

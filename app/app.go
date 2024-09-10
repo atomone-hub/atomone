@@ -23,6 +23,12 @@ import (
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
 
+	"github.com/cosmos/cosmos-sdk/version"
+
+	atomoneante "github.com/atomone-hub/atomone/ante"
+	"github.com/atomone-hub/atomone/app/keepers"
+	"github.com/atomone-hub/atomone/app/params"
+	"github.com/atomone-hub/atomone/app/upgrades"
 	"github.com/atomone-hub/atomone/baseapp"
 	"github.com/atomone-hub/atomone/client"
 	nodeservice "github.com/atomone-hub/atomone/client/grpc/node"
@@ -42,14 +48,8 @@ import (
 	authtx "github.com/atomone-hub/atomone/x/auth/tx"
 	authtypes "github.com/atomone-hub/atomone/x/auth/types"
 	"github.com/atomone-hub/atomone/x/crisis"
-	upgradetypes "github.com/atomone-hub/atomone/x/upgrade/types"
-	"github.com/cosmos/cosmos-sdk/version"
-
-	atomoneante "github.com/atomone-hub/atomone/ante"
-	"github.com/atomone-hub/atomone/app/keepers"
-	"github.com/atomone-hub/atomone/app/params"
-	"github.com/atomone-hub/atomone/app/upgrades"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
+	upgradetypes "github.com/atomone-hub/atomone/x/upgrade/types"
 )
 
 var (

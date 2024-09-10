@@ -65,7 +65,7 @@ func (k Keeper) CreateGroup(goCtx context.Context, req *group.MsgCreateGroup) (*
 	}
 	groupID, err := k.groupTable.Create(ctx.KVStore(k.key), groupInfo)
 	if err != nil {
-		return nil, sdkerrors.Wrap(err, "could not create group")
+		return nil, sdkerrors.Wrap(err, "could not create group") //nolint: staticcheck
 	}
 
 	// Create new group members in the groupMemberTable.
@@ -81,7 +81,7 @@ func (k Keeper) CreateGroup(goCtx context.Context, req *group.MsgCreateGroup) (*
 			},
 		})
 		if err != nil {
-			return nil, sdkerrors.Wrapf(err, "could not store member %d", i)
+			return nil, sdkerrors.Wrapf(err, "could not store member %d", i) //nolint: staticcheck
 		}
 	}
 
@@ -98,7 +98,7 @@ func (k Keeper) UpdateGroupMembers(goCtx context.Context, req *group.MsgUpdateGr
 	action := func(g *group.GroupInfo) error {
 		totalWeight, err := math.NewNonNegativeDecFromString(g.TotalWeight)
 		if err != nil {
-			return sdkerrors.Wrap(err, "group total weight")
+			return sdkerrors.Wrap(err, "group total weight") //nolint: staticcheck
 		}
 		for i := range req.MemberUpdates {
 			if err := k.assertMetadataLength(req.MemberUpdates[i].Metadata, "group member metadata"); err != nil {
@@ -122,7 +122,7 @@ func (k Keeper) UpdateGroupMembers(goCtx context.Context, req *group.MsgUpdateGr
 			case sdkerrors.ErrNotFound.Is(err):
 				found = false
 			default:
-				return sdkerrors.Wrap(err, "get group member")
+				return sdkerrors.Wrap(err, "get group member") //nolint: staticcheck
 			}
 
 			newMemberWeight, err := math.NewNonNegativeDecFromString(groupMember.Member.Weight)
@@ -134,7 +134,7 @@ func (k Keeper) UpdateGroupMembers(goCtx context.Context, req *group.MsgUpdateGr
 			if newMemberWeight.IsZero() {
 				// We can't delete a group member that doesn't already exist.
 				if !found {
-					return sdkerrors.Wrap(sdkerrors.ErrNotFound, "unknown member")
+					return sdkerrors.Wrap(sdkerrors.ErrNotFound, "unknown member") //nolint: staticcheck
 				}
 
 				previousMemberWeight, err := math.NewPositiveDecFromString(prevGroupMember.Member.Weight)
@@ -150,7 +150,7 @@ func (k Keeper) UpdateGroupMembers(goCtx context.Context, req *group.MsgUpdateGr
 
 				// Delete group member in the groupMemberTable.
 				if err := k.groupMemberTable.Delete(ctx.KVStore(k.key), &groupMember); err != nil {
-					return sdkerrors.Wrap(err, "delete member")
+					return sdkerrors.Wrap(err, "delete member") //nolint: staticcheck
 				}
 				continue
 			}
@@ -168,12 +168,12 @@ func (k Keeper) UpdateGroupMembers(goCtx context.Context, req *group.MsgUpdateGr
 				// Save updated group member in the groupMemberTable.
 				groupMember.Member.AddedAt = prevGroupMember.Member.AddedAt
 				if err := k.groupMemberTable.Update(ctx.KVStore(k.key), &groupMember); err != nil {
-					return sdkerrors.Wrap(err, "add member")
+					return sdkerrors.Wrap(err, "add member") //nolint: staticcheck
 				}
 			} else { // else handle create.
 				groupMember.Member.AddedAt = ctx.BlockTime()
 				if err := k.groupMemberTable.Create(ctx.KVStore(k.key), &groupMember); err != nil {
-					return sdkerrors.Wrap(err, "add member")
+					return sdkerrors.Wrap(err, "add member") //nolint: staticcheck
 				}
 			}
 			// In both cases (handle + update), we need to add the new member's weight to the group total weight.
@@ -245,7 +245,7 @@ func (k Keeper) CreateGroupWithPolicy(goCtx context.Context, req *group.MsgCreat
 		Metadata: req.GroupMetadata,
 	})
 	if err != nil {
-		return nil, sdkerrors.Wrap(err, "group response")
+		return nil, sdkerrors.Wrap(err, "group response") //nolint: staticcheck
 	}
 	groupID := groupRes.GroupId
 
@@ -257,13 +257,13 @@ func (k Keeper) CreateGroupWithPolicy(goCtx context.Context, req *group.MsgCreat
 		DecisionPolicy: req.DecisionPolicy,
 	})
 	if err != nil {
-		return nil, sdkerrors.Wrap(err, "group policy response")
+		return nil, sdkerrors.Wrap(err, "group policy response") //nolint: staticcheck
 	}
 	policyAddr := groupPolicyRes.Address
 
 	groupPolicyAddr, err = sdk.AccAddressFromBech32(policyAddr)
 	if err != nil {
-		return nil, sdkerrors.Wrap(err, "group policy address")
+		return nil, sdkerrors.Wrap(err, "group policy address") //nolint: staticcheck
 	}
 	groupPolicyAddress := groupPolicyAddr.String()
 
@@ -296,11 +296,11 @@ func (k Keeper) CreateGroupPolicy(goCtx context.Context, req *group.MsgCreateGro
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	admin, err := sdk.AccAddressFromBech32(req.GetAdmin())
 	if err != nil {
-		return nil, sdkerrors.Wrap(err, "request admin")
+		return nil, sdkerrors.Wrap(err, "request admin") //nolint: staticcheck
 	}
 	policy, err := req.GetDecisionPolicy()
 	if err != nil {
-		return nil, sdkerrors.Wrap(err, "request decision policy")
+		return nil, sdkerrors.Wrap(err, "request decision policy") //nolint: staticcheck
 	}
 	groupID := req.GetGroupID()
 	metadata := req.GetMetadata()
@@ -315,11 +315,11 @@ func (k Keeper) CreateGroupPolicy(goCtx context.Context, req *group.MsgCreateGro
 	}
 	groupAdmin, err := sdk.AccAddressFromBech32(g.Admin)
 	if err != nil {
-		return nil, sdkerrors.Wrap(err, "group admin")
+		return nil, sdkerrors.Wrap(err, "group admin") //nolint: staticcheck
 	}
 	// Only current group admin is authorized to create a group policy for this
 	if !groupAdmin.Equals(admin) {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "not group admin")
+		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "not group admin") //nolint: staticcheck
 	}
 
 	err = policy.Validate(g, k.config)
@@ -350,7 +350,7 @@ func (k Keeper) CreateGroupPolicy(goCtx context.Context, req *group.MsgCreateGro
 		// group policy accounts are unclaimable base accounts
 		account, err := authtypes.NewBaseAccountWithPubKey(ac)
 		if err != nil {
-			return nil, sdkerrors.Wrap(err, "could not create group policy account")
+			return nil, sdkerrors.Wrap(err, "could not create group policy account") //nolint: staticcheck
 		}
 
 		acc := k.accKeeper.NewAccount(ctx, account)
@@ -373,7 +373,7 @@ func (k Keeper) CreateGroupPolicy(goCtx context.Context, req *group.MsgCreateGro
 	}
 
 	if err := k.groupPolicyTable.Create(ctx.KVStore(k.key), &groupPolicy); err != nil {
-		return nil, sdkerrors.Wrap(err, "could not create group policy")
+		return nil, sdkerrors.Wrap(err, "could not create group policy") //nolint: staticcheck
 	}
 
 	err = ctx.EventManager().EmitTypedEvent(&group.EventCreateGroupPolicy{Address: accountAddr.String()})
@@ -461,13 +461,13 @@ func (k Keeper) SubmitProposal(goCtx context.Context, req *group.MsgSubmitPropos
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	groupPolicyAddr, err := sdk.AccAddressFromBech32(req.GroupPolicyAddress)
 	if err != nil {
-		return nil, sdkerrors.Wrap(err, "request account address of group policy")
+		return nil, sdkerrors.Wrap(err, "request account address of group policy") //nolint: staticcheck
 	}
 	metadata := req.Metadata
 	proposers := req.Proposers
 	msgs, err := req.GetMsgs()
 	if err != nil {
-		return nil, sdkerrors.Wrap(err, "request msgs")
+		return nil, sdkerrors.Wrap(err, "request msgs") //nolint: staticcheck
 	}
 
 	if err := k.assertMetadataLength(metadata, "metadata"); err != nil {
@@ -484,18 +484,18 @@ func (k Keeper) SubmitProposal(goCtx context.Context, req *group.MsgSubmitPropos
 
 	policyAcc, err := k.getGroupPolicyInfo(ctx, req.GroupPolicyAddress)
 	if err != nil {
-		return nil, sdkerrors.Wrap(err, "load group policy")
+		return nil, sdkerrors.Wrap(err, "load group policy") //nolint: staticcheck
 	}
 
 	g, err := k.getGroupInfo(ctx, policyAcc.GroupId)
 	if err != nil {
-		return nil, sdkerrors.Wrap(err, "get group by groupId of group policy")
+		return nil, sdkerrors.Wrap(err, "get group by groupId of group policy") //nolint: staticcheck
 	}
 
 	// Only members of the group can submit a new proposal.
 	for i := range proposers {
 		if !k.groupMemberTable.Has(ctx.KVStore(k.key), orm.PrimaryKey(&group.GroupMember{GroupId: g.Id, Member: &group.Member{Address: proposers[i]}})) {
-			return nil, sdkerrors.Wrapf(errors.ErrUnauthorized, "not in group: %s", proposers[i])
+			return nil, sdkerrors.Wrapf(errors.ErrUnauthorized, "not in group: %s", proposers[i]) //nolint: staticcheck
 		}
 	}
 
@@ -506,7 +506,7 @@ func (k Keeper) SubmitProposal(goCtx context.Context, req *group.MsgSubmitPropos
 
 	policy, err := policyAcc.GetDecisionPolicy()
 	if err != nil {
-		return nil, sdkerrors.Wrap(err, "proposal group policy decision policy")
+		return nil, sdkerrors.Wrap(err, "proposal group policy decision policy") //nolint: staticcheck
 	}
 
 	// Prevent proposal that can not succeed.
@@ -532,12 +532,12 @@ func (k Keeper) SubmitProposal(goCtx context.Context, req *group.MsgSubmitPropos
 	}
 
 	if err := m.SetMsgs(msgs); err != nil {
-		return nil, sdkerrors.Wrap(err, "create proposal")
+		return nil, sdkerrors.Wrap(err, "create proposal") //nolint: staticcheck
 	}
 
 	id, err := k.proposalTable.Create(ctx.KVStore(k.key), m)
 	if err != nil {
-		return nil, sdkerrors.Wrap(err, "create proposal")
+		return nil, sdkerrors.Wrap(err, "create proposal") //nolint: staticcheck
 	}
 
 	err = ctx.EventManager().EmitTypedEvent(&group.EventSubmitProposal{ProposalId: id})
@@ -556,7 +556,7 @@ func (k Keeper) SubmitProposal(goCtx context.Context, req *group.MsgSubmitPropos
 				Option:     group.VOTE_OPTION_YES,
 			})
 			if err != nil {
-				return &group.MsgSubmitProposalResponse{ProposalId: id}, sdkerrors.Wrapf(err, "the proposal was created but failed on vote for voter %s", proposers[i])
+				return &group.MsgSubmitProposalResponse{ProposalId: id}, sdkerrors.Wrapf(err, "the proposal was created but failed on vote for voter %s", proposers[i]) //nolint: staticcheck
 			}
 		}
 
@@ -568,7 +568,7 @@ func (k Keeper) SubmitProposal(goCtx context.Context, req *group.MsgSubmitPropos
 			Executor: proposers[0],
 		})
 		if err != nil {
-			return &group.MsgSubmitProposalResponse{ProposalId: id}, sdkerrors.Wrap(err, "the proposal was created but failed on exec")
+			return &group.MsgSubmitProposalResponse{ProposalId: id}, sdkerrors.Wrap(err, "the proposal was created but failed on exec") //nolint: staticcheck
 		}
 	}
 
@@ -587,17 +587,17 @@ func (k Keeper) WithdrawProposal(goCtx context.Context, req *group.MsgWithdrawPr
 
 	// Ensure the proposal can be withdrawn.
 	if proposal.Status != group.PROPOSAL_STATUS_SUBMITTED {
-		return nil, sdkerrors.Wrapf(errors.ErrInvalid, "cannot withdraw a proposal with the status of %s", proposal.Status.String())
+		return nil, sdkerrors.Wrapf(errors.ErrInvalid, "cannot withdraw a proposal with the status of %s", proposal.Status.String()) //nolint: staticcheck
 	}
 
 	var policyInfo group.GroupPolicyInfo
 	if policyInfo, err = k.getGroupPolicyInfo(ctx, proposal.GroupPolicyAddress); err != nil {
-		return nil, sdkerrors.Wrap(err, "load group policy")
+		return nil, sdkerrors.Wrap(err, "load group policy") //nolint: staticcheck
 	}
 
 	// check address is the group policy admin he is in proposers list..
 	if address != policyInfo.Admin && !isProposer(proposal, address) {
-		return nil, sdkerrors.Wrapf(errors.ErrUnauthorized, "given address is neither group policy admin nor in proposers: %s", address)
+		return nil, sdkerrors.Wrapf(errors.ErrUnauthorized, "given address is neither group policy admin nor in proposers: %s", address) //nolint: staticcheck
 	}
 
 	proposal.Status = group.PROPOSAL_STATUS_WITHDRAWN
@@ -629,15 +629,15 @@ func (k Keeper) Vote(goCtx context.Context, req *group.MsgVote) (*group.MsgVoteR
 	}
 	// Ensure that we can still accept votes for this proposal.
 	if proposal.Status != group.PROPOSAL_STATUS_SUBMITTED {
-		return nil, sdkerrors.Wrap(errors.ErrInvalid, "proposal not open for voting")
+		return nil, sdkerrors.Wrap(errors.ErrInvalid, "proposal not open for voting") //nolint: staticcheck
 	}
 	if ctx.BlockTime().After(proposal.VotingPeriodEnd) {
-		return nil, sdkerrors.Wrap(errors.ErrExpired, "voting period has ended already")
+		return nil, sdkerrors.Wrap(errors.ErrExpired, "voting period has ended already") //nolint: staticcheck
 	}
 
 	policyInfo, err := k.getGroupPolicyInfo(ctx, proposal.GroupPolicyAddress)
 	if err != nil {
-		return nil, sdkerrors.Wrap(err, "load group policy")
+		return nil, sdkerrors.Wrap(err, "load group policy") //nolint: staticcheck
 	}
 
 	electorate, err := k.getGroupInfo(ctx, policyInfo.GroupId)
@@ -649,7 +649,7 @@ func (k Keeper) Vote(goCtx context.Context, req *group.MsgVote) (*group.MsgVoteR
 	voterAddr := req.Voter
 	voter := group.GroupMember{GroupId: electorate.Id, Member: &group.Member{Address: voterAddr}}
 	if err := k.groupMemberTable.GetOne(ctx.KVStore(k.key), orm.PrimaryKey(&voter), &voter); err != nil {
-		return nil, sdkerrors.Wrapf(err, "voter address: %s", voterAddr)
+		return nil, sdkerrors.Wrapf(err, "voter address: %s", voterAddr) //nolint: staticcheck
 	}
 	newVote := group.Vote{
 		ProposalId: id,
@@ -662,7 +662,7 @@ func (k Keeper) Vote(goCtx context.Context, req *group.MsgVote) (*group.MsgVoteR
 	// The ORM will return an error if the vote already exists,
 	// making sure than a voter hasn't already voted.
 	if err := k.voteTable.Create(ctx.KVStore(k.key), &newVote); err != nil {
-		return nil, sdkerrors.Wrap(err, "store vote")
+		return nil, sdkerrors.Wrap(err, "store vote") //nolint: staticcheck
 	}
 
 	err = ctx.EventManager().EmitTypedEvent(&group.EventVote{ProposalId: id})
@@ -700,7 +700,7 @@ func (k Keeper) doTallyAndUpdate(ctx sdk.Context, p *group.Proposal, electorate 
 
 	result, err := policy.Allow(tallyResult, electorate.TotalWeight)
 	if err != nil {
-		return sdkerrors.Wrap(err, "policy allow")
+		return sdkerrors.Wrap(err, "policy allow") //nolint: staticcheck
 	}
 
 	// If the result was final (i.e. enough votes to pass) or if the voting
@@ -732,12 +732,12 @@ func (k Keeper) Exec(goCtx context.Context, req *group.MsgExec) (*group.MsgExecR
 	}
 
 	if proposal.Status != group.PROPOSAL_STATUS_SUBMITTED && proposal.Status != group.PROPOSAL_STATUS_ACCEPTED {
-		return nil, sdkerrors.Wrapf(errors.ErrInvalid, "not possible to exec with proposal status %s", proposal.Status.String())
+		return nil, sdkerrors.Wrapf(errors.ErrInvalid, "not possible to exec with proposal status %s", proposal.Status.String()) //nolint: staticcheck
 	}
 
 	policyInfo, err := k.getGroupPolicyInfo(ctx, proposal.GroupPolicyAddress)
 	if err != nil {
-		return nil, sdkerrors.Wrap(err, "load group policy")
+		return nil, sdkerrors.Wrap(err, "load group policy") //nolint: staticcheck
 	}
 
 	// If proposal is still in SUBMITTED phase, it means that the voting period
@@ -746,7 +746,7 @@ func (k Keeper) Exec(goCtx context.Context, req *group.MsgExec) (*group.MsgExecR
 	if proposal.Status == group.PROPOSAL_STATUS_SUBMITTED {
 		electorate, err := k.getGroupInfo(ctx, policyInfo.GroupId)
 		if err != nil {
-			return nil, sdkerrors.Wrap(err, "load group")
+			return nil, sdkerrors.Wrap(err, "load group") //nolint: staticcheck
 		}
 
 		if err := k.doTallyAndUpdate(ctx, &proposal, electorate, policyInfo); err != nil {
@@ -828,7 +828,7 @@ func (k Keeper) LeaveGroup(goCtx context.Context, req *group.MsgLeaveGroup) (*gr
 
 	groupInfo, err := k.getGroupInfo(ctx, req.GroupId)
 	if err != nil {
-		return nil, sdkerrors.Wrap(err, "group")
+		return nil, sdkerrors.Wrap(err, "group") //nolint: staticcheck
 	}
 
 	groupWeight, err := math.NewNonNegativeDecFromString(groupInfo.TotalWeight)
@@ -856,7 +856,7 @@ func (k Keeper) LeaveGroup(goCtx context.Context, req *group.MsgLeaveGroup) (*gr
 
 	// delete group member in the groupMemberTable.
 	if err := k.groupMemberTable.Delete(ctx.KVStore(k.key), gm); err != nil {
-		return nil, sdkerrors.Wrap(err, "group member")
+		return nil, sdkerrors.Wrap(err, "group member") //nolint: staticcheck
 	}
 
 	// update group weight
@@ -886,7 +886,7 @@ func (k Keeper) getGroupMember(ctx sdk.Context, member *group.GroupMember) (*gro
 	case err == nil:
 		break
 	case sdkerrors.ErrNotFound.Is(err):
-		return nil, sdkerrors.ErrNotFound.Wrapf("%s is not part of group %d", member.Member.Address, member.GroupId)
+		return nil, sdkerrors.ErrNotFound.Wrapf("%s is not part of group %d", member.Member.Address, member.GroupId) //nolint: staticcheck
 	default:
 		return nil, err
 	}
@@ -909,26 +909,26 @@ type (
 func (k Keeper) doUpdateGroupPolicy(ctx sdk.Context, groupPolicy string, admin string, action groupPolicyActionFn, note string) error {
 	groupPolicyInfo, err := k.getGroupPolicyInfo(ctx, groupPolicy)
 	if err != nil {
-		return sdkerrors.Wrap(err, "load group policy")
+		return sdkerrors.Wrap(err, "load group policy") //nolint: staticcheck
 	}
 
 	groupPolicyAddr, err := sdk.AccAddressFromBech32(groupPolicy)
 	if err != nil {
-		return sdkerrors.Wrap(err, "group policy address")
+		return sdkerrors.Wrap(err, "group policy address") //nolint: staticcheck
 	}
 
 	groupPolicyAdmin, err := sdk.AccAddressFromBech32(admin)
 	if err != nil {
-		return sdkerrors.Wrap(err, "group policy admin")
+		return sdkerrors.Wrap(err, "group policy admin") //nolint: staticcheck
 	}
 
 	// Only current group policy admin is authorized to update a group policy.
 	if groupPolicyAdmin.String() != groupPolicyInfo.Admin {
-		return sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "not group policy admin")
+		return sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "not group policy admin") //nolint: staticcheck
 	}
 
 	if err := action(&groupPolicyInfo); err != nil {
-		return sdkerrors.Wrap(err, note)
+		return sdkerrors.Wrap(err, note) //nolint: staticcheck
 	}
 
 	if err = k.abortProposals(ctx, groupPolicyAddr); err != nil {
@@ -967,17 +967,17 @@ func (k Keeper) doAuthenticated(ctx sdk.Context, req authNGroupReq, action actio
 	}
 	admin, err := sdk.AccAddressFromBech32(group.Admin)
 	if err != nil {
-		return sdkerrors.Wrap(err, "group admin")
+		return sdkerrors.Wrap(err, "group admin") //nolint: staticcheck
 	}
 	reqAdmin, err := sdk.AccAddressFromBech32(req.GetAdmin())
 	if err != nil {
-		return sdkerrors.Wrap(err, "request admin")
+		return sdkerrors.Wrap(err, "request admin") //nolint: staticcheck
 	}
 	if !admin.Equals(reqAdmin) {
-		return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "not group admin; got %s, expected %s", req.GetAdmin(), group.Admin)
+		return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "not group admin; got %s, expected %s", req.GetAdmin(), group.Admin) //nolint: staticcheck
 	}
 	if err := action(&group); err != nil {
-		return sdkerrors.Wrap(err, errNote)
+		return sdkerrors.Wrap(err, errNote) //nolint: staticcheck
 	}
 	return nil
 }
@@ -986,7 +986,7 @@ func (k Keeper) doAuthenticated(ctx sdk.Context, req authNGroupReq, action actio
 // is greater than a pre-defined maxMetadataLen.
 func (k Keeper) assertMetadataLength(metadata string, description string) error {
 	if metadata != "" && uint64(len(metadata)) > k.config.MaxMetadataLen {
-		return sdkerrors.Wrapf(errors.ErrMaxLimit, description)
+		return sdkerrors.Wrapf(errors.ErrMaxLimit, description) //nolint: staticcheck
 	}
 	return nil
 }

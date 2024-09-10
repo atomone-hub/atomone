@@ -9,14 +9,14 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/cosmos/cosmos-sdk/version"
+
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/crypto/keys/ed25519"
 	"github.com/atomone-hub/atomone/crypto/keys/secp256k1"
 	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
 	sdk "github.com/atomone-hub/atomone/types"
-	"github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cosmos/cosmos-sdk/version"
-
 	legacybech32 "github.com/atomone-hub/atomone/types/bech32/legacybech32" //nolint:staticcheck // we do old keys, they're keys after all.
 )
 
@@ -143,7 +143,7 @@ $ %s debug pubkey-raw cosmos1e0jnq2sun3dzjh8p2xq95kk0expwmd7shwjpfg
 			}
 			pubkeyType = strings.ToLower(pubkeyType)
 			if pubkeyType != "secp256k1" && pubkeyType != ed {
-				return errors.Wrapf(errors.ErrInvalidType, "invalid pubkey type, expected oneof ed25519 or secp256k1")
+				return errors.Wrapf(errors.ErrInvalidType, "invalid pubkey type, expected oneof ed25519 or secp256k1") //nolint: staticcheck
 			}
 
 			pk, err := getPubKeyFromRawString(args[0], pubkeyType)

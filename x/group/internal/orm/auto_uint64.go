@@ -131,7 +131,7 @@ func (a AutoUInt64Table) Export(store sdk.KVStore, dest ModelSlicePtr) (uint64, 
 // data should be a slice of structs that implement PrimaryKeyed.
 func (a AutoUInt64Table) Import(store sdk.KVStore, data interface{}, seqValue uint64) error {
 	if err := a.seq.InitVal(store, seqValue); err != nil {
-		return errors.Wrap(err, "sequence")
+		return errors.Wrap(err, "sequence") //nolint: staticcheck
 	}
 	return a.table.Import(store, data, seqValue)
 }

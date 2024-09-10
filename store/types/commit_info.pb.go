@@ -5,21 +5,24 @@ package types
 
 import (
 	fmt "fmt"
-	_ "github.com/cosmos/gogoproto/gogoproto"
-	proto "github.com/cosmos/gogoproto/proto"
-	github_com_cosmos_gogoproto_types "github.com/cosmos/gogoproto/types"
-	_ "google.golang.org/protobuf/types/known/timestamppb"
 	io "io"
 	math "math"
 	math_bits "math/bits"
 	time "time"
+
+	_ "github.com/cosmos/gogoproto/gogoproto"
+	proto "github.com/cosmos/gogoproto/proto"
+	github_com_cosmos_gogoproto_types "github.com/cosmos/gogoproto/types"
+	_ "google.golang.org/protobuf/types/known/timestamppb"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
-var _ = time.Kitchen
+var (
+	_ = proto.Marshal
+	_ = fmt.Errorf
+	_ = math.Inf
+	_ = time.Kitchen
+)
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -41,9 +44,11 @@ func (*CommitInfo) ProtoMessage()    {}
 func (*CommitInfo) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d47e650bafe099d7, []int{0}
 }
+
 func (m *CommitInfo) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *CommitInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_CommitInfo.Marshal(b, m, deterministic)
@@ -56,12 +61,15 @@ func (m *CommitInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
+
 func (m *CommitInfo) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_CommitInfo.Merge(m, src)
 }
+
 func (m *CommitInfo) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *CommitInfo) XXX_DiscardUnknown() {
 	xxx_messageInfo_CommitInfo.DiscardUnknown(m)
 }
@@ -102,9 +110,11 @@ func (*StoreInfo) ProtoMessage()    {}
 func (*StoreInfo) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d47e650bafe099d7, []int{1}
 }
+
 func (m *StoreInfo) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *StoreInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_StoreInfo.Marshal(b, m, deterministic)
@@ -117,12 +127,15 @@ func (m *StoreInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
+
 func (m *StoreInfo) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_StoreInfo.Merge(m, src)
 }
+
 func (m *StoreInfo) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *StoreInfo) XXX_DiscardUnknown() {
 	xxx_messageInfo_StoreInfo.DiscardUnknown(m)
 }
@@ -155,9 +168,11 @@ func (*CommitID) ProtoMessage() {}
 func (*CommitID) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d47e650bafe099d7, []int{2}
 }
+
 func (m *CommitID) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *CommitID) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_CommitID.Marshal(b, m, deterministic)
@@ -170,12 +185,15 @@ func (m *CommitID) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
+
 func (m *CommitID) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_CommitID.Merge(m, src)
 }
+
 func (m *CommitID) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *CommitID) XXX_DiscardUnknown() {
 	xxx_messageInfo_CommitID.DiscardUnknown(m)
 }
@@ -369,6 +387,7 @@ func encodeVarintCommitInfo(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+
 func (m *CommitInfo) Size() (n int) {
 	if m == nil {
 		return 0
@@ -423,9 +442,11 @@ func (m *CommitID) Size() (n int) {
 func sovCommitInfo(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
+
 func sozCommitInfo(x uint64) (n int) {
 	return sovCommitInfo(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
+
 func (m *CommitInfo) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -562,6 +583,7 @@ func (m *CommitInfo) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *StoreInfo) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -677,6 +699,7 @@ func (m *StoreInfo) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *CommitID) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -780,6 +803,7 @@ func (m *CommitID) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func skipCommitInfo(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

@@ -15,7 +15,7 @@ import (
 	"gotest.tools/v3/assert"
 	"gotest.tools/v3/golden"
 
-	"cosmossdk.io/client/v2/internal/testpb"
+	"github.com/atomone-hub/atomone/client/v2/internal/testpb"
 )
 
 var testCmdDesc = &autocliv1.ServiceCommandDescriptor{
@@ -52,10 +52,10 @@ var testCmdDesc = &autocliv1.ServiceCommandDescriptor{
 					Usage:        "some random int32",
 					DefaultValue: "3",
 				},
-				"u64": {
-					Usage:             "some random uint64",
-					NoOptDefaultValue: "5",
-				},
+				//"u64": {
+				//	Usage:             "some random uint64",
+				//	NoOptDefaultValue: "5", // note: only available in v0.3.0, not v0.3.1!
+				//},
 				"deprecated_field": {
 					Deprecated: "don't use this",
 				},
@@ -104,7 +104,7 @@ func testExec(t *testing.T, args ...string) *testClientConn {
 		}
 	}()
 	defer server.GracefulStop()
-	clientConn, err := grpc.Dial(listener.Addr().String(), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	clientConn, err := grpc.Dial(listener.Addr().String(), grpc.WithTransportCredentials(insecure.NewCredentials())) //nolint: staticcheck
 	assert.NilError(t, err)
 	defer func() {
 		err := clientConn.Close()

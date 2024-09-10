@@ -4,7 +4,6 @@ import (
 	"context"
 	"strconv"
 
-	gogogrpc "github.com/cosmos/gogoproto/grpc"
 	grpcmiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpcrecovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"google.golang.org/grpc"
@@ -12,9 +11,12 @@ import (
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 
-	sdk "github.com/atomone-hub/atomone/types"
+	gogogrpc "github.com/cosmos/gogoproto/grpc"
+
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	grpctypes "github.com/cosmos/cosmos-sdk/types/grpc"
+
+	sdk "github.com/atomone-hub/atomone/types"
 )
 
 // GRPCQueryRouter returns the GRPCQueryRouter of a BaseApp.
@@ -36,7 +38,7 @@ func (app *BaseApp) RegisterGRPCServer(server gogogrpc.Server) {
 		if heightHeaders := md.Get(grpctypes.GRPCBlockHeightHeader); len(heightHeaders) == 1 {
 			height, err = strconv.ParseInt(heightHeaders[0], 10, 64)
 			if err != nil {
-				return nil, sdkerrors.Wrapf(
+				return nil, sdkerrors.Wrapf( //nolint: staticcheck
 					sdkerrors.ErrInvalidRequest,
 					"Baseapp.RegisterGRPCServer: invalid height header %q: %v", grpctypes.GRPCBlockHeightHeader, err)
 			}

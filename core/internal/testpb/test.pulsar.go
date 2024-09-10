@@ -2,20 +2,20 @@
 package testpb
 
 import (
-	_ "cosmossdk.io/api/cosmos/app/v1alpha1"
 	fmt "fmt"
+	io "io"
+	reflect "reflect"
+	sync "sync"
+
+	_ "cosmossdk.io/api/cosmos/app/v1alpha1"
+
 	runtime "github.com/cosmos/cosmos-proto/runtime"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	io "io"
-	reflect "reflect"
-	sync "sync"
 )
 
-var (
-	md_TestRuntimeModule protoreflect.MessageDescriptor
-)
+var md_TestRuntimeModule protoreflect.MessageDescriptor
 
 func init() {
 	file_testpb_test_proto_init()
@@ -42,17 +42,21 @@ func (x *TestRuntimeModule) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_TestRuntimeModule_messageType fastReflection_TestRuntimeModule_messageType
-var _ protoreflect.MessageType = fastReflection_TestRuntimeModule_messageType{}
+var (
+	_fastReflection_TestRuntimeModule_messageType fastReflection_TestRuntimeModule_messageType
+	_                                             protoreflect.MessageType = fastReflection_TestRuntimeModule_messageType{}
+)
 
 type fastReflection_TestRuntimeModule_messageType struct{}
 
 func (x fastReflection_TestRuntimeModule_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_TestRuntimeModule)(nil)
 }
+
 func (x fastReflection_TestRuntimeModule_messageType) New() protoreflect.Message {
 	return new(fastReflection_TestRuntimeModule)
 }
+
 func (x fastReflection_TestRuntimeModule_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_TestRuntimeModule
 }
@@ -369,9 +373,7 @@ func (x *fastReflection_TestRuntimeModule) ProtoMethods() *protoiface.Methods {
 	}
 }
 
-var (
-	md_TestModuleA protoreflect.MessageDescriptor
-)
+var md_TestModuleA protoreflect.MessageDescriptor
 
 func init() {
 	file_testpb_test_proto_init()
@@ -398,17 +400,21 @@ func (x *TestModuleA) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_TestModuleA_messageType fastReflection_TestModuleA_messageType
-var _ protoreflect.MessageType = fastReflection_TestModuleA_messageType{}
+var (
+	_fastReflection_TestModuleA_messageType fastReflection_TestModuleA_messageType
+	_                                       protoreflect.MessageType = fastReflection_TestModuleA_messageType{}
+)
 
 type fastReflection_TestModuleA_messageType struct{}
 
 func (x fastReflection_TestModuleA_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_TestModuleA)(nil)
 }
+
 func (x fastReflection_TestModuleA_messageType) New() protoreflect.Message {
 	return new(fastReflection_TestModuleA)
 }
+
 func (x fastReflection_TestModuleA_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_TestModuleA
 }
@@ -725,9 +731,7 @@ func (x *fastReflection_TestModuleA) ProtoMethods() *protoiface.Methods {
 	}
 }
 
-var (
-	md_TestModuleB protoreflect.MessageDescriptor
-)
+var md_TestModuleB protoreflect.MessageDescriptor
 
 func init() {
 	file_testpb_test_proto_init()
@@ -754,17 +758,21 @@ func (x *TestModuleB) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_TestModuleB_messageType fastReflection_TestModuleB_messageType
-var _ protoreflect.MessageType = fastReflection_TestModuleB_messageType{}
+var (
+	_fastReflection_TestModuleB_messageType fastReflection_TestModuleB_messageType
+	_                                       protoreflect.MessageType = fastReflection_TestModuleB_messageType{}
+)
 
 type fastReflection_TestModuleB_messageType struct{}
 
 func (x fastReflection_TestModuleB_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_TestModuleB)(nil)
 }
+
 func (x fastReflection_TestModuleB_messageType) New() protoreflect.Message {
 	return new(fastReflection_TestModuleB)
 }
+
 func (x fastReflection_TestModuleB_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_TestModuleB
 }
@@ -1081,9 +1089,7 @@ func (x *fastReflection_TestModuleB) ProtoMethods() *protoiface.Methods {
 	}
 }
 
-var (
-	md_TestUnregisteredModule protoreflect.MessageDescriptor
-)
+var md_TestUnregisteredModule protoreflect.MessageDescriptor
 
 func init() {
 	file_testpb_test_proto_init()
@@ -1110,17 +1116,21 @@ func (x *TestUnregisteredModule) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_TestUnregisteredModule_messageType fastReflection_TestUnregisteredModule_messageType
-var _ protoreflect.MessageType = fastReflection_TestUnregisteredModule_messageType{}
+var (
+	_fastReflection_TestUnregisteredModule_messageType fastReflection_TestUnregisteredModule_messageType
+	_                                                  protoreflect.MessageType = fastReflection_TestUnregisteredModule_messageType{}
+)
 
 type fastReflection_TestUnregisteredModule_messageType struct{}
 
 func (x fastReflection_TestUnregisteredModule_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_TestUnregisteredModule)(nil)
 }
+
 func (x fastReflection_TestUnregisteredModule_messageType) New() protoreflect.Message {
 	return new(fastReflection_TestUnregisteredModule)
 }
+
 func (x fastReflection_TestUnregisteredModule_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_TestUnregisteredModule
 }
@@ -1437,9 +1447,7 @@ func (x *fastReflection_TestUnregisteredModule) ProtoMethods() *protoiface.Metho
 	}
 }
 
-var (
-	md_TestNoModuleOptionModule protoreflect.MessageDescriptor
-)
+var md_TestNoModuleOptionModule protoreflect.MessageDescriptor
 
 func init() {
 	file_testpb_test_proto_init()
@@ -1466,17 +1474,21 @@ func (x *TestNoModuleOptionModule) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_TestNoModuleOptionModule_messageType fastReflection_TestNoModuleOptionModule_messageType
-var _ protoreflect.MessageType = fastReflection_TestNoModuleOptionModule_messageType{}
+var (
+	_fastReflection_TestNoModuleOptionModule_messageType fastReflection_TestNoModuleOptionModule_messageType
+	_                                                    protoreflect.MessageType = fastReflection_TestNoModuleOptionModule_messageType{}
+)
 
 type fastReflection_TestNoModuleOptionModule_messageType struct{}
 
 func (x fastReflection_TestNoModuleOptionModule_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_TestNoModuleOptionModule)(nil)
 }
+
 func (x fastReflection_TestNoModuleOptionModule_messageType) New() protoreflect.Message {
 	return new(fastReflection_TestNoModuleOptionModule)
 }
+
 func (x fastReflection_TestNoModuleOptionModule_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_TestNoModuleOptionModule
 }
@@ -1793,9 +1805,7 @@ func (x *fastReflection_TestNoModuleOptionModule) ProtoMethods() *protoiface.Met
 	}
 }
 
-var (
-	md_TestNoGoImportModule protoreflect.MessageDescriptor
-)
+var md_TestNoGoImportModule protoreflect.MessageDescriptor
 
 func init() {
 	file_testpb_test_proto_init()
@@ -1822,17 +1832,21 @@ func (x *TestNoGoImportModule) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_TestNoGoImportModule_messageType fastReflection_TestNoGoImportModule_messageType
-var _ protoreflect.MessageType = fastReflection_TestNoGoImportModule_messageType{}
+var (
+	_fastReflection_TestNoGoImportModule_messageType fastReflection_TestNoGoImportModule_messageType
+	_                                                protoreflect.MessageType = fastReflection_TestNoGoImportModule_messageType{}
+)
 
 type fastReflection_TestNoGoImportModule_messageType struct{}
 
 func (x fastReflection_TestNoGoImportModule_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_TestNoGoImportModule)(nil)
 }
+
 func (x fastReflection_TestNoGoImportModule_messageType) New() protoreflect.Message {
 	return new(fastReflection_TestNoGoImportModule)
 }
+
 func (x fastReflection_TestNoGoImportModule_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_TestNoGoImportModule
 }
@@ -2366,15 +2380,17 @@ func file_testpb_test_proto_rawDescGZIP() []byte {
 	return file_testpb_test_proto_rawDescData
 }
 
-var file_testpb_test_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
-var file_testpb_test_proto_goTypes = []interface{}{
-	(*TestRuntimeModule)(nil),        // 0: testpb.TestRuntimeModule
-	(*TestModuleA)(nil),              // 1: testpb.TestModuleA
-	(*TestModuleB)(nil),              // 2: testpb.TestModuleB
-	(*TestUnregisteredModule)(nil),   // 3: testpb.TestUnregisteredModule
-	(*TestNoModuleOptionModule)(nil), // 4: testpb.TestNoModuleOptionModule
-	(*TestNoGoImportModule)(nil),     // 5: testpb.TestNoGoImportModule
-}
+var (
+	file_testpb_test_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+	file_testpb_test_proto_goTypes  = []interface{}{
+		(*TestRuntimeModule)(nil),        // 0: testpb.TestRuntimeModule
+		(*TestModuleA)(nil),              // 1: testpb.TestModuleA
+		(*TestModuleB)(nil),              // 2: testpb.TestModuleB
+		(*TestUnregisteredModule)(nil),   // 3: testpb.TestUnregisteredModule
+		(*TestNoModuleOptionModule)(nil), // 4: testpb.TestNoModuleOptionModule
+		(*TestNoGoImportModule)(nil),     // 5: testpb.TestNoGoImportModule
+	}
+)
 var file_testpb_test_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
 	0, // [0:0] is the sub-list for method input_type

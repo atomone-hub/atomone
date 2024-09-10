@@ -16,7 +16,7 @@ func FreeTCPAddr() (addr, port string, err error) {
 	}
 
 	if err := l.Close(); err != nil {
-		return "", "", sdkerrors.Wrap(err, "couldn't close the listener")
+		return "", "", sdkerrors.Wrap(err, "couldn't close the listener") //nolint: staticcheck
 	}
 
 	portI := l.Addr().(*net.TCPAddr).Port

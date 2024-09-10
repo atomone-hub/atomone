@@ -66,7 +66,7 @@ func (app *AtomOneApp) prepForZeroHeightGenesis(ctx sdk.Context, jailAllowedAddr
 	}
 
 	/* Just to be safe, assert the invariants on current state. */
-	//app.CrisisKeeper.AssertInvariants(ctx)
+	// app.CrisisKeeper.AssertInvariants(ctx)
 
 	/* Handle fee distribution state. */
 
@@ -213,7 +213,7 @@ func (app *AtomOneApp) prepForZeroHeightGenesis(ctx sdk.Context, jailAllowedAddr
 	/* Handle slashing state. */
 
 	// reset start height on signing infos
-	//app.SlashingKeeper.IterateValidatorSigningInfos(
+	// app.SlashingKeeper.IterateValidatorSigningInfos(
 	//	ctx,
 	//	func(addr sdk.ConsAddress, info slashingtypes.ValidatorSigningInfo) (stop bool) {
 	//		info.StartHeight = 0

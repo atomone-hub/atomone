@@ -464,7 +464,7 @@ func TestCustomRunTxPanicHandler(t *testing.T) {
 	anteErr := sdkerrors.Register("fakeModule", 100500, "fakeError")
 	anteOpt := func(bapp *baseapp.BaseApp) {
 		bapp.SetAnteHandler(func(ctx sdk.Context, tx sdk.Tx, simulate bool) (newCtx sdk.Context, err error) {
-			panic(sdkerrors.Wrap(anteErr, "anteHandler"))
+			panic(sdkerrors.Wrap(anteErr, "anteHandler")) //nolint: staticcheck
 		})
 	}
 	suite := NewBaseAppSuite(t, anteOpt)

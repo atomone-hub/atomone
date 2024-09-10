@@ -7,20 +7,21 @@ import (
 	"reflect"
 	"strconv"
 
-	proto "github.com/cosmos/gogoproto/proto"
-	"google.golang.org/grpc/encoding"
-
-	"github.com/atomone-hub/atomone/codec"
-
-	abci "github.com/cometbft/cometbft/abci/types"
-	gogogrpc "github.com/cosmos/gogoproto/grpc"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/encoding"
 	"google.golang.org/grpc/metadata"
 
-	"github.com/atomone-hub/atomone/codec/types"
-	"github.com/atomone-hub/atomone/types/tx"
+	abci "github.com/cometbft/cometbft/abci/types"
+
+	gogogrpc "github.com/cosmos/gogoproto/grpc"
+	proto "github.com/cosmos/gogoproto/proto"
+
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	grpctypes "github.com/cosmos/cosmos-sdk/types/grpc"
+
+	"github.com/atomone-hub/atomone/codec"
+	"github.com/atomone-hub/atomone/codec/types"
+	"github.com/atomone-hub/atomone/types/tx"
 )
 
 var _ gogogrpc.ClientConn = Context{}
@@ -39,14 +40,14 @@ func (ctx Context) Invoke(grpcCtx gocontext.Context, method string, req, reply i
 
 	// In both cases, we don't allow empty request args (it will panic unexpectedly).
 	if reflect.ValueOf(req).IsNil() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "request cannot be nil")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "request cannot be nil") //nolint: staticcheck
 	}
 
 	// Case 1. Broadcasting a Tx.
 	if reqProto, ok := req.(*tx.BroadcastTxRequest); ok {
 		res, ok := reply.(*tx.BroadcastTxResponse)
 		if !ok {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "expected %T, got %T", (*tx.BroadcastTxResponse)(nil), req)
+			return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "expected %T, got %T", (*tx.BroadcastTxResponse)(nil), req) //nolint: staticcheck
 		}
 
 		broadcastRes, err := TxServiceBroadcast(grpcCtx, ctx, reqProto)
@@ -77,7 +78,7 @@ func (ctx Context) Invoke(grpcCtx gocontext.Context, method string, req, reply i
 			return err
 		}
 		if height < 0 {
-			return sdkerrors.Wrapf(
+			return sdkerrors.Wrapf( //nolint: staticcheck
 				sdkerrors.ErrInvalidRequest,
 				"client.Context.Invoke: height (%d) from %q must be >= 0", height, grpctypes.GRPCBlockHeightHeader)
 		}

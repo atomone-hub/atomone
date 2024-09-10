@@ -21,13 +21,13 @@ var _ FeeAllowanceI = (*BasicAllowance)(nil)
 // (eg. when it is used up). (See call to RevokeAllowance in Keeper.UseGrantedFees)
 func (a *BasicAllowance) Accept(ctx sdk.Context, fee sdk.Coins, _ []sdk.Msg) (bool, error) {
 	if a.Expiration != nil && a.Expiration.Before(ctx.BlockTime()) {
-		return true, sdkerrors.Wrap(ErrFeeLimitExpired, "basic allowance")
+		return true, sdkerrors.Wrap(ErrFeeLimitExpired, "basic allowance") //nolint: staticcheck
 	}
 
 	if a.SpendLimit != nil {
 		left, invalid := a.SpendLimit.SafeSub(fee...)
 		if invalid {
-			return false, sdkerrors.Wrap(ErrFeeLimitExceeded, "basic allowance")
+			return false, sdkerrors.Wrap(ErrFeeLimitExceeded, "basic allowance") //nolint: staticcheck
 		}
 
 		a.SpendLimit = left
@@ -41,15 +41,15 @@ func (a *BasicAllowance) Accept(ctx sdk.Context, fee sdk.Coins, _ []sdk.Msg) (bo
 func (a BasicAllowance) ValidateBasic() error {
 	if a.SpendLimit != nil {
 		if !a.SpendLimit.IsValid() {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "send amount is invalid: %s", a.SpendLimit)
+			return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "send amount is invalid: %s", a.SpendLimit) //nolint: staticcheck
 		}
 		if !a.SpendLimit.IsAllPositive() {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "spend limit must be positive")
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "spend limit must be positive") //nolint: staticcheck
 		}
 	}
 
 	if a.Expiration != nil && a.Expiration.Unix() < 0 {
-		return sdkerrors.Wrap(ErrInvalidDuration, "expiration time cannot be negative")
+		return sdkerrors.Wrap(ErrInvalidDuration, "expiration time cannot be negative") //nolint: staticcheck
 	}
 
 	return nil

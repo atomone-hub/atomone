@@ -23,10 +23,10 @@ type Dec struct {
 func NewPositiveDecFromString(s string) (Dec, error) {
 	d, err := NewDecFromString(s)
 	if err != nil {
-		return Dec{}, errors.ErrInvalidDecString.Wrap(err.Error())
+		return Dec{}, errors.ErrInvalidDecString.Wrap(err.Error()) //nolint: staticcheck
 	}
 	if !d.IsPositive() {
-		return Dec{}, errors.ErrInvalidDecString.Wrapf("expected a positive decimal, got %s", s)
+		return Dec{}, errors.ErrInvalidDecString.Wrapf("expected a positive decimal, got %s", s) //nolint: staticcheck
 	}
 	return d, nil
 }
@@ -34,10 +34,10 @@ func NewPositiveDecFromString(s string) (Dec, error) {
 func NewNonNegativeDecFromString(s string) (Dec, error) {
 	d, err := NewDecFromString(s)
 	if err != nil {
-		return Dec{}, errors.ErrInvalidDecString.Wrap(err.Error())
+		return Dec{}, errors.ErrInvalidDecString.Wrap(err.Error()) //nolint: staticcheck
 	}
 	if d.IsNegative() {
-		return Dec{}, errors.ErrInvalidDecString.Wrapf("expected a non-negative decimal, got %s", s)
+		return Dec{}, errors.ErrInvalidDecString.Wrapf("expected a non-negative decimal, got %s", s) //nolint: staticcheck
 	}
 	return d, nil
 }
@@ -51,11 +51,11 @@ func (x Dec) IsPositive() bool {
 func NewDecFromString(s string) (Dec, error) {
 	d, _, err := apd.NewFromString(s)
 	if err != nil {
-		return Dec{}, errors.ErrInvalidDecString.Wrap(err.Error())
+		return Dec{}, errors.ErrInvalidDecString.Wrap(err.Error()) //nolint: staticcheck
 	}
 
 	if d.Form != apd.Finite {
-		return Dec{}, errors.ErrInvalidDecString.Wrapf("expected a finite decimal, got %s", s)
+		return Dec{}, errors.ErrInvalidDecString.Wrapf("expected a finite decimal, got %s", s) //nolint: staticcheck
 	}
 
 	return Dec{*d}, nil
@@ -76,7 +76,7 @@ func NewDecFromInt64(x int64) Dec {
 func (x Dec) Add(y Dec) (Dec, error) {
 	var z Dec
 	_, err := apd.BaseContext.Add(&z.dec, &x.dec, &y.dec)
-	return z, sdkerrors.Wrap(err, "decimal addition error")
+	return z, sdkerrors.Wrap(err, "decimal addition error") //nolint: staticcheck
 }
 
 // Sub returns a new Dec with value `x-y` without mutating any argument and error if
@@ -84,7 +84,7 @@ func (x Dec) Add(y Dec) (Dec, error) {
 func (x Dec) Sub(y Dec) (Dec, error) {
 	var z Dec
 	_, err := apd.BaseContext.Sub(&z.dec, &x.dec, &y.dec)
-	return z, sdkerrors.Wrap(err, "decimal subtraction error")
+	return z, sdkerrors.Wrap(err, "decimal subtraction error") //nolint: staticcheck
 }
 
 func (x Dec) Int64() (int64, error) {
@@ -120,7 +120,7 @@ var dec128Context = apd.Context{
 func (x Dec) Quo(y Dec) (Dec, error) {
 	var z Dec
 	_, err := dec128Context.Quo(&z.dec, &x.dec, &y.dec)
-	return z, sdkerrors.Wrap(err, "decimal quotient error")
+	return z, sdkerrors.Wrap(err, "decimal quotient error") //nolint: staticcheck
 }
 
 func (x Dec) IsZero() bool {

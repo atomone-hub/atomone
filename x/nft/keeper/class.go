@@ -9,11 +9,11 @@ import (
 // SaveClass defines a method for creating a new nft class
 func (k Keeper) SaveClass(ctx sdk.Context, class nft.Class) error {
 	if k.HasClass(ctx, class.Id) {
-		return sdkerrors.Wrap(nft.ErrClassExists, class.Id)
+		return sdkerrors.Wrap(nft.ErrClassExists, class.Id) //nolint: staticcheck
 	}
 	bz, err := k.cdc.Marshal(&class)
 	if err != nil {
-		return sdkerrors.Wrap(err, "Marshal nft.Class failed")
+		return sdkerrors.Wrap(err, "Marshal nft.Class failed") //nolint: staticcheck
 	}
 	store := ctx.KVStore(k.storeKey)
 	store.Set(classStoreKey(class.Id), bz)
@@ -23,11 +23,11 @@ func (k Keeper) SaveClass(ctx sdk.Context, class nft.Class) error {
 // UpdateClass defines a method for updating an exist nft class
 func (k Keeper) UpdateClass(ctx sdk.Context, class nft.Class) error {
 	if !k.HasClass(ctx, class.Id) {
-		return sdkerrors.Wrap(nft.ErrClassNotExists, class.Id)
+		return sdkerrors.Wrap(nft.ErrClassNotExists, class.Id) //nolint: staticcheck
 	}
 	bz, err := k.cdc.Marshal(&class)
 	if err != nil {
-		return sdkerrors.Wrap(err, "Marshal nft.Class failed")
+		return sdkerrors.Wrap(err, "Marshal nft.Class failed") //nolint: staticcheck
 	}
 	store := ctx.KVStore(k.storeKey)
 	store.Set(classStoreKey(class.Id), bz)

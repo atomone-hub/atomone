@@ -6,6 +6,10 @@ package feegrant
 import (
 	context "context"
 	fmt "fmt"
+	io "io"
+	math "math"
+	math_bits "math/bits"
+
 	query "github.com/atomone-hub/atomone/types/query"
 	_ "github.com/cosmos/cosmos-proto"
 	grpc1 "github.com/cosmos/gogoproto/grpc"
@@ -14,15 +18,14 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	io "io"
-	math "math"
-	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
+var (
+	_ = proto.Marshal
+	_ = fmt.Errorf
+	_ = math.Inf
+)
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -45,9 +48,11 @@ func (*QueryAllowanceRequest) ProtoMessage()    {}
 func (*QueryAllowanceRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4d2e0a1d69dc0bc4, []int{0}
 }
+
 func (m *QueryAllowanceRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *QueryAllowanceRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryAllowanceRequest.Marshal(b, m, deterministic)
@@ -60,12 +65,15 @@ func (m *QueryAllowanceRequest) XXX_Marshal(b []byte, deterministic bool) ([]byt
 		return b[:n], nil
 	}
 }
+
 func (m *QueryAllowanceRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryAllowanceRequest.Merge(m, src)
 }
+
 func (m *QueryAllowanceRequest) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *QueryAllowanceRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryAllowanceRequest.DiscardUnknown(m)
 }
@@ -99,9 +107,11 @@ func (*QueryAllowanceResponse) ProtoMessage()    {}
 func (*QueryAllowanceResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4d2e0a1d69dc0bc4, []int{1}
 }
+
 func (m *QueryAllowanceResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *QueryAllowanceResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryAllowanceResponse.Marshal(b, m, deterministic)
@@ -114,12 +124,15 @@ func (m *QueryAllowanceResponse) XXX_Marshal(b []byte, deterministic bool) ([]by
 		return b[:n], nil
 	}
 }
+
 func (m *QueryAllowanceResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryAllowanceResponse.Merge(m, src)
 }
+
 func (m *QueryAllowanceResponse) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *QueryAllowanceResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryAllowanceResponse.DiscardUnknown(m)
 }
@@ -147,9 +160,11 @@ func (*QueryAllowancesRequest) ProtoMessage()    {}
 func (*QueryAllowancesRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4d2e0a1d69dc0bc4, []int{2}
 }
+
 func (m *QueryAllowancesRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *QueryAllowancesRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryAllowancesRequest.Marshal(b, m, deterministic)
@@ -162,12 +177,15 @@ func (m *QueryAllowancesRequest) XXX_Marshal(b []byte, deterministic bool) ([]by
 		return b[:n], nil
 	}
 }
+
 func (m *QueryAllowancesRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryAllowancesRequest.Merge(m, src)
 }
+
 func (m *QueryAllowancesRequest) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *QueryAllowancesRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryAllowancesRequest.DiscardUnknown(m)
 }
@@ -203,9 +221,11 @@ func (*QueryAllowancesResponse) ProtoMessage()    {}
 func (*QueryAllowancesResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4d2e0a1d69dc0bc4, []int{3}
 }
+
 func (m *QueryAllowancesResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *QueryAllowancesResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryAllowancesResponse.Marshal(b, m, deterministic)
@@ -218,12 +238,15 @@ func (m *QueryAllowancesResponse) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return b[:n], nil
 	}
 }
+
 func (m *QueryAllowancesResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryAllowancesResponse.Merge(m, src)
 }
+
 func (m *QueryAllowancesResponse) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *QueryAllowancesResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryAllowancesResponse.DiscardUnknown(m)
 }
@@ -260,9 +283,11 @@ func (*QueryAllowancesByGranterRequest) ProtoMessage()    {}
 func (*QueryAllowancesByGranterRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4d2e0a1d69dc0bc4, []int{4}
 }
+
 func (m *QueryAllowancesByGranterRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *QueryAllowancesByGranterRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryAllowancesByGranterRequest.Marshal(b, m, deterministic)
@@ -275,12 +300,15 @@ func (m *QueryAllowancesByGranterRequest) XXX_Marshal(b []byte, deterministic bo
 		return b[:n], nil
 	}
 }
+
 func (m *QueryAllowancesByGranterRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryAllowancesByGranterRequest.Merge(m, src)
 }
+
 func (m *QueryAllowancesByGranterRequest) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *QueryAllowancesByGranterRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryAllowancesByGranterRequest.DiscardUnknown(m)
 }
@@ -318,9 +346,11 @@ func (*QueryAllowancesByGranterResponse) ProtoMessage()    {}
 func (*QueryAllowancesByGranterResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4d2e0a1d69dc0bc4, []int{5}
 }
+
 func (m *QueryAllowancesByGranterResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *QueryAllowancesByGranterResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryAllowancesByGranterResponse.Marshal(b, m, deterministic)
@@ -333,12 +363,15 @@ func (m *QueryAllowancesByGranterResponse) XXX_Marshal(b []byte, deterministic b
 		return b[:n], nil
 	}
 }
+
 func (m *QueryAllowancesByGranterResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryAllowancesByGranterResponse.Merge(m, src)
 }
+
 func (m *QueryAllowancesByGranterResponse) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *QueryAllowancesByGranterResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryAllowancesByGranterResponse.DiscardUnknown(m)
 }
@@ -411,8 +444,10 @@ var fileDescriptor_4d2e0a1d69dc0bc4 = []byte{
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
-var _ context.Context
-var _ grpc.ClientConn
+var (
+	_ context.Context
+	_ grpc.ClientConn
+)
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
@@ -480,15 +515,16 @@ type QueryServer interface {
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
-type UnimplementedQueryServer struct {
-}
+type UnimplementedQueryServer struct{}
 
 func (*UnimplementedQueryServer) Allowance(ctx context.Context, req *QueryAllowanceRequest) (*QueryAllowanceResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Allowance not implemented")
 }
+
 func (*UnimplementedQueryServer) Allowances(ctx context.Context, req *QueryAllowancesRequest) (*QueryAllowancesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Allowances not implemented")
 }
+
 func (*UnimplementedQueryServer) AllowancesByGranter(ctx context.Context, req *QueryAllowancesByGranterRequest) (*QueryAllowancesByGranterResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AllowancesByGranter not implemented")
 }
@@ -837,6 +873,7 @@ func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+
 func (m *QueryAllowanceRequest) Size() (n int) {
 	if m == nil {
 		return 0
@@ -942,9 +979,11 @@ func (m *QueryAllowancesByGranterResponse) Size() (n int) {
 func sovQuery(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
+
 func sozQuery(x uint64) (n int) {
 	return sovQuery(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
+
 func (m *QueryAllowanceRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1059,6 +1098,7 @@ func (m *QueryAllowanceRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *QueryAllowanceResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1145,6 +1185,7 @@ func (m *QueryAllowanceResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *QueryAllowancesRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1263,6 +1304,7 @@ func (m *QueryAllowancesRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *QueryAllowancesResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1383,6 +1425,7 @@ func (m *QueryAllowancesResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *QueryAllowancesByGranterRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1501,6 +1544,7 @@ func (m *QueryAllowancesByGranterRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *QueryAllowancesByGranterResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1621,6 +1665,7 @@ func (m *QueryAllowancesByGranterResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func skipQuery(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

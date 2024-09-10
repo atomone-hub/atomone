@@ -21,16 +21,16 @@ func (p Plan) String() string {
 // ValidateBasic does basic validation of a Plan
 func (p Plan) ValidateBasic() error {
 	if !p.Time.IsZero() {
-		return sdkerrors.ErrInvalidRequest.Wrap("time-based upgrades have been deprecated in the SDK")
+		return sdkerrors.ErrInvalidRequest.Wrap("time-based upgrades have been deprecated in the SDK") //nolint: staticcheck
 	}
 	if p.UpgradedClientState != nil {
-		return sdkerrors.ErrInvalidRequest.Wrap("upgrade logic for IBC has been moved to the IBC module")
+		return sdkerrors.ErrInvalidRequest.Wrap("upgrade logic for IBC has been moved to the IBC module") //nolint: staticcheck
 	}
 	if len(p.Name) == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "name cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "name cannot be empty") //nolint: staticcheck
 	}
 	if p.Height <= 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "height must be greater than 0")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "height must be greater than 0") //nolint: staticcheck
 	}
 
 	return nil

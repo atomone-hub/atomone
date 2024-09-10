@@ -5,13 +5,12 @@ import (
 
 	"github.com/atomone-hub/atomone/codec"
 	sdk "github.com/atomone-hub/atomone/types"
+	atomoneerrors "github.com/atomone-hub/atomone/types/errors"
 	"github.com/atomone-hub/atomone/x/authz"
+	govv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	govv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 	stakingkeeper "github.com/atomone-hub/atomone/x/staking/keeper"
 	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
-
-	atomoneerrors "github.com/atomone-hub/atomone/types/errors"
-	govv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 )
 
 var (

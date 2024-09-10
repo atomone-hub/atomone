@@ -7,15 +7,17 @@ import (
 	"strings"
 	"time"
 
+	"github.com/spf13/cobra"
+
 	rpchttp "github.com/cometbft/cometbft/rpc/client/http"
 	coretypes "github.com/cometbft/cometbft/rpc/core/types"
 	tmtypes "github.com/cometbft/cometbft/types"
-	"github.com/spf13/cobra"
+
+	"github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/client/flags"
 	sdk "github.com/atomone-hub/atomone/types"
-	"github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func newTxResponseCheckTx(res *coretypes.ResultBroadcastTxCommit) *sdk.TxResponse {

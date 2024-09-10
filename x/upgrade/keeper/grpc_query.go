@@ -62,7 +62,7 @@ func (k Keeper) ModuleVersions(c context.Context, req *types.QueryModuleVersions
 			return &types.QueryModuleVersionsResponse{ModuleVersions: res}, nil
 		}
 		// module requested, but not found
-		return nil, errors.Wrapf(errors.ErrNotFound, "x/upgrade: QueryModuleVersions module %s not found", req.ModuleName)
+		return nil, errors.Wrapf(errors.ErrNotFound, "x/upgrade: QueryModuleVersions module %s not found", req.ModuleName) //nolint: staticcheck
 	}
 
 	// if no module requested return all module versions from state

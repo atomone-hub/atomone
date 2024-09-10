@@ -243,23 +243,23 @@ func (d Description) UpdateDescription(d2 Description) (Description, error) {
 // EnsureLength ensures the length of a validator's description.
 func (d Description) EnsureLength() (Description, error) {
 	if len(d.Moniker) > MaxMonikerLength {
-		return d, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid moniker length; got: %d, max: %d", len(d.Moniker), MaxMonikerLength)
+		return d, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid moniker length; got: %d, max: %d", len(d.Moniker), MaxMonikerLength) //nolint: staticcheck
 	}
 
 	if len(d.Identity) > MaxIdentityLength {
-		return d, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid identity length; got: %d, max: %d", len(d.Identity), MaxIdentityLength)
+		return d, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid identity length; got: %d, max: %d", len(d.Identity), MaxIdentityLength) //nolint: staticcheck
 	}
 
 	if len(d.Website) > MaxWebsiteLength {
-		return d, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid website length; got: %d, max: %d", len(d.Website), MaxWebsiteLength)
+		return d, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid website length; got: %d, max: %d", len(d.Website), MaxWebsiteLength) //nolint: staticcheck
 	}
 
 	if len(d.SecurityContact) > MaxSecurityContactLength {
-		return d, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid security contact length; got: %d, max: %d", len(d.SecurityContact), MaxSecurityContactLength)
+		return d, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid security contact length; got: %d, max: %d", len(d.SecurityContact), MaxSecurityContactLength) //nolint: staticcheck
 	}
 
 	if len(d.Details) > MaxDetailsLength {
-		return d, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid details length; got: %d, max: %d", len(d.Details), MaxDetailsLength)
+		return d, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid details length; got: %d, max: %d", len(d.Details), MaxDetailsLength) //nolint: staticcheck
 	}
 
 	return d, nil
@@ -483,7 +483,7 @@ func (v Validator) GetOperator() sdk.ValAddress {
 func (v Validator) ConsPubKey() (cryptotypes.PubKey, error) {
 	pk, ok := v.ConsensusPubkey.GetCachedValue().(cryptotypes.PubKey)
 	if !ok {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "expecting cryptotypes.PubKey, got %T", pk)
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "expecting cryptotypes.PubKey, got %T", pk) //nolint: staticcheck
 	}
 
 	return pk, nil
@@ -508,7 +508,7 @@ func (v Validator) TmConsPublicKey() (tmprotocrypto.PublicKey, error) {
 func (v Validator) GetConsAddr() (sdk.ConsAddress, error) {
 	pk, ok := v.ConsensusPubkey.GetCachedValue().(cryptotypes.PubKey)
 	if !ok {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "expecting cryptotypes.PubKey, got %T", pk)
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "expecting cryptotypes.PubKey, got %T", pk) //nolint: staticcheck
 	}
 
 	return sdk.ConsAddress(pk.Address()), nil

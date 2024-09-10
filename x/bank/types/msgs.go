@@ -35,19 +35,19 @@ func (msg MsgSend) Type() string { return TypeMsgSend }
 // ValidateBasic Implements Msg.
 func (msg MsgSend) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.FromAddress); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", err) //nolint: staticcheck
 	}
 
 	if _, err := sdk.AccAddressFromBech32(msg.ToAddress); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", err) //nolint: staticcheck
 	}
 
 	if !msg.Amount.IsValid() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, msg.Amount.String())
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, msg.Amount.String()) //nolint: staticcheck
 	}
 
 	if !msg.Amount.IsAllPositive() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, msg.Amount.String())
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, msg.Amount.String()) //nolint: staticcheck
 	}
 
 	return nil
@@ -114,15 +114,15 @@ func (msg MsgMultiSend) GetSigners() []sdk.AccAddress {
 // ValidateBasic - validate transaction input
 func (in Input) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(in.Address); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid input address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid input address: %s", err) //nolint: staticcheck
 	}
 
 	if !in.Coins.IsValid() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, in.Coins.String())
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, in.Coins.String()) //nolint: staticcheck
 	}
 
 	if !in.Coins.IsAllPositive() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, in.Coins.String())
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, in.Coins.String()) //nolint: staticcheck
 	}
 
 	return nil
@@ -141,15 +141,15 @@ func NewInput(addr sdk.AccAddress, coins sdk.Coins) Input {
 // ValidateBasic - validate transaction output
 func (out Output) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(out.Address); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid output address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid output address: %s", err) //nolint: staticcheck
 	}
 
 	if !out.Coins.IsValid() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, out.Coins.String())
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, out.Coins.String()) //nolint: staticcheck
 	}
 
 	if !out.Coins.IsAllPositive() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, out.Coins.String())
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, out.Coins.String()) //nolint: staticcheck
 	}
 
 	return nil
@@ -236,26 +236,26 @@ func (msg MsgSetSendEnabled) GetSigners() []sdk.AccAddress {
 func (msg MsgSetSendEnabled) ValidateBasic() error {
 	if len(msg.Authority) > 0 {
 		if _, err := sdk.AccAddressFromBech32(msg.Authority); err != nil {
-			return sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", err)
+			return sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", err) //nolint: staticcheck
 		}
 	}
 
 	seen := map[string]bool{}
 	for _, se := range msg.SendEnabled {
 		if _, alreadySeen := seen[se.Denom]; alreadySeen {
-			return sdkerrors.ErrInvalidRequest.Wrapf("duplicate denom entries found for %q", se.Denom)
+			return sdkerrors.ErrInvalidRequest.Wrapf("duplicate denom entries found for %q", se.Denom) //nolint: staticcheck
 		}
 
 		seen[se.Denom] = true
 
 		if err := se.Validate(); err != nil {
-			return sdkerrors.ErrInvalidRequest.Wrapf("invalid SendEnabled denom %q: %s", se.Denom, err)
+			return sdkerrors.ErrInvalidRequest.Wrapf("invalid SendEnabled denom %q: %s", se.Denom, err) //nolint: staticcheck
 		}
 	}
 
 	for _, denom := range msg.UseDefaultFor {
 		if err := sdk.ValidateDenom(denom); err != nil {
-			return sdkerrors.ErrInvalidRequest.Wrapf("invalid UseDefaultFor denom %q: %s", denom, err)
+			return sdkerrors.ErrInvalidRequest.Wrapf("invalid UseDefaultFor denom %q: %s", denom, err) //nolint: staticcheck
 		}
 	}
 

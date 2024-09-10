@@ -5,16 +5,18 @@ import (
 	"fmt"
 	"strings"
 
-	abci "github.com/cometbft/cometbft/abci/types"
-	tmbytes "github.com/cometbft/cometbft/libs/bytes"
-	rpcclient "github.com/cometbft/cometbft/rpc/client"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
+	abci "github.com/cometbft/cometbft/abci/types"
+	tmbytes "github.com/cometbft/cometbft/libs/bytes"
+	rpcclient "github.com/cometbft/cometbft/rpc/client"
+
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	"github.com/atomone-hub/atomone/store/rootmulti"
 	sdk "github.com/atomone-hub/atomone/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // GetNode returns an RPC client. If the context's client is not defined, an

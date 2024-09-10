@@ -25,7 +25,7 @@ func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 
 func (k msgServer) UpdateParams(goCtx context.Context, req *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
 	if k.GetAuthority() != req.Authority {
-		return nil, sdkerrors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+		return nil, sdkerrors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority) //nolint: staticcheck
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)

@@ -2,9 +2,14 @@
 package testpb
 
 import (
+	fmt "fmt"
+	io "io"
+	reflect "reflect"
+	sync "sync"
+
 	v1beta11 "cosmossdk.io/api/cosmos/base/query/v1beta1"
 	v1beta1 "cosmossdk.io/api/cosmos/base/v1beta1"
-	fmt "fmt"
+
 	_ "github.com/cosmos/cosmos-proto"
 	runtime "github.com/cosmos/cosmos-proto/runtime"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -12,9 +17,6 @@ import (
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	durationpb "google.golang.org/protobuf/types/known/durationpb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
-	io "io"
-	reflect "reflect"
-	sync "sync"
 )
 
 var _ protoreflect.List = (*_EchoRequest_21_list)(nil)
@@ -435,17 +437,21 @@ func (x *EchoRequest) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_EchoRequest_messageType fastReflection_EchoRequest_messageType
-var _ protoreflect.MessageType = fastReflection_EchoRequest_messageType{}
+var (
+	_fastReflection_EchoRequest_messageType fastReflection_EchoRequest_messageType
+	_                                       protoreflect.MessageType = fastReflection_EchoRequest_messageType{}
+)
 
 type fastReflection_EchoRequest_messageType struct{}
 
 func (x fastReflection_EchoRequest_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_EchoRequest)(nil)
 }
+
 func (x fastReflection_EchoRequest_messageType) New() protoreflect.Message {
 	return new(fastReflection_EchoRequest)
 }
+
 func (x fastReflection_EchoRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_EchoRequest
 }
@@ -2672,17 +2678,21 @@ func (x *AMessage) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_AMessage_messageType fastReflection_AMessage_messageType
-var _ protoreflect.MessageType = fastReflection_AMessage_messageType{}
+var (
+	_fastReflection_AMessage_messageType fastReflection_AMessage_messageType
+	_                                    protoreflect.MessageType = fastReflection_AMessage_messageType{}
+)
 
 type fastReflection_AMessage_messageType struct{}
 
 func (x fastReflection_AMessage_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_AMessage)(nil)
 }
+
 func (x fastReflection_AMessage_messageType) New() protoreflect.Message {
 	return new(fastReflection_AMessage)
 }
+
 func (x fastReflection_AMessage_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_AMessage
 }
@@ -3138,17 +3148,21 @@ func (x *EchoResponse) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_EchoResponse_messageType fastReflection_EchoResponse_messageType
-var _ protoreflect.MessageType = fastReflection_EchoResponse_messageType{}
+var (
+	_fastReflection_EchoResponse_messageType fastReflection_EchoResponse_messageType
+	_                                        protoreflect.MessageType = fastReflection_EchoResponse_messageType{}
+)
 
 type fastReflection_EchoResponse_messageType struct{}
 
 func (x fastReflection_EchoResponse_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_EchoResponse)(nil)
 }
+
 func (x fastReflection_EchoResponse_messageType) New() protoreflect.Message {
 	return new(fastReflection_EchoResponse)
 }
+
 func (x fastReflection_EchoResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_EchoResponse
 }
@@ -4043,18 +4057,20 @@ func file_testpb_query_proto_rawDescGZIP() []byte {
 	return file_testpb_query_proto_rawDescData
 }
 
-var file_testpb_query_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_testpb_query_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
-var file_testpb_query_proto_goTypes = []interface{}{
-	(Enum)(0),                     // 0: testpb.Enum
-	(*EchoRequest)(nil),           // 1: testpb.EchoRequest
-	(*AMessage)(nil),              // 2: testpb.AMessage
-	(*EchoResponse)(nil),          // 3: testpb.EchoResponse
-	(*timestamppb.Timestamp)(nil), // 4: google.protobuf.Timestamp
-	(*durationpb.Duration)(nil),   // 5: google.protobuf.Duration
-	(*v1beta1.Coin)(nil),          // 6: cosmos.base.v1beta1.Coin
-	(*v1beta11.PageRequest)(nil),  // 7: cosmos.base.query.v1beta1.PageRequest
-}
+var (
+	file_testpb_query_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+	file_testpb_query_proto_msgTypes  = make([]protoimpl.MessageInfo, 3)
+	file_testpb_query_proto_goTypes   = []interface{}{
+		(Enum)(0),                     // 0: testpb.Enum
+		(*EchoRequest)(nil),           // 1: testpb.EchoRequest
+		(*AMessage)(nil),              // 2: testpb.AMessage
+		(*EchoResponse)(nil),          // 3: testpb.EchoResponse
+		(*timestamppb.Timestamp)(nil), // 4: google.protobuf.Timestamp
+		(*durationpb.Duration)(nil),   // 5: google.protobuf.Duration
+		(*v1beta1.Coin)(nil),          // 6: cosmos.base.v1beta1.Coin
+		(*v1beta11.PageRequest)(nil),  // 7: cosmos.base.query.v1beta1.PageRequest
+	}
+)
 var file_testpb_query_proto_depIdxs = []int32{
 	4,  // 0: testpb.EchoRequest.timestamp:type_name -> google.protobuf.Timestamp
 	5,  // 1: testpb.EchoRequest.duration:type_name -> google.protobuf.Duration

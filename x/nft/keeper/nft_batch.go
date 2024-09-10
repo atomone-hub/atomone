@@ -14,11 +14,11 @@ func (k Keeper) BatchMint(ctx sdk.Context,
 	checked := make(map[string]bool, len(tokens))
 	for _, token := range tokens {
 		if !checked[token.ClassId] && !k.HasClass(ctx, token.ClassId) {
-			return sdkerrors.Wrap(nft.ErrClassNotExists, token.ClassId)
+			return sdkerrors.Wrap(nft.ErrClassNotExists, token.ClassId) //nolint: staticcheck
 		}
 
 		if k.HasNFT(ctx, token.ClassId, token.Id) {
-			return sdkerrors.Wrap(nft.ErrNFTExists, token.Id)
+			return sdkerrors.Wrap(nft.ErrNFTExists, token.Id) //nolint: staticcheck
 		}
 
 		checked[token.ClassId] = true
@@ -31,11 +31,11 @@ func (k Keeper) BatchMint(ctx sdk.Context,
 // Note: When the upper module uses this method, it needs to authenticate nft
 func (k Keeper) BatchBurn(ctx sdk.Context, classID string, nftIDs []string) error {
 	if !k.HasClass(ctx, classID) {
-		return sdkerrors.Wrap(nft.ErrClassNotExists, classID)
+		return sdkerrors.Wrap(nft.ErrClassNotExists, classID) //nolint: staticcheck
 	}
 	for _, nftID := range nftIDs {
 		if !k.HasNFT(ctx, classID, nftID) {
-			return sdkerrors.Wrap(nft.ErrNFTNotExists, nftID)
+			return sdkerrors.Wrap(nft.ErrNFTNotExists, nftID) //nolint: staticcheck
 		}
 		if err := k.burnWithNoCheck(ctx, classID, nftID); err != nil {
 			return err
@@ -50,11 +50,11 @@ func (k Keeper) BatchUpdate(ctx sdk.Context, tokens []nft.NFT) error {
 	checked := make(map[string]bool, len(tokens))
 	for _, token := range tokens {
 		if !checked[token.ClassId] && !k.HasClass(ctx, token.ClassId) {
-			return sdkerrors.Wrap(nft.ErrClassNotExists, token.ClassId)
+			return sdkerrors.Wrap(nft.ErrClassNotExists, token.ClassId) //nolint: staticcheck
 		}
 
 		if !k.HasNFT(ctx, token.ClassId, token.Id) {
-			return sdkerrors.Wrap(nft.ErrNFTNotExists, token.Id)
+			return sdkerrors.Wrap(nft.ErrNFTNotExists, token.Id) //nolint: staticcheck
 		}
 		checked[token.ClassId] = true
 		k.updateWithNoCheck(ctx, token)
@@ -70,14 +70,14 @@ func (k Keeper) BatchTransfer(ctx sdk.Context,
 	receiver sdk.AccAddress,
 ) error {
 	if !k.HasClass(ctx, classID) {
-		return sdkerrors.Wrap(nft.ErrClassNotExists, classID)
+		return sdkerrors.Wrap(nft.ErrClassNotExists, classID) //nolint: staticcheck
 	}
 	for _, nftID := range nftIDs {
 		if !k.HasNFT(ctx, classID, nftID) {
-			return sdkerrors.Wrap(nft.ErrNFTNotExists, nftID)
+			return sdkerrors.Wrap(nft.ErrNFTNotExists, nftID) //nolint: staticcheck
 		}
 		if err := k.transferWithNoCheck(ctx, classID, nftID, receiver); err != nil {
-			return sdkerrors.Wrap(nft.ErrNFTNotExists, nftID)
+			return sdkerrors.Wrap(nft.ErrNFTNotExists, nftID) //nolint: staticcheck
 		}
 	}
 	return nil

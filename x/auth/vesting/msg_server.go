@@ -45,11 +45,11 @@ func (s msgServer) CreateVestingAccount(goCtx context.Context, msg *types.MsgCre
 	}
 
 	if bk.BlockedAddr(to) {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not allowed to receive funds", msg.ToAddress)
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not allowed to receive funds", msg.ToAddress) //nolint: staticcheck
 	}
 
 	if acc := ak.GetAccount(ctx, to); acc != nil {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "account %s already exists", msg.ToAddress)
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "account %s already exists", msg.ToAddress) //nolint: staticcheck
 	}
 
 	baseAccount := authtypes.NewBaseAccountWithAddress(to)
@@ -105,11 +105,11 @@ func (s msgServer) CreatePermanentLockedAccount(goCtx context.Context, msg *type
 	}
 
 	if bk.BlockedAddr(to) {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not allowed to receive funds", msg.ToAddress)
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not allowed to receive funds", msg.ToAddress) //nolint: staticcheck
 	}
 
 	if acc := ak.GetAccount(ctx, to); acc != nil {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "account %s already exists", msg.ToAddress)
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "account %s already exists", msg.ToAddress) //nolint: staticcheck
 	}
 
 	baseAccount := authtypes.NewBaseAccountWithAddress(to)
@@ -155,11 +155,11 @@ func (s msgServer) CreatePeriodicVestingAccount(goCtx context.Context, msg *type
 	}
 
 	if s.BankKeeper.BlockedAddr(to) {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not allowed to receive funds", msg.ToAddress)
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not allowed to receive funds", msg.ToAddress) //nolint: staticcheck
 	}
 
 	if acc := ak.GetAccount(ctx, to); acc != nil {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "account %s already exists", msg.ToAddress)
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "account %s already exists", msg.ToAddress) //nolint: staticcheck
 	}
 
 	var totalCoins sdk.Coins

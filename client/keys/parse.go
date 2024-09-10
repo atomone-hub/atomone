@@ -8,9 +8,10 @@ import (
 	"io"
 	"strings"
 
-	"github.com/cometbft/cometbft/libs/cli"
 	"github.com/spf13/cobra"
 	"sigs.k8s.io/yaml"
+
+	"github.com/cometbft/cometbft/libs/cli"
 
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/bech32"

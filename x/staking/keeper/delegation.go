@@ -729,7 +729,7 @@ func (k Keeper) Unbond(
 
 	// ensure that we have enough shares to remove
 	if delegation.Shares.LT(shares) {
-		return amount, sdkerrors.Wrap(types.ErrNotEnoughDelegationShares, delegation.Shares.String())
+		return amount, sdkerrors.Wrap(types.ErrNotEnoughDelegationShares, delegation.Shares.String()) //nolint: staticcheck
 	}
 
 	// get validator
@@ -1016,7 +1016,7 @@ func (k Keeper) ValidateUnbondAmount(
 
 	delShares := del.GetShares()
 	if sharesTruncated.GT(delShares) {
-		return shares, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid shares amount")
+		return shares, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid shares amount") //nolint: staticcheck
 	}
 
 	// Cap the shares at the delegation's shares. Shares being greater could occur

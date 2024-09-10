@@ -12,13 +12,12 @@ import (
 	distrtypes "github.com/atomone-hub/atomone/x/distribution/types"
 	evidencetypes "github.com/atomone-hub/atomone/x/evidence/types"
 	"github.com/atomone-hub/atomone/x/feegrant"
+	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	minttypes "github.com/atomone-hub/atomone/x/mint/types"
 	paramstypes "github.com/atomone-hub/atomone/x/params/types"
 	slashingtypes "github.com/atomone-hub/atomone/x/slashing/types"
 	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
 	upgradetypes "github.com/atomone-hub/atomone/x/upgrade/types"
-
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 )
 
 func (appKeepers *AppKeepers) GenerateKeys() {

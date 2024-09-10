@@ -5,19 +5,22 @@ package keyring
 
 import (
 	fmt "fmt"
+	io "io"
+	math "math"
+	math_bits "math/bits"
+
 	types "github.com/atomone-hub/atomone/codec/types"
 	hd "github.com/atomone-hub/atomone/crypto/hd"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	proto "github.com/golang/protobuf/proto"
-	io "io"
-	math "math"
-	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
+var (
+	_ = proto.Marshal
+	_ = fmt.Errorf
+	_ = math.Inf
+)
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -47,9 +50,11 @@ func (*Record) ProtoMessage()    {}
 func (*Record) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4f32fd837050bd6c, []int{0}
 }
+
 func (m *Record) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *Record) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_Record.Marshal(b, m, deterministic)
@@ -62,12 +67,15 @@ func (m *Record) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
+
 func (m *Record) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Record.Merge(m, src)
 }
+
 func (m *Record) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *Record) XXX_DiscardUnknown() {
 	xxx_messageInfo_Record.DiscardUnknown(m)
 }
@@ -155,9 +163,11 @@ func (*Record_Local) ProtoMessage()    {}
 func (*Record_Local) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4f32fd837050bd6c, []int{0, 0}
 }
+
 func (m *Record_Local) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *Record_Local) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_Record_Local.Marshal(b, m, deterministic)
@@ -170,12 +180,15 @@ func (m *Record_Local) XXX_Marshal(b []byte, deterministic bool) ([]byte, error)
 		return b[:n], nil
 	}
 }
+
 func (m *Record_Local) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Record_Local.Merge(m, src)
 }
+
 func (m *Record_Local) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *Record_Local) XXX_DiscardUnknown() {
 	xxx_messageInfo_Record_Local.DiscardUnknown(m)
 }
@@ -193,9 +206,11 @@ func (*Record_Ledger) ProtoMessage()    {}
 func (*Record_Ledger) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4f32fd837050bd6c, []int{0, 1}
 }
+
 func (m *Record_Ledger) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *Record_Ledger) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_Record_Ledger.Marshal(b, m, deterministic)
@@ -208,12 +223,15 @@ func (m *Record_Ledger) XXX_Marshal(b []byte, deterministic bool) ([]byte, error
 		return b[:n], nil
 	}
 }
+
 func (m *Record_Ledger) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Record_Ledger.Merge(m, src)
 }
+
 func (m *Record_Ledger) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *Record_Ledger) XXX_DiscardUnknown() {
 	xxx_messageInfo_Record_Ledger.DiscardUnknown(m)
 }
@@ -221,8 +239,7 @@ func (m *Record_Ledger) XXX_DiscardUnknown() {
 var xxx_messageInfo_Record_Ledger proto.InternalMessageInfo
 
 // Multi item
-type Record_Multi struct {
-}
+type Record_Multi struct{}
 
 func (m *Record_Multi) Reset()         { *m = Record_Multi{} }
 func (m *Record_Multi) String() string { return proto.CompactTextString(m) }
@@ -230,9 +247,11 @@ func (*Record_Multi) ProtoMessage()    {}
 func (*Record_Multi) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4f32fd837050bd6c, []int{0, 2}
 }
+
 func (m *Record_Multi) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *Record_Multi) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_Record_Multi.Marshal(b, m, deterministic)
@@ -245,12 +264,15 @@ func (m *Record_Multi) XXX_Marshal(b []byte, deterministic bool) ([]byte, error)
 		return b[:n], nil
 	}
 }
+
 func (m *Record_Multi) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Record_Multi.Merge(m, src)
 }
+
 func (m *Record_Multi) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *Record_Multi) XXX_DiscardUnknown() {
 	xxx_messageInfo_Record_Multi.DiscardUnknown(m)
 }
@@ -258,8 +280,7 @@ func (m *Record_Multi) XXX_DiscardUnknown() {
 var xxx_messageInfo_Record_Multi proto.InternalMessageInfo
 
 // Offline item
-type Record_Offline struct {
-}
+type Record_Offline struct{}
 
 func (m *Record_Offline) Reset()         { *m = Record_Offline{} }
 func (m *Record_Offline) String() string { return proto.CompactTextString(m) }
@@ -267,9 +288,11 @@ func (*Record_Offline) ProtoMessage()    {}
 func (*Record_Offline) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4f32fd837050bd6c, []int{0, 3}
 }
+
 func (m *Record_Offline) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *Record_Offline) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_Record_Offline.Marshal(b, m, deterministic)
@@ -282,12 +305,15 @@ func (m *Record_Offline) XXX_Marshal(b []byte, deterministic bool) ([]byte, erro
 		return b[:n], nil
 	}
 }
+
 func (m *Record_Offline) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Record_Offline.Merge(m, src)
 }
+
 func (m *Record_Offline) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *Record_Offline) XXX_DiscardUnknown() {
 	xxx_messageInfo_Record_Offline.DiscardUnknown(m)
 }
@@ -408,6 +434,7 @@ func (m *Record_Local_) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	}
 	return len(dAtA) - i, nil
 }
+
 func (m *Record_Ledger_) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
@@ -429,6 +456,7 @@ func (m *Record_Ledger_) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	}
 	return len(dAtA) - i, nil
 }
+
 func (m *Record_Multi_) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
@@ -450,6 +478,7 @@ func (m *Record_Multi_) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	}
 	return len(dAtA) - i, nil
 }
+
 func (m *Record_Offline_) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
@@ -471,6 +500,7 @@ func (m *Record_Offline_) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	}
 	return len(dAtA) - i, nil
 }
+
 func (m *Record_Local) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -598,6 +628,7 @@ func encodeVarintRecord(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+
 func (m *Record) Size() (n int) {
 	if m == nil {
 		return 0
@@ -630,6 +661,7 @@ func (m *Record_Local_) Size() (n int) {
 	}
 	return n
 }
+
 func (m *Record_Ledger_) Size() (n int) {
 	if m == nil {
 		return 0
@@ -642,6 +674,7 @@ func (m *Record_Ledger_) Size() (n int) {
 	}
 	return n
 }
+
 func (m *Record_Multi_) Size() (n int) {
 	if m == nil {
 		return 0
@@ -654,6 +687,7 @@ func (m *Record_Multi_) Size() (n int) {
 	}
 	return n
 }
+
 func (m *Record_Offline_) Size() (n int) {
 	if m == nil {
 		return 0
@@ -666,6 +700,7 @@ func (m *Record_Offline_) Size() (n int) {
 	}
 	return n
 }
+
 func (m *Record_Local) Size() (n int) {
 	if m == nil {
 		return 0
@@ -713,9 +748,11 @@ func (m *Record_Offline) Size() (n int) {
 func sovRecord(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
+
 func sozRecord(x uint64) (n int) {
 	return sovRecord(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
+
 func (m *Record) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -974,6 +1011,7 @@ func (m *Record) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *Record_Local) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1060,6 +1098,7 @@ func (m *Record_Local) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *Record_Ledger) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1146,6 +1185,7 @@ func (m *Record_Ledger) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *Record_Multi) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1196,6 +1236,7 @@ func (m *Record_Multi) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *Record_Offline) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1246,6 +1287,7 @@ func (m *Record_Offline) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func skipRecord(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

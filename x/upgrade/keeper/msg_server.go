@@ -26,7 +26,7 @@ var _ types.MsgServer = msgServer{}
 // SoftwareUpgrade implements the Msg/SoftwareUpgrade Msg service.
 func (k msgServer) SoftwareUpgrade(goCtx context.Context, req *types.MsgSoftwareUpgrade) (*types.MsgSoftwareUpgradeResponse, error) {
 	if k.authority != req.Authority {
-		return nil, errors.Wrapf(gov.ErrInvalidSigner, "expected %s got %s", k.authority, req.Authority)
+		return nil, errors.Wrapf(gov.ErrInvalidSigner, "expected %s got %s", k.authority, req.Authority) //nolint: staticcheck
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
@@ -41,7 +41,7 @@ func (k msgServer) SoftwareUpgrade(goCtx context.Context, req *types.MsgSoftware
 // CancelUpgrade implements the Msg/CancelUpgrade Msg service.
 func (k msgServer) CancelUpgrade(goCtx context.Context, req *types.MsgCancelUpgrade) (*types.MsgCancelUpgradeResponse, error) {
 	if k.authority != req.Authority {
-		return nil, errors.Wrapf(gov.ErrInvalidSigner, "expected %s got %s", k.authority, req.Authority)
+		return nil, errors.Wrapf(gov.ErrInvalidSigner, "expected %s got %s", k.authority, req.Authority) //nolint: staticcheck
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)

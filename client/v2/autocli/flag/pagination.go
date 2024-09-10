@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/pflag"
 	"google.golang.org/protobuf/reflect/protoreflect"
 
-	"cosmossdk.io/client/v2/internal/util"
+	"github.com/atomone-hub/atomone/client/v2/internal/util"
 )
 
 func (b *Builder) bindPageRequest(ctx context.Context, flagSet *pflag.FlagSet, field protoreflect.FieldDescriptor) (HasValue, error) {

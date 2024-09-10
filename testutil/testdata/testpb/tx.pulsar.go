@@ -3,14 +3,15 @@ package testpb
 
 import (
 	fmt "fmt"
+	io "io"
+	reflect "reflect"
+	sync "sync"
+
 	runtime "github.com/cosmos/cosmos-proto/runtime"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	io "io"
-	reflect "reflect"
-	sync "sync"
 )
 
 var (
@@ -44,17 +45,21 @@ func (x *MsgCreateDog) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_MsgCreateDog_messageType fastReflection_MsgCreateDog_messageType
-var _ protoreflect.MessageType = fastReflection_MsgCreateDog_messageType{}
+var (
+	_fastReflection_MsgCreateDog_messageType fastReflection_MsgCreateDog_messageType
+	_                                        protoreflect.MessageType = fastReflection_MsgCreateDog_messageType{}
+)
 
 type fastReflection_MsgCreateDog_messageType struct{}
 
 func (x fastReflection_MsgCreateDog_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_MsgCreateDog)(nil)
 }
+
 func (x fastReflection_MsgCreateDog_messageType) New() protoreflect.Message {
 	return new(fastReflection_MsgCreateDog)
 }
+
 func (x fastReflection_MsgCreateDog_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_MsgCreateDog
 }
@@ -479,17 +484,21 @@ func (x *MsgCreateDogResponse) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_MsgCreateDogResponse_messageType fastReflection_MsgCreateDogResponse_messageType
-var _ protoreflect.MessageType = fastReflection_MsgCreateDogResponse_messageType{}
+var (
+	_fastReflection_MsgCreateDogResponse_messageType fastReflection_MsgCreateDogResponse_messageType
+	_                                                protoreflect.MessageType = fastReflection_MsgCreateDogResponse_messageType{}
+)
 
 type fastReflection_MsgCreateDogResponse_messageType struct{}
 
 func (x fastReflection_MsgCreateDogResponse_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_MsgCreateDogResponse)(nil)
 }
+
 func (x fastReflection_MsgCreateDogResponse_messageType) New() protoreflect.Message {
 	return new(fastReflection_MsgCreateDogResponse)
 }
+
 func (x fastReflection_MsgCreateDogResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_MsgCreateDogResponse
 }
@@ -945,17 +954,21 @@ func (x *TestMsg) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_TestMsg_messageType fastReflection_TestMsg_messageType
-var _ protoreflect.MessageType = fastReflection_TestMsg_messageType{}
+var (
+	_fastReflection_TestMsg_messageType fastReflection_TestMsg_messageType
+	_                                   protoreflect.MessageType = fastReflection_TestMsg_messageType{}
+)
 
 type fastReflection_TestMsg_messageType struct{}
 
 func (x fastReflection_TestMsg_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_TestMsg)(nil)
 }
+
 func (x fastReflection_TestMsg_messageType) New() protoreflect.Message {
 	return new(fastReflection_TestMsg)
 }
+
 func (x fastReflection_TestMsg_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_TestMsg
 }
@@ -1512,13 +1525,16 @@ func file_testpb_tx_proto_rawDescGZIP() []byte {
 	return file_testpb_tx_proto_rawDescData
 }
 
-var file_testpb_tx_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
-var file_testpb_tx_proto_goTypes = []interface{}{
-	(*MsgCreateDog)(nil),         // 0: testpb.MsgCreateDog
-	(*MsgCreateDogResponse)(nil), // 1: testpb.MsgCreateDogResponse
-	(*TestMsg)(nil),              // 2: testpb.TestMsg
-	(*Dog)(nil),                  // 3: testpb.Dog
-}
+var (
+	file_testpb_tx_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+	file_testpb_tx_proto_goTypes  = []interface{}{
+		(*MsgCreateDog)(nil),         // 0: testpb.MsgCreateDog
+		(*MsgCreateDogResponse)(nil), // 1: testpb.MsgCreateDogResponse
+		(*TestMsg)(nil),              // 2: testpb.TestMsg
+		(*Dog)(nil),                  // 3: testpb.Dog
+	}
+)
+
 var file_testpb_tx_proto_depIdxs = []int32{
 	3, // 0: testpb.MsgCreateDog.dog:type_name -> testpb.Dog
 	0, // 1: testpb.Msg.CreateDog:input_type -> testpb.MsgCreateDog

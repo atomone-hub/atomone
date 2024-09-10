@@ -1,11 +1,12 @@
 package testutil
 
 import (
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	"github.com/atomone-hub/atomone/codec/types"
 	"github.com/atomone-hub/atomone/crypto/codec"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/msgservice"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {
@@ -29,7 +30,7 @@ func (msg *MsgCounter) ValidateBasic() error {
 	if msg.Counter >= 0 {
 		return nil
 	}
-	return sdkerrors.Wrap(sdkerrors.ErrInvalidSequence, "counter should be a non-negative integer")
+	return sdkerrors.Wrap(sdkerrors.ErrInvalidSequence, "counter should be a non-negative integer") //nolint: staticcheck
 }
 
 var _ sdk.Msg = &MsgCounter2{}
@@ -39,7 +40,7 @@ func (msg *MsgCounter2) ValidateBasic() error {
 	if msg.Counter >= 0 {
 		return nil
 	}
-	return sdkerrors.Wrap(sdkerrors.ErrInvalidSequence, "counter should be a non-negative integer")
+	return sdkerrors.Wrap(sdkerrors.ErrInvalidSequence, "counter should be a non-negative integer") //nolint: staticcheck
 }
 
 var _ sdk.Msg = &MsgKeyValue{}
@@ -54,10 +55,10 @@ func (msg *MsgKeyValue) GetSigners() []sdk.AccAddress {
 
 func (msg *MsgKeyValue) ValidateBasic() error {
 	if msg.Key == nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "key cannot be nil")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "key cannot be nil") //nolint: staticcheck
 	}
 	if msg.Value == nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "value cannot be nil")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "value cannot be nil") //nolint: staticcheck
 	}
 	return nil
 }

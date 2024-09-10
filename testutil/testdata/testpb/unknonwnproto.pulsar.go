@@ -2,20 +2,22 @@
 package testpb
 
 import (
-	v1beta1 "cosmossdk.io/api/cosmos/tx/v1beta1"
 	binary "encoding/binary"
 	fmt "fmt"
+	io "io"
+	math "math"
+	reflect "reflect"
+	sort "sort"
+	sync "sync"
+
+	v1beta1 "cosmossdk.io/api/cosmos/tx/v1beta1"
+
 	runtime "github.com/cosmos/cosmos-proto/runtime"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	anypb "google.golang.org/protobuf/types/known/anypb"
-	io "io"
-	math "math"
-	reflect "reflect"
-	sort "sort"
-	sync "sync"
 )
 
 var (
@@ -55,17 +57,21 @@ func (x *Customer1) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_Customer1_messageType fastReflection_Customer1_messageType
-var _ protoreflect.MessageType = fastReflection_Customer1_messageType{}
+var (
+	_fastReflection_Customer1_messageType fastReflection_Customer1_messageType
+	_                                     protoreflect.MessageType = fastReflection_Customer1_messageType{}
+)
 
 type fastReflection_Customer1_messageType struct{}
 
 func (x fastReflection_Customer1_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_Customer1)(nil)
 }
+
 func (x fastReflection_Customer1_messageType) New() protoreflect.Message {
 	return new(fastReflection_Customer1)
 }
+
 func (x fastReflection_Customer1_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_Customer1
 }
@@ -634,17 +640,21 @@ func (x *Customer2) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_Customer2_messageType fastReflection_Customer2_messageType
-var _ protoreflect.MessageType = fastReflection_Customer2_messageType{}
+var (
+	_fastReflection_Customer2_messageType fastReflection_Customer2_messageType
+	_                                     protoreflect.MessageType = fastReflection_Customer2_messageType{}
+)
 
 type fastReflection_Customer2_messageType struct{}
 
 func (x fastReflection_Customer2_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_Customer2)(nil)
 }
+
 func (x fastReflection_Customer2_messageType) New() protoreflect.Message {
 	return new(fastReflection_Customer2)
 }
+
 func (x fastReflection_Customer2_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_Customer2
 }
@@ -1358,17 +1368,21 @@ func (x *Nested4A) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_Nested4A_messageType fastReflection_Nested4A_messageType
-var _ protoreflect.MessageType = fastReflection_Nested4A_messageType{}
+var (
+	_fastReflection_Nested4A_messageType fastReflection_Nested4A_messageType
+	_                                    protoreflect.MessageType = fastReflection_Nested4A_messageType{}
+)
 
 type fastReflection_Nested4A_messageType struct{}
 
 func (x fastReflection_Nested4A_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_Nested4A)(nil)
 }
+
 func (x fastReflection_Nested4A_messageType) New() protoreflect.Message {
 	return new(fastReflection_Nested4A)
 }
+
 func (x fastReflection_Nested4A_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_Nested4A
 }
@@ -1971,17 +1985,21 @@ func (x *Nested3A) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_Nested3A_messageType fastReflection_Nested3A_messageType
-var _ protoreflect.MessageType = fastReflection_Nested3A_messageType{}
+var (
+	_fastReflection_Nested3A_messageType fastReflection_Nested3A_messageType
+	_                                    protoreflect.MessageType = fastReflection_Nested3A_messageType{}
+)
 
 type fastReflection_Nested3A_messageType struct{}
 
 func (x fastReflection_Nested3A_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_Nested3A)(nil)
 }
+
 func (x fastReflection_Nested3A_messageType) New() protoreflect.Message {
 	return new(fastReflection_Nested3A)
 }
+
 func (x fastReflection_Nested3A_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_Nested3A
 }
@@ -2746,17 +2764,21 @@ func (x *Nested2A) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_Nested2A_messageType fastReflection_Nested2A_messageType
-var _ protoreflect.MessageType = fastReflection_Nested2A_messageType{}
+var (
+	_fastReflection_Nested2A_messageType fastReflection_Nested2A_messageType
+	_                                    protoreflect.MessageType = fastReflection_Nested2A_messageType{}
+)
 
 type fastReflection_Nested2A_messageType struct{}
 
 func (x fastReflection_Nested2A_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_Nested2A)(nil)
 }
+
 func (x fastReflection_Nested2A_messageType) New() protoreflect.Message {
 	return new(fastReflection_Nested2A)
 }
+
 func (x fastReflection_Nested2A_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_Nested2A
 }
@@ -3291,17 +3313,21 @@ func (x *Nested1A) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_Nested1A_messageType fastReflection_Nested1A_messageType
-var _ protoreflect.MessageType = fastReflection_Nested1A_messageType{}
+var (
+	_fastReflection_Nested1A_messageType fastReflection_Nested1A_messageType
+	_                                    protoreflect.MessageType = fastReflection_Nested1A_messageType{}
+)
 
 type fastReflection_Nested1A_messageType struct{}
 
 func (x fastReflection_Nested1A_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_Nested1A)(nil)
 }
+
 func (x fastReflection_Nested1A_messageType) New() protoreflect.Message {
 	return new(fastReflection_Nested1A)
 }
+
 func (x fastReflection_Nested1A_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_Nested1A
 }
@@ -3776,17 +3802,21 @@ func (x *Nested4B) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_Nested4B_messageType fastReflection_Nested4B_messageType
-var _ protoreflect.MessageType = fastReflection_Nested4B_messageType{}
+var (
+	_fastReflection_Nested4B_messageType fastReflection_Nested4B_messageType
+	_                                    protoreflect.MessageType = fastReflection_Nested4B_messageType{}
+)
 
 type fastReflection_Nested4B_messageType struct{}
 
 func (x fastReflection_Nested4B_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_Nested4B)(nil)
 }
+
 func (x fastReflection_Nested4B_messageType) New() protoreflect.Message {
 	return new(fastReflection_Nested4B)
 }
+
 func (x fastReflection_Nested4B_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_Nested4B
 }
@@ -4345,17 +4375,21 @@ func (x *Nested3B) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_Nested3B_messageType fastReflection_Nested3B_messageType
-var _ protoreflect.MessageType = fastReflection_Nested3B_messageType{}
+var (
+	_fastReflection_Nested3B_messageType fastReflection_Nested3B_messageType
+	_                                    protoreflect.MessageType = fastReflection_Nested3B_messageType{}
+)
 
 type fastReflection_Nested3B_messageType struct{}
 
 func (x fastReflection_Nested3B_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_Nested3B)(nil)
 }
+
 func (x fastReflection_Nested3B_messageType) New() protoreflect.Message {
 	return new(fastReflection_Nested3B)
 }
+
 func (x fastReflection_Nested3B_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_Nested3B
 }
@@ -4948,17 +4982,21 @@ func (x *Nested2B) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_Nested2B_messageType fastReflection_Nested2B_messageType
-var _ protoreflect.MessageType = fastReflection_Nested2B_messageType{}
+var (
+	_fastReflection_Nested2B_messageType fastReflection_Nested2B_messageType
+	_                                    protoreflect.MessageType = fastReflection_Nested2B_messageType{}
+)
 
 type fastReflection_Nested2B_messageType struct{}
 
 func (x fastReflection_Nested2B_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_Nested2B)(nil)
 }
+
 func (x fastReflection_Nested2B_messageType) New() protoreflect.Message {
 	return new(fastReflection_Nested2B)
 }
+
 func (x fastReflection_Nested2B_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_Nested2B
 }
@@ -5534,17 +5572,21 @@ func (x *Nested1B) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_Nested1B_messageType fastReflection_Nested1B_messageType
-var _ protoreflect.MessageType = fastReflection_Nested1B_messageType{}
+var (
+	_fastReflection_Nested1B_messageType fastReflection_Nested1B_messageType
+	_                                    protoreflect.MessageType = fastReflection_Nested1B_messageType{}
+)
 
 type fastReflection_Nested1B_messageType struct{}
 
 func (x fastReflection_Nested1B_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_Nested1B)(nil)
 }
+
 func (x fastReflection_Nested1B_messageType) New() protoreflect.Message {
 	return new(fastReflection_Nested1B)
 }
+
 func (x fastReflection_Nested1B_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_Nested1B
 }
@@ -6075,17 +6117,21 @@ func (x *Customer3) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_Customer3_messageType fastReflection_Customer3_messageType
-var _ protoreflect.MessageType = fastReflection_Customer3_messageType{}
+var (
+	_fastReflection_Customer3_messageType fastReflection_Customer3_messageType
+	_                                     protoreflect.MessageType = fastReflection_Customer3_messageType{}
+)
 
 type fastReflection_Customer3_messageType struct{}
 
 func (x fastReflection_Customer3_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_Customer3)(nil)
 }
+
 func (x fastReflection_Customer3_messageType) New() protoreflect.Message {
 	return new(fastReflection_Customer3)
 }
+
 func (x fastReflection_Customer3_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_Customer3
 }
@@ -7097,17 +7143,21 @@ func (x *TestVersion1) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_TestVersion1_messageType fastReflection_TestVersion1_messageType
-var _ protoreflect.MessageType = fastReflection_TestVersion1_messageType{}
+var (
+	_fastReflection_TestVersion1_messageType fastReflection_TestVersion1_messageType
+	_                                        protoreflect.MessageType = fastReflection_TestVersion1_messageType{}
+)
 
 type fastReflection_TestVersion1_messageType struct{}
 
 func (x fastReflection_TestVersion1_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_TestVersion1)(nil)
 }
+
 func (x fastReflection_TestVersion1_messageType) New() protoreflect.Message {
 	return new(fastReflection_TestVersion1)
 }
+
 func (x fastReflection_TestVersion1_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_TestVersion1
 }
@@ -8415,17 +8465,21 @@ func (x *TestVersion2) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_TestVersion2_messageType fastReflection_TestVersion2_messageType
-var _ protoreflect.MessageType = fastReflection_TestVersion2_messageType{}
+var (
+	_fastReflection_TestVersion2_messageType fastReflection_TestVersion2_messageType
+	_                                        protoreflect.MessageType = fastReflection_TestVersion2_messageType{}
+)
 
 type fastReflection_TestVersion2_messageType struct{}
 
 func (x fastReflection_TestVersion2_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_TestVersion2)(nil)
 }
+
 func (x fastReflection_TestVersion2_messageType) New() protoreflect.Message {
 	return new(fastReflection_TestVersion2)
 }
+
 func (x fastReflection_TestVersion2_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_TestVersion2
 }
@@ -9781,17 +9835,21 @@ func (x *TestVersion3) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_TestVersion3_messageType fastReflection_TestVersion3_messageType
-var _ protoreflect.MessageType = fastReflection_TestVersion3_messageType{}
+var (
+	_fastReflection_TestVersion3_messageType fastReflection_TestVersion3_messageType
+	_                                        protoreflect.MessageType = fastReflection_TestVersion3_messageType{}
+)
 
 type fastReflection_TestVersion3_messageType struct{}
 
 func (x fastReflection_TestVersion3_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_TestVersion3)(nil)
 }
+
 func (x fastReflection_TestVersion3_messageType) New() protoreflect.Message {
 	return new(fastReflection_TestVersion3)
 }
+
 func (x fastReflection_TestVersion3_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_TestVersion3
 }
@@ -11161,17 +11219,21 @@ func (x *TestVersion3LoneOneOfValue) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_TestVersion3LoneOneOfValue_messageType fastReflection_TestVersion3LoneOneOfValue_messageType
-var _ protoreflect.MessageType = fastReflection_TestVersion3LoneOneOfValue_messageType{}
+var (
+	_fastReflection_TestVersion3LoneOneOfValue_messageType fastReflection_TestVersion3LoneOneOfValue_messageType
+	_                                                      protoreflect.MessageType = fastReflection_TestVersion3LoneOneOfValue_messageType{}
+)
 
 type fastReflection_TestVersion3LoneOneOfValue_messageType struct{}
 
 func (x fastReflection_TestVersion3LoneOneOfValue_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_TestVersion3LoneOneOfValue)(nil)
 }
+
 func (x fastReflection_TestVersion3LoneOneOfValue_messageType) New() protoreflect.Message {
 	return new(fastReflection_TestVersion3LoneOneOfValue)
 }
+
 func (x fastReflection_TestVersion3LoneOneOfValue_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_TestVersion3LoneOneOfValue
 }
@@ -12443,17 +12505,21 @@ func (x *TestVersion3LoneNesting) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_TestVersion3LoneNesting_messageType fastReflection_TestVersion3LoneNesting_messageType
-var _ protoreflect.MessageType = fastReflection_TestVersion3LoneNesting_messageType{}
+var (
+	_fastReflection_TestVersion3LoneNesting_messageType fastReflection_TestVersion3LoneNesting_messageType
+	_                                                   protoreflect.MessageType = fastReflection_TestVersion3LoneNesting_messageType{}
+)
 
 type fastReflection_TestVersion3LoneNesting_messageType struct{}
 
 func (x fastReflection_TestVersion3LoneNesting_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_TestVersion3LoneNesting)(nil)
 }
+
 func (x fastReflection_TestVersion3LoneNesting_messageType) New() protoreflect.Message {
 	return new(fastReflection_TestVersion3LoneNesting)
 }
+
 func (x fastReflection_TestVersion3LoneNesting_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_TestVersion3LoneNesting
 }
@@ -13748,17 +13814,21 @@ func (x *TestVersion3LoneNesting_Inner1) slowProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_TestVersion3LoneNesting_Inner1_messageType fastReflection_TestVersion3LoneNesting_Inner1_messageType
-var _ protoreflect.MessageType = fastReflection_TestVersion3LoneNesting_Inner1_messageType{}
+var (
+	_fastReflection_TestVersion3LoneNesting_Inner1_messageType fastReflection_TestVersion3LoneNesting_Inner1_messageType
+	_                                                          protoreflect.MessageType = fastReflection_TestVersion3LoneNesting_Inner1_messageType{}
+)
 
 type fastReflection_TestVersion3LoneNesting_Inner1_messageType struct{}
 
 func (x fastReflection_TestVersion3LoneNesting_Inner1_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_TestVersion3LoneNesting_Inner1)(nil)
 }
+
 func (x fastReflection_TestVersion3LoneNesting_Inner1_messageType) New() protoreflect.Message {
 	return new(fastReflection_TestVersion3LoneNesting_Inner1)
 }
+
 func (x fastReflection_TestVersion3LoneNesting_Inner1_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_TestVersion3LoneNesting_Inner1
 }
@@ -14293,17 +14363,21 @@ func (x *TestVersion3LoneNesting_Inner1_InnerInner) slowProtoReflect() protorefl
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_TestVersion3LoneNesting_Inner1_InnerInner_messageType fastReflection_TestVersion3LoneNesting_Inner1_InnerInner_messageType
-var _ protoreflect.MessageType = fastReflection_TestVersion3LoneNesting_Inner1_InnerInner_messageType{}
+var (
+	_fastReflection_TestVersion3LoneNesting_Inner1_InnerInner_messageType fastReflection_TestVersion3LoneNesting_Inner1_InnerInner_messageType
+	_                                                                     protoreflect.MessageType = fastReflection_TestVersion3LoneNesting_Inner1_InnerInner_messageType{}
+)
 
 type fastReflection_TestVersion3LoneNesting_Inner1_InnerInner_messageType struct{}
 
 func (x fastReflection_TestVersion3LoneNesting_Inner1_InnerInner_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_TestVersion3LoneNesting_Inner1_InnerInner)(nil)
 }
+
 func (x fastReflection_TestVersion3LoneNesting_Inner1_InnerInner_messageType) New() protoreflect.Message {
 	return new(fastReflection_TestVersion3LoneNesting_Inner1_InnerInner)
 }
+
 func (x fastReflection_TestVersion3LoneNesting_Inner1_InnerInner_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_TestVersion3LoneNesting_Inner1_InnerInner
 }
@@ -14779,17 +14853,21 @@ func (x *TestVersion3LoneNesting_Inner2) slowProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_TestVersion3LoneNesting_Inner2_messageType fastReflection_TestVersion3LoneNesting_Inner2_messageType
-var _ protoreflect.MessageType = fastReflection_TestVersion3LoneNesting_Inner2_messageType{}
+var (
+	_fastReflection_TestVersion3LoneNesting_Inner2_messageType fastReflection_TestVersion3LoneNesting_Inner2_messageType
+	_                                                          protoreflect.MessageType = fastReflection_TestVersion3LoneNesting_Inner2_messageType{}
+)
 
 type fastReflection_TestVersion3LoneNesting_Inner2_messageType struct{}
 
 func (x fastReflection_TestVersion3LoneNesting_Inner2_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_TestVersion3LoneNesting_Inner2)(nil)
 }
+
 func (x fastReflection_TestVersion3LoneNesting_Inner2_messageType) New() protoreflect.Message {
 	return new(fastReflection_TestVersion3LoneNesting_Inner2)
 }
+
 func (x fastReflection_TestVersion3LoneNesting_Inner2_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_TestVersion3LoneNesting_Inner2
 }
@@ -15340,17 +15418,21 @@ func (x *TestVersion3LoneNesting_Inner2_InnerInner) slowProtoReflect() protorefl
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_TestVersion3LoneNesting_Inner2_InnerInner_messageType fastReflection_TestVersion3LoneNesting_Inner2_InnerInner_messageType
-var _ protoreflect.MessageType = fastReflection_TestVersion3LoneNesting_Inner2_InnerInner_messageType{}
+var (
+	_fastReflection_TestVersion3LoneNesting_Inner2_InnerInner_messageType fastReflection_TestVersion3LoneNesting_Inner2_InnerInner_messageType
+	_                                                                     protoreflect.MessageType = fastReflection_TestVersion3LoneNesting_Inner2_InnerInner_messageType{}
+)
 
 type fastReflection_TestVersion3LoneNesting_Inner2_InnerInner_messageType struct{}
 
 func (x fastReflection_TestVersion3LoneNesting_Inner2_InnerInner_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_TestVersion3LoneNesting_Inner2_InnerInner)(nil)
 }
+
 func (x fastReflection_TestVersion3LoneNesting_Inner2_InnerInner_messageType) New() protoreflect.Message {
 	return new(fastReflection_TestVersion3LoneNesting_Inner2_InnerInner)
 }
+
 func (x fastReflection_TestVersion3LoneNesting_Inner2_InnerInner_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_TestVersion3LoneNesting_Inner2_InnerInner
 }
@@ -15997,17 +16079,21 @@ func (x *TestVersion4LoneNesting) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_TestVersion4LoneNesting_messageType fastReflection_TestVersion4LoneNesting_messageType
-var _ protoreflect.MessageType = fastReflection_TestVersion4LoneNesting_messageType{}
+var (
+	_fastReflection_TestVersion4LoneNesting_messageType fastReflection_TestVersion4LoneNesting_messageType
+	_                                                   protoreflect.MessageType = fastReflection_TestVersion4LoneNesting_messageType{}
+)
 
 type fastReflection_TestVersion4LoneNesting_messageType struct{}
 
 func (x fastReflection_TestVersion4LoneNesting_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_TestVersion4LoneNesting)(nil)
 }
+
 func (x fastReflection_TestVersion4LoneNesting_messageType) New() protoreflect.Message {
 	return new(fastReflection_TestVersion4LoneNesting)
 }
+
 func (x fastReflection_TestVersion4LoneNesting_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_TestVersion4LoneNesting
 }
@@ -17302,17 +17388,21 @@ func (x *TestVersion4LoneNesting_Inner1) slowProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_TestVersion4LoneNesting_Inner1_messageType fastReflection_TestVersion4LoneNesting_Inner1_messageType
-var _ protoreflect.MessageType = fastReflection_TestVersion4LoneNesting_Inner1_messageType{}
+var (
+	_fastReflection_TestVersion4LoneNesting_Inner1_messageType fastReflection_TestVersion4LoneNesting_Inner1_messageType
+	_                                                          protoreflect.MessageType = fastReflection_TestVersion4LoneNesting_Inner1_messageType{}
+)
 
 type fastReflection_TestVersion4LoneNesting_Inner1_messageType struct{}
 
 func (x fastReflection_TestVersion4LoneNesting_Inner1_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_TestVersion4LoneNesting_Inner1)(nil)
 }
+
 func (x fastReflection_TestVersion4LoneNesting_Inner1_messageType) New() protoreflect.Message {
 	return new(fastReflection_TestVersion4LoneNesting_Inner1)
 }
+
 func (x fastReflection_TestVersion4LoneNesting_Inner1_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_TestVersion4LoneNesting_Inner1
 }
@@ -17847,17 +17937,21 @@ func (x *TestVersion4LoneNesting_Inner1_InnerInner) slowProtoReflect() protorefl
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_TestVersion4LoneNesting_Inner1_InnerInner_messageType fastReflection_TestVersion4LoneNesting_Inner1_InnerInner_messageType
-var _ protoreflect.MessageType = fastReflection_TestVersion4LoneNesting_Inner1_InnerInner_messageType{}
+var (
+	_fastReflection_TestVersion4LoneNesting_Inner1_InnerInner_messageType fastReflection_TestVersion4LoneNesting_Inner1_InnerInner_messageType
+	_                                                                     protoreflect.MessageType = fastReflection_TestVersion4LoneNesting_Inner1_InnerInner_messageType{}
+)
 
 type fastReflection_TestVersion4LoneNesting_Inner1_InnerInner_messageType struct{}
 
 func (x fastReflection_TestVersion4LoneNesting_Inner1_InnerInner_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_TestVersion4LoneNesting_Inner1_InnerInner)(nil)
 }
+
 func (x fastReflection_TestVersion4LoneNesting_Inner1_InnerInner_messageType) New() protoreflect.Message {
 	return new(fastReflection_TestVersion4LoneNesting_Inner1_InnerInner)
 }
+
 func (x fastReflection_TestVersion4LoneNesting_Inner1_InnerInner_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_TestVersion4LoneNesting_Inner1_InnerInner
 }
@@ -18317,17 +18411,21 @@ func (x *TestVersion4LoneNesting_Inner2) slowProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_TestVersion4LoneNesting_Inner2_messageType fastReflection_TestVersion4LoneNesting_Inner2_messageType
-var _ protoreflect.MessageType = fastReflection_TestVersion4LoneNesting_Inner2_messageType{}
+var (
+	_fastReflection_TestVersion4LoneNesting_Inner2_messageType fastReflection_TestVersion4LoneNesting_Inner2_messageType
+	_                                                          protoreflect.MessageType = fastReflection_TestVersion4LoneNesting_Inner2_messageType{}
+)
 
 type fastReflection_TestVersion4LoneNesting_Inner2_messageType struct{}
 
 func (x fastReflection_TestVersion4LoneNesting_Inner2_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_TestVersion4LoneNesting_Inner2)(nil)
 }
+
 func (x fastReflection_TestVersion4LoneNesting_Inner2_messageType) New() protoreflect.Message {
 	return new(fastReflection_TestVersion4LoneNesting_Inner2)
 }
+
 func (x fastReflection_TestVersion4LoneNesting_Inner2_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_TestVersion4LoneNesting_Inner2
 }
@@ -18878,17 +18976,21 @@ func (x *TestVersion4LoneNesting_Inner2_InnerInner) slowProtoReflect() protorefl
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_TestVersion4LoneNesting_Inner2_InnerInner_messageType fastReflection_TestVersion4LoneNesting_Inner2_InnerInner_messageType
-var _ protoreflect.MessageType = fastReflection_TestVersion4LoneNesting_Inner2_InnerInner_messageType{}
+var (
+	_fastReflection_TestVersion4LoneNesting_Inner2_InnerInner_messageType fastReflection_TestVersion4LoneNesting_Inner2_InnerInner_messageType
+	_                                                                     protoreflect.MessageType = fastReflection_TestVersion4LoneNesting_Inner2_InnerInner_messageType{}
+)
 
 type fastReflection_TestVersion4LoneNesting_Inner2_InnerInner_messageType struct{}
 
 func (x fastReflection_TestVersion4LoneNesting_Inner2_InnerInner_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_TestVersion4LoneNesting_Inner2_InnerInner)(nil)
 }
+
 func (x fastReflection_TestVersion4LoneNesting_Inner2_InnerInner_messageType) New() protoreflect.Message {
 	return new(fastReflection_TestVersion4LoneNesting_Inner2_InnerInner)
 }
+
 func (x fastReflection_TestVersion4LoneNesting_Inner2_InnerInner_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_TestVersion4LoneNesting_Inner2_InnerInner
 }
@@ -19405,17 +19507,21 @@ func (x *TestVersionFD1) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_TestVersionFD1_messageType fastReflection_TestVersionFD1_messageType
-var _ protoreflect.MessageType = fastReflection_TestVersionFD1_messageType{}
+var (
+	_fastReflection_TestVersionFD1_messageType fastReflection_TestVersionFD1_messageType
+	_                                          protoreflect.MessageType = fastReflection_TestVersionFD1_messageType{}
+)
 
 type fastReflection_TestVersionFD1_messageType struct{}
 
 func (x fastReflection_TestVersionFD1_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_TestVersionFD1)(nil)
 }
+
 func (x fastReflection_TestVersionFD1_messageType) New() protoreflect.Message {
 	return new(fastReflection_TestVersionFD1)
 }
+
 func (x fastReflection_TestVersionFD1_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_TestVersionFD1
 }
@@ -20287,17 +20393,21 @@ func (x *TestVersionFD1WithExtraAny) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_TestVersionFD1WithExtraAny_messageType fastReflection_TestVersionFD1WithExtraAny_messageType
-var _ protoreflect.MessageType = fastReflection_TestVersionFD1WithExtraAny_messageType{}
+var (
+	_fastReflection_TestVersionFD1WithExtraAny_messageType fastReflection_TestVersionFD1WithExtraAny_messageType
+	_                                                      protoreflect.MessageType = fastReflection_TestVersionFD1WithExtraAny_messageType{}
+)
 
 type fastReflection_TestVersionFD1WithExtraAny_messageType struct{}
 
 func (x fastReflection_TestVersionFD1WithExtraAny_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_TestVersionFD1WithExtraAny)(nil)
 }
+
 func (x fastReflection_TestVersionFD1WithExtraAny_messageType) New() protoreflect.Message {
 	return new(fastReflection_TestVersionFD1WithExtraAny)
 }
+
 func (x fastReflection_TestVersionFD1WithExtraAny_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_TestVersionFD1WithExtraAny
 }
@@ -21112,17 +21222,21 @@ func (x *AnyWithExtra) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_AnyWithExtra_messageType fastReflection_AnyWithExtra_messageType
-var _ protoreflect.MessageType = fastReflection_AnyWithExtra_messageType{}
+var (
+	_fastReflection_AnyWithExtra_messageType fastReflection_AnyWithExtra_messageType
+	_                                        protoreflect.MessageType = fastReflection_AnyWithExtra_messageType{}
+)
 
 type fastReflection_AnyWithExtra_messageType struct{}
 
 func (x fastReflection_AnyWithExtra_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_AnyWithExtra)(nil)
 }
+
 func (x fastReflection_AnyWithExtra_messageType) New() protoreflect.Message {
 	return new(fastReflection_AnyWithExtra)
 }
+
 func (x fastReflection_AnyWithExtra_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_AnyWithExtra
 }
@@ -21693,17 +21807,21 @@ func (x *TestUpdatedTxRaw) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_TestUpdatedTxRaw_messageType fastReflection_TestUpdatedTxRaw_messageType
-var _ protoreflect.MessageType = fastReflection_TestUpdatedTxRaw_messageType{}
+var (
+	_fastReflection_TestUpdatedTxRaw_messageType fastReflection_TestUpdatedTxRaw_messageType
+	_                                            protoreflect.MessageType = fastReflection_TestUpdatedTxRaw_messageType{}
+)
 
 type fastReflection_TestUpdatedTxRaw_messageType struct{}
 
 func (x fastReflection_TestUpdatedTxRaw_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_TestUpdatedTxRaw)(nil)
 }
+
 func (x fastReflection_TestUpdatedTxRaw_messageType) New() protoreflect.Message {
 	return new(fastReflection_TestUpdatedTxRaw)
 }
+
 func (x fastReflection_TestUpdatedTxRaw_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_TestUpdatedTxRaw
 }
@@ -22550,17 +22668,21 @@ func (x *TestUpdatedTxBody) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_TestUpdatedTxBody_messageType fastReflection_TestUpdatedTxBody_messageType
-var _ protoreflect.MessageType = fastReflection_TestUpdatedTxBody_messageType{}
+var (
+	_fastReflection_TestUpdatedTxBody_messageType fastReflection_TestUpdatedTxBody_messageType
+	_                                             protoreflect.MessageType = fastReflection_TestUpdatedTxBody_messageType{}
+)
 
 type fastReflection_TestUpdatedTxBody_messageType struct{}
 
 func (x fastReflection_TestUpdatedTxBody_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_TestUpdatedTxBody)(nil)
 }
+
 func (x fastReflection_TestUpdatedTxBody_messageType) New() protoreflect.Message {
 	return new(fastReflection_TestUpdatedTxBody)
 }
+
 func (x fastReflection_TestUpdatedTxBody_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_TestUpdatedTxBody
 }
@@ -23442,17 +23564,21 @@ func (x *TestUpdatedAuthInfo) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_TestUpdatedAuthInfo_messageType fastReflection_TestUpdatedAuthInfo_messageType
-var _ protoreflect.MessageType = fastReflection_TestUpdatedAuthInfo_messageType{}
+var (
+	_fastReflection_TestUpdatedAuthInfo_messageType fastReflection_TestUpdatedAuthInfo_messageType
+	_                                               protoreflect.MessageType = fastReflection_TestUpdatedAuthInfo_messageType{}
+)
 
 type fastReflection_TestUpdatedAuthInfo_messageType struct{}
 
 func (x fastReflection_TestUpdatedAuthInfo_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_TestUpdatedAuthInfo)(nil)
 }
+
 func (x fastReflection_TestUpdatedAuthInfo_messageType) New() protoreflect.Message {
 	return new(fastReflection_TestUpdatedAuthInfo)
 }
+
 func (x fastReflection_TestUpdatedAuthInfo_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_TestUpdatedAuthInfo
 }
@@ -24138,17 +24264,21 @@ func (x *TestRepeatedUints) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_TestRepeatedUints_messageType fastReflection_TestRepeatedUints_messageType
-var _ protoreflect.MessageType = fastReflection_TestRepeatedUints_messageType{}
+var (
+	_fastReflection_TestRepeatedUints_messageType fastReflection_TestRepeatedUints_messageType
+	_                                             protoreflect.MessageType = fastReflection_TestRepeatedUints_messageType{}
+)
 
 type fastReflection_TestRepeatedUints_messageType struct{}
 
 func (x fastReflection_TestRepeatedUints_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_TestRepeatedUints)(nil)
 }
+
 func (x fastReflection_TestRepeatedUints_messageType) New() protoreflect.Message {
 	return new(fastReflection_TestRepeatedUints)
 }
+
 func (x fastReflection_TestRepeatedUints_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_TestRepeatedUints
 }
@@ -27466,47 +27596,50 @@ func file_testpb_unknonwnproto_proto_rawDescGZIP() []byte {
 	return file_testpb_unknonwnproto_proto_rawDescData
 }
 
-var file_testpb_unknonwnproto_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_testpb_unknonwnproto_proto_msgTypes = make([]protoimpl.MessageInfo, 33)
-var file_testpb_unknonwnproto_proto_goTypes = []interface{}{
-	(Customer2_City)(0),                               // 0: testpb.Customer2.City
-	(*Customer1)(nil),                                 // 1: testpb.Customer1
-	(*Customer2)(nil),                                 // 2: testpb.Customer2
-	(*Nested4A)(nil),                                  // 3: testpb.Nested4A
-	(*Nested3A)(nil),                                  // 4: testpb.Nested3A
-	(*Nested2A)(nil),                                  // 5: testpb.Nested2A
-	(*Nested1A)(nil),                                  // 6: testpb.Nested1A
-	(*Nested4B)(nil),                                  // 7: testpb.Nested4B
-	(*Nested3B)(nil),                                  // 8: testpb.Nested3B
-	(*Nested2B)(nil),                                  // 9: testpb.Nested2B
-	(*Nested1B)(nil),                                  // 10: testpb.Nested1B
-	(*Customer3)(nil),                                 // 11: testpb.Customer3
-	(*TestVersion1)(nil),                              // 12: testpb.TestVersion1
-	(*TestVersion2)(nil),                              // 13: testpb.TestVersion2
-	(*TestVersion3)(nil),                              // 14: testpb.TestVersion3
-	(*TestVersion3LoneOneOfValue)(nil),                // 15: testpb.TestVersion3LoneOneOfValue
-	(*TestVersion3LoneNesting)(nil),                   // 16: testpb.TestVersion3LoneNesting
-	(*TestVersion4LoneNesting)(nil),                   // 17: testpb.TestVersion4LoneNesting
-	(*TestVersionFD1)(nil),                            // 18: testpb.TestVersionFD1
-	(*TestVersionFD1WithExtraAny)(nil),                // 19: testpb.TestVersionFD1WithExtraAny
-	(*AnyWithExtra)(nil),                              // 20: testpb.AnyWithExtra
-	(*TestUpdatedTxRaw)(nil),                          // 21: testpb.TestUpdatedTxRaw
-	(*TestUpdatedTxBody)(nil),                         // 22: testpb.TestUpdatedTxBody
-	(*TestUpdatedAuthInfo)(nil),                       // 23: testpb.TestUpdatedAuthInfo
-	(*TestRepeatedUints)(nil),                         // 24: testpb.TestRepeatedUints
-	nil,                                               // 25: testpb.Nested3A.IndexEntry
-	(*TestVersion3LoneNesting_Inner1)(nil),            // 26: testpb.TestVersion3LoneNesting.Inner1
-	(*TestVersion3LoneNesting_Inner2)(nil),            // 27: testpb.TestVersion3LoneNesting.Inner2
-	(*TestVersion3LoneNesting_Inner1_InnerInner)(nil), // 28: testpb.TestVersion3LoneNesting.Inner1.InnerInner
-	(*TestVersion3LoneNesting_Inner2_InnerInner)(nil), // 29: testpb.TestVersion3LoneNesting.Inner2.InnerInner
-	(*TestVersion4LoneNesting_Inner1)(nil),            // 30: testpb.TestVersion4LoneNesting.Inner1
-	(*TestVersion4LoneNesting_Inner2)(nil),            // 31: testpb.TestVersion4LoneNesting.Inner2
-	(*TestVersion4LoneNesting_Inner1_InnerInner)(nil), // 32: testpb.TestVersion4LoneNesting.Inner1.InnerInner
-	(*TestVersion4LoneNesting_Inner2_InnerInner)(nil), // 33: testpb.TestVersion4LoneNesting.Inner2.InnerInner
-	(*anypb.Any)(nil),                                 // 34: google.protobuf.Any
-	(*v1beta1.SignerInfo)(nil),                        // 35: cosmos.tx.v1beta1.SignerInfo
-	(*v1beta1.Fee)(nil),                               // 36: cosmos.tx.v1beta1.Fee
-}
+var (
+	file_testpb_unknonwnproto_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+	file_testpb_unknonwnproto_proto_msgTypes  = make([]protoimpl.MessageInfo, 33)
+	file_testpb_unknonwnproto_proto_goTypes   = []interface{}{
+		(Customer2_City)(0),                               // 0: testpb.Customer2.City
+		(*Customer1)(nil),                                 // 1: testpb.Customer1
+		(*Customer2)(nil),                                 // 2: testpb.Customer2
+		(*Nested4A)(nil),                                  // 3: testpb.Nested4A
+		(*Nested3A)(nil),                                  // 4: testpb.Nested3A
+		(*Nested2A)(nil),                                  // 5: testpb.Nested2A
+		(*Nested1A)(nil),                                  // 6: testpb.Nested1A
+		(*Nested4B)(nil),                                  // 7: testpb.Nested4B
+		(*Nested3B)(nil),                                  // 8: testpb.Nested3B
+		(*Nested2B)(nil),                                  // 9: testpb.Nested2B
+		(*Nested1B)(nil),                                  // 10: testpb.Nested1B
+		(*Customer3)(nil),                                 // 11: testpb.Customer3
+		(*TestVersion1)(nil),                              // 12: testpb.TestVersion1
+		(*TestVersion2)(nil),                              // 13: testpb.TestVersion2
+		(*TestVersion3)(nil),                              // 14: testpb.TestVersion3
+		(*TestVersion3LoneOneOfValue)(nil),                // 15: testpb.TestVersion3LoneOneOfValue
+		(*TestVersion3LoneNesting)(nil),                   // 16: testpb.TestVersion3LoneNesting
+		(*TestVersion4LoneNesting)(nil),                   // 17: testpb.TestVersion4LoneNesting
+		(*TestVersionFD1)(nil),                            // 18: testpb.TestVersionFD1
+		(*TestVersionFD1WithExtraAny)(nil),                // 19: testpb.TestVersionFD1WithExtraAny
+		(*AnyWithExtra)(nil),                              // 20: testpb.AnyWithExtra
+		(*TestUpdatedTxRaw)(nil),                          // 21: testpb.TestUpdatedTxRaw
+		(*TestUpdatedTxBody)(nil),                         // 22: testpb.TestUpdatedTxBody
+		(*TestUpdatedAuthInfo)(nil),                       // 23: testpb.TestUpdatedAuthInfo
+		(*TestRepeatedUints)(nil),                         // 24: testpb.TestRepeatedUints
+		nil,                                               // 25: testpb.Nested3A.IndexEntry
+		(*TestVersion3LoneNesting_Inner1)(nil),            // 26: testpb.TestVersion3LoneNesting.Inner1
+		(*TestVersion3LoneNesting_Inner2)(nil),            // 27: testpb.TestVersion3LoneNesting.Inner2
+		(*TestVersion3LoneNesting_Inner1_InnerInner)(nil), // 28: testpb.TestVersion3LoneNesting.Inner1.InnerInner
+		(*TestVersion3LoneNesting_Inner2_InnerInner)(nil), // 29: testpb.TestVersion3LoneNesting.Inner2.InnerInner
+		(*TestVersion4LoneNesting_Inner1)(nil),            // 30: testpb.TestVersion4LoneNesting.Inner1
+		(*TestVersion4LoneNesting_Inner2)(nil),            // 31: testpb.TestVersion4LoneNesting.Inner2
+		(*TestVersion4LoneNesting_Inner1_InnerInner)(nil), // 32: testpb.TestVersion4LoneNesting.Inner1.InnerInner
+		(*TestVersion4LoneNesting_Inner2_InnerInner)(nil), // 33: testpb.TestVersion4LoneNesting.Inner2.InnerInner
+		(*anypb.Any)(nil),                                 // 34: google.protobuf.Any
+		(*v1beta1.SignerInfo)(nil),                        // 35: cosmos.tx.v1beta1.SignerInfo
+		(*v1beta1.Fee)(nil),                               // 36: cosmos.tx.v1beta1.Fee
+	}
+)
+
 var file_testpb_unknonwnproto_proto_depIdxs = []int32{
 	0,  // 0: testpb.Customer2.city:type_name -> testpb.Customer2.City
 	34, // 1: testpb.Customer2.miscellaneous:type_name -> google.protobuf.Any

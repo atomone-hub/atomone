@@ -57,7 +57,7 @@ type Any struct {
 // unmarshaling
 func NewAnyWithValue(v proto.Message) (*Any, error) {
 	if v == nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrPackAny, "Expecting non nil value to create a new Any")
+		return nil, sdkerrors.Wrap(sdkerrors.ErrPackAny, "Expecting non nil value to create a new Any") //nolint: staticcheck
 	}
 
 	bz, err := proto.Marshal(v)

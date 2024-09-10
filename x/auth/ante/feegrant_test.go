@@ -108,7 +108,7 @@ func TestDeductFeesNoDelegation(t *testing.T) {
 				accs := suite.CreateTestAccounts(2)
 				suite.feeGrantKeeper.EXPECT().
 					UseGrantedFees(gomock.Any(), accs[1].acc.GetAddress(), accs[0].acc.GetAddress(), gomock.Any(), gomock.Any()).
-					Return(sdkerrors.ErrNotFound.Wrap("fee-grant not found")).
+					Return(sdkerrors.ErrNotFound.Wrap("fee-grant not found")). //nolint: staticcheck
 					Times(2)
 				return accs[0], accs[1].acc.GetAddress()
 			},
@@ -121,7 +121,7 @@ func TestDeductFeesNoDelegation(t *testing.T) {
 				accs := suite.CreateTestAccounts(2)
 				suite.feeGrantKeeper.EXPECT().
 					UseGrantedFees(gomock.Any(), accs[1].acc.GetAddress(), accs[0].acc.GetAddress(), gomock.Any(), gomock.Any()).
-					Return(feegrant.ErrFeeLimitExceeded.Wrap("basic allowance")).
+					Return(feegrant.ErrFeeLimitExceeded.Wrap("basic allowance")). //nolint: staticcheck
 					Times(2)
 				return accs[0], accs[1].acc.GetAddress()
 			},

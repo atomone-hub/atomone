@@ -10,18 +10,21 @@ import (
 	"syscall"
 	"time"
 
-	abci "github.com/cometbft/cometbft/abci/types"
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
-	"github.com/cosmos/gogoproto/proto"
 	"google.golang.org/grpc/codes"
 	grpcstatus "google.golang.org/grpc/status"
+
+	abci "github.com/cometbft/cometbft/abci/types"
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+
+	"github.com/cosmos/gogoproto/proto"
+
+	snapshottypes "github.com/cosmos/cosmos-sdk/snapshots/types"
+	"github.com/cosmos/cosmos-sdk/telemetry"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/atomone-hub/atomone/codec"
 	"github.com/atomone-hub/atomone/store/rootmulti"
 	sdk "github.com/atomone-hub/atomone/types"
-	snapshottypes "github.com/cosmos/cosmos-sdk/snapshots/types"
-	"github.com/cosmos/cosmos-sdk/telemetry"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // Supported ABCI Query prefixes
@@ -69,7 +72,7 @@ func (app *BaseApp) InitChain(req abci.RequestInitChain) (res abci.ResponseInitC
 	}
 
 	if app.initChainer == nil {
-		return
+		return //nolint: nakedret
 	}
 
 	// add block gas meter for any genesis transactions (allow infinite gas)
@@ -522,7 +525,7 @@ func (app *BaseApp) Query(req abci.RequestQuery) (res abci.ResponseQuery) {
 	// ref: https://github.com/cosmos/cosmos-sdk/pull/8039
 	defer func() {
 		if r := recover(); r != nil {
-			res = sdkerrors.QueryResult(sdkerrors.Wrapf(sdkerrors.ErrPanic, "%v", r), app.trace)
+			res = sdkerrors.QueryResult(sdkerrors.Wrapf(sdkerrors.ErrPanic, "%v", r), app.trace) //nolint: staticcheck
 		}
 	}()
 
@@ -536,7 +539,7 @@ func (app *BaseApp) Query(req abci.RequestQuery) (res abci.ResponseQuery) {
 	defer telemetry.MeasureSince(time.Now(), req.Path)
 
 	if req.Path == "/atomone.tx.v1beta1.Service/BroadcastTx" {
-		return sdkerrors.QueryResult(sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "can't route a broadcast tx message"), app.trace)
+		return sdkerrors.QueryResult(sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "can't route a broadcast tx message"), app.trace) //nolint: staticcheck
 	}
 
 	// handle gRPC routes first rather than calling splitPath because '/' characters
@@ -547,7 +550,7 @@ func (app *BaseApp) Query(req abci.RequestQuery) (res abci.ResponseQuery) {
 
 	path := SplitABCIQueryPath(req.Path)
 	if len(path) == 0 {
-		return sdkerrors.QueryResult(sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "no query path provided"), app.trace)
+		return sdkerrors.QueryResult(sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "no query path provided"), app.trace) //nolint: staticcheck
 	}
 
 	switch path[0] {
@@ -562,7 +565,7 @@ func (app *BaseApp) Query(req abci.RequestQuery) (res abci.ResponseQuery) {
 		return handleQueryP2P(app, path)
 	}
 
-	return sdkerrors.QueryResult(sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "unknown query path"), app.trace)
+	return sdkerrors.QueryResult(sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "unknown query path"), app.trace) //nolint: staticcheck
 }
 
 // ListSnapshots implements the ABCI interface. It delegates to app.snapshotManager if set.
@@ -708,27 +711,27 @@ func (app *BaseApp) handleQueryGRPC(handler GRPCQueryHandler, req abci.RequestQu
 func gRPCErrorToSDKError(err error) error {
 	status, ok := grpcstatus.FromError(err)
 	if !ok {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error()) //nolint: staticcheck
 	}
 
 	switch status.Code() {
 	case codes.NotFound:
-		return sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, err.Error())
+		return sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, err.Error()) //nolint: staticcheck
 	case codes.InvalidArgument:
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error()) //nolint: staticcheck
 	case codes.FailedPrecondition:
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error()) //nolint: staticcheck
 	case codes.Unauthenticated:
-		return sdkerrors.Wrap(sdkerrors.ErrUnauthorized, err.Error())
+		return sdkerrors.Wrap(sdkerrors.ErrUnauthorized, err.Error()) //nolint: staticcheck
 	default:
-		return sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, err.Error())
+		return sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, err.Error()) //nolint: staticcheck
 	}
 }
 
 func checkNegativeHeight(height int64) error {
 	if height < 0 {
 		// Reject invalid heights.
-		return sdkerrors.Wrap(
+		return sdkerrors.Wrap( //nolint: staticcheck
 			sdkerrors.ErrInvalidRequest,
 			"cannot query with height < 0; please provide a valid height",
 		)
@@ -751,12 +754,12 @@ func (app *BaseApp) CreateQueryContext(height int64, prove bool) (sdk.Context, e
 
 	lastBlockHeight := qms.LatestVersion()
 	if lastBlockHeight == 0 {
-		return sdk.Context{}, sdkerrors.Wrapf(sdkerrors.ErrInvalidHeight, "%s is not ready; please wait for first block", app.Name())
+		return sdk.Context{}, sdkerrors.Wrapf(sdkerrors.ErrInvalidHeight, "%s is not ready; please wait for first block", app.Name()) //nolint: staticcheck
 	}
 
 	if height > lastBlockHeight {
 		return sdk.Context{},
-			sdkerrors.Wrap(
+			sdkerrors.Wrap( //nolint: staticcheck
 				sdkerrors.ErrInvalidHeight,
 				"cannot query with height in the future; please provide a valid height",
 			)
@@ -769,7 +772,7 @@ func (app *BaseApp) CreateQueryContext(height int64, prove bool) (sdk.Context, e
 
 	if height <= 1 && prove {
 		return sdk.Context{},
-			sdkerrors.Wrap(
+			sdkerrors.Wrap( //nolint: staticcheck
 				sdkerrors.ErrInvalidRequest,
 				"cannot query with proof when height <= 1; please provide a valid height",
 			)
@@ -778,7 +781,7 @@ func (app *BaseApp) CreateQueryContext(height int64, prove bool) (sdk.Context, e
 	cacheMS, err := qms.CacheMultiStoreWithVersion(height)
 	if err != nil {
 		return sdk.Context{},
-			sdkerrors.Wrapf(
+			sdkerrors.Wrapf( //nolint: staticcheck
 				sdkerrors.ErrInvalidRequest,
 				"failed to load state at height %d; %s (latest height: %d)", height, err, lastBlockHeight,
 			)
@@ -883,7 +886,7 @@ func handleQueryApp(app *BaseApp, path []string, req abci.RequestQuery) abci.Res
 
 			gInfo, res, err := app.Simulate(txBytes)
 			if err != nil {
-				return sdkerrors.QueryResult(sdkerrors.Wrap(err, "failed to simulate tx"), app.trace)
+				return sdkerrors.QueryResult(sdkerrors.Wrap(err, "failed to simulate tx"), app.trace) //nolint: staticcheck
 			}
 
 			simRes := &sdk.SimulationResponse{
@@ -893,7 +896,7 @@ func handleQueryApp(app *BaseApp, path []string, req abci.RequestQuery) abci.Res
 
 			bz, err := codec.ProtoMarshalJSON(simRes, app.interfaceRegistry)
 			if err != nil {
-				return sdkerrors.QueryResult(sdkerrors.Wrap(err, "failed to JSON encode simulation response"), app.trace)
+				return sdkerrors.QueryResult(sdkerrors.Wrap(err, "failed to JSON encode simulation response"), app.trace) //nolint: staticcheck
 			}
 
 			return abci.ResponseQuery{
@@ -910,12 +913,12 @@ func handleQueryApp(app *BaseApp, path []string, req abci.RequestQuery) abci.Res
 			}
 
 		default:
-			return sdkerrors.QueryResult(sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unknown query: %s", path), app.trace)
+			return sdkerrors.QueryResult(sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unknown query: %s", path), app.trace) //nolint: staticcheck
 		}
 	}
 
 	return sdkerrors.QueryResult(
-		sdkerrors.Wrap(
+		sdkerrors.Wrap( //nolint: staticcheck
 			sdkerrors.ErrUnknownRequest,
 			"expected second parameter to be either 'simulate' or 'version', neither was present",
 		), app.trace)
@@ -925,14 +928,14 @@ func handleQueryStore(app *BaseApp, path []string, req abci.RequestQuery) abci.R
 	// "/store" prefix for store queries
 	queryable, ok := app.cms.(sdk.Queryable)
 	if !ok {
-		return sdkerrors.QueryResult(sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "multistore doesn't support queries"), app.trace)
+		return sdkerrors.QueryResult(sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "multistore doesn't support queries"), app.trace) //nolint: staticcheck
 	}
 
 	req.Path = "/" + strings.Join(path[1:], "/")
 
 	if req.Height <= 1 && req.Prove {
 		return sdkerrors.QueryResult(
-			sdkerrors.Wrap(
+			sdkerrors.Wrap( //nolint: staticcheck
 				sdkerrors.ErrInvalidRequest,
 				"cannot query with proof when height <= 1; please provide a valid height",
 			), app.trace)
@@ -948,7 +951,7 @@ func handleQueryP2P(app *BaseApp, path []string) abci.ResponseQuery {
 	// "/p2p" prefix for p2p queries
 	if len(path) < 4 {
 		return sdkerrors.QueryResult(
-			sdkerrors.Wrap(
+			sdkerrors.Wrap( //nolint: staticcheck
 				sdkerrors.ErrUnknownRequest, "path should be p2p filter <addr|id> <parameter>",
 			), app.trace)
 	}
@@ -967,7 +970,7 @@ func handleQueryP2P(app *BaseApp, path []string) abci.ResponseQuery {
 		}
 
 	default:
-		resp = sdkerrors.QueryResult(sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "expected second parameter to be 'filter'"), app.trace)
+		resp = sdkerrors.QueryResult(sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "expected second parameter to be 'filter'"), app.trace) //nolint: staticcheck
 	}
 
 	return resp

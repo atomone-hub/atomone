@@ -99,7 +99,7 @@ func (msg *TestMsg) GetSigners() []sdk.AccAddress {
 func (msg *TestMsg) ValidateBasic() error {
 	for _, addr := range msg.Signers {
 		if _, err := sdk.AccAddressFromBech32(addr); err != nil {
-			return sdkerrors.ErrInvalidAddress.Wrapf("invalid signer address: %s", err)
+			return sdkerrors.ErrInvalidAddress.Wrapf("invalid signer address: %s", err) //nolint: staticcheck
 		}
 	}
 	return nil

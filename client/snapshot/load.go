@@ -10,10 +10,11 @@ import (
 	"reflect"
 	"strconv"
 
-	"github.com/atomone-hub/atomone/server"
 	"github.com/spf13/cobra"
 
 	snapshottypes "github.com/cosmos/cosmos-sdk/snapshots/types"
+
+	"github.com/atomone-hub/atomone/server"
 )
 
 const SnapshotFileName = "_snapshot"

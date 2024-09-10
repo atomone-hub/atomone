@@ -106,7 +106,7 @@ type RowGetter func(store sdk.KVStore, rowID RowID, dest codec.ProtoMarshaler) e
 func NewTypeSafeRowGetter(prefixKey [2]byte, model reflect.Type, cdc codec.Codec) RowGetter {
 	return func(store sdk.KVStore, rowID RowID, dest codec.ProtoMarshaler) error {
 		if len(rowID) == 0 {
-			return sdkerrors.Wrap(errors.ErrORMEmptyKey, "key must not be nil")
+			return sdkerrors.Wrap(errors.ErrORMEmptyKey, "key must not be nil") //nolint: staticcheck
 		}
 		if err := assertCorrectType(model, dest); err != nil {
 			return err
@@ -125,10 +125,10 @@ func NewTypeSafeRowGetter(prefixKey [2]byte, model reflect.Type, cdc codec.Codec
 func assertCorrectType(model reflect.Type, obj codec.ProtoMarshaler) error {
 	tp := reflect.TypeOf(obj)
 	if tp.Kind() != reflect.Ptr {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidType, "model destination must be a pointer")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidType, "model destination must be a pointer") //nolint: staticcheck
 	}
 	if model != tp.Elem() {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "can not use %T with this bucket", obj)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "can not use %T with this bucket", obj) //nolint: staticcheck
 	}
 	return nil
 }

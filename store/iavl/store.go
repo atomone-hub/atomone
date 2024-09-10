@@ -383,7 +383,7 @@ func (st *Store) Query(req abci.RequestQuery) (res abci.ResponseQuery) {
 		res.Value = bz
 
 	default:
-		return sdkerrors.QueryResult(sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unexpected query path: %v", req.Path), false)
+		return sdkerrors.QueryResult(sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unexpected query path: %v", req.Path), false) //nolint: staticcheck
 	}
 
 	return res

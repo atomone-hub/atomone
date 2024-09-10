@@ -224,7 +224,7 @@ func (keeper Keeper) InactiveProposalQueueIterator(ctx sdk.Context, endTime time
 // is greater than a pre-defined MaxMetadataLen.
 func (keeper Keeper) assertMetadataLength(metadata string) error {
 	if metadata != "" && uint64(len(metadata)) > keeper.config.MaxMetadataLen {
-		return types.ErrMetadataTooLong.Wrapf("got metadata with length %d", len(metadata))
+		return types.ErrMetadataTooLong.Wrapf("got metadata with length %d", len(metadata)) //nolint: staticcheck
 	}
 	return nil
 }

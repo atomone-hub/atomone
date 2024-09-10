@@ -25,11 +25,11 @@ func (m MsgSoftwareUpgrade) GetSignBytes() []byte {
 // ValidateBasic does a sanity check on the provided data.
 func (m *MsgSoftwareUpgrade) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
-		return sdkerrors.Wrap(err, "authority")
+		return sdkerrors.Wrap(err, "authority") //nolint: staticcheck
 	}
 
 	if err := m.Plan.ValidateBasic(); err != nil {
-		return sdkerrors.Wrap(err, "plan")
+		return sdkerrors.Wrap(err, "plan") //nolint: staticcheck
 	}
 
 	return nil
@@ -55,7 +55,7 @@ func (m MsgCancelUpgrade) GetSignBytes() []byte {
 // ValidateBasic does a sanity check on the provided data.
 func (m *MsgCancelUpgrade) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
-		return sdkerrors.Wrap(err, "authority")
+		return sdkerrors.Wrap(err, "authority") //nolint: staticcheck
 	}
 
 	return nil

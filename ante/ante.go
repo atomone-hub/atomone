@@ -3,12 +3,12 @@ package ante
 import (
 	errorsmod "cosmossdk.io/errors"
 
+	atomoneerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	"github.com/atomone-hub/atomone/codec"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/auth/ante"
 	stakingkeeper "github.com/atomone-hub/atomone/x/staking/keeper"
-
-	atomoneerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // HandlerOptions extend the SDK's AnteHandler options by requiring the IBC

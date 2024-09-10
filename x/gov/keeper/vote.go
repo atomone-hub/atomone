@@ -15,7 +15,7 @@ func (keeper Keeper) AddVote(ctx sdk.Context, proposalID uint64, voterAddr sdk.A
 	// Check if proposal is in voting period.
 	store := ctx.KVStore(keeper.storeKey)
 	if !store.Has(types.VotingPeriodProposalKey(proposalID)) {
-		return sdkerrors.Wrapf(types.ErrInactiveProposal, "%d", proposalID)
+		return sdkerrors.Wrapf(types.ErrInactiveProposal, "%d", proposalID) //nolint: staticcheck
 	}
 
 	err := keeper.assertMetadataLength(metadata)
@@ -25,7 +25,7 @@ func (keeper Keeper) AddVote(ctx sdk.Context, proposalID uint64, voterAddr sdk.A
 
 	for _, option := range options {
 		if !v1.ValidWeightedVoteOption(*option) {
-			return sdkerrors.Wrap(types.ErrInvalidVote, option.String())
+			return sdkerrors.Wrap(types.ErrInvalidVote, option.String()) //nolint: staticcheck
 		}
 	}
 

@@ -8,8 +8,11 @@ import (
 	"fmt"
 	"os"
 
-	gogogrpc "github.com/cosmos/gogoproto/grpc"
 	"github.com/spf13/pflag"
+
+	gogogrpc "github.com/cosmos/gogoproto/grpc"
+
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/client/input"
@@ -18,7 +21,6 @@ import (
 	"github.com/atomone-hub/atomone/types/tx"
 	"github.com/atomone-hub/atomone/types/tx/signing"
 	authsigning "github.com/atomone-hub/atomone/x/auth/signing"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // GenerateOrBroadcastTxCLI will either generate and print and unsigned transaction

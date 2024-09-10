@@ -8,9 +8,10 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/cosmos/go-bip39"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
+
+	"github.com/cosmos/go-bip39"
 
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/client/flags"

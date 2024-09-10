@@ -3,15 +3,16 @@ package testpb
 
 import (
 	fmt "fmt"
+	io "io"
+	reflect "reflect"
+	sync "sync"
+
 	runtime "github.com/cosmos/cosmos-proto/runtime"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	anypb "google.golang.org/protobuf/types/known/anypb"
-	io "io"
-	reflect "reflect"
-	sync "sync"
 )
 
 var (
@@ -47,17 +48,21 @@ func (x *Dog) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_Dog_messageType fastReflection_Dog_messageType
-var _ protoreflect.MessageType = fastReflection_Dog_messageType{}
+var (
+	_fastReflection_Dog_messageType fastReflection_Dog_messageType
+	_                               protoreflect.MessageType = fastReflection_Dog_messageType{}
+)
 
 type fastReflection_Dog_messageType struct{}
 
 func (x fastReflection_Dog_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_Dog)(nil)
 }
+
 func (x fastReflection_Dog_messageType) New() protoreflect.Message {
 	return new(fastReflection_Dog)
 }
+
 func (x fastReflection_Dog_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_Dog
 }
@@ -531,17 +536,21 @@ func (x *Cat) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_Cat_messageType fastReflection_Cat_messageType
-var _ protoreflect.MessageType = fastReflection_Cat_messageType{}
+var (
+	_fastReflection_Cat_messageType fastReflection_Cat_messageType
+	_                               protoreflect.MessageType = fastReflection_Cat_messageType{}
+)
 
 type fastReflection_Cat_messageType struct{}
 
 func (x fastReflection_Cat_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_Cat)(nil)
 }
+
 func (x fastReflection_Cat_messageType) New() protoreflect.Message {
 	return new(fastReflection_Cat)
 }
+
 func (x fastReflection_Cat_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_Cat
 }
@@ -999,17 +1008,21 @@ func (x *Bird) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_Bird_messageType fastReflection_Bird_messageType
-var _ protoreflect.MessageType = fastReflection_Bird_messageType{}
+var (
+	_fastReflection_Bird_messageType fastReflection_Bird_messageType
+	_                                protoreflect.MessageType = fastReflection_Bird_messageType{}
+)
 
 type fastReflection_Bird_messageType struct{}
 
 func (x fastReflection_Bird_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_Bird)(nil)
 }
+
 func (x fastReflection_Bird_messageType) New() protoreflect.Message {
 	return new(fastReflection_Bird)
 }
+
 func (x fastReflection_Bird_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_Bird
 }
@@ -1467,17 +1480,21 @@ func (x *HasAnimal) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_HasAnimal_messageType fastReflection_HasAnimal_messageType
-var _ protoreflect.MessageType = fastReflection_HasAnimal_messageType{}
+var (
+	_fastReflection_HasAnimal_messageType fastReflection_HasAnimal_messageType
+	_                                     protoreflect.MessageType = fastReflection_HasAnimal_messageType{}
+)
 
 type fastReflection_HasAnimal_messageType struct{}
 
 func (x fastReflection_HasAnimal_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_HasAnimal)(nil)
 }
+
 func (x fastReflection_HasAnimal_messageType) New() protoreflect.Message {
 	return new(fastReflection_HasAnimal)
 }
+
 func (x fastReflection_HasAnimal_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_HasAnimal
 }
@@ -1948,17 +1965,21 @@ func (x *HasHasAnimal) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_HasHasAnimal_messageType fastReflection_HasHasAnimal_messageType
-var _ protoreflect.MessageType = fastReflection_HasHasAnimal_messageType{}
+var (
+	_fastReflection_HasHasAnimal_messageType fastReflection_HasHasAnimal_messageType
+	_                                        protoreflect.MessageType = fastReflection_HasHasAnimal_messageType{}
+)
 
 type fastReflection_HasHasAnimal_messageType struct{}
 
 func (x fastReflection_HasHasAnimal_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_HasHasAnimal)(nil)
 }
+
 func (x fastReflection_HasHasAnimal_messageType) New() protoreflect.Message {
 	return new(fastReflection_HasHasAnimal)
 }
+
 func (x fastReflection_HasHasAnimal_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_HasHasAnimal
 }
@@ -2383,17 +2404,21 @@ func (x *HasHasHasAnimal) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_HasHasHasAnimal_messageType fastReflection_HasHasHasAnimal_messageType
-var _ protoreflect.MessageType = fastReflection_HasHasHasAnimal_messageType{}
+var (
+	_fastReflection_HasHasHasAnimal_messageType fastReflection_HasHasHasAnimal_messageType
+	_                                           protoreflect.MessageType = fastReflection_HasHasHasAnimal_messageType{}
+)
 
 type fastReflection_HasHasHasAnimal_messageType struct{}
 
 func (x fastReflection_HasHasHasAnimal_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_HasHasHasAnimal)(nil)
 }
+
 func (x fastReflection_HasHasHasAnimal_messageType) New() protoreflect.Message {
 	return new(fastReflection_HasHasHasAnimal)
 }
+
 func (x fastReflection_HasHasHasAnimal_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_HasHasHasAnimal
 }
@@ -2866,17 +2891,21 @@ func (x *BadMultiSignature) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_BadMultiSignature_messageType fastReflection_BadMultiSignature_messageType
-var _ protoreflect.MessageType = fastReflection_BadMultiSignature_messageType{}
+var (
+	_fastReflection_BadMultiSignature_messageType fastReflection_BadMultiSignature_messageType
+	_                                             protoreflect.MessageType = fastReflection_BadMultiSignature_messageType{}
+)
 
 type fastReflection_BadMultiSignature_messageType struct{}
 
 func (x fastReflection_BadMultiSignature_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_BadMultiSignature)(nil)
 }
+
 func (x fastReflection_BadMultiSignature_messageType) New() protoreflect.Message {
 	return new(fastReflection_BadMultiSignature)
 }
+
 func (x fastReflection_BadMultiSignature_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_BadMultiSignature
 }
@@ -3370,17 +3399,21 @@ func (x *TableModel) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_TableModel_messageType fastReflection_TableModel_messageType
-var _ protoreflect.MessageType = fastReflection_TableModel_messageType{}
+var (
+	_fastReflection_TableModel_messageType fastReflection_TableModel_messageType
+	_                                      protoreflect.MessageType = fastReflection_TableModel_messageType{}
+)
 
 type fastReflection_TableModel_messageType struct{}
 
 func (x fastReflection_TableModel_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_TableModel)(nil)
 }
+
 func (x fastReflection_TableModel_messageType) New() protoreflect.Message {
 	return new(fastReflection_TableModel)
 }
+
 func (x fastReflection_TableModel_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_TableModel
 }
@@ -4342,18 +4375,21 @@ func file_testpb_testdata_proto_rawDescGZIP() []byte {
 	return file_testpb_testdata_proto_rawDescData
 }
 
-var file_testpb_testdata_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
-var file_testpb_testdata_proto_goTypes = []interface{}{
-	(*Dog)(nil),               // 0: testpb.Dog
-	(*Cat)(nil),               // 1: testpb.Cat
-	(*Bird)(nil),              // 2: testpb.Bird
-	(*HasAnimal)(nil),         // 3: testpb.HasAnimal
-	(*HasHasAnimal)(nil),      // 4: testpb.HasHasAnimal
-	(*HasHasHasAnimal)(nil),   // 5: testpb.HasHasHasAnimal
-	(*BadMultiSignature)(nil), // 6: testpb.BadMultiSignature
-	(*TableModel)(nil),        // 7: testpb.TableModel
-	(*anypb.Any)(nil),         // 8: google.protobuf.Any
-}
+var (
+	file_testpb_testdata_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+	file_testpb_testdata_proto_goTypes  = []interface{}{
+		(*Dog)(nil),               // 0: testpb.Dog
+		(*Cat)(nil),               // 1: testpb.Cat
+		(*Bird)(nil),              // 2: testpb.Bird
+		(*HasAnimal)(nil),         // 3: testpb.HasAnimal
+		(*HasHasAnimal)(nil),      // 4: testpb.HasHasAnimal
+		(*HasHasHasAnimal)(nil),   // 5: testpb.HasHasHasAnimal
+		(*BadMultiSignature)(nil), // 6: testpb.BadMultiSignature
+		(*TableModel)(nil),        // 7: testpb.TableModel
+		(*anypb.Any)(nil),         // 8: google.protobuf.Any
+	}
+)
+
 var file_testpb_testdata_proto_depIdxs = []int32{
 	8, // 0: testpb.HasAnimal.animal:type_name -> google.protobuf.Any
 	8, // 1: testpb.HasHasAnimal.has_animal:type_name -> google.protobuf.Any

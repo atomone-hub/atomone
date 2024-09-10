@@ -5,12 +5,14 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	_ "github.com/atomone-hub/atomone/runtime"
+
 	runtimev1alpha1 "cosmossdk.io/api/cosmos/app/runtime/v1alpha1"
 	appv1alpha1 "cosmossdk.io/api/cosmos/app/v1alpha1"
 	"cosmossdk.io/depinject"
+
 	"github.com/atomone-hub/atomone/codec"
 	"github.com/atomone-hub/atomone/core/appconfig"
-	_ "github.com/atomone-hub/atomone/runtime"
 )
 
 var TestConfig = appconfig.Compose(&appv1alpha1.Config{
@@ -24,7 +26,7 @@ var TestConfig = appconfig.Compose(&appv1alpha1.Config{
 	},
 })
 
-func MakeTestCodec(t *testing.T) codec.Codec {
+func MakeTestCodec(t *testing.T) codec.Codec { //nolint: thelper
 	var cdc codec.Codec
 	err := depinject.Inject(TestConfig, &cdc)
 	require.NoError(t, err)

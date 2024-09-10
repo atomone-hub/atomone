@@ -6,6 +6,10 @@ package testutil
 import (
 	context "context"
 	fmt "fmt"
+	io "io"
+	math "math"
+	math_bits "math/bits"
+
 	_ "github.com/atomone-hub/atomone/codec/types"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	grpc1 "github.com/cosmos/gogoproto/grpc"
@@ -13,15 +17,14 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	io "io"
-	math "math"
-	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
+var (
+	_ = proto.Marshal
+	_ = fmt.Errorf
+	_ = math.Inf
+)
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -40,9 +43,11 @@ func (*MsgCounter) ProtoMessage()    {}
 func (*MsgCounter) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4dc296cbfe5ffcd5, []int{0}
 }
+
 func (m *MsgCounter) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *MsgCounter) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgCounter.Marshal(b, m, deterministic)
@@ -55,12 +60,15 @@ func (m *MsgCounter) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
+
 func (m *MsgCounter) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgCounter.Merge(m, src)
 }
+
 func (m *MsgCounter) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *MsgCounter) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgCounter.DiscardUnknown(m)
 }
@@ -92,9 +100,11 @@ func (*MsgCounter2) ProtoMessage()    {}
 func (*MsgCounter2) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4dc296cbfe5ffcd5, []int{1}
 }
+
 func (m *MsgCounter2) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *MsgCounter2) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgCounter2.Marshal(b, m, deterministic)
@@ -107,12 +117,15 @@ func (m *MsgCounter2) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return b[:n], nil
 	}
 }
+
 func (m *MsgCounter2) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgCounter2.Merge(m, src)
 }
+
 func (m *MsgCounter2) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *MsgCounter2) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgCounter2.DiscardUnknown(m)
 }
@@ -133,8 +146,7 @@ func (m *MsgCounter2) GetFailOnHandler() bool {
 	return false
 }
 
-type MsgCreateCounterResponse struct {
-}
+type MsgCreateCounterResponse struct{}
 
 func (m *MsgCreateCounterResponse) Reset()         { *m = MsgCreateCounterResponse{} }
 func (m *MsgCreateCounterResponse) String() string { return proto.CompactTextString(m) }
@@ -142,9 +154,11 @@ func (*MsgCreateCounterResponse) ProtoMessage()    {}
 func (*MsgCreateCounterResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4dc296cbfe5ffcd5, []int{2}
 }
+
 func (m *MsgCreateCounterResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *MsgCreateCounterResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgCreateCounterResponse.Marshal(b, m, deterministic)
@@ -157,12 +171,15 @@ func (m *MsgCreateCounterResponse) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
+
 func (m *MsgCreateCounterResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgCreateCounterResponse.Merge(m, src)
 }
+
 func (m *MsgCreateCounterResponse) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *MsgCreateCounterResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgCreateCounterResponse.DiscardUnknown(m)
 }
@@ -181,9 +198,11 @@ func (*MsgKeyValue) ProtoMessage()    {}
 func (*MsgKeyValue) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4dc296cbfe5ffcd5, []int{3}
 }
+
 func (m *MsgKeyValue) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *MsgKeyValue) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgKeyValue.Marshal(b, m, deterministic)
@@ -196,12 +215,15 @@ func (m *MsgKeyValue) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return b[:n], nil
 	}
 }
+
 func (m *MsgKeyValue) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgKeyValue.Merge(m, src)
 }
+
 func (m *MsgKeyValue) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *MsgKeyValue) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgKeyValue.DiscardUnknown(m)
 }
@@ -229,8 +251,7 @@ func (m *MsgKeyValue) GetSigner() string {
 	return ""
 }
 
-type MsgCreateKeyValueResponse struct {
-}
+type MsgCreateKeyValueResponse struct{}
 
 func (m *MsgCreateKeyValueResponse) Reset()         { *m = MsgCreateKeyValueResponse{} }
 func (m *MsgCreateKeyValueResponse) String() string { return proto.CompactTextString(m) }
@@ -238,9 +259,11 @@ func (*MsgCreateKeyValueResponse) ProtoMessage()    {}
 func (*MsgCreateKeyValueResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4dc296cbfe5ffcd5, []int{4}
 }
+
 func (m *MsgCreateKeyValueResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *MsgCreateKeyValueResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgCreateKeyValueResponse.Marshal(b, m, deterministic)
@@ -253,12 +276,15 @@ func (m *MsgCreateKeyValueResponse) XXX_Marshal(b []byte, deterministic bool) ([
 		return b[:n], nil
 	}
 }
+
 func (m *MsgCreateKeyValueResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgCreateKeyValueResponse.Merge(m, src)
 }
+
 func (m *MsgCreateKeyValueResponse) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *MsgCreateKeyValueResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgCreateKeyValueResponse.DiscardUnknown(m)
 }
@@ -303,8 +329,10 @@ var fileDescriptor_4dc296cbfe5ffcd5 = []byte{
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
-var _ context.Context
-var _ grpc.ClientConn
+var (
+	_ context.Context
+	_ grpc.ClientConn
+)
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
@@ -340,8 +368,7 @@ type CounterServer interface {
 }
 
 // UnimplementedCounterServer can be embedded to have forward compatible implementations.
-type UnimplementedCounterServer struct {
-}
+type UnimplementedCounterServer struct{}
 
 func (*UnimplementedCounterServer) IncrementCounter(ctx context.Context, req *MsgCounter) (*MsgCreateCounterResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method IncrementCounter not implemented")
@@ -412,8 +439,7 @@ type Counter2Server interface {
 }
 
 // UnimplementedCounter2Server can be embedded to have forward compatible implementations.
-type UnimplementedCounter2Server struct {
-}
+type UnimplementedCounter2Server struct{}
 
 func (*UnimplementedCounter2Server) IncrementCounter(ctx context.Context, req *MsgCounter2) (*MsgCreateCounterResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method IncrementCounter not implemented")
@@ -484,8 +510,7 @@ type KeyValueServer interface {
 }
 
 // UnimplementedKeyValueServer can be embedded to have forward compatible implementations.
-type UnimplementedKeyValueServer struct {
-}
+type UnimplementedKeyValueServer struct{}
 
 func (*UnimplementedKeyValueServer) Set(ctx context.Context, req *MsgKeyValue) (*MsgCreateKeyValueResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Set not implemented")
@@ -703,6 +728,7 @@ func encodeVarintMessages(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+
 func (m *MsgCounter) Size() (n int) {
 	if m == nil {
 		return 0
@@ -775,9 +801,11 @@ func (m *MsgCreateKeyValueResponse) Size() (n int) {
 func sovMessages(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
+
 func sozMessages(x uint64) (n int) {
 	return sovMessages(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
+
 func (m *MsgCounter) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -867,6 +895,7 @@ func (m *MsgCounter) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *MsgCounter2) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -956,6 +985,7 @@ func (m *MsgCounter2) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *MsgCreateCounterResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1006,6 +1036,7 @@ func (m *MsgCreateCounterResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *MsgKeyValue) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1156,6 +1187,7 @@ func (m *MsgKeyValue) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *MsgCreateKeyValueResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1206,6 +1238,7 @@ func (m *MsgCreateKeyValueResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func skipMessages(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

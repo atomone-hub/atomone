@@ -1,9 +1,8 @@
 package atomone
 
 import (
-	"github.com/atomone-hub/atomone/std"
-
 	"github.com/atomone-hub/atomone/app/params"
+	"github.com/atomone-hub/atomone/std"
 )
 
 func RegisterEncodingConfig() params.EncodingConfig {

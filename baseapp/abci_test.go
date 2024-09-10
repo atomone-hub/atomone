@@ -933,7 +933,7 @@ func TestABCI_TxGasLimits(t *testing.T) {
 				if r := recover(); r != nil {
 					switch rType := r.(type) {
 					case sdk.ErrorOutOfGas:
-						err = sdkerrors.Wrapf(sdkerrors.ErrOutOfGas, "out of gas in location: %v", rType.Descriptor)
+						err = sdkerrors.Wrapf(sdkerrors.ErrOutOfGas, "out of gas in location: %v", rType.Descriptor) //nolint: staticcheck
 					default:
 						panic(r)
 					}
@@ -1012,7 +1012,7 @@ func TestABCI_MaxBlockGasLimits(t *testing.T) {
 				if r := recover(); r != nil {
 					switch rType := r.(type) {
 					case sdk.ErrorOutOfGas:
-						err = sdkerrors.Wrapf(sdkerrors.ErrOutOfGas, "out of gas in location: %v", rType.Descriptor)
+						err = sdkerrors.Wrapf(sdkerrors.ErrOutOfGas, "out of gas in location: %v", rType.Descriptor) //nolint: staticcheck
 					default:
 						panic(r)
 					}
@@ -1108,7 +1108,7 @@ func TestABCI_GasConsumptionBadTx(t *testing.T) {
 					switch rType := r.(type) {
 					case sdk.ErrorOutOfGas:
 						log := fmt.Sprintf("out of gas in location: %v", rType.Descriptor)
-						err = sdkerrors.Wrap(sdkerrors.ErrOutOfGas, log)
+						err = sdkerrors.Wrap(sdkerrors.ErrOutOfGas, log) //nolint: staticcheck
 					default:
 						panic(r)
 					}
@@ -1118,7 +1118,7 @@ func TestABCI_GasConsumptionBadTx(t *testing.T) {
 			counter, failOnAnte := parseTxMemo(t, tx)
 			newCtx.GasMeter().ConsumeGas(uint64(counter), "counter-ante")
 			if failOnAnte {
-				return newCtx, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "ante handler failure")
+				return newCtx, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "ante handler failure") //nolint: staticcheck
 			}
 
 			return

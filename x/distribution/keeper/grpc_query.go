@@ -52,7 +52,7 @@ func (k Querier) ValidatorDistributionInfo(c context.Context, req *types.QueryVa
 	// self-delegation rewards
 	val := k.stakingKeeper.Validator(ctx, valAdr)
 	if val == nil {
-		return nil, sdkerrors.Wrap(types.ErrNoValidatorExists, req.ValidatorAddress)
+		return nil, sdkerrors.Wrap(types.ErrNoValidatorExists, req.ValidatorAddress) //nolint: staticcheck
 	}
 
 	delAdr := sdk.AccAddress(valAdr)
@@ -183,7 +183,7 @@ func (k Querier) DelegationRewards(c context.Context, req *types.QueryDelegation
 
 	val := k.stakingKeeper.Validator(ctx, valAdr)
 	if val == nil {
-		return nil, sdkerrors.Wrap(types.ErrNoValidatorExists, req.ValidatorAddress)
+		return nil, sdkerrors.Wrap(types.ErrNoValidatorExists, req.ValidatorAddress) //nolint: staticcheck
 	}
 
 	delAdr, err := sdk.AccAddressFromBech32(req.DelegatorAddress)

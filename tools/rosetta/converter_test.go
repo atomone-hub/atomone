@@ -62,7 +62,7 @@ func (s *ConverterTestSuite) SetupTest() {
 	txBytes, err := s.txConf.TxEncoder()(sdkTx1)
 	s.Require().NoError(err)
 	txHex := hex.EncodeToString(txBytes)
-	var unsignedTxHex = txHex
+	unsignedTxHex := txHex
 	unsignedTxBytes, err := hex.DecodeString(unsignedTxHex)
 	s.Require().NoError(err)
 	s.unsignedTxBytes = unsignedTxBytes

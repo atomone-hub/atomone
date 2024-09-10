@@ -6,21 +6,24 @@ import (
 	"sort"
 	"strings"
 
+	"golang.org/x/exp/maps"
+
 	dbm "github.com/cometbft/cometbft-db"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cometbft/cometbft/crypto/tmhash"
 	"github.com/cometbft/cometbft/libs/log"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+
 	"github.com/cosmos/gogoproto/proto"
-	"golang.org/x/exp/maps"
+
+	"github.com/cosmos/cosmos-sdk/snapshots"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	codectypes "github.com/atomone-hub/atomone/codec/types"
 	"github.com/atomone-hub/atomone/store"
 	storetypes "github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/mempool"
-	"github.com/cosmos/cosmos-sdk/snapshots"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 type (
@@ -537,7 +540,7 @@ func (app *BaseApp) validateHeight(req abci.RequestBeginBlock) error {
 // validateBasicTxMsgs executes basic validator calls for messages.
 func validateBasicTxMsgs(msgs []sdk.Msg) error {
 	if len(msgs) == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "must contain at least one message")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "must contain at least one message") //nolint: staticcheck
 	}
 
 	for _, msg := range msgs {
@@ -637,7 +640,7 @@ func (app *BaseApp) runTx(mode runTxMode, txBytes []byte) (gInfo sdk.GasInfo, re
 
 	// only run the tx if there is block gas remaining
 	if mode == runTxModeDeliver && ctx.BlockGasMeter().IsOutOfGas() {
-		return gInfo, nil, nil, 0, sdkerrors.Wrap(sdkerrors.ErrOutOfGas, "no block gas left to run tx")
+		return gInfo, nil, nil, 0, sdkerrors.Wrap(sdkerrors.ErrOutOfGas, "no block gas left to run tx") //nolint: staticcheck
 	}
 
 	defer func() {
@@ -799,13 +802,13 @@ func (app *BaseApp) runMsgs(ctx sdk.Context, msgs []sdk.Msg, mode runTxMode) (*s
 
 		handler := app.msgServiceRouter.Handler(msg)
 		if handler == nil {
-			return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "can't route message %+v", msg)
+			return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "can't route message %+v", msg) //nolint: staticcheck
 		}
 
 		// ADR 031 request type routing
 		msgResult, err := handler(ctx, msg)
 		if err != nil {
-			return nil, sdkerrors.Wrapf(err, "failed to execute message; message index: %d", i)
+			return nil, sdkerrors.Wrapf(err, "failed to execute message; message index: %d", i) //nolint: staticcheck
 		}
 
 		// create message events
@@ -835,7 +838,7 @@ func (app *BaseApp) runMsgs(ctx sdk.Context, msgs []sdk.Msg, mode runTxMode) (*s
 
 	data, err := makeABCIData(msgResponses)
 	if err != nil {
-		return nil, sdkerrors.Wrap(err, "failed to marshal tx data")
+		return nil, sdkerrors.Wrap(err, "failed to marshal tx data") //nolint: staticcheck
 	}
 
 	return &sdk.Result{

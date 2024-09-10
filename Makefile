@@ -242,32 +242,29 @@ format:
 	$(golangci_lint_cmd) run --fix
 .PHONY: format
 
-# Number of files to process per batch
-BATCH_SIZE=1000
+# Get a list of all directories containing Go files, excluding vendor and other paths
+GO_DIRS=$(shell find . -name '*.go' -not -path "./vendor*" -not -path "*.git*" \
+	-not -path "./client/docs/statik/statik.go" \
+	-not -path "./tests/mocks/*" \
+	-not -path "./crypto/keys/secp256k1/*" \
+	-not -name "*.pb.go" \
+	-not -name "*.pb.gw.go" \
+	-not -name "*.pulsar.go" | xargs -n1 dirname | sort -u)
 
 format-batch:
 	@go install mvdan.cc/gofumpt@latest
 	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@$(golangci_version)
 
-	# Find all Go files excluding specified paths
-	@find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" \
-	-not -path "./client/docs/statik/statik.go" \
-	-not -path "./tests/mocks/*" \
-	-not -name "*.pb.go" \
-	-not -name "*.pb.gw.go" \
-	-not -name "*.pulsar.go" \
-	-not -path "./crypto/keys/secp256k1/*" \
-	-print0 | xargs -0 -n $(BATCH_SIZE) -P 1 gofumpt -w -l
+	# Run gofumpt in a loop over each directory
+	@for dir in $(GO_DIRS); do \
+		echo "Running gofumpt on $$dir"; \
+		find $$dir -name '*.go' -type f -print0 | xargs -0 gofumpt -w -l; \
+	done
 
-	# Linting in smaller batches
-	@find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" \
-	-not -path "./client/docs/statik/statik.go" \
-	-not -path "./tests/mocks/*" \
-	-not -name "*.pb.go" \
-	-not -name "*.pb.gw.go" \
-	-not -name "*.pulsar.go" \
-	-not -path "./crypto/keys/secp256k1/*" \
-	-print0 | xargs -0 -n $(BATCH_SIZE) -P 1 $(golangci_lint_cmd) run --fix
+	# Run golangci-lint separately for each directory
+	@for dir in $(GO_DIRS); do \
+		$(golangci_lint_cmd) run --fix $$dir || exit 1; \
+	done
 
 .PHONY: format-batch
 

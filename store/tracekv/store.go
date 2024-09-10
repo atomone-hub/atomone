@@ -188,14 +188,14 @@ func writeOperation(w io.Writer, op operation, tc types.TraceContext, key, value
 
 	raw, err := json.Marshal(traceOp)
 	if err != nil {
-		panic(errors.Wrap(err, "failed to serialize trace operation"))
+		panic(errors.Wrap(err, "failed to serialize trace operation")) //nolint: staticcheck
 	}
 
 	if _, err := w.Write(raw); err != nil {
-		panic(errors.Wrap(err, "failed to write trace operation"))
+		panic(errors.Wrap(err, "failed to write trace operation")) //nolint: staticcheck
 	}
 
 	if _, err = io.WriteString(w, "\n"); err != nil {
-		panic(errors.Wrap(err, "failed to write newline"))
+		panic(errors.Wrap(err, "failed to write newline")) //nolint: staticcheck
 	}
 }

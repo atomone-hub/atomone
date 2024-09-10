@@ -113,7 +113,7 @@ func GetAccountCmd() *cobra.Command {
 				}
 				catchingUp := status.SyncInfo.CatchingUp
 				if !catchingUp {
-					return errors.Wrapf(err, "your node may be syncing, please check node status using `/status`")
+					return errors.Wrapf(err, "your node may be syncing, please check node status using `/status`") //nolint: staticcheck
 				}
 				return err
 			}
@@ -389,7 +389,7 @@ $ %s query tx --%s=%s <sig1_base64>,<sig2_base64...>
 					}
 					if len(txs.Txs) > 1 {
 						// This case means there's a bug somewhere else in the code. Should not happen.
-						return errors.ErrLogic.Wrapf("found %d txs matching given signatures", len(txs.Txs))
+						return errors.ErrLogic.Wrapf("found %d txs matching given signatures", len(txs.Txs)) //nolint: staticcheck
 					}
 
 					return clientCtx.PrintProto(txs.Txs[0])

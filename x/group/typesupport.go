@@ -23,7 +23,7 @@ func (ms MemberRequests) ValidateBasic() error {
 		}
 		addr := member.Address
 		if _, exists := index[addr]; exists {
-			return sdkerrors.Wrapf(errors.ErrDuplicate, "address: %s", addr)
+			return sdkerrors.Wrapf(errors.ErrDuplicate, "address: %s", addr) //nolint: staticcheck
 		}
 		index[addr] = struct{}{}
 	}
@@ -40,7 +40,7 @@ func (a accAddresses) ValidateBasic() error {
 		accAddr := a[i]
 		addr := string(accAddr)
 		if _, exists := index[addr]; exists {
-			return sdkerrors.Wrapf(errors.ErrDuplicate, "address: %s", accAddr.String())
+			return sdkerrors.Wrapf(errors.ErrDuplicate, "address: %s", accAddr.String()) //nolint: staticcheck
 		}
 		index[addr] = struct{}{}
 	}

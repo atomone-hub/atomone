@@ -53,7 +53,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.Require().NoError(err)
 
 	val0 := s.network.Validators[0]
-	s.conn, err = grpc.Dial(
+	s.conn, err = grpc.Dial( //nolint: staticcheck
 		val0.AppConfig.GRPC.Address,
 		grpc.WithInsecure(), // Or else we get "no transport security set"
 		grpc.WithDefaultCallOptions(grpc.ForceCodec(codec.NewProtoCodec(s.cfg.InterfaceRegistry).GRPCCodec())),

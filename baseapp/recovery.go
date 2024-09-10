@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"runtime/debug"
 
-	sdk "github.com/atomone-hub/atomone/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
+	sdk "github.com/atomone-hub/atomone/types"
 )
 
 // RecoveryHandler handles recovery() object.
@@ -52,7 +53,7 @@ func newOutOfGasRecoveryMiddleware(gasWanted uint64, ctx sdk.Context, next recov
 			return nil
 		}
 
-		return sdkerrors.Wrap(
+		return sdkerrors.Wrap( //nolint: staticcheck
 			sdkerrors.ErrOutOfGas, fmt.Sprintf(
 				"out of gas in location: %v; gasWanted: %d, gasUsed: %d",
 				err.Descriptor, gasWanted, ctx.GasMeter().GasConsumed(),
@@ -66,7 +67,7 @@ func newOutOfGasRecoveryMiddleware(gasWanted uint64, ctx sdk.Context, next recov
 // newDefaultRecoveryMiddleware creates a default (last in chain) recovery middleware for app.runTx method.
 func newDefaultRecoveryMiddleware() recoveryMiddleware {
 	handler := func(recoveryObj interface{}) error {
-		return sdkerrors.Wrap(
+		return sdkerrors.Wrap( //nolint: staticcheck
 			sdkerrors.ErrPanic, fmt.Sprintf(
 				"recovered: %v\nstack:\n%v", recoveryObj, string(debug.Stack()),
 			),

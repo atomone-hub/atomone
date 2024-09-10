@@ -34,7 +34,7 @@ func (sud SetUpContextDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate
 		// Set a gas meter with limit 0 as to prevent an infinite gas meter attack
 		// during runTx.
 		newCtx = SetGasMeter(simulate, ctx, 0)
-		return newCtx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "Tx must be GasTx")
+		return newCtx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "Tx must be GasTx") //nolint: staticcheck
 	}
 
 	newCtx = SetGasMeter(simulate, ctx, gasTx.GetGas())
@@ -43,7 +43,7 @@ func (sud SetUpContextDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate
 		// If there exists a maximum block gas limit, we must ensure that the tx
 		// does not exceed it.
 		if cp.Block.MaxGas > 0 && gasTx.GetGas() > uint64(cp.Block.MaxGas) {
-			return newCtx, sdkerrors.Wrapf(sdkerrors.ErrInvalidGasLimit, "tx gas limit %d exceeds block max gas %d", gasTx.GetGas(), cp.Block.MaxGas)
+			return newCtx, sdkerrors.Wrapf(sdkerrors.ErrInvalidGasLimit, "tx gas limit %d exceeds block max gas %d", gasTx.GetGas(), cp.Block.MaxGas) //nolint: staticcheck
 		}
 	}
 
@@ -60,7 +60,7 @@ func (sud SetUpContextDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate
 					"out of gas in location: %v; gasWanted: %d, gasUsed: %d",
 					rType.Descriptor, gasTx.GetGas(), newCtx.GasMeter().GasConsumed())
 
-				err = sdkerrors.Wrap(sdkerrors.ErrOutOfGas, log)
+				err = sdkerrors.Wrap(sdkerrors.ErrOutOfGas, log) //nolint: staticcheck
 			default:
 				panic(r)
 			}

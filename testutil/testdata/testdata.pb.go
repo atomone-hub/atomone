@@ -5,18 +5,21 @@ package testdata
 
 import (
 	fmt "fmt"
-	types "github.com/atomone-hub/atomone/codec/types"
-	_ "github.com/cosmos/gogoproto/gogoproto"
-	proto "github.com/cosmos/gogoproto/proto"
 	io "io"
 	math "math"
 	math_bits "math/bits"
+
+	types "github.com/atomone-hub/atomone/codec/types"
+	_ "github.com/cosmos/gogoproto/gogoproto"
+	proto "github.com/cosmos/gogoproto/proto"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
+var (
+	_ = proto.Marshal
+	_ = fmt.Errorf
+	_ = math.Inf
+)
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -35,9 +38,11 @@ func (*Dog) ProtoMessage()    {}
 func (*Dog) Descriptor() ([]byte, []int) {
 	return fileDescriptor_bc244d00904a39a7, []int{0}
 }
+
 func (m *Dog) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *Dog) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_Dog.Marshal(b, m, deterministic)
@@ -50,12 +55,15 @@ func (m *Dog) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
+
 func (m *Dog) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Dog.Merge(m, src)
 }
+
 func (m *Dog) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *Dog) XXX_DiscardUnknown() {
 	xxx_messageInfo_Dog.DiscardUnknown(m)
 }
@@ -87,9 +95,11 @@ func (*Cat) ProtoMessage()    {}
 func (*Cat) Descriptor() ([]byte, []int) {
 	return fileDescriptor_bc244d00904a39a7, []int{1}
 }
+
 func (m *Cat) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *Cat) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_Cat.Marshal(b, m, deterministic)
@@ -102,12 +112,15 @@ func (m *Cat) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
+
 func (m *Cat) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Cat.Merge(m, src)
 }
+
 func (m *Cat) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *Cat) XXX_DiscardUnknown() {
 	xxx_messageInfo_Cat.DiscardUnknown(m)
 }
@@ -139,9 +152,11 @@ func (*Bird) ProtoMessage()    {}
 func (*Bird) Descriptor() ([]byte, []int) {
 	return fileDescriptor_bc244d00904a39a7, []int{2}
 }
+
 func (m *Bird) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *Bird) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_Bird.Marshal(b, m, deterministic)
@@ -154,12 +169,15 @@ func (m *Bird) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
+
 func (m *Bird) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Bird.Merge(m, src)
 }
+
 func (m *Bird) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *Bird) XXX_DiscardUnknown() {
 	xxx_messageInfo_Bird.DiscardUnknown(m)
 }
@@ -191,9 +209,11 @@ func (*HasAnimal) ProtoMessage()    {}
 func (*HasAnimal) Descriptor() ([]byte, []int) {
 	return fileDescriptor_bc244d00904a39a7, []int{3}
 }
+
 func (m *HasAnimal) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *HasAnimal) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_HasAnimal.Marshal(b, m, deterministic)
@@ -206,12 +226,15 @@ func (m *HasAnimal) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
+
 func (m *HasAnimal) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_HasAnimal.Merge(m, src)
 }
+
 func (m *HasAnimal) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *HasAnimal) XXX_DiscardUnknown() {
 	xxx_messageInfo_HasAnimal.DiscardUnknown(m)
 }
@@ -242,9 +265,11 @@ func (*HasHasAnimal) ProtoMessage()    {}
 func (*HasHasAnimal) Descriptor() ([]byte, []int) {
 	return fileDescriptor_bc244d00904a39a7, []int{4}
 }
+
 func (m *HasHasAnimal) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *HasHasAnimal) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_HasHasAnimal.Marshal(b, m, deterministic)
@@ -257,12 +282,15 @@ func (m *HasHasAnimal) XXX_Marshal(b []byte, deterministic bool) ([]byte, error)
 		return b[:n], nil
 	}
 }
+
 func (m *HasHasAnimal) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_HasHasAnimal.Merge(m, src)
 }
+
 func (m *HasHasAnimal) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *HasHasAnimal) XXX_DiscardUnknown() {
 	xxx_messageInfo_HasHasAnimal.DiscardUnknown(m)
 }
@@ -286,9 +314,11 @@ func (*HasHasHasAnimal) ProtoMessage()    {}
 func (*HasHasHasAnimal) Descriptor() ([]byte, []int) {
 	return fileDescriptor_bc244d00904a39a7, []int{5}
 }
+
 func (m *HasHasHasAnimal) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *HasHasHasAnimal) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_HasHasHasAnimal.Marshal(b, m, deterministic)
@@ -301,12 +331,15 @@ func (m *HasHasHasAnimal) XXX_Marshal(b []byte, deterministic bool) ([]byte, err
 		return b[:n], nil
 	}
 }
+
 func (m *HasHasHasAnimal) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_HasHasHasAnimal.Merge(m, src)
 }
+
 func (m *HasHasHasAnimal) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *HasHasHasAnimal) XXX_DiscardUnknown() {
 	xxx_messageInfo_HasHasHasAnimal.DiscardUnknown(m)
 }
@@ -333,9 +366,11 @@ func (*BadMultiSignature) ProtoMessage()    {}
 func (*BadMultiSignature) Descriptor() ([]byte, []int) {
 	return fileDescriptor_bc244d00904a39a7, []int{6}
 }
+
 func (m *BadMultiSignature) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *BadMultiSignature) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_BadMultiSignature.Marshal(b, m, deterministic)
@@ -348,12 +383,15 @@ func (m *BadMultiSignature) XXX_Marshal(b []byte, deterministic bool) ([]byte, e
 		return b[:n], nil
 	}
 }
+
 func (m *BadMultiSignature) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_BadMultiSignature.Merge(m, src)
 }
+
 func (m *BadMultiSignature) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *BadMultiSignature) XXX_DiscardUnknown() {
 	xxx_messageInfo_BadMultiSignature.DiscardUnknown(m)
 }
@@ -387,9 +425,11 @@ func (*TableModel) ProtoMessage()    {}
 func (*TableModel) Descriptor() ([]byte, []int) {
 	return fileDescriptor_bc244d00904a39a7, []int{7}
 }
+
 func (m *TableModel) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *TableModel) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_TableModel.Marshal(b, m, deterministic)
@@ -402,12 +442,15 @@ func (m *TableModel) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
+
 func (m *TableModel) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_TableModel.Merge(m, src)
 }
+
 func (m *TableModel) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *TableModel) XXX_DiscardUnknown() {
 	xxx_messageInfo_TableModel.DiscardUnknown(m)
 }
@@ -805,6 +848,7 @@ func encodeVarintTestdata(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+
 func (m *Dog) Size() (n int) {
 	if m == nil {
 		return 0
@@ -944,9 +988,11 @@ func (m *TableModel) Size() (n int) {
 func sovTestdata(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
+
 func sozTestdata(x uint64) (n int) {
 	return sovTestdata(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
+
 func (m *Dog) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1061,6 +1107,7 @@ func (m *Dog) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *Cat) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1162,6 +1209,7 @@ func (m *Cat) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *Bird) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1263,6 +1311,7 @@ func (m *Bird) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *HasAnimal) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1368,6 +1417,7 @@ func (m *HasAnimal) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *HasHasAnimal) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1454,6 +1504,7 @@ func (m *HasHasAnimal) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *HasHasHasAnimal) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1540,6 +1591,7 @@ func (m *HasHasHasAnimal) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *BadMultiSignature) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1657,6 +1709,7 @@ func (m *BadMultiSignature) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *TableModel) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1811,6 +1864,7 @@ func (m *TableModel) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func skipTestdata(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

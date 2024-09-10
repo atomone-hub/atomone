@@ -5,13 +5,14 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/cometbft/cometbft/libs/cli"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
+
+	"github.com/cometbft/cometbft/libs/cli"
 
 	"github.com/atomone-hub/atomone/client/flags"
 	"github.com/atomone-hub/atomone/crypto/keyring"
@@ -165,7 +166,7 @@ func ReadPersistentCommandFlags(clientCtx Context, flagSet *pflag.FlagSet) (Cont
 				})))
 			}
 
-			grpcClient, err := grpc.Dial(grpcURI, dialOpts...)
+			grpcClient, err := grpc.Dial(grpcURI, dialOpts...) //nolint: staticcheck
 			if err != nil {
 				return Context{}, err
 			}

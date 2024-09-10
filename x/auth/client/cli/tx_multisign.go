@@ -413,7 +413,7 @@ func getMultisigRecord(clientCtx client.Context, name string) (*keyring.Record, 
 	kb := clientCtx.Keyring
 	multisigRecord, err := kb.Key(name)
 	if err != nil {
-		return nil, errors.Wrap(err, "error getting keybase multisig account")
+		return nil, errors.Wrap(err, "error getting keybase multisig account") //nolint: staticcheck
 	}
 
 	return multisigRecord, nil

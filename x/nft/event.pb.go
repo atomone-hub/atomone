@@ -5,16 +5,19 @@ package nft
 
 import (
 	fmt "fmt"
-	proto "github.com/cosmos/gogoproto/proto"
 	io "io"
 	math "math"
 	math_bits "math/bits"
+
+	proto "github.com/cosmos/gogoproto/proto"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
+var (
+	_ = proto.Marshal
+	_ = fmt.Errorf
+	_ = math.Inf
+)
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -40,9 +43,11 @@ func (*EventSend) ProtoMessage()    {}
 func (*EventSend) Descriptor() ([]byte, []int) {
 	return fileDescriptor_0d8a17c361550d96, []int{0}
 }
+
 func (m *EventSend) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *EventSend) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_EventSend.Marshal(b, m, deterministic)
@@ -55,12 +60,15 @@ func (m *EventSend) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
+
 func (m *EventSend) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_EventSend.Merge(m, src)
 }
+
 func (m *EventSend) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *EventSend) XXX_DiscardUnknown() {
 	xxx_messageInfo_EventSend.DiscardUnknown(m)
 }
@@ -111,9 +119,11 @@ func (*EventMint) ProtoMessage()    {}
 func (*EventMint) Descriptor() ([]byte, []int) {
 	return fileDescriptor_0d8a17c361550d96, []int{1}
 }
+
 func (m *EventMint) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *EventMint) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_EventMint.Marshal(b, m, deterministic)
@@ -126,12 +136,15 @@ func (m *EventMint) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
+
 func (m *EventMint) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_EventMint.Merge(m, src)
 }
+
 func (m *EventMint) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *EventMint) XXX_DiscardUnknown() {
 	xxx_messageInfo_EventMint.DiscardUnknown(m)
 }
@@ -175,9 +188,11 @@ func (*EventBurn) ProtoMessage()    {}
 func (*EventBurn) Descriptor() ([]byte, []int) {
 	return fileDescriptor_0d8a17c361550d96, []int{2}
 }
+
 func (m *EventBurn) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *EventBurn) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_EventBurn.Marshal(b, m, deterministic)
@@ -190,12 +205,15 @@ func (m *EventBurn) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
+
 func (m *EventBurn) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_EventBurn.Merge(m, src)
 }
+
 func (m *EventBurn) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *EventBurn) XXX_DiscardUnknown() {
 	xxx_messageInfo_EventBurn.DiscardUnknown(m)
 }
@@ -400,6 +418,7 @@ func encodeVarintEvent(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+
 func (m *EventSend) Size() (n int) {
 	if m == nil {
 		return 0
@@ -470,9 +489,11 @@ func (m *EventBurn) Size() (n int) {
 func sovEvent(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
+
 func sozEvent(x uint64) (n int) {
 	return sovEvent(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
+
 func (m *EventSend) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -651,6 +672,7 @@ func (m *EventSend) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *EventMint) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -797,6 +819,7 @@ func (m *EventMint) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *EventBurn) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -943,6 +966,7 @@ func (m *EventBurn) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func skipEvent(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

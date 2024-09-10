@@ -1,8 +1,9 @@
 package keys
 
 import (
-	"github.com/cometbft/cometbft/libs/cli"
 	"github.com/spf13/cobra"
+
+	"github.com/cometbft/cometbft/libs/cli"
 
 	"github.com/atomone-hub/atomone/client/flags"
 )

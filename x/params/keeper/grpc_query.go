@@ -25,7 +25,7 @@ func (k Keeper) Params(c context.Context, req *proposal.QueryParamsRequest) (*pr
 
 	ss, ok := k.GetSubspace(req.Subspace)
 	if !ok {
-		return nil, sdkerrors.Wrap(proposal.ErrUnknownSubspace, req.Subspace)
+		return nil, sdkerrors.Wrap(proposal.ErrUnknownSubspace, req.Subspace) //nolint: staticcheck
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)

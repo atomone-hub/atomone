@@ -45,7 +45,7 @@ func (msg MsgVerifyInvariant) GetSignBytes() []byte {
 // quick validity check
 func (msg MsgVerifyInvariant) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Sender); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid sender address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid sender address: %s", err) //nolint: staticcheck
 	}
 	return nil
 }
@@ -78,15 +78,15 @@ func (msg MsgUpdateParams) GetSignBytes() []byte {
 // ValidateBasic performs basic MsgUpdateParams message validation.
 func (msg MsgUpdateParams) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Authority); err != nil {
-		return sdkerrors.Wrap(err, "invalid authority address")
+		return sdkerrors.Wrap(err, "invalid authority address") //nolint: staticcheck
 	}
 
 	if !msg.ConstantFee.IsValid() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid costant fee")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "invalid costant fee") //nolint: staticcheck
 	}
 
 	if msg.ConstantFee.IsNegative() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "negative costant fee")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "negative costant fee") //nolint: staticcheck
 	}
 
 	return nil

@@ -27,7 +27,7 @@ func MigrateStore(ctx sdk.Context, storeKey storetypes.StoreKey, legacySubspace 
 	legacySubspace.Get(ctx, ConstantFee, &currConstantFee)
 
 	if !currConstantFee.IsValid() {
-		return errors.ErrInvalidCoins.Wrap("constant fee")
+		return errors.ErrInvalidCoins.Wrap("constant fee") //nolint: staticcheck
 	}
 
 	bz, err := cdc.Marshal(&currConstantFee)

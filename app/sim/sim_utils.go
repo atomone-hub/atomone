@@ -7,12 +7,11 @@ import (
 
 	dbm "github.com/cometbft/cometbft-db"
 
+	atomone "github.com/atomone-hub/atomone/app"
 	"github.com/atomone-hub/atomone/codec"
 	"github.com/atomone-hub/atomone/runtime"
 	"github.com/atomone-hub/atomone/types/module"
 	simtypes "github.com/atomone-hub/atomone/types/simulation"
-
-	atomone "github.com/atomone-hub/atomone/app"
 )
 
 // SimulationOperations retrieves the simulation params from the provided file path

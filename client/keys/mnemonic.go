@@ -5,8 +5,9 @@ import (
 	"crypto/sha256"
 	"fmt"
 
-	"github.com/cosmos/go-bip39"
 	"github.com/spf13/cobra"
+
+	"github.com/cosmos/go-bip39"
 
 	"github.com/atomone-hub/atomone/client/input"
 )

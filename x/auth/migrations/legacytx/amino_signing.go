@@ -80,7 +80,7 @@ func MultiSignatureDataToAminoMultisignature(cdc *codec.LegacyAmino, mSig *signi
 		var err error
 		sigs[i], err = SignatureDataToAminoSignature(cdc, mSig.Signatures[i])
 		if err != nil {
-			return multisig.AminoMultisignature{}, sdkerrors.Wrapf(err, "Unable to convert Signature Data to signature %d", i)
+			return multisig.AminoMultisignature{}, sdkerrors.Wrapf(err, "Unable to convert Signature Data to signature %d", i) //nolint: staticcheck
 		}
 	}
 

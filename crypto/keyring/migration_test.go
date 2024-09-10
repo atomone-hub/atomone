@@ -214,7 +214,7 @@ func (s *MigrationTestSuite) TestMigrateErrUnknownItemKey() {
 
 	incorrectItemKey := n1 + "1"
 	_, err := s.ks.migrate(incorrectItemKey)
-	s.Require().EqualError(err, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, infoKey(incorrectItemKey)).Error())
+	s.Require().EqualError(err, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, infoKey(incorrectItemKey)).Error()) //nolint: staticcheck
 }
 
 func (s *MigrationTestSuite) TestMigrateErrEmptyItemData() {
@@ -227,7 +227,7 @@ func (s *MigrationTestSuite) TestMigrateErrEmptyItemData() {
 	s.Require().NoError(s.ks.SetItem(item))
 
 	_, err := s.ks.migrate(n1)
-	s.Require().EqualError(err, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, n1).Error())
+	s.Require().EqualError(err, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, n1).Error()) //nolint: staticcheck
 }
 
 func TestMigrationTestSuite(t *testing.T) {

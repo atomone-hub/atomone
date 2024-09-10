@@ -51,10 +51,10 @@ func (msg MsgSetWithdrawAddress) GetSignBytes() []byte {
 // quick validity check
 func (msg MsgSetWithdrawAddress) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.DelegatorAddress); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid delegator address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid delegator address: %s", err) //nolint: staticcheck
 	}
 	if _, err := sdk.AccAddressFromBech32(msg.WithdrawAddress); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid withdraw address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid withdraw address: %s", err) //nolint: staticcheck
 	}
 
 	return nil
@@ -85,10 +85,10 @@ func (msg MsgWithdrawDelegatorReward) GetSignBytes() []byte {
 // quick validity check
 func (msg MsgWithdrawDelegatorReward) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.DelegatorAddress); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid delegator address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid delegator address: %s", err) //nolint: staticcheck
 	}
 	if _, err := sdk.ValAddressFromBech32(msg.ValidatorAddress); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid validator address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid validator address: %s", err) //nolint: staticcheck
 	}
 	return nil
 }
@@ -117,7 +117,7 @@ func (msg MsgWithdrawValidatorCommission) GetSignBytes() []byte {
 // quick validity check
 func (msg MsgWithdrawValidatorCommission) ValidateBasic() error {
 	if _, err := sdk.ValAddressFromBech32(msg.ValidatorAddress); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid validator address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid validator address: %s", err) //nolint: staticcheck
 	}
 	return nil
 }
@@ -154,10 +154,10 @@ func (msg MsgFundCommunityPool) GetSignBytes() []byte {
 // ValidateBasic performs basic MsgFundCommunityPool message validation.
 func (msg MsgFundCommunityPool) ValidateBasic() error {
 	if !msg.Amount.IsValid() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, msg.Amount.String())
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, msg.Amount.String()) //nolint: staticcheck
 	}
 	if _, err := sdk.AccAddressFromBech32(msg.Depositor); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid depositor address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid depositor address: %s", err) //nolint: staticcheck
 	}
 	return nil
 }
@@ -190,7 +190,7 @@ func (msg MsgUpdateParams) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(msg.Authority); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", err) //nolint: staticcheck
 	}
 
 	return msg.Params.ValidateBasic()
@@ -219,7 +219,7 @@ func (msg MsgCommunityPoolSpend) GetSignBytes() []byte {
 // ValidateBasic performs basic MsgCommunityPoolSpend message validation.
 func (msg MsgCommunityPoolSpend) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Authority); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", err) //nolint: staticcheck
 	}
 
 	return msg.Amount.Validate()

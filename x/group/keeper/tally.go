@@ -55,7 +55,7 @@ func (k Keeper) Tally(ctx sdk.Context, p group.Proposal, groupID uint64) (group.
 		}
 
 		if err := tallyResult.Add(vote, member.Member.Weight); err != nil {
-			return group.TallyResult{}, sdkerrors.Wrap(err, "add new vote")
+			return group.TallyResult{}, sdkerrors.Wrap(err, "add new vote") //nolint: staticcheck
 		}
 	}
 

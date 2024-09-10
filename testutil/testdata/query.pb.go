@@ -6,21 +6,24 @@ package testdata
 import (
 	context "context"
 	fmt "fmt"
+	io "io"
+	math "math"
+	math_bits "math/bits"
+
 	types "github.com/atomone-hub/atomone/codec/types"
 	grpc1 "github.com/cosmos/gogoproto/grpc"
 	proto "github.com/cosmos/gogoproto/proto"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	io "io"
-	math "math"
-	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
+var (
+	_ = proto.Marshal
+	_ = fmt.Errorf
+	_ = math.Inf
+)
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -38,9 +41,11 @@ func (*EchoRequest) ProtoMessage()    {}
 func (*EchoRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_b00998f1336963e3, []int{0}
 }
+
 func (m *EchoRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *EchoRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_EchoRequest.Marshal(b, m, deterministic)
@@ -53,12 +58,15 @@ func (m *EchoRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return b[:n], nil
 	}
 }
+
 func (m *EchoRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_EchoRequest.Merge(m, src)
 }
+
 func (m *EchoRequest) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *EchoRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_EchoRequest.DiscardUnknown(m)
 }
@@ -82,9 +90,11 @@ func (*EchoResponse) ProtoMessage()    {}
 func (*EchoResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_b00998f1336963e3, []int{1}
 }
+
 func (m *EchoResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *EchoResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_EchoResponse.Marshal(b, m, deterministic)
@@ -97,12 +107,15 @@ func (m *EchoResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error)
 		return b[:n], nil
 	}
 }
+
 func (m *EchoResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_EchoResponse.Merge(m, src)
 }
+
 func (m *EchoResponse) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *EchoResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_EchoResponse.DiscardUnknown(m)
 }
@@ -126,9 +139,11 @@ func (*SayHelloRequest) ProtoMessage()    {}
 func (*SayHelloRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_b00998f1336963e3, []int{2}
 }
+
 func (m *SayHelloRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *SayHelloRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_SayHelloRequest.Marshal(b, m, deterministic)
@@ -141,12 +156,15 @@ func (m *SayHelloRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, err
 		return b[:n], nil
 	}
 }
+
 func (m *SayHelloRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_SayHelloRequest.Merge(m, src)
 }
+
 func (m *SayHelloRequest) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *SayHelloRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_SayHelloRequest.DiscardUnknown(m)
 }
@@ -170,9 +188,11 @@ func (*SayHelloResponse) ProtoMessage()    {}
 func (*SayHelloResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_b00998f1336963e3, []int{3}
 }
+
 func (m *SayHelloResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *SayHelloResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_SayHelloResponse.Marshal(b, m, deterministic)
@@ -185,12 +205,15 @@ func (m *SayHelloResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, er
 		return b[:n], nil
 	}
 }
+
 func (m *SayHelloResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_SayHelloResponse.Merge(m, src)
 }
+
 func (m *SayHelloResponse) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *SayHelloResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_SayHelloResponse.DiscardUnknown(m)
 }
@@ -214,9 +237,11 @@ func (*TestAnyRequest) ProtoMessage()    {}
 func (*TestAnyRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_b00998f1336963e3, []int{4}
 }
+
 func (m *TestAnyRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *TestAnyRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_TestAnyRequest.Marshal(b, m, deterministic)
@@ -229,12 +254,15 @@ func (m *TestAnyRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, erro
 		return b[:n], nil
 	}
 }
+
 func (m *TestAnyRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_TestAnyRequest.Merge(m, src)
 }
+
 func (m *TestAnyRequest) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *TestAnyRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_TestAnyRequest.DiscardUnknown(m)
 }
@@ -258,9 +286,11 @@ func (*TestAnyResponse) ProtoMessage()    {}
 func (*TestAnyResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_b00998f1336963e3, []int{5}
 }
+
 func (m *TestAnyResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *TestAnyResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_TestAnyResponse.Marshal(b, m, deterministic)
@@ -273,12 +303,15 @@ func (m *TestAnyResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, err
 		return b[:n], nil
 	}
 }
+
 func (m *TestAnyResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_TestAnyResponse.Merge(m, src)
 }
+
 func (m *TestAnyResponse) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *TestAnyResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_TestAnyResponse.DiscardUnknown(m)
 }
@@ -331,8 +364,10 @@ var fileDescriptor_b00998f1336963e3 = []byte{
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
-var _ context.Context
-var _ grpc.ClientConn
+var (
+	_ context.Context
+	_ grpc.ClientConn
+)
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
@@ -390,15 +425,16 @@ type QueryServer interface {
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
-type UnimplementedQueryServer struct {
-}
+type UnimplementedQueryServer struct{}
 
 func (*UnimplementedQueryServer) Echo(ctx context.Context, req *EchoRequest) (*EchoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Echo not implemented")
 }
+
 func (*UnimplementedQueryServer) SayHello(ctx context.Context, req *SayHelloRequest) (*SayHelloResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SayHello not implemented")
 }
+
 func (*UnimplementedQueryServer) TestAny(ctx context.Context, req *TestAnyRequest) (*TestAnyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TestAny not implemented")
 }
@@ -683,6 +719,7 @@ func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+
 func (m *EchoRequest) Size() (n int) {
 	if m == nil {
 		return 0
@@ -764,9 +801,11 @@ func (m *TestAnyResponse) Size() (n int) {
 func sovQuery(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
+
 func sozQuery(x uint64) (n int) {
 	return sovQuery(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
+
 func (m *EchoRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -849,6 +888,7 @@ func (m *EchoRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *EchoResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -931,6 +971,7 @@ func (m *EchoResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *SayHelloRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1013,6 +1054,7 @@ func (m *SayHelloRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *SayHelloResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1095,6 +1137,7 @@ func (m *SayHelloResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *TestAnyRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1181,6 +1224,7 @@ func (m *TestAnyRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *TestAnyResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1267,6 +1311,7 @@ func (m *TestAnyResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func skipQuery(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

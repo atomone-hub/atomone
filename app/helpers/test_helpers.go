@@ -14,6 +14,7 @@ import (
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	tmtypes "github.com/cometbft/cometbft/types"
 
+	atomoneapp "github.com/atomone-hub/atomone/app"
 	"github.com/atomone-hub/atomone/baseapp"
 	codectypes "github.com/atomone-hub/atomone/codec/types"
 	cryptocodec "github.com/atomone-hub/atomone/crypto/codec"
@@ -25,8 +26,6 @@ import (
 	authtypes "github.com/atomone-hub/atomone/x/auth/types"
 	banktypes "github.com/atomone-hub/atomone/x/bank/types"
 	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
-
-	atomoneapp "github.com/atomone-hub/atomone/app"
 )
 
 var ParamStoreKey = []byte("paramstore")
@@ -98,7 +97,9 @@ func (ps *paramStore) Set(_ sdk.Context, value *tmproto.ConsensusParams) {
 		panic(err)
 	}
 
-	ps.db.Set(ParamStoreKey, bz)
+	if err := ps.db.Set(ParamStoreKey, bz); err != nil {
+		panic(err)
+	}
 }
 
 func (ps *paramStore) Has(_ sdk.Context) bool {

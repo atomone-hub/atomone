@@ -9,8 +9,9 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/atomone-hub/atomone/server"
 	"github.com/spf13/cobra"
+
+	"github.com/atomone-hub/atomone/server"
 )
 
 // DumpArchiveCmd returns a command to dump the snapshot as portable archive format

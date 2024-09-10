@@ -264,12 +264,12 @@ func incrementCounter(ctx context.Context,
 	switch m := msg.(type) {
 	case *baseapptestutil.MsgCounter:
 		if m.FailOnHandler {
-			return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "message handler failure")
+			return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "message handler failure") //nolint: staticcheck
 		}
 		msgCount = m.Counter
 	case *baseapptestutil.MsgCounter2:
 		if m.FailOnHandler {
-			return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "message handler failure")
+			return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "message handler failure") //nolint: staticcheck
 		}
 		msgCount = m.Counter
 	}
@@ -301,7 +301,7 @@ func anteHandlerTxTest(t *testing.T, capKey storetypes.StoreKey, storeKey []byte
 		counter, failOnAnte := parseTxMemo(t, tx)
 
 		if failOnAnte {
-			return ctx, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "ante handler failure")
+			return ctx, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "ante handler failure") //nolint: staticcheck
 		}
 
 		_, err := incrementingCounter(t, store, storeKey, counter)
@@ -341,7 +341,9 @@ func (ps *paramStore) Set(_ sdk.Context, value *tmproto.ConsensusParams) {
 		panic(err)
 	}
 
-	ps.db.Set(ParamStoreKey, bz)
+	if err := ps.db.Set(ParamStoreKey, bz); err != nil {
+		panic(err)
+	}
 }
 
 func (ps *paramStore) Has(_ sdk.Context) bool {

@@ -30,12 +30,12 @@ func (a SendAuthorization) MsgTypeURL() string {
 func (a SendAuthorization) Accept(ctx sdk.Context, msg sdk.Msg) (authz.AcceptResponse, error) {
 	mSend, ok := msg.(*MsgSend)
 	if !ok {
-		return authz.AcceptResponse{}, sdkerrors.ErrInvalidType.Wrap("type mismatch")
+		return authz.AcceptResponse{}, sdkerrors.ErrInvalidType.Wrap("type mismatch") //nolint: staticcheck
 	}
 
 	limitLeft, isNegative := a.SpendLimit.SafeSub(mSend.Amount...)
 	if isNegative {
-		return authz.AcceptResponse{}, sdkerrors.ErrInsufficientFunds.Wrapf("requested amount is more than spend limit")
+		return authz.AcceptResponse{}, sdkerrors.ErrInsufficientFunds.Wrapf("requested amount is more than spend limit") //nolint: staticcheck
 	}
 
 	isAddrExists := false
@@ -50,7 +50,7 @@ func (a SendAuthorization) Accept(ctx sdk.Context, msg sdk.Msg) (authz.AcceptRes
 	}
 
 	if len(allowedList) > 0 && !isAddrExists {
-		return authz.AcceptResponse{}, sdkerrors.ErrUnauthorized.Wrapf("cannot send to %s address", toAddr)
+		return authz.AcceptResponse{}, sdkerrors.ErrUnauthorized.Wrapf("cannot send to %s address", toAddr) //nolint: staticcheck
 	}
 
 	if limitLeft.IsZero() {
@@ -63,10 +63,10 @@ func (a SendAuthorization) Accept(ctx sdk.Context, msg sdk.Msg) (authz.AcceptRes
 // ValidateBasic implements Authorization.ValidateBasic.
 func (a SendAuthorization) ValidateBasic() error {
 	if len(a.SpendLimit) == 0 {
-		return sdkerrors.ErrInvalidCoins.Wrap("spend limit cannot be nil")
+		return sdkerrors.ErrInvalidCoins.Wrap("spend limit cannot be nil") //nolint: staticcheck
 	}
 	if !a.SpendLimit.IsAllPositive() {
-		return sdkerrors.ErrInvalidCoins.Wrapf("spend limit must be positive")
+		return sdkerrors.ErrInvalidCoins.Wrapf("spend limit must be positive") //nolint: staticcheck
 	}
 
 	found := make(map[string]bool, 0)

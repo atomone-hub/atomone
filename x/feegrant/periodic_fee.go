@@ -23,7 +23,7 @@ func (a *PeriodicAllowance) Accept(ctx sdk.Context, fee sdk.Coins, _ []sdk.Msg) 
 	blockTime := ctx.BlockTime()
 
 	if a.Basic.Expiration != nil && blockTime.After(*a.Basic.Expiration) {
-		return true, sdkerrors.Wrap(ErrFeeLimitExpired, "absolute limit")
+		return true, sdkerrors.Wrap(ErrFeeLimitExpired, "absolute limit") //nolint: staticcheck
 	}
 
 	a.tryResetPeriod(blockTime)
@@ -32,13 +32,13 @@ func (a *PeriodicAllowance) Accept(ctx sdk.Context, fee sdk.Coins, _ []sdk.Msg) 
 	var isNeg bool
 	a.PeriodCanSpend, isNeg = a.PeriodCanSpend.SafeSub(fee...)
 	if isNeg {
-		return false, sdkerrors.Wrap(ErrFeeLimitExceeded, "period limit")
+		return false, sdkerrors.Wrap(ErrFeeLimitExceeded, "period limit") //nolint: staticcheck
 	}
 
 	if a.Basic.SpendLimit != nil {
 		a.Basic.SpendLimit, isNeg = a.Basic.SpendLimit.SafeSub(fee...)
 		if isNeg {
-			return false, sdkerrors.Wrap(ErrFeeLimitExceeded, "absolute limit")
+			return false, sdkerrors.Wrap(ErrFeeLimitExceeded, "absolute limit") //nolint: staticcheck
 		}
 
 		return a.Basic.SpendLimit.IsZero(), nil
@@ -80,27 +80,27 @@ func (a PeriodicAllowance) ValidateBasic() error {
 	}
 
 	if !a.PeriodSpendLimit.IsValid() {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "spend amount is invalid: %s", a.PeriodSpendLimit)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "spend amount is invalid: %s", a.PeriodSpendLimit) //nolint: staticcheck
 	}
 	if !a.PeriodSpendLimit.IsAllPositive() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "spend limit must be positive")
 	}
 	if !a.PeriodCanSpend.IsValid() {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "can spend amount is invalid: %s", a.PeriodCanSpend)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "can spend amount is invalid: %s", a.PeriodCanSpend) //nolint: staticcheck
 	}
 	// We allow 0 for CanSpend
 	if a.PeriodCanSpend.IsAnyNegative() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "can spend must not be negative")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "can spend must not be negative") //nolint: staticcheck
 	}
 
 	// ensure PeriodSpendLimit can be subtracted from total (same coin types)
 	if a.Basic.SpendLimit != nil && !a.PeriodSpendLimit.DenomsSubsetOf(a.Basic.SpendLimit) {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "period spend limit has different currency than basic spend limit")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "period spend limit has different currency than basic spend limit") //nolint: staticcheck
 	}
 
 	// check times
 	if a.Period.Seconds() < 0 {
-		return sdkerrors.Wrap(ErrInvalidDuration, "negative clock step")
+		return sdkerrors.Wrap(ErrInvalidDuration, "negative clock step") //nolint: staticcheck
 	}
 
 	return nil

@@ -3,11 +3,15 @@ package tmservice
 import (
 	"context"
 
-	abci "github.com/cometbft/cometbft/abci/types"
-	gogogrpc "github.com/cosmos/gogoproto/grpc"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
+	abci "github.com/cometbft/cometbft/abci/types"
+
+	gogogrpc "github.com/cosmos/gogoproto/grpc"
+
+	"github.com/cosmos/cosmos-sdk/version"
 
 	"github.com/atomone-hub/atomone/baseapp"
 	"github.com/atomone-hub/atomone/client"
@@ -15,7 +19,6 @@ import (
 	codectypes "github.com/atomone-hub/atomone/codec/types"
 	cryptotypes "github.com/atomone-hub/atomone/crypto/types"
 	qtypes "github.com/atomone-hub/atomone/types/query"
-	"github.com/cosmos/cosmos-sdk/version"
 )
 
 var (

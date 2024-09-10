@@ -3,14 +3,15 @@ package testpb
 
 import (
 	fmt "fmt"
+	io "io"
+	reflect "reflect"
+	sync "sync"
+
 	runtime "github.com/cosmos/cosmos-proto/runtime"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	anypb "google.golang.org/protobuf/types/known/anypb"
-	io "io"
-	reflect "reflect"
-	sync "sync"
 )
 
 var (
@@ -44,17 +45,21 @@ func (x *EchoRequest) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_EchoRequest_messageType fastReflection_EchoRequest_messageType
-var _ protoreflect.MessageType = fastReflection_EchoRequest_messageType{}
+var (
+	_fastReflection_EchoRequest_messageType fastReflection_EchoRequest_messageType
+	_                                       protoreflect.MessageType = fastReflection_EchoRequest_messageType{}
+)
 
 type fastReflection_EchoRequest_messageType struct{}
 
 func (x fastReflection_EchoRequest_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_EchoRequest)(nil)
 }
+
 func (x fastReflection_EchoRequest_messageType) New() protoreflect.Message {
 	return new(fastReflection_EchoRequest)
 }
+
 func (x fastReflection_EchoRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_EchoRequest
 }
@@ -464,17 +469,21 @@ func (x *EchoResponse) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_EchoResponse_messageType fastReflection_EchoResponse_messageType
-var _ protoreflect.MessageType = fastReflection_EchoResponse_messageType{}
+var (
+	_fastReflection_EchoResponse_messageType fastReflection_EchoResponse_messageType
+	_                                        protoreflect.MessageType = fastReflection_EchoResponse_messageType{}
+)
 
 type fastReflection_EchoResponse_messageType struct{}
 
 func (x fastReflection_EchoResponse_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_EchoResponse)(nil)
 }
+
 func (x fastReflection_EchoResponse_messageType) New() protoreflect.Message {
 	return new(fastReflection_EchoResponse)
 }
+
 func (x fastReflection_EchoResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_EchoResponse
 }
@@ -884,17 +893,21 @@ func (x *SayHelloRequest) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_SayHelloRequest_messageType fastReflection_SayHelloRequest_messageType
-var _ protoreflect.MessageType = fastReflection_SayHelloRequest_messageType{}
+var (
+	_fastReflection_SayHelloRequest_messageType fastReflection_SayHelloRequest_messageType
+	_                                           protoreflect.MessageType = fastReflection_SayHelloRequest_messageType{}
+)
 
 type fastReflection_SayHelloRequest_messageType struct{}
 
 func (x fastReflection_SayHelloRequest_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_SayHelloRequest)(nil)
 }
+
 func (x fastReflection_SayHelloRequest_messageType) New() protoreflect.Message {
 	return new(fastReflection_SayHelloRequest)
 }
+
 func (x fastReflection_SayHelloRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_SayHelloRequest
 }
@@ -1304,17 +1317,21 @@ func (x *SayHelloResponse) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_SayHelloResponse_messageType fastReflection_SayHelloResponse_messageType
-var _ protoreflect.MessageType = fastReflection_SayHelloResponse_messageType{}
+var (
+	_fastReflection_SayHelloResponse_messageType fastReflection_SayHelloResponse_messageType
+	_                                            protoreflect.MessageType = fastReflection_SayHelloResponse_messageType{}
+)
 
 type fastReflection_SayHelloResponse_messageType struct{}
 
 func (x fastReflection_SayHelloResponse_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_SayHelloResponse)(nil)
 }
+
 func (x fastReflection_SayHelloResponse_messageType) New() protoreflect.Message {
 	return new(fastReflection_SayHelloResponse)
 }
+
 func (x fastReflection_SayHelloResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_SayHelloResponse
 }
@@ -1724,17 +1741,21 @@ func (x *TestAnyRequest) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_TestAnyRequest_messageType fastReflection_TestAnyRequest_messageType
-var _ protoreflect.MessageType = fastReflection_TestAnyRequest_messageType{}
+var (
+	_fastReflection_TestAnyRequest_messageType fastReflection_TestAnyRequest_messageType
+	_                                          protoreflect.MessageType = fastReflection_TestAnyRequest_messageType{}
+)
 
 type fastReflection_TestAnyRequest_messageType struct{}
 
 func (x fastReflection_TestAnyRequest_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_TestAnyRequest)(nil)
 }
+
 func (x fastReflection_TestAnyRequest_messageType) New() protoreflect.Message {
 	return new(fastReflection_TestAnyRequest)
 }
+
 func (x fastReflection_TestAnyRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_TestAnyRequest
 }
@@ -2159,17 +2180,21 @@ func (x *TestAnyResponse) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_TestAnyResponse_messageType fastReflection_TestAnyResponse_messageType
-var _ protoreflect.MessageType = fastReflection_TestAnyResponse_messageType{}
+var (
+	_fastReflection_TestAnyResponse_messageType fastReflection_TestAnyResponse_messageType
+	_                                           protoreflect.MessageType = fastReflection_TestAnyResponse_messageType{}
+)
 
 type fastReflection_TestAnyResponse_messageType struct{}
 
 func (x fastReflection_TestAnyResponse_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_TestAnyResponse)(nil)
 }
+
 func (x fastReflection_TestAnyResponse_messageType) New() protoreflect.Message {
 	return new(fastReflection_TestAnyResponse)
 }
+
 func (x fastReflection_TestAnyResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_TestAnyResponse
 }
@@ -2849,17 +2874,20 @@ func file_testpb_query_proto_rawDescGZIP() []byte {
 	return file_testpb_query_proto_rawDescData
 }
 
-var file_testpb_query_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
-var file_testpb_query_proto_goTypes = []interface{}{
-	(*EchoRequest)(nil),      // 0: testpb.EchoRequest
-	(*EchoResponse)(nil),     // 1: testpb.EchoResponse
-	(*SayHelloRequest)(nil),  // 2: testpb.SayHelloRequest
-	(*SayHelloResponse)(nil), // 3: testpb.SayHelloResponse
-	(*TestAnyRequest)(nil),   // 4: testpb.TestAnyRequest
-	(*TestAnyResponse)(nil),  // 5: testpb.TestAnyResponse
-	(*anypb.Any)(nil),        // 6: google.protobuf.Any
-	(*HasAnimal)(nil),        // 7: testpb.HasAnimal
-}
+var (
+	file_testpb_query_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+	file_testpb_query_proto_goTypes  = []interface{}{
+		(*EchoRequest)(nil),      // 0: testpb.EchoRequest
+		(*EchoResponse)(nil),     // 1: testpb.EchoResponse
+		(*SayHelloRequest)(nil),  // 2: testpb.SayHelloRequest
+		(*SayHelloResponse)(nil), // 3: testpb.SayHelloResponse
+		(*TestAnyRequest)(nil),   // 4: testpb.TestAnyRequest
+		(*TestAnyResponse)(nil),  // 5: testpb.TestAnyResponse
+		(*anypb.Any)(nil),        // 6: google.protobuf.Any
+		(*HasAnimal)(nil),        // 7: testpb.HasAnimal
+	}
+)
+
 var file_testpb_query_proto_depIdxs = []int32{
 	6, // 0: testpb.TestAnyRequest.any_animal:type_name -> google.protobuf.Any
 	7, // 1: testpb.TestAnyResponse.has_animal:type_name -> testpb.HasAnimal

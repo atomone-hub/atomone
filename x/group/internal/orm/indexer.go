@@ -21,7 +21,7 @@ type Indexer struct {
 // NewIndexer returns an indexer that supports multiple reference keys for an entity.
 func NewIndexer(indexerFunc IndexerFunc) (*Indexer, error) {
 	if indexerFunc == nil {
-		return nil, errors.ErrORMInvalidArgument.Wrap("Indexer func must not be nil")
+		return nil, errors.ErrORMInvalidArgument.Wrap("Indexer func must not be nil") //nolint: staticcheck
 	}
 	return &Indexer{
 		indexerFunc: pruneEmptyKeys(indexerFunc),
@@ -32,7 +32,7 @@ func NewIndexer(indexerFunc IndexerFunc) (*Indexer, error) {
 // NewUniqueIndexer returns an indexer that requires exactly one reference keys for an entity.
 func NewUniqueIndexer(f UniqueIndexerFunc) (*Indexer, error) {
 	if f == nil {
-		return nil, errors.ErrORMInvalidArgument.Wrap("Indexer func must not be nil")
+		return nil, errors.ErrORMInvalidArgument.Wrap("Indexer func must not be nil") //nolint: staticcheck
 	}
 	adaptor := func(indexerFunc UniqueIndexerFunc) IndexerFunc {
 		return func(v interface{}) ([]interface{}, error) {
@@ -126,7 +126,7 @@ func uniqueKeysAddFunc(store sdk.KVStore, secondaryIndexKey interface{}, rowID R
 		return err
 	}
 	if len(secondaryIndexKeyBytes) == 0 {
-		return sdkerrors.Wrap(errors.ErrORMInvalidArgument, "empty index key")
+		return sdkerrors.Wrap(errors.ErrORMInvalidArgument, "empty index key") //nolint: staticcheck
 	}
 
 	if err := checkUniqueIndexKey(store, secondaryIndexKeyBytes); err != nil {
@@ -159,7 +159,7 @@ func multiKeyAddFunc(store sdk.KVStore, secondaryIndexKey interface{}, rowID Row
 		return err
 	}
 	if len(secondaryIndexKeyBytes) == 0 {
-		return sdkerrors.Wrap(errors.ErrORMInvalidArgument, "empty index key")
+		return sdkerrors.Wrap(errors.ErrORMInvalidArgument, "empty index key") //nolint: staticcheck
 	}
 
 	encodedKey, err := buildKeyFromParts([]interface{}{secondaryIndexKey, []byte(rowID)})
@@ -167,7 +167,7 @@ func multiKeyAddFunc(store sdk.KVStore, secondaryIndexKey interface{}, rowID Row
 		return err
 	}
 	if len(encodedKey) == 0 {
-		return sdkerrors.Wrap(errors.ErrORMInvalidArgument, "empty index key")
+		return sdkerrors.Wrap(errors.ErrORMInvalidArgument, "empty index key") //nolint: staticcheck
 	}
 
 	store.Set(encodedKey, []byte{})

@@ -362,10 +362,10 @@ func GetConfig(v *viper.Viper) (Config, error) {
 // ValidateBasic returns an error if min-gas-prices field is empty in BaseConfig. Otherwise, it returns nil.
 func (c Config) ValidateBasic() error {
 	if c.BaseConfig.MinGasPrices == "" {
-		return sdkerrors.ErrAppConfig.Wrap("set min gas price in app.toml or flag or env variable")
+		return sdkerrors.ErrAppConfig.Wrap("set min gas price in app.toml or flag or env variable") //nolint: staticcheck
 	}
 	if c.Pruning == pruningtypes.PruningOptionEverything && c.StateSync.SnapshotInterval > 0 {
-		return sdkerrors.ErrAppConfig.Wrapf(
+		return sdkerrors.ErrAppConfig.Wrapf( //nolint: staticcheck
 			"cannot enable state sync snapshots with '%s' pruning setting", pruningtypes.PruningOptionEverything,
 		)
 	}

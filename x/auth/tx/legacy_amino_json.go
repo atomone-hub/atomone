@@ -37,18 +37,18 @@ func (s signModeLegacyAminoJSONHandler) GetSignBytes(mode signingtypes.SignMode,
 	}
 
 	if protoTx.txBodyHasUnknownNonCriticals {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, aminoNonCriticalFieldsError)
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, aminoNonCriticalFieldsError) //nolint: staticcheck
 	}
 
 	body := protoTx.tx.Body
 
 	if len(body.ExtensionOptions) != 0 || len(body.NonCriticalExtensionOptions) != 0 {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "%s does not support protobuf extension options", signingtypes.SignMode_SIGN_MODE_LEGACY_AMINO_JSON)
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "%s does not support protobuf extension options", signingtypes.SignMode_SIGN_MODE_LEGACY_AMINO_JSON) //nolint: staticcheck
 	}
 
 	addr := data.Address
 	if addr == "" {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "got empty address in %s handler", signingtypes.SignMode_SIGN_MODE_LEGACY_AMINO_JSON)
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "got empty address in %s handler", signingtypes.SignMode_SIGN_MODE_LEGACY_AMINO_JSON) //nolint: staticcheck
 	}
 
 	tip := protoTx.GetTip()

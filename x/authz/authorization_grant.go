@@ -14,11 +14,11 @@ import (
 // which is passed into the `blockTime` arg.
 func NewGrant(blockTime time.Time, a Authorization, expiration *time.Time) (Grant, error) {
 	if expiration != nil && !expiration.After(blockTime) {
-		return Grant{}, sdkerrors.Wrapf(ErrInvalidExpirationTime, "expiration must be after the current block time (%v), got %v", blockTime.Format(time.RFC3339), expiration.Format(time.RFC3339))
+		return Grant{}, sdkerrors.Wrapf(ErrInvalidExpirationTime, "expiration must be after the current block time (%v), got %v", blockTime.Format(time.RFC3339), expiration.Format(time.RFC3339)) //nolint: staticcheck
 	}
 	msg, ok := a.(proto.Message)
 	if !ok {
-		return Grant{}, sdkerrors.ErrPackAny.Wrapf("cannot proto marshal %T", a)
+		return Grant{}, sdkerrors.ErrPackAny.Wrapf("cannot proto marshal %T", a) //nolint: staticcheck
 	}
 	any, err := cdctypes.NewAnyWithValue(msg)
 	if err != nil {
@@ -41,12 +41,12 @@ func (g Grant) UnpackInterfaces(unpacker cdctypes.AnyUnpacker) error {
 // GetAuthorization returns the cached value from the Grant.Authorization if present.
 func (g Grant) GetAuthorization() (Authorization, error) {
 	if g.Authorization == nil {
-		return nil, sdkerrors.ErrInvalidType.Wrap("authorization is nil")
+		return nil, sdkerrors.ErrInvalidType.Wrap("authorization is nil") //nolint: staticcheck
 	}
 	av := g.Authorization.GetCachedValue()
 	a, ok := av.(Authorization)
 	if !ok {
-		return nil, sdkerrors.ErrInvalidType.Wrapf("expected %T, got %T", (Authorization)(nil), av)
+		return nil, sdkerrors.ErrInvalidType.Wrapf("expected %T, got %T", (Authorization)(nil), av) //nolint: staticcheck
 	}
 	return a, nil
 }
@@ -55,7 +55,7 @@ func (g Grant) ValidateBasic() error {
 	av := g.Authorization.GetCachedValue()
 	a, ok := av.(Authorization)
 	if !ok {
-		return sdkerrors.ErrInvalidType.Wrapf("expected %T, got %T", (Authorization)(nil), av)
+		return sdkerrors.ErrInvalidType.Wrapf("expected %T, got %T", (Authorization)(nil), av) //nolint: staticcheck
 	}
 	return a.ValidateBasic()
 }

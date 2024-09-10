@@ -90,14 +90,14 @@ func (msg MsgCreateValidator) ValidateBasic() error {
 	// note that unmarshaling from bech32 ensures both non-empty and valid
 	delAddr, err := sdk.AccAddressFromBech32(msg.DelegatorAddress)
 	if err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid delegator address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid delegator address: %s", err) //nolint: staticcheck
 	}
 	valAddr, err := sdk.ValAddressFromBech32(msg.ValidatorAddress)
 	if err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid validator address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid validator address: %s", err) //nolint: staticcheck
 	}
 	if !sdk.AccAddress(valAddr).Equals(delAddr) {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "validator address is invalid")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "validator address is invalid") //nolint: staticcheck
 	}
 
 	if msg.Pubkey == nil {
@@ -105,15 +105,15 @@ func (msg MsgCreateValidator) ValidateBasic() error {
 	}
 
 	if !msg.Value.IsValid() || !msg.Value.Amount.IsPositive() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid delegation amount")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid delegation amount") //nolint: staticcheck
 	}
 
 	if msg.Description == (Description{}) {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "empty description")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "empty description") //nolint: staticcheck
 	}
 
 	if msg.Commission == (CommissionRates{}) {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "empty commission")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "empty commission") //nolint: staticcheck
 	}
 
 	if err := msg.Commission.Validate(); err != nil {
@@ -121,7 +121,7 @@ func (msg MsgCreateValidator) ValidateBasic() error {
 	}
 
 	if !msg.MinSelfDelegation.IsPositive() {
-		return sdkerrors.Wrap(
+		return sdkerrors.Wrap( //nolint: staticcheck
 			sdkerrors.ErrInvalidRequest,
 			"minimum self delegation must be a positive integer",
 		)
@@ -173,15 +173,15 @@ func (msg MsgEditValidator) GetSignBytes() []byte {
 // ValidateBasic implements the sdk.Msg interface.
 func (msg MsgEditValidator) ValidateBasic() error {
 	if _, err := sdk.ValAddressFromBech32(msg.ValidatorAddress); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid validator address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid validator address: %s", err) //nolint: staticcheck
 	}
 
 	if msg.Description == (Description{}) {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "empty description")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "empty description") //nolint: staticchec
 	}
 
 	if msg.MinSelfDelegation != nil && !msg.MinSelfDelegation.IsPositive() {
-		return sdkerrors.Wrap(
+		return sdkerrors.Wrap( //nolint: staticchec
 			sdkerrors.ErrInvalidRequest,
 			"minimum self delegation must be a positive integer",
 		)
@@ -189,7 +189,7 @@ func (msg MsgEditValidator) ValidateBasic() error {
 
 	if msg.CommissionRate != nil {
 		if msg.CommissionRate.GT(math.LegacyOneDec()) || msg.CommissionRate.IsNegative() {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "commission rate must be between 0 and 1 (inclusive)")
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "commission rate must be between 0 and 1 (inclusive)") //nolint: staticchec
 		}
 	}
 
@@ -228,14 +228,14 @@ func (msg MsgDelegate) GetSignBytes() []byte {
 // ValidateBasic implements the sdk.Msg interface.
 func (msg MsgDelegate) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.DelegatorAddress); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid delegator address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid delegator address: %s", err) //nolint: staticcheck
 	}
 	if _, err := sdk.ValAddressFromBech32(msg.ValidatorAddress); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid validator address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid validator address: %s", err) //nolint: staticcheck
 	}
 
 	if !msg.Amount.IsValid() || !msg.Amount.Amount.IsPositive() {
-		return sdkerrors.Wrap(
+		return sdkerrors.Wrap( //nolint: staticchec
 			sdkerrors.ErrInvalidRequest,
 			"invalid delegation amount",
 		)
@@ -279,17 +279,17 @@ func (msg MsgBeginRedelegate) GetSignBytes() []byte {
 // ValidateBasic implements the sdk.Msg interface.
 func (msg MsgBeginRedelegate) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.DelegatorAddress); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid delegator address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid delegator address: %s", err) //nolint: staticcheck
 	}
 	if _, err := sdk.ValAddressFromBech32(msg.ValidatorSrcAddress); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid source validator address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid source validator address: %s", err) //nolint: staticcheck
 	}
 	if _, err := sdk.ValAddressFromBech32(msg.ValidatorDstAddress); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid destination validator address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid destination validator address: %s", err) //nolint: staticcheck
 	}
 
 	if !msg.Amount.IsValid() || !msg.Amount.Amount.IsPositive() {
-		return sdkerrors.Wrap(
+		return sdkerrors.Wrap( //nolint: staticcheck
 			sdkerrors.ErrInvalidRequest,
 			"invalid shares amount",
 		)
@@ -330,14 +330,14 @@ func (msg MsgUndelegate) GetSignBytes() []byte {
 // ValidateBasic implements the sdk.Msg interface.
 func (msg MsgUndelegate) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.DelegatorAddress); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid delegator address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid delegator address: %s", err) //nolint: staticcheck
 	}
 	if _, err := sdk.ValAddressFromBech32(msg.ValidatorAddress); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid validator address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid validator address: %s", err) //nolint: staticcheck
 	}
 
 	if !msg.Amount.IsValid() || !msg.Amount.Amount.IsPositive() {
-		return sdkerrors.Wrap(
+		return sdkerrors.Wrap( //nolint: staticchec
 			sdkerrors.ErrInvalidRequest,
 			"invalid shares amount",
 		)
@@ -378,21 +378,21 @@ func (msg MsgCancelUnbondingDelegation) GetSignBytes() []byte {
 // ValidateBasic implements the sdk.Msg interface.
 func (msg MsgCancelUnbondingDelegation) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.DelegatorAddress); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid delegator address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid delegator address: %s", err) //nolint: staticcheck
 	}
 	if _, err := sdk.ValAddressFromBech32(msg.ValidatorAddress); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid validator address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid validator address: %s", err) //nolint: staticcheck
 	}
 
 	if !msg.Amount.IsValid() || !msg.Amount.Amount.IsPositive() {
-		return sdkerrors.Wrap(
+		return sdkerrors.Wrap( //nolint: staticcheck
 			sdkerrors.ErrInvalidRequest,
 			"invalid amount",
 		)
 	}
 
 	if msg.CreationHeight <= 0 {
-		return sdkerrors.Wrap(
+		return sdkerrors.Wrap( //nolint: staticcheck
 			sdkerrors.ErrInvalidRequest,
 			"invalid height",
 		)
@@ -411,7 +411,7 @@ func (m *MsgUpdateParams) GetSignBytes() []byte {
 // ValidateBasic executes sanity validation on the provided data
 func (m *MsgUpdateParams) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
-		return sdkerrors.Wrap(err, "invalid authority address")
+		return sdkerrors.Wrap(err, "invalid authority address") //nolint: staticcheck
 	}
 	return m.Params.Validate()
 }

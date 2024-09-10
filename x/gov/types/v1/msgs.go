@@ -75,7 +75,7 @@ func (m MsgSubmitProposal) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.Proposer); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proposer address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proposer address: %s", err) //nolint: staticcheck
 	}
 
 	deposit := sdk.NewCoins(m.InitialDeposit...)
@@ -140,7 +140,7 @@ func (msg MsgDeposit) Type() string { return sdk.MsgTypeURL(&msg) }
 // ValidateBasic implements the sdk.Msg interface.
 func (msg MsgDeposit) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Depositor); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid depositor address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid depositor address: %s", err) //nolint: staticcheck
 	}
 	amount := sdk.NewCoins(msg.Amount...)
 	if !amount.IsValid() {
@@ -181,7 +181,7 @@ func (msg MsgVote) Type() string { return sdk.MsgTypeURL(&msg) }
 // ValidateBasic implements the sdk.Msg interface.
 func (msg MsgVote) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Voter); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid voter address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid voter address: %s", err) //nolint: staticcheck
 	}
 	if !ValidVoteOption(msg.Option) {
 		return sdkerrors.Wrap(types.ErrInvalidVote, msg.Option.String()) //nolint:staticcheck
@@ -218,7 +218,7 @@ func (msg MsgVoteWeighted) Type() string { return sdk.MsgTypeURL(&msg) }
 // ValidateBasic implements the sdk.Msg interface.
 func (msg MsgVoteWeighted) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Voter); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid voter address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid voter address: %s", err) //nolint: staticcheck
 	}
 	if len(msg.Options) == 0 {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, WeightedVoteOptions(msg.Options).String()) //nolint:staticcheck
@@ -305,7 +305,7 @@ func (msg MsgUpdateParams) Type() string { return sdk.MsgTypeURL(&msg) }
 // ValidateBasic implements the sdk.Msg interface.
 func (msg MsgUpdateParams) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Authority); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", err) //nolint: staticcheck
 	}
 
 	return msg.Params.ValidateBasic()

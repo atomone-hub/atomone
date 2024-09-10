@@ -3,8 +3,9 @@ package snapshot
 import (
 	"fmt"
 
-	"github.com/atomone-hub/atomone/server"
 	"github.com/spf13/cobra"
+
+	"github.com/atomone-hub/atomone/server"
 )
 
 // ListSnapshotsCmd returns the command to list local snapshots

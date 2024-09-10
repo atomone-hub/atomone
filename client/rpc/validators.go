@@ -6,8 +6,9 @@ import (
 	"strconv"
 	"strings"
 
-	tmtypes "github.com/cometbft/cometbft/types"
 	"github.com/spf13/cobra"
+
+	tmtypes "github.com/cometbft/cometbft/types"
 
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/client/flags"

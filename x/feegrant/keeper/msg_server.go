@@ -39,7 +39,7 @@ func (k msgServer) GrantAllowance(goCtx context.Context, msg *feegrant.MsgGrantA
 
 	// Checking for duplicate entry
 	if f, _ := k.Keeper.GetAllowance(ctx, granter, grantee); f != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "fee allowance already exists")
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "fee allowance already exists") //nolint: staticcheck
 	}
 
 	allowance, err := msg.GetFeeAllowanceI()

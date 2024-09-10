@@ -38,7 +38,7 @@ type table struct {
 // newTable creates a new table
 func newTable(prefix [2]byte, model codec.ProtoMarshaler, cdc codec.Codec) (*table, error) {
 	if model == nil {
-		return nil, errors.ErrORMInvalidArgument.Wrap("Model must not be nil")
+		return nil, errors.ErrORMInvalidArgument.Wrap("Model must not be nil") //nolint: staticcheck
 	}
 	tp := reflect.TypeOf(model)
 	if tp.Kind() == reflect.Ptr {
@@ -119,13 +119,13 @@ func (a table) Set(store sdk.KVStore, rowID RowID, newValue codec.ProtoMarshaler
 
 	newValueEncoded, err := a.cdc.Marshal(newValue)
 	if err != nil {
-		return sdkerrors.Wrapf(err, "failed to serialize %T", newValue)
+		return sdkerrors.Wrapf(err, "failed to serialize %T", newValue) //nolint: staticcheck
 	}
 
 	pStore.Set(rowID, newValueEncoded)
 	for i, itc := range a.afterSet {
 		if err := itc(store, rowID, newValue, oldValue); err != nil {
-			return sdkerrors.Wrapf(err, "interceptor %d failed", i)
+			return sdkerrors.Wrapf(err, "interceptor %d failed", i) //nolint: staticcheck
 		}
 	}
 	return nil
@@ -151,13 +151,13 @@ func (a table) Delete(store sdk.KVStore, rowID RowID) error {
 
 	oldValue := reflect.New(a.model).Interface().(codec.ProtoMarshaler)
 	if err := a.GetOne(store, rowID, oldValue); err != nil {
-		return sdkerrors.Wrap(err, "load old value")
+		return sdkerrors.Wrap(err, "load old value") //nolint: staticcheck
 	}
 	pStore.Delete(rowID)
 
 	for i, itc := range a.afterDelete {
 		if err := itc(store, rowID, oldValue); err != nil {
-			return sdkerrors.Wrapf(err, "delete interceptor %d failed", i)
+			return sdkerrors.Wrapf(err, "delete interceptor %d failed", i) //nolint: staticcheck
 		}
 	}
 	return nil
@@ -203,7 +203,7 @@ func (a table) GetOne(store sdk.KVStore, rowID RowID, dest codec.ProtoMarshaler)
 // CONTRACT: No writes may happen within a domain while an iterator exists over it.
 func (a table) PrefixScan(store sdk.KVStore, start, end RowID) (Iterator, error) {
 	if start != nil && end != nil && bytes.Compare(start, end) >= 0 {
-		return NewInvalidIterator(), sdkerrors.Wrap(errors.ErrORMInvalidArgument, "start must be before end")
+		return NewInvalidIterator(), sdkerrors.Wrap(errors.ErrORMInvalidArgument, "start must be before end") //nolint: staticcheck
 	}
 	pStore := prefix.NewStore(store, a.prefix[:])
 	return &typeSafeIterator{
@@ -224,7 +224,7 @@ func (a table) PrefixScan(store sdk.KVStore, start, end RowID) (Iterator, error)
 // CONTRACT: No writes may happen within a domain while an iterator exists over it.
 func (a table) ReversePrefixScan(store sdk.KVStore, start, end RowID) (Iterator, error) {
 	if start != nil && end != nil && bytes.Compare(start, end) >= 0 {
-		return NewInvalidIterator(), sdkerrors.Wrap(errors.ErrORMInvalidArgument, "start must be before end")
+		return NewInvalidIterator(), sdkerrors.Wrap(errors.ErrORMInvalidArgument, "start must be before end") //nolint: staticcheck
 	}
 	pStore := prefix.NewStore(store, a.prefix[:])
 	return &typeSafeIterator{
@@ -238,7 +238,7 @@ func (a table) ReversePrefixScan(store sdk.KVStore, start, end RowID) (Iterator,
 func (a table) Export(store sdk.KVStore, dest ModelSlicePtr) (uint64, error) {
 	it, err := a.PrefixScan(store, nil, nil)
 	if err != nil {
-		return 0, sdkerrors.Wrap(err, "table Export failure when exporting table data")
+		return 0, sdkerrors.Wrap(err, "table Export failure when exporting table data") //nolint: staticcheck
 	}
 	_, err = ReadAll(it, dest)
 	if err != nil {
@@ -261,14 +261,14 @@ func (a table) Import(store sdk.KVStore, data interface{}, _ uint64) error {
 	// Provided data must be a slice
 	modelSlice := reflect.ValueOf(data)
 	if modelSlice.Kind() != reflect.Slice {
-		return sdkerrors.Wrap(errors.ErrORMInvalidArgument, "data must be a slice")
+		return sdkerrors.Wrap(errors.ErrORMInvalidArgument, "data must be a slice") //nolint: staticcheck
 	}
 
 	// Import values from slice
 	for i := 0; i < modelSlice.Len(); i++ {
 		obj, ok := modelSlice.Index(i).Interface().(PrimaryKeyed)
 		if !ok {
-			return sdkerrors.Wrapf(errors.ErrORMInvalidArgument, "unsupported type :%s", reflect.TypeOf(data).Elem().Elem())
+			return sdkerrors.Wrapf(errors.ErrORMInvalidArgument, "unsupported type :%s", reflect.TypeOf(data).Elem().Elem()) //nolint: staticcheck
 		}
 		err := a.Create(store, PrimaryKey(obj), obj)
 		if err != nil {

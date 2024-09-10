@@ -3,10 +3,12 @@ package baseapp
 import (
 	"fmt"
 
-	abci "github.com/cometbft/cometbft/abci/types"
-	gogogrpc "github.com/cosmos/gogoproto/grpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/encoding"
+
+	abci "github.com/cometbft/cometbft/abci/types"
+
+	gogogrpc "github.com/cosmos/gogoproto/grpc"
 
 	"github.com/atomone-hub/atomone/client/grpc/reflection"
 	"github.com/atomone-hub/atomone/codec"

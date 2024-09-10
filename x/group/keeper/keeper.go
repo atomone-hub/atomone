@@ -400,12 +400,12 @@ func (k Keeper) TallyProposalsAtVPEnd(ctx sdk.Context) error {
 	for _, proposal := range proposals {
 		policyInfo, err := k.getGroupPolicyInfo(ctx, proposal.GroupPolicyAddress)
 		if err != nil {
-			return sdkerrors.Wrap(err, "group policy")
+			return sdkerrors.Wrap(err, "group policy") //nolint: staticcheck
 		}
 
 		electorate, err := k.getGroupInfo(ctx, policyInfo.GroupId)
 		if err != nil {
-			return sdkerrors.Wrap(err, "group")
+			return sdkerrors.Wrap(err, "group") //nolint: staticcheck
 		}
 
 		proposalID := proposal.Id
@@ -426,11 +426,11 @@ func (k Keeper) TallyProposalsAtVPEnd(ctx sdk.Context) error {
 			}
 		} else if proposal.Status == group.PROPOSAL_STATUS_SUBMITTED {
 			if err := k.doTallyAndUpdate(ctx, &proposal, electorate, policyInfo); err != nil {
-				return sdkerrors.Wrap(err, "doTallyAndUpdate")
+				return sdkerrors.Wrap(err, "doTallyAndUpdate") //nolint: staticcheck
 			}
 
 			if err := k.proposalTable.Update(ctx.KVStore(k.key), proposal.Id, &proposal); err != nil {
-				return sdkerrors.Wrap(err, "proposal update")
+				return sdkerrors.Wrap(err, "proposal update") //nolint: staticcheck
 			}
 		}
 		// Note: We do nothing if the proposal has been marked as ACCEPTED or

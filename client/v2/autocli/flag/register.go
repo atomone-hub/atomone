@@ -104,7 +104,7 @@ func (b *Builder) addMessageFlags(ctx context.Context, flagSet *pflag.FlagSet, m
 			flag.Deprecated = opts.Deprecated
 			flag.ShorthandDeprecated = opts.ShorthandDeprecated
 			flag.Hidden = opts.Hidden
-			flag.NoOptDefVal = opts.NoOptDefaultValue
+			// flag.NoOptDefVal = opts.NoOptDefaultValue // note: not available in v0.3.1, only v0.3.1!
 		}
 	})
 

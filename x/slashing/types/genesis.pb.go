@@ -5,19 +5,22 @@ package types
 
 import (
 	fmt "fmt"
+	io "io"
+	math "math"
+	math_bits "math/bits"
+
 	_ "github.com/atomone-hub/atomone/types/tx/amino"
 	_ "github.com/cosmos/cosmos-proto"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	proto "github.com/cosmos/gogoproto/proto"
-	io "io"
-	math "math"
-	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
+var (
+	_ = proto.Marshal
+	_ = fmt.Errorf
+	_ = math.Inf
+)
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -43,9 +46,11 @@ func (*GenesisState) ProtoMessage()    {}
 func (*GenesisState) Descriptor() ([]byte, []int) {
 	return fileDescriptor_82a7ddf1314dad08, []int{0}
 }
+
 func (m *GenesisState) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *GenesisState) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_GenesisState.Marshal(b, m, deterministic)
@@ -58,12 +63,15 @@ func (m *GenesisState) XXX_Marshal(b []byte, deterministic bool) ([]byte, error)
 		return b[:n], nil
 	}
 }
+
 func (m *GenesisState) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GenesisState.Merge(m, src)
 }
+
 func (m *GenesisState) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *GenesisState) XXX_DiscardUnknown() {
 	xxx_messageInfo_GenesisState.DiscardUnknown(m)
 }
@@ -105,9 +113,11 @@ func (*SigningInfo) ProtoMessage()    {}
 func (*SigningInfo) Descriptor() ([]byte, []int) {
 	return fileDescriptor_82a7ddf1314dad08, []int{1}
 }
+
 func (m *SigningInfo) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *SigningInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_SigningInfo.Marshal(b, m, deterministic)
@@ -120,12 +130,15 @@ func (m *SigningInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return b[:n], nil
 	}
 }
+
 func (m *SigningInfo) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_SigningInfo.Merge(m, src)
 }
+
 func (m *SigningInfo) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *SigningInfo) XXX_DiscardUnknown() {
 	xxx_messageInfo_SigningInfo.DiscardUnknown(m)
 }
@@ -161,9 +174,11 @@ func (*ValidatorMissedBlocks) ProtoMessage()    {}
 func (*ValidatorMissedBlocks) Descriptor() ([]byte, []int) {
 	return fileDescriptor_82a7ddf1314dad08, []int{2}
 }
+
 func (m *ValidatorMissedBlocks) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *ValidatorMissedBlocks) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ValidatorMissedBlocks.Marshal(b, m, deterministic)
@@ -176,12 +191,15 @@ func (m *ValidatorMissedBlocks) XXX_Marshal(b []byte, deterministic bool) ([]byt
 		return b[:n], nil
 	}
 }
+
 func (m *ValidatorMissedBlocks) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ValidatorMissedBlocks.Merge(m, src)
 }
+
 func (m *ValidatorMissedBlocks) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *ValidatorMissedBlocks) XXX_DiscardUnknown() {
 	xxx_messageInfo_ValidatorMissedBlocks.DiscardUnknown(m)
 }
@@ -216,9 +234,11 @@ func (*MissedBlock) ProtoMessage()    {}
 func (*MissedBlock) Descriptor() ([]byte, []int) {
 	return fileDescriptor_82a7ddf1314dad08, []int{3}
 }
+
 func (m *MissedBlock) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *MissedBlock) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MissedBlock.Marshal(b, m, deterministic)
@@ -231,12 +251,15 @@ func (m *MissedBlock) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return b[:n], nil
 	}
 }
+
 func (m *MissedBlock) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MissedBlock.Merge(m, src)
 }
+
 func (m *MissedBlock) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *MissedBlock) XXX_DiscardUnknown() {
 	xxx_messageInfo_MissedBlock.DiscardUnknown(m)
 }
@@ -494,6 +517,7 @@ func encodeVarintGenesis(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+
 func (m *GenesisState) Size() (n int) {
 	if m == nil {
 		return 0
@@ -569,9 +593,11 @@ func (m *MissedBlock) Size() (n int) {
 func sovGenesis(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
+
 func sozGenesis(x uint64) (n int) {
 	return sovGenesis(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
+
 func (m *GenesisState) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -723,6 +749,7 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *SigningInfo) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -838,6 +865,7 @@ func (m *SigningInfo) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *ValidatorMissedBlocks) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -954,6 +982,7 @@ func (m *ValidatorMissedBlocks) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *MissedBlock) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1043,6 +1072,7 @@ func (m *MissedBlock) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func skipGenesis(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

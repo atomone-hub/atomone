@@ -6,10 +6,11 @@ import (
 	"os"
 	"strings"
 
-	"cosmossdk.io/math"
 	"github.com/spf13/pflag"
 
 	"github.com/cosmos/go-bip39"
+
+	"cosmossdk.io/math"
 
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/client/flags"

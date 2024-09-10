@@ -142,11 +142,11 @@ func (k BaseKeeper) WithMintCoinsRestriction(check MintingRestrictionFn) BaseKee
 func (k BaseKeeper) DelegateCoins(ctx sdk.Context, delegatorAddr, moduleAccAddr sdk.AccAddress, amt sdk.Coins) error {
 	moduleAcc := k.ak.GetAccount(ctx, moduleAccAddr)
 	if moduleAcc == nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "module account %s does not exist", moduleAccAddr)
+		return sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "module account %s does not exist", moduleAccAddr) //nolint: staticcheck
 	}
 
 	if !amt.IsValid() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, amt.String())
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, amt.String()) //nolint: staticcheck
 	}
 
 	balances := sdk.NewCoins()
@@ -154,7 +154,7 @@ func (k BaseKeeper) DelegateCoins(ctx sdk.Context, delegatorAddr, moduleAccAddr 
 	for _, coin := range amt {
 		balance := k.GetBalance(ctx, delegatorAddr, coin.GetDenom())
 		if balance.IsLT(coin) {
-			return sdkerrors.Wrapf(
+			return sdkerrors.Wrapf( //nolint: staticcheck
 				sdkerrors.ErrInsufficientFunds, "failed to delegate; %s is smaller than %s", balance, amt,
 			)
 		}
@@ -167,7 +167,7 @@ func (k BaseKeeper) DelegateCoins(ctx sdk.Context, delegatorAddr, moduleAccAddr 
 	}
 
 	if err := k.trackDelegation(ctx, delegatorAddr, balances, amt); err != nil {
-		return sdkerrors.Wrap(err, "failed to track delegation")
+		return sdkerrors.Wrap(err, "failed to track delegation") //nolint: staticcheck
 	}
 	// emit coin spent event
 	ctx.EventManager().EmitEvent(
@@ -190,11 +190,11 @@ func (k BaseKeeper) DelegateCoins(ctx sdk.Context, delegatorAddr, moduleAccAddr 
 func (k BaseKeeper) UndelegateCoins(ctx sdk.Context, moduleAccAddr, delegatorAddr sdk.AccAddress, amt sdk.Coins) error {
 	moduleAcc := k.ak.GetAccount(ctx, moduleAccAddr)
 	if moduleAcc == nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "module account %s does not exist", moduleAccAddr)
+		return sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "module account %s does not exist", moduleAccAddr) //nolint: staticcheck
 	}
 
 	if !amt.IsValid() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, amt.String())
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, amt.String()) //nolint: staticcheck
 	}
 
 	err := k.subUnlockedCoins(ctx, moduleAccAddr, amt)
@@ -203,7 +203,7 @@ func (k BaseKeeper) UndelegateCoins(ctx sdk.Context, moduleAccAddr, delegatorAdd
 	}
 
 	if err := k.trackUndelegation(ctx, delegatorAddr, amt); err != nil {
-		return sdkerrors.Wrap(err, "failed to track undelegation")
+		return sdkerrors.Wrap(err, "failed to track undelegation") //nolint: staticcheck
 	}
 
 	err = k.addCoins(ctx, delegatorAddr, amt)
@@ -318,11 +318,11 @@ func (k BaseKeeper) SendCoinsFromModuleToAccount(
 ) error {
 	senderAddr := k.ak.GetModuleAddress(senderModule)
 	if senderAddr == nil {
-		panic(sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "module account %s does not exist", senderModule))
+		panic(sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "module account %s does not exist", senderModule)) //nolint: staticcheck
 	}
 
 	if k.BlockedAddr(recipientAddr) {
-		return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not allowed to receive funds", recipientAddr)
+		return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not allowed to receive funds", recipientAddr) //nolint: staticcheck
 	}
 
 	return k.SendCoins(ctx, senderAddr, recipientAddr, amt)
@@ -335,12 +335,12 @@ func (k BaseKeeper) SendCoinsFromModuleToModule(
 ) error {
 	senderAddr := k.ak.GetModuleAddress(senderModule)
 	if senderAddr == nil {
-		panic(sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "module account %s does not exist", senderModule))
+		panic(sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "module account %s does not exist", senderModule)) //nolint: staticcheck
 	}
 
 	recipientAcc := k.ak.GetModuleAccount(ctx, recipientModule)
 	if recipientAcc == nil {
-		panic(sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "module account %s does not exist", recipientModule))
+		panic(sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "module account %s does not exist", recipientModule)) //nolint: staticcheck
 	}
 
 	return k.SendCoins(ctx, senderAddr, recipientAcc.GetAddress(), amt)
@@ -353,7 +353,7 @@ func (k BaseKeeper) SendCoinsFromAccountToModule(
 ) error {
 	recipientAcc := k.ak.GetModuleAccount(ctx, recipientModule)
 	if recipientAcc == nil {
-		panic(sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "module account %s does not exist", recipientModule))
+		panic(sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "module account %s does not exist", recipientModule)) //nolint: staticcheck
 	}
 
 	return k.SendCoins(ctx, senderAddr, recipientAcc.GetAddress(), amt)
@@ -367,11 +367,11 @@ func (k BaseKeeper) DelegateCoinsFromAccountToModule(
 ) error {
 	recipientAcc := k.ak.GetModuleAccount(ctx, recipientModule)
 	if recipientAcc == nil {
-		panic(sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "module account %s does not exist", recipientModule))
+		panic(sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "module account %s does not exist", recipientModule)) //nolint: staticcheck
 	}
 
 	if !recipientAcc.HasPermission(authtypes.Staking) {
-		panic(sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "module account %s does not have permissions to receive delegated coins", recipientModule))
+		panic(sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "module account %s does not have permissions to receive delegated coins", recipientModule)) //nolint: staticcheck
 	}
 
 	return k.DelegateCoins(ctx, senderAddr, recipientAcc.GetAddress(), amt)
@@ -385,11 +385,11 @@ func (k BaseKeeper) UndelegateCoinsFromModuleToAccount(
 ) error {
 	acc := k.ak.GetModuleAccount(ctx, senderModule)
 	if acc == nil {
-		panic(sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "module account %s does not exist", senderModule))
+		panic(sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "module account %s does not exist", senderModule)) //nolint: staticcheck
 	}
 
 	if !acc.HasPermission(authtypes.Staking) {
-		panic(sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "module account %s does not have permissions to undelegate coins", senderModule))
+		panic(sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "module account %s does not have permissions to undelegate coins", senderModule)) //nolint: staticcheck
 	}
 
 	return k.UndelegateCoins(ctx, acc.GetAddress(), recipientAddr, amt)
@@ -405,11 +405,11 @@ func (k BaseKeeper) MintCoins(ctx sdk.Context, moduleName string, amounts sdk.Co
 	}
 	acc := k.ak.GetModuleAccount(ctx, moduleName)
 	if acc == nil {
-		panic(sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "module account %s does not exist", moduleName))
+		panic(sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "module account %s does not exist", moduleName)) //nolint: staticcheck
 	}
 
 	if !acc.HasPermission(authtypes.Minter) {
-		panic(sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "module account %s does not have permissions to mint tokens", moduleName))
+		panic(sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "module account %s does not have permissions to mint tokens", moduleName)) //nolint: staticcheck
 	}
 
 	err = k.addCoins(ctx, acc.GetAddress(), amounts)
@@ -439,11 +439,11 @@ func (k BaseKeeper) MintCoins(ctx sdk.Context, moduleName string, amounts sdk.Co
 func (k BaseKeeper) BurnCoins(ctx sdk.Context, moduleName string, amounts sdk.Coins) error {
 	acc := k.ak.GetModuleAccount(ctx, moduleName)
 	if acc == nil {
-		panic(sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "module account %s does not exist", moduleName))
+		panic(sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "module account %s does not exist", moduleName)) //nolint: staticcheck
 	}
 
 	if !acc.HasPermission(authtypes.Burner) {
-		panic(sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "module account %s does not have permissions to burn tokens", moduleName))
+		panic(sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "module account %s does not have permissions to burn tokens", moduleName)) //nolint: staticcheck
 	}
 
 	err := k.subUnlockedCoins(ctx, acc.GetAddress(), amounts)
@@ -490,7 +490,7 @@ func (k BaseKeeper) setSupply(ctx sdk.Context, coin sdk.Coin) {
 func (k BaseKeeper) trackDelegation(ctx sdk.Context, addr sdk.AccAddress, balance, amt sdk.Coins) error {
 	acc := k.ak.GetAccount(ctx, addr)
 	if acc == nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "account %s does not exist", addr)
+		return sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "account %s does not exist", addr) //nolint: staticcheck
 	}
 
 	vacc, ok := acc.(types.VestingAccount)
@@ -507,7 +507,7 @@ func (k BaseKeeper) trackDelegation(ctx sdk.Context, addr sdk.AccAddress, balanc
 func (k BaseKeeper) trackUndelegation(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) error {
 	acc := k.ak.GetAccount(ctx, addr)
 	if acc == nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "account %s does not exist", addr)
+		return sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "account %s does not exist", addr) //nolint: staticcheck
 	}
 
 	vacc, ok := acc.(types.VestingAccount)

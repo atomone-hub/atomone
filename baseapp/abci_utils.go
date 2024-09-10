@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/cockroachdb/errors"
+
 	abci "github.com/cometbft/cometbft/abci/types"
 
 	sdk "github.com/atomone-hub/atomone/types"

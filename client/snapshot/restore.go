@@ -6,9 +6,10 @@ import (
 
 	"github.com/spf13/cobra"
 
+	dbm "github.com/cometbft/cometbft-db"
+
 	"github.com/atomone-hub/atomone/server"
 	servertypes "github.com/atomone-hub/atomone/server/types"
-	dbm "github.com/cometbft/cometbft-db"
 )
 
 // RestoreSnapshotCmd returns a command to restore a snapshot

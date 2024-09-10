@@ -23,7 +23,7 @@ func FromTmProtoPublicKey(protoPk tmprotocrypto.PublicKey) (cryptotypes.PubKey, 
 			Key: protoPk.Secp256K1,
 		}, nil
 	default:
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "cannot convert %v from Tendermint public key", protoPk)
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "cannot convert %v from Tendermint public key", protoPk) //nolint: staticcheck
 	}
 }
 
@@ -43,7 +43,7 @@ func ToTmProtoPublicKey(pk cryptotypes.PubKey) (tmprotocrypto.PublicKey, error) 
 			},
 		}, nil
 	default:
-		return tmprotocrypto.PublicKey{}, sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "cannot convert %v to Tendermint public key", pk)
+		return tmprotocrypto.PublicKey{}, sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "cannot convert %v to Tendermint public key", pk) //nolint: staticcheck
 	}
 }
 

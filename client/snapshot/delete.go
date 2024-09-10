@@ -3,8 +3,9 @@ package snapshot
 import (
 	"strconv"
 
-	"github.com/atomone-hub/atomone/server"
 	"github.com/spf13/cobra"
+
+	"github.com/atomone-hub/atomone/server"
 )
 
 func DeleteSnapshotCmd() *cobra.Command {

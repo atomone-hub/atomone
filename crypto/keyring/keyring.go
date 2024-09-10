@@ -325,7 +325,7 @@ func (ks keystore) ImportPrivKey(uid, armor, passphrase string) error {
 
 	privKey, _, err := crypto.UnarmorDecryptPrivKey(armor, passphrase)
 	if err != nil {
-		return errors.Wrap(err, "failed to decrypt private key")
+		return errors.Wrap(err, "failed to decrypt private key") //nolint: staticcheck
 	}
 
 	_, err = ks.writeLocalKey(uid, privKey)
@@ -537,7 +537,7 @@ func (ks keystore) KeyByAddress(address sdk.Address) (*Record, error) {
 
 func wrapKeyNotFound(err error, msg string) error {
 	if err == keyring.ErrKeyNotFound {
-		return sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, msg)
+		return sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, msg) //nolint: staticcheck
 	}
 	return err
 }
@@ -942,7 +942,7 @@ func (ks keystore) migrate(key string) (*Record, error) {
 	}
 
 	if len(item.Data) == 0 {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, key)
+		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, key) //nolint: staticcheck
 	}
 
 	// 2. Try to deserialize using proto

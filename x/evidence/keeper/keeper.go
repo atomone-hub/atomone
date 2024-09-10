@@ -66,7 +66,7 @@ func (k *Keeper) SetRouter(rtr types.Router) {
 // no handler exists, an error is returned.
 func (k Keeper) GetEvidenceHandler(evidenceRoute string) (types.Handler, error) {
 	if !k.router.HasRoute(evidenceRoute) {
-		return nil, sdkerrors.Wrap(types.ErrNoEvidenceHandlerExists, evidenceRoute)
+		return nil, sdkerrors.Wrap(types.ErrNoEvidenceHandlerExists, evidenceRoute) //nolint: staticcheck
 	}
 
 	return k.router.GetRoute(evidenceRoute), nil
@@ -78,15 +78,15 @@ func (k Keeper) GetEvidenceHandler(evidenceRoute string) (types.Handler, error) 
 // persisted.
 func (k Keeper) SubmitEvidence(ctx sdk.Context, evidence exported.Evidence) error {
 	if _, ok := k.GetEvidence(ctx, evidence.Hash()); ok {
-		return sdkerrors.Wrap(types.ErrEvidenceExists, evidence.Hash().String())
+		return sdkerrors.Wrap(types.ErrEvidenceExists, evidence.Hash().String()) //nolint: staticcheck
 	}
 	if !k.router.HasRoute(evidence.Route()) {
-		return sdkerrors.Wrap(types.ErrNoEvidenceHandlerExists, evidence.Route())
+		return sdkerrors.Wrap(types.ErrNoEvidenceHandlerExists, evidence.Route()) //nolint: staticcheck
 	}
 
 	handler := k.router.GetRoute(evidence.Route())
 	if err := handler(ctx, evidence); err != nil {
-		return sdkerrors.Wrap(types.ErrInvalidEvidence, err.Error())
+		return sdkerrors.Wrap(types.ErrInvalidEvidence, err.Error()) //nolint: staticcheck
 	}
 
 	ctx.EventManager().EmitEvent(

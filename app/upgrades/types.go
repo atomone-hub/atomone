@@ -1,12 +1,11 @@
 package upgrades
 
 import (
+	"github.com/atomone-hub/atomone/app/keepers"
 	store "github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/types/module"
 	upgradetypes "github.com/atomone-hub/atomone/x/upgrade/types"
-
-	"github.com/atomone-hub/atomone/app/keepers"
 )
 
 // Upgrade defines a struct containing necessary fields that a SoftwareUpgradeProposal

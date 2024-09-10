@@ -23,7 +23,7 @@ func (k Keeper) Unjail(ctx sdk.Context, validatorAddr sdk.ValAddress) error {
 	tokens := validator.TokensFromShares(selfDel.GetShares()).TruncateInt()
 	minSelfBond := validator.GetMinSelfDelegation()
 	if tokens.LT(minSelfBond) {
-		return sdkerrors.Wrapf(
+		return sdkerrors.Wrapf( //nolint: staticcheck
 			types.ErrSelfDelegationTooLowToUnjail, "%s less than %s", tokens, minSelfBond,
 		)
 	}

@@ -70,7 +70,7 @@ func (c configurator) QueryServer() grpc.Server {
 // RegisterMigration implements the Configurator.RegisterMigration method
 func (c configurator) RegisterMigration(moduleName string, fromVersion uint64, handler MigrationHandler) error {
 	if fromVersion == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidVersion, "module migration versions should start at 1")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidVersion, "module migration versions should start at 1") //nolint: staticcheck
 	}
 
 	if c.migrations[moduleName] == nil {
@@ -78,7 +78,7 @@ func (c configurator) RegisterMigration(moduleName string, fromVersion uint64, h
 	}
 
 	if c.migrations[moduleName][fromVersion] != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrLogic, "another migration for module %s and version %d already exists", moduleName, fromVersion)
+		return sdkerrors.Wrapf(sdkerrors.ErrLogic, "another migration for module %s and version %d already exists", moduleName, fromVersion) //nolint: staticcheck
 	}
 
 	c.migrations[moduleName][fromVersion] = handler
@@ -96,14 +96,14 @@ func (c configurator) runModuleMigrations(ctx sdk.Context, moduleName string, fr
 
 	moduleMigrationsMap, found := c.migrations[moduleName]
 	if !found {
-		return sdkerrors.Wrapf(sdkerrors.ErrNotFound, "no migrations found for module %s", moduleName)
+		return sdkerrors.Wrapf(sdkerrors.ErrNotFound, "no migrations found for module %s", moduleName) //nolint: staticcheck
 	}
 
 	// Run in-place migrations for the module sequentially until toVersion.
 	for i := fromVersion; i < toVersion; i++ {
 		migrateFn, found := moduleMigrationsMap[i]
 		if !found {
-			return sdkerrors.Wrapf(sdkerrors.ErrNotFound, "no migration found for module %s from version %d to version %d", moduleName, i, i+1)
+			return sdkerrors.Wrapf(sdkerrors.ErrNotFound, "no migration found for module %s from version %d to version %d", moduleName, i, i+1) //nolint: staticcheck
 		}
 		ctx.Logger().Info(fmt.Sprintf("migrating module %s from version %d to version %d", moduleName, i, i+1))
 

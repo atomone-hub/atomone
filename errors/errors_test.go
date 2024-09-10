@@ -35,11 +35,11 @@ func (s *errorsTestSuite) TestCause() {
 			root: ErrUnauthorized,
 		},
 		"Wrap reveals root cause": {
-			err:  Wrap(ErrUnauthorized, "foo"),
+			err:  Wrap(ErrUnauthorized, "foo"), //nolint: staticcheck
 			root: ErrUnauthorized,
 		},
 		"Cause works for stderr as root": {
-			err:  Wrap(std, "Some helpful text"),
+			err:  Wrap(std, "Some helpful text"), //nolint: staticcheck
 			root: std,
 		},
 	}
@@ -67,12 +67,12 @@ func (s *errorsTestSuite) TestErrorIs() {
 		},
 		"successful comparison to a wrapped error": {
 			a:      ErrUnauthorized,
-			b:      errors.Wrap(ErrUnauthorized, "gone"),
+			b:      errors.Wrap(ErrUnauthorized, "gone"), //nolint: staticcheck
 			wantIs: true,
 		},
 		"unsuccessful comparison to a wrapped error": {
 			a:      ErrUnauthorized,
-			b:      errors.Wrap(ErrInsufficientFee, "too big"),
+			b:      errors.Wrap(ErrInsufficientFee, "too big"), //nolint: staticcheck
 			wantIs: false,
 		},
 		"not equal to stdlib error": {
@@ -82,7 +82,7 @@ func (s *errorsTestSuite) TestErrorIs() {
 		},
 		"not equal to a wrapped stdlib error": {
 			a:      ErrUnauthorized,
-			b:      errors.Wrap(fmt.Errorf("stdlib error"), "wrapped"),
+			b:      errors.Wrap(fmt.Errorf("stdlib error"), "wrapped"), //nolint: staticcheck
 			wantIs: false,
 		},
 		"nil is nil": {
@@ -116,20 +116,20 @@ func (s *errorsTestSuite) TestIsOf() {
 
 	var errNil *Error
 	err := ErrInvalidAddress
-	errW := Wrap(ErrLogic, "more info")
+	errW := Wrap(ErrLogic, "more info") //nolint: staticcheck
 
-	require.False(IsOf(errNil), "nil error should always have no causer")
-	require.False(IsOf(errNil, err), "nil error should always have no causer")
+	require.False(IsOf(errNil), "nil error should always have no causer")      //nolint: staticcheck
+	require.False(IsOf(errNil, err), "nil error should always have no causer") //nolint: staticcheck
 
-	require.False(IsOf(err))
-	require.False(IsOf(err, nil))
-	require.False(IsOf(err, ErrLogic))
+	require.False(IsOf(err))           //nolint: staticcheck
+	require.False(IsOf(err, nil))      //nolint: staticcheck
+	require.False(IsOf(err, ErrLogic)) //nolint: staticcheck
 
-	require.True(IsOf(errW, ErrLogic))
-	require.True(IsOf(errW, err, ErrLogic))
-	require.True(IsOf(errW, nil, errW), "error should much itself")
+	require.True(IsOf(errW, ErrLogic))                              //nolint: staticcheck
+	require.True(IsOf(errW, err, ErrLogic))                         //nolint: staticcheck
+	require.True(IsOf(errW, nil, errW), "error should much itself") //nolint: staticcheck
 	err2 := errors.New("other error")
-	require.True(IsOf(err2, nil, err2), "error should much itself")
+	require.True(IsOf(err2, nil, err2), "error should much itself") //nolint: staticcheck
 }
 
 type customError struct{}
@@ -139,21 +139,21 @@ func (customError) Error() string {
 }
 
 func (s *errorsTestSuite) TestWrapEmpty() {
-	s.Require().Nil(Wrap(nil, "wrapping <nil>"))
+	s.Require().Nil(Wrap(nil, "wrapping <nil>")) //nolint: staticcheck
 }
 
 func (s *errorsTestSuite) TestWrappedIs() {
 	require := s.Require()
-	err := Wrap(ErrTxTooLarge, "context")
+	err := Wrap(ErrTxTooLarge, "context") //nolint: staticcheck
 	require.True(stdlib.Is(err, ErrTxTooLarge))
 
-	err = Wrap(err, "more context")
+	err = Wrap(err, "more context") //nolint: staticcheck
 	require.True(stdlib.Is(err, ErrTxTooLarge))
 
-	err = Wrap(err, "even more context")
+	err = Wrap(err, "even more context") //nolint: staticcheck
 	require.True(stdlib.Is(err, ErrTxTooLarge))
 
-	err = Wrap(ErrInsufficientFee, "...")
+	err = Wrap(ErrInsufficientFee, "...") //nolint: staticcheck
 	require.False(stdlib.Is(err, ErrTxTooLarge))
 
 	errs := stdlib.New("other")
@@ -162,43 +162,43 @@ func (s *errorsTestSuite) TestWrappedIs() {
 	errw := &wrappedError{"msg", errs}
 	require.True(errw.Is(errw), "should match itself")
 
-	require.True(stdlib.Is(ErrInsufficientFee.Wrap("wrapped"), ErrInsufficientFee))
-	require.True(IsOf(ErrInsufficientFee.Wrap("wrapped"), ErrInsufficientFee))
-	require.True(stdlib.Is(ErrInsufficientFee.Wrapf("wrapped"), ErrInsufficientFee))
-	require.True(IsOf(ErrInsufficientFee.Wrapf("wrapped"), ErrInsufficientFee))
+	require.True(stdlib.Is(ErrInsufficientFee.Wrap("wrapped"), ErrInsufficientFee))  //nolint: staticcheck
+	require.True(IsOf(ErrInsufficientFee.Wrap("wrapped"), ErrInsufficientFee))       //nolint: staticcheck
+	require.True(stdlib.Is(ErrInsufficientFee.Wrapf("wrapped"), ErrInsufficientFee)) //nolint: staticcheck
+	require.True(IsOf(ErrInsufficientFee.Wrapf("wrapped"), ErrInsufficientFee))      //nolint: staticcheck
 }
 
 func (s *errorsTestSuite) TestWrappedIsMultiple() {
 	errTest := errors.New("test error")
 	errTest2 := errors.New("test error 2")
-	err := Wrap(errTest2, Wrap(errTest, "some random description").Error())
+	err := Wrap(errTest2, Wrap(errTest, "some random description").Error()) //nolint: staticcheck
 	s.Require().True(stdlib.Is(err, errTest2))
 }
 
 func (s *errorsTestSuite) TestWrappedIsFail() {
 	errTest := errors.New("test error")
 	errTest2 := errors.New("test error 2")
-	err := Wrap(errTest2, Wrap(errTest, "some random description").Error())
+	err := Wrap(errTest2, Wrap(errTest, "some random description").Error()) //nolint: staticcheck
 	s.Require().False(stdlib.Is(err, errTest))
 }
 
 func (s *errorsTestSuite) TestWrappedUnwrap() {
 	errTest := errors.New("test error")
-	err := Wrap(errTest, "some random description")
+	err := Wrap(errTest, "some random description") //nolint: staticcheck
 	s.Require().Equal(errTest, stdlib.Unwrap(err))
 }
 
 func (s *errorsTestSuite) TestWrappedUnwrapMultiple() {
 	errTest := errors.New("test error")
 	errTest2 := errors.New("test error 2")
-	err := Wrap(errTest2, Wrap(errTest, "some random description").Error())
+	err := Wrap(errTest2, Wrap(errTest, "some random description").Error()) //nolint: staticcheck
 	s.Require().Equal(errTest2, stdlib.Unwrap(err))
 }
 
 func (s *errorsTestSuite) TestWrappedUnwrapFail() {
 	errTest := errors.New("test error")
 	errTest2 := errors.New("test error 2")
-	err := Wrap(errTest2, Wrap(errTest, "some random description").Error())
+	err := Wrap(errTest2, Wrap(errTest, "some random description").Error()) //nolint: staticcheck
 	s.Require().NotEqual(errTest, stdlib.Unwrap(err))
 }
 
@@ -216,17 +216,17 @@ func (s *errorsTestSuite) TestGRPCStatus() {
 	s.Require().Equal("codespace testtesttest code 38: not found", status.Message())
 
 	// test wrapping
-	s.Require().Equal(codes.Unimplemented, grpcstatus.Code(ErrNotSupported.Wrap("test")))
-	s.Require().Equal(codes.FailedPrecondition, grpcstatus.Code(ErrConflict.Wrapf("test %s", "foo")))
+	s.Require().Equal(codes.Unimplemented, grpcstatus.Code(ErrNotSupported.Wrap("test")))             //nolint: staticcheck
+	s.Require().Equal(codes.FailedPrecondition, grpcstatus.Code(ErrConflict.Wrapf("test %s", "foo"))) //nolint: staticcheck
 
-	status, ok = grpcstatus.FromError(ErrNotFound.Wrap("test"))
+	status, ok = grpcstatus.FromError(ErrNotFound.Wrap("test")) //nolint: staticcheck
 	s.Require().True(ok)
 	s.Require().Equal("codespace testtesttest code 38: not found: test", status.Message())
 }
 
 func ExampleWrap() {
-	err1 := Wrap(ErrInsufficientFunds, "90 is smaller than 100")
-	err2 := errors.Wrap(ErrInsufficientFunds, "90 is smaller than 100")
+	err1 := Wrap(ErrInsufficientFunds, "90 is smaller than 100")        //nolint: staticcheck
+	err2 := errors.Wrap(ErrInsufficientFunds, "90 is smaller than 100") //nolint: staticcheck
 	fmt.Println(err1.Error())
 	fmt.Println(err2.Error())
 	// Output:
@@ -235,8 +235,8 @@ func ExampleWrap() {
 }
 
 func ExampleWrapf() {
-	err1 := Wrap(ErrInsufficientFunds, "90 is smaller than 100")
-	err2 := errors.Wrap(ErrInsufficientFunds, "90 is smaller than 100")
+	err1 := Wrap(ErrInsufficientFunds, "90 is smaller than 100")        //nolint: staticcheck
+	err2 := errors.Wrap(ErrInsufficientFunds, "90 is smaller than 100") //nolint: staticcheck
 	fmt.Println(err1.Error())
 	fmt.Println(err2.Error())
 	// Output:

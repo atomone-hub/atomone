@@ -44,22 +44,22 @@ func (msg MsgCreateVestingAccount) Type() string { return TypeMsgCreateVestingAc
 // ValidateBasic Implements Msg.
 func (msg MsgCreateVestingAccount) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.FromAddress); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid 'from' address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid 'from' address: %s", err) //nolint: staticcheck
 	}
 	if _, err := sdk.AccAddressFromBech32(msg.ToAddress); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid 'to' address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid 'to' address: %s", err) //nolint: staticcheck
 	}
 
 	if !msg.Amount.IsValid() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, msg.Amount.String())
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, msg.Amount.String()) //nolint: staticcheck
 	}
 
 	if !msg.Amount.IsAllPositive() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, msg.Amount.String())
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, msg.Amount.String()) //nolint: staticcheck
 	}
 
 	if msg.EndTime <= 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid end time")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid end time") //nolint: staticcheck
 	}
 
 	return nil
@@ -97,18 +97,18 @@ func (msg MsgCreatePermanentLockedAccount) Type() string { return TypeMsgCreateP
 // ValidateBasic Implements Msg.
 func (msg MsgCreatePermanentLockedAccount) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.FromAddress); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid sender address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid sender address: %s", err) //nolint: staticcheck
 	}
 	if _, err := sdk.AccAddressFromBech32(msg.ToAddress); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid recipient address: %s", err)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid recipient address: %s", err) //nolint: staticcheck
 	}
 
 	if !msg.Amount.IsValid() {
-		return sdkerrors.ErrInvalidCoins.Wrap(msg.Amount.String())
+		return sdkerrors.ErrInvalidCoins.Wrap(msg.Amount.String()) //nolint: staticcheck
 	}
 
 	if !msg.Amount.IsAllPositive() {
-		return sdkerrors.ErrInvalidCoins.Wrap(msg.Amount.String())
+		return sdkerrors.ErrInvalidCoins.Wrap(msg.Amount.String()) //nolint: staticcheck
 	}
 
 	return nil
@@ -170,11 +170,11 @@ func (msg MsgCreatePeriodicVestingAccount) ValidateBasic() error {
 		return err
 	}
 	if err := sdk.VerifyAddressFormat(from); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address: %s", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address: %s", err) //nolint: staticcheck
 	}
 
 	if err := sdk.VerifyAddressFormat(to); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid recipient address: %s", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid recipient address: %s", err) //nolint: staticcheck
 	}
 
 	if msg.StartTime < 1 {
@@ -183,11 +183,11 @@ func (msg MsgCreatePeriodicVestingAccount) ValidateBasic() error {
 
 	for i, period := range msg.VestingPeriods {
 		if !period.Amount.IsValid() {
-			return sdkerrors.ErrInvalidCoins.Wrap(period.Amount.String())
+			return sdkerrors.ErrInvalidCoins.Wrap(period.Amount.String()) //nolint: staticcheck
 		}
 
 		if !period.Amount.IsAllPositive() {
-			return sdkerrors.ErrInvalidCoins.Wrap(period.Amount.String())
+			return sdkerrors.ErrInvalidCoins.Wrap(period.Amount.String()) //nolint: staticcheck
 		}
 
 		if period.Length < 1 {

@@ -126,7 +126,7 @@ func decodeTx(txBytes []byte) (sdk.Tx, error) {
 		k, v := split[0], split[1]
 		tx = &kvstoreTx{k, v, txBytes, nil}
 	} else {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "too many '='")
+		return nil, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "too many '='") //nolint: staticcheck
 	}
 
 	return tx, nil

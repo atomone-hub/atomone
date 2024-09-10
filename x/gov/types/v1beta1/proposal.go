@@ -207,18 +207,18 @@ func ValidProposalStatus(status ProposalStatus) bool {
 func ValidateAbstract(c Content) error {
 	title := c.GetTitle()
 	if len(strings.TrimSpace(title)) == 0 {
-		return sdkerrors.Wrap(types.ErrInvalidProposalContent, "proposal title cannot be blank")
+		return sdkerrors.Wrap(types.ErrInvalidProposalContent, "proposal title cannot be blank") //nolint: staticcheck
 	}
 	if len(title) > MaxTitleLength {
-		return sdkerrors.Wrapf(types.ErrInvalidProposalContent, "proposal title is longer than max length of %d", MaxTitleLength)
+		return sdkerrors.Wrapf(types.ErrInvalidProposalContent, "proposal title is longer than max length of %d", MaxTitleLength) //nolint: staticcheck
 	}
 
 	description := c.GetDescription()
 	if len(description) == 0 {
-		return sdkerrors.Wrap(types.ErrInvalidProposalContent, "proposal description cannot be blank")
+		return sdkerrors.Wrap(types.ErrInvalidProposalContent, "proposal description cannot be blank") //nolint: staticcheck
 	}
 	if len(description) > MaxDescriptionLength {
-		return sdkerrors.Wrapf(types.ErrInvalidProposalContent, "proposal description is longer than max length of %d", MaxDescriptionLength)
+		return sdkerrors.Wrapf(types.ErrInvalidProposalContent, "proposal description is longer than max length of %d", MaxDescriptionLength) //nolint: staticcheck
 	}
 
 	return nil

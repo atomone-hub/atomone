@@ -39,11 +39,11 @@ func NewDeductFeeDecorator(ak AccountKeeper, bk types.BankKeeper, fk FeegrantKee
 func (dfd DeductFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (sdk.Context, error) {
 	feeTx, ok := tx.(sdk.FeeTx)
 	if !ok {
-		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "Tx must be a FeeTx")
+		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "Tx must be a FeeTx") //nolint: staticcheck
 	}
 
 	if !simulate && ctx.BlockHeight() > 0 && feeTx.GetGas() == 0 {
-		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidGasLimit, "must provide positive gas")
+		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidGasLimit, "must provide positive gas") //nolint: staticcheck
 	}
 
 	var (
@@ -70,7 +70,7 @@ func (dfd DeductFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bo
 func (dfd DeductFeeDecorator) checkDeductFee(ctx sdk.Context, sdkTx sdk.Tx, fee sdk.Coins) error {
 	feeTx, ok := sdkTx.(sdk.FeeTx)
 	if !ok {
-		return sdkerrors.Wrap(sdkerrors.ErrTxDecode, "Tx must be a FeeTx")
+		return sdkerrors.Wrap(sdkerrors.ErrTxDecode, "Tx must be a FeeTx") //nolint: staticcheck
 	}
 
 	if addr := dfd.accountKeeper.GetModuleAddress(types.FeeCollectorName); addr == nil {
@@ -85,11 +85,11 @@ func (dfd DeductFeeDecorator) checkDeductFee(ctx sdk.Context, sdkTx sdk.Tx, fee 
 	// this works with only when feegrant enabled.
 	if feeGranter != nil {
 		if dfd.feegrantKeeper == nil {
-			return sdkerrors.ErrInvalidRequest.Wrap("fee grants are not enabled")
+			return sdkerrors.ErrInvalidRequest.Wrap("fee grants are not enabled") //nolint: staticcheck
 		} else if !feeGranter.Equals(feePayer) {
 			err := dfd.feegrantKeeper.UseGrantedFees(ctx, feeGranter, feePayer, fee, sdkTx.GetMsgs())
 			if err != nil {
-				return sdkerrors.Wrapf(err, "%s does not allow to pay fees for %s", feeGranter, feePayer)
+				return sdkerrors.Wrapf(err, "%s does not allow to pay fees for %s", feeGranter, feePayer) //nolint: staticcheck
 			}
 		}
 
@@ -98,7 +98,7 @@ func (dfd DeductFeeDecorator) checkDeductFee(ctx sdk.Context, sdkTx sdk.Tx, fee 
 
 	deductFeesFromAcc := dfd.accountKeeper.GetAccount(ctx, deductFeesFrom)
 	if deductFeesFromAcc == nil {
-		return sdkerrors.ErrUnknownAddress.Wrapf("fee payer address: %s does not exist", deductFeesFrom)
+		return sdkerrors.ErrUnknownAddress.Wrapf("fee payer address: %s does not exist", deductFeesFrom) //nolint: staticcheck
 	}
 
 	// deduct the fees
@@ -124,12 +124,12 @@ func (dfd DeductFeeDecorator) checkDeductFee(ctx sdk.Context, sdkTx sdk.Tx, fee 
 // DeductFees deducts fees from the given account.
 func DeductFees(bankKeeper types.BankKeeper, ctx sdk.Context, acc types.AccountI, fees sdk.Coins) error {
 	if !fees.IsValid() {
-		return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFee, "invalid fee amount: %s", fees)
+		return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFee, "invalid fee amount: %s", fees) //nolint: staticcheck
 	}
 
 	err := bankKeeper.SendCoinsFromAccountToModule(ctx, acc.GetAddress(), types.FeeCollectorName, fees)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds, err.Error())
+		return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds, err.Error()) //nolint: staticcheck
 	}
 
 	return nil

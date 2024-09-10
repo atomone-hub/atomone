@@ -96,7 +96,7 @@ func testTableModelIterator(tms []*testdata.TableModel, key RowID) Iterator {
 	}
 	return IteratorFunc(func(dest codec.ProtoMarshaler) (RowID, error) {
 		if dest == nil {
-			return nil, sdkerrors.Wrap(errors.ErrORMInvalidArgument, "destination object must not be nil")
+			return nil, sdkerrors.Wrap(errors.ErrORMInvalidArgument, "destination object must not be nil") //nolint: staticcheck
 		}
 
 		if index == len(tms) {

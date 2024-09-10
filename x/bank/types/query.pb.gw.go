@@ -25,17 +25,17 @@ import (
 )
 
 // Suppress "imported and not used" errors
-var _ codes.Code
-var _ io.Reader
-var _ status.Status
-var _ = runtime.String
-var _ = utilities.NewDoubleArray
-var _ = descriptor.ForMessage
-var _ = metadata.Join
-
 var (
-	filter_Query_Balance_0 = &utilities.DoubleArray{Encoding: map[string]int{"address": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+	_ codes.Code
+	_ io.Reader
+	_ status.Status
+	_ = runtime.String
+	_ = utilities.NewDoubleArray
+	_ = descriptor.ForMessage
+	_ = metadata.Join
 )
+
+var filter_Query_Balance_0 = &utilities.DoubleArray{Encoding: map[string]int{"address": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 
 func request_Query_Balance_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq QueryBalanceRequest
@@ -54,7 +54,6 @@ func request_Query_Balance_0(ctx context.Context, marshaler runtime.Marshaler, c
 	}
 
 	protoReq.Address, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "address", err)
 	}
@@ -68,7 +67,6 @@ func request_Query_Balance_0(ctx context.Context, marshaler runtime.Marshaler, c
 
 	msg, err := client.Balance(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_Query_Balance_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -88,7 +86,6 @@ func local_request_Query_Balance_0(ctx context.Context, marshaler runtime.Marsha
 	}
 
 	protoReq.Address, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "address", err)
 	}
@@ -102,12 +99,9 @@ func local_request_Query_Balance_0(ctx context.Context, marshaler runtime.Marsha
 
 	msg, err := server.Balance(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
-var (
-	filter_Query_AllBalances_0 = &utilities.DoubleArray{Encoding: map[string]int{"address": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
-)
+var filter_Query_AllBalances_0 = &utilities.DoubleArray{Encoding: map[string]int{"address": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 
 func request_Query_AllBalances_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq QueryAllBalancesRequest
@@ -126,7 +120,6 @@ func request_Query_AllBalances_0(ctx context.Context, marshaler runtime.Marshale
 	}
 
 	protoReq.Address, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "address", err)
 	}
@@ -140,7 +133,6 @@ func request_Query_AllBalances_0(ctx context.Context, marshaler runtime.Marshale
 
 	msg, err := client.AllBalances(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_Query_AllBalances_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -160,7 +152,6 @@ func local_request_Query_AllBalances_0(ctx context.Context, marshaler runtime.Ma
 	}
 
 	protoReq.Address, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "address", err)
 	}
@@ -174,12 +165,9 @@ func local_request_Query_AllBalances_0(ctx context.Context, marshaler runtime.Ma
 
 	msg, err := server.AllBalances(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
-var (
-	filter_Query_SpendableBalances_0 = &utilities.DoubleArray{Encoding: map[string]int{"address": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
-)
+var filter_Query_SpendableBalances_0 = &utilities.DoubleArray{Encoding: map[string]int{"address": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 
 func request_Query_SpendableBalances_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq QuerySpendableBalancesRequest
@@ -198,7 +186,6 @@ func request_Query_SpendableBalances_0(ctx context.Context, marshaler runtime.Ma
 	}
 
 	protoReq.Address, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "address", err)
 	}
@@ -212,7 +199,6 @@ func request_Query_SpendableBalances_0(ctx context.Context, marshaler runtime.Ma
 
 	msg, err := client.SpendableBalances(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_Query_SpendableBalances_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -232,7 +218,6 @@ func local_request_Query_SpendableBalances_0(ctx context.Context, marshaler runt
 	}
 
 	protoReq.Address, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "address", err)
 	}
@@ -246,12 +231,9 @@ func local_request_Query_SpendableBalances_0(ctx context.Context, marshaler runt
 
 	msg, err := server.SpendableBalances(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
-var (
-	filter_Query_SpendableBalanceByDenom_0 = &utilities.DoubleArray{Encoding: map[string]int{"address": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
-)
+var filter_Query_SpendableBalanceByDenom_0 = &utilities.DoubleArray{Encoding: map[string]int{"address": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 
 func request_Query_SpendableBalanceByDenom_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq QuerySpendableBalanceByDenomRequest
@@ -270,7 +252,6 @@ func request_Query_SpendableBalanceByDenom_0(ctx context.Context, marshaler runt
 	}
 
 	protoReq.Address, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "address", err)
 	}
@@ -284,7 +265,6 @@ func request_Query_SpendableBalanceByDenom_0(ctx context.Context, marshaler runt
 
 	msg, err := client.SpendableBalanceByDenom(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_Query_SpendableBalanceByDenom_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -304,7 +284,6 @@ func local_request_Query_SpendableBalanceByDenom_0(ctx context.Context, marshale
 	}
 
 	protoReq.Address, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "address", err)
 	}
@@ -318,12 +297,9 @@ func local_request_Query_SpendableBalanceByDenom_0(ctx context.Context, marshale
 
 	msg, err := server.SpendableBalanceByDenom(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
-var (
-	filter_Query_TotalSupply_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
-)
+var filter_Query_TotalSupply_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 
 func request_Query_TotalSupply_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq QueryTotalSupplyRequest
@@ -338,7 +314,6 @@ func request_Query_TotalSupply_0(ctx context.Context, marshaler runtime.Marshale
 
 	msg, err := client.TotalSupply(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_Query_TotalSupply_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -354,12 +329,9 @@ func local_request_Query_TotalSupply_0(ctx context.Context, marshaler runtime.Ma
 
 	msg, err := server.TotalSupply(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
-var (
-	filter_Query_SupplyOf_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
-)
+var filter_Query_SupplyOf_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 
 func request_Query_SupplyOf_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq QuerySupplyOfRequest
@@ -374,7 +346,6 @@ func request_Query_SupplyOf_0(ctx context.Context, marshaler runtime.Marshaler, 
 
 	msg, err := client.SupplyOf(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_Query_SupplyOf_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -390,7 +361,6 @@ func local_request_Query_SupplyOf_0(ctx context.Context, marshaler runtime.Marsh
 
 	msg, err := server.SupplyOf(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_Query_Params_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -399,7 +369,6 @@ func request_Query_Params_0(ctx context.Context, marshaler runtime.Marshaler, cl
 
 	msg, err := client.Params(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_Query_Params_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -408,7 +377,6 @@ func local_request_Query_Params_0(ctx context.Context, marshaler runtime.Marshal
 
 	msg, err := server.Params(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_Query_DenomMetadata_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -428,14 +396,12 @@ func request_Query_DenomMetadata_0(ctx context.Context, marshaler runtime.Marsha
 	}
 
 	protoReq.Denom, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "denom", err)
 	}
 
 	msg, err := client.DenomMetadata(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_Query_DenomMetadata_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -455,19 +421,15 @@ func local_request_Query_DenomMetadata_0(ctx context.Context, marshaler runtime.
 	}
 
 	protoReq.Denom, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "denom", err)
 	}
 
 	msg, err := server.DenomMetadata(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
-var (
-	filter_Query_DenomsMetadata_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
-)
+var filter_Query_DenomsMetadata_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 
 func request_Query_DenomsMetadata_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq QueryDenomsMetadataRequest
@@ -482,7 +444,6 @@ func request_Query_DenomsMetadata_0(ctx context.Context, marshaler runtime.Marsh
 
 	msg, err := client.DenomsMetadata(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_Query_DenomsMetadata_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -498,12 +459,9 @@ func local_request_Query_DenomsMetadata_0(ctx context.Context, marshaler runtime
 
 	msg, err := server.DenomsMetadata(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
-var (
-	filter_Query_DenomOwners_0 = &utilities.DoubleArray{Encoding: map[string]int{"denom": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
-)
+var filter_Query_DenomOwners_0 = &utilities.DoubleArray{Encoding: map[string]int{"denom": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 
 func request_Query_DenomOwners_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq QueryDenomOwnersRequest
@@ -522,7 +480,6 @@ func request_Query_DenomOwners_0(ctx context.Context, marshaler runtime.Marshale
 	}
 
 	protoReq.Denom, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "denom", err)
 	}
@@ -536,7 +493,6 @@ func request_Query_DenomOwners_0(ctx context.Context, marshaler runtime.Marshale
 
 	msg, err := client.DenomOwners(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_Query_DenomOwners_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -556,7 +512,6 @@ func local_request_Query_DenomOwners_0(ctx context.Context, marshaler runtime.Ma
 	}
 
 	protoReq.Denom, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "denom", err)
 	}
@@ -570,12 +525,9 @@ func local_request_Query_DenomOwners_0(ctx context.Context, marshaler runtime.Ma
 
 	msg, err := server.DenomOwners(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
-var (
-	filter_Query_SendEnabled_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
-)
+var filter_Query_SendEnabled_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 
 func request_Query_SendEnabled_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq QuerySendEnabledRequest
@@ -590,7 +542,6 @@ func request_Query_SendEnabled_0(ctx context.Context, marshaler runtime.Marshale
 
 	msg, err := client.SendEnabled(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_Query_SendEnabled_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -606,7 +557,6 @@ func local_request_Query_SendEnabled_0(ctx context.Context, marshaler runtime.Ma
 
 	msg, err := server.SendEnabled(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 // RegisterQueryHandlerServer registers the http handlers for service Query to "mux".
@@ -614,7 +564,6 @@ func local_request_Query_SendEnabled_0(ctx context.Context, marshaler runtime.Ma
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterQueryHandlerFromEndpoint instead.
 func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, server QueryServer) error {
-
 	mux.Handle("GET", pattern_Query_Balance_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -635,7 +584,6 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		}
 
 		forward_Query_Balance_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("GET", pattern_Query_AllBalances_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -658,7 +606,6 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		}
 
 		forward_Query_AllBalances_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("GET", pattern_Query_SpendableBalances_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -681,7 +628,6 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		}
 
 		forward_Query_SpendableBalances_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("GET", pattern_Query_SpendableBalanceByDenom_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -704,7 +650,6 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		}
 
 		forward_Query_SpendableBalanceByDenom_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("GET", pattern_Query_TotalSupply_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -727,7 +672,6 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		}
 
 		forward_Query_TotalSupply_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("GET", pattern_Query_SupplyOf_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -750,7 +694,6 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		}
 
 		forward_Query_SupplyOf_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("GET", pattern_Query_Params_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -773,7 +716,6 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		}
 
 		forward_Query_Params_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("GET", pattern_Query_DenomMetadata_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -796,7 +738,6 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		}
 
 		forward_Query_DenomMetadata_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("GET", pattern_Query_DenomsMetadata_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -819,7 +760,6 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		}
 
 		forward_Query_DenomsMetadata_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("GET", pattern_Query_DenomOwners_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -842,7 +782,6 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		}
 
 		forward_Query_DenomOwners_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("GET", pattern_Query_SendEnabled_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -865,7 +804,6 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		}
 
 		forward_Query_SendEnabled_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	return nil
@@ -874,7 +812,7 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 // RegisterQueryHandlerFromEndpoint is same as RegisterQueryHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterQueryHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.Dial(endpoint, opts...)
+	conn, err := grpc.Dial(endpoint, opts...) //nolint: staticcheck
 	if err != nil {
 		return err
 	}
@@ -908,7 +846,6 @@ func RegisterQueryHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
 // "QueryClient" to call the correct interceptors.
 func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, client QueryClient) error {
-
 	mux.Handle("GET", pattern_Query_Balance_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -926,7 +863,6 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 		}
 
 		forward_Query_Balance_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("GET", pattern_Query_AllBalances_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -946,7 +882,6 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 		}
 
 		forward_Query_AllBalances_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("GET", pattern_Query_SpendableBalances_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -966,7 +901,6 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 		}
 
 		forward_Query_SpendableBalances_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("GET", pattern_Query_SpendableBalanceByDenom_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -986,7 +920,6 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 		}
 
 		forward_Query_SpendableBalanceByDenom_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("GET", pattern_Query_TotalSupply_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1006,7 +939,6 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 		}
 
 		forward_Query_TotalSupply_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("GET", pattern_Query_SupplyOf_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1026,7 +958,6 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 		}
 
 		forward_Query_SupplyOf_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("GET", pattern_Query_Params_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1046,7 +977,6 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 		}
 
 		forward_Query_Params_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("GET", pattern_Query_DenomMetadata_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1066,7 +996,6 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 		}
 
 		forward_Query_DenomMetadata_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("GET", pattern_Query_DenomsMetadata_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1086,7 +1015,6 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 		}
 
 		forward_Query_DenomsMetadata_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("GET", pattern_Query_DenomOwners_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1106,7 +1034,6 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 		}
 
 		forward_Query_DenomOwners_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("GET", pattern_Query_SendEnabled_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1126,7 +1053,6 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 		}
 
 		forward_Query_SendEnabled_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	return nil

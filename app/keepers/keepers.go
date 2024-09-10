@@ -11,49 +11,42 @@ import (
 	"github.com/atomone-hub/atomone/baseapp"
 	"github.com/atomone-hub/atomone/codec"
 	servertypes "github.com/atomone-hub/atomone/server/types"
+	"github.com/atomone-hub/atomone/store/streaming"
+	storetypes "github.com/atomone-hub/atomone/store/types"
 	sdk "github.com/atomone-hub/atomone/types"
 	authkeeper "github.com/atomone-hub/atomone/x/auth/keeper"
 	authtypes "github.com/atomone-hub/atomone/x/auth/types"
 	authzkeeper "github.com/atomone-hub/atomone/x/authz/keeper"
 	bankkeeper "github.com/atomone-hub/atomone/x/bank/keeper"
 	banktypes "github.com/atomone-hub/atomone/x/bank/types"
-	"github.com/atomone-hub/atomone/x/params"
-
+	capabilitykeeper "github.com/atomone-hub/atomone/x/capability/keeper"
+	capabilitytypes "github.com/atomone-hub/atomone/x/capability/types"
+	consensusparamkeeper "github.com/atomone-hub/atomone/x/consensus/keeper"
 	consensusparamtypes "github.com/atomone-hub/atomone/x/consensus/types"
-
-	"github.com/atomone-hub/atomone/store/streaming"
-	storetypes "github.com/atomone-hub/atomone/store/types"
+	crisiskeeper "github.com/atomone-hub/atomone/x/crisis/keeper"
+	crisistypes "github.com/atomone-hub/atomone/x/crisis/types"
 	distrkeeper "github.com/atomone-hub/atomone/x/distribution/keeper"
 	distrtypes "github.com/atomone-hub/atomone/x/distribution/types"
+	evidencekeeper "github.com/atomone-hub/atomone/x/evidence/keeper"
 	"github.com/atomone-hub/atomone/x/feegrant"
 	feegrantkeeper "github.com/atomone-hub/atomone/x/feegrant/keeper"
+	govkeeper "github.com/atomone-hub/atomone/x/gov/keeper"
+	govtypes "github.com/atomone-hub/atomone/x/gov/types"
+	govv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	govv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 	mintkeeper "github.com/atomone-hub/atomone/x/mint/keeper"
 	minttypes "github.com/atomone-hub/atomone/x/mint/types"
+	"github.com/atomone-hub/atomone/x/params"
+	paramskeeper "github.com/atomone-hub/atomone/x/params/keeper"
+	paramstypes "github.com/atomone-hub/atomone/x/params/types"
+	paramproposal "github.com/atomone-hub/atomone/x/params/types/proposal"
+	slashingkeeper "github.com/atomone-hub/atomone/x/slashing/keeper"
+	slashingtypes "github.com/atomone-hub/atomone/x/slashing/types"
 	stakingkeeper "github.com/atomone-hub/atomone/x/staking/keeper"
 	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
 	"github.com/atomone-hub/atomone/x/upgrade"
 	upgradekeeper "github.com/atomone-hub/atomone/x/upgrade/keeper"
 	upgradetypes "github.com/atomone-hub/atomone/x/upgrade/types"
-
-	capabilitykeeper "github.com/atomone-hub/atomone/x/capability/keeper"
-	capabilitytypes "github.com/atomone-hub/atomone/x/capability/types"
-	consensusparamkeeper "github.com/atomone-hub/atomone/x/consensus/keeper"
-	crisiskeeper "github.com/atomone-hub/atomone/x/crisis/keeper"
-	crisistypes "github.com/atomone-hub/atomone/x/crisis/types"
-
-	evidencekeeper "github.com/atomone-hub/atomone/x/evidence/keeper"
-
-	paramskeeper "github.com/atomone-hub/atomone/x/params/keeper"
-	paramstypes "github.com/atomone-hub/atomone/x/params/types"
-	paramproposal "github.com/atomone-hub/atomone/x/params/types/proposal"
-
-	slashingkeeper "github.com/atomone-hub/atomone/x/slashing/keeper"
-	slashingtypes "github.com/atomone-hub/atomone/x/slashing/types"
-
-	govkeeper "github.com/atomone-hub/atomone/x/gov/keeper"
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
-	govv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 )
 
 type AppKeepers struct {
@@ -262,14 +255,14 @@ func NewAppKeeper(
 	// Set legacy router for backwards compatibility with gov v1beta1
 	appKeepers.GovKeeper.SetLegacyRouter(govRouter)
 
-	//evidenceKeeper := evidencekeeper.NewKeeper(
+	// evidenceKeeper := evidencekeeper.NewKeeper(
 	//	appCodec,
 	//	appKeepers.keys[evidencetypes.StoreKey],
 	//	appKeepers.StakingKeeper,
 	//	//appKeepers.SlashingKeeper,
 	//)
 	// If evidence needs to be handled for the app, set routes in router here and seal
-	//appKeepers.EvidenceKeeper = *evidenceKeeper
+	// appKeepers.EvidenceKeeper = *evidenceKeeper
 
 	return appKeepers
 }
