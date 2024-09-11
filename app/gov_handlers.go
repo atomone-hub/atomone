@@ -40,6 +40,10 @@ func init() {
 
 // NewSubmitParamChangeProposalTxCmd returns a CLI command handler for creating
 // a parameter change proposal governance transaction.
+//
+// NOTE: copy of x/params/client.newSubmitParamChangeProposalTxCmd() except
+// that it creates a atomone.gov.MsgSubmitProposal instead of a
+// cosmos.gov.MsgSubmitProposal.
 func newSubmitParamChangeProposalTxCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "param-change [proposal-file]",
@@ -120,6 +124,10 @@ const (
 
 // newCmdSubmitLegacyUpgradeProposal implements a command handler for submitting a software upgrade proposal transaction.
 // Deprecated: please use NewCmdSubmitUpgradeProposal instead.ck
+//
+// NOTE: copy of x/upgrade/client.NewCmdSubmitUpgradeProposal() except
+// that it creates a atomone.gov.MsgSubmitProposal instead of a
+// cosmos.gov.MsgSubmitProposal.
 func newCmdSubmitLegacyUpgradeProposal() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "software-upgrade [name] (--upgrade-height [height]) (--upgrade-info [info]) [flags]",
@@ -190,6 +198,10 @@ func newCmdSubmitLegacyUpgradeProposal() *cobra.Command {
 
 // newCmdSubmitLegacyCancelUpgradeProposal implements a command handler for submitting a software upgrade cancel proposal transaction.
 // Deprecated: please use NewCmdSubmitCancelUpgradeProposal instead.
+//
+// NOTE: copy of x/upgrade/client.newcmdsubmitcancelupgradeproposal() except
+// that it creates a atomone.gov.msgsubmitproposal instead of a
+// cosmos.gov.msgsubmitproposal.
 func newCmdSubmitLegacyCancelUpgradeProposal() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "cancel-software-upgrade [flags]",
