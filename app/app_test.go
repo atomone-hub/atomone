@@ -9,10 +9,10 @@ import (
 	"github.com/cometbft/cometbft/libs/log"
 
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	atomone "github.com/atomone-hub/atomone/app"
 	atomonehelpers "github.com/atomone-hub/atomone/app/helpers"
+	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 )
 
 type EmptyAppOptions struct{}

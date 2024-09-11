@@ -9,7 +9,8 @@ import (
 
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	v1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
+
+	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 )
 
 func TestVotes(t *testing.T) {

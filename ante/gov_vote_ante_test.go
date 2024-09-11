@@ -11,12 +11,12 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	govv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
-	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	"github.com/atomone-hub/atomone/ante"
 	"github.com/atomone-hub/atomone/app/helpers"
+	govv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
+	govv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 )
 
 // Test that the GovVoteDecorator rejects v1beta1 vote messages from accounts with less than 1 atom staked

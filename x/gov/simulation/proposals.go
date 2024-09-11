@@ -5,8 +5,9 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
-	"github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
+
+	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 )
 
 // OpWeightSubmitTextProposal app params key for text proposal

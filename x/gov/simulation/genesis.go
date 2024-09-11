@@ -13,8 +13,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/types/simulation"
-	"github.com/cosmos/cosmos-sdk/x/gov/types"
-	v1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
+
+	"github.com/atomone-hub/atomone/x/gov/types"
+	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 )
 
 // Simulation parameter constants

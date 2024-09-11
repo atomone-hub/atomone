@@ -8,11 +8,11 @@ import (
 
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/gov/types"
-	v1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 
 	"github.com/atomone-hub/atomone/x/gov"
 	"github.com/atomone-hub/atomone/x/gov/keeper"
+	"github.com/atomone-hub/atomone/x/gov/types"
+	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 )
 
 var _ types.GovHooks = &MockGovHooksReceiver{}
