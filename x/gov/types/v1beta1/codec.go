@@ -8,6 +8,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
 	authzcodec "github.com/cosmos/cosmos-sdk/x/authz/codec"
 	groupcodec "github.com/cosmos/cosmos-sdk/x/group/codec"
+	paramsproposal "github.com/cosmos/cosmos-sdk/x/params/types/proposal"
+	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
 	govcodec "github.com/atomone-hub/atomone/x/gov/codec"
 )
@@ -35,6 +37,21 @@ func RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 		"atomone.gov.v1beta1.Content",
 		(*Content)(nil),
 		&TextProposal{},
+	)
+
+	// Register proposal types (this is actually done in related modules, but
+	// since we are using an other gov module, we need to do it manually).
+	registry.RegisterImplementations(
+		(*Content)(nil),
+		&paramsproposal.ParameterChangeProposal{},
+	)
+	registry.RegisterImplementations(
+		(*Content)(nil),
+		&upgradetypes.SoftwareUpgradeProposal{},
+	)
+	registry.RegisterImplementations(
+		(*Content)(nil),
+		&upgradetypes.CancelSoftwareUpgradeProposal{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
