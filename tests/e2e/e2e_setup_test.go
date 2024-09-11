@@ -521,7 +521,7 @@ func (s *IntegrationTestSuite) runValidators(c *chain, portOffset int) {
 			Mounts: []string{
 				fmt.Sprintf("%s/:%s", val.configDir(), atomoneHomePath),
 			},
-			Repository: "cosmos/atomoned-e2e",
+			Repository: "atomone/atomoned-e2e",
 		}
 
 		s.Require().NoError(exec.Command("chmod", "-R", "0777", val.configDir()).Run()) //nolint:gosec // this is a test

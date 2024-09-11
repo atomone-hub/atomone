@@ -18,7 +18,7 @@ import (
 )
 
 func queryAtomOneTx(endpoint, txHash string) error {
-	resp, err := http.Get(fmt.Sprintf("%s/cosmos/tx/v1beta1/txs/%s", endpoint, txHash))
+	resp, err := http.Get(fmt.Sprintf("%s/atomone/tx/v1beta1/txs/%s", endpoint, txHash))
 	if err != nil {
 		return fmt.Errorf("failed to execute HTTP request: %w", err)
 	}
@@ -58,7 +58,7 @@ func getSpecificBalance(endpoint, addr, denom string) (amt sdk.Coin, err error) 
 }
 
 func queryAtomOneAllBalances(endpoint, addr string) (sdk.Coins, error) {
-	body, err := httpGet(fmt.Sprintf("%s/cosmos/bank/v1beta1/balances/%s", endpoint, addr))
+	body, err := httpGet(fmt.Sprintf("%s/atomone/bank/v1beta1/balances/%s", endpoint, addr))
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute HTTP request: %w", err)
 	}
@@ -72,7 +72,7 @@ func queryAtomOneAllBalances(endpoint, addr string) (sdk.Coins, error) {
 }
 
 func queryStakingParams(endpoint string) (stakingtypes.QueryParamsResponse, error) { //nolint:unused
-	body, err := httpGet(fmt.Sprintf("%s/cosmos/staking/v1beta1/params", endpoint))
+	body, err := httpGet(fmt.Sprintf("%s/atomone/staking/v1beta1/params", endpoint))
 	if err != nil {
 		return stakingtypes.QueryParamsResponse{}, fmt.Errorf("failed to execute HTTP request: %w", err)
 	}
@@ -88,7 +88,7 @@ func queryStakingParams(endpoint string) (stakingtypes.QueryParamsResponse, erro
 func queryDelegation(endpoint string, validatorAddr string, delegatorAddr string) (stakingtypes.QueryDelegationResponse, error) {
 	var res stakingtypes.QueryDelegationResponse
 
-	body, err := httpGet(fmt.Sprintf("%s/cosmos/staking/v1beta1/validators/%s/delegations/%s", endpoint, validatorAddr, delegatorAddr))
+	body, err := httpGet(fmt.Sprintf("%s/atomone/staking/v1beta1/validators/%s/delegations/%s", endpoint, validatorAddr, delegatorAddr))
 	if err != nil {
 		return res, err
 	}
@@ -101,7 +101,7 @@ func queryDelegation(endpoint string, validatorAddr string, delegatorAddr string
 
 func queryUnbondingDelegation(endpoint string, validatorAddr string, delegatorAddr string) (stakingtypes.QueryUnbondingDelegationResponse, error) {
 	var res stakingtypes.QueryUnbondingDelegationResponse
-	body, err := httpGet(fmt.Sprintf("%s/cosmos/staking/v1beta1/validators/%s/delegations/%s/unbonding_delegation", endpoint, validatorAddr, delegatorAddr))
+	body, err := httpGet(fmt.Sprintf("%s/atomone/staking/v1beta1/validators/%s/delegations/%s/unbonding_delegation", endpoint, validatorAddr, delegatorAddr))
 	if err != nil {
 		return res, err
 	}
@@ -115,7 +115,7 @@ func queryUnbondingDelegation(endpoint string, validatorAddr string, delegatorAd
 func queryDelegatorWithdrawalAddress(endpoint string, delegatorAddr string) (disttypes.QueryDelegatorWithdrawAddressResponse, error) {
 	var res disttypes.QueryDelegatorWithdrawAddressResponse
 
-	body, err := httpGet(fmt.Sprintf("%s/cosmos/distribution/v1beta1/delegators/%s/withdraw_address", endpoint, delegatorAddr))
+	body, err := httpGet(fmt.Sprintf("%s/atomone/distribution/v1beta1/delegators/%s/withdraw_address", endpoint, delegatorAddr))
 	if err != nil {
 		return res, err
 	}
@@ -129,7 +129,7 @@ func queryDelegatorWithdrawalAddress(endpoint string, delegatorAddr string) (dis
 func queryDelegatorTotalRewards(endpoint, delegatorAddr string) (disttypes.QueryDelegationTotalRewardsResponse, error) { //nolint:unused
 	var res disttypes.QueryDelegationTotalRewardsResponse
 
-	body, err := httpGet(fmt.Sprintf("%s/cosmos/distribution/v1beta1/delegators/%s/rewards", endpoint, delegatorAddr))
+	body, err := httpGet(fmt.Sprintf("%s/atomone/distribution/v1beta1/delegators/%s/rewards", endpoint, delegatorAddr))
 	if err != nil {
 		return res, err
 	}
@@ -144,7 +144,7 @@ func queryDelegatorTotalRewards(endpoint, delegatorAddr string) (disttypes.Query
 func queryGovProposal(endpoint string, proposalID int) (govtypesv1beta1.QueryProposalResponse, error) {
 	var govProposalResp govtypesv1beta1.QueryProposalResponse
 
-	path := fmt.Sprintf("%s/cosmos/gov/v1beta1/proposals/%d", endpoint, proposalID)
+	path := fmt.Sprintf("%s/atomone/gov/v1beta1/proposals/%d", endpoint, proposalID)
 
 	body, err := httpGet(path)
 	if err != nil {
@@ -159,7 +159,7 @@ func queryGovProposal(endpoint string, proposalID int) (govtypesv1beta1.QueryPro
 
 func queryAccount(endpoint, address string) (acc authtypes.AccountI, err error) {
 	var res authtypes.QueryAccountResponse
-	resp, err := http.Get(fmt.Sprintf("%s/cosmos/auth/v1beta1/accounts/%s", endpoint, address))
+	resp, err := http.Get(fmt.Sprintf("%s/atomone/auth/v1beta1/accounts/%s", endpoint, address))
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute HTTP request: %w", err)
 	}
@@ -217,7 +217,7 @@ func queryPeriodicVestingAccount(endpoint, address string) (authvesting.Periodic
 func queryValidator(endpoint, address string) (stakingtypes.Validator, error) {
 	var res stakingtypes.QueryValidatorResponse
 
-	body, err := httpGet(fmt.Sprintf("%s/cosmos/staking/v1beta1/validators/%s", endpoint, address))
+	body, err := httpGet(fmt.Sprintf("%s/atomone/staking/v1beta1/validators/%s", endpoint, address))
 	if err != nil {
 		return stakingtypes.Validator{}, fmt.Errorf("failed to execute HTTP request: %w", err)
 	}
@@ -230,7 +230,7 @@ func queryValidator(endpoint, address string) (stakingtypes.Validator, error) {
 
 func queryValidators(endpoint string) (stakingtypes.Validators, error) {
 	var res stakingtypes.QueryValidatorsResponse
-	body, err := httpGet(fmt.Sprintf("%s/cosmos/staking/v1beta1/validators", endpoint))
+	body, err := httpGet(fmt.Sprintf("%s/atomone/staking/v1beta1/validators", endpoint))
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute HTTP request: %w", err)
 	}
@@ -243,7 +243,7 @@ func queryValidators(endpoint string) (stakingtypes.Validators, error) {
 
 func queryEvidence(endpoint, hash string) (evidencetypes.QueryEvidenceResponse, error) { //nolint:unused // this is called during e2e tests
 	var res evidencetypes.QueryEvidenceResponse
-	body, err := httpGet(fmt.Sprintf("%s/cosmos/evidence/v1beta1/evidence/%s", endpoint, hash))
+	body, err := httpGet(fmt.Sprintf("%s/atomone/evidence/v1beta1/evidence/%s", endpoint, hash))
 	if err != nil {
 		return res, err
 	}
@@ -256,7 +256,7 @@ func queryEvidence(endpoint, hash string) (evidencetypes.QueryEvidenceResponse, 
 
 func queryAllEvidence(endpoint string) (evidencetypes.QueryAllEvidenceResponse, error) {
 	var res evidencetypes.QueryAllEvidenceResponse
-	body, err := httpGet(fmt.Sprintf("%s/cosmos/evidence/v1beta1/evidence", endpoint))
+	body, err := httpGet(fmt.Sprintf("%s/atomone/evidence/v1beta1/evidence", endpoint))
 	if err != nil {
 		return res, err
 	}

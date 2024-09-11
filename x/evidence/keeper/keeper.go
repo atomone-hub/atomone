@@ -103,6 +103,11 @@ func (k Keeper) SubmitEvidence(ctx sdk.Context, evidence exported.Evidence) erro
 
 // SetEvidence sets Evidence by hash in the module's KVStore.
 func (k Keeper) SetEvidence(ctx sdk.Context, evidence exported.Evidence) {
+	// TODO: why is storeKey nil?
+	if k.storeKey == nil {
+		return
+	}
+
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixEvidence)
 	store.Set(evidence.Hash(), k.MustMarshalEvidence(evidence))
 }
@@ -110,6 +115,11 @@ func (k Keeper) SetEvidence(ctx sdk.Context, evidence exported.Evidence) {
 // GetEvidence retrieves Evidence by hash if it exists. If no Evidence exists for
 // the given hash, (nil, false) is returned.
 func (k Keeper) GetEvidence(ctx sdk.Context, hash tmbytes.HexBytes) (exported.Evidence, bool) {
+	// TODO: why is storeKey nil?
+	if k.storeKey == nil {
+		return nil, false
+	}
+
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixEvidence)
 
 	bz := store.Get(hash)

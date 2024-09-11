@@ -28,6 +28,7 @@ import (
 	distrkeeper "github.com/atomone-hub/atomone/x/distribution/keeper"
 	distrtypes "github.com/atomone-hub/atomone/x/distribution/types"
 	evidencekeeper "github.com/atomone-hub/atomone/x/evidence/keeper"
+	evidencetypes "github.com/atomone-hub/atomone/x/evidence/types"
 	"github.com/atomone-hub/atomone/x/feegrant"
 	feegrantkeeper "github.com/atomone-hub/atomone/x/feegrant/keeper"
 	govkeeper "github.com/atomone-hub/atomone/x/gov/keeper"
@@ -127,7 +128,7 @@ func NewAppKeeper(
 
 	// Applications that wish to enforce statically created ScopedKeepers should call `Seal` after creating
 	// their scoped modules in `NewApp` with `ScopeToModule`
-	// appKeepers.CapabilityKeeper.Seal()
+	appKeepers.CapabilityKeeper.Seal()
 
 	appKeepers.CrisisKeeper = crisiskeeper.NewKeeper(
 		appCodec,
@@ -210,7 +211,7 @@ func NewAppKeeper(
 	appKeepers.StakingKeeper.SetHooks(
 		stakingtypes.NewMultiStakingHooks(
 			appKeepers.DistrKeeper.Hooks(),
-			// appKeepers.SlashingKeeper.Hooks(),
+			appKeepers.SlashingKeeper.Hooks(),
 		),
 	)
 
@@ -255,14 +256,14 @@ func NewAppKeeper(
 	// Set legacy router for backwards compatibility with gov v1beta1
 	appKeepers.GovKeeper.SetLegacyRouter(govRouter)
 
-	// evidenceKeeper := evidencekeeper.NewKeeper(
-	//	appCodec,
-	//	appKeepers.keys[evidencetypes.StoreKey],
-	//	appKeepers.StakingKeeper,
-	//	//appKeepers.SlashingKeeper,
-	//)
+	evidenceKeeper := evidencekeeper.NewKeeper(
+		appCodec,
+		appKeepers.keys[evidencetypes.StoreKey],
+		appKeepers.StakingKeeper,
+		appKeepers.SlashingKeeper,
+	)
 	// If evidence needs to be handled for the app, set routes in router here and seal
-	// appKeepers.EvidenceKeeper = *evidenceKeeper
+	appKeepers.EvidenceKeeper = *evidenceKeeper
 
 	return appKeepers
 }

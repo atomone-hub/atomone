@@ -18,4 +18,5 @@ COPY --from=atomoned-builder /go/bin/atomoned /usr/local/bin/
 EXPOSE 26656 26657 1317 9090
 USER nonroot
 
-ENTRYPOINT ["atomoned", "start"]
+# TODO: Why is min gas price not being read from the config?
+ENTRYPOINT ["atomoned", "start", "--minimum-gas-prices", "0.00001uatone"]

@@ -217,7 +217,7 @@ endif
 .PHONY: run-tests $(TEST_TARGETS)
 
 docker-build-debug:
-	@docker build -t cosmos/atomoned-e2e -f e2e.Dockerfile .
+	@docker build -t atomone/atomoned-e2e -f e2e.Dockerfile .
 
 ###############################################################################
 ###                                Linting                                  ###
