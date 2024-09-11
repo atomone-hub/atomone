@@ -224,7 +224,7 @@ func NewMsgCreateGroupWithPolicy(admin string, members []MemberRequest, groupMet
 func (m *MsgCreateGroupWithPolicy) GetDecisionPolicy() (DecisionPolicy, error) {
 	decisionPolicy, ok := m.DecisionPolicy.GetCachedValue().(DecisionPolicy)
 	if !ok {
-		return nil, sdkerrors.ErrInvalidType.Wrapf("expected %T, got %T", (DecisionPolicy)(nil), m.DecisionPolicy.GetCachedValue()) 
+		return nil, sdkerrors.ErrInvalidType.Wrapf("expected %T, got %T", (DecisionPolicy)(nil), m.DecisionPolicy.GetCachedValue())
 	}
 	return decisionPolicy, nil
 }
@@ -392,7 +392,7 @@ func NewMsgUpdateGroupPolicyDecisionPolicy(admin sdk.AccAddress, address sdk.Acc
 func (m *MsgUpdateGroupPolicyDecisionPolicy) SetDecisionPolicy(decisionPolicy DecisionPolicy) error {
 	msg, ok := decisionPolicy.(proto.Message)
 	if !ok {
-		return sdkerrors.ErrInvalidType.Wrapf("can't proto marshal %T", msg) 
+		return sdkerrors.ErrInvalidType.Wrapf("can't proto marshal %T", msg)
 	}
 	any, err := types.NewAnyWithValue(msg)
 	if err != nil {
@@ -452,7 +452,7 @@ func (m MsgUpdateGroupPolicyDecisionPolicy) ValidateBasic() error {
 func (m *MsgUpdateGroupPolicyDecisionPolicy) GetDecisionPolicy() (DecisionPolicy, error) {
 	decisionPolicy, ok := m.DecisionPolicy.GetCachedValue().(DecisionPolicy)
 	if !ok {
-		return nil, sdkerrors.ErrInvalidType.Wrapf("expected %T, got %T", (DecisionPolicy)(nil), m.DecisionPolicy.GetCachedValue()) 
+		return nil, sdkerrors.ErrInvalidType.Wrapf("expected %T, got %T", (DecisionPolicy)(nil), m.DecisionPolicy.GetCachedValue())
 	}
 
 	return decisionPolicy, nil
@@ -539,7 +539,7 @@ func (m *MsgCreateGroupPolicy) GetMetadata() string {
 func (m *MsgCreateGroupPolicy) GetDecisionPolicy() (DecisionPolicy, error) {
 	decisionPolicy, ok := m.DecisionPolicy.GetCachedValue().(DecisionPolicy)
 	if !ok {
-		return nil, sdkerrors.ErrInvalidType.Wrapf("expected %T, got %T", (DecisionPolicy)(nil), m.DecisionPolicy.GetCachedValue()) 
+		return nil, sdkerrors.ErrInvalidType.Wrapf("expected %T, got %T", (DecisionPolicy)(nil), m.DecisionPolicy.GetCachedValue())
 	}
 	return decisionPolicy, nil
 }

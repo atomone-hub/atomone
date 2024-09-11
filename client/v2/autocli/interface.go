@@ -4,7 +4,6 @@ import (
 	"github.com/spf13/cobra"
 
 	autocliv1 "github.com/atomone-hub/atomone/api/atomone/autocli/v1"
-
 	"github.com/atomone-hub/atomone/core/appmodule"
 )
 

@@ -887,7 +887,7 @@ func (k Keeper) getGroupMember(ctx sdk.Context, member *group.GroupMember) (*gro
 	case err == nil:
 		break
 	case sdkerrors.ErrNotFound.Is(err):
-		return nil, sdkerrors.ErrNotFound.Wrapf("%s is not part of group %d", member.Member.Address, member.GroupId) 
+		return nil, sdkerrors.ErrNotFound.Wrapf("%s is not part of group %d", member.Member.Address, member.GroupId)
 	default:
 		return nil, err
 	}

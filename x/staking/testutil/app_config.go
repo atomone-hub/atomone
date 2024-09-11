@@ -24,7 +24,6 @@ import (
 	slashingmodulev1 "github.com/atomone-hub/atomone/api/atomone/slashing/module/v1"
 	stakingmodulev1 "github.com/atomone-hub/atomone/api/atomone/staking/module/v1"
 	txconfigv1 "github.com/atomone-hub/atomone/api/atomone/tx/config/v1"
-
 	"github.com/atomone-hub/atomone/core/appconfig"
 	authtypes "github.com/atomone-hub/atomone/x/auth/types"
 	banktypes "github.com/atomone-hub/atomone/x/bank/types"

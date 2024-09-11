@@ -252,7 +252,7 @@ func (rs *Store) loadVersion(ver int64, upgrades *types.StoreUpgrades) error {
 
 		store, err := rs.loadCommitStoreFromParams(key, commitID, storeParams)
 		if err != nil {
-			return errors.Wrap(err, "failed to load store") 
+			return errors.Wrap(err, "failed to load store")
 		}
 
 		newStores[key] = store
@@ -260,7 +260,7 @@ func (rs *Store) loadVersion(ver int64, upgrades *types.StoreUpgrades) error {
 		// If it was deleted, remove all data
 		if upgrades.IsDeleted(key.Name()) {
 			if err := deleteKVStore(types.KVStore(store)); err != nil {
-				return errors.Wrapf(err, "failed to delete store %s", key.Name()) 
+				return errors.Wrapf(err, "failed to delete store %s", key.Name())
 			}
 			rs.removalMap[key] = true
 		} else if oldName := upgrades.RenamedFrom(key.Name()); oldName != "" {
@@ -272,12 +272,12 @@ func (rs *Store) loadVersion(ver int64, upgrades *types.StoreUpgrades) error {
 			// load from the old name
 			oldStore, err := rs.loadCommitStoreFromParams(oldKey, rs.getCommitID(infos, oldName), oldParams)
 			if err != nil {
-				return errors.Wrapf(err, "failed to load old store %s", oldName) 
+				return errors.Wrapf(err, "failed to load old store %s", oldName)
 			}
 
 			// move all data
 			if err := moveKVStoreData(types.KVStore(oldStore), types.KVStore(store)); err != nil {
-				return errors.Wrapf(err, "failed to move store %s -> %s", oldName, key.Name()) 
+				return errors.Wrapf(err, "failed to move store %s -> %s", oldName, key.Name())
 			}
 
 			// add the old key so its deletion is committed
@@ -1055,14 +1055,14 @@ func (rs *Store) GetCommitInfo(ver int64) (*types.CommitInfo, error) {
 
 	bz, err := rs.db.Get([]byte(cInfoKey))
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to get commit info") 
+		return nil, errors.Wrap(err, "failed to get commit info")
 	} else if bz == nil {
 		return nil, errors.New("no commit info found")
 	}
 
 	cInfo := &types.CommitInfo{}
 	if err = cInfo.Unmarshal(bz); err != nil {
-		return nil, errors.Wrap(err, "failed unmarshal commit info") 
+		return nil, errors.Wrap(err, "failed unmarshal commit info")
 	}
 
 	return cInfo, nil

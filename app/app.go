@@ -20,12 +20,11 @@ import (
 	"github.com/cometbft/cometbft/libs/log"
 	tmos "github.com/cometbft/cometbft/libs/os"
 
-	autocliv1 "github.com/atomone-hub/atomone/api/atomone/autocli/v1"
-	reflectionv1 "github.com/atomone-hub/atomone/api/atomone/reflection/v1"
-
 	"github.com/cosmos/cosmos-sdk/version"
 
 	atomoneante "github.com/atomone-hub/atomone/ante"
+	autocliv1 "github.com/atomone-hub/atomone/api/atomone/autocli/v1"
+	reflectionv1 "github.com/atomone-hub/atomone/api/atomone/reflection/v1"
 	"github.com/atomone-hub/atomone/app/keepers"
 	"github.com/atomone-hub/atomone/app/params"
 	"github.com/atomone-hub/atomone/app/upgrades"

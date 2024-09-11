@@ -47,7 +47,7 @@ func (msg MsgUnjail) GetSignBytes() []byte {
 // ValidateBasic does a sanity check on the provided message.
 func (msg MsgUnjail) ValidateBasic() error {
 	if _, err := sdk.ValAddressFromBech32(msg.ValidatorAddr); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("validator input address: %s", err) 
+		return sdkerrors.ErrInvalidAddress.Wrapf("validator input address: %s", err)
 	}
 	return nil
 }

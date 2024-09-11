@@ -34,12 +34,12 @@ func CollectGenTxsCmd(genBalIterator types.GenesisBalancesIterator, defaultNodeH
 
 			nodeID, valPubKey, err := genutil.InitializeNodeValidatorFiles(config)
 			if err != nil {
-				return errors.Wrap(err, "failed to initialize node validator files") 
+				return errors.Wrap(err, "failed to initialize node validator files")
 			}
 
 			genDoc, err := tmtypes.GenesisDocFromFile(config.GenesisFile())
 			if err != nil {
-				return errors.Wrap(err, "failed to read genesis doc from file") 
+				return errors.Wrap(err, "failed to read genesis doc from file")
 			}
 
 			genTxDir, _ := cmd.Flags().GetString(flagGenTxDir)
@@ -55,7 +55,7 @@ func CollectGenTxsCmd(genBalIterator types.GenesisBalancesIterator, defaultNodeH
 				clientCtx.TxConfig,
 				config, initCfg, *genDoc, genBalIterator, validator)
 			if err != nil {
-				return errors.Wrap(err, "failed to get genesis app state from config") 
+				return errors.Wrap(err, "failed to get genesis app state from config")
 			}
 
 			toPrint.AppMessage = appMessage

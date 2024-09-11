@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"cosmossdk.io/depinject"
-	txconfigv1 "github.com/atomone-hub/atomone/api/atomone/tx/config/v1"
 
+	txconfigv1 "github.com/atomone-hub/atomone/api/atomone/tx/config/v1"
 	"github.com/atomone-hub/atomone/baseapp"
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/codec"

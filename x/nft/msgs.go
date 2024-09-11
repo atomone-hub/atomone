@@ -27,12 +27,12 @@ func (m MsgSend) ValidateBasic() error {
 
 	_, err := sdk.AccAddressFromBech32(m.Sender)
 	if err != nil {
-		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid sender address (%s)", m.Sender) 
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid sender address (%s)", m.Sender)
 	}
 
 	_, err = sdk.AccAddressFromBech32(m.Receiver)
 	if err != nil {
-		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid receiver address (%s)", m.Receiver) 
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid receiver address (%s)", m.Receiver)
 	}
 	return nil
 }

@@ -7,7 +7,6 @@ import (
 	"google.golang.org/protobuf/reflect/protoreflect"
 
 	autocliv1 "github.com/atomone-hub/atomone/api/atomone/autocli/v1"
-
 	"github.com/atomone-hub/atomone/client/v2/internal/util"
 )
 

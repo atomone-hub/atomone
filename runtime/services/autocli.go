@@ -8,7 +8,6 @@ import (
 	gogogrpc "github.com/cosmos/gogoproto/grpc"
 
 	autocliv1 "github.com/atomone-hub/atomone/api/atomone/autocli/v1"
-
 	"github.com/atomone-hub/atomone/types/module"
 )
 

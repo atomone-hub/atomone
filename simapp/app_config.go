@@ -27,7 +27,6 @@ import (
 	txconfigv1 "github.com/atomone-hub/atomone/api/atomone/tx/config/v1"
 	upgrademodulev1 "github.com/atomone-hub/atomone/api/atomone/upgrade/module/v1"
 	vestingmodulev1 "github.com/atomone-hub/atomone/api/atomone/vesting/module/v1"
-
 	"github.com/atomone-hub/atomone/core/appconfig"
 	authtypes "github.com/atomone-hub/atomone/x/auth/types"
 	vestingtypes "github.com/atomone-hub/atomone/x/auth/vesting/types"

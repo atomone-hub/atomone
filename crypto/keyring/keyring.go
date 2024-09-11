@@ -328,7 +328,7 @@ func (ks keystore) ImportPrivKey(uid, armor, passphrase string) error {
 
 	privKey, _, err := crypto.UnarmorDecryptPrivKey(armor, passphrase)
 	if err != nil {
-		return errors.Wrap(err, "failed to decrypt private key") 
+		return errors.Wrap(err, "failed to decrypt private key")
 	}
 
 	_, err = ks.writeLocalKey(uid, privKey)

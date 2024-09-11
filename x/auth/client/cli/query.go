@@ -391,7 +391,7 @@ $ %s query tx --%s=%s <sig1_base64>,<sig2_base64...>
 					}
 					if len(txs.Txs) > 1 {
 						// This case means there's a bug somewhere else in the code. Should not happen.
-						return errors.ErrLogic.Wrapf("found %d txs matching given signatures", len(txs.Txs)) 
+						return errors.ErrLogic.Wrapf("found %d txs matching given signatures", len(txs.Txs))
 					}
 
 					return clientCtx.PrintProto(txs.Txs[0])

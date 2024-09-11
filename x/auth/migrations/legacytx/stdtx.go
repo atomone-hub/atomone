@@ -115,13 +115,13 @@ func (stdTx StdTx) ValidateBasic() error {
 	stdSigs := stdTx.GetSignatures()
 
 	if stdTx.Fee.Gas > tx.MaxGasWanted {
-		return sdkerrors.Wrapf( 
+		return sdkerrors.Wrapf(
 			sdkerrors.ErrInvalidRequest,
 			"invalid gas supplied; %d > %d", stdTx.Fee.Gas, tx.MaxGasWanted,
 		)
 	}
 	if stdTx.Fee.Amount.IsAnyNegative() {
-		return sdkerrors.Wrapf( 
+		return sdkerrors.Wrapf(
 			sdkerrors.ErrInsufficientFee,
 			"invalid fee provided: %s", stdTx.Fee.Amount,
 		)
@@ -130,7 +130,7 @@ func (stdTx StdTx) ValidateBasic() error {
 		return sdkerrors.ErrNoSignatures
 	}
 	if len(stdSigs) != len(stdTx.GetSigners()) {
-		return sdkerrors.Wrapf( 
+		return sdkerrors.Wrapf(
 			sdkerrors.ErrUnauthorized,
 			"wrong number of signers; expected %d, got %d", len(stdTx.GetSigners()), len(stdSigs),
 		)
@@ -198,7 +198,7 @@ func (tx StdTx) GetSignaturesV2() ([]signing.SignatureV2, error) {
 		var err error
 		res[i], err = StdSignatureToSignatureV2(legacy.Cdc, sig)
 		if err != nil {
-			return nil, sdkerrors.Wrapf(err, "Unable to convert signature %v to V2", sig) 
+			return nil, sdkerrors.Wrapf(err, "Unable to convert signature %v to V2", sig)
 		}
 	}
 

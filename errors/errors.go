@@ -71,11 +71,11 @@ func setUsed(err *Error) {
 // The server (abci app / blockchain) should only refer to registered errors
 func ABCIError(codespace string, code uint32, log string) error {
 	if e := getUsed(codespace, code); e != nil {
-		return Wrap(e, log) 
+		return Wrap(e, log)
 	}
 	// This is a unique error, will never match on .Is()
 	// Use Wrap here to get a stack trace
-	return Wrap(&Error{codespace: codespace, code: code, desc: "unknown"}, log) 
+	return Wrap(&Error{codespace: codespace, code: code, desc: "unknown"}, log)
 }
 
 // Error represents a root error.
@@ -145,11 +145,11 @@ func (e *Error) Is(err error) bool {
 
 // Wrap extends this error with an additional information.
 // It's a handy function to call Wrap with sdk errors.
-func (e *Error) Wrap(desc string) error { return Wrap(e, desc) } 
+func (e *Error) Wrap(desc string) error { return Wrap(e, desc) }
 
 // Wrapf extends this error with an additional information.
 // It's a handy function to call Wrapf with sdk errors.
-func (e *Error) Wrapf(desc string, args ...interface{}) error { return Wrapf(e, desc, args...) } 
+func (e *Error) Wrapf(desc string, args ...interface{}) error { return Wrapf(e, desc, args...) }
 
 func (e *Error) GRPCStatus() *grpcstatus.Status {
 	return grpcstatus.Newf(e.grpcCode, "codespace %s code %d: %s", e.codespace, e.code, e.desc)
@@ -174,7 +174,7 @@ func isNilErr(err error) bool {
 //
 // If err is nil, this returns nil, avoiding the need for an if statement when
 // wrapping a error returned at the end of a function
-func Wrap(err error, description string) error { 
+func Wrap(err error, description string) error {
 	if err == nil {
 		return nil
 	}
@@ -198,7 +198,7 @@ func Wrap(err error, description string) error {
 // formatting the input as specified.
 func Wrapf(err error, format string, args ...interface{}) error {
 	desc := fmt.Sprintf(format, args...)
-	return Wrap(err, desc) 
+	return Wrap(err, desc)
 }
 
 type wrappedError struct {
@@ -275,7 +275,7 @@ func Recover(err *error) {
 
 // WithType is a helper to augment an error with a corresponding type message
 func WithType(err error, obj interface{}) error {
-	return Wrap(err, fmt.Sprintf("%T", obj)) 
+	return Wrap(err, fmt.Sprintf("%T", obj))
 }
 
 // IsOf checks if a received error is caused by one of the target errors.

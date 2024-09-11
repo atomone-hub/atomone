@@ -53,11 +53,11 @@ func (msg MsgGrant) GetSigners() []sdk.AccAddress {
 func (msg MsgGrant) ValidateBasic() error {
 	granter, err := sdk.AccAddressFromBech32(msg.Granter)
 	if err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid granter address: %s", err) 
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid granter address: %s", err)
 	}
 	grantee, err := sdk.AccAddressFromBech32(msg.Grantee)
 	if err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", err) 
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", err)
 	}
 
 	if granter.Equals(grantee) {
@@ -90,7 +90,7 @@ func (msg *MsgGrant) GetAuthorization() (Authorization, error) {
 func (msg *MsgGrant) SetAuthorization(a Authorization) error {
 	m, ok := a.(proto.Message)
 	if !ok {
-		return sdkerrors.ErrPackAny.Wrapf("can't proto marshal %T", m) 
+		return sdkerrors.ErrPackAny.Wrapf("can't proto marshal %T", m)
 	}
 	any, err := cdctypes.NewAnyWithValue(m)
 	if err != nil {
@@ -139,11 +139,11 @@ func (msg MsgRevoke) GetSigners() []sdk.AccAddress {
 func (msg MsgRevoke) ValidateBasic() error {
 	granter, err := sdk.AccAddressFromBech32(msg.Granter)
 	if err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid granter address: %s", err) 
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid granter address: %s", err)
 	}
 	grantee, err := sdk.AccAddressFromBech32(msg.Grantee)
 	if err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", err) 
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", err)
 	}
 
 	if granter.Equals(grantee) {
@@ -151,7 +151,7 @@ func (msg MsgRevoke) ValidateBasic() error {
 	}
 
 	if msg.MsgTypeUrl == "" {
-		return sdkerrors.ErrInvalidRequest.Wrap("missing method name") 
+		return sdkerrors.ErrInvalidRequest.Wrap("missing method name")
 	}
 
 	return nil
@@ -198,7 +198,7 @@ func (msg MsgExec) GetMessages() ([]sdk.Msg, error) {
 	for i, msgAny := range msg.Msgs {
 		msg, ok := msgAny.GetCachedValue().(sdk.Msg)
 		if !ok {
-			return nil, sdkerrors.ErrInvalidRequest.Wrapf("messages contains %T which is not a sdk.MsgRequest", msgAny) 
+			return nil, sdkerrors.ErrInvalidRequest.Wrapf("messages contains %T which is not a sdk.MsgRequest", msgAny)
 		}
 		msgs[i] = msg
 	}
@@ -215,11 +215,11 @@ func (msg MsgExec) GetSigners() []sdk.AccAddress {
 // ValidateBasic implements Msg
 func (msg MsgExec) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Grantee); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", err) 
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", err)
 	}
 
 	if len(msg.Msgs) == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrapf("messages cannot be empty") 
+		return sdkerrors.ErrInvalidRequest.Wrapf("messages cannot be empty")
 	}
 
 	msgs, err := msg.GetMessages()

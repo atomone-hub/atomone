@@ -11,10 +11,10 @@ import (
 	abci "github.com/cometbft/cometbft/abci/types"
 
 	"cosmossdk.io/depinject"
-	modulev1 "github.com/atomone-hub/atomone/api/atomone/capability/module/v1"
 
 	"github.com/cosmos/cosmos-sdk/telemetry"
 
+	modulev1 "github.com/atomone-hub/atomone/api/atomone/capability/module/v1"
 	"github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/codec"
 	cdctypes "github.com/atomone-hub/atomone/codec/types"

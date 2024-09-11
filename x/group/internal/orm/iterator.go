@@ -62,10 +62,10 @@ type LimitedIterator struct {
 // max can be 0 or any positive number
 func LimitIterator(parent Iterator, max int) (*LimitedIterator, error) {
 	if max < 0 {
-		return nil, errors.ErrORMInvalidArgument.Wrap("quantity must not be negative") 
+		return nil, errors.ErrORMInvalidArgument.Wrap("quantity must not be negative")
 	}
 	if parent == nil {
-		return nil, errors.ErrORMInvalidArgument.Wrap("parent iterator must not be nil") 
+		return nil, errors.ErrORMInvalidArgument.Wrap("parent iterator must not be nil")
 	}
 	return &LimitedIterator{remainingCount: max, parentIterator: parent}, nil
 }

@@ -379,7 +379,7 @@ func (k BaseSendKeeper) IsSendEnabledCoins(ctx sdk.Context, coins ...sdk.Coin) e
 
 	for _, coin := range coins {
 		if !k.getSendEnabledOrDefault(store, coin.Denom, defaultVal) {
-			return types.ErrSendDisabled.Wrapf("%s transfers are currently disabled", coin.Denom) 
+			return types.ErrSendDisabled.Wrapf("%s transfers are currently disabled", coin.Denom)
 		}
 	}
 

@@ -10,7 +10,6 @@ import (
 	cosmos_proto "github.com/cosmos/cosmos-proto"
 
 	autocliv1 "github.com/atomone-hub/atomone/api/atomone/autocli/v1"
-
 	"github.com/atomone-hub/atomone/client/v2/internal/util"
 )
 

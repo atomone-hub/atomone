@@ -2,6 +2,7 @@ package configurator
 
 import (
 	"cosmossdk.io/depinject"
+
 	runtimev1alpha1 "github.com/atomone-hub/atomone/api/atomone/app/runtime/v1alpha1"
 	appv1alpha1 "github.com/atomone-hub/atomone/api/atomone/app/v1alpha1"
 	authmodulev1 "github.com/atomone-hub/atomone/api/atomone/auth/module/v1"
@@ -21,7 +22,6 @@ import (
 	stakingmodulev1 "github.com/atomone-hub/atomone/api/atomone/staking/module/v1"
 	txconfigv1 "github.com/atomone-hub/atomone/api/atomone/tx/config/v1"
 	vestingmodulev1 "github.com/atomone-hub/atomone/api/atomone/vesting/module/v1"
-
 	"github.com/atomone-hub/atomone/core/appconfig"
 )
 

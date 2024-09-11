@@ -22,7 +22,7 @@ type Indexer struct {
 // NewIndexer returns an indexer that supports multiple reference keys for an entity.
 func NewIndexer(indexerFunc IndexerFunc) (*Indexer, error) {
 	if indexerFunc == nil {
-		return nil, errors.ErrORMInvalidArgument.Wrap("Indexer func must not be nil") 
+		return nil, errors.ErrORMInvalidArgument.Wrap("Indexer func must not be nil")
 	}
 	return &Indexer{
 		indexerFunc: pruneEmptyKeys(indexerFunc),
@@ -33,7 +33,7 @@ func NewIndexer(indexerFunc IndexerFunc) (*Indexer, error) {
 // NewUniqueIndexer returns an indexer that requires exactly one reference keys for an entity.
 func NewUniqueIndexer(f UniqueIndexerFunc) (*Indexer, error) {
 	if f == nil {
-		return nil, errors.ErrORMInvalidArgument.Wrap("Indexer func must not be nil") 
+		return nil, errors.ErrORMInvalidArgument.Wrap("Indexer func must not be nil")
 	}
 	adaptor := func(indexerFunc UniqueIndexerFunc) IndexerFunc {
 		return func(v interface{}) ([]interface{}, error) {

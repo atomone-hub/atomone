@@ -431,15 +431,15 @@ func (k msgServer) CancelUnbondingDelegation(goCtx context.Context, msg *types.M
 		}
 	}
 	if unbondEntryIndex == -1 {
-		return nil, sdkerrors.ErrNotFound.Wrapf("unbonding delegation entry is not found at block height %d", msg.CreationHeight) 
+		return nil, sdkerrors.ErrNotFound.Wrapf("unbonding delegation entry is not found at block height %d", msg.CreationHeight)
 	}
 
 	if unbondEntry.Balance.LT(msg.Amount.Amount) {
-		return nil, sdkerrors.ErrInvalidRequest.Wrap("amount is greater than the unbonding delegation entry balance") 
+		return nil, sdkerrors.ErrInvalidRequest.Wrap("amount is greater than the unbonding delegation entry balance")
 	}
 
 	if unbondEntry.CompletionTime.Before(ctx.BlockTime()) {
-		return nil, sdkerrors.ErrInvalidRequest.Wrap("unbonding delegation is already processed") 
+		return nil, sdkerrors.ErrInvalidRequest.Wrap("unbonding delegation is already processed")
 	}
 
 	// delegate back the unbonding delegation amount to the validator

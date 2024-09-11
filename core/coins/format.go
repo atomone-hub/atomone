@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"cosmossdk.io/math"
+
 	bankv1beta1 "github.com/atomone-hub/atomone/api/atomone/bank/v1beta1"
 	basev1beta1 "github.com/atomone-hub/atomone/api/atomone/base/v1beta1"
 )

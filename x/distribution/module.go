@@ -11,8 +11,8 @@ import (
 	abci "github.com/cometbft/cometbft/abci/types"
 
 	"cosmossdk.io/depinject"
-	modulev1 "github.com/atomone-hub/atomone/api/atomone/distribution/module/v1"
 
+	modulev1 "github.com/atomone-hub/atomone/api/atomone/distribution/module/v1"
 	sdkclient "github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/codec"
 	cdctypes "github.com/atomone-hub/atomone/codec/types"

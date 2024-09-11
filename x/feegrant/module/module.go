@@ -11,10 +11,10 @@ import (
 	abci "github.com/cometbft/cometbft/abci/types"
 
 	"cosmossdk.io/depinject"
-	modulev1 "github.com/atomone-hub/atomone/api/atomone/feegrant/module/v1"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
+	modulev1 "github.com/atomone-hub/atomone/api/atomone/feegrant/module/v1"
 	sdkclient "github.com/atomone-hub/atomone/client"
 	"github.com/atomone-hub/atomone/codec"
 	cdctypes "github.com/atomone-hub/atomone/codec/types"

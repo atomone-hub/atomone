@@ -36,11 +36,11 @@ func (msg MsgSend) Type() string { return TypeMsgSend }
 // ValidateBasic Implements Msg.
 func (msg MsgSend) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.FromAddress); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", err) 
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", err)
 	}
 
 	if _, err := sdk.AccAddressFromBech32(msg.ToAddress); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", err) 
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", err)
 	}
 
 	if !msg.Amount.IsValid() {
@@ -115,7 +115,7 @@ func (msg MsgMultiSend) GetSigners() []sdk.AccAddress {
 // ValidateBasic - validate transaction input
 func (in Input) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(in.Address); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid input address: %s", err) 
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid input address: %s", err)
 	}
 
 	if !in.Coins.IsValid() {
@@ -142,7 +142,7 @@ func NewInput(addr sdk.AccAddress, coins sdk.Coins) Input {
 // ValidateBasic - validate transaction output
 func (out Output) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(out.Address); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid output address: %s", err) 
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid output address: %s", err)
 	}
 
 	if !out.Coins.IsValid() {
@@ -237,26 +237,26 @@ func (msg MsgSetSendEnabled) GetSigners() []sdk.AccAddress {
 func (msg MsgSetSendEnabled) ValidateBasic() error {
 	if len(msg.Authority) > 0 {
 		if _, err := sdk.AccAddressFromBech32(msg.Authority); err != nil {
-			return sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", err) 
+			return sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", err)
 		}
 	}
 
 	seen := map[string]bool{}
 	for _, se := range msg.SendEnabled {
 		if _, alreadySeen := seen[se.Denom]; alreadySeen {
-			return sdkerrors.ErrInvalidRequest.Wrapf("duplicate denom entries found for %q", se.Denom) 
+			return sdkerrors.ErrInvalidRequest.Wrapf("duplicate denom entries found for %q", se.Denom)
 		}
 
 		seen[se.Denom] = true
 
 		if err := se.Validate(); err != nil {
-			return sdkerrors.ErrInvalidRequest.Wrapf("invalid SendEnabled denom %q: %s", se.Denom, err) 
+			return sdkerrors.ErrInvalidRequest.Wrapf("invalid SendEnabled denom %q: %s", se.Denom, err)
 		}
 	}
 
 	for _, denom := range msg.UseDefaultFor {
 		if err := sdk.ValidateDenom(denom); err != nil {
-			return sdkerrors.ErrInvalidRequest.Wrapf("invalid UseDefaultFor denom %q: %s", denom, err) 
+			return sdkerrors.ErrInvalidRequest.Wrapf("invalid UseDefaultFor denom %q: %s", denom, err)
 		}
 	}
 

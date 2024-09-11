@@ -508,6 +508,6 @@ func signatureDataToBz(data signing.SignatureData) ([][]byte, error) {
 
 		return sigs, nil
 	default:
-		return nil, sdkerrors.ErrInvalidType.Wrapf("unexpected signature data type %T", data) 
+		return nil, sdkerrors.ErrInvalidType.Wrapf("unexpected signature data type %T", data)
 	}
 }
