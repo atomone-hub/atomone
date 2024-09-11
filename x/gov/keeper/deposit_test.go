@@ -16,7 +16,8 @@ const (
 )
 
 func TestDeposits(t *testing.T) {
-	govKeeper, _, bankKeeper, stakingKeeper, _, ctx := setupGovKeeper(t)
+	govKeeper, mocks, _, ctx := setupGovKeeper(t)
+	bankKeeper, stakingKeeper := mocks.bankKeeper, mocks.stakingKeeper
 	trackMockBalances(bankKeeper)
 	TestAddrs := simtestutil.AddTestAddrsIncremental(bankKeeper, stakingKeeper, ctx, 2, sdk.NewInt(10000000))
 
@@ -193,7 +194,7 @@ func TestValidateInitialDeposit(t *testing.T) {
 
 	for name, tc := range testcases {
 		t.Run(name, func(t *testing.T) {
-			govKeeper, _, _, _, _, ctx := setupGovKeeper(t)
+			govKeeper, _, _, ctx := setupGovKeeper(t)
 
 			params := v1.DefaultParams()
 			params.MinDeposit = tc.minDeposit

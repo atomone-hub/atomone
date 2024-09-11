@@ -46,12 +46,34 @@ func getTestProposal() []sdk.Msg {
 	}
 }
 
+type mocks struct {
+	acctKeeper    *govtestutil.MockAccountKeeper
+	bankKeeper    *govtestutil.MockBankKeeper
+	stakingKeeper *govtestutil.MockStakingKeeper
+}
+
+func mockAccountKeeperExpectations(ctx sdk.Context, m mocks) {
+	m.acctKeeper.EXPECT().GetModuleAddress(types.ModuleName).Return(govAcct).AnyTimes()
+	m.acctKeeper.EXPECT().GetModuleAccount(gomock.Any(), types.ModuleName).Return(authtypes.NewEmptyModuleAccount(types.ModuleName)).AnyTimes()
+}
+
+func mockDefaultExpectations(ctx sdk.Context, m mocks) {
+	mockAccountKeeperExpectations(ctx, m)
+	trackMockBalances(m.bankKeeper)
+	m.stakingKeeper.EXPECT().TokensFromConsensusPower(ctx, gomock.Any()).DoAndReturn(func(ctx sdk.Context, power int64) math.Int {
+		return sdk.TokensFromConsensusPower(power, math.NewIntFromUint64(1000000))
+	}).AnyTimes()
+
+	m.stakingKeeper.EXPECT().BondDenom(ctx).Return("stake").AnyTimes()
+	m.stakingKeeper.EXPECT().IterateBondedValidatorsByPower(gomock.Any(), gomock.Any()).AnyTimes()
+	m.stakingKeeper.EXPECT().IterateDelegations(gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes()
+	m.stakingKeeper.EXPECT().TotalBondedTokens(gomock.Any()).Return(math.NewInt(10000000)).AnyTimes()
+}
+
 // setupGovKeeper creates a govKeeper as well as all its dependencies.
-func setupGovKeeper(t *testing.T) (
+func setupGovKeeper(t *testing.T, expectations ...func(sdk.Context, mocks)) (
 	*keeper.Keeper,
-	*govtestutil.MockAccountKeeper,
-	*govtestutil.MockBankKeeper,
-	*govtestutil.MockStakingKeeper,
+	mocks,
 	moduletestutil.TestEncodingConfig,
 	sdk.Context,
 ) {
@@ -69,23 +91,23 @@ func setupGovKeeper(t *testing.T) (
 
 	// gomock initializations
 	ctrl := gomock.NewController(t)
-	acctKeeper := govtestutil.NewMockAccountKeeper(ctrl)
-	bankKeeper := govtestutil.NewMockBankKeeper(ctrl)
-	stakingKeeper := govtestutil.NewMockStakingKeeper(ctrl)
-	acctKeeper.EXPECT().GetModuleAddress(types.ModuleName).Return(govAcct).AnyTimes()
-	acctKeeper.EXPECT().GetModuleAccount(gomock.Any(), types.ModuleName).Return(authtypes.NewEmptyModuleAccount(types.ModuleName)).AnyTimes()
-	trackMockBalances(bankKeeper)
-	stakingKeeper.EXPECT().TokensFromConsensusPower(ctx, gomock.Any()).DoAndReturn(func(ctx sdk.Context, power int64) math.Int {
-		return sdk.TokensFromConsensusPower(power, math.NewIntFromUint64(1000000))
-	}).AnyTimes()
-	stakingKeeper.EXPECT().BondDenom(ctx).Return("stake").AnyTimes()
-	stakingKeeper.EXPECT().IterateBondedValidatorsByPower(gomock.Any(), gomock.Any()).AnyTimes()
-	stakingKeeper.EXPECT().IterateDelegations(gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes()
-	stakingKeeper.EXPECT().TotalBondedTokens(gomock.Any()).Return(math.NewInt(10000000)).AnyTimes()
+	m := mocks{
+		acctKeeper:    govtestutil.NewMockAccountKeeper(ctrl),
+		bankKeeper:    govtestutil.NewMockBankKeeper(ctrl),
+		stakingKeeper: govtestutil.NewMockStakingKeeper(ctrl),
+	}
+	if len(expectations) == 0 {
+		mockDefaultExpectations(ctx, m)
+	} else {
+		for _, exp := range expectations {
+			exp(ctx, m)
+		}
+	}
 
 	// Gov keeper initializations
-	govKeeper := keeper.NewKeeper(encCfg.Codec, key, acctKeeper, bankKeeper, stakingKeeper, msr, types.DefaultConfig(), govAcct.String())
+	govKeeper := keeper.NewKeeper(encCfg.Codec, key, m.acctKeeper, m.bankKeeper, m.stakingKeeper, msr, types.DefaultConfig(), govAcct.String())
 	govKeeper.SetProposalID(ctx, 1)
+
 	govRouter := v1beta1.NewRouter() // Also register legacy gov handlers to test them too.
 	govRouter.AddRoute(types.RouterKey, v1beta1.ProposalHandler)
 	govKeeper.SetLegacyRouter(govRouter)
@@ -96,7 +118,7 @@ func setupGovKeeper(t *testing.T) (
 	v1.RegisterMsgServer(msr, keeper.NewMsgServerImpl(govKeeper))
 	banktypes.RegisterMsgServer(msr, nil) // Nil is fine here as long as we never execute the proposal's Msgs.
 
-	return govKeeper, acctKeeper, bankKeeper, stakingKeeper, encCfg, ctx
+	return govKeeper, m, encCfg, ctx
 }
 
 // trackMockBalances sets up expected calls on the Mock BankKeeper, and also
