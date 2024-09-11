@@ -145,7 +145,7 @@ func queryDelegatorTotalRewards(endpoint, delegatorAddr string) (disttypes.Query
 func queryGovProposal(endpoint string, proposalID int) (govtypesv1beta1.QueryProposalResponse, error) {
 	var govProposalResp govtypesv1beta1.QueryProposalResponse
 
-	path := fmt.Sprintf("%s/cosmos/gov/v1beta1/proposals/%d", endpoint, proposalID)
+	path := fmt.Sprintf("%s/atomone/gov/v1beta1/proposals/%d", endpoint, proposalID)
 
 	body, err := httpGet(path)
 	if err != nil {

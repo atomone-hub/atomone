@@ -4,8 +4,9 @@ import (
 	"strings"
 	"testing"
 
-	"cosmossdk.io/math"
 	"github.com/stretchr/testify/require"
+
+	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -68,7 +69,7 @@ func TestMsgDepositGetSignBytes(t *testing.T) {
 	msg := NewMsgDeposit(addr, 0, coinsPos)
 	res := msg.GetSignBytes()
 
-	expected := `{"type":"cosmos-sdk/MsgDeposit","value":{"amount":[{"amount":"1000","denom":"stake"}],"depositor":"cosmos1v9jxgu33kfsgr5","proposal_id":"0"}}`
+	expected := `{"type":"atomone/MsgDeposit","value":{"amount":[{"amount":"1000","denom":"stake"}],"depositor":"cosmos1v9jxgu33kfsgr5","proposal_id":"0"}}`
 	require.Equal(t, expected, string(res))
 }
 
@@ -175,6 +176,6 @@ func TestMsgSubmitProposal_GetSignBytes(t *testing.T) {
 		bz = msg.GetSignBytes()
 	})
 	require.Equal(t,
-		`{"type":"cosmos-sdk/MsgSubmitProposal","value":{"content":{"type":"cosmos-sdk/TextProposal","value":{"description":"abcd","title":"test"}},"initial_deposit":[]}}`,
+		`{"type":"atomone/MsgSubmitProposal","value":{"content":{"type":"atomone/TextProposal","value":{"description":"abcd","title":"test"}},"initial_deposit":[]}}`,
 		string(bz))
 }

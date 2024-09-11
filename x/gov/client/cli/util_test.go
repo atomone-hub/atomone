@@ -152,10 +152,10 @@ func TestParseSubmitProposal(t *testing.T) {
 			"amount":{"denom": "stake","amount": "10"}
 		},
 		{
-			"@type": "/cosmos.gov.v1.MsgExecLegacyContent",
+			"@type": "/atomone.gov.v1.MsgExecLegacyContent",
 			"authority": "%s",
 			"content": {
-				"@type": "/cosmos.gov.v1beta1.TextProposal",
+				"@type": "/atomone.gov.v1beta1.TextProposal",
 				"title": "My awesome title",
 				"description": "My awesome description"
 			}

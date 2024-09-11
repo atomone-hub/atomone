@@ -34,7 +34,7 @@ func TestMsgDepositGetSignBytes(t *testing.T) {
 	msg := v1.NewMsgDeposit(addr, 0, coinsPos)
 	res := msg.GetSignBytes()
 
-	expected := `{"type":"cosmos-sdk/v1/MsgDeposit","value":{"amount":[{"amount":"1000","denom":"stake"}],"depositor":"cosmos1v9jxgu33kfsgr5","proposal_id":"0"}}`
+	expected := `{"type":"atomone/v1/MsgDeposit","value":{"amount":[{"amount":"1000","denom":"stake"}],"depositor":"cosmos1v9jxgu33kfsgr5","proposal_id":"0"}}`
 	require.Equal(t, expected, string(res))
 }
 
@@ -189,14 +189,14 @@ func TestMsgSubmitProposal_GetSignBytes(t *testing.T) {
 			[]sdk.Msg{v1.NewMsgVote(addrs[0], 1, v1.OptionYes, "")},
 			"gov/MsgVote",
 			"Proposal for a governance vote msg",
-			`{"type":"cosmos-sdk/v1/MsgSubmitProposal","value":{"initial_deposit":[],"messages":[{"type":"cosmos-sdk/v1/MsgVote","value":{"option":1,"proposal_id":"1","voter":"cosmos1w3jhxap3gempvr"}}],"summary":"Proposal for a governance vote msg","title":"gov/MsgVote"}}`,
+			`{"type":"atomone/v1/MsgSubmitProposal","value":{"initial_deposit":[],"messages":[{"type":"atomone/v1/MsgVote","value":{"option":1,"proposal_id":"1","voter":"cosmos1w3jhxap3gempvr"}}],"summary":"Proposal for a governance vote msg","title":"gov/MsgVote"}}`,
 		},
 		{
 			"MsgSend",
 			[]sdk.Msg{banktypes.NewMsgSend(addrs[0], addrs[0], sdk.NewCoins())},
 			"bank/MsgSend",
 			"Proposal for a bank msg send",
-			fmt.Sprintf(`{"type":"cosmos-sdk/v1/MsgSubmitProposal","value":{"initial_deposit":[],"messages":[{"type":"cosmos-sdk/MsgSend","value":{"amount":[],"from_address":"%s","to_address":"%s"}}],"summary":"Proposal for a bank msg send","title":"bank/MsgSend"}}`, addrs[0], addrs[0]),
+			fmt.Sprintf(`{"type":"atomone/v1/MsgSubmitProposal","value":{"initial_deposit":[],"messages":[{"type":"cosmos-sdk/MsgSend","value":{"amount":[],"from_address":"%s","to_address":"%s"}}],"summary":"Proposal for a bank msg send","title":"bank/MsgSend"}}`, addrs[0], addrs[0]),
 		},
 	}
 
