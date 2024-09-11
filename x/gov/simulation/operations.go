@@ -257,7 +257,7 @@ func simulateMsgSubmitProposal(ak types.AccountKeeper, bk types.BankKeeper, k *k
 			whenVote := ctx.BlockHeader().Time.Add(time.Duration(r.Int63n(int64(votingPeriod.Seconds()))) * time.Second)
 			fops[i] = simtypes.FutureOperation{
 				BlockTime: whenVote,
-				Op:        operationSimulateMsgVote(ak, bk, k, accs[whoVotes[i]], int64(proposalID)), //nolint:gosec
+				Op:        operationSimulateMsgVote(ak, bk, k, accs[whoVotes[i]], int64(proposalID)),
 			}
 		}
 
@@ -340,7 +340,7 @@ func operationSimulateMsgVote(ak types.AccountKeeper, bk types.BankKeeper, k *ke
 				return simtypes.NoOpMsg(types.ModuleName, TypeMsgVote, "unable to generate proposalID"), nil, nil
 			}
 		default:
-			proposalID = uint64(proposalIDInt) //nolint:gosec
+			proposalID = uint64(proposalIDInt)
 		}
 
 		option := randomVotingOption(r)
@@ -392,7 +392,7 @@ func operationSimulateMsgVoteWeighted(ak types.AccountKeeper, bk types.BankKeepe
 				return simtypes.NoOpMsg(types.ModuleName, TypeMsgVoteWeighted, "unable to generate proposalID"), nil, nil
 			}
 		default:
-			proposalID = uint64(proposalIDInt) //nolint:gosec
+			proposalID = uint64(proposalIDInt)
 		}
 
 		options := randomWeightedVotingOptions(r)
@@ -485,7 +485,7 @@ func randomProposalID(r *rand.Rand, k *keeper.Keeper, ctx sdk.Context, status v1
 	switch {
 	case proposalID > initialProposalID:
 		// select a random ID between [initialProposalID, proposalID]
-		proposalID = uint64(simtypes.RandIntBetween(r, int(initialProposalID), int(proposalID))) //nolint:gosec
+		proposalID = uint64(simtypes.RandIntBetween(r, int(initialProposalID), int(proposalID)))
 
 	default:
 		// This is called on the first call to this funcion

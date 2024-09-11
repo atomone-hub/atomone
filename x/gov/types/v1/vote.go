@@ -149,8 +149,8 @@ func ValidVoteOption(option VoteOption) bool {
 func (vo VoteOption) Format(s fmt.State, verb rune) {
 	switch verb {
 	case 's':
-		s.Write([]byte(vo.String())) //nolint:errcheck
+		s.Write([]byte(vo.String()))
 	default:
-		s.Write([]byte(fmt.Sprintf("%v", byte(vo)))) //nolint:errcheck
+		s.Write([]byte(fmt.Sprintf("%v", byte(vo))))
 	}
 }
