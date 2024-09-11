@@ -2,7 +2,6 @@ package v1beta1
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	sdkgovtypes "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 )
 

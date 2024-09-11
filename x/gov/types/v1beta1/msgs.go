@@ -3,8 +3,9 @@ package v1beta1
 import (
 	"fmt"
 
-	"github.com/cosmos/gogoproto/proto"
 	"sigs.k8s.io/yaml"
+
+	"github.com/cosmos/gogoproto/proto"
 
 	"cosmossdk.io/math"
 
@@ -98,18 +99,18 @@ func (m MsgSubmitProposal) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proposer address: %s", err)
 	}
 	if !m.InitialDeposit.IsValid() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, m.InitialDeposit.String())
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, m.InitialDeposit.String()) //nolint:staticcheck
 	}
 	if m.InitialDeposit.IsAnyNegative() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, m.InitialDeposit.String())
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, m.InitialDeposit.String()) //nolint:staticcheck
 	}
 
 	content := m.GetContent()
 	if content == nil {
-		return sdkerrors.Wrap(types.ErrInvalidProposalContent, "missing content")
+		return sdkerrors.Wrap(types.ErrInvalidProposalContent, "missing content") //nolint:staticcheck
 	}
 	if !IsValidProposalType(content.ProposalType()) {
-		return sdkerrors.Wrap(types.ErrInvalidProposalType, content.ProposalType())
+		return sdkerrors.Wrap(types.ErrInvalidProposalType, content.ProposalType()) //nolint:staticcheck
 	}
 	if err := content.ValidateBasic(); err != nil {
 		return err
@@ -161,10 +162,10 @@ func (msg MsgDeposit) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid depositor address: %s", err)
 	}
 	if !msg.Amount.IsValid() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, msg.Amount.String())
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, msg.Amount.String()) //nolint:staticcheck
 	}
 	if msg.Amount.IsAnyNegative() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, msg.Amount.String())
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, msg.Amount.String()) //nolint:staticcheck
 	}
 
 	return nil
@@ -207,7 +208,7 @@ func (msg MsgVote) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid voter address: %s", err)
 	}
 	if !ValidVoteOption(msg.Option) {
-		return sdkerrors.Wrap(types.ErrInvalidVote, msg.Option.String())
+		return sdkerrors.Wrap(types.ErrInvalidVote, msg.Option.String()) //nolint:staticcheck
 	}
 
 	return nil
@@ -250,28 +251,28 @@ func (msg MsgVoteWeighted) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid voter address: %s", err)
 	}
 	if len(msg.Options) == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, WeightedVoteOptions(msg.Options).String())
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, WeightedVoteOptions(msg.Options).String()) //nolint:staticcheck
 	}
 
 	totalWeight := math.LegacyNewDec(0)
 	usedOptions := make(map[VoteOption]bool)
 	for _, option := range msg.Options {
 		if !ValidWeightedVoteOption(option) {
-			return sdkerrors.Wrap(types.ErrInvalidVote, option.String())
+			return sdkerrors.Wrap(types.ErrInvalidVote, option.String()) //nolint:staticcheck
 		}
 		totalWeight = totalWeight.Add(option.Weight)
 		if usedOptions[option.Option] {
-			return sdkerrors.Wrap(types.ErrInvalidVote, "Duplicated vote option")
+			return sdkerrors.Wrap(types.ErrInvalidVote, "Duplicated vote option") //nolint:staticcheck
 		}
 		usedOptions[option.Option] = true
 	}
 
 	if totalWeight.GT(math.LegacyNewDec(1)) {
-		return sdkerrors.Wrap(types.ErrInvalidVote, "Total weight overflow 1.00")
+		return sdkerrors.Wrap(types.ErrInvalidVote, "Total weight overflow 1.00") //nolint:staticcheck
 	}
 
 	if totalWeight.LT(math.LegacyNewDec(1)) {
-		return sdkerrors.Wrap(types.ErrInvalidVote, "Total weight lower than 1.00")
+		return sdkerrors.Wrap(types.ErrInvalidVote, "Total weight lower than 1.00") //nolint:staticcheck
 	}
 
 	return nil

@@ -249,8 +249,8 @@ func newCmdSubmitLegacyCancelUpgradeProposal() *cobra.Command {
 	cmd.Flags().String(cli.FlagTitle, "", "title of proposal")
 	cmd.Flags().String(cli.FlagDescription, "", "description of proposal") //nolint:staticcheck // we are intentionally using a deprecated flag here.
 	cmd.Flags().String(cli.FlagDeposit, "", "deposit of proposal")
-	cmd.MarkFlagRequired(cli.FlagTitle)
-	cmd.MarkFlagRequired(cli.FlagDescription) //nolint:staticcheck // we are intentionally using a deprecated flag here.
+	cmd.MarkFlagRequired(cli.FlagTitle)       //nolint:errcheck
+	cmd.MarkFlagRequired(cli.FlagDescription) //nolint:staticcheck,errcheck // we are intentionally using a deprecated flag here.
 
 	return cmd
 }

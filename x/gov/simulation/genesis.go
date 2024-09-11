@@ -66,7 +66,7 @@ func GenTallyParamsVeto(r *rand.Rand) math.LegacyDec {
 
 // RandomizedGenState generates a random GenesisState for gov
 func RandomizedGenState(simState *module.SimulationState) {
-	startingProposalID := uint64(simState.Rand.Intn(100))
+	startingProposalID := uint64(simState.Rand.Intn(100)) //nolint:gosec
 
 	var minDeposit sdk.Coins
 	simState.AppParams.GetOrGenerate(

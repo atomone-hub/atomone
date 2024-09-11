@@ -47,11 +47,11 @@ func RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 	)
 	registry.RegisterImplementations(
 		(*Content)(nil),
-		&upgradetypes.SoftwareUpgradeProposal{},
+		&upgradetypes.SoftwareUpgradeProposal{}, //nolint:staticcheck
 	)
 	registry.RegisterImplementations(
 		(*Content)(nil),
-		&upgradetypes.CancelSoftwareUpgradeProposal{},
+		&upgradetypes.CancelSoftwareUpgradeProposal{}, //nolint:staticcheck
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
