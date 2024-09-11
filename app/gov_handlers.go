@@ -30,9 +30,9 @@ var (
 )
 
 func init() {
-	// NOTE(tb): Proposal types are registered within their specific module in
-	// the SDK, but using the legacy gov module. To register them in the atomone
-	// gov module, we need to do it here.
+	// Proposal types are registered within their specific module in the SDK, but
+	// using the legacy gov module. To register them in the atomone gov module,
+	// we need to do it here.
 	govv1beta1.RegisterProposalType(paramproposal.ProposalTypeChange)
 	govv1beta1.RegisterProposalType(upgradetypes.ProposalTypeSoftwareUpgrade)
 	govv1beta1.RegisterProposalType(upgradetypes.ProposalTypeCancelSoftwareUpgrade)

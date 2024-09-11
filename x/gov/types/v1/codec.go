@@ -7,7 +7,16 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
 	authzcodec "github.com/cosmos/cosmos-sdk/x/authz/codec"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	consensustypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
+	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
+	distributiontypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
+	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
 	groupcodec "github.com/cosmos/cosmos-sdk/x/group/codec"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
 	govcodec "github.com/atomone-hub/atomone/x/gov/codec"
 )
@@ -43,4 +52,16 @@ func init() {
 	RegisterLegacyAminoCodec(authzcodec.Amino)
 	RegisterLegacyAminoCodec(govcodec.Amino)
 	RegisterLegacyAminoCodec(groupcodec.Amino)
+
+	// Need to add registration in the atomone gov amino for all modules that
+	// register their amino types in the legacy gov module.
+	banktypes.RegisterLegacyAminoCodec(govcodec.Amino)
+	consensustypes.RegisterLegacyAminoCodec(govcodec.Amino)
+	crisistypes.RegisterLegacyAminoCodec(govcodec.Amino)
+	distributiontypes.RegisterLegacyAminoCodec(govcodec.Amino)
+	evidencetypes.RegisterLegacyAminoCodec(govcodec.Amino)
+	minttypes.RegisterLegacyAminoCodec(govcodec.Amino)
+	slashingtypes.RegisterLegacyAminoCodec(govcodec.Amino)
+	stakingtypes.RegisterLegacyAminoCodec(govcodec.Amino)
+	upgradetypes.RegisterLegacyAminoCodec(govcodec.Amino)
 }
