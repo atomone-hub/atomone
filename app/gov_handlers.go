@@ -16,7 +16,7 @@ import (
 	paramscutils "github.com/cosmos/cosmos-sdk/x/params/client/utils"
 	paramproposal "github.com/cosmos/cosmos-sdk/x/params/types/proposal"
 	"github.com/cosmos/cosmos-sdk/x/upgrade/plan"
-	"github.com/cosmos/cosmos-sdk/x/upgrade/types"
+	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
 	govclient "github.com/atomone-hub/atomone/x/gov/client"
 	"github.com/atomone-hub/atomone/x/gov/client/cli"
@@ -28,6 +28,15 @@ var (
 	upgradeProposalHandler       = govclient.NewProposalHandler(newCmdSubmitLegacyUpgradeProposal)
 	cancelUpgradeProposalHandler = govclient.NewProposalHandler(newCmdSubmitLegacyCancelUpgradeProposal)
 )
+
+func init() {
+	// NOTE(tb): Proposal types are registered within their specific module in
+	// the SDK, but using the legacy gov module. To register them in the atomone
+	// gov module, we need to do it here.
+	govv1beta1.RegisterProposalType(paramproposal.ProposalTypeChange)
+	govv1beta1.RegisterProposalType(upgradetypes.ProposalTypeSoftwareUpgrade)
+	govv1beta1.RegisterProposalType(upgradetypes.ProposalTypeCancelSoftwareUpgrade)
+}
 
 // NewSubmitParamChangeProposalTxCmd returns a CLI command handler for creating
 // a parameter change proposal governance transaction.
@@ -134,7 +143,7 @@ func newCmdSubmitLegacyUpgradeProposal() *cobra.Command {
 				return err
 			}
 			if !noValidate {
-				prop := content.(*types.SoftwareUpgradeProposal) //nolint:staticcheck // we are intentionally using a deprecated proposal type.
+				prop := content.(*upgradetypes.SoftwareUpgradeProposal) //nolint:staticcheck // we are intentionally using a deprecated proposal type.
 				var daemonName string
 				if daemonName, err = cmd.Flags().GetString(FlagDaemonName); err != nil {
 					return err
@@ -214,7 +223,7 @@ func newCmdSubmitLegacyCancelUpgradeProposal() *cobra.Command {
 				return err
 			}
 
-			content := types.NewCancelSoftwareUpgradeProposal(title, description)
+			content := upgradetypes.NewCancelSoftwareUpgradeProposal(title, description)
 
 			msg, err := govv1beta1.NewMsgSubmitProposal(content, deposit, from)
 			if err != nil {
@@ -267,7 +276,7 @@ func parseArgsToContent(fs *pflag.FlagSet, name string) (govv1beta1.Content, err
 		return nil, err
 	}
 
-	plan := types.Plan{Name: name, Height: height, Info: info}
-	content := types.NewSoftwareUpgradeProposal(title, description, plan)
+	plan := upgradetypes.Plan{Name: name, Height: height, Info: info}
+	content := upgradetypes.NewSoftwareUpgradeProposal(title, description, plan)
 	return content, nil
 }
