@@ -38,9 +38,10 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+
+	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 )
 
 const (

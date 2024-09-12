@@ -31,9 +31,6 @@ import (
 	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
 	"github.com/cosmos/cosmos-sdk/x/feegrant"
 	feegrantkeeper "github.com/cosmos/cosmos-sdk/x/feegrant/keeper"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	govv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
-	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	mintkeeper "github.com/cosmos/cosmos-sdk/x/mint/keeper"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/cosmos/cosmos-sdk/x/params"
@@ -49,6 +46,9 @@ import (
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
 	govkeeper "github.com/atomone-hub/atomone/x/gov/keeper"
+	govtypes "github.com/atomone-hub/atomone/x/gov/types"
+	govv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
+	govv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 )
 
 type AppKeepers struct {
@@ -251,8 +251,8 @@ func NewAppKeeper(
 	govRouter := govv1beta1.NewRouter()
 	govRouter.
 		AddRoute(govtypes.RouterKey, govv1beta1.ProposalHandler).
-		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(appKeepers.ParamsKeeper)).
-		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(appKeepers.UpgradeKeeper))
+		AddRoute(paramproposal.RouterKey, govv1beta1.WrapSDKHandler(params.NewParamChangeProposalHandler(appKeepers.ParamsKeeper))).
+		AddRoute(upgradetypes.RouterKey, govv1beta1.WrapSDKHandler(upgrade.NewSoftwareUpgradeProposalHandler(appKeepers.UpgradeKeeper)))
 
 	// Set legacy router for backwards compatibility with gov v1beta1
 	appKeepers.GovKeeper.SetLegacyRouter(govRouter)

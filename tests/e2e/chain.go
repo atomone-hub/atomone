@@ -15,13 +15,13 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	distribtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
-	govv1types "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
-	govv1beta1types "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	paramsproptypes "github.com/cosmos/cosmos-sdk/x/params/types/proposal"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
 	atomoneparams "github.com/atomone-hub/atomone/app/params"
+	govv1types "github.com/atomone-hub/atomone/x/gov/types/v1"
+	govv1beta1types "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 )
 
 const (
