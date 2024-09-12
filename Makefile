@@ -223,7 +223,7 @@ docker-build-debug:
 ###                                Linting                                  ###
 ###############################################################################
 golangci_lint_cmd=golangci-lint
-golangci_version=v1.53.3
+golangci_version=v1.56.0 # note: needed to bump from v1.53.3 bc go.tmz.dev/musttag (A dep of golangci-lint) was no longer resolving
 
 lint:
 	@echo "--> Running linter"
@@ -241,6 +241,31 @@ format:
 	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./client/docs/statik/statik.go" -not -path "./tests/mocks/*" -not -name "*.pb.go" -not -name "*.pb.gw.go" -not -name "*.pulsar.go" -not -path "./crypto/keys/secp256k1/*" | xargs gofumpt -w -l
 	$(golangci_lint_cmd) run --fix
 .PHONY: format
+
+# Get a list of all directories containing Go files, excluding vendor and other paths
+GO_DIRS=$(shell find . -name '*.go' -not -path "./vendor*" -not -path "*.git*" \
+	-not -path "./client/docs/statik/statik.go" \
+	-not -path "./tests/mocks/*" \
+	-not -path "./crypto/keys/secp256k1/*" \
+	-not -name "*.pb.go" \
+	-not -name "*.pb.gw.go" \
+	-not -name "*.pulsar.go" | xargs -n1 dirname | sort -u)
+
+format-batch:
+	@go install mvdan.cc/gofumpt@latest
+	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@$(golangci_version)
+
+	# Run gofumpt in a loop over each directory
+	@for dir in $(GO_DIRS); do \
+		echo "Running gofumpt on $$dir"; \
+		find $$dir -name '*.go' -type f -print0 | xargs -0 gofumpt -w -l; \
+	done
+
+	# Run golangci-lint separately for each directory
+	@for dir in $(GO_DIRS); do \
+		$(golangci_lint_cmd) run --fix $$dir || exit 1; \
+	done
+.PHONY: format-batch
 
 ###############################################################################
 ###                                Localnet                                 ###
