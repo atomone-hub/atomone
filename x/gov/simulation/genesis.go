@@ -68,6 +68,18 @@ func GenTallyParamsVeto(r *rand.Rand) math.LegacyDec {
 	return sdk.NewDecWithPrec(int64(simulation.RandIntBetween(r, 250, 334)), 3)
 }
 
+// GenTallyParamsQuorum returns randomized TallyParamsQuorum
+func GenTallyParamsConstitutionalQuorum(r *rand.Rand, minDec sdk.Dec) math.LegacyDec {
+	min := int(minDec.Mul(sdk.NewDec(1000)).RoundInt64())
+	return sdk.NewDecWithPrec(int64(simulation.RandIntBetween(r, min, 600)), 3)
+}
+
+// GenTallyParamsThreshold returns randomized TallyParamsThreshold
+func GenTallyParamsConstitutionalThreshold(r *rand.Rand, minDec sdk.Dec) math.LegacyDec {
+	min := int(minDec.Mul(sdk.NewDec(1000)).RoundInt64())
+	return sdk.NewDecWithPrec(int64(simulation.RandIntBetween(r, min, 950)), 3)
+}
+
 // RandomizedGenState generates a random GenesisState for gov
 func RandomizedGenState(simState *module.SimulationState) {
 	startingProposalID := uint64(simState.Rand.Intn(100))
@@ -114,28 +126,28 @@ func RandomizedGenState(simState *module.SimulationState) {
 		func(r *rand.Rand) { veto = GenTallyParamsVeto(r) },
 	)
 
-	var amendmentsQuorum sdk.Dec
-	simState.AppParams.GetOrGenerate(
-		simState.Cdc, TallyParamsConstitutionAmendmentQuorum, &amendmentsQuorum, simState.Rand,
-		func(r *rand.Rand) { amendmentsQuorum = GenTallyParamsQuorum(r) },
-	)
-
-	var amendmentsThreshold sdk.Dec
-	simState.AppParams.GetOrGenerate(
-		simState.Cdc, TallyParamsConstitutionAmendmentThreshold, &amendmentsThreshold, simState.Rand,
-		func(r *rand.Rand) { amendmentsThreshold = GenTallyParamsThreshold(r) },
-	)
-
 	var lawQuorum sdk.Dec
 	simState.AppParams.GetOrGenerate(
 		simState.Cdc, TallyParamsLawQuorum, &lawQuorum, simState.Rand,
-		func(r *rand.Rand) { lawQuorum = GenTallyParamsQuorum(r) },
+		func(r *rand.Rand) { lawQuorum = GenTallyParamsConstitutionalQuorum(r, quorum) },
 	)
 
 	var lawThreshold sdk.Dec
 	simState.AppParams.GetOrGenerate(
 		simState.Cdc, TallyParamsLawThreshold, &lawThreshold, simState.Rand,
-		func(r *rand.Rand) { lawThreshold = GenTallyParamsThreshold(r) },
+		func(r *rand.Rand) { lawThreshold = GenTallyParamsConstitutionalThreshold(r, threshold) },
+	)
+
+	var amendmentsQuorum sdk.Dec
+	simState.AppParams.GetOrGenerate(
+		simState.Cdc, TallyParamsConstitutionAmendmentQuorum, &amendmentsQuorum, simState.Rand,
+		func(r *rand.Rand) { amendmentsQuorum = GenTallyParamsConstitutionalQuorum(r, lawQuorum) },
+	)
+
+	var amendmentsThreshold sdk.Dec
+	simState.AppParams.GetOrGenerate(
+		simState.Cdc, TallyParamsConstitutionAmendmentThreshold, &amendmentsThreshold, simState.Rand,
+		func(r *rand.Rand) { amendmentsThreshold = GenTallyParamsConstitutionalThreshold(r, lawThreshold) },
 	)
 
 	govGenesis := v1.NewGenesisState(

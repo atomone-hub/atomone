@@ -47,6 +47,10 @@ func TestRandomizedGenState(t *testing.T) {
 		tallyQuorum          = "0.400000000000000000"
 		tallyThreshold       = "0.539000000000000000"
 		tallyVetoThreshold   = "0.314000000000000000"
+		amendmentQuorum      = "0.557000000000000000"
+		amendmentThreshold   = "0.907000000000000000"
+		lawQuorum            = "0.474000000000000000"
+		lawThreshold         = "0.701000000000000000"
 		minInitialDepositDec = "0.590000000000000000"
 	)
 
@@ -56,6 +60,10 @@ func TestRandomizedGenState(t *testing.T) {
 	require.Equal(t, tallyQuorum, govGenesis.Params.Quorum)
 	require.Equal(t, tallyThreshold, govGenesis.Params.Threshold)
 	require.Equal(t, tallyVetoThreshold, govGenesis.Params.VetoThreshold)
+	require.Equal(t, amendmentQuorum, govGenesis.Params.ConstitutionAmendmentQuorum)
+	require.Equal(t, amendmentThreshold, govGenesis.Params.ConstitutionAmendmentThreshold)
+	require.Equal(t, lawQuorum, govGenesis.Params.LawQuorum)
+	require.Equal(t, lawThreshold, govGenesis.Params.LawThreshold)
 	require.Equal(t, uint64(0x28), govGenesis.StartingProposalId)
 	require.Equal(t, []*v1.Deposit{}, govGenesis.Deposits)
 	require.Equal(t, []*v1.Vote{}, govGenesis.Votes)
