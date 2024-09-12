@@ -67,9 +67,9 @@ var ModuleBasics = module.NewBasicManager(
 	gov.NewAppModuleBasic(
 		// TODO remove since no compat needed with old gov handler system?
 		[]govclient.ProposalHandler{
-			paramsclient.ProposalHandler,
-			upgradeclient.LegacyProposalHandler,
-			upgradeclient.LegacyCancelProposalHandler,
+			paramsChangeProposalHandler,
+			upgradeProposalHandler,
+			cancelUpgradeProposalHandler,
 		},
 	),
 	sdkparams.AppModuleBasic{},

@@ -13,6 +13,7 @@ import (
 
 	atomone "github.com/atomone-hub/atomone/app"
 	atomonehelpers "github.com/atomone-hub/atomone/app/helpers"
+	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 )
 
 type EmptyAppOptions struct{}

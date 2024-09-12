@@ -19,6 +19,8 @@ import (
 
 	"github.com/atomone-hub/atomone/x/gov"
 	"github.com/atomone-hub/atomone/x/gov/simulation"
+	"github.com/atomone-hub/atomone/x/gov/types"
+	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 )
 
 var (
