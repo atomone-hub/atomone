@@ -199,8 +199,10 @@ const (
 )
 
 // Implements Content Interface
-var _ Content = &LawProposal{}
-var _ Content = &ConstitutionAmendmentProposal{}
+var (
+	_ Content = &LawProposal{}
+	_ Content = &ConstitutionAmendmentProposal{}
+)
 
 // NewLawProposal creates a law proposal Content
 func NewLawProposal(title, description string) Content {

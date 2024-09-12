@@ -124,6 +124,10 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 	amnt := sdk.NewInt(10000)
 	quorum, _ := sdk.NewDecFromStr("0.000000000000000001")
 	threshold, _ := sdk.NewDecFromStr("0.000000000000000001")
+	lawQuorum, _ := sdk.NewDecFromStr("0.000000000000000001")
+	lawThreshold, _ := sdk.NewDecFromStr("0.000000000000000001")
+	amendmentsQuorum, _ := sdk.NewDecFromStr("0.000000000000000001")
+	amendmentsThreshold, _ := sdk.NewDecFromStr("0.000000000000000001")
 
 	maxDepositPeriod := 10 * time.Minute
 	votingPeriod := 15 * time.Second
@@ -133,6 +137,7 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 			sdk.NewCoins(sdk.NewCoin(denom, amnt)), maxDepositPeriod,
 			votingPeriod,
 			quorum.String(), threshold.String(), govv1.DefaultVetoThreshold.String(),
+			amendmentsQuorum.String(), amendmentsThreshold.String(), lawQuorum.String(), lawThreshold.String(),
 			sdk.ZeroDec().String(),
 			false, false, true,
 		),
