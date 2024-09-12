@@ -17,7 +17,7 @@ const (
 // Default governance params
 var (
 	DefaultMinDepositTokens       = sdk.NewInt(10000000)
-	DefaultQuorum                 = sdk.NewDecWithPrec(334, 3)
+	DefaultQuorum                 = sdk.NewDecWithPrec(25, 2)
 	DefaultThreshold              = sdk.NewDecWithPrec(667, 3)
 	DefaultMinInitialDepositRatio = sdk.ZeroDec()
 	DefaultBurnProposalPrevote    = false // set to false to replicate behavior of when this change was made (0.47)

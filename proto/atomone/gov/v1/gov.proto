@@ -188,7 +188,7 @@ message Params {
   google.protobuf.Duration voting_period = 3 [(gogoproto.stdduration) = true];
 
   //  Minimum percentage of total stake needed to vote for a result to be
-  //  considered valid.
+  //  considered valid. Default value: 0.25.
   string quorum = 4 [(cosmos_proto.scalar) = "cosmos.Dec"];
 
   //  Minimum proportion of Yes votes for proposal to pass. Default value: 2/3.

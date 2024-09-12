@@ -179,14 +179,14 @@ func TestTally(t *testing.T) {
 		{
 			name: "one delegator votes yes, validator votes also yes: prop fails/burn deposit",
 			setup: func(s *tallyFixture) {
-				s.delegate(s.delAddrs[0], s.valAddrs[0], 2)
+				s.delegate(s.delAddrs[0], s.valAddrs[0], 1)
 				s.vote(s.delAddrs[0], v1.VoteOption_VOTE_OPTION_YES)
 				s.validatorVote(s.valAddrs[0], v1.VoteOption_VOTE_OPTION_YES)
 			},
 			expectedPass: false,
 			expectedBurn: true, // burn because quorum not reached
 			expectedTally: v1.TallyResult{
-				YesCount:     "3",
+				YesCount:     "2",
 				AbstainCount: "0",
 				NoCount:      "0",
 			},
@@ -194,14 +194,14 @@ func TestTally(t *testing.T) {
 		{
 			name: "one delegator votes yes, validator votes no: prop fails/burn deposit",
 			setup: func(s *tallyFixture) {
-				s.delegate(s.delAddrs[0], s.valAddrs[0], 2)
+				s.delegate(s.delAddrs[0], s.valAddrs[0], 1)
 				s.vote(s.delAddrs[0], v1.VoteOption_VOTE_OPTION_YES)
 				s.validatorVote(s.valAddrs[0], v1.VoteOption_VOTE_OPTION_NO)
 			},
 			expectedPass: false,
 			expectedBurn: true, // burn because quorum not reached
 			expectedTally: v1.TallyResult{
-				YesCount:     "2",
+				YesCount:     "1",
 				AbstainCount: "0",
 				NoCount:      "1",
 			},
