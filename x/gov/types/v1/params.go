@@ -20,7 +20,9 @@ var (
 	DefaultQuorum                         = sdk.NewDecWithPrec(334, 3)
 	DefaultThreshold                      = sdk.NewDecWithPrec(5, 1)
 	DefaultVetoThreshold                  = sdk.NewDecWithPrec(334, 3)
+	DefaultConstitutionAmendmentQuorum    = sdk.NewDecWithPrec(4, 1)
 	DefaultConstitutionAmendmentThreshold = sdk.NewDecWithPrec(9, 1)
+	DefaultLawQuorum                      = sdk.NewDecWithPrec(4, 1)
 	DefaultLawThreshold                   = sdk.NewDecWithPrec(9, 1)
 	DefaultMinInitialDepositRatio         = sdk.ZeroDec()
 	DefaultBurnProposalPrevote            = false // set to false to replicate behavior of when this change was made (0.47)
@@ -55,7 +57,7 @@ func NewVotingParams(votingPeriod *time.Duration) VotingParams {
 // NewParams creates a new Params instance with given values.
 func NewParams(
 	minDeposit sdk.Coins, maxDepositPeriod, votingPeriod time.Duration,
-	quorum, threshold, vetoThreshold, constitutionAmendmentThreshold, lawThreshold, minInitialDepositRatio string,
+	quorum, threshold, vetoThreshold, constitutionAmendmentQuorum, constitutionAmendmentThreshold, lawQuorum, lawThreshold, minInitialDepositRatio string,
 	burnProposalDeposit, burnVoteQuorum, burnVoteVeto bool,
 ) Params {
 	return Params{
@@ -65,7 +67,9 @@ func NewParams(
 		Quorum:                         quorum,
 		Threshold:                      threshold,
 		VetoThreshold:                  vetoThreshold,
+		ConstitutionAmendmentQuorum:    constitutionAmendmentQuorum,
 		ConstitutionAmendmentThreshold: constitutionAmendmentThreshold,
+		LawQuorum:                      lawQuorum,
 		LawThreshold:                   lawThreshold,
 		MinInitialDepositRatio:         minInitialDepositRatio,
 		BurnProposalDepositPrevote:     burnProposalDeposit,
@@ -83,7 +87,9 @@ func DefaultParams() Params {
 		DefaultQuorum.String(),
 		DefaultThreshold.String(),
 		DefaultVetoThreshold.String(),
+		DefaultConstitutionAmendmentQuorum.String(),
 		DefaultConstitutionAmendmentThreshold.String(),
+		DefaultLawQuorum.String(),
 		DefaultLawThreshold.String(),
 		DefaultMinInitialDepositRatio.String(),
 		DefaultBurnProposalPrevote,
@@ -111,10 +117,10 @@ func (p Params) ValidateBasic() error {
 		return fmt.Errorf("invalid quorum string: %w", err)
 	}
 	if quorum.IsNegative() {
-		return fmt.Errorf("quorom cannot be negative: %s", quorum)
+		return fmt.Errorf("quorum cannot be negative: %s", quorum)
 	}
 	if quorum.GT(math.LegacyOneDec()) {
-		return fmt.Errorf("quorom too large: %s", p.Quorum)
+		return fmt.Errorf("quorum too large: %s", quorum)
 	}
 
 	threshold, err := sdk.NewDecFromStr(p.Threshold)
@@ -139,6 +145,17 @@ func (p Params) ValidateBasic() error {
 		return fmt.Errorf("veto threshold too large: %s", vetoThreshold)
 	}
 
+	amendmentQuorum, err := sdk.NewDecFromStr(p.ConstitutionAmendmentQuorum)
+	if err != nil {
+		return fmt.Errorf("invalid constitution amendment quorum string: %w", err)
+	}
+	if amendmentQuorum.IsNegative() {
+		return fmt.Errorf("constitution amendment quorum cannot be negative: %s", amendmentQuorum)
+	}
+	if amendmentQuorum.GT(math.LegacyOneDec()) {
+		return fmt.Errorf("constitution amendment quorum too large: %s", amendmentQuorum)
+	}
+
 	amendmentThreshold, err := sdk.NewDecFromStr(p.ConstitutionAmendmentThreshold)
 	if err != nil {
 		return fmt.Errorf("invalid constitution amendment threshold string: %w", err)
@@ -148,6 +165,17 @@ func (p Params) ValidateBasic() error {
 	}
 	if amendmentThreshold.GT(math.LegacyOneDec()) {
 		return fmt.Errorf("constitution amendment threshold too large: %s", amendmentThreshold)
+	}
+
+	lawQuorum, err := sdk.NewDecFromStr(p.LawQuorum)
+	if err != nil {
+		return fmt.Errorf("invalid law quorum string: %w", err)
+	}
+	if lawQuorum.IsNegative() {
+		return fmt.Errorf("law quorum cannot be negative: %s", lawQuorum)
+	}
+	if lawQuorum.GT(math.LegacyOneDec()) {
+		return fmt.Errorf("law quorum too large: %s", lawQuorum)
 	}
 
 	lawThreshold, err := sdk.NewDecFromStr(p.LawThreshold)
