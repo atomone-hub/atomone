@@ -7,6 +7,7 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
+	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 )
 
 // TODO: Break into several smaller functions for clarity
@@ -103,6 +104,24 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 
 	// If more than 1/2 of non-abstaining voters vote Yes, proposal passes
 	threshold, _ := sdk.NewDecFromStr(params.Threshold)
+	// Check if the proposal message is an ExecLegacyContent message
+	var execMsg v1.MsgExecLegacyContent
+	if err := keeper.cdc.UnpackAny(proposal.Messages[0], &execMsg); err == nil {
+		// Unpack the content into the appropriate interface
+		var content v1beta1.Content
+		if err := keeper.cdc.UnpackAny(execMsg.Content, &content); err != nil {
+			return false, false, tallyResults
+		}
+
+		// Check if proposal is a law or constitution amendment and adjust the
+		// threshold accordingly
+		switch content.(type) {
+		case *v1beta1.LawProposal:
+			threshold, _ = sdk.NewDecFromStr(params.LawThreshold)
+		case *v1beta1.ConstitutionAmendmentProposal:
+			threshold, _ = sdk.NewDecFromStr(params.ConstitutionAmendmentThreshold)
+		}
+	}
 	if results[v1.OptionYes].Quo(totalVotingPower.Sub(results[v1.OptionAbstain])).GT(threshold) {
 		return true, false, tallyResults
 	}

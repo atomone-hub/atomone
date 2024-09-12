@@ -16,14 +16,16 @@ const (
 
 // Default governance params
 var (
-	DefaultMinDepositTokens       = sdk.NewInt(10000000)
-	DefaultQuorum                 = sdk.NewDecWithPrec(334, 3)
-	DefaultThreshold              = sdk.NewDecWithPrec(5, 1)
-	DefaultVetoThreshold          = sdk.NewDecWithPrec(334, 3)
-	DefaultMinInitialDepositRatio = sdk.ZeroDec()
-	DefaultBurnProposalPrevote    = false // set to false to replicate behavior of when this change was made (0.47)
-	DefaultBurnVoteQuorom         = false // set to false to  replicate behavior of when this change was made (0.47)
-	DefaultBurnVoteVeto           = true  // set to true to replicate behavior of when this change was made (0.47)
+	DefaultMinDepositTokens               = sdk.NewInt(10000000)
+	DefaultQuorum                         = sdk.NewDecWithPrec(334, 3)
+	DefaultThreshold                      = sdk.NewDecWithPrec(5, 1)
+	DefaultVetoThreshold                  = sdk.NewDecWithPrec(334, 3)
+	DefaultConstitutionAmendmentThreshold = sdk.NewDecWithPrec(9, 1)
+	DefaultLawThreshold                   = sdk.NewDecWithPrec(9, 1)
+	DefaultMinInitialDepositRatio         = sdk.ZeroDec()
+	DefaultBurnProposalPrevote            = false // set to false to replicate behavior of when this change was made (0.47)
+	DefaultBurnVoteQuorom                 = false // set to false to  replicate behavior of when this change was made (0.47)
+	DefaultBurnVoteVeto                   = true  // set to true to replicate behavior of when this change was made (0.47)
 )
 
 // Deprecated: NewDepositParams creates a new DepositParams object
@@ -53,19 +55,22 @@ func NewVotingParams(votingPeriod *time.Duration) VotingParams {
 // NewParams creates a new Params instance with given values.
 func NewParams(
 	minDeposit sdk.Coins, maxDepositPeriod, votingPeriod time.Duration,
-	quorum, threshold, vetoThreshold, minInitialDepositRatio string, burnProposalDeposit, burnVoteQuorum, burnVoteVeto bool,
+	quorum, threshold, vetoThreshold, constitutionAmendmentThreshold, lawThreshold, minInitialDepositRatio string,
+	burnProposalDeposit, burnVoteQuorum, burnVoteVeto bool,
 ) Params {
 	return Params{
-		MinDeposit:                 minDeposit,
-		MaxDepositPeriod:           &maxDepositPeriod,
-		VotingPeriod:               &votingPeriod,
-		Quorum:                     quorum,
-		Threshold:                  threshold,
-		VetoThreshold:              vetoThreshold,
-		MinInitialDepositRatio:     minInitialDepositRatio,
-		BurnProposalDepositPrevote: burnProposalDeposit,
-		BurnVoteQuorum:             burnVoteQuorum,
-		BurnVoteVeto:               burnVoteVeto,
+		MinDeposit:                     minDeposit,
+		MaxDepositPeriod:               &maxDepositPeriod,
+		VotingPeriod:                   &votingPeriod,
+		Quorum:                         quorum,
+		Threshold:                      threshold,
+		VetoThreshold:                  vetoThreshold,
+		ConstitutionAmendmentThreshold: constitutionAmendmentThreshold,
+		LawThreshold:                   lawThreshold,
+		MinInitialDepositRatio:         minInitialDepositRatio,
+		BurnProposalDepositPrevote:     burnProposalDeposit,
+		BurnVoteQuorum:                 burnVoteQuorum,
+		BurnVoteVeto:                   burnVoteVeto,
 	}
 }
 
@@ -78,6 +83,8 @@ func DefaultParams() Params {
 		DefaultQuorum.String(),
 		DefaultThreshold.String(),
 		DefaultVetoThreshold.String(),
+		DefaultConstitutionAmendmentThreshold.String(),
+		DefaultLawThreshold.String(),
 		DefaultMinInitialDepositRatio.String(),
 		DefaultBurnProposalPrevote,
 		DefaultBurnVoteQuorom,
@@ -130,6 +137,28 @@ func (p Params) ValidateBasic() error {
 	}
 	if vetoThreshold.GT(math.LegacyOneDec()) {
 		return fmt.Errorf("veto threshold too large: %s", vetoThreshold)
+	}
+
+	amendmentThreshold, err := sdk.NewDecFromStr(p.ConstitutionAmendmentThreshold)
+	if err != nil {
+		return fmt.Errorf("invalid constitution amendment threshold string: %w", err)
+	}
+	if !amendmentThreshold.IsPositive() {
+		return fmt.Errorf("constitution amendment threshold must be positive: %s", amendmentThreshold)
+	}
+	if amendmentThreshold.GT(math.LegacyOneDec()) {
+		return fmt.Errorf("constitution amendment threshold too large: %s", amendmentThreshold)
+	}
+
+	lawThreshold, err := sdk.NewDecFromStr(p.LawThreshold)
+	if err != nil {
+		return fmt.Errorf("invalid law threshold string: %w", err)
+	}
+	if !lawThreshold.IsPositive() {
+		return fmt.Errorf("law threshold must be positive: %s", lawThreshold)
+	}
+	if lawThreshold.GT(math.LegacyOneDec()) {
+		return fmt.Errorf("law threshold too large: %s", lawThreshold)
 	}
 
 	if p.VotingPeriod == nil {

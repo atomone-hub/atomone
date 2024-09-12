@@ -179,6 +179,12 @@ message TallyParams {
   // Minimum value of Veto votes to Total votes ratio for proposal to be
   // vetoed. Default value: 1/3.
   string veto_threshold = 3 [(cosmos_proto.scalar) = "cosmos.Dec"];
+
+  // Minimum proportion of Yes votes for a Constitution Amendment proposal to pass. Default value: 0.9.
+  string constitution_amendment_threshold = 4 [(cosmos_proto.scalar) = "cosmos.Dec"];
+
+  // Minimum proportion of Yes votes for a Law proposal to pass. Default value: 0.9.
+  string law_threshold = 5 [(cosmos_proto.scalar) = "cosmos.Dec"];
 }
 
 // Params defines the parameters for the x/gov module.
@@ -217,4 +223,10 @@ message Params {
   
   // burn deposits if quorum with vote type no_veto is met
   bool burn_vote_veto = 15;
+
+  // Minimum proportion of Yes votes for a Constitution Amendment proposal to pass. Default value: 0.9.
+  string constitution_amendment_threshold = 16 [(cosmos_proto.scalar) = "cosmos.Dec"];
+
+  // Minimum proportion of Yes votes for a Law proposal to pass. Default value: 0.9.
+  string law_threshold = 17 [(cosmos_proto.scalar) = "cosmos.Dec"];
 }
