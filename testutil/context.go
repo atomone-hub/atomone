@@ -35,8 +35,9 @@ type TestContext struct {
 	CMS store.CommitMultiStore
 }
 
-func DefaultContextWithDB(t *testing.T, key storetypes.StoreKey, tkey storetypes.StoreKey) TestContext {
-	t.Helper()
+func DefaultContextWithDB(t *testing.T, key storetypes.StoreKey, tkey storetypes.StoreKey) TestContext { //nolint: thelper
+	// NOTE: t is nil!
+	// t.Helper()
 
 	db := dbm.NewMemDB()
 	cms := store.NewCommitMultiStore(db)
