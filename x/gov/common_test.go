@@ -25,16 +25,12 @@ import (
 	authkeeper "github.com/atomone-hub/atomone/x/auth/keeper"
 	authtypes "github.com/atomone-hub/atomone/x/auth/types"
 	bankkeeper "github.com/atomone-hub/atomone/x/bank/keeper"
+	"github.com/atomone-hub/atomone/x/gov/keeper"
 	"github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 	stakingkeeper "github.com/atomone-hub/atomone/x/staking/keeper"
 	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
-
-	"github.com/atomone-hub/atomone/x/gov/keeper"
-	"github.com/atomone-hub/atomone/x/gov/types"
-	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
-	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 )
 
 var (

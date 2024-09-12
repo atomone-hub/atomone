@@ -26,3 +26,10 @@ type HandlerRoute struct {
 
 // IsManyPerContainerType implements the depinject.ManyPerContainerType interface.
 func (HandlerRoute) IsManyPerContainerType() {}
+
+// WrapHandler converts a Cosmos SDK gov Handler to GovGen gov Handler
+func WrapSDKHandler(sdkHandler Handler) Handler {
+	return func(ctx sdk.Context, content Content) error {
+		return sdkHandler(ctx, content)
+	}
+}

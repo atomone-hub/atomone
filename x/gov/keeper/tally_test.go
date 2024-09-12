@@ -12,11 +12,9 @@ import (
 
 	simtestutil "github.com/atomone-hub/atomone/testutil/sims"
 	sdk "github.com/atomone-hub/atomone/types"
-	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
-	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
-
 	"github.com/atomone-hub/atomone/x/gov/keeper"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
+	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
 )
 
 type tallyFixture struct {

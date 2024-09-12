@@ -9,18 +9,18 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/tx"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/version"
-	paramscutils "github.com/cosmos/cosmos-sdk/x/params/client/utils"
-	paramproposal "github.com/cosmos/cosmos-sdk/x/params/types/proposal"
-	"github.com/cosmos/cosmos-sdk/x/upgrade/plan"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
+	"github.com/atomone-hub/atomone/client"
+	"github.com/atomone-hub/atomone/client/tx"
+	sdk "github.com/atomone-hub/atomone/types"
 	govclient "github.com/atomone-hub/atomone/x/gov/client"
 	"github.com/atomone-hub/atomone/x/gov/client/cli"
 	govv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
+	paramscutils "github.com/atomone-hub/atomone/x/params/client/utils"
+	paramproposal "github.com/atomone-hub/atomone/x/params/types/proposal"
+	"github.com/atomone-hub/atomone/x/upgrade/plan"
+	upgradetypes "github.com/atomone-hub/atomone/x/upgrade/types"
 )
 
 var (

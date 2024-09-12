@@ -3,10 +3,9 @@ package ante
 import (
 	errorsmod "cosmossdk.io/errors"
 
-	atomoneerrors "github.com/cosmos/cosmos-sdk/types/errors"
-
 	"github.com/atomone-hub/atomone/codec"
 	sdk "github.com/atomone-hub/atomone/types"
+	atomoneerrors "github.com/atomone-hub/atomone/types/errors"
 	"github.com/atomone-hub/atomone/x/auth/ante"
 	stakingkeeper "github.com/atomone-hub/atomone/x/staking/keeper"
 )

@@ -32,14 +32,12 @@ import (
 	"github.com/atomone-hub/atomone/x/mint"
 	minttypes "github.com/atomone-hub/atomone/x/mint/types"
 	sdkparams "github.com/atomone-hub/atomone/x/params"
-	paramsclient "github.com/atomone-hub/atomone/x/params/client"
 	paramstypes "github.com/atomone-hub/atomone/x/params/types"
 	"github.com/atomone-hub/atomone/x/slashing"
 	slashingtypes "github.com/atomone-hub/atomone/x/slashing/types"
 	"github.com/atomone-hub/atomone/x/staking"
 	stakingtypes "github.com/atomone-hub/atomone/x/staking/types"
 	"github.com/atomone-hub/atomone/x/upgrade"
-	upgradeclient "github.com/atomone-hub/atomone/x/upgrade/client"
 	upgradetypes "github.com/atomone-hub/atomone/x/upgrade/types"
 )
 

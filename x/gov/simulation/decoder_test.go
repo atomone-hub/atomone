@@ -13,14 +13,11 @@ import (
 	"github.com/atomone-hub/atomone/crypto/keys/ed25519"
 	sdk "github.com/atomone-hub/atomone/types"
 	moduletestutil "github.com/atomone-hub/atomone/types/module/testutil"
-	"github.com/atomone-hub/atomone/x/gov/types"
-	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
-	"github.com/cosmos/cosmos-sdk/types/kv"
-
 	"github.com/atomone-hub/atomone/x/gov"
 	"github.com/atomone-hub/atomone/x/gov/simulation"
 	"github.com/atomone-hub/atomone/x/gov/types"
 	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
+	"github.com/cosmos/cosmos-sdk/types/kv"
 )
 
 var (
