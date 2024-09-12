@@ -90,23 +90,25 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 	threshold, _ := sdk.NewDecFromStr(params.Threshold)
 
 	// Check if the proposal message is an ExecLegacyContent message
-	var execMsg v1.MsgExecLegacyContent
-	if err := keeper.cdc.UnpackAny(proposal.Messages[0], &execMsg); err == nil {
-		// Unpack the content into the appropriate interface
-		var content v1beta1.Content
-		if err := keeper.cdc.UnpackAny(execMsg.Content, &content); err != nil {
-			return false, false, tallyResults
-		}
+	if len(proposal.Messages) > 0 {
+		var execMsg v1.MsgExecLegacyContent
+		if err := keeper.cdc.UnpackAny(proposal.Messages[0], &execMsg); err == nil {
+			// Unpack the content into the appropriate interface
+			var content v1beta1.Content
+			if err := keeper.cdc.UnpackAny(execMsg.Content, &content); err != nil {
+				return false, false, tallyResults
+			}
 
-		// Check if proposal is a law or constitution amendment and adjust the
-		// quorum and threshold accordingly
-		switch content.(type) {
-		case *v1beta1.ConstitutionAmendmentProposal:
-			quorum, _ = sdk.NewDecFromStr(params.ConstitutionAmendmentQuorum)
-			threshold, _ = sdk.NewDecFromStr(params.ConstitutionAmendmentThreshold)
-		case *v1beta1.LawProposal:
-			quorum, _ = sdk.NewDecFromStr(params.LawQuorum)
-			threshold, _ = sdk.NewDecFromStr(params.LawThreshold)
+			// Check if proposal is a law or constitution amendment and adjust the
+			// quorum and threshold accordingly
+			switch content.(type) {
+			case *v1beta1.ConstitutionAmendmentProposal:
+				quorum, _ = sdk.NewDecFromStr(params.ConstitutionAmendmentQuorum)
+				threshold, _ = sdk.NewDecFromStr(params.ConstitutionAmendmentThreshold)
+			case *v1beta1.LawProposal:
+				quorum, _ = sdk.NewDecFromStr(params.LawQuorum)
+				threshold, _ = sdk.NewDecFromStr(params.LawThreshold)
+			}
 		}
 	}
 

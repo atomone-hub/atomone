@@ -117,7 +117,7 @@ func (p Params) ValidateBasic() error {
 		return fmt.Errorf("invalid quorum string: %w", err)
 	}
 	if quorum.IsNegative() {
-		return fmt.Errorf("quorum cannot be negative: %s", quorum)
+		return fmt.Errorf("quorum must be positive: %s", quorum)
 	}
 	if quorum.GT(math.LegacyOneDec()) {
 		return fmt.Errorf("quorum too large: %s", quorum)
@@ -150,7 +150,7 @@ func (p Params) ValidateBasic() error {
 		return fmt.Errorf("invalid constitution amendment quorum string: %w", err)
 	}
 	if amendmentQuorum.IsNegative() {
-		return fmt.Errorf("constitution amendment quorum cannot be negative: %s", amendmentQuorum)
+		return fmt.Errorf("constitution amendment quorum must be positive: %s", amendmentQuorum)
 	}
 	if amendmentQuorum.GT(math.LegacyOneDec()) {
 		return fmt.Errorf("constitution amendment quorum too large: %s", amendmentQuorum)
@@ -172,7 +172,7 @@ func (p Params) ValidateBasic() error {
 		return fmt.Errorf("invalid law quorum string: %w", err)
 	}
 	if lawQuorum.IsNegative() {
-		return fmt.Errorf("law quorum cannot be negative: %s", lawQuorum)
+		return fmt.Errorf("law quorum must be positive: %s", lawQuorum)
 	}
 	if lawQuorum.GT(math.LegacyOneDec()) {
 		return fmt.Errorf("law quorum too large: %s", lawQuorum)

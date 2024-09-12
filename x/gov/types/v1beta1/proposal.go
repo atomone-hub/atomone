@@ -312,6 +312,14 @@ func ContentFromProposalType(title, desc, ty string) (Content, bool) {
 		return NewTextProposal(title, desc), true
 	}
 
+	if strings.EqualFold(ty, ProposalTypeLaw) {
+		return NewLawProposal(title, desc), true
+	}
+
+	if strings.EqualFold(ty, ProposalTypeConstitutionAmendment) {
+		return NewConstitutionAmendmentProposal(title, desc), true
+	}
+
 	return nil, false
 }
 
