@@ -42,6 +42,29 @@ func InitGenesis(ctx sdk.Context, ak types.AccountKeeper, bk types.BankKeeper, k
 			k.InsertActiveProposalQueue(ctx, proposal.Id, *proposal.VotingEndTime)
 		}
 		k.SetProposal(ctx, *proposal)
+
+		if data.Params.QuorumCheckCount > 0 && proposal.Status == v1.StatusVotingPeriod {
+			quorumTimeoutTime := proposal.VotingStartTime.Add(*data.Params.QuorumTimeout)
+			quorumCheckEntry := v1.NewQuorumCheckQueueEntry(quorumTimeoutTime, data.Params.QuorumCheckCount)
+			quorum := false
+			if ctx.BlockTime().After(quorumTimeoutTime) {
+				var err error
+				quorum, err = k.HasReachedQuorum(ctx, *proposal)
+				if err != nil {
+					panic(err)
+				}
+				if !quorum {
+					// since we don't export the state of the quorum check queue, we can't know how many checks were actually
+					// done. However, in order to trigger a vote time extension, it is enough to have QuorumChecksDone > 0 to
+					// trigger a vote time extension, so we set it to 1
+					quorumCheckEntry.QuorumChecksDone = 1
+				}
+			}
+			if !quorum {
+				k.InsertQuorumCheckQueue(ctx, proposal.Id, quorumTimeoutTime, quorumCheckEntry)
+			}
+		}
+
 	}
 
 	// if account has zero balance it probably means it's not set, so we set it

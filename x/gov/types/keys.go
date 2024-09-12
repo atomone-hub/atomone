@@ -44,6 +44,7 @@ var (
 	InactiveProposalQueuePrefix   = []byte{0x02}
 	ProposalIDKey                 = []byte{0x03}
 	VotingPeriodProposalKeyPrefix = []byte{0x04}
+	QuorumCheckQueuePrefix        = []byte{0x05}
 
 	DepositsKeyPrefix = []byte{0x10}
 
@@ -100,6 +101,16 @@ func InactiveProposalQueueKey(proposalID uint64, endTime time.Time) []byte {
 	return append(InactiveProposalByTimeKey(endTime), GetProposalIDBytes(proposalID)...)
 }
 
+// QuorumCheckByTimeKey gets the quorum check queue key by endTime
+func QuorumCheckByTimeKey(endTime time.Time) []byte {
+	return append(QuorumCheckQueuePrefix, sdk.FormatTimeBytes(endTime)...)
+}
+
+// QuorumCheckQueueKey returns the key for a proposalID in the quorumCheckQueue
+func QuorumCheckQueueKey(proposalID uint64, endTime time.Time) []byte {
+	return append(QuorumCheckByTimeKey(endTime), GetProposalIDBytes(proposalID)...)
+}
+
 // DepositsKey gets the first part of the deposits key based on the proposalID
 func DepositsKey(proposalID uint64) []byte {
 	return append(DepositsKeyPrefix, GetProposalIDBytes(proposalID)...)
@@ -136,6 +147,11 @@ func SplitActiveProposalQueueKey(key []byte) (proposalID uint64, endTime time.Ti
 
 // SplitInactiveProposalQueueKey split the inactive proposal key and returns the proposal id and endTime
 func SplitInactiveProposalQueueKey(key []byte) (proposalID uint64, endTime time.Time) {
+	return splitKeyWithTime(key)
+}
+
+// SplitQuorumQueueKey split the quorum queue key and returns the proposal id and endTime
+func SplitQuorumQueueKey(key []byte) (proposalID uint64, endTime time.Time) {
 	return splitKeyWithTime(key)
 }
 

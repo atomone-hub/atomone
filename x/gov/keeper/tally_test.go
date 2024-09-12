@@ -471,3 +471,83 @@ func TestTally(t *testing.T) {
 		})
 	}
 }
+
+func TestHasReachedQuorum(t *testing.T) {
+	tests := []struct {
+		name           string
+		setup          func(*tallyFixture)
+		expectedQuorum bool
+	}{
+		{
+			name: "no votes: no quorum",
+			setup: func(s *tallyFixture) {
+			},
+			expectedQuorum: false,
+		},
+		{
+			name: "not enough votes: no quorum",
+			setup: func(s *tallyFixture) {
+				s.validatorVote(s.valAddrs[0], v1.VoteOption_VOTE_OPTION_NO)
+				s.validatorVote(s.valAddrs[1], v1.VoteOption_VOTE_OPTION_YES)
+				s.validatorVote(s.valAddrs[2], v1.VoteOption_VOTE_OPTION_ABSTAIN)
+			},
+			expectedQuorum: false,
+		},
+		{
+			name: "enough votes: quorum (with only validators)",
+			setup: func(s *tallyFixture) {
+				// NOTE: don't use validatorVote helper here, because when validator
+				// votes reach quorum, we don't iterate over delegations, so we don't
+				// want the EXPECT registered in validatorVote helper.
+				for i := 0; i < 4; i++ {
+					voter := sdk.AccAddress(s.valAddrs[i])
+					vote := v1.VoteOption_VOTE_OPTION_ABSTAIN
+					err := s.keeper.AddVote(s.ctx, s.proposal.Id, voter, v1.NewNonSplitVoteOption(vote), "")
+					require.NoError(s.t, err)
+				}
+			},
+			expectedQuorum: true,
+		},
+		{
+			name: "enough votes: quorum",
+			setup: func(s *tallyFixture) {
+				s.validatorVote(s.valAddrs[0], v1.VoteOption_VOTE_OPTION_NO)
+				s.validatorVote(s.valAddrs[1], v1.VoteOption_VOTE_OPTION_YES)
+				s.delegate(s.delAddrs[0], s.valAddrs[2], 500000)
+				s.delegate(s.delAddrs[0], s.valAddrs[3], 500000)
+				s.delegate(s.delAddrs[0], s.valAddrs[4], 500000)
+				s.delegate(s.delAddrs[0], s.valAddrs[5], 500000)
+				s.vote(s.delAddrs[0], v1.VoteOption_VOTE_OPTION_ABSTAIN)
+			},
+			expectedQuorum: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			govKeeper, mocks, _, ctx := setupGovKeeper(t, mockAccountKeeperExpectations)
+			var (
+				numVals       = 10
+				numDelegators = 5
+				addrs         = simtestutil.CreateRandomAccounts(numVals + numDelegators)
+				valAddrs      = simtestutil.ConvertAddrsToValAddrs(addrs[:numVals])
+				delAddrs      = addrs[numVals:]
+			)
+			// Submit and activate a proposal
+			proposal, err := govKeeper.SubmitProposal(ctx, TestProposal, "", "title", "summary", delAddrs[0])
+			require.NoError(t, err)
+			govKeeper.ActivateVotingPeriod(ctx, proposal)
+			suite := newTallyFixture(t, ctx, proposal, valAddrs, delAddrs, govKeeper, mocks)
+			tt.setup(suite)
+
+			quorum, err := govKeeper.HasReachedQuorum(ctx, proposal)
+
+			require.NoError(t, err)
+			assert.Equal(t, tt.expectedQuorum, quorum)
+			if tt.expectedQuorum {
+				// Assert votes are still here after HasReachedQuorum
+				votes := suite.keeper.GetVotes(suite.ctx, proposal.Id)
+				assert.NotEmpty(t, votes, "votes must be kept after HasReachedQuorum")
+			}
+		})
+	}
+}
