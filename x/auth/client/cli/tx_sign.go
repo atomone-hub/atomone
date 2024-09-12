@@ -59,7 +59,9 @@ account key. It implies --signature-only.
 
 	flags.AddTxFlagsToCmd(cmd)
 
-	cmd.MarkFlagRequired(flags.FlagFrom)
+	if err := cmd.MarkFlagRequired(flags.FlagFrom); err != nil {
+		panic(fmt.Sprintf("err marking from flag as required: %v", err))
+	}
 
 	return cmd
 }
@@ -138,7 +140,9 @@ func makeSignBatchCmd() func(cmd *cobra.Command, args []string) error {
 				msgs = append(msgs, unsignedStdTx.GetMsgs()...)
 			}
 			// set the new appened msgs into builder
-			txBuilder.SetMsgs(msgs...)
+			if err = txBuilder.SetMsgs(msgs...); err != nil {
+				return err
+			}
 
 			// set the memo,fees,feeGranter,feePayer from cmd flags
 			txBuilder.SetMemo(txFactory.Memo())
@@ -286,7 +290,9 @@ be generated via the 'multisign' command.
 	cmd.Flags().Bool(flagAmino, false, "Generate Amino encoded JSON suitable for submiting to the txs REST endpoint")
 	flags.AddTxFlagsToCmd(cmd)
 
-	cmd.MarkFlagRequired(flags.FlagFrom)
+	if err := cmd.MarkFlagRequired(flags.FlagFrom); err != nil {
+		panic(fmt.Sprintf("err marking from flag as required: %v", err))
+	}
 
 	return cmd
 }
@@ -295,8 +301,12 @@ func preSignCmd(cmd *cobra.Command, _ []string) {
 	// Conditionally mark the account and sequence numbers required as no RPC
 	// query will be done.
 	if offline, _ := cmd.Flags().GetBool(flags.FlagOffline); offline {
-		cmd.MarkFlagRequired(flags.FlagAccountNumber)
-		cmd.MarkFlagRequired(flags.FlagSequence)
+		if err := cmd.MarkFlagRequired(flags.FlagAccountNumber); err != nil {
+			panic(fmt.Sprintf("err marking account number flag as required: %v", err))
+		}
+		if err := cmd.MarkFlagRequired(flags.FlagSequence); err != nil {
+			panic(fmt.Sprintf("err marking sequence flag as required: %v", err))
+		}
 	}
 }
 

@@ -18,19 +18,18 @@ func (k Keeper) Mint(ctx sdk.Context, token nft.NFT, receiver sdk.AccAddress) er
 		return sdkerrors.Wrap(nft.ErrNFTExists, token.Id) //nolint: staticcheck
 	}
 
-	k.mintWithNoCheck(ctx, token, receiver)
-	return nil
+	return k.mintWithNoCheck(ctx, token, receiver)
 }
 
 // mintWithNoCheck defines a method for minting a new nft
 // Note: this method does not check whether the class already exists in nft.
 // The upper-layer application needs to check it when it needs to use it.
-func (k Keeper) mintWithNoCheck(ctx sdk.Context, token nft.NFT, receiver sdk.AccAddress) {
+func (k Keeper) mintWithNoCheck(ctx sdk.Context, token nft.NFT, receiver sdk.AccAddress) error {
 	k.setNFT(ctx, token)
 	k.setOwner(ctx, token.ClassId, token.Id, receiver)
 	k.incrTotalSupply(ctx, token.ClassId)
 
-	ctx.EventManager().EmitTypedEvent(&nft.EventMint{
+	return ctx.EventManager().EmitTypedEvent(&nft.EventMint{
 		ClassId: token.ClassId,
 		Id:      token.Id,
 		Owner:   receiver.String(),
@@ -48,7 +47,10 @@ func (k Keeper) Burn(ctx sdk.Context, classID string, nftID string) error {
 		return sdkerrors.Wrap(nft.ErrNFTNotExists, nftID) //nolint: staticcheck
 	}
 
-	k.burnWithNoCheck(ctx, classID, nftID)
+	if err := k.burnWithNoCheck(ctx, classID, nftID); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -62,11 +64,14 @@ func (k Keeper) burnWithNoCheck(ctx sdk.Context, classID string, nftID string) e
 
 	k.deleteOwner(ctx, classID, nftID, owner)
 	k.decrTotalSupply(ctx, classID)
-	ctx.EventManager().EmitTypedEvent(&nft.EventBurn{
+	if err := ctx.EventManager().EmitTypedEvent(&nft.EventBurn{
 		ClassId: classID,
 		Id:      nftID,
 		Owner:   owner.String(),
-	})
+	}); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -106,7 +111,10 @@ func (k Keeper) Transfer(ctx sdk.Context,
 		return sdkerrors.Wrap(nft.ErrNFTNotExists, nftID) //nolint: staticcheck
 	}
 
-	k.transferWithNoCheck(ctx, classID, nftID, receiver)
+	if err := k.transferWithNoCheck(ctx, classID, nftID, receiver); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -117,7 +125,7 @@ func (k Keeper) transferWithNoCheck(ctx sdk.Context,
 	classID string,
 	nftID string,
 	receiver sdk.AccAddress,
-) error {
+) error { //nolint:unparam
 	owner := k.GetOwner(ctx, classID, nftID)
 	k.deleteOwner(ctx, classID, nftID, owner)
 	k.setOwner(ctx, classID, nftID, receiver)

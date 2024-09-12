@@ -115,7 +115,9 @@ func (a table) Set(store sdk.KVStore, rowID RowID, newValue codec.ProtoMarshaler
 	var oldValue codec.ProtoMarshaler
 	if a.Has(store, rowID) {
 		oldValue = reflect.New(a.model).Interface().(codec.ProtoMarshaler)
-		a.GetOne(store, rowID, oldValue)
+		if err := a.GetOne(store, rowID, oldValue); err != nil {
+			return err
+		}
 	}
 
 	newValueEncoded, err := a.cdc.Marshal(newValue)

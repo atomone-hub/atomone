@@ -9,8 +9,8 @@ import (
 // must not be altered after this function is called as it will cause a segmentation fault.
 func UnsafeStrToBytes(s string) []byte {
 	var buf []byte
-	sHdr := (*reflect.StringHeader)(unsafe.Pointer(&s))
-	bufHdr := (*reflect.SliceHeader)(unsafe.Pointer(&buf))
+	sHdr := (*reflect.StringHeader)(unsafe.Pointer(&s))    //nolint:staticcheck // SA1019
+	bufHdr := (*reflect.SliceHeader)(unsafe.Pointer(&buf)) //nolint:staticcheck // SA1019
 	bufHdr.Data = sHdr.Data
 	bufHdr.Cap = sHdr.Len
 	bufHdr.Len = sHdr.Len

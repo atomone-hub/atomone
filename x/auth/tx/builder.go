@@ -448,7 +448,9 @@ func (w *wrapper) AddAuxSignerData(data tx.AuxSignerData) error {
 	for i, msgAny := range body.Messages {
 		msgs[i] = msgAny.GetCachedValue().(sdk.Msg)
 	}
-	w.SetMsgs(msgs...)
+	if err = w.SetMsgs(msgs...); err != nil {
+		return err
+	}
 	w.SetTip(data.GetSignDoc().GetTip())
 
 	// Get the aux signer's index in GetSigners.

@@ -311,7 +311,7 @@ func (m MsgCreateGroupPolicy) ValidateBasic() error {
 		return sdkerrors.Wrap(err, "admin") //nolint: staticcheck
 	}
 	if m.GroupId == 0 {
-		return sdkerrors.Wrap(errors.ErrEmpty, "group id")
+		return sdkerrors.Wrap(errors.ErrEmpty, "group id") //nolint:staticcheck // SA1019
 	}
 
 	policy, err := m.GetDecisionPolicy()

@@ -370,7 +370,7 @@ func (k Keeper) PruneProposals(ctx sdk.Context) error {
 	if err != nil {
 		return nil
 	}
-	for _, proposal := range proposals {
+	for idx, proposal := range proposals {
 		err := k.pruneProposal(ctx, proposal.Id)
 		if err != nil {
 			return err
@@ -380,7 +380,7 @@ func (k Keeper) PruneProposals(ctx sdk.Context) error {
 			&group.EventProposalPruned{
 				ProposalId:  proposal.Id,
 				Status:      proposal.Status,
-				TallyResult: &proposal.FinalTallyResult,
+				TallyResult: &proposals[idx].FinalTallyResult,
 			}); err != nil {
 			return err
 		}

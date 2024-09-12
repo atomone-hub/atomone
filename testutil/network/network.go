@@ -678,9 +678,12 @@ func (n *Network) WaitForHeightWithTimeout(h int64, t time.Duration) (int64, err
 // It will do this until the function returns a nil error or until the number of
 // blocks has been reached.
 func (n *Network) RetryForBlocks(retryFunc func() error, blocks int) error {
+	var err error
 	for i := 0; i < blocks; i++ {
-		n.WaitForNextBlock()
-		err := retryFunc()
+		if err = n.WaitForNextBlock(); err != nil {
+			return err
+		}
+		err = retryFunc()
 		if err == nil {
 			return nil
 		}

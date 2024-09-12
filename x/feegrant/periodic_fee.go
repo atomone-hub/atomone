@@ -84,7 +84,7 @@ func (a PeriodicAllowance) ValidateBasic() error {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "spend amount is invalid: %s", a.PeriodSpendLimit) //nolint: staticcheck
 	}
 	if !a.PeriodSpendLimit.IsAllPositive() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "spend limit must be positive")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "spend limit must be positive") //nolint:staticcheck // SA1019
 	}
 	if !a.PeriodCanSpend.IsValid() {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "can spend amount is invalid: %s", a.PeriodCanSpend) //nolint: staticcheck

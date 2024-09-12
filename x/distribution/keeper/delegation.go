@@ -61,7 +61,7 @@ func (k Keeper) CalculateDelegationRewards(ctx sdk.Context, val stakingtypes.Val
 
 	if startingInfo.Height == uint64(ctx.BlockHeight()) {
 		// started this height, no rewards yet
-		return
+		return sdk.DecCoins{}
 	}
 
 	startingPeriod := startingInfo.PreviousPeriod

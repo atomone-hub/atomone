@@ -328,12 +328,16 @@ func (k Keeper) insertIntoGrantQueue(ctx sdk.Context, granter, grantee sdk.AccAd
 	}
 
 	if len(queueItems.MsgTypeUrls) == 0 {
-		k.setGrantQueueItem(ctx, expiration, granter, grantee, &authz.GrantQueueItem{
+		if err = k.setGrantQueueItem(ctx, expiration, granter, grantee, &authz.GrantQueueItem{
 			MsgTypeUrls: []string{msgType},
-		})
+		}); err != nil {
+			return err
+		}
 	} else {
 		queueItems.MsgTypeUrls = append(queueItems.MsgTypeUrls, msgType)
-		k.setGrantQueueItem(ctx, expiration, granter, grantee, queueItems)
+		if err = k.setGrantQueueItem(ctx, expiration, granter, grantee, queueItems); err != nil {
+			return err
+		}
 	}
 
 	return nil

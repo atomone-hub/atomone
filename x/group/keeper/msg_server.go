@@ -872,10 +872,12 @@ func (k Keeper) LeaveGroup(goCtx context.Context, req *group.MsgLeaveGroup) (*gr
 		return nil, err
 	}
 
-	ctx.EventManager().EmitTypedEvent(&group.EventLeaveGroup{
+	if err := ctx.EventManager().EmitTypedEvent(&group.EventLeaveGroup{
 		GroupId: req.GroupId,
 		Address: req.Address,
-	})
+	}); err != nil {
+		return nil, err
+	}
 
 	return &group.MsgLeaveGroupResponse{}, nil
 }

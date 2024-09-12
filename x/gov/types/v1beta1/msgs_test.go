@@ -8,14 +8,13 @@ import (
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/atomone-hub/atomone/types"
-	sdk1 "github.com/atomone-hub/atomone/types"
 )
 
 var (
 	coinsPos   = sdk.NewCoins(sdk.NewInt64Coin(sdk.DefaultBondDenom, 1000))
 	coinsZero  = sdk.NewCoins()
 	coinsMulti = sdk.NewCoins(sdk.NewInt64Coin(sdk.DefaultBondDenom, 1000), sdk.NewInt64Coin("foo", 10000))
-	addrs      = []sdk1.AccAddress{
+	addrs      = []sdk.AccAddress{
 		sdk.AccAddress("test1"),
 		sdk.AccAddress("test2"),
 	}
@@ -169,7 +168,7 @@ func TestMsgVoteWeighted(t *testing.T) {
 
 // this tests that Amino JSON MsgSubmitProposal.GetSignBytes() still works with Content as Any using the ModuleCdc
 func TestMsgSubmitProposal_GetSignBytes(t *testing.T) {
-	msg, err := NewMsgSubmitProposal(NewTextProposal("test", "abcd"), sdk.NewCoins(), sdk1.AccAddress{})
+	msg, err := NewMsgSubmitProposal(NewTextProposal("test", "abcd"), sdk.NewCoins(), sdk.AccAddress{})
 	require.NoError(t, err)
 	var bz []byte
 	require.NotPanics(t, func() {

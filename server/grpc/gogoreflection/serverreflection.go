@@ -386,60 +386,60 @@ func (s *serverReflectionServer) ServerReflectionInfo(stream rpb.ServerReflectio
 			return err
 		}
 
-		out := &rpb.ServerReflectionResponse{
-			ValidHost:       in.Host,
+		out := &rpb.ServerReflectionResponse{ //nolint:staticcheck // SA1019
+			ValidHost:       in.Host, //nolint:staticcheck // SA1019
 			OriginalRequest: in,
 		}
 		switch req := in.MessageRequest.(type) {
 		case *rpb.ServerReflectionRequest_FileByFilename:
-			b, err := s.fileDescEncodingByFilename(req.FileByFilename, sentFileDescriptors)
+			b, err := s.fileDescEncodingByFilename(req.FileByFilename, sentFileDescriptors) //nolint:staticcheck // SA1019
 			if err != nil {
 				out.MessageResponse = &rpb.ServerReflectionResponse_ErrorResponse{
-					ErrorResponse: &rpb.ErrorResponse{
+					ErrorResponse: &rpb.ErrorResponse{ //nolint:staticcheck // SA1019
 						ErrorCode:    int32(codes.NotFound),
 						ErrorMessage: err.Error(),
 					},
 				}
 			} else {
 				out.MessageResponse = &rpb.ServerReflectionResponse_FileDescriptorResponse{
-					FileDescriptorResponse: &rpb.FileDescriptorResponse{FileDescriptorProto: b},
+					FileDescriptorResponse: &rpb.FileDescriptorResponse{FileDescriptorProto: b}, //nolint:staticcheck // SA1019
 				}
 			}
 		case *rpb.ServerReflectionRequest_FileContainingSymbol:
-			b, err := s.fileDescEncodingContainingSymbol(req.FileContainingSymbol, sentFileDescriptors)
+			b, err := s.fileDescEncodingContainingSymbol(req.FileContainingSymbol, sentFileDescriptors) //nolint:staticcheck // SA1019
 			if err != nil {
 				out.MessageResponse = &rpb.ServerReflectionResponse_ErrorResponse{
-					ErrorResponse: &rpb.ErrorResponse{
+					ErrorResponse: &rpb.ErrorResponse{ //nolint:staticcheck // SA1019
 						ErrorCode:    int32(codes.NotFound),
 						ErrorMessage: err.Error(),
 					},
 				}
 			} else {
 				out.MessageResponse = &rpb.ServerReflectionResponse_FileDescriptorResponse{
-					FileDescriptorResponse: &rpb.FileDescriptorResponse{FileDescriptorProto: b},
+					FileDescriptorResponse: &rpb.FileDescriptorResponse{FileDescriptorProto: b}, //nolint:staticcheck // SA1019
 				}
 			}
 		case *rpb.ServerReflectionRequest_FileContainingExtension:
-			typeName := req.FileContainingExtension.ContainingType
-			extNum := req.FileContainingExtension.ExtensionNumber
+			typeName := req.FileContainingExtension.ContainingType //nolint:staticcheck // SA1019
+			extNum := req.FileContainingExtension.ExtensionNumber  //nolint:staticcheck // SA1019
 			b, err := s.fileDescEncodingContainingExtension(typeName, extNum, sentFileDescriptors)
 			if err != nil {
 				out.MessageResponse = &rpb.ServerReflectionResponse_ErrorResponse{
-					ErrorResponse: &rpb.ErrorResponse{
+					ErrorResponse: &rpb.ErrorResponse{ //nolint:staticcheck // SA1019
 						ErrorCode:    int32(codes.NotFound),
 						ErrorMessage: err.Error(),
 					},
 				}
 			} else {
 				out.MessageResponse = &rpb.ServerReflectionResponse_FileDescriptorResponse{
-					FileDescriptorResponse: &rpb.FileDescriptorResponse{FileDescriptorProto: b},
+					FileDescriptorResponse: &rpb.FileDescriptorResponse{FileDescriptorProto: b}, //nolint:staticcheck // SA1019
 				}
 			}
 		case *rpb.ServerReflectionRequest_AllExtensionNumbersOfType:
-			extNums, err := s.allExtensionNumbersForTypeName(req.AllExtensionNumbersOfType)
+			extNums, err := s.allExtensionNumbersForTypeName(req.AllExtensionNumbersOfType) //nolint:staticcheck // SA1019
 			if err != nil {
 				out.MessageResponse = &rpb.ServerReflectionResponse_ErrorResponse{
-					ErrorResponse: &rpb.ErrorResponse{
+					ErrorResponse: &rpb.ErrorResponse{ //nolint:staticcheck // SA1019
 						ErrorCode:    int32(codes.NotFound),
 						ErrorMessage: err.Error(),
 					},
@@ -447,22 +447,22 @@ func (s *serverReflectionServer) ServerReflectionInfo(stream rpb.ServerReflectio
 				log.Printf("OH NO: %s", err)
 			} else {
 				out.MessageResponse = &rpb.ServerReflectionResponse_AllExtensionNumbersResponse{
-					AllExtensionNumbersResponse: &rpb.ExtensionNumberResponse{
-						BaseTypeName:    req.AllExtensionNumbersOfType,
+					AllExtensionNumbersResponse: &rpb.ExtensionNumberResponse{ //nolint:staticcheck // SA1019
+						BaseTypeName:    req.AllExtensionNumbersOfType, //nolint:staticcheck // SA1019
 						ExtensionNumber: extNums,
 					},
 				}
 			}
 		case *rpb.ServerReflectionRequest_ListServices:
 			svcNames, _ := s.getSymbols()
-			serviceResponses := make([]*rpb.ServiceResponse, len(svcNames))
+			serviceResponses := make([]*rpb.ServiceResponse, len(svcNames)) //nolint:staticcheck // SA1019
 			for i, n := range svcNames {
-				serviceResponses[i] = &rpb.ServiceResponse{
+				serviceResponses[i] = &rpb.ServiceResponse{ //nolint:staticcheck // SA1019
 					Name: n,
 				}
 			}
 			out.MessageResponse = &rpb.ServerReflectionResponse_ListServicesResponse{
-				ListServicesResponse: &rpb.ListServiceResponse{
+				ListServicesResponse: &rpb.ListServiceResponse{ //nolint:staticcheck // SA1019
 					Service: serviceResponses,
 				},
 			}

@@ -6,21 +6,24 @@ package v2alpha1
 import (
 	context "context"
 	fmt "fmt"
+	io "io"
+	math "math"
+	math_bits "math/bits"
+
 	grpc1 "github.com/cosmos/gogoproto/grpc"
 	proto "github.com/cosmos/gogoproto/proto"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	io "io"
-	math "math"
-	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
+var (
+	_ = proto.Marshal
+	_ = fmt.Errorf
+	_ = math.Inf
+)
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -54,9 +57,11 @@ func (*AppDescriptor) ProtoMessage()    {}
 func (*AppDescriptor) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e5545ffbad5a193f, []int{0}
 }
+
 func (m *AppDescriptor) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *AppDescriptor) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_AppDescriptor.Marshal(b, m, deterministic)
@@ -69,12 +74,15 @@ func (m *AppDescriptor) XXX_Marshal(b []byte, deterministic bool) ([]byte, error
 		return b[:n], nil
 	}
 }
+
 func (m *AppDescriptor) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_AppDescriptor.Merge(m, src)
 }
+
 func (m *AppDescriptor) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *AppDescriptor) XXX_DiscardUnknown() {
 	xxx_messageInfo_AppDescriptor.DiscardUnknown(m)
 }
@@ -140,9 +148,11 @@ func (*TxDescriptor) ProtoMessage()    {}
 func (*TxDescriptor) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e5545ffbad5a193f, []int{1}
 }
+
 func (m *TxDescriptor) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *TxDescriptor) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_TxDescriptor.Marshal(b, m, deterministic)
@@ -155,12 +165,15 @@ func (m *TxDescriptor) XXX_Marshal(b []byte, deterministic bool) ([]byte, error)
 		return b[:n], nil
 	}
 }
+
 func (m *TxDescriptor) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_TxDescriptor.Merge(m, src)
 }
+
 func (m *TxDescriptor) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *TxDescriptor) XXX_DiscardUnknown() {
 	xxx_messageInfo_TxDescriptor.DiscardUnknown(m)
 }
@@ -194,9 +207,11 @@ func (*AuthnDescriptor) ProtoMessage()    {}
 func (*AuthnDescriptor) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e5545ffbad5a193f, []int{2}
 }
+
 func (m *AuthnDescriptor) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *AuthnDescriptor) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_AuthnDescriptor.Marshal(b, m, deterministic)
@@ -209,12 +224,15 @@ func (m *AuthnDescriptor) XXX_Marshal(b []byte, deterministic bool) ([]byte, err
 		return b[:n], nil
 	}
 }
+
 func (m *AuthnDescriptor) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_AuthnDescriptor.Merge(m, src)
 }
+
 func (m *AuthnDescriptor) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *AuthnDescriptor) XXX_DiscardUnknown() {
 	xxx_messageInfo_AuthnDescriptor.DiscardUnknown(m)
 }
@@ -249,9 +267,11 @@ func (*SigningModeDescriptor) ProtoMessage()    {}
 func (*SigningModeDescriptor) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e5545ffbad5a193f, []int{3}
 }
+
 func (m *SigningModeDescriptor) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *SigningModeDescriptor) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_SigningModeDescriptor.Marshal(b, m, deterministic)
@@ -264,12 +284,15 @@ func (m *SigningModeDescriptor) XXX_Marshal(b []byte, deterministic bool) ([]byt
 		return b[:n], nil
 	}
 }
+
 func (m *SigningModeDescriptor) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_SigningModeDescriptor.Merge(m, src)
 }
+
 func (m *SigningModeDescriptor) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *SigningModeDescriptor) XXX_DiscardUnknown() {
 	xxx_messageInfo_SigningModeDescriptor.DiscardUnknown(m)
 }
@@ -309,9 +332,11 @@ func (*ChainDescriptor) ProtoMessage()    {}
 func (*ChainDescriptor) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e5545ffbad5a193f, []int{4}
 }
+
 func (m *ChainDescriptor) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *ChainDescriptor) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ChainDescriptor.Marshal(b, m, deterministic)
@@ -324,12 +349,15 @@ func (m *ChainDescriptor) XXX_Marshal(b []byte, deterministic bool) ([]byte, err
 		return b[:n], nil
 	}
 }
+
 func (m *ChainDescriptor) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ChainDescriptor.Merge(m, src)
 }
+
 func (m *ChainDescriptor) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *ChainDescriptor) XXX_DiscardUnknown() {
 	xxx_messageInfo_ChainDescriptor.DiscardUnknown(m)
 }
@@ -356,9 +384,11 @@ func (*CodecDescriptor) ProtoMessage()    {}
 func (*CodecDescriptor) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e5545ffbad5a193f, []int{5}
 }
+
 func (m *CodecDescriptor) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *CodecDescriptor) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_CodecDescriptor.Marshal(b, m, deterministic)
@@ -371,12 +401,15 @@ func (m *CodecDescriptor) XXX_Marshal(b []byte, deterministic bool) ([]byte, err
 		return b[:n], nil
 	}
 }
+
 func (m *CodecDescriptor) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_CodecDescriptor.Merge(m, src)
 }
+
 func (m *CodecDescriptor) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *CodecDescriptor) XXX_DiscardUnknown() {
 	xxx_messageInfo_CodecDescriptor.DiscardUnknown(m)
 }
@@ -408,9 +441,11 @@ func (*InterfaceDescriptor) ProtoMessage()    {}
 func (*InterfaceDescriptor) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e5545ffbad5a193f, []int{6}
 }
+
 func (m *InterfaceDescriptor) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *InterfaceDescriptor) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_InterfaceDescriptor.Marshal(b, m, deterministic)
@@ -423,12 +458,15 @@ func (m *InterfaceDescriptor) XXX_Marshal(b []byte, deterministic bool) ([]byte,
 		return b[:n], nil
 	}
 }
+
 func (m *InterfaceDescriptor) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_InterfaceDescriptor.Merge(m, src)
 }
+
 func (m *InterfaceDescriptor) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *InterfaceDescriptor) XXX_DiscardUnknown() {
 	xxx_messageInfo_InterfaceDescriptor.DiscardUnknown(m)
 }
@@ -473,9 +511,11 @@ func (*InterfaceImplementerDescriptor) ProtoMessage()    {}
 func (*InterfaceImplementerDescriptor) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e5545ffbad5a193f, []int{7}
 }
+
 func (m *InterfaceImplementerDescriptor) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *InterfaceImplementerDescriptor) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_InterfaceImplementerDescriptor.Marshal(b, m, deterministic)
@@ -488,12 +528,15 @@ func (m *InterfaceImplementerDescriptor) XXX_Marshal(b []byte, deterministic boo
 		return b[:n], nil
 	}
 }
+
 func (m *InterfaceImplementerDescriptor) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_InterfaceImplementerDescriptor.Merge(m, src)
 }
+
 func (m *InterfaceImplementerDescriptor) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *InterfaceImplementerDescriptor) XXX_DiscardUnknown() {
 	xxx_messageInfo_InterfaceImplementerDescriptor.DiscardUnknown(m)
 }
@@ -531,9 +574,11 @@ func (*InterfaceAcceptingMessageDescriptor) ProtoMessage()    {}
 func (*InterfaceAcceptingMessageDescriptor) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e5545ffbad5a193f, []int{8}
 }
+
 func (m *InterfaceAcceptingMessageDescriptor) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *InterfaceAcceptingMessageDescriptor) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_InterfaceAcceptingMessageDescriptor.Marshal(b, m, deterministic)
@@ -546,12 +591,15 @@ func (m *InterfaceAcceptingMessageDescriptor) XXX_Marshal(b []byte, deterministi
 		return b[:n], nil
 	}
 }
+
 func (m *InterfaceAcceptingMessageDescriptor) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_InterfaceAcceptingMessageDescriptor.Merge(m, src)
 }
+
 func (m *InterfaceAcceptingMessageDescriptor) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *InterfaceAcceptingMessageDescriptor) XXX_DiscardUnknown() {
 	xxx_messageInfo_InterfaceAcceptingMessageDescriptor.DiscardUnknown(m)
 }
@@ -584,9 +632,11 @@ func (*ConfigurationDescriptor) ProtoMessage()    {}
 func (*ConfigurationDescriptor) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e5545ffbad5a193f, []int{9}
 }
+
 func (m *ConfigurationDescriptor) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *ConfigurationDescriptor) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ConfigurationDescriptor.Marshal(b, m, deterministic)
@@ -599,12 +649,15 @@ func (m *ConfigurationDescriptor) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return b[:n], nil
 	}
 }
+
 func (m *ConfigurationDescriptor) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConfigurationDescriptor.Merge(m, src)
 }
+
 func (m *ConfigurationDescriptor) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *ConfigurationDescriptor) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConfigurationDescriptor.DiscardUnknown(m)
 }
@@ -631,9 +684,11 @@ func (*MsgDescriptor) ProtoMessage()    {}
 func (*MsgDescriptor) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e5545ffbad5a193f, []int{10}
 }
+
 func (m *MsgDescriptor) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *MsgDescriptor) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgDescriptor.Marshal(b, m, deterministic)
@@ -646,12 +701,15 @@ func (m *MsgDescriptor) XXX_Marshal(b []byte, deterministic bool) ([]byte, error
 		return b[:n], nil
 	}
 }
+
 func (m *MsgDescriptor) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgDescriptor.Merge(m, src)
 }
+
 func (m *MsgDescriptor) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *MsgDescriptor) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgDescriptor.DiscardUnknown(m)
 }
@@ -666,8 +724,7 @@ func (m *MsgDescriptor) GetMsgTypeUrl() string {
 }
 
 // GetAuthnDescriptorRequest is the request used for the GetAuthnDescriptor RPC
-type GetAuthnDescriptorRequest struct {
-}
+type GetAuthnDescriptorRequest struct{}
 
 func (m *GetAuthnDescriptorRequest) Reset()         { *m = GetAuthnDescriptorRequest{} }
 func (m *GetAuthnDescriptorRequest) String() string { return proto.CompactTextString(m) }
@@ -675,9 +732,11 @@ func (*GetAuthnDescriptorRequest) ProtoMessage()    {}
 func (*GetAuthnDescriptorRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e5545ffbad5a193f, []int{11}
 }
+
 func (m *GetAuthnDescriptorRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *GetAuthnDescriptorRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_GetAuthnDescriptorRequest.Marshal(b, m, deterministic)
@@ -690,12 +749,15 @@ func (m *GetAuthnDescriptorRequest) XXX_Marshal(b []byte, deterministic bool) ([
 		return b[:n], nil
 	}
 }
+
 func (m *GetAuthnDescriptorRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GetAuthnDescriptorRequest.Merge(m, src)
 }
+
 func (m *GetAuthnDescriptorRequest) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *GetAuthnDescriptorRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_GetAuthnDescriptorRequest.DiscardUnknown(m)
 }
@@ -716,9 +778,11 @@ func (*GetAuthnDescriptorResponse) ProtoMessage()    {}
 func (*GetAuthnDescriptorResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e5545ffbad5a193f, []int{12}
 }
+
 func (m *GetAuthnDescriptorResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *GetAuthnDescriptorResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_GetAuthnDescriptorResponse.Marshal(b, m, deterministic)
@@ -731,12 +795,15 @@ func (m *GetAuthnDescriptorResponse) XXX_Marshal(b []byte, deterministic bool) (
 		return b[:n], nil
 	}
 }
+
 func (m *GetAuthnDescriptorResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GetAuthnDescriptorResponse.Merge(m, src)
 }
+
 func (m *GetAuthnDescriptorResponse) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *GetAuthnDescriptorResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_GetAuthnDescriptorResponse.DiscardUnknown(m)
 }
@@ -751,8 +818,7 @@ func (m *GetAuthnDescriptorResponse) GetAuthn() *AuthnDescriptor {
 }
 
 // GetChainDescriptorRequest is the request used for the GetChainDescriptor RPC
-type GetChainDescriptorRequest struct {
-}
+type GetChainDescriptorRequest struct{}
 
 func (m *GetChainDescriptorRequest) Reset()         { *m = GetChainDescriptorRequest{} }
 func (m *GetChainDescriptorRequest) String() string { return proto.CompactTextString(m) }
@@ -760,9 +826,11 @@ func (*GetChainDescriptorRequest) ProtoMessage()    {}
 func (*GetChainDescriptorRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e5545ffbad5a193f, []int{13}
 }
+
 func (m *GetChainDescriptorRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *GetChainDescriptorRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_GetChainDescriptorRequest.Marshal(b, m, deterministic)
@@ -775,12 +843,15 @@ func (m *GetChainDescriptorRequest) XXX_Marshal(b []byte, deterministic bool) ([
 		return b[:n], nil
 	}
 }
+
 func (m *GetChainDescriptorRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GetChainDescriptorRequest.Merge(m, src)
 }
+
 func (m *GetChainDescriptorRequest) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *GetChainDescriptorRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_GetChainDescriptorRequest.DiscardUnknown(m)
 }
@@ -800,9 +871,11 @@ func (*GetChainDescriptorResponse) ProtoMessage()    {}
 func (*GetChainDescriptorResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e5545ffbad5a193f, []int{14}
 }
+
 func (m *GetChainDescriptorResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *GetChainDescriptorResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_GetChainDescriptorResponse.Marshal(b, m, deterministic)
@@ -815,12 +888,15 @@ func (m *GetChainDescriptorResponse) XXX_Marshal(b []byte, deterministic bool) (
 		return b[:n], nil
 	}
 }
+
 func (m *GetChainDescriptorResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GetChainDescriptorResponse.Merge(m, src)
 }
+
 func (m *GetChainDescriptorResponse) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *GetChainDescriptorResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_GetChainDescriptorResponse.DiscardUnknown(m)
 }
@@ -835,8 +911,7 @@ func (m *GetChainDescriptorResponse) GetChain() *ChainDescriptor {
 }
 
 // GetCodecDescriptorRequest is the request used for the GetCodecDescriptor RPC
-type GetCodecDescriptorRequest struct {
-}
+type GetCodecDescriptorRequest struct{}
 
 func (m *GetCodecDescriptorRequest) Reset()         { *m = GetCodecDescriptorRequest{} }
 func (m *GetCodecDescriptorRequest) String() string { return proto.CompactTextString(m) }
@@ -844,9 +919,11 @@ func (*GetCodecDescriptorRequest) ProtoMessage()    {}
 func (*GetCodecDescriptorRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e5545ffbad5a193f, []int{15}
 }
+
 func (m *GetCodecDescriptorRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *GetCodecDescriptorRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_GetCodecDescriptorRequest.Marshal(b, m, deterministic)
@@ -859,12 +936,15 @@ func (m *GetCodecDescriptorRequest) XXX_Marshal(b []byte, deterministic bool) ([
 		return b[:n], nil
 	}
 }
+
 func (m *GetCodecDescriptorRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GetCodecDescriptorRequest.Merge(m, src)
 }
+
 func (m *GetCodecDescriptorRequest) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *GetCodecDescriptorRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_GetCodecDescriptorRequest.DiscardUnknown(m)
 }
@@ -885,9 +965,11 @@ func (*GetCodecDescriptorResponse) ProtoMessage()    {}
 func (*GetCodecDescriptorResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e5545ffbad5a193f, []int{16}
 }
+
 func (m *GetCodecDescriptorResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *GetCodecDescriptorResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_GetCodecDescriptorResponse.Marshal(b, m, deterministic)
@@ -900,12 +982,15 @@ func (m *GetCodecDescriptorResponse) XXX_Marshal(b []byte, deterministic bool) (
 		return b[:n], nil
 	}
 }
+
 func (m *GetCodecDescriptorResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GetCodecDescriptorResponse.Merge(m, src)
 }
+
 func (m *GetCodecDescriptorResponse) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *GetCodecDescriptorResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_GetCodecDescriptorResponse.DiscardUnknown(m)
 }
@@ -921,8 +1006,7 @@ func (m *GetCodecDescriptorResponse) GetCodec() *CodecDescriptor {
 
 // GetConfigurationDescriptorRequest is the request used for the
 // GetConfigurationDescriptor RPC
-type GetConfigurationDescriptorRequest struct {
-}
+type GetConfigurationDescriptorRequest struct{}
 
 func (m *GetConfigurationDescriptorRequest) Reset()         { *m = GetConfigurationDescriptorRequest{} }
 func (m *GetConfigurationDescriptorRequest) String() string { return proto.CompactTextString(m) }
@@ -930,9 +1014,11 @@ func (*GetConfigurationDescriptorRequest) ProtoMessage()    {}
 func (*GetConfigurationDescriptorRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e5545ffbad5a193f, []int{17}
 }
+
 func (m *GetConfigurationDescriptorRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *GetConfigurationDescriptorRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_GetConfigurationDescriptorRequest.Marshal(b, m, deterministic)
@@ -945,12 +1031,15 @@ func (m *GetConfigurationDescriptorRequest) XXX_Marshal(b []byte, deterministic 
 		return b[:n], nil
 	}
 }
+
 func (m *GetConfigurationDescriptorRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GetConfigurationDescriptorRequest.Merge(m, src)
 }
+
 func (m *GetConfigurationDescriptorRequest) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *GetConfigurationDescriptorRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_GetConfigurationDescriptorRequest.DiscardUnknown(m)
 }
@@ -970,9 +1059,11 @@ func (*GetConfigurationDescriptorResponse) ProtoMessage()    {}
 func (*GetConfigurationDescriptorResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e5545ffbad5a193f, []int{18}
 }
+
 func (m *GetConfigurationDescriptorResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *GetConfigurationDescriptorResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_GetConfigurationDescriptorResponse.Marshal(b, m, deterministic)
@@ -985,12 +1076,15 @@ func (m *GetConfigurationDescriptorResponse) XXX_Marshal(b []byte, deterministic
 		return b[:n], nil
 	}
 }
+
 func (m *GetConfigurationDescriptorResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GetConfigurationDescriptorResponse.Merge(m, src)
 }
+
 func (m *GetConfigurationDescriptorResponse) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *GetConfigurationDescriptorResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_GetConfigurationDescriptorResponse.DiscardUnknown(m)
 }
@@ -1006,8 +1100,7 @@ func (m *GetConfigurationDescriptorResponse) GetConfig() *ConfigurationDescripto
 
 // GetQueryServicesDescriptorRequest is the request used for the
 // GetQueryServicesDescriptor RPC
-type GetQueryServicesDescriptorRequest struct {
-}
+type GetQueryServicesDescriptorRequest struct{}
 
 func (m *GetQueryServicesDescriptorRequest) Reset()         { *m = GetQueryServicesDescriptorRequest{} }
 func (m *GetQueryServicesDescriptorRequest) String() string { return proto.CompactTextString(m) }
@@ -1015,9 +1108,11 @@ func (*GetQueryServicesDescriptorRequest) ProtoMessage()    {}
 func (*GetQueryServicesDescriptorRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e5545ffbad5a193f, []int{19}
 }
+
 func (m *GetQueryServicesDescriptorRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *GetQueryServicesDescriptorRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_GetQueryServicesDescriptorRequest.Marshal(b, m, deterministic)
@@ -1030,12 +1125,15 @@ func (m *GetQueryServicesDescriptorRequest) XXX_Marshal(b []byte, deterministic 
 		return b[:n], nil
 	}
 }
+
 func (m *GetQueryServicesDescriptorRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GetQueryServicesDescriptorRequest.Merge(m, src)
 }
+
 func (m *GetQueryServicesDescriptorRequest) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *GetQueryServicesDescriptorRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_GetQueryServicesDescriptorRequest.DiscardUnknown(m)
 }
@@ -1055,9 +1153,11 @@ func (*GetQueryServicesDescriptorResponse) ProtoMessage()    {}
 func (*GetQueryServicesDescriptorResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e5545ffbad5a193f, []int{20}
 }
+
 func (m *GetQueryServicesDescriptorResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *GetQueryServicesDescriptorResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_GetQueryServicesDescriptorResponse.Marshal(b, m, deterministic)
@@ -1070,12 +1170,15 @@ func (m *GetQueryServicesDescriptorResponse) XXX_Marshal(b []byte, deterministic
 		return b[:n], nil
 	}
 }
+
 func (m *GetQueryServicesDescriptorResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GetQueryServicesDescriptorResponse.Merge(m, src)
 }
+
 func (m *GetQueryServicesDescriptorResponse) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *GetQueryServicesDescriptorResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_GetQueryServicesDescriptorResponse.DiscardUnknown(m)
 }
@@ -1090,8 +1193,7 @@ func (m *GetQueryServicesDescriptorResponse) GetQueries() *QueryServicesDescript
 }
 
 // GetTxDescriptorRequest is the request used for the GetTxDescriptor RPC
-type GetTxDescriptorRequest struct {
-}
+type GetTxDescriptorRequest struct{}
 
 func (m *GetTxDescriptorRequest) Reset()         { *m = GetTxDescriptorRequest{} }
 func (m *GetTxDescriptorRequest) String() string { return proto.CompactTextString(m) }
@@ -1099,9 +1201,11 @@ func (*GetTxDescriptorRequest) ProtoMessage()    {}
 func (*GetTxDescriptorRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e5545ffbad5a193f, []int{21}
 }
+
 func (m *GetTxDescriptorRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *GetTxDescriptorRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_GetTxDescriptorRequest.Marshal(b, m, deterministic)
@@ -1114,12 +1218,15 @@ func (m *GetTxDescriptorRequest) XXX_Marshal(b []byte, deterministic bool) ([]by
 		return b[:n], nil
 	}
 }
+
 func (m *GetTxDescriptorRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GetTxDescriptorRequest.Merge(m, src)
 }
+
 func (m *GetTxDescriptorRequest) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *GetTxDescriptorRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_GetTxDescriptorRequest.DiscardUnknown(m)
 }
@@ -1139,9 +1246,11 @@ func (*GetTxDescriptorResponse) ProtoMessage()    {}
 func (*GetTxDescriptorResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e5545ffbad5a193f, []int{22}
 }
+
 func (m *GetTxDescriptorResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *GetTxDescriptorResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_GetTxDescriptorResponse.Marshal(b, m, deterministic)
@@ -1154,12 +1263,15 @@ func (m *GetTxDescriptorResponse) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return b[:n], nil
 	}
 }
+
 func (m *GetTxDescriptorResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GetTxDescriptorResponse.Merge(m, src)
 }
+
 func (m *GetTxDescriptorResponse) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *GetTxDescriptorResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_GetTxDescriptorResponse.DiscardUnknown(m)
 }
@@ -1185,9 +1297,11 @@ func (*QueryServicesDescriptor) ProtoMessage()    {}
 func (*QueryServicesDescriptor) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e5545ffbad5a193f, []int{23}
 }
+
 func (m *QueryServicesDescriptor) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *QueryServicesDescriptor) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryServicesDescriptor.Marshal(b, m, deterministic)
@@ -1200,12 +1314,15 @@ func (m *QueryServicesDescriptor) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return b[:n], nil
 	}
 }
+
 func (m *QueryServicesDescriptor) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryServicesDescriptor.Merge(m, src)
 }
+
 func (m *QueryServicesDescriptor) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *QueryServicesDescriptor) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryServicesDescriptor.DiscardUnknown(m)
 }
@@ -1236,9 +1353,11 @@ func (*QueryServiceDescriptor) ProtoMessage()    {}
 func (*QueryServiceDescriptor) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e5545ffbad5a193f, []int{24}
 }
+
 func (m *QueryServiceDescriptor) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *QueryServiceDescriptor) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryServiceDescriptor.Marshal(b, m, deterministic)
@@ -1251,12 +1370,15 @@ func (m *QueryServiceDescriptor) XXX_Marshal(b []byte, deterministic bool) ([]by
 		return b[:n], nil
 	}
 }
+
 func (m *QueryServiceDescriptor) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryServiceDescriptor.Merge(m, src)
 }
+
 func (m *QueryServiceDescriptor) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *QueryServiceDescriptor) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryServiceDescriptor.DiscardUnknown(m)
 }
@@ -1301,9 +1423,11 @@ func (*QueryMethodDescriptor) ProtoMessage()    {}
 func (*QueryMethodDescriptor) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e5545ffbad5a193f, []int{25}
 }
+
 func (m *QueryMethodDescriptor) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *QueryMethodDescriptor) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryMethodDescriptor.Marshal(b, m, deterministic)
@@ -1316,12 +1440,15 @@ func (m *QueryMethodDescriptor) XXX_Marshal(b []byte, deterministic bool) ([]byt
 		return b[:n], nil
 	}
 }
+
 func (m *QueryMethodDescriptor) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryMethodDescriptor.Merge(m, src)
 }
+
 func (m *QueryMethodDescriptor) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *QueryMethodDescriptor) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryMethodDescriptor.DiscardUnknown(m)
 }
@@ -1453,8 +1580,10 @@ var fileDescriptor_e5545ffbad5a193f = []byte{
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
-var _ context.Context
-var _ grpc.ClientConn
+var (
+	_ context.Context
+	_ grpc.ClientConn
+)
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
@@ -1569,24 +1698,28 @@ type ReflectionServiceServer interface {
 }
 
 // UnimplementedReflectionServiceServer can be embedded to have forward compatible implementations.
-type UnimplementedReflectionServiceServer struct {
-}
+type UnimplementedReflectionServiceServer struct{}
 
 func (*UnimplementedReflectionServiceServer) GetAuthnDescriptor(ctx context.Context, req *GetAuthnDescriptorRequest) (*GetAuthnDescriptorResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAuthnDescriptor not implemented")
 }
+
 func (*UnimplementedReflectionServiceServer) GetChainDescriptor(ctx context.Context, req *GetChainDescriptorRequest) (*GetChainDescriptorResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetChainDescriptor not implemented")
 }
+
 func (*UnimplementedReflectionServiceServer) GetCodecDescriptor(ctx context.Context, req *GetCodecDescriptorRequest) (*GetCodecDescriptorResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCodecDescriptor not implemented")
 }
+
 func (*UnimplementedReflectionServiceServer) GetConfigurationDescriptor(ctx context.Context, req *GetConfigurationDescriptorRequest) (*GetConfigurationDescriptorResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetConfigurationDescriptor not implemented")
 }
+
 func (*UnimplementedReflectionServiceServer) GetQueryServicesDescriptor(ctx context.Context, req *GetQueryServicesDescriptorRequest) (*GetQueryServicesDescriptorResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetQueryServicesDescriptor not implemented")
 }
+
 func (*UnimplementedReflectionServiceServer) GetTxDescriptor(ctx context.Context, req *GetTxDescriptorRequest) (*GetTxDescriptorResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTxDescriptor not implemented")
 }
@@ -2702,6 +2835,7 @@ func encodeVarintReflection(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+
 func (m *AppDescriptor) Size() (n int) {
 	if m == nil {
 		return 0
@@ -3093,9 +3227,11 @@ func (m *QueryMethodDescriptor) Size() (n int) {
 func sovReflection(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
+
 func sozReflection(x uint64) (n int) {
 	return sovReflection(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
+
 func (m *AppDescriptor) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3362,6 +3498,7 @@ func (m *AppDescriptor) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *TxDescriptor) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3478,6 +3615,7 @@ func (m *TxDescriptor) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *AuthnDescriptor) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3562,6 +3700,7 @@ func (m *AuthnDescriptor) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *SigningModeDescriptor) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3695,6 +3834,7 @@ func (m *SigningModeDescriptor) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *ChainDescriptor) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3777,6 +3917,7 @@ func (m *ChainDescriptor) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *CodecDescriptor) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3861,6 +4002,7 @@ func (m *CodecDescriptor) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *InterfaceDescriptor) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -4011,6 +4153,7 @@ func (m *InterfaceDescriptor) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *InterfaceImplementerDescriptor) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -4125,6 +4268,7 @@ func (m *InterfaceImplementerDescriptor) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *InterfaceAcceptingMessageDescriptor) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -4239,6 +4383,7 @@ func (m *InterfaceAcceptingMessageDescriptor) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *ConfigurationDescriptor) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -4321,6 +4466,7 @@ func (m *ConfigurationDescriptor) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *MsgDescriptor) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -4403,6 +4549,7 @@ func (m *MsgDescriptor) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *GetAuthnDescriptorRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -4453,6 +4600,7 @@ func (m *GetAuthnDescriptorRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *GetAuthnDescriptorResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -4539,6 +4687,7 @@ func (m *GetAuthnDescriptorResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *GetChainDescriptorRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -4589,6 +4738,7 @@ func (m *GetChainDescriptorRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *GetChainDescriptorResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -4675,6 +4825,7 @@ func (m *GetChainDescriptorResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *GetCodecDescriptorRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -4725,6 +4876,7 @@ func (m *GetCodecDescriptorRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *GetCodecDescriptorResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -4811,6 +4963,7 @@ func (m *GetCodecDescriptorResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *GetConfigurationDescriptorRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -4861,6 +5014,7 @@ func (m *GetConfigurationDescriptorRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *GetConfigurationDescriptorResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -4947,6 +5101,7 @@ func (m *GetConfigurationDescriptorResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *GetQueryServicesDescriptorRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -4997,6 +5152,7 @@ func (m *GetQueryServicesDescriptorRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *GetQueryServicesDescriptorResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -5083,6 +5239,7 @@ func (m *GetQueryServicesDescriptorResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *GetTxDescriptorRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -5133,6 +5290,7 @@ func (m *GetTxDescriptorRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *GetTxDescriptorResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -5219,6 +5377,7 @@ func (m *GetTxDescriptorResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *QueryServicesDescriptor) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -5303,6 +5462,7 @@ func (m *QueryServicesDescriptor) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *QueryServiceDescriptor) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -5439,6 +5599,7 @@ func (m *QueryServiceDescriptor) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *QueryMethodDescriptor) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -5553,6 +5714,7 @@ func (m *QueryMethodDescriptor) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func skipReflection(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

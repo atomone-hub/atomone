@@ -6,4 +6,4 @@ import "github.com/cosmos/cosmos-sdk/types/errors"
 const mathCodespace = "math"
 
 // ErrInvalidDecString defines an error for an invalid decimal string
-var ErrInvalidDecString = errors.Register(mathCodespace, 10, "invalid decimal string")
+var ErrInvalidDecString = errors.Register(mathCodespace, 10, "invalid decimal string") //nolint:staticcheck // SA1019

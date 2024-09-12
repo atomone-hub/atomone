@@ -8,7 +8,6 @@ import (
 
 	sdkerrors "github.com/atomone-hub/atomone/errors"
 	sdk "github.com/atomone-hub/atomone/types"
-	sdk1 "github.com/atomone-hub/atomone/types"
 	"github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 )
@@ -110,7 +109,7 @@ func (keeper Keeper) IterateDeposits(ctx sdk.Context, proposalID uint64, cb func
 
 // AddDeposit adds or updates a deposit of a specific depositor on a specific proposal.
 // Activates voting period when appropriate and returns true in that case, else returns false.
-func (keeper Keeper) AddDeposit(ctx sdk.Context, proposalID uint64, depositorAddr sdk.AccAddress, depositAmount sdk1.Coins) (bool, error) {
+func (keeper Keeper) AddDeposit(ctx sdk.Context, proposalID uint64, depositorAddr sdk.AccAddress, depositAmount sdk.Coins) (bool, error) {
 	// Checks to see if proposal exists
 	proposal, ok := keeper.GetProposal(ctx, proposalID)
 	if !ok {
@@ -141,7 +140,7 @@ func (keeper Keeper) AddDeposit(ctx sdk.Context, proposalID uint64, depositorAdd
 		)
 		for _, minDep := range minDepositAmount {
 			// calculate the threshold for this denom, and hold a list to later return a useful error message
-			threshold := sdk1.NewCoin(minDep.GetDenom(), minDep.Amount.ToLegacyDec().Mul(minDepositRatio).TruncateInt())
+			threshold := sdk.NewCoin(minDep.GetDenom(), minDep.Amount.ToLegacyDec().Mul(minDepositRatio).TruncateInt())
 			thresholds = append(thresholds, threshold.String())
 
 			found, deposit := depositAmount.Find(minDep.Denom)
@@ -170,13 +169,13 @@ func (keeper Keeper) AddDeposit(ctx sdk.Context, proposalID uint64, depositorAdd
 	}
 
 	// Update proposal
-	proposal.TotalDeposit = sdk1.NewCoins(proposal.TotalDeposit...).Add(depositAmount...)
+	proposal.TotalDeposit = sdk.NewCoins(proposal.TotalDeposit...).Add(depositAmount...)
 	keeper.SetProposal(ctx, proposal)
 
 	// Check if deposit has provided sufficient total funds to transition the proposal into the voting period
 	activatedVotingPeriod := false
 
-	if proposal.Status == v1.StatusDepositPeriod && sdk1.NewCoins(proposal.TotalDeposit...).IsAllGTE(keeper.GetParams(ctx).MinDeposit) {
+	if proposal.Status == v1.StatusDepositPeriod && sdk.NewCoins(proposal.TotalDeposit...).IsAllGTE(keeper.GetParams(ctx).MinDeposit) {
 		keeper.ActivateVotingPeriod(ctx, proposal)
 
 		activatedVotingPeriod = true
@@ -186,7 +185,7 @@ func (keeper Keeper) AddDeposit(ctx sdk.Context, proposalID uint64, depositorAdd
 	deposit, found := keeper.GetDeposit(ctx, proposalID, depositorAddr)
 
 	if found {
-		deposit.Amount = sdk1.NewCoins(deposit.Amount...).Add(depositAmount...)
+		deposit.Amount = sdk.NewCoins(deposit.Amount...).Add(depositAmount...)
 	} else {
 		deposit = v1.NewDeposit(proposalID, depositorAddr, depositAmount)
 	}
@@ -227,7 +226,7 @@ func (keeper Keeper) RefundAndDeleteDeposits(ctx sdk.Context, proposalID uint64)
 // validateInitialDeposit validates if initial deposit is greater than or equal to the minimum
 // required at the time of proposal submission. This threshold amount is determined by
 // the deposit parameters. Returns nil on success, error otherwise.
-func (keeper Keeper) validateInitialDeposit(ctx sdk.Context, initialDeposit sdk1.Coins) error {
+func (keeper Keeper) validateInitialDeposit(ctx sdk.Context, initialDeposit sdk.Coins) error {
 	if !initialDeposit.IsValid() || initialDeposit.IsAnyNegative() {
 		return sdkerrors.Wrapf(errors.ErrInvalidCoins, initialDeposit.String())
 	}

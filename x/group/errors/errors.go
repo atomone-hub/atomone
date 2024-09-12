@@ -8,12 +8,12 @@ import (
 const groupCodespace = "group"
 
 var (
-	ErrEmpty        = errors.Register(groupCodespace, 2, "value is empty")
-	ErrDuplicate    = errors.Register(groupCodespace, 3, "duplicate value")
-	ErrMaxLimit     = errors.Register(groupCodespace, 4, "limit exceeded")
-	ErrType         = errors.Register(groupCodespace, 5, "invalid type")
-	ErrInvalid      = errors.Register(groupCodespace, 6, "invalid value")
-	ErrUnauthorized = errors.Register(groupCodespace, 7, "unauthorized")
-	ErrModified     = errors.Register(groupCodespace, 8, "modified")
-	ErrExpired      = errors.Register(groupCodespace, 9, "expired")
+	ErrEmpty        = errors.Register(groupCodespace, 2, "value is empty")  //nolint:staticcheck // SA1019
+	ErrDuplicate    = errors.Register(groupCodespace, 3, "duplicate value") //nolint:staticcheck // SA1019
+	ErrMaxLimit     = errors.Register(groupCodespace, 4, "limit exceeded")  //nolint:staticcheck // SA1019
+	ErrType         = errors.Register(groupCodespace, 5, "invalid type")    //nolint:staticcheck // SA1019
+	ErrInvalid      = errors.Register(groupCodespace, 6, "invalid value")   //nolint:staticcheck // SA1019
+	ErrUnauthorized = errors.Register(groupCodespace, 7, "unauthorized")    //nolint:staticcheck // SA1019
+	ErrModified     = errors.Register(groupCodespace, 8, "modified")        //nolint:staticcheck // SA1019
+	ErrExpired      = errors.Register(groupCodespace, 9, "expired")         //nolint:staticcheck // SA1019
 )

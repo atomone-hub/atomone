@@ -6,6 +6,10 @@ package tmservice
 import (
 	context "context"
 	fmt "fmt"
+	io "io"
+	math "math"
+	math_bits "math/bits"
+
 	types "github.com/atomone-hub/atomone/codec/types"
 	query "github.com/atomone-hub/atomone/types/query"
 	_ "github.com/atomone-hub/atomone/types/tx/amino"
@@ -19,15 +23,14 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	io "io"
-	math "math"
-	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
+var (
+	_ = proto.Marshal
+	_ = fmt.Errorf
+	_ = math.Inf
+)
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -49,9 +52,11 @@ func (*GetValidatorSetByHeightRequest) ProtoMessage()    {}
 func (*GetValidatorSetByHeightRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_19a9ef2b687d487f, []int{0}
 }
+
 func (m *GetValidatorSetByHeightRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *GetValidatorSetByHeightRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_GetValidatorSetByHeightRequest.Marshal(b, m, deterministic)
@@ -64,12 +69,15 @@ func (m *GetValidatorSetByHeightRequest) XXX_Marshal(b []byte, deterministic boo
 		return b[:n], nil
 	}
 }
+
 func (m *GetValidatorSetByHeightRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GetValidatorSetByHeightRequest.Merge(m, src)
 }
+
 func (m *GetValidatorSetByHeightRequest) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *GetValidatorSetByHeightRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_GetValidatorSetByHeightRequest.DiscardUnknown(m)
 }
@@ -105,9 +113,11 @@ func (*GetValidatorSetByHeightResponse) ProtoMessage()    {}
 func (*GetValidatorSetByHeightResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_19a9ef2b687d487f, []int{1}
 }
+
 func (m *GetValidatorSetByHeightResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *GetValidatorSetByHeightResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_GetValidatorSetByHeightResponse.Marshal(b, m, deterministic)
@@ -120,12 +130,15 @@ func (m *GetValidatorSetByHeightResponse) XXX_Marshal(b []byte, deterministic bo
 		return b[:n], nil
 	}
 }
+
 func (m *GetValidatorSetByHeightResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GetValidatorSetByHeightResponse.Merge(m, src)
 }
+
 func (m *GetValidatorSetByHeightResponse) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *GetValidatorSetByHeightResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_GetValidatorSetByHeightResponse.DiscardUnknown(m)
 }
@@ -166,9 +179,11 @@ func (*GetLatestValidatorSetRequest) ProtoMessage()    {}
 func (*GetLatestValidatorSetRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_19a9ef2b687d487f, []int{2}
 }
+
 func (m *GetLatestValidatorSetRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *GetLatestValidatorSetRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_GetLatestValidatorSetRequest.Marshal(b, m, deterministic)
@@ -181,12 +196,15 @@ func (m *GetLatestValidatorSetRequest) XXX_Marshal(b []byte, deterministic bool)
 		return b[:n], nil
 	}
 }
+
 func (m *GetLatestValidatorSetRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GetLatestValidatorSetRequest.Merge(m, src)
 }
+
 func (m *GetLatestValidatorSetRequest) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *GetLatestValidatorSetRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_GetLatestValidatorSetRequest.DiscardUnknown(m)
 }
@@ -215,9 +233,11 @@ func (*GetLatestValidatorSetResponse) ProtoMessage()    {}
 func (*GetLatestValidatorSetResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_19a9ef2b687d487f, []int{3}
 }
+
 func (m *GetLatestValidatorSetResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *GetLatestValidatorSetResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_GetLatestValidatorSetResponse.Marshal(b, m, deterministic)
@@ -230,12 +250,15 @@ func (m *GetLatestValidatorSetResponse) XXX_Marshal(b []byte, deterministic bool
 		return b[:n], nil
 	}
 }
+
 func (m *GetLatestValidatorSetResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GetLatestValidatorSetResponse.Merge(m, src)
 }
+
 func (m *GetLatestValidatorSetResponse) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *GetLatestValidatorSetResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_GetLatestValidatorSetResponse.DiscardUnknown(m)
 }
@@ -277,9 +300,11 @@ func (*Validator) ProtoMessage()    {}
 func (*Validator) Descriptor() ([]byte, []int) {
 	return fileDescriptor_19a9ef2b687d487f, []int{4}
 }
+
 func (m *Validator) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *Validator) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_Validator.Marshal(b, m, deterministic)
@@ -292,12 +317,15 @@ func (m *Validator) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
+
 func (m *Validator) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Validator.Merge(m, src)
 }
+
 func (m *Validator) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *Validator) XXX_DiscardUnknown() {
 	xxx_messageInfo_Validator.DiscardUnknown(m)
 }
@@ -344,9 +372,11 @@ func (*GetBlockByHeightRequest) ProtoMessage()    {}
 func (*GetBlockByHeightRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_19a9ef2b687d487f, []int{5}
 }
+
 func (m *GetBlockByHeightRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *GetBlockByHeightRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_GetBlockByHeightRequest.Marshal(b, m, deterministic)
@@ -359,12 +389,15 @@ func (m *GetBlockByHeightRequest) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return b[:n], nil
 	}
 }
+
 func (m *GetBlockByHeightRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GetBlockByHeightRequest.Merge(m, src)
 }
+
 func (m *GetBlockByHeightRequest) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *GetBlockByHeightRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_GetBlockByHeightRequest.DiscardUnknown(m)
 }
@@ -394,9 +427,11 @@ func (*GetBlockByHeightResponse) ProtoMessage()    {}
 func (*GetBlockByHeightResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_19a9ef2b687d487f, []int{6}
 }
+
 func (m *GetBlockByHeightResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *GetBlockByHeightResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_GetBlockByHeightResponse.Marshal(b, m, deterministic)
@@ -409,12 +444,15 @@ func (m *GetBlockByHeightResponse) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
+
 func (m *GetBlockByHeightResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GetBlockByHeightResponse.Merge(m, src)
 }
+
 func (m *GetBlockByHeightResponse) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *GetBlockByHeightResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_GetBlockByHeightResponse.DiscardUnknown(m)
 }
@@ -444,8 +482,7 @@ func (m *GetBlockByHeightResponse) GetSdkBlock() *Block {
 
 // GetLatestBlockRequest is the request type for the Query/GetLatestBlock RPC
 // method.
-type GetLatestBlockRequest struct {
-}
+type GetLatestBlockRequest struct{}
 
 func (m *GetLatestBlockRequest) Reset()         { *m = GetLatestBlockRequest{} }
 func (m *GetLatestBlockRequest) String() string { return proto.CompactTextString(m) }
@@ -453,9 +490,11 @@ func (*GetLatestBlockRequest) ProtoMessage()    {}
 func (*GetLatestBlockRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_19a9ef2b687d487f, []int{7}
 }
+
 func (m *GetLatestBlockRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *GetLatestBlockRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_GetLatestBlockRequest.Marshal(b, m, deterministic)
@@ -468,12 +507,15 @@ func (m *GetLatestBlockRequest) XXX_Marshal(b []byte, deterministic bool) ([]byt
 		return b[:n], nil
 	}
 }
+
 func (m *GetLatestBlockRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GetLatestBlockRequest.Merge(m, src)
 }
+
 func (m *GetLatestBlockRequest) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *GetLatestBlockRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_GetLatestBlockRequest.DiscardUnknown(m)
 }
@@ -496,9 +538,11 @@ func (*GetLatestBlockResponse) ProtoMessage()    {}
 func (*GetLatestBlockResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_19a9ef2b687d487f, []int{8}
 }
+
 func (m *GetLatestBlockResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *GetLatestBlockResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_GetLatestBlockResponse.Marshal(b, m, deterministic)
@@ -511,12 +555,15 @@ func (m *GetLatestBlockResponse) XXX_Marshal(b []byte, deterministic bool) ([]by
 		return b[:n], nil
 	}
 }
+
 func (m *GetLatestBlockResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GetLatestBlockResponse.Merge(m, src)
 }
+
 func (m *GetLatestBlockResponse) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *GetLatestBlockResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_GetLatestBlockResponse.DiscardUnknown(m)
 }
@@ -545,8 +592,7 @@ func (m *GetLatestBlockResponse) GetSdkBlock() *Block {
 }
 
 // GetSyncingRequest is the request type for the Query/GetSyncing RPC method.
-type GetSyncingRequest struct {
-}
+type GetSyncingRequest struct{}
 
 func (m *GetSyncingRequest) Reset()         { *m = GetSyncingRequest{} }
 func (m *GetSyncingRequest) String() string { return proto.CompactTextString(m) }
@@ -554,9 +600,11 @@ func (*GetSyncingRequest) ProtoMessage()    {}
 func (*GetSyncingRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_19a9ef2b687d487f, []int{9}
 }
+
 func (m *GetSyncingRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *GetSyncingRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_GetSyncingRequest.Marshal(b, m, deterministic)
@@ -569,12 +617,15 @@ func (m *GetSyncingRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, e
 		return b[:n], nil
 	}
 }
+
 func (m *GetSyncingRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GetSyncingRequest.Merge(m, src)
 }
+
 func (m *GetSyncingRequest) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *GetSyncingRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_GetSyncingRequest.DiscardUnknown(m)
 }
@@ -592,9 +643,11 @@ func (*GetSyncingResponse) ProtoMessage()    {}
 func (*GetSyncingResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_19a9ef2b687d487f, []int{10}
 }
+
 func (m *GetSyncingResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *GetSyncingResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_GetSyncingResponse.Marshal(b, m, deterministic)
@@ -607,12 +660,15 @@ func (m *GetSyncingResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, 
 		return b[:n], nil
 	}
 }
+
 func (m *GetSyncingResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GetSyncingResponse.Merge(m, src)
 }
+
 func (m *GetSyncingResponse) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *GetSyncingResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_GetSyncingResponse.DiscardUnknown(m)
 }
@@ -627,8 +683,7 @@ func (m *GetSyncingResponse) GetSyncing() bool {
 }
 
 // GetNodeInfoRequest is the request type for the Query/GetNodeInfo RPC method.
-type GetNodeInfoRequest struct {
-}
+type GetNodeInfoRequest struct{}
 
 func (m *GetNodeInfoRequest) Reset()         { *m = GetNodeInfoRequest{} }
 func (m *GetNodeInfoRequest) String() string { return proto.CompactTextString(m) }
@@ -636,9 +691,11 @@ func (*GetNodeInfoRequest) ProtoMessage()    {}
 func (*GetNodeInfoRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_19a9ef2b687d487f, []int{11}
 }
+
 func (m *GetNodeInfoRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *GetNodeInfoRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_GetNodeInfoRequest.Marshal(b, m, deterministic)
@@ -651,12 +708,15 @@ func (m *GetNodeInfoRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, 
 		return b[:n], nil
 	}
 }
+
 func (m *GetNodeInfoRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GetNodeInfoRequest.Merge(m, src)
 }
+
 func (m *GetNodeInfoRequest) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *GetNodeInfoRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_GetNodeInfoRequest.DiscardUnknown(m)
 }
@@ -676,9 +736,11 @@ func (*GetNodeInfoResponse) ProtoMessage()    {}
 func (*GetNodeInfoResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_19a9ef2b687d487f, []int{12}
 }
+
 func (m *GetNodeInfoResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *GetNodeInfoResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_GetNodeInfoResponse.Marshal(b, m, deterministic)
@@ -691,12 +753,15 @@ func (m *GetNodeInfoResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte,
 		return b[:n], nil
 	}
 }
+
 func (m *GetNodeInfoResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GetNodeInfoResponse.Merge(m, src)
 }
+
 func (m *GetNodeInfoResponse) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *GetNodeInfoResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_GetNodeInfoResponse.DiscardUnknown(m)
 }
@@ -736,9 +801,11 @@ func (*VersionInfo) ProtoMessage()    {}
 func (*VersionInfo) Descriptor() ([]byte, []int) {
 	return fileDescriptor_19a9ef2b687d487f, []int{13}
 }
+
 func (m *VersionInfo) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *VersionInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_VersionInfo.Marshal(b, m, deterministic)
@@ -751,12 +818,15 @@ func (m *VersionInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return b[:n], nil
 	}
 }
+
 func (m *VersionInfo) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_VersionInfo.Merge(m, src)
 }
+
 func (m *VersionInfo) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *VersionInfo) XXX_DiscardUnknown() {
 	xxx_messageInfo_VersionInfo.DiscardUnknown(m)
 }
@@ -835,9 +905,11 @@ func (*Module) ProtoMessage()    {}
 func (*Module) Descriptor() ([]byte, []int) {
 	return fileDescriptor_19a9ef2b687d487f, []int{14}
 }
+
 func (m *Module) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *Module) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_Module.Marshal(b, m, deterministic)
@@ -850,12 +922,15 @@ func (m *Module) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
+
 func (m *Module) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Module.Merge(m, src)
 }
+
 func (m *Module) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *Module) XXX_DiscardUnknown() {
 	xxx_messageInfo_Module.DiscardUnknown(m)
 }
@@ -897,9 +972,11 @@ func (*ABCIQueryRequest) ProtoMessage()    {}
 func (*ABCIQueryRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_19a9ef2b687d487f, []int{15}
 }
+
 func (m *ABCIQueryRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *ABCIQueryRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ABCIQueryRequest.Marshal(b, m, deterministic)
@@ -912,12 +989,15 @@ func (m *ABCIQueryRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, er
 		return b[:n], nil
 	}
 }
+
 func (m *ABCIQueryRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ABCIQueryRequest.Merge(m, src)
 }
+
 func (m *ABCIQueryRequest) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *ABCIQueryRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_ABCIQueryRequest.DiscardUnknown(m)
 }
@@ -975,9 +1055,11 @@ func (*ABCIQueryResponse) ProtoMessage()    {}
 func (*ABCIQueryResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_19a9ef2b687d487f, []int{16}
 }
+
 func (m *ABCIQueryResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *ABCIQueryResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ABCIQueryResponse.Marshal(b, m, deterministic)
@@ -990,12 +1072,15 @@ func (m *ABCIQueryResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, e
 		return b[:n], nil
 	}
 }
+
 func (m *ABCIQueryResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ABCIQueryResponse.Merge(m, src)
 }
+
 func (m *ABCIQueryResponse) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *ABCIQueryResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_ABCIQueryResponse.DiscardUnknown(m)
 }
@@ -1083,9 +1168,11 @@ func (*ProofOp) ProtoMessage()    {}
 func (*ProofOp) Descriptor() ([]byte, []int) {
 	return fileDescriptor_19a9ef2b687d487f, []int{17}
 }
+
 func (m *ProofOp) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *ProofOp) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ProofOp.Marshal(b, m, deterministic)
@@ -1098,12 +1185,15 @@ func (m *ProofOp) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
+
 func (m *ProofOp) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ProofOp.Merge(m, src)
 }
+
 func (m *ProofOp) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *ProofOp) XXX_DiscardUnknown() {
 	xxx_messageInfo_ProofOp.DiscardUnknown(m)
 }
@@ -1145,9 +1235,11 @@ func (*ProofOps) ProtoMessage()    {}
 func (*ProofOps) Descriptor() ([]byte, []int) {
 	return fileDescriptor_19a9ef2b687d487f, []int{18}
 }
+
 func (m *ProofOps) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *ProofOps) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ProofOps.Marshal(b, m, deterministic)
@@ -1160,12 +1252,15 @@ func (m *ProofOps) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
+
 func (m *ProofOps) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ProofOps.Merge(m, src)
 }
+
 func (m *ProofOps) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *ProofOps) XXX_DiscardUnknown() {
 	xxx_messageInfo_ProofOps.DiscardUnknown(m)
 }
@@ -1298,8 +1393,10 @@ var fileDescriptor_19a9ef2b687d487f = []byte{
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
-var _ context.Context
-var _ grpc.ClientConn
+var (
+	_ context.Context
+	_ grpc.ClientConn
+)
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
@@ -1423,27 +1520,32 @@ type ServiceServer interface {
 }
 
 // UnimplementedServiceServer can be embedded to have forward compatible implementations.
-type UnimplementedServiceServer struct {
-}
+type UnimplementedServiceServer struct{}
 
 func (*UnimplementedServiceServer) GetNodeInfo(ctx context.Context, req *GetNodeInfoRequest) (*GetNodeInfoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetNodeInfo not implemented")
 }
+
 func (*UnimplementedServiceServer) GetSyncing(ctx context.Context, req *GetSyncingRequest) (*GetSyncingResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetSyncing not implemented")
 }
+
 func (*UnimplementedServiceServer) GetLatestBlock(ctx context.Context, req *GetLatestBlockRequest) (*GetLatestBlockResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetLatestBlock not implemented")
 }
+
 func (*UnimplementedServiceServer) GetBlockByHeight(ctx context.Context, req *GetBlockByHeightRequest) (*GetBlockByHeightResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetBlockByHeight not implemented")
 }
+
 func (*UnimplementedServiceServer) GetLatestValidatorSet(ctx context.Context, req *GetLatestValidatorSetRequest) (*GetLatestValidatorSetResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetLatestValidatorSet not implemented")
 }
+
 func (*UnimplementedServiceServer) GetValidatorSetByHeight(ctx context.Context, req *GetValidatorSetByHeightRequest) (*GetValidatorSetByHeightResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetValidatorSetByHeight not implemented")
 }
+
 func (*UnimplementedServiceServer) ABCIQuery(ctx context.Context, req *ABCIQueryRequest) (*ABCIQueryResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ABCIQuery not implemented")
 }
@@ -2504,6 +2606,7 @@ func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+
 func (m *GetValidatorSetByHeightRequest) Size() (n int) {
 	if m == nil {
 		return 0
@@ -2878,9 +2981,11 @@ func (m *ProofOps) Size() (n int) {
 func sovQuery(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
+
 func sozQuery(x uint64) (n int) {
 	return sovQuery(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
+
 func (m *GetValidatorSetByHeightRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2986,6 +3091,7 @@ func (m *GetValidatorSetByHeightRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *GetValidatorSetByHeightResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3125,6 +3231,7 @@ func (m *GetValidatorSetByHeightResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *GetLatestValidatorSetRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3211,6 +3318,7 @@ func (m *GetLatestValidatorSetRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *GetLatestValidatorSetResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3350,6 +3458,7 @@ func (m *GetLatestValidatorSetResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *Validator) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3506,6 +3615,7 @@ func (m *Validator) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *GetBlockByHeightRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3575,6 +3685,7 @@ func (m *GetBlockByHeightRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *GetBlockByHeightResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3733,6 +3844,7 @@ func (m *GetBlockByHeightResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *GetLatestBlockRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3783,6 +3895,7 @@ func (m *GetLatestBlockRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *GetLatestBlockResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3941,6 +4054,7 @@ func (m *GetLatestBlockResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *GetSyncingRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3991,6 +4105,7 @@ func (m *GetSyncingRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *GetSyncingResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -4061,6 +4176,7 @@ func (m *GetSyncingResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *GetNodeInfoRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -4111,6 +4227,7 @@ func (m *GetNodeInfoRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *GetNodeInfoResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -4233,6 +4350,7 @@ func (m *GetNodeInfoResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *VersionInfo) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -4541,6 +4659,7 @@ func (m *VersionInfo) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *Module) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -4687,6 +4806,7 @@ func (m *Module) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *ABCIQueryRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -4842,6 +4962,7 @@ func (m *ABCIQueryRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *ABCIQueryResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -5149,6 +5270,7 @@ func (m *ABCIQueryResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *ProofOp) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -5299,6 +5421,7 @@ func (m *ProofOp) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *ProofOps) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -5383,6 +5506,7 @@ func (m *ProofOps) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func skipQuery(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

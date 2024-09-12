@@ -7,8 +7,8 @@ import (
 
 // x/evidence module sentinel errors
 var (
-	ErrNoEvidenceHandlerExists = sdkerrors.Register(ModuleName, 2, "unregistered handler for evidence type")
-	ErrInvalidEvidence         = sdkerrors.Register(ModuleName, 3, "invalid evidence")
-	ErrNoEvidenceExists        = sdkerrors.Register(ModuleName, 4, "evidence does not exist")
-	ErrEvidenceExists          = sdkerrors.Register(ModuleName, 5, "evidence already exists")
+	ErrNoEvidenceHandlerExists = sdkerrors.Register(ModuleName, 2, "unregistered handler for evidence type") //nolint:staticcheck // SA1019
+	ErrInvalidEvidence         = sdkerrors.Register(ModuleName, 3, "invalid evidence")                       //nolint:staticcheck // SA1019
+	ErrNoEvidenceExists        = sdkerrors.Register(ModuleName, 4, "evidence does not exist")                //nolint:staticcheck // SA1019
+	ErrEvidenceExists          = sdkerrors.Register(ModuleName, 5, "evidence already exists")                //nolint:staticcheck // SA1019
 )

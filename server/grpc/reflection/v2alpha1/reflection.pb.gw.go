@@ -25,13 +25,15 @@ import (
 )
 
 // Suppress "imported and not used" errors
-var _ codes.Code
-var _ io.Reader
-var _ status.Status
-var _ = runtime.String
-var _ = utilities.NewDoubleArray
-var _ = descriptor.ForMessage
-var _ = metadata.Join
+var (
+	_ codes.Code
+	_ io.Reader
+	_ status.Status
+	_ = runtime.String
+	_ = utilities.NewDoubleArray
+	_ = descriptor.ForMessage
+	_ = metadata.Join
+)
 
 func request_ReflectionService_GetAuthnDescriptor_0(ctx context.Context, marshaler runtime.Marshaler, client ReflectionServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetAuthnDescriptorRequest
@@ -39,7 +41,6 @@ func request_ReflectionService_GetAuthnDescriptor_0(ctx context.Context, marshal
 
 	msg, err := client.GetAuthnDescriptor(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_ReflectionService_GetAuthnDescriptor_0(ctx context.Context, marshaler runtime.Marshaler, server ReflectionServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -48,7 +49,6 @@ func local_request_ReflectionService_GetAuthnDescriptor_0(ctx context.Context, m
 
 	msg, err := server.GetAuthnDescriptor(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_ReflectionService_GetChainDescriptor_0(ctx context.Context, marshaler runtime.Marshaler, client ReflectionServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -57,7 +57,6 @@ func request_ReflectionService_GetChainDescriptor_0(ctx context.Context, marshal
 
 	msg, err := client.GetChainDescriptor(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_ReflectionService_GetChainDescriptor_0(ctx context.Context, marshaler runtime.Marshaler, server ReflectionServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -66,7 +65,6 @@ func local_request_ReflectionService_GetChainDescriptor_0(ctx context.Context, m
 
 	msg, err := server.GetChainDescriptor(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_ReflectionService_GetCodecDescriptor_0(ctx context.Context, marshaler runtime.Marshaler, client ReflectionServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -75,7 +73,6 @@ func request_ReflectionService_GetCodecDescriptor_0(ctx context.Context, marshal
 
 	msg, err := client.GetCodecDescriptor(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_ReflectionService_GetCodecDescriptor_0(ctx context.Context, marshaler runtime.Marshaler, server ReflectionServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -84,7 +81,6 @@ func local_request_ReflectionService_GetCodecDescriptor_0(ctx context.Context, m
 
 	msg, err := server.GetCodecDescriptor(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_ReflectionService_GetConfigurationDescriptor_0(ctx context.Context, marshaler runtime.Marshaler, client ReflectionServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -93,7 +89,6 @@ func request_ReflectionService_GetConfigurationDescriptor_0(ctx context.Context,
 
 	msg, err := client.GetConfigurationDescriptor(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_ReflectionService_GetConfigurationDescriptor_0(ctx context.Context, marshaler runtime.Marshaler, server ReflectionServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -102,7 +97,6 @@ func local_request_ReflectionService_GetConfigurationDescriptor_0(ctx context.Co
 
 	msg, err := server.GetConfigurationDescriptor(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_ReflectionService_GetQueryServicesDescriptor_0(ctx context.Context, marshaler runtime.Marshaler, client ReflectionServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -111,7 +105,6 @@ func request_ReflectionService_GetQueryServicesDescriptor_0(ctx context.Context,
 
 	msg, err := client.GetQueryServicesDescriptor(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_ReflectionService_GetQueryServicesDescriptor_0(ctx context.Context, marshaler runtime.Marshaler, server ReflectionServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -120,7 +113,6 @@ func local_request_ReflectionService_GetQueryServicesDescriptor_0(ctx context.Co
 
 	msg, err := server.GetQueryServicesDescriptor(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_ReflectionService_GetTxDescriptor_0(ctx context.Context, marshaler runtime.Marshaler, client ReflectionServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -129,7 +121,6 @@ func request_ReflectionService_GetTxDescriptor_0(ctx context.Context, marshaler 
 
 	msg, err := client.GetTxDescriptor(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_ReflectionService_GetTxDescriptor_0(ctx context.Context, marshaler runtime.Marshaler, server ReflectionServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -138,7 +129,6 @@ func local_request_ReflectionService_GetTxDescriptor_0(ctx context.Context, mars
 
 	msg, err := server.GetTxDescriptor(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 // RegisterReflectionServiceHandlerServer registers the http handlers for service ReflectionService to "mux".
@@ -146,7 +136,6 @@ func local_request_ReflectionService_GetTxDescriptor_0(ctx context.Context, mars
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterReflectionServiceHandlerFromEndpoint instead.
 func RegisterReflectionServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ReflectionServiceServer) error {
-
 	mux.Handle("GET", pattern_ReflectionService_GetAuthnDescriptor_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -167,7 +156,6 @@ func RegisterReflectionServiceHandlerServer(ctx context.Context, mux *runtime.Se
 		}
 
 		forward_ReflectionService_GetAuthnDescriptor_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("GET", pattern_ReflectionService_GetChainDescriptor_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -190,7 +178,6 @@ func RegisterReflectionServiceHandlerServer(ctx context.Context, mux *runtime.Se
 		}
 
 		forward_ReflectionService_GetChainDescriptor_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("GET", pattern_ReflectionService_GetCodecDescriptor_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -213,7 +200,6 @@ func RegisterReflectionServiceHandlerServer(ctx context.Context, mux *runtime.Se
 		}
 
 		forward_ReflectionService_GetCodecDescriptor_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("GET", pattern_ReflectionService_GetConfigurationDescriptor_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -236,7 +222,6 @@ func RegisterReflectionServiceHandlerServer(ctx context.Context, mux *runtime.Se
 		}
 
 		forward_ReflectionService_GetConfigurationDescriptor_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("GET", pattern_ReflectionService_GetQueryServicesDescriptor_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -259,7 +244,6 @@ func RegisterReflectionServiceHandlerServer(ctx context.Context, mux *runtime.Se
 		}
 
 		forward_ReflectionService_GetQueryServicesDescriptor_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("GET", pattern_ReflectionService_GetTxDescriptor_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -282,7 +266,6 @@ func RegisterReflectionServiceHandlerServer(ctx context.Context, mux *runtime.Se
 		}
 
 		forward_ReflectionService_GetTxDescriptor_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	return nil
@@ -325,7 +308,6 @@ func RegisterReflectionServiceHandler(ctx context.Context, mux *runtime.ServeMux
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
 // "ReflectionServiceClient" to call the correct interceptors.
 func RegisterReflectionServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client ReflectionServiceClient) error {
-
 	mux.Handle("GET", pattern_ReflectionService_GetAuthnDescriptor_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -343,7 +325,6 @@ func RegisterReflectionServiceHandlerClient(ctx context.Context, mux *runtime.Se
 		}
 
 		forward_ReflectionService_GetAuthnDescriptor_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("GET", pattern_ReflectionService_GetChainDescriptor_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -363,7 +344,6 @@ func RegisterReflectionServiceHandlerClient(ctx context.Context, mux *runtime.Se
 		}
 
 		forward_ReflectionService_GetChainDescriptor_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("GET", pattern_ReflectionService_GetCodecDescriptor_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -383,7 +363,6 @@ func RegisterReflectionServiceHandlerClient(ctx context.Context, mux *runtime.Se
 		}
 
 		forward_ReflectionService_GetCodecDescriptor_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("GET", pattern_ReflectionService_GetConfigurationDescriptor_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -403,7 +382,6 @@ func RegisterReflectionServiceHandlerClient(ctx context.Context, mux *runtime.Se
 		}
 
 		forward_ReflectionService_GetConfigurationDescriptor_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("GET", pattern_ReflectionService_GetQueryServicesDescriptor_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -423,7 +401,6 @@ func RegisterReflectionServiceHandlerClient(ctx context.Context, mux *runtime.Se
 		}
 
 		forward_ReflectionService_GetQueryServicesDescriptor_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("GET", pattern_ReflectionService_GetTxDescriptor_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -443,7 +420,6 @@ func RegisterReflectionServiceHandlerClient(ctx context.Context, mux *runtime.Se
 		}
 
 		forward_ReflectionService_GetTxDescriptor_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	return nil

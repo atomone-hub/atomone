@@ -5,7 +5,7 @@
 //go:build gofuzz || !cgo
 // +build gofuzz !cgo
 
-//nolint // this nolint lets us use this file in its original and unmodified form.
+//nolint // this nolint lets us use this file in its original and unmodified form.t
 package secp256k1
 
 import "math/big"

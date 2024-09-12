@@ -5,20 +5,23 @@ package types
 
 import (
 	fmt "fmt"
+	io "io"
+	math "math"
+	math_bits "math/bits"
+
 	types "github.com/atomone-hub/atomone/codec/types"
 	_ "github.com/atomone-hub/atomone/types/tx/amino"
 	_ "github.com/cosmos/cosmos-proto"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	proto "github.com/cosmos/gogoproto/proto"
-	io "io"
-	math "math"
-	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
+var (
+	_ = proto.Marshal
+	_ = fmt.Errorf
+	_ = math.Inf
+)
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -42,9 +45,11 @@ func (*BaseAccount) ProtoMessage()    {}
 func (*BaseAccount) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d8f1bec27314bf28, []int{0}
 }
+
 func (m *BaseAccount) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *BaseAccount) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_BaseAccount.Marshal(b, m, deterministic)
@@ -57,12 +62,15 @@ func (m *BaseAccount) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return b[:n], nil
 	}
 }
+
 func (m *BaseAccount) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_BaseAccount.Merge(m, src)
 }
+
 func (m *BaseAccount) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *BaseAccount) XXX_DiscardUnknown() {
 	xxx_messageInfo_BaseAccount.DiscardUnknown(m)
 }
@@ -82,9 +90,11 @@ func (*ModuleAccount) ProtoMessage()    {}
 func (*ModuleAccount) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d8f1bec27314bf28, []int{1}
 }
+
 func (m *ModuleAccount) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *ModuleAccount) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ModuleAccount.Marshal(b, m, deterministic)
@@ -97,12 +107,15 @@ func (m *ModuleAccount) XXX_Marshal(b []byte, deterministic bool) ([]byte, error
 		return b[:n], nil
 	}
 }
+
 func (m *ModuleAccount) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ModuleAccount.Merge(m, src)
 }
+
 func (m *ModuleAccount) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *ModuleAccount) XXX_DiscardUnknown() {
 	xxx_messageInfo_ModuleAccount.DiscardUnknown(m)
 }
@@ -129,9 +142,11 @@ func (*ModuleCredential) ProtoMessage()    {}
 func (*ModuleCredential) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d8f1bec27314bf28, []int{2}
 }
+
 func (m *ModuleCredential) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *ModuleCredential) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ModuleCredential.Marshal(b, m, deterministic)
@@ -144,12 +159,15 @@ func (m *ModuleCredential) XXX_Marshal(b []byte, deterministic bool) ([]byte, er
 		return b[:n], nil
 	}
 }
+
 func (m *ModuleCredential) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ModuleCredential.Merge(m, src)
 }
+
 func (m *ModuleCredential) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *ModuleCredential) XXX_DiscardUnknown() {
 	xxx_messageInfo_ModuleCredential.DiscardUnknown(m)
 }
@@ -185,9 +203,11 @@ func (*Params) ProtoMessage()    {}
 func (*Params) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d8f1bec27314bf28, []int{3}
 }
+
 func (m *Params) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *Params) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_Params.Marshal(b, m, deterministic)
@@ -200,12 +220,15 @@ func (m *Params) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
+
 func (m *Params) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Params.Merge(m, src)
 }
+
 func (m *Params) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *Params) XXX_DiscardUnknown() {
 	xxx_messageInfo_Params.DiscardUnknown(m)
 }
@@ -341,6 +364,7 @@ func (this *Params) Equal(that interface{}) bool {
 	}
 	return true
 }
+
 func (m *BaseAccount) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -542,6 +566,7 @@ func encodeVarintAuth(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+
 func (m *BaseAccount) Size() (n int) {
 	if m == nil {
 		return 0
@@ -634,9 +659,11 @@ func (m *Params) Size() (n int) {
 func sovAuth(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
+
 func sozAuth(x uint64) (n int) {
 	return sovAuth(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
+
 func (m *BaseAccount) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -793,6 +820,7 @@ func (m *BaseAccount) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *ModuleAccount) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -943,6 +971,7 @@ func (m *ModuleAccount) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *ModuleCredential) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1057,6 +1086,7 @@ func (m *ModuleCredential) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *Params) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1202,6 +1232,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func skipAuth(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

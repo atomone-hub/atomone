@@ -4,13 +4,12 @@ import (
 	"fmt"
 
 	sdk "github.com/atomone-hub/atomone/types"
-	sdk1 "github.com/atomone-hub/atomone/types"
 )
 
 // NewDeposit creates a new Deposit instance
 //
 //nolint:interfacer
-func NewDeposit(proposalID uint64, depositor sdk.AccAddress, amount sdk1.Coins) Deposit {
+func NewDeposit(proposalID uint64, depositor sdk.AccAddress, amount sdk.Coins) Deposit {
 	return Deposit{proposalID, depositor.String(), amount}
 }
 

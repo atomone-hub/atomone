@@ -5,6 +5,11 @@ package feegrant
 
 import (
 	fmt "fmt"
+	io "io"
+	math "math"
+	math_bits "math/bits"
+	time "time"
+
 	types1 "github.com/atomone-hub/atomone/codec/types"
 	github_com_atomone_hub_atomone_types "github.com/atomone-hub/atomone/types"
 	types "github.com/atomone-hub/atomone/types"
@@ -15,17 +20,15 @@ import (
 	github_com_cosmos_gogoproto_types "github.com/cosmos/gogoproto/types"
 	_ "google.golang.org/protobuf/types/known/durationpb"
 	_ "google.golang.org/protobuf/types/known/timestamppb"
-	io "io"
-	math "math"
-	math_bits "math/bits"
-	time "time"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
-var _ = time.Kitchen
+var (
+	_ = proto.Marshal
+	_ = fmt.Errorf
+	_ = math.Inf
+	_ = time.Kitchen
+)
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -50,9 +53,11 @@ func (*BasicAllowance) ProtoMessage()    {}
 func (*BasicAllowance) Descriptor() ([]byte, []int) {
 	return fileDescriptor_49bdbbd910a86230, []int{0}
 }
+
 func (m *BasicAllowance) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *BasicAllowance) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_BasicAllowance.Marshal(b, m, deterministic)
@@ -65,12 +70,15 @@ func (m *BasicAllowance) XXX_Marshal(b []byte, deterministic bool) ([]byte, erro
 		return b[:n], nil
 	}
 }
+
 func (m *BasicAllowance) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_BasicAllowance.Merge(m, src)
 }
+
 func (m *BasicAllowance) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *BasicAllowance) XXX_DiscardUnknown() {
 	xxx_messageInfo_BasicAllowance.DiscardUnknown(m)
 }
@@ -117,9 +125,11 @@ func (*PeriodicAllowance) ProtoMessage()    {}
 func (*PeriodicAllowance) Descriptor() ([]byte, []int) {
 	return fileDescriptor_49bdbbd910a86230, []int{1}
 }
+
 func (m *PeriodicAllowance) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *PeriodicAllowance) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_PeriodicAllowance.Marshal(b, m, deterministic)
@@ -132,12 +142,15 @@ func (m *PeriodicAllowance) XXX_Marshal(b []byte, deterministic bool) ([]byte, e
 		return b[:n], nil
 	}
 }
+
 func (m *PeriodicAllowance) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_PeriodicAllowance.Merge(m, src)
 }
+
 func (m *PeriodicAllowance) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *PeriodicAllowance) XXX_DiscardUnknown() {
 	xxx_messageInfo_PeriodicAllowance.DiscardUnknown(m)
 }
@@ -193,9 +206,11 @@ func (*AllowedMsgAllowance) ProtoMessage()    {}
 func (*AllowedMsgAllowance) Descriptor() ([]byte, []int) {
 	return fileDescriptor_49bdbbd910a86230, []int{2}
 }
+
 func (m *AllowedMsgAllowance) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *AllowedMsgAllowance) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_AllowedMsgAllowance.Marshal(b, m, deterministic)
@@ -208,12 +223,15 @@ func (m *AllowedMsgAllowance) XXX_Marshal(b []byte, deterministic bool) ([]byte,
 		return b[:n], nil
 	}
 }
+
 func (m *AllowedMsgAllowance) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_AllowedMsgAllowance.Merge(m, src)
 }
+
 func (m *AllowedMsgAllowance) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *AllowedMsgAllowance) XXX_DiscardUnknown() {
 	xxx_messageInfo_AllowedMsgAllowance.DiscardUnknown(m)
 }
@@ -237,9 +255,11 @@ func (*Grant) ProtoMessage()    {}
 func (*Grant) Descriptor() ([]byte, []int) {
 	return fileDescriptor_49bdbbd910a86230, []int{3}
 }
+
 func (m *Grant) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *Grant) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_Grant.Marshal(b, m, deterministic)
@@ -252,12 +272,15 @@ func (m *Grant) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
+
 func (m *Grant) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Grant.Merge(m, src)
 }
+
 func (m *Grant) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *Grant) XXX_DiscardUnknown() {
 	xxx_messageInfo_Grant.DiscardUnknown(m)
 }
@@ -568,6 +591,7 @@ func encodeVarintFeegrant(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+
 func (m *BasicAllowance) Size() (n int) {
 	if m == nil {
 		return 0
@@ -657,9 +681,11 @@ func (m *Grant) Size() (n int) {
 func sovFeegrant(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
+
 func sozFeegrant(x uint64) (n int) {
 	return sovFeegrant(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
+
 func (m *BasicAllowance) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -780,6 +806,7 @@ func (m *BasicAllowance) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *PeriodicAllowance) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -997,6 +1024,7 @@ func (m *PeriodicAllowance) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *AllowedMsgAllowance) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1115,6 +1143,7 @@ func (m *AllowedMsgAllowance) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *Grant) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1265,6 +1294,7 @@ func (m *Grant) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func skipFeegrant(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

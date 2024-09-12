@@ -100,7 +100,7 @@ func NewClient(cfg *Config) (*Client, error) {
 
 // Bootstrap is gonna connect the client to the endpoints
 func (c *Client) Bootstrap() error {
-	grpcConn, err := grpc.Dial(c.config.GRPCEndpoint, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	grpcConn, err := grpc.Dial(c.config.GRPCEndpoint, grpc.WithTransportCredentials(insecure.NewCredentials())) //nolint:staticcheck // SA1019
 	if err != nil {
 		return err
 	}
@@ -245,7 +245,7 @@ func (c *Client) coins(ctx context.Context) (sdk.Coins, error) {
 		// get next key
 		page := supply.GetPagination()
 		if page == nil {
-			return nil, crgerrs.WrapError(crgerrs.ErrCodec, fmt.Sprintf("error pagination"))
+			return nil, crgerrs.WrapError(crgerrs.ErrCodec, "error pagination") //nolint:staticcheck // SA1019
 		}
 		nextKey := page.GetNextKey()
 

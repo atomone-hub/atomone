@@ -69,7 +69,7 @@ func (a *AllowedMsgAllowance) SetAllowance(allowance FeeAllowanceI) error {
 // Accept method checks for the filtered messages has valid expiry
 func (a *AllowedMsgAllowance) Accept(ctx sdk.Context, fee sdk.Coins, msgs []sdk.Msg) (bool, error) {
 	if !a.allMsgTypesAllowed(ctx, msgs) {
-		return false, sdkerrors.Wrap(ErrMessageNotAllowed, "message does not exist in allowed messages")
+		return false, sdkerrors.Wrap(ErrMessageNotAllowed, "message does not exist in allowed messages") //nolint:staticcheck // SA1019
 	}
 
 	allowance, err := a.GetAllowance()

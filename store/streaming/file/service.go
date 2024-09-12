@@ -145,7 +145,7 @@ func (fss *StreamingService) ListenCommit(ctx context.Context, res abci.Response
 	return nil
 }
 
-func (fss *StreamingService) doListenCommit(ctx context.Context, res abci.ResponseCommit) (err error) {
+func (fss *StreamingService) doListenCommit(ctx context.Context, res abci.ResponseCommit) (err error) { //nolint:unparam
 	fss.blockMetadata.ResponseCommit = &res
 
 	// Write to target files, the file size is written at the beginning, which can

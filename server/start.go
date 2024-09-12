@@ -544,7 +544,7 @@ func startAPIserver(config serverconfig.Config, genDocProvider node.GenesisDocPr
 				maxRecvMsgSize = serverconfig.DefaultGRPCMaxRecvMsgSize
 			}
 
-			grpcClient, err := grpc.Dial(
+			grpcClient, err := grpc.Dial( //nolint:staticcheck // SA1019
 				config.GRPC.Address,
 				grpc.WithTransportCredentials(insecure.NewCredentials()),
 				grpc.WithDefaultCallOptions(
