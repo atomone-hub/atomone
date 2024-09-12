@@ -132,9 +132,9 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 		govv1.NewParams(
 			sdk.NewCoins(sdk.NewCoin(denom, amnt)), maxDepositPeriod,
 			votingPeriod,
-			quorum.String(), threshold.String(), govv1.DefaultVetoThreshold.String(),
+			quorum.String(), threshold.String(),
 			sdk.ZeroDec().String(),
-			false, false, true,
+			false, false,
 		),
 	)
 	govGenStateBz, err := cdc.MarshalJSON(govGenState)

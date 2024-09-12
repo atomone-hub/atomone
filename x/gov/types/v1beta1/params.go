@@ -17,8 +17,8 @@ const (
 var (
 	DefaultMinDepositTokens = sdk.NewInt(10000000)
 	DefaultQuorum           = sdk.NewDecWithPrec(334, 3)
-	DefaultThreshold        = sdk.NewDecWithPrec(5, 1)
-	DefaultVetoThreshold    = sdk.NewDecWithPrec(334, 3)
+	DefaultThreshold        = sdk.NewDecWithPrec(667, 3)
+	DefaultVetoThreshold    = sdk.ZeroDec()
 )
 
 // NewDepositParams creates a new DepositParams object

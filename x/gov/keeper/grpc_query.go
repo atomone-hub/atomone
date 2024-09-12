@@ -174,7 +174,7 @@ func (q Keeper) Params(c context.Context, req *v1.QueryParamsRequest) (*v1.Query
 		response.VotingParams = &votingParams
 
 	case v1.ParamTallying:
-		tallyParams := v1.NewTallyParams(params.Quorum, params.Threshold, params.VetoThreshold)
+		tallyParams := v1.NewTallyParams(params.Quorum, params.Threshold)
 		response.TallyParams = &tallyParams
 
 	default:
@@ -403,12 +403,8 @@ func (q legacyQueryServer) Params(c context.Context, req *v1beta1.QueryParamsReq
 		if err != nil {
 			return nil, err
 		}
-		vetoThreshold, err := sdk.NewDecFromStr(resp.TallyParams.VetoThreshold)
-		if err != nil {
-			return nil, err
-		}
 
-		response.TallyParams = v1beta1.NewTallyParams(quorum, threshold, vetoThreshold)
+		response.TallyParams = v1beta1.NewTallyParams(quorum, threshold, sdk.ZeroDec())
 	}
 
 	return response, nil

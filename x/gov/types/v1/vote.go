@@ -10,11 +10,10 @@ import (
 )
 
 const (
-	OptionEmpty      = VoteOption_VOTE_OPTION_UNSPECIFIED
-	OptionYes        = VoteOption_VOTE_OPTION_YES
-	OptionNo         = VoteOption_VOTE_OPTION_NO
-	OptionNoWithVeto = VoteOption_VOTE_OPTION_NO_WITH_VETO
-	OptionAbstain    = VoteOption_VOTE_OPTION_ABSTAIN
+	OptionEmpty   = VoteOption_VOTE_OPTION_UNSPECIFIED
+	OptionYes     = VoteOption_VOTE_OPTION_YES
+	OptionNo      = VoteOption_VOTE_OPTION_NO
+	OptionAbstain = VoteOption_VOTE_OPTION_ABSTAIN
 )
 
 // NewVote creates a new Vote instance
@@ -138,8 +137,7 @@ func WeightedVoteOptionsFromString(str string) (WeightedVoteOptions, error) {
 func ValidVoteOption(option VoteOption) bool {
 	if option == OptionYes ||
 		option == OptionAbstain ||
-		option == OptionNo ||
-		option == OptionNoWithVeto {
+		option == OptionNo {
 		return true
 	}
 	return false

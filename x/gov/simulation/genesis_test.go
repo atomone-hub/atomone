@@ -55,7 +55,6 @@ func TestRandomizedGenState(t *testing.T) {
 	require.Equal(t, float64(275567), govGenesis.Params.VotingPeriod.Seconds())
 	require.Equal(t, tallyQuorum, govGenesis.Params.Quorum)
 	require.Equal(t, tallyThreshold, govGenesis.Params.Threshold)
-	require.Equal(t, tallyVetoThreshold, govGenesis.Params.VetoThreshold)
 	require.Equal(t, uint64(0x28), govGenesis.StartingProposalId)
 	require.Equal(t, []*v1.Deposit{}, govGenesis.Deposits)
 	require.Equal(t, []*v1.Vote{}, govGenesis.Votes)
