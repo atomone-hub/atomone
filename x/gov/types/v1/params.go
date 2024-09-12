@@ -155,6 +155,9 @@ func (p Params) ValidateBasic() error {
 	if amendmentQuorum.GT(math.LegacyOneDec()) {
 		return fmt.Errorf("constitution amendment quorum too large: %s", amendmentQuorum)
 	}
+	if amendmentQuorum.LT(quorum) {
+		return fmt.Errorf("constitution amendment quorum must be greater than or equal to governance quorum: %s", amendmentQuorum)
+	}
 
 	amendmentThreshold, err := sdk.NewDecFromStr(p.ConstitutionAmendmentThreshold)
 	if err != nil {
@@ -165,6 +168,9 @@ func (p Params) ValidateBasic() error {
 	}
 	if amendmentThreshold.GT(math.LegacyOneDec()) {
 		return fmt.Errorf("constitution amendment threshold too large: %s", amendmentThreshold)
+	}
+	if amendmentThreshold.LT(threshold) {
+		return fmt.Errorf("constitution amendment threshold must be greater than or equal to governance threshold: %s", amendmentThreshold)
 	}
 
 	lawQuorum, err := sdk.NewDecFromStr(p.LawQuorum)
@@ -177,6 +183,12 @@ func (p Params) ValidateBasic() error {
 	if lawQuorum.GT(math.LegacyOneDec()) {
 		return fmt.Errorf("law quorum too large: %s", lawQuorum)
 	}
+	if lawQuorum.LT(quorum) {
+		return fmt.Errorf("law quorum must be greater than or equal to governance quorum: %s", lawQuorum)
+	}
+	if lawQuorum.GT(amendmentQuorum) {
+		return fmt.Errorf("law quorum must be less than or equal to constitution amendment quorum: %s", lawQuorum)
+	}
 
 	lawThreshold, err := sdk.NewDecFromStr(p.LawThreshold)
 	if err != nil {
@@ -187,6 +199,12 @@ func (p Params) ValidateBasic() error {
 	}
 	if lawThreshold.GT(math.LegacyOneDec()) {
 		return fmt.Errorf("law threshold too large: %s", lawThreshold)
+	}
+	if lawThreshold.LT(threshold) {
+		return fmt.Errorf("law threshold must be greater than or equal to governance threshold: %s", lawThreshold)
+	}
+	if lawThreshold.GT(amendmentThreshold) {
+		return fmt.Errorf("law threshold must be less than or equal to constitution amendment threshold: %s", lawThreshold)
 	}
 
 	if p.VotingPeriod == nil {

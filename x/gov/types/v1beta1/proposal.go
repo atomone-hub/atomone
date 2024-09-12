@@ -341,6 +341,10 @@ func ProposalHandler(_ sdk.Context, c Content) error {
 	case ProposalTypeText:
 		// both proposal types do not change state so this performs a no-op
 		return nil
+	case ProposalTypeConstitutionAmendment:
+		return nil
+	case ProposalTypeLaw:
+		return nil
 
 	default:
 		return sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unrecognized gov proposal type: %s", c.ProposalType()) //nolint:staticcheck

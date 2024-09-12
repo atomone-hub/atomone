@@ -89,25 +89,42 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 	quorum, _ := sdk.NewDecFromStr(params.Quorum)
 	threshold, _ := sdk.NewDecFromStr(params.Threshold)
 
-	// Check if the proposal message is an ExecLegacyContent message
+	// Check if a proposal message is an ExecLegacyContent message
 	if len(proposal.Messages) > 0 {
-		var execMsg v1.MsgExecLegacyContent
-		if err := keeper.cdc.UnpackAny(proposal.Messages[0], &execMsg); err == nil {
-			// Unpack the content into the appropriate interface
-			var content v1beta1.Content
-			if err := keeper.cdc.UnpackAny(execMsg.Content, &content); err != nil {
-				return false, false, tallyResults
-			}
+		var sdkMsg sdk.Msg
+		for _, msg := range proposal.Messages {
+			if err := keeper.cdc.UnpackAny(msg, &sdkMsg); err == nil {
+				execMsg, ok := sdkMsg.(*v1.MsgExecLegacyContent)
+				if !ok {
+					continue
+				}
+				var content v1beta1.Content
+				if err := keeper.cdc.UnpackAny(execMsg.Content, &content); err != nil {
+					return false, false, tallyResults
+				}
 
-			// Check if proposal is a law or constitution amendment and adjust the
-			// quorum and threshold accordingly
-			switch content.(type) {
-			case *v1beta1.ConstitutionAmendmentProposal:
-				quorum, _ = sdk.NewDecFromStr(params.ConstitutionAmendmentQuorum)
-				threshold, _ = sdk.NewDecFromStr(params.ConstitutionAmendmentThreshold)
-			case *v1beta1.LawProposal:
-				quorum, _ = sdk.NewDecFromStr(params.LawQuorum)
-				threshold, _ = sdk.NewDecFromStr(params.LawThreshold)
+				// Check if proposal is a law or constitution amendment and adjust the
+				// quorum and threshold accordingly
+				switch content.(type) {
+				case *v1beta1.ConstitutionAmendmentProposal:
+					q, _ := sdk.NewDecFromStr(params.ConstitutionAmendmentQuorum)
+					if quorum.LT(q) {
+						quorum = q
+					}
+					t, _ := sdk.NewDecFromStr(params.ConstitutionAmendmentThreshold)
+					if threshold.LT(t) {
+						threshold = t
+					}
+				case *v1beta1.LawProposal:
+					q, _ := sdk.NewDecFromStr(params.LawQuorum)
+					if quorum.LT(q) {
+						quorum = q
+					}
+					t, _ := sdk.NewDecFromStr(params.LawThreshold)
+					if threshold.LT(t) {
+						threshold = t
+					}
+				}
 			}
 		}
 	}
