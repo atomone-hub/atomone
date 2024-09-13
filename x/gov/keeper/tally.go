@@ -22,7 +22,7 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 
 	totalVotingPower := math.LegacyZeroDec()
 	currValidators := make(map[string]stakingtypes.ValidatorI)
-	currGovernors := make(map[string]v1.GovernorI)
+	currGovernors := make(map[string]v1.GovernorGovInfo)
 
 	// fetch all the bonded validators, insert them into currValidators
 	keeper.sk.IterateBondedValidatorsByPower(ctx, func(index int64, validator stakingtypes.ValidatorI) (stop bool) {
@@ -32,7 +32,12 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 
 	// fetch all the governors, insert them into currGovernors
 	keeper.IterateGovernorsByPower(ctx, func(index int64, governor v1.GovernorI) (stop bool) {
-		currGovernors[governor.GetAddress().String()] = governor
+		currGovernors[governor.GetAddress().String()] = v1.NewGovernorGovInfo(
+			governor.GetAddress(),
+			governor.GetDelegations(),
+			[]v1.ValidatorDelegation{},
+			v1.WeightedVoteOptions{},
+		)
 		return false
 	})
 
@@ -42,7 +47,7 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 		voter := sdk.MustAccAddressFromBech32(vote.Voter)
 
 		// if voter is a governor record it in the map
-		govAddrStr := v1.GovAddress(voter.Bytes()).String()
+		govAddrStr := v1.GovernorAddress(voter.Bytes()).String()
 		if gov, ok := currGovernors[govAddrStr]; ok {
 			gov.Vote = vote.Options
 			currGovernors[govAddrStr] = gov
@@ -72,7 +77,7 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 
 				// remove the delegation shares from the governor
 				if governor != nil {
-					d := governor.GetDelegatorDeductions(delegation.GetValidatorAddr())
+					d := governor.GetDelegationDeductions(delegation.GetValidatorAddr())
 					d = d.Add(delegation.GetShares().Mul(governorDelegationPercentage))
 					governor.SetDelegatorDeductions(delegation.GetValidatorAddr(), d)
 				}
@@ -115,9 +120,11 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 		// As governor are simply voters that need to have 100% of their bonded tokens
 		// delegated to them and their shares were deducted when iterating over votes
 		// we don't need to handle special cases.
-		for valAddrStr, shares := range gov.GetDelegations() {
+		for _, d := range gov.Delegations {
+			valAddrStr := d.ValidatorAddress
+			shares := d.Shares
 			if val, ok := currValidators[valAddrStr]; ok {
-				sharesAfterDeductions := shares.Sub(gov.GetDelegatorDeductions(val.GetOperator()))
+				sharesAfterDeductions := shares.Sub(gov.GetDelegationDeductions(val.GetOperator()))
 				votingPower := sharesAfterDeductions.MulInt(val.GetBondedTokens()).Quo(val.GetDelegatorShares())
 
 				for _, option := range gov.Vote {
