@@ -37,6 +37,20 @@ service Msg {
   //
   // Since: cosmos-sdk 0.47
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+
+  // CreateGovernor defines a method to create a new governor.
+  rpc CreateGovernor(MsgCreateGovernor) returns (MsgCreateGovernorResponse);
+
+  // EditGovernor defines a method to edit an existing governor.
+  // It also sets its status.
+  rpc EditGovernor(MsgEditGovernor) returns (MsgEditGovernorResponse);
+
+  // DelegateGovernor defines a method to delegate a non-zero percentange of
+  // governance voting power from a delegator to a governor.
+  rpc DelegateGovernor(MsgDelegateGovernor) returns (MsgDelegateGovernorResponse);
+
+  // UndelegateGovernor defines a method to undelegate governance voting power
+  rpc UndelegateGovernor(MsgUndelegateGovernor) returns (MsgUndelegateGovernorResponse);
 }
 
 // MsgSubmitProposal defines an sdk.Msg type that supports submitting arbitrary
@@ -170,3 +184,67 @@ message MsgUpdateParams {
 //
 // Since: cosmos-sdk 0.47
 message MsgUpdateParamsResponse {}
+
+// MsgCreateGovernor defines a SDK message for creating a new governor.
+message MsgCreateGovernor {
+  option (cosmos.msg.v1.signer) = "governor_address";
+  option (amino.name)           = "atomone/MsgCreateGovernor";
+
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  GovernorDescription      description      = 1 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
+  string                   governor_address = 2 [(cosmos_proto.scalar) = "atomone.GovernorAddressString"];
+  google.protobuf.Any      pubkey           = 3 [(cosmos_proto.accepts_interface) = "cosmos.crypto.PubKey"];
+}
+
+// MsgCreateGovernorrResponse defines the Msg/CreateGovernor response type.
+message MsgCreateGovernorResponse {}
+
+// MsgEditGovernor defines a SDK message for editing an existing governor.
+message MsgEditGovernor {
+  option (cosmos.msg.v1.signer) = "governor_address";
+  option (amino.name)           = "cosmos-sdk/MsgEditGovernor";
+
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  GovernorDescription description = 1 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
+  GovernorStatus     status       = 2;
+  string      governor_address    = 3 [(cosmos_proto.scalar) = "atomone.GovernorAddressString"];
+}
+
+// MsgEditGovernorResponse defines the Msg/EditGovernor response type.
+message MsgEditGovernorResponse {}
+
+// MsgDelegateGovernor defines a SDK message for performing a delegation of governance voting power
+// from a delegator to a governor.
+message MsgDelegateGovernor {
+  option (cosmos.msg.v1.signer) = "delegator_address";
+  option (amino.name)           = "atomone/MsgDelegateGovernor";
+
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string delegator_address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string governor_address  = 2 [(cosmos_proto.scalar) = "atomone.GovernorAddressString"];
+  // percentage is the percentage of the delegator's bonded tokens that are delegated to the governor.
+  string percentage = 6 [(cosmos_proto.scalar) = "cosmos.Dec"];
+}
+
+// MsgDelegateGovernorResponse defines the Msg/Delegate response type.
+message MsgDelegateGovernorResponse {}
+
+// MsgUndelegateGovernor defines a SDK message for undelegating governance voting power
+message MsgUndelegateGovernor {
+  option (cosmos.msg.v1.signer) = "delegator_address";
+  option (amino.name)           = "cosmos-sdk/MsgUndelegateGovernor";
+
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string delegator_address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+}
+
+// MsgUndelegateGovernorResponse defines the Msg/UndelegateGovernor response type.
+message MsgUndelegateGovernorResponse {}

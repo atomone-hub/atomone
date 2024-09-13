@@ -688,6 +688,314 @@ func (m *MsgUpdateParamsResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgUpdateParamsResponse proto.InternalMessageInfo
 
+// MsgCreateGovernor defines a SDK message for creating a new governor.
+type MsgCreateGovernor struct {
+	Description     GovernorDescription `protobuf:"bytes,1,opt,name=description,proto3" json:"description"`
+	GovernorAddress string              `protobuf:"bytes,2,opt,name=governor_address,json=governorAddress,proto3" json:"governor_address,omitempty"`
+	Pubkey          *types.Any          `protobuf:"bytes,3,opt,name=pubkey,proto3" json:"pubkey,omitempty"`
+}
+
+func (m *MsgCreateGovernor) Reset()         { *m = MsgCreateGovernor{} }
+func (m *MsgCreateGovernor) String() string { return proto.CompactTextString(m) }
+func (*MsgCreateGovernor) ProtoMessage()    {}
+func (*MsgCreateGovernor) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f6c84786701fca8d, []int{12}
+}
+func (m *MsgCreateGovernor) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgCreateGovernor) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgCreateGovernor.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgCreateGovernor) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCreateGovernor.Merge(m, src)
+}
+func (m *MsgCreateGovernor) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgCreateGovernor) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCreateGovernor.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgCreateGovernor proto.InternalMessageInfo
+
+// MsgCreateGovernorrResponse defines the Msg/CreateGovernor response type.
+type MsgCreateGovernorResponse struct {
+}
+
+func (m *MsgCreateGovernorResponse) Reset()         { *m = MsgCreateGovernorResponse{} }
+func (m *MsgCreateGovernorResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgCreateGovernorResponse) ProtoMessage()    {}
+func (*MsgCreateGovernorResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f6c84786701fca8d, []int{13}
+}
+func (m *MsgCreateGovernorResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgCreateGovernorResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgCreateGovernorResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgCreateGovernorResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCreateGovernorResponse.Merge(m, src)
+}
+func (m *MsgCreateGovernorResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgCreateGovernorResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCreateGovernorResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgCreateGovernorResponse proto.InternalMessageInfo
+
+// MsgEditGovernor defines a SDK message for editing an existing governor.
+type MsgEditGovernor struct {
+	Description     GovernorDescription `protobuf:"bytes,1,opt,name=description,proto3" json:"description"`
+	Status          GovernorStatus      `protobuf:"varint,2,opt,name=status,proto3,enum=atomone.gov.v1.GovernorStatus" json:"status,omitempty"`
+	GovernorAddress string              `protobuf:"bytes,3,opt,name=governor_address,json=governorAddress,proto3" json:"governor_address,omitempty"`
+}
+
+func (m *MsgEditGovernor) Reset()         { *m = MsgEditGovernor{} }
+func (m *MsgEditGovernor) String() string { return proto.CompactTextString(m) }
+func (*MsgEditGovernor) ProtoMessage()    {}
+func (*MsgEditGovernor) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f6c84786701fca8d, []int{14}
+}
+func (m *MsgEditGovernor) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgEditGovernor) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgEditGovernor.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgEditGovernor) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgEditGovernor.Merge(m, src)
+}
+func (m *MsgEditGovernor) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgEditGovernor) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgEditGovernor.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgEditGovernor proto.InternalMessageInfo
+
+// MsgEditGovernorResponse defines the Msg/EditGovernor response type.
+type MsgEditGovernorResponse struct {
+}
+
+func (m *MsgEditGovernorResponse) Reset()         { *m = MsgEditGovernorResponse{} }
+func (m *MsgEditGovernorResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgEditGovernorResponse) ProtoMessage()    {}
+func (*MsgEditGovernorResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f6c84786701fca8d, []int{15}
+}
+func (m *MsgEditGovernorResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgEditGovernorResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgEditGovernorResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgEditGovernorResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgEditGovernorResponse.Merge(m, src)
+}
+func (m *MsgEditGovernorResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgEditGovernorResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgEditGovernorResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgEditGovernorResponse proto.InternalMessageInfo
+
+// MsgDelegateGovernor defines a SDK message for performing a delegation of governance voting power
+// from a delegator to a governor.
+type MsgDelegateGovernor struct {
+	DelegatorAddress string `protobuf:"bytes,1,opt,name=delegator_address,json=delegatorAddress,proto3" json:"delegator_address,omitempty"`
+	GovernorAddress  string `protobuf:"bytes,2,opt,name=governor_address,json=governorAddress,proto3" json:"governor_address,omitempty"`
+	// percentage is the percentage of the delegator's bonded tokens that are delegated to the governor.
+	Percentage string `protobuf:"bytes,6,opt,name=percentage,proto3" json:"percentage,omitempty"`
+}
+
+func (m *MsgDelegateGovernor) Reset()         { *m = MsgDelegateGovernor{} }
+func (m *MsgDelegateGovernor) String() string { return proto.CompactTextString(m) }
+func (*MsgDelegateGovernor) ProtoMessage()    {}
+func (*MsgDelegateGovernor) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f6c84786701fca8d, []int{16}
+}
+func (m *MsgDelegateGovernor) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgDelegateGovernor) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgDelegateGovernor.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgDelegateGovernor) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDelegateGovernor.Merge(m, src)
+}
+func (m *MsgDelegateGovernor) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgDelegateGovernor) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDelegateGovernor.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgDelegateGovernor proto.InternalMessageInfo
+
+// MsgDelegateGovernorResponse defines the Msg/Delegate response type.
+type MsgDelegateGovernorResponse struct {
+}
+
+func (m *MsgDelegateGovernorResponse) Reset()         { *m = MsgDelegateGovernorResponse{} }
+func (m *MsgDelegateGovernorResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgDelegateGovernorResponse) ProtoMessage()    {}
+func (*MsgDelegateGovernorResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f6c84786701fca8d, []int{17}
+}
+func (m *MsgDelegateGovernorResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgDelegateGovernorResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgDelegateGovernorResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgDelegateGovernorResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDelegateGovernorResponse.Merge(m, src)
+}
+func (m *MsgDelegateGovernorResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgDelegateGovernorResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDelegateGovernorResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgDelegateGovernorResponse proto.InternalMessageInfo
+
+// MsgUndelegateGovernor defines a SDK message for undelegating governance voting power
+type MsgUndelegateGovernor struct {
+	DelegatorAddress string `protobuf:"bytes,1,opt,name=delegator_address,json=delegatorAddress,proto3" json:"delegator_address,omitempty"`
+}
+
+func (m *MsgUndelegateGovernor) Reset()         { *m = MsgUndelegateGovernor{} }
+func (m *MsgUndelegateGovernor) String() string { return proto.CompactTextString(m) }
+func (*MsgUndelegateGovernor) ProtoMessage()    {}
+func (*MsgUndelegateGovernor) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f6c84786701fca8d, []int{18}
+}
+func (m *MsgUndelegateGovernor) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUndelegateGovernor) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUndelegateGovernor.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUndelegateGovernor) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUndelegateGovernor.Merge(m, src)
+}
+func (m *MsgUndelegateGovernor) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUndelegateGovernor) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUndelegateGovernor.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUndelegateGovernor proto.InternalMessageInfo
+
+// MsgUndelegateGovernorResponse defines the Msg/UndelegateGovernor response type.
+type MsgUndelegateGovernorResponse struct {
+}
+
+func (m *MsgUndelegateGovernorResponse) Reset()         { *m = MsgUndelegateGovernorResponse{} }
+func (m *MsgUndelegateGovernorResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgUndelegateGovernorResponse) ProtoMessage()    {}
+func (*MsgUndelegateGovernorResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f6c84786701fca8d, []int{19}
+}
+func (m *MsgUndelegateGovernorResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUndelegateGovernorResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUndelegateGovernorResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUndelegateGovernorResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUndelegateGovernorResponse.Merge(m, src)
+}
+func (m *MsgUndelegateGovernorResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUndelegateGovernorResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUndelegateGovernorResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUndelegateGovernorResponse proto.InternalMessageInfo
+
 func init() {
 	proto.RegisterType((*MsgSubmitProposal)(nil), "atomone.gov.v1.MsgSubmitProposal")
 	proto.RegisterType((*MsgSubmitProposalResponse)(nil), "atomone.gov.v1.MsgSubmitProposalResponse")
@@ -701,69 +1009,100 @@ func init() {
 	proto.RegisterType((*MsgDepositResponse)(nil), "atomone.gov.v1.MsgDepositResponse")
 	proto.RegisterType((*MsgUpdateParams)(nil), "atomone.gov.v1.MsgUpdateParams")
 	proto.RegisterType((*MsgUpdateParamsResponse)(nil), "atomone.gov.v1.MsgUpdateParamsResponse")
+	proto.RegisterType((*MsgCreateGovernor)(nil), "atomone.gov.v1.MsgCreateGovernor")
+	proto.RegisterType((*MsgCreateGovernorResponse)(nil), "atomone.gov.v1.MsgCreateGovernorResponse")
+	proto.RegisterType((*MsgEditGovernor)(nil), "atomone.gov.v1.MsgEditGovernor")
+	proto.RegisterType((*MsgEditGovernorResponse)(nil), "atomone.gov.v1.MsgEditGovernorResponse")
+	proto.RegisterType((*MsgDelegateGovernor)(nil), "atomone.gov.v1.MsgDelegateGovernor")
+	proto.RegisterType((*MsgDelegateGovernorResponse)(nil), "atomone.gov.v1.MsgDelegateGovernorResponse")
+	proto.RegisterType((*MsgUndelegateGovernor)(nil), "atomone.gov.v1.MsgUndelegateGovernor")
+	proto.RegisterType((*MsgUndelegateGovernorResponse)(nil), "atomone.gov.v1.MsgUndelegateGovernorResponse")
 }
 
 func init() { proto.RegisterFile("atomone/gov/v1/tx.proto", fileDescriptor_f6c84786701fca8d) }
 
 var fileDescriptor_f6c84786701fca8d = []byte{
-	// 912 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x56, 0x4d, 0x6f, 0xe3, 0x44,
-	0x18, 0xae, 0xfb, 0x91, 0x6c, 0xa7, 0xa8, 0xab, 0x8e, 0x02, 0x75, 0x4d, 0x95, 0x74, 0x2d, 0x24,
-	0xba, 0x15, 0xb5, 0x49, 0x16, 0x90, 0x88, 0x7a, 0x60, 0xb3, 0x20, 0xb4, 0x12, 0xd1, 0xae, 0xbc,
-	0xe2, 0x43, 0x1c, 0xa8, 0x26, 0xf1, 0x30, 0xb5, 0x54, 0x7b, 0x2c, 0xcf, 0x24, 0x6a, 0x6e, 0x88,
-	0x23, 0x27, 0x4e, 0xfc, 0x06, 0x8e, 0x3d, 0xec, 0x65, 0xff, 0x00, 0x5a, 0x71, 0x5a, 0x71, 0xe2,
-	0xb4, 0x42, 0xed, 0xa1, 0x12, 0xff, 0x01, 0x09, 0xcd, 0x97, 0x13, 0xc7, 0x6e, 0x53, 0x71, 0xe0,
-	0x12, 0xcd, 0xbc, 0x1f, 0xcf, 0xbc, 0xcf, 0x33, 0xef, 0x3b, 0x0e, 0xd8, 0x46, 0x9c, 0xc6, 0x34,
-	0xc1, 0x3e, 0xa1, 0x63, 0x7f, 0xdc, 0xf6, 0xf9, 0x99, 0x97, 0x66, 0x94, 0x53, 0xb8, 0xa9, 0x1d,
-	0x1e, 0xa1, 0x63, 0x6f, 0xdc, 0x76, 0x9a, 0x43, 0xca, 0x62, 0xca, 0xfc, 0x01, 0x62, 0xd8, 0x1f,
-	0xb7, 0x07, 0x98, 0xa3, 0xb6, 0x3f, 0xa4, 0x51, 0xa2, 0xe2, 0x1d, 0x7b, 0x0e, 0x48, 0xa4, 0x29,
-	0x4f, 0x83, 0x50, 0x42, 0xe5, 0xd2, 0x17, 0x2b, 0x6d, 0xdd, 0x51, 0x78, 0xc7, 0xca, 0xa1, 0x36,
-	0xc6, 0x45, 0x28, 0x25, 0xa7, 0xd8, 0x97, 0xbb, 0xc1, 0xe8, 0x7b, 0x1f, 0x25, 0x13, 0xed, 0xda,
-	0xd6, 0x55, 0xc4, 0x8c, 0x88, 0x43, 0x62, 0x46, 0xb4, 0x63, 0x0b, 0xc5, 0x51, 0x42, 0x7d, 0xf9,
-	0xab, 0x4c, 0xee, 0x6f, 0xcb, 0x60, 0xab, 0xcf, 0xc8, 0xb3, 0xd1, 0x20, 0x8e, 0xf8, 0xd3, 0x8c,
-	0xa6, 0x94, 0xa1, 0x53, 0xf8, 0x3e, 0xb8, 0x13, 0x63, 0xc6, 0x10, 0xc1, 0xcc, 0xb6, 0xf6, 0x56,
-	0xf6, 0x37, 0x3a, 0x0d, 0x4f, 0x9d, 0xe7, 0x99, 0xf3, 0xbc, 0x87, 0xc9, 0x24, 0xc8, 0xa3, 0x60,
-	0x1f, 0xdc, 0x8d, 0x92, 0x88, 0x47, 0xe8, 0xf4, 0x38, 0xc4, 0x29, 0x65, 0x11, 0xb7, 0x97, 0x65,
-	0xe2, 0x8e, 0xa7, 0xcb, 0x16, 0x9a, 0x78, 0x5a, 0x13, 0xef, 0x11, 0x8d, 0x92, 0xde, 0xfa, 0xcb,
-	0xd7, 0xad, 0xa5, 0x5f, 0xaf, 0xce, 0x0f, 0xac, 0x60, 0x53, 0x27, 0x7f, 0xaa, 0x72, 0xe1, 0x07,
-	0xe0, 0x4e, 0x2a, 0x8b, 0xc1, 0x99, 0xbd, 0xb2, 0x67, 0xed, 0xaf, 0xf7, 0xec, 0x3f, 0x9e, 0x1f,
-	0x36, 0x34, 0xd4, 0xc3, 0x30, 0xcc, 0x30, 0x63, 0xcf, 0x78, 0x16, 0x25, 0x24, 0xc8, 0x23, 0xa1,
-	0x23, 0xca, 0xe6, 0x28, 0x44, 0x1c, 0xd9, 0xab, 0x22, 0x2b, 0xc8, 0xf7, 0xb0, 0x01, 0xd6, 0x78,
-	0xc4, 0x4f, 0xb1, 0xbd, 0x26, 0x1d, 0x6a, 0x03, 0x6d, 0x50, 0x67, 0xa3, 0x38, 0x46, 0xd9, 0xc4,
-	0xae, 0x49, 0xbb, 0xd9, 0x76, 0xbd, 0x1f, 0xaf, 0xce, 0x0f, 0x72, 0xe8, 0x9f, 0xae, 0xce, 0x0f,
-	0x76, 0xcd, 0xe5, 0x8d, 0xdb, 0x7e, 0x49, 0x32, 0xf7, 0x08, 0xec, 0x94, 0x8c, 0x01, 0x66, 0x29,
-	0x4d, 0x18, 0x86, 0x2d, 0xb0, 0x91, 0x6a, 0xdb, 0x71, 0x14, 0xda, 0xd6, 0x9e, 0xb5, 0xbf, 0x1a,
-	0x00, 0x63, 0x7a, 0x1c, 0xba, 0x2f, 0x2c, 0xd0, 0xe8, 0x33, 0xf2, 0xd9, 0x19, 0x1e, 0x7e, 0x81,
-	0x09, 0x1a, 0x4e, 0x1e, 0xd1, 0x84, 0xe3, 0x84, 0xc3, 0x27, 0xa0, 0x3e, 0x54, 0x4b, 0x99, 0x75,
-	0xcd, 0x45, 0xf4, 0x5a, 0xbf, 0x3f, 0x3f, 0x7c, 0xbb, 0xd8, 0x8c, 0x46, 0x68, 0x99, 0x1c, 0x18,
-	0x14, 0xb8, 0x0b, 0xd6, 0xd1, 0x88, 0x9f, 0xd0, 0x2c, 0xe2, 0x13, 0x7b, 0x59, 0x72, 0x9e, 0x1a,
-	0xba, 0x1d, 0xc1, 0x7a, 0xba, 0x17, 0xb4, 0x5b, 0x45, 0xda, 0xa5, 0x12, 0xdd, 0x26, 0xd8, 0xad,
-	0xb2, 0x1b, 0xf2, 0xee, 0xa5, 0x05, 0xea, 0x7d, 0x46, 0xbe, 0xa2, 0x1c, 0xc3, 0x0f, 0x2b, 0x84,
-	0xe8, 0x35, 0xfe, 0x7e, 0xdd, 0x9a, 0x35, 0xab, 0x96, 0x98, 0x91, 0x07, 0x7a, 0x60, 0x6d, 0x4c,
-	0x39, 0xce, 0x54, 0xc1, 0x37, 0xf4, 0x82, 0x0a, 0x83, 0x1d, 0x50, 0xa3, 0x29, 0x8f, 0x68, 0x22,
-	0x9b, 0x67, 0xb3, 0xe3, 0x78, 0x45, 0x6d, 0x3c, 0x51, 0xcc, 0x13, 0x19, 0x11, 0xe8, 0xc8, 0x9b,
-	0x9a, 0xa7, 0x7b, 0x4f, 0xc8, 0xa2, 0xb0, 0x85, 0x24, 0xb0, 0x28, 0x89, 0x00, 0x73, 0xb7, 0xc0,
-	0x5d, 0xbd, 0xcc, 0x89, 0xff, 0x63, 0xe5, 0xb6, 0xaf, 0x71, 0x44, 0x4e, 0x38, 0x0e, 0xff, 0x2f,
-	0x01, 0x8e, 0x40, 0x5d, 0xd1, 0x62, 0xf6, 0x8a, 0x1c, 0x43, 0x77, 0x5e, 0x01, 0x53, 0xd1, 0x8c,
-	0x12, 0x26, 0xe5, 0x46, 0x29, 0xee, 0x17, 0xa5, 0x70, 0xca, 0x52, 0x18, 0x64, 0x77, 0x07, 0x6c,
-	0xcf, 0x99, 0x66, 0x7b, 0x02, 0xf4, 0x19, 0x31, 0xe3, 0xfe, 0x1f, 0x55, 0xf9, 0x08, 0xac, 0xeb,
-	0xc7, 0x86, 0x2e, 0x56, 0x66, 0x1a, 0x0a, 0x8f, 0x40, 0x0d, 0xc5, 0x74, 0x94, 0x70, 0x2d, 0xce,
-	0xed, 0xde, 0x28, 0x9d, 0xd3, 0xdd, 0x97, 0x33, 0x92, 0xa3, 0x09, 0x15, 0xde, 0x2c, 0xaa, 0xa0,
-	0x69, 0xb9, 0x0d, 0x00, 0xa7, 0xbb, 0x9c, 0xfb, 0x0b, 0xd5, 0x16, 0x5f, 0xa6, 0x21, 0xe2, 0xf8,
-	0x29, 0xca, 0x50, 0xcc, 0x04, 0x93, 0xe9, 0x54, 0x5a, 0x8b, 0x98, 0xe4, 0xa1, 0xf0, 0x63, 0x50,
-	0x4b, 0x25, 0x82, 0xa4, 0xbf, 0xd1, 0x79, 0x6b, 0xfe, 0x9a, 0x15, 0x7e, 0x81, 0x86, 0x4a, 0xe8,
-	0x3e, 0x28, 0x8f, 0xfa, 0x9e, 0xa1, 0x71, 0x66, 0x3e, 0x50, 0x73, 0x75, 0xea, 0x2b, 0x9d, 0x35,
-	0x19, 0x5a, 0x9d, 0x5f, 0x56, 0xc1, 0x4a, 0x9f, 0x11, 0xf8, 0x1d, 0xd8, 0x9c, 0xfb, 0x9a, 0xdc,
-	0x9b, 0x2f, 0xaa, 0xf4, 0x50, 0x3a, 0xf7, 0x17, 0x86, 0xe4, 0x6f, 0x29, 0x01, 0x5b, 0xe5, 0x67,
-	0xf2, 0x9d, 0x8a, 0xfc, 0x52, 0x94, 0xf3, 0xde, 0x6d, 0xa2, 0xf2, 0x83, 0x3e, 0x01, 0xab, 0xf2,
-	0xcd, 0xda, 0xae, 0xc8, 0x12, 0x0e, 0xa7, 0x75, 0x8d, 0x23, 0x47, 0xf8, 0x06, 0xbc, 0x51, 0x18,
-	0xfe, 0xeb, 0x12, 0x4c, 0x80, 0xf3, 0xee, 0x82, 0x80, 0x1c, 0xf9, 0x31, 0xa8, 0x9b, 0xd9, 0x71,
-	0x2a, 0x72, 0xb4, 0xcf, 0x71, 0xaf, 0xf7, 0xcd, 0x16, 0x59, 0x68, 0xc5, 0xaa, 0x22, 0x67, 0x03,
-	0x2a, 0x8b, 0xac, 0xea, 0x08, 0x67, 0xed, 0x07, 0xd1, 0x70, 0xbd, 0xcf, 0x5f, 0x5e, 0x34, 0xad,
-	0x57, 0x17, 0x4d, 0xeb, 0xaf, 0x8b, 0xa6, 0xf5, 0xf3, 0x65, 0x73, 0xe9, 0xd5, 0x65, 0x73, 0xe9,
-	0xcf, 0xcb, 0xe6, 0xd2, 0xb7, 0x87, 0x24, 0xe2, 0x27, 0xa3, 0x81, 0x37, 0xa4, 0xb1, 0xaf, 0x31,
-	0x0f, 0x4f, 0x46, 0x03, 0xbf, 0xd8, 0x86, 0x7c, 0x92, 0x62, 0x26, 0xfe, 0x4d, 0xd5, 0xe4, 0x27,
-	0xef, 0xc1, 0xbf, 0x01, 0x00, 0x00, 0xff, 0xff, 0x70, 0x13, 0x4d, 0x50, 0x8f, 0x09, 0x00, 0x00,
+	// 1268 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x57, 0xcf, 0x6f, 0x1b, 0xc5,
+	0x17, 0xf7, 0x26, 0x8d, 0xdd, 0x4c, 0xbe, 0x72, 0x9b, 0xfd, 0xba, 0x64, 0xb3, 0x69, 0xec, 0x64,
+	0x0b, 0x22, 0x0d, 0x78, 0x97, 0xb8, 0x50, 0x09, 0x13, 0x21, 0xea, 0x24, 0x54, 0x15, 0xb5, 0x1a,
+	0x39, 0xe2, 0x87, 0x38, 0x10, 0xad, 0xbd, 0xc3, 0x66, 0x69, 0x76, 0x67, 0xb5, 0x33, 0xb6, 0xe2,
+	0x1b, 0xe2, 0x84, 0x38, 0x71, 0xe6, 0x54, 0xc1, 0x01, 0x8e, 0x39, 0xe4, 0x40, 0xff, 0x01, 0x54,
+	0xf5, 0x54, 0xe5, 0xc4, 0xa9, 0x42, 0xc9, 0x21, 0x88, 0xff, 0x01, 0x09, 0xed, 0xfc, 0x58, 0xef,
+	0x7a, 0xd7, 0x71, 0x54, 0x51, 0x2e, 0xd6, 0xce, 0x7b, 0x9f, 0xf7, 0xe6, 0xf3, 0x3e, 0xf3, 0xe6,
+	0x87, 0xc1, 0x9c, 0x49, 0x90, 0x8b, 0x3c, 0x68, 0xd8, 0xa8, 0x67, 0xf4, 0xd6, 0x0c, 0x72, 0xa0,
+	0xfb, 0x01, 0x22, 0x48, 0x2e, 0x72, 0x87, 0x6e, 0xa3, 0x9e, 0xde, 0x5b, 0x53, 0xcb, 0x1d, 0x84,
+	0x5d, 0x84, 0x8d, 0xb6, 0x89, 0xa1, 0xd1, 0x5b, 0x6b, 0x43, 0x62, 0xae, 0x19, 0x1d, 0xe4, 0x78,
+	0x0c, 0xaf, 0x2a, 0x43, 0x89, 0xc2, 0x30, 0xe6, 0x29, 0xd9, 0xc8, 0x46, 0xf4, 0xd3, 0x08, 0xbf,
+	0xb8, 0x75, 0x9e, 0xe5, 0xdb, 0x65, 0x0e, 0x36, 0x10, 0x2e, 0x1b, 0x21, 0x7b, 0x1f, 0x1a, 0x74,
+	0xd4, 0xee, 0x7e, 0x69, 0x98, 0x5e, 0x9f, 0xbb, 0xe6, 0x38, 0x0b, 0x17, 0xdb, 0xe1, 0x24, 0x2e,
+	0xb6, 0xb9, 0x63, 0xd6, 0x74, 0x1d, 0x0f, 0x19, 0xf4, 0x97, 0x99, 0xb4, 0xdf, 0x26, 0xc0, 0x6c,
+	0x13, 0xdb, 0x3b, 0xdd, 0xb6, 0xeb, 0x90, 0xed, 0x00, 0xf9, 0x08, 0x9b, 0xfb, 0xf2, 0x5b, 0xe0,
+	0xb2, 0x0b, 0x31, 0x36, 0x6d, 0x88, 0x15, 0x69, 0x69, 0x72, 0x65, 0xa6, 0x56, 0xd2, 0xd9, 0x7c,
+	0xba, 0x98, 0x4f, 0xbf, 0xe3, 0xf5, 0x5b, 0x11, 0x4a, 0x6e, 0x82, 0x2b, 0x8e, 0xe7, 0x10, 0xc7,
+	0xdc, 0xdf, 0xb5, 0xa0, 0x8f, 0xb0, 0x43, 0x94, 0x09, 0x1a, 0x38, 0xaf, 0x73, 0xda, 0xa1, 0x26,
+	0x3a, 0xd7, 0x44, 0xdf, 0x40, 0x8e, 0xd7, 0x98, 0x7e, 0xf2, 0xbc, 0x92, 0xfb, 0xe5, 0xec, 0x70,
+	0x55, 0x6a, 0x15, 0x79, 0xf0, 0x26, 0x8b, 0x95, 0xdf, 0x06, 0x97, 0x7d, 0x4a, 0x06, 0x06, 0xca,
+	0xe4, 0x92, 0xb4, 0x32, 0xdd, 0x50, 0x8e, 0x8f, 0xaa, 0x25, 0x9e, 0xea, 0x8e, 0x65, 0x05, 0x10,
+	0xe3, 0x1d, 0x12, 0x38, 0x9e, 0xdd, 0x8a, 0x90, 0xb2, 0x1a, 0xd2, 0x26, 0xa6, 0x65, 0x12, 0x53,
+	0xb9, 0x14, 0x46, 0xb5, 0xa2, 0xb1, 0x5c, 0x02, 0x53, 0xc4, 0x21, 0xfb, 0x50, 0x99, 0xa2, 0x0e,
+	0x36, 0x90, 0x15, 0x50, 0xc0, 0x5d, 0xd7, 0x35, 0x83, 0xbe, 0x92, 0xa7, 0x76, 0x31, 0xac, 0xeb,
+	0xdf, 0x9c, 0x1d, 0xae, 0x46, 0xa9, 0xbf, 0x3b, 0x3b, 0x5c, 0xbd, 0x2e, 0x16, 0xaf, 0xb7, 0x66,
+	0xa4, 0x24, 0xd3, 0xd6, 0xc1, 0x7c, 0xca, 0xd8, 0x82, 0xd8, 0x47, 0x1e, 0x86, 0x72, 0x05, 0xcc,
+	0xf8, 0xdc, 0xb6, 0xeb, 0x58, 0x8a, 0xb4, 0x24, 0xad, 0x5c, 0x6a, 0x01, 0x61, 0xba, 0x67, 0x69,
+	0x8f, 0x25, 0x50, 0x6a, 0x62, 0x7b, 0xeb, 0x00, 0x76, 0xee, 0x43, 0xdb, 0xec, 0xf4, 0x37, 0x90,
+	0x47, 0xa0, 0x47, 0xe4, 0x07, 0xa0, 0xd0, 0x61, 0x9f, 0x34, 0x6a, 0xc4, 0x42, 0x34, 0x2a, 0x4f,
+	0x8f, 0xaa, 0x0b, 0xc9, 0x66, 0x14, 0x42, 0xd3, 0xe0, 0x96, 0xc8, 0x22, 0x5f, 0x07, 0xd3, 0x66,
+	0x97, 0xec, 0xa1, 0xc0, 0x21, 0x7d, 0x65, 0x82, 0xd6, 0x3c, 0x30, 0xd4, 0x6b, 0x61, 0xd5, 0x83,
+	0x71, 0x58, 0x76, 0x25, 0x59, 0x76, 0x8a, 0xa2, 0x56, 0x06, 0xd7, 0xb3, 0xec, 0xa2, 0x78, 0xed,
+	0x54, 0x02, 0x85, 0x26, 0xb6, 0x3f, 0x41, 0x04, 0xca, 0xef, 0x64, 0x08, 0xd1, 0x28, 0xfd, 0xf5,
+	0xbc, 0x12, 0x37, 0xb3, 0x96, 0x88, 0xc9, 0x23, 0xeb, 0x60, 0xaa, 0x87, 0x08, 0x0c, 0x18, 0xe1,
+	0x73, 0x7a, 0x81, 0xc1, 0xe4, 0x1a, 0xc8, 0x23, 0x9f, 0x38, 0xc8, 0xa3, 0xcd, 0x53, 0xac, 0xa9,
+	0x7a, 0x52, 0x1b, 0x3d, 0x24, 0xf3, 0x80, 0x22, 0x5a, 0x1c, 0x79, 0x5e, 0xf3, 0xd4, 0x97, 0x43,
+	0x59, 0x58, 0xee, 0x50, 0x12, 0x39, 0x29, 0x49, 0x98, 0x4c, 0x9b, 0x05, 0x57, 0xf8, 0x67, 0x54,
+	0xf8, 0xdf, 0x52, 0x64, 0xfb, 0x14, 0x3a, 0xf6, 0x1e, 0x81, 0xd6, 0x7f, 0x25, 0xc0, 0x3a, 0x28,
+	0xb0, 0xb2, 0xb0, 0x32, 0x49, 0xb7, 0xa1, 0x36, 0xac, 0x80, 0x60, 0x14, 0x53, 0x42, 0x84, 0x9c,
+	0x2b, 0xc5, 0xcd, 0xa4, 0x14, 0x6a, 0x5a, 0x0a, 0x91, 0x59, 0x9b, 0x07, 0x73, 0x43, 0xa6, 0x78,
+	0x4f, 0x80, 0x26, 0xb6, 0xc5, 0x76, 0x7f, 0x41, 0x55, 0x6e, 0x83, 0x69, 0x7e, 0xd8, 0xa0, 0xf1,
+	0xca, 0x0c, 0xa0, 0xf2, 0x3a, 0xc8, 0x9b, 0x2e, 0xea, 0x7a, 0x84, 0x8b, 0x73, 0xb1, 0x33, 0x8a,
+	0xc7, 0xd4, 0x57, 0xe8, 0x1e, 0x89, 0xb2, 0x85, 0x2a, 0x5c, 0x4b, 0xaa, 0xc0, 0xcb, 0xd2, 0x4a,
+	0x40, 0x1e, 0x8c, 0xa2, 0xda, 0x1f, 0xb3, 0xb6, 0xf8, 0xd8, 0xb7, 0x4c, 0x02, 0xb7, 0xcd, 0xc0,
+	0x74, 0x71, 0x58, 0xc9, 0x60, 0x57, 0x4a, 0xe3, 0x2a, 0x89, 0xa0, 0xf2, 0xbb, 0x20, 0xef, 0xd3,
+	0x0c, 0xb4, 0xfc, 0x99, 0xda, 0x2b, 0xc3, 0xcb, 0xcc, 0xf2, 0x27, 0xca, 0x60, 0x01, 0xf5, 0x5b,
+	0xe9, 0xad, 0xbe, 0x24, 0xca, 0x38, 0x10, 0x17, 0xd4, 0x10, 0x4f, 0xbe, 0xa4, 0x71, 0x53, 0x54,
+	0xd6, 0xaf, 0xec, 0x26, 0xd9, 0x08, 0xa0, 0x49, 0xe0, 0x5d, 0xd4, 0x83, 0x81, 0x87, 0x02, 0x79,
+	0x1b, 0xcc, 0x58, 0x10, 0x77, 0x02, 0x87, 0x6d, 0x47, 0x76, 0x86, 0xdd, 0x18, 0x66, 0x29, 0xe0,
+	0x9b, 0x03, 0x68, 0x9c, 0x72, 0x3c, 0x85, 0x7c, 0x1f, 0x5c, 0xb5, 0x39, 0x7c, 0xd7, 0x64, 0xba,
+	0xf0, 0xb5, 0x5f, 0x3e, 0x3e, 0xaa, 0x2e, 0x8a, 0xcc, 0x22, 0x65, 0x52, 0xba, 0x2b, 0x76, 0xd2,
+	0x2c, 0x7f, 0x08, 0xf2, 0x7e, 0xb7, 0xfd, 0x10, 0xf6, 0xe9, 0x49, 0x31, 0xea, 0x78, 0x55, 0x9e,
+	0x0e, 0xd6, 0xa2, 0x13, 0xf4, 0x7d, 0x82, 0xf4, 0xed, 0x6e, 0xfb, 0x23, 0xd8, 0x6f, 0xf1, 0xe8,
+	0xfa, 0x7b, 0xdf, 0x3e, 0xaa, 0xe4, 0xfe, 0x7c, 0x54, 0xc9, 0x85, 0xaa, 0xa6, 0x08, 0x86, 0xe2,
+	0xce, 0x0b, 0x71, 0x53, 0x22, 0x69, 0x0b, 0xf4, 0xee, 0x48, 0x1a, 0x23, 0x5d, 0x7f, 0x9e, 0xa0,
+	0xed, 0xb2, 0x65, 0x39, 0xe4, 0x25, 0xaa, 0x7a, 0x1b, 0xe4, 0x31, 0x31, 0x49, 0x97, 0x69, 0x59,
+	0xac, 0x95, 0x47, 0x25, 0xdb, 0xa1, 0xa8, 0x16, 0x47, 0x67, 0xae, 0xc6, 0xe4, 0x8b, 0xae, 0x46,
+	0x7d, 0x7d, 0xac, 0x8a, 0x2a, 0x5b, 0x85, 0x2a, 0xb6, 0x1e, 0x1a, 0x43, 0xaa, 0xf0, 0xe6, 0x8c,
+	0x9b, 0x22, 0x11, 0x7f, 0x98, 0x00, 0xff, 0xa7, 0x5b, 0x71, 0x1f, 0xda, 0xf1, 0xf6, 0xdc, 0x02,
+	0xb3, 0x16, 0xb3, 0xc5, 0xf8, 0x8f, 0xdb, 0x7f, 0x57, 0xa3, 0x10, 0xd1, 0x45, 0xff, 0x6e, 0x4f,
+	0xea, 0x00, 0xf8, 0x30, 0xe8, 0x40, 0x8f, 0x98, 0x36, 0x64, 0xef, 0x92, 0x46, 0xf1, 0xf8, 0xa8,
+	0x0a, 0x38, 0x9b, 0x4d, 0xd8, 0x69, 0xc5, 0x10, 0xf5, 0xf7, 0xe3, 0xaa, 0xa5, 0xeb, 0x09, 0x65,
+	0x5b, 0x88, 0x35, 0xdf, 0xb0, 0x08, 0xda, 0x22, 0x58, 0xc8, 0x30, 0x47, 0xda, 0xfd, 0x24, 0x81,
+	0x6b, 0xe1, 0xa6, 0xf7, 0xac, 0x97, 0xa3, 0x5e, 0x7d, 0x63, 0x3c, 0xff, 0xa5, 0xe4, 0xb2, 0xa7,
+	0xb9, 0x68, 0x15, 0xb0, 0x98, 0xe9, 0x10, 0x65, 0xd4, 0x7e, 0x2c, 0x80, 0xc9, 0x26, 0xb6, 0xe5,
+	0x2f, 0x40, 0x71, 0xe8, 0xb5, 0xbb, 0x3c, 0xdc, 0xeb, 0xa9, 0x87, 0x9c, 0x7a, 0x73, 0x2c, 0x24,
+	0x7a, 0xeb, 0xd9, 0x60, 0x36, 0xfd, 0x8c, 0x7b, 0x35, 0x23, 0x3e, 0x85, 0x52, 0xdf, 0xbc, 0x08,
+	0x2a, 0x9a, 0xe8, 0x03, 0x70, 0x89, 0xbe, 0xa9, 0xe6, 0x32, 0xa2, 0x42, 0x87, 0x5a, 0x19, 0xe1,
+	0x88, 0x32, 0x7c, 0x06, 0xfe, 0x97, 0x78, 0x9c, 0x8c, 0x0a, 0x10, 0x00, 0xf5, 0xf5, 0x31, 0x80,
+	0x28, 0xf3, 0x3d, 0x50, 0x10, 0x77, 0xbb, 0x9a, 0x11, 0xc3, 0x7d, 0xaa, 0x36, 0xda, 0x17, 0x27,
+	0x99, 0xb8, 0x2a, 0xb3, 0x48, 0xc6, 0x01, 0x99, 0x24, 0xb3, 0x6e, 0xac, 0xb0, 0x13, 0x86, 0x6e,
+	0xab, 0xac, 0x4e, 0x48, 0x42, 0x32, 0x3b, 0x21, 0xfb, 0xe4, 0x0e, 0x99, 0x27, 0x4e, 0xed, 0x2c,
+	0xe6, 0x71, 0x40, 0x26, 0xf3, 0xac, 0xe3, 0x4c, 0xb6, 0xc0, 0xd5, 0xd4, 0x51, 0x76, 0x23, 0x53,
+	0xcb, 0x24, 0x48, 0x7d, 0xe3, 0x02, 0xa0, 0x68, 0x96, 0xaf, 0x80, 0x9c, 0xb1, 0xe9, 0x5f, 0xcb,
+	0x92, 0x37, 0x05, 0x53, 0xab, 0x17, 0x82, 0x89, 0xb9, 0xd4, 0xa9, 0xaf, 0xc3, 0x3b, 0xa9, 0x71,
+	0xf7, 0xc9, 0x49, 0x59, 0x7a, 0x76, 0x52, 0x96, 0xfe, 0x38, 0x29, 0x4b, 0xdf, 0x9f, 0x96, 0x73,
+	0xcf, 0x4e, 0xcb, 0xb9, 0xdf, 0x4f, 0xcb, 0xb9, 0xcf, 0xab, 0xb6, 0x43, 0xf6, 0xba, 0x6d, 0xbd,
+	0x83, 0x5c, 0x83, 0x67, 0xae, 0xee, 0x75, 0xdb, 0x46, 0xf2, 0xc9, 0x42, 0xfa, 0x3e, 0xc4, 0xe1,
+	0x3f, 0xef, 0x3c, 0xbd, 0xbf, 0x6f, 0xfd, 0x13, 0x00, 0x00, 0xff, 0xff, 0xf8, 0x3e, 0xf0, 0xd5,
+	0xbb, 0x0f, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -794,6 +1133,16 @@ type MsgClient interface {
 	//
 	// Since: cosmos-sdk 0.47
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	// CreateGovernor defines a method to create a new governor.
+	CreateGovernor(ctx context.Context, in *MsgCreateGovernor, opts ...grpc.CallOption) (*MsgCreateGovernorResponse, error)
+	// EditGovernor defines a method to edit an existing governor.
+	// It also sets its status.
+	EditGovernor(ctx context.Context, in *MsgEditGovernor, opts ...grpc.CallOption) (*MsgEditGovernorResponse, error)
+	// DelegateGovernor defines a method to delegate a non-zero percentange of
+	// governance voting power from a delegator to a governor.
+	DelegateGovernor(ctx context.Context, in *MsgDelegateGovernor, opts ...grpc.CallOption) (*MsgDelegateGovernorResponse, error)
+	// UndelegateGovernor defines a method to undelegate governance voting power
+	UndelegateGovernor(ctx context.Context, in *MsgUndelegateGovernor, opts ...grpc.CallOption) (*MsgUndelegateGovernorResponse, error)
 }
 
 type msgClient struct {
@@ -858,6 +1207,42 @@ func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts 
 	return out, nil
 }
 
+func (c *msgClient) CreateGovernor(ctx context.Context, in *MsgCreateGovernor, opts ...grpc.CallOption) (*MsgCreateGovernorResponse, error) {
+	out := new(MsgCreateGovernorResponse)
+	err := c.cc.Invoke(ctx, "/atomone.gov.v1.Msg/CreateGovernor", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) EditGovernor(ctx context.Context, in *MsgEditGovernor, opts ...grpc.CallOption) (*MsgEditGovernorResponse, error) {
+	out := new(MsgEditGovernorResponse)
+	err := c.cc.Invoke(ctx, "/atomone.gov.v1.Msg/EditGovernor", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) DelegateGovernor(ctx context.Context, in *MsgDelegateGovernor, opts ...grpc.CallOption) (*MsgDelegateGovernorResponse, error) {
+	out := new(MsgDelegateGovernorResponse)
+	err := c.cc.Invoke(ctx, "/atomone.gov.v1.Msg/DelegateGovernor", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UndelegateGovernor(ctx context.Context, in *MsgUndelegateGovernor, opts ...grpc.CallOption) (*MsgUndelegateGovernorResponse, error) {
+	out := new(MsgUndelegateGovernorResponse)
+	err := c.cc.Invoke(ctx, "/atomone.gov.v1.Msg/UndelegateGovernor", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	// SubmitProposal defines a method to create new proposal given the messages.
@@ -876,6 +1261,16 @@ type MsgServer interface {
 	//
 	// Since: cosmos-sdk 0.47
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
+	// CreateGovernor defines a method to create a new governor.
+	CreateGovernor(context.Context, *MsgCreateGovernor) (*MsgCreateGovernorResponse, error)
+	// EditGovernor defines a method to edit an existing governor.
+	// It also sets its status.
+	EditGovernor(context.Context, *MsgEditGovernor) (*MsgEditGovernorResponse, error)
+	// DelegateGovernor defines a method to delegate a non-zero percentange of
+	// governance voting power from a delegator to a governor.
+	DelegateGovernor(context.Context, *MsgDelegateGovernor) (*MsgDelegateGovernorResponse, error)
+	// UndelegateGovernor defines a method to undelegate governance voting power
+	UndelegateGovernor(context.Context, *MsgUndelegateGovernor) (*MsgUndelegateGovernorResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
@@ -899,6 +1294,18 @@ func (*UnimplementedMsgServer) Deposit(ctx context.Context, req *MsgDeposit) (*M
 }
 func (*UnimplementedMsgServer) UpdateParams(ctx context.Context, req *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
+}
+func (*UnimplementedMsgServer) CreateGovernor(ctx context.Context, req *MsgCreateGovernor) (*MsgCreateGovernorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateGovernor not implemented")
+}
+func (*UnimplementedMsgServer) EditGovernor(ctx context.Context, req *MsgEditGovernor) (*MsgEditGovernorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EditGovernor not implemented")
+}
+func (*UnimplementedMsgServer) DelegateGovernor(ctx context.Context, req *MsgDelegateGovernor) (*MsgDelegateGovernorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DelegateGovernor not implemented")
+}
+func (*UnimplementedMsgServer) UndelegateGovernor(ctx context.Context, req *MsgUndelegateGovernor) (*MsgUndelegateGovernorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UndelegateGovernor not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
@@ -1013,6 +1420,78 @@ func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_CreateGovernor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCreateGovernor)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).CreateGovernor(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/atomone.gov.v1.Msg/CreateGovernor",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).CreateGovernor(ctx, req.(*MsgCreateGovernor))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_EditGovernor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgEditGovernor)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).EditGovernor(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/atomone.gov.v1.Msg/EditGovernor",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).EditGovernor(ctx, req.(*MsgEditGovernor))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_DelegateGovernor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgDelegateGovernor)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).DelegateGovernor(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/atomone.gov.v1.Msg/DelegateGovernor",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).DelegateGovernor(ctx, req.(*MsgDelegateGovernor))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UndelegateGovernor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUndelegateGovernor)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UndelegateGovernor(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/atomone.gov.v1.Msg/UndelegateGovernor",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UndelegateGovernor(ctx, req.(*MsgUndelegateGovernor))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "atomone.gov.v1.Msg",
 	HandlerType: (*MsgServer)(nil),
@@ -1040,6 +1519,22 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateParams",
 			Handler:    _Msg_UpdateParams_Handler,
+		},
+		{
+			MethodName: "CreateGovernor",
+			Handler:    _Msg_CreateGovernor_Handler,
+		},
+		{
+			MethodName: "EditGovernor",
+			Handler:    _Msg_EditGovernor_Handler,
+		},
+		{
+			MethodName: "DelegateGovernor",
+			Handler:    _Msg_DelegateGovernor_Handler,
+		},
+		{
+			MethodName: "UndelegateGovernor",
+			Handler:    _Msg_UndelegateGovernor_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -1502,6 +1997,269 @@ func (m *MsgUpdateParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgCreateGovernor) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgCreateGovernor) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgCreateGovernor) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pubkey != nil {
+		{
+			size, err := m.Pubkey.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTx(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.GovernorAddress) > 0 {
+		i -= len(m.GovernorAddress)
+		copy(dAtA[i:], m.GovernorAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.GovernorAddress)))
+		i--
+		dAtA[i] = 0x12
+	}
+	{
+		size, err := m.Description.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintTx(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgCreateGovernorResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgCreateGovernorResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgCreateGovernorResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgEditGovernor) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgEditGovernor) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgEditGovernor) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.GovernorAddress) > 0 {
+		i -= len(m.GovernorAddress)
+		copy(dAtA[i:], m.GovernorAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.GovernorAddress)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.Status != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.Status))
+		i--
+		dAtA[i] = 0x10
+	}
+	{
+		size, err := m.Description.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintTx(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgEditGovernorResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgEditGovernorResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgEditGovernorResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgDelegateGovernor) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgDelegateGovernor) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgDelegateGovernor) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Percentage) > 0 {
+		i -= len(m.Percentage)
+		copy(dAtA[i:], m.Percentage)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Percentage)))
+		i--
+		dAtA[i] = 0x32
+	}
+	if len(m.GovernorAddress) > 0 {
+		i -= len(m.GovernorAddress)
+		copy(dAtA[i:], m.GovernorAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.GovernorAddress)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.DelegatorAddress) > 0 {
+		i -= len(m.DelegatorAddress)
+		copy(dAtA[i:], m.DelegatorAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.DelegatorAddress)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgDelegateGovernorResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgDelegateGovernorResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgDelegateGovernorResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUndelegateGovernor) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUndelegateGovernor) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUndelegateGovernor) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.DelegatorAddress) > 0 {
+		i -= len(m.DelegatorAddress)
+		copy(dAtA[i:], m.DelegatorAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.DelegatorAddress)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUndelegateGovernorResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUndelegateGovernorResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUndelegateGovernorResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	offset -= sovTx(v)
 	base := offset
@@ -1702,6 +2460,113 @@ func (m *MsgUpdateParams) Size() (n int) {
 }
 
 func (m *MsgUpdateParamsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgCreateGovernor) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.Description.Size()
+	n += 1 + l + sovTx(uint64(l))
+	l = len(m.GovernorAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.Pubkey != nil {
+		l = m.Pubkey.Size()
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgCreateGovernorResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgEditGovernor) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.Description.Size()
+	n += 1 + l + sovTx(uint64(l))
+	if m.Status != 0 {
+		n += 1 + sovTx(uint64(m.Status))
+	}
+	l = len(m.GovernorAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgEditGovernorResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgDelegateGovernor) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.DelegatorAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.GovernorAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Percentage)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgDelegateGovernorResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgUndelegateGovernor) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.DelegatorAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgUndelegateGovernorResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2945,6 +3810,719 @@ func (m *MsgUpdateParamsResponse) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: MsgUpdateParamsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgCreateGovernor) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgCreateGovernor: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgCreateGovernor: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Description", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Description.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GovernorAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.GovernorAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pubkey", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pubkey == nil {
+				m.Pubkey = &types.Any{}
+			}
+			if err := m.Pubkey.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgCreateGovernorResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgCreateGovernorResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgCreateGovernorResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgEditGovernor) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgEditGovernor: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgEditGovernor: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Description", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Description.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Status", wireType)
+			}
+			m.Status = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Status |= GovernorStatus(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GovernorAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.GovernorAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgEditGovernorResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgEditGovernorResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgEditGovernorResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgDelegateGovernor) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgDelegateGovernor: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgDelegateGovernor: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DelegatorAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DelegatorAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GovernorAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.GovernorAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Percentage", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Percentage = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgDelegateGovernorResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgDelegateGovernorResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgDelegateGovernorResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUndelegateGovernor) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUndelegateGovernor: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUndelegateGovernor: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DelegatorAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DelegatorAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUndelegateGovernorResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUndelegateGovernorResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUndelegateGovernorResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
