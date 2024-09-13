@@ -28,14 +28,42 @@ import (
 )
 
 var (
-	_, _, addr   = testdata.KeyTestPubAddr()
-	govAcct      = authtypes.NewModuleAddress(types.ModuleName)
-	TestProposal = getTestProposal()
+	_, _, addr            = testdata.KeyTestPubAddr()
+	govAcct               = authtypes.NewModuleAddress(types.ModuleName)
+	TestProposal          = getTestProposal()
+	TestAmendmentProposal = getTestConstitutionAmendmentProposal()
+	TestLawProposal       = getTestLawProposal()
 )
 
 // getTestProposal creates and returns a test proposal message.
 func getTestProposal() []sdk.Msg {
 	legacyProposalMsg, err := v1.NewLegacyContent(v1beta1.NewTextProposal("Title", "description"), authtypes.NewModuleAddress(types.ModuleName).String())
+	if err != nil {
+		panic(err)
+	}
+
+	return []sdk.Msg{
+		banktypes.NewMsgSend(govAcct, addr, sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(1000)))),
+		legacyProposalMsg,
+	}
+}
+
+// getTestConstitutionAmendmentProposal creates and returns a test constitution amendment proposal message.
+func getTestConstitutionAmendmentProposal() []sdk.Msg {
+	legacyProposalMsg, err := v1.NewLegacyContent(v1beta1.NewConstitutionAmendmentProposal("Title", "description"), authtypes.NewModuleAddress(types.ModuleName).String())
+	if err != nil {
+		panic(err)
+	}
+
+	return []sdk.Msg{
+		banktypes.NewMsgSend(govAcct, addr, sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(1000)))),
+		legacyProposalMsg,
+	}
+}
+
+// getTestLawProposal creates and returns a test law proposal message.
+func getTestLawProposal() []sdk.Msg {
+	legacyProposalMsg, err := v1.NewLegacyContent(v1beta1.NewLawProposal("Title", "description"), authtypes.NewModuleAddress(types.ModuleName).String())
 	if err != nil {
 		panic(err)
 	}
