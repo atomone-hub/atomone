@@ -2,19 +2,14 @@ package v1
 
 import (
 	"bytes"
-	"fmt"
 	"sort"
 	"strings"
 
-	gogoprotoany "github.com/cosmos/gogoproto/types/any"
-
 	"cosmossdk.io/core/address"
-	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/errors"
 	"cosmossdk.io/math"
 
 	"github.com/cosmos/cosmos-sdk/codec"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -40,7 +35,7 @@ func NewGovernor(address string, description GovernorDescription) (Governor, err
 	return Governor{
 		GovernorAddress: address,
 		Description:     description,
-		Delegations:     make([]*ValidatorDelegation, 0),
+		DelegatedShares: make([]*ValidatorGovDelegation, 0),
 		Status:          Active,
 	}, nil
 }
@@ -71,11 +66,11 @@ func (g Governors) Len() int {
 
 // Implements sort interface
 func (g Governors) Less(i, j int) bool {
-	gi, err := g.GovernorCodec.StringToBytes(g.Governors[i].GetAddress())
+	gi, err := g.GovernorCodec.StringToBytes(g.Governors[i].GetAddress().String())
 	if err != nil {
 		panic(err)
 	}
-	gj, err := g.GovernorCodec.StringToBytes(g.Governors[j].GetAddress())
+	gj, err := g.GovernorCodec.StringToBytes(g.Governors[j].GetAddress().String())
 	if err != nil {
 		panic(err)
 	}
@@ -90,13 +85,13 @@ func (g Governors) Swap(i, j int) {
 
 // GovernorsByVotingPower implements sort.Interface for []Governor based on
 // the VotingPower and Address fields.
-// The validators are sorted first by their voting power (descending). Secondary index - Address (ascending).
-// Copied from tendermint/types/validator_set.go
+// The vovernors are sorted first by their voting power (descending). Secondary index - Address (ascending).
+// Copied from tendermint/types/vovernor_set.go
 type GovernorsByVotingPower []Governor
 
-func (valz ValidatorsByVotingPower) Len() int { return len(valz) }
+func (govs GovernorsByVotingPower) Len() int { return len(govs) }
 
-func (valz ValidatorsByVotingPower) Less(i, j int, r math.Int) bool {
+func (govs GovernorsByVotingPower) Less(i, j int, r math.Int) bool {
 	if valz[i].ConsensusPower(r) == valz[j].ConsensusPower(r) {
 		addrI, errI := valz[i].GetConsAddr()
 		addrJ, errJ := valz[j].GetConsAddr()
@@ -109,61 +104,44 @@ func (valz ValidatorsByVotingPower) Less(i, j int, r math.Int) bool {
 	return valz[i].ConsensusPower(r) > valz[j].ConsensusPower(r)
 }
 
-func (valz ValidatorsByVotingPower) Swap(i, j int) {
-	valz[i], valz[j] = valz[j], valz[i]
+func (govs GovernorsByVotingPower) Swap(i, j int) {
+	govs[i], govs[j] = govs[j], govs[i]
 }
 
-// UnpackInterfaces implements UnpackInterfacesMessage.UnpackInterfaces
-func (v Validators) UnpackInterfaces(c gogoprotoany.AnyUnpacker) error {
-	for i := range v.Validators {
-		if err := v.Validators[i].UnpackInterfaces(c); err != nil {
-			return err
-		}
-	}
-	return nil
+func MustMarshalGovernor(cdc codec.BinaryCodec, governor *Governor) []byte {
+	return cdc.MustMarshal(governor)
 }
 
-// return the redelegation
-func MustMarshalValidator(cdc codec.BinaryCodec, validator *Validator) []byte {
-	return cdc.MustMarshal(validator)
-}
-
-// unmarshal a redelegation from a store value
-func MustUnmarshalValidator(cdc codec.BinaryCodec, value []byte) Validator {
-	validator, err := UnmarshalValidator(cdc, value)
+func MustUnmarshalGovernor(cdc codec.BinaryCodec, value []byte) Governor {
+	governor, err := UnmarshalGovernor(cdc, value)
 	if err != nil {
 		panic(err)
 	}
 
-	return validator
+	return governor
 }
 
 // unmarshal a redelegation from a store value
-func UnmarshalValidator(cdc codec.BinaryCodec, value []byte) (v Validator, err error) {
-	err = cdc.Unmarshal(value, &v)
-	return v, err
+func UnmarshalGovernor(cdc codec.BinaryCodec, value []byte) (g Governor, err error) {
+	err = cdc.Unmarshal(value, &g)
+	return g, err
 }
 
-// IsBonded checks if the validator status equals Bonded
-func (v Validator) IsBonded() bool {
-	return v.GetStatus() == sdk.Bonded
+// IsActive checks if the governor status equals Active
+func (g Governor) IsActive() bool {
+	return g.GetStatus() == Active
 }
 
-// IsUnbonded checks if the validator status equals Unbonded
-func (v Validator) IsUnbonded() bool {
-	return v.GetStatus() == sdk.Unbonded
-}
-
-// IsUnbonding checks if the validator status equals Unbonding
-func (v Validator) IsUnbonding() bool {
-	return v.GetStatus() == sdk.Unbonding
+// IsInactive checks if the governor status equals Inactive
+func (g Governor) IsInactive() bool {
+	return g.GetStatus() == Inactive
 }
 
 // constant used in flags to indicate that description field should not be updated
 const DoNotModifyDesc = "[do-not-modify]"
 
-func NewDescription(moniker, identity, website, securityContact, details string) Description {
-	return Description{
+func NewGovernorDescription(moniker, identity, website, securityContact, details string) GovernorDescription {
+	return GovernorDescription{
 		Moniker:         moniker,
 		Identity:        identity,
 		Website:         website,
@@ -174,7 +152,7 @@ func NewDescription(moniker, identity, website, securityContact, details string)
 
 // UpdateDescription updates the fields of a given description. An error is
 // returned if the resulting description contains an invalid length.
-func (d Description) UpdateDescription(d2 Description) (Description, error) {
+func (d GovernorDescription) UpdateDescription(d2 GovernorDescription) (GovernorDescription, error) {
 	if d2.Moniker == DoNotModifyDesc {
 		d2.Moniker = d.Moniker
 	}
@@ -195,7 +173,7 @@ func (d Description) UpdateDescription(d2 Description) (Description, error) {
 		d2.Details = d.Details
 	}
 
-	return NewDescription(
+	return NewGovernorDescription(
 		d2.Moniker,
 		d2.Identity,
 		d2.Website,
@@ -204,8 +182,8 @@ func (d Description) UpdateDescription(d2 Description) (Description, error) {
 	).EnsureLength()
 }
 
-// EnsureLength ensures the length of a validator's description.
-func (d Description) EnsureLength() (Description, error) {
+// EnsureLength ensures the length of a vovernor's description.
+func (d GovernorDescription) EnsureLength() (GovernorDescription, error) {
 	if len(d.Moniker) > MaxMonikerLength {
 		return d, errors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid moniker length; got: %d, max: %d", len(d.Moniker), MaxMonikerLength)
 	}
@@ -229,248 +207,38 @@ func (d Description) EnsureLength() (Description, error) {
 	return d, nil
 }
 
-// ModuleValidatorUpdate returns a appmodule.ValidatorUpdate from a staking validator type
-// with the full validator power.
-// It replaces the previous ABCIValidatorUpdate function.
-func (v Validator) ModuleValidatorUpdate(r math.Int) appmodule.ValidatorUpdate {
-	consPk, err := v.ConsPubKey()
-	if err != nil {
-		panic(err)
-	}
-
-	return appmodule.ValidatorUpdate{
-		PubKey:     consPk.Bytes(),
-		PubKeyType: consPk.Type(),
-		Power:      v.ConsensusPower(r),
-	}
+// GetDelegations returns the delegations of the governor
+func (g Governor) GetDelegations() []*ValidatorGovDelegation {
+	return g.DelegatedShares
 }
 
-// ModuleValidatorUpdateZero returns a appmodule.ValidatorUpdate from a staking validator type
-// with zero power used for validator updates.
-// It replaces the previous ABCIValidatorUpdateZero function.
-func (v Validator) ModuleValidatorUpdateZero() appmodule.ValidatorUpdate {
-	consPk, err := v.ConsPubKey()
-	if err != nil {
-		panic(err)
-	}
-
-	return appmodule.ValidatorUpdate{
-		PubKey:     consPk.Bytes(),
-		PubKeyType: consPk.Type(),
-		Power:      0,
-	}
-}
-
-// SetInitialCommission attempts to set a validator's initial commission. An
-// error is returned if the commission is invalid.
-func (v Validator) SetInitialCommission(commission Commission) (Validator, error) {
-	if err := commission.Validate(); err != nil {
-		return v, err
-	}
-
-	v.Commission = commission
-
-	return v, nil
-}
-
-// In some situations, the exchange rate becomes invalid, e.g. if
-// Validator loses all tokens due to slashing. In this case,
-// make all future delegations invalid.
-func (v Validator) InvalidExRate() bool {
-	return v.Tokens.IsZero() && v.DelegatorShares.IsPositive()
-}
-
-// calculate the token worth of provided shares
-func (v Validator) TokensFromShares(shares math.LegacyDec) math.LegacyDec {
-	return (shares.MulInt(v.Tokens)).Quo(v.DelegatorShares)
-}
-
-// calculate the token worth of provided shares, truncated
-func (v Validator) TokensFromSharesTruncated(shares math.LegacyDec) math.LegacyDec {
-	return (shares.MulInt(v.Tokens)).QuoTruncate(v.DelegatorShares)
-}
-
-// TokensFromSharesRoundUp returns the token worth of provided shares, rounded
-// up.
-func (v Validator) TokensFromSharesRoundUp(shares math.LegacyDec) math.LegacyDec {
-	return (shares.MulInt(v.Tokens)).QuoRoundUp(v.DelegatorShares)
-}
-
-// SharesFromTokens returns the shares of a delegation given a bond amount. It
-// returns an error if the validator has no tokens.
-func (v Validator) SharesFromTokens(amt math.Int) (math.LegacyDec, error) {
-	if v.Tokens.IsZero() {
-		return math.LegacyZeroDec(), ErrInsufficientShares
-	}
-
-	return v.GetDelegatorShares().MulInt(amt).QuoInt(v.GetTokens()), nil
-}
-
-// SharesFromTokensTruncated returns the truncated shares of a delegation given
-// a bond amount. It returns an error if the validator has no tokens.
-func (v Validator) SharesFromTokensTruncated(amt math.Int) (math.LegacyDec, error) {
-	if v.Tokens.IsZero() {
-		return math.LegacyZeroDec(), ErrInsufficientShares
-	}
-
-	return v.GetDelegatorShares().MulInt(amt).QuoTruncate(math.LegacyNewDecFromInt(v.GetTokens())), nil
-}
-
-// get the bonded tokens which the validator holds
-func (v Validator) BondedTokens() math.Int {
-	if v.IsBonded() {
-		return v.Tokens
-	}
-
-	return math.ZeroInt()
-}
-
-// ConsensusPower gets the consensus-engine power. Aa reduction of 10^6 from
-// validator tokens is applied
-func (v Validator) ConsensusPower(r math.Int) int64 {
-	if v.IsBonded() {
-		return v.PotentialConsensusPower(r)
-	}
-
-	return 0
-}
-
-// PotentialConsensusPower returns the potential consensus-engine power.
-func (v Validator) PotentialConsensusPower(r math.Int) int64 {
-	return sdk.TokensToConsensusPower(v.Tokens, r)
-}
-
-// UpdateStatus updates the location of the shares within a validator
-// to reflect the new status
-func (v Validator) UpdateStatus(newStatus BondStatus) Validator {
-	v.Status = newStatus
-	return v
-}
-
-// AddTokensFromDel adds tokens to a validator
-func (v Validator) AddTokensFromDel(amount math.Int) (Validator, math.LegacyDec) {
-	// calculate the shares to issue
-	var issuedShares math.LegacyDec
-	if v.DelegatorShares.IsZero() {
-		// the first delegation to a validator sets the exchange rate to one
-		issuedShares = math.LegacyNewDecFromInt(amount)
-	} else {
-		shares, err := v.SharesFromTokens(amount)
-		if err != nil {
-			panic(err)
-		}
-
-		issuedShares = shares
-	}
-
-	v.Tokens = v.Tokens.Add(amount)
-	v.DelegatorShares = v.DelegatorShares.Add(issuedShares)
-
-	return v, issuedShares
-}
-
-// RemoveTokens removes tokens from a validator
-func (v Validator) RemoveTokens(tokens math.Int) Validator {
-	if tokens.IsNegative() {
-		panic(fmt.Sprintf("should not happen: trying to remove negative tokens %v", tokens))
-	}
-
-	if v.Tokens.LT(tokens) {
-		panic(fmt.Sprintf("should not happen: only have %v tokens, trying to remove %v", v.Tokens, tokens))
-	}
-
-	v.Tokens = v.Tokens.Sub(tokens)
-
-	return v
-}
-
-// RemoveDelShares removes delegator shares from a validator.
-// NOTE: because token fractions are left in the valiadator,
-//
-//	the exchange rate of future shares of this validator can increase.
-func (v Validator) RemoveDelShares(delShares math.LegacyDec) (Validator, math.Int) {
-	remainingShares := v.DelegatorShares.Sub(delShares)
-
-	var issuedTokens math.Int
-	if remainingShares.IsZero() {
-		// last delegation share gets any trimmings
-		issuedTokens = v.Tokens
-		v.Tokens = math.ZeroInt()
-	} else {
-		// leave excess tokens in the validator
-		// however fully use all the delegator shares
-		issuedTokens = v.TokensFromShares(delShares).TruncateInt()
-		v.Tokens = v.Tokens.Sub(issuedTokens)
-
-		if v.Tokens.IsNegative() {
-			panic("attempting to remove more tokens than available in validator")
+// GetDelegationShares returns the shares delegated to the governor for a specific validator
+func (g Governor) GetDelegationShares(valAddr sdk.ValAddress) sdk.Dec {
+	valAddrStr := valAddr.String()
+	for _, del := range g.DelegatedShares {
+		if del.ValidatorAddress == valAddrStr {
+			return del.Shares
 		}
 	}
 
-	v.DelegatorShares = remainingShares
-
-	return v, issuedTokens
+	return sdk.ZeroDec()
 }
 
 // MinEqual defines a more minimum set of equality conditions when comparing two
-// validators.
-func (v *Validator) MinEqual(other *Validator) bool {
-	return v.OperatorAddress == other.OperatorAddress &&
-		v.Status == other.Status &&
-		v.Tokens.Equal(other.Tokens) &&
-		v.DelegatorShares.Equal(other.DelegatorShares) &&
-		v.Description.Equal(other.Description) &&
-		v.Commission.Equal(other.Commission) &&
-		v.Jailed == other.Jailed &&
-		v.MinSelfDelegation.Equal(other.MinSelfDelegation) &&
-		v.ConsensusPubkey.Equal(other.ConsensusPubkey)
+// governors.
+func (g *Governor) MinEqual(other *Governor) bool {
+	return g.GovernorAddress == other.GovernorAddress &&
+		g.Status == other.Status &&
+		g.DelegatedShares.Equal(other.DelegatedShares) &&
+		g.Description.Equal(other.Description)
 }
 
 // Equal checks if the receiver equals the parameter
-func (v *Validator) Equal(v2 *Validator) bool {
-	return v.MinEqual(v2) &&
-		v.UnbondingHeight == v2.UnbondingHeight &&
-		v.UnbondingTime.Equal(v2.UnbondingTime)
+func (g *Governor) Equal(v2 *Governor) bool {
+	return g.MinEqual(v2)
 }
 
-func (v Validator) IsJailed() bool            { return v.Jailed }
-func (v Validator) GetMoniker() string        { return v.Description.Moniker }
-func (v Validator) GetStatus() sdk.BondStatus { return sdk.BondStatus(v.Status) }
-func (v Validator) GetOperator() string {
-	return v.OperatorAddress
-}
-
-// ConsPubKey returns the validator PubKey as a cryptotypes.PubKey.
-func (v Validator) ConsPubKey() (cryptotypes.PubKey, error) {
-	pk, ok := v.ConsensusPubkey.GetCachedValue().(cryptotypes.PubKey)
-	if !ok {
-		return nil, errors.Wrapf(sdkerrors.ErrInvalidType, "expecting cryptotypes.PubKey, got %T", pk)
-	}
-
-	return pk, nil
-}
-
-// GetConsAddr extracts Consensus key address
-func (v Validator) GetConsAddr() ([]byte, error) {
-	pk, ok := v.ConsensusPubkey.GetCachedValue().(cryptotypes.PubKey)
-	if !ok {
-		return nil, errors.Wrapf(sdkerrors.ErrInvalidType, "expecting cryptotypes.PubKey, got %T", pk)
-	}
-
-	return pk.Address().Bytes(), nil
-}
-
-func (v Validator) GetTokens() math.Int       { return v.Tokens }
-func (v Validator) GetBondedTokens() math.Int { return v.BondedTokens() }
-func (v Validator) GetConsensusPower(r math.Int) int64 {
-	return v.ConsensusPower(r)
-}
-func (v Validator) GetCommission() math.LegacyDec      { return v.Commission.Rate }
-func (v Validator) GetMinSelfDelegation() math.Int     { return v.MinSelfDelegation }
-func (v Validator) GetDelegatorShares() math.LegacyDec { return v.DelegatorShares }
-
-// UnpackInterfaces implements UnpackInterfacesMessage.UnpackInterfaces
-func (v Validator) UnpackInterfaces(unpacker gogoprotoany.AnyUnpacker) error {
-	var pk cryptotypes.PubKey
-	return unpacker.UnpackAny(v.ConsensusPubkey, &pk)
-}
+func (g Governor) GetMoniker() string                  { return g.Description.Moniker }
+func (g Governor) GetStatus() GovernorStatus           { return g.Status }
+func (g Governor) GetAddress() GovernorAddress         { return GovernorAddressFromBech32(g.GovernorAddress) }
+func (g Governor) GetDescription() GovernorDescription { return g.Description }

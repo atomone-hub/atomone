@@ -35,7 +35,7 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 		currGovernors[governor.GetAddress().String()] = v1.NewGovernorGovInfo(
 			governor.GetAddress(),
 			governor.GetDelegations(),
-			[]v1.ValidatorDelegation{},
+			make([]v1.ValidatorGovDelegation, 0),
 			v1.WeightedVoteOptions{},
 		)
 		return false

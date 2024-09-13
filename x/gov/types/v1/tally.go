@@ -8,14 +8,14 @@ import (
 
 // GovernorGovInfo used for tallying
 type GovernorGovInfo struct {
-	Address               GovernorAddress       // address of the governor
-	Delegations           []ValidatorDelegation // Delegations of the governor
-	DelegationsDeductions []ValidatorDelegation // Delegator deductions from validator's delegators voting independently
-	Vote                  WeightedVoteOptions   // Vote of the validator
+	Address               GovernorAddress           // address of the governor
+	Delegations           []*ValidatorGovDelegation // Delegations of the governor
+	DelegationsDeductions []ValidatorGovDelegation  // Delegator deductions from validator's delegators voting independently
+	Vote                  WeightedVoteOptions       // Vote of the validator
 }
 
 // NewGovernorGovInfo creates a GovernorGovInfo instance
-func NewGovernorGovInfo(address GovernorAddress, delegations []ValidatorDelegation, deductions []ValidatorDelegation, options WeightedVoteOptions) GovernorGovInfo {
+func NewGovernorGovInfo(address GovernorAddress, delegations []*ValidatorGovDelegation, deductions []ValidatorGovDelegation, options WeightedVoteOptions) GovernorGovInfo {
 	return GovernorGovInfo{
 		Address:               address,
 		Delegations:           delegations,
