@@ -12,7 +12,6 @@ import (
 // Tally iterates over the votes and updates the tally of a proposal based on the voting power of the
 // voters
 func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, burnDeposits bool, tallyResults v1.TallyResult) {
-	totalVotingPower := math.LegacyZeroDec()
 	// fetch all the bonded validators
 	currValidators := keeper.getBondedValidatorsByAddress(ctx)
 	totalVotingPower, results := keeper.tallyVotes(ctx, proposal, currValidators, true)
