@@ -31,8 +31,8 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 		return false
 	})
 
-	// fetch all the governors, insert them into currGovernors
-	keeper.IterateGovernorsByPower(ctx, func(index int64, governor v1.GovernorI) (stop bool) {
+	// fetch all the top active param.MaxGovernors governors by delegated VP, insert them into currGovernors
+	keeper.IterateGovernorsByGovernancePower(ctx, func(index int64, governor v1.GovernorI) (stop bool) {
 		currGovernors[governor.GetAddress().String()] = v1.NewGovernorGovInfo(
 			governor.GetAddress(),
 			keeper.GetAllGovernorValShares(ctx, governor.GetAddress()),

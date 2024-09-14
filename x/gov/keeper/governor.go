@@ -28,7 +28,7 @@ func (k Keeper) SetGovernor(ctx sdk.Context, governor v1.Governor) {
 }
 
 // GetAllGovernors returns all governors
-func (k Keeper) GetAllGovernors(ctx sdk.Context) (governors []v1.Governor) {
+func (k Keeper) GetAllGovernors(ctx sdk.Context) (governors v1.Governors) {
 	store := ctx.KVStore(k.storeKey)
 
 	iterator := sdk.KVStorePrefixIterator(store, types.GovernorKeyPrefix)
@@ -37,6 +37,23 @@ func (k Keeper) GetAllGovernors(ctx sdk.Context) (governors []v1.Governor) {
 	for ; iterator.Valid(); iterator.Next() {
 		governor := v1.MustUnmarshalGovernor(k.cdc, iterator.Value())
 		governors = append(governors, governor)
+	}
+
+	return governors
+}
+
+// GetAllActiveGovernors returns all active governors
+func (k Keeper) GetAllActiveGovernors(ctx sdk.Context) (governors v1.Governors) {
+	store := ctx.KVStore(k.storeKey)
+
+	iterator := sdk.KVStorePrefixIterator(store, types.GovernorKeyPrefix)
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		governor := v1.MustUnmarshalGovernor(k.cdc, iterator.Value())
+		if governor.IsActive() {
+			governors = append(governors, governor)
+		}
 	}
 
 	return governors
