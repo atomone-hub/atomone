@@ -157,7 +157,7 @@ func (k Keeper) IncreaseGovernorShares(ctx sdk.Context, governorAddr types.Gover
 	validator, _ := k.sk.GetValidator(ctx, validatorAddr)
 	vp := shares.MulInt(validator.GetBondedTokens()).Quo(validator.GetDelegatorShares())
 	governor.SetVotingPower(governor.GetVotingPower().Add(vp))
-	k.SetGovernor(ctx, governor)
+	k.UpdateGovernorByPowerIndex(ctx, governor)
 }
 
 // DecreaseGovernorShares decreases the governor validator shares in the store
@@ -183,7 +183,7 @@ func (k Keeper) DecreaseGovernorShares(ctx sdk.Context, governorAddr types.Gover
 		panic("negative governor voting power")
 	}
 	governor.SetVotingPower(governorVP)
-	k.SetGovernor(ctx, governor)
+	k.UpdateGovernorByPowerIndex(ctx, governor)
 }
 
 // UndelegateGovernor decreases all governor validator shares in the store

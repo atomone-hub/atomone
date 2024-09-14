@@ -25,6 +25,10 @@ func (k Keeper) SetGovernor(ctx sdk.Context, governor v1.Governor) {
 	store := ctx.KVStore(k.storeKey)
 	bz := v1.MustMarshalGovernor(k.cdc, &governor)
 	store.Set(types.GovernorKey(governor.GetAddress()), bz)
+
+	if governor.VotingPower.GT(sdk.ZeroDec()) {
+		k.SetGovernorByPowerIndex(ctx, governor)
+	}
 }
 
 // GetAllGovernors returns all governors
@@ -82,9 +86,17 @@ func (k Keeper) SetGovernorByPowerIndex(ctx sdk.Context, governor v1.Governor) {
 }
 
 // governor by power index
-func (k Keeper) DeleteValidatorByPowerIndex(ctx sdk.Context, governor v1.Governor) {
+func (k Keeper) DeleteGovernorByPowerIndex(ctx sdk.Context, governor v1.Governor) {
 	store := ctx.KVStore(k.storeKey)
 	store.Delete(types.GovernorsByPowerKey(governor.GetAddress(), governor.GetVotingPower()))
+}
+
+// UpdateGovernorByPowerIndex updates the governor in the governor by power index
+func (k Keeper) UpdateGovernorByPowerIndex(ctx sdk.Context, governor v1.Governor) {
+	oldGovernor, _ := k.GetGovernor(ctx, governor.GetAddress())
+	k.DeleteGovernorByPowerIndex(ctx, oldGovernor)
+	k.SetGovernorByPowerIndex(ctx, governor)
+	k.SetGovernor(ctx, governor)
 }
 
 // IterateMaxGovernorsByGovernancePower iterates over the top params.MaxGovernors governors by governance power
