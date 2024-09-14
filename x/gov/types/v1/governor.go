@@ -9,6 +9,7 @@ import (
 	"cosmossdk.io/errors"
 	"cosmossdk.io/math"
 
+	"github.com/atomone-hub/atomone/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -221,8 +222,8 @@ func (g *Governor) Equal(v2 *Governor) bool {
 func (g Governor) GetMoniker() string                  { return g.Description.Moniker }
 func (g Governor) GetStatus() GovernorStatus           { return g.Status }
 func (g Governor) GetDescription() GovernorDescription { return g.Description }
-func (g Governor) GetAddress() GovernorAddress {
-	addr, err := GovernorAddressFromBech32(g.GovernorAddress)
+func (g Governor) GetAddress() types.GovernorAddress {
+	addr, err := types.GovernorAddressFromBech32(g.GovernorAddress)
 	if err != nil {
 		panic(err)
 	}

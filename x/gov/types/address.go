@@ -1,4 +1,4 @@
-package v1
+package types
 
 import (
 	"bytes"
@@ -49,6 +49,17 @@ func GovernorAddressFromBech32(address string) (addr GovernorAddress, err error)
 	}
 
 	return GovernorAddress(bz), nil
+}
+
+// MustGovernorAddressFromBech32 creates a GovernorAddress from a Bech32 string.
+// If the address is invalid, it panics.
+func MustGovernorAddressFromBech32(address string) GovernorAddress {
+	addr, err := GovernorAddressFromBech32(address)
+	if err != nil {
+		panic(err)
+	}
+
+	return addr
 }
 
 // Returns boolean for whether two GovernorAddresses are Equal

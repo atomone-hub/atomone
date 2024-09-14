@@ -3,19 +3,20 @@ package v1
 import (
 	"cosmossdk.io/math"
 
+	"github.com/atomone-hub/atomone/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // GovernorGovInfo used for tallying
 type GovernorGovInfo struct {
-	Address             GovernorAddress     // address of the governor
-	ValShares           map[string]sdk.Dec  // shares held for each validator
-	ValSharesDeductions map[string]sdk.Dec  // deductions from validator's shares when a delegator votes independently
-	Vote                WeightedVoteOptions // vote of the governor
+	Address             types.GovernorAddress // address of the governor
+	ValShares           map[string]sdk.Dec    // shares held for each validator
+	ValSharesDeductions map[string]sdk.Dec    // deductions from validator's shares when a delegator votes independently
+	Vote                WeightedVoteOptions   // vote of the governor
 }
 
 // NewGovernorGovInfo creates a GovernorGovInfo instance
-func NewGovernorGovInfo(address GovernorAddress, valShares []*GovernorValShares, options WeightedVoteOptions) GovernorGovInfo {
+func NewGovernorGovInfo(address types.GovernorAddress, valShares []*GovernorValShares, options WeightedVoteOptions) GovernorGovInfo {
 	valSharesMap := make(map[string]sdk.Dec)
 	for _, valShare := range valShares {
 		valSharesMap[valShare.ValidatorAddress] = valShare.Shares
