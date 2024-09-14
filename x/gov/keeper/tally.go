@@ -6,6 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
+	"github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 )
 
@@ -34,7 +35,7 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 	keeper.IterateGovernorsByPower(ctx, func(index int64, governor v1.GovernorI) (stop bool) {
 		currGovernors[governor.GetAddress().String()] = v1.NewGovernorGovInfo(
 			governor.GetAddress(),
-			keeper.GovernorValShares(ctx, governor.GetAddress()),
+			keeper.GetAllGovernorValShares(ctx, governor.GetAddress()),
 			v1.WeightedVoteOptions{},
 		)
 		return false
@@ -46,17 +47,19 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 		voter := sdk.MustAccAddressFromBech32(vote.Voter)
 
 		// if voter is a governor record it in the map
-		govAddrStr := v1.GovernorAddress(voter.Bytes()).String()
+		govAddrStr := types.GovernorAddress(voter.Bytes()).String()
 		if gov, ok := currGovernors[govAddrStr]; ok {
 			gov.Vote = vote.Options
 			currGovernors[govAddrStr] = gov
 		}
 
-		g, governorDelegationPercentage, hasGovernor := keeper.GetDelegatorGovernor(ctx, voter)
+		governorDelegationPercentage := sdk.ZeroDec()
+		gd, hasGovernor := keeper.GetGovernanceDelegation(ctx, voter)
 		if hasGovernor {
-			if gi, ok := currGovernors[g.GetAddress().String()]; ok {
+			if gi, ok := currGovernors[gd.GovernorAddress]; ok {
 				governor = gi
 			}
+			governorDelegationPercentage = sdk.MustNewDecFromStr(gd.Percentage)
 		}
 
 		// iterate over all delegations from voter

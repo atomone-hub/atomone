@@ -54,9 +54,9 @@ var (
 
 	// GovernorKeyPrefix is the prefix for governor key
 	GovernorKeyPrefix                        = []byte{0x40}
-	GovernanceDelegationsByGovernorKeyPrefix = []byte{0x41}
-	GovernanceDelegationByDelegatorKeyPrefix = []byte{0x42}
-	ValidatorSharesByGovernorKeyPrefix       = []byte{0x43}
+	GovernanceDelegationKeyPrefix            = []byte{0x41}
+	ValidatorSharesByGovernorKeyPrefix       = []byte{0x42}
+	GovernanceDelegationsByGovernorKeyPrefix = []byte{0x43}
 )
 
 var lenTime = len(sdk.FormatTimeBytes(time.Now()))
@@ -128,15 +128,15 @@ func GovernorKey(governorAddr GovernorAddress) []byte {
 	return append(GovernorKeyPrefix, address.MustLengthPrefix(governorAddr.Bytes())...)
 }
 
-// GovernanceDelegationsByGovernorKey gets the first part of the governance delegation key based
-// on the governor address and delegator address
-func GovernanceDelegationsByGovernorKey(governorAddr GovernorAddress, delegatorAddr sdk.AccAddress) []byte {
-	return append(GovernanceDelegationsByGovernorKeyPrefix, append(address.MustLengthPrefix(governorAddr.Bytes()), address.MustLengthPrefix(delegatorAddr.Bytes())...)...)
+// GovernanceDelegationKey gets the first part of the governance delegation key based on the delegator address
+func GovernanceDelegationKey(delegatorAddr sdk.AccAddress) []byte {
+	return append(GovernanceDelegationKeyPrefix, address.MustLengthPrefix(delegatorAddr.Bytes())...)
 }
 
-// GovernanceDelegationByDelegatorKey gets the first part of the governance delegation key based on the delegator address
-func GovernanceDelegationByDelegatorKey(delegatorAddr sdk.AccAddress) []byte {
-	return append(GovernanceDelegationByDelegatorKeyPrefix, address.MustLengthPrefix(delegatorAddr.Bytes())...)
+// GovernanceDelegationsByGovernorKey gets the first part of the governance delegations key based on
+// the governor and delegator address
+func GovernanceDelegationsByGovernorKey(governorAddr GovernorAddress, delegatorAddr sdk.AccAddress) []byte {
+	return append(GovernanceDelegationsByGovernorKeyPrefix, append(address.MustLengthPrefix(governorAddr.Bytes()), address.MustLengthPrefix(delegatorAddr.Bytes())...)...)
 }
 
 // ValidatorSharesByGovernorKey gets the first part of the validator shares key based

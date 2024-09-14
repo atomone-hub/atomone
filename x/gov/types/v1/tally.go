@@ -16,7 +16,7 @@ type GovernorGovInfo struct {
 }
 
 // NewGovernorGovInfo creates a GovernorGovInfo instance
-func NewGovernorGovInfo(address types.GovernorAddress, valShares []*GovernorValShares, options WeightedVoteOptions) GovernorGovInfo {
+func NewGovernorGovInfo(address types.GovernorAddress, valShares []GovernorValShares, options WeightedVoteOptions) GovernorGovInfo {
 	valSharesMap := make(map[string]sdk.Dec)
 	for _, valShare := range valShares {
 		valSharesMap[valShare.ValidatorAddress] = valShare.Shares
