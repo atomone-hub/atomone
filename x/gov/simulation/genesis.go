@@ -110,9 +110,11 @@ func RandomizedGenState(simState *module.SimulationState) {
 		func(r *rand.Rand) { veto = GenTallyParamsVeto(r) },
 	)
 
+	maxGovernors := uint64(simState.Rand.Intn(100))
+
 	govGenesis := v1.NewGenesisState(
 		startingProposalID,
-		v1.NewParams(minDeposit, depositPeriod, votingPeriod, quorum.String(), threshold.String(), veto.String(), minInitialDepositRatio.String(), simState.Rand.Intn(2) == 0, simState.Rand.Intn(2) == 0, simState.Rand.Intn(2) == 0),
+		v1.NewParams(minDeposit, depositPeriod, votingPeriod, quorum.String(), threshold.String(), veto.String(), minInitialDepositRatio.String(), simState.Rand.Intn(2) == 0, simState.Rand.Intn(2) == 0, simState.Rand.Intn(2) == 0, maxGovernors),
 	)
 
 	bz, err := json.MarshalIndent(&govGenesis, "", " ")

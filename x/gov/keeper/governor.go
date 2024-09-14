@@ -58,3 +58,19 @@ func (k Keeper) GetAllActiveGovernors(ctx sdk.Context) (governors v1.Governors) 
 
 	return governors
 }
+
+// IterateGovernors iterates over all governors and performs a callback function
+func (k Keeper) IterateGovernors(ctx sdk.Context, cb func(index int64, governor v1.GovernorI) (stop bool)) {
+	store := ctx.KVStore(k.storeKey)
+
+	iterator := sdk.KVStorePrefixIterator(store, types.GovernorKeyPrefix)
+	defer iterator.Close()
+
+	for i := int64(0); iterator.Valid(); iterator.Next() {
+		governor := v1.MustUnmarshalGovernor(k.cdc, iterator.Value())
+		if cb(i, governor) {
+			break
+		}
+		i++
+	}
+}

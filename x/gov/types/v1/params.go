@@ -24,6 +24,7 @@ var (
 	DefaultBurnProposalPrevote    = false // set to false to replicate behavior of when this change was made (0.47)
 	DefaultBurnVoteQuorom         = false // set to false to  replicate behavior of when this change was made (0.47)
 	DefaultBurnVoteVeto           = true  // set to true to replicate behavior of when this change was made (0.47)
+	DefaultMaxGovernors           = uint64(100)
 )
 
 // Deprecated: NewDepositParams creates a new DepositParams object
@@ -54,6 +55,7 @@ func NewVotingParams(votingPeriod *time.Duration) VotingParams {
 func NewParams(
 	minDeposit sdk.Coins, maxDepositPeriod, votingPeriod time.Duration,
 	quorum, threshold, vetoThreshold, minInitialDepositRatio string, burnProposalDeposit, burnVoteQuorum, burnVoteVeto bool,
+	maxGovernors uint64,
 ) Params {
 	return Params{
 		MinDeposit:                 minDeposit,
@@ -66,6 +68,7 @@ func NewParams(
 		BurnProposalDepositPrevote: burnProposalDeposit,
 		BurnVoteQuorum:             burnVoteQuorum,
 		BurnVoteVeto:               burnVoteVeto,
+		MaxGovernors:               maxGovernors,
 	}
 }
 
@@ -82,6 +85,7 @@ func DefaultParams() Params {
 		DefaultBurnProposalPrevote,
 		DefaultBurnVoteQuorom,
 		DefaultBurnVoteVeto,
+		DefaultMaxGovernors,
 	)
 }
 

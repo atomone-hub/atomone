@@ -217,6 +217,9 @@ message Params {
   
   // burn deposits if quorum with vote type no_veto is met
   bool burn_vote_veto = 15;
+
+  // defines the maximum number of governors that can be active at any given time.
+  uint64 max_governors = 20;
 }
 
 
