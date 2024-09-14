@@ -9,6 +9,7 @@ import (
 
 	"github.com/atomone-hub/atomone/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/codec"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
@@ -27,6 +28,7 @@ func NewGovernor(address string, description GovernorDescription) (Governor, err
 		GovernorAddress: address,
 		Description:     description,
 		Status:          Active,
+		VotingPower:     sdk.ZeroDec(),
 	}, nil
 }
 
@@ -59,6 +61,27 @@ func (g Governors) Less(i, j int) bool {
 // Implements sort interface
 func (g Governors) Swap(i, j int) {
 	g[i], g[j] = g[j], g[i]
+}
+
+// GovernorsByVotingPower implements sort.Interface for []Governor based on
+// the VotingPower and Address fields.
+// The governors are sorted first by their voting power (descending). Secondary index - Address (ascending).
+// Copied from tendermint/types/validator_set.go
+type GovernorsByVotingPower []Governor
+
+func (govz GovernorsByVotingPower) Len() int { return len(govz) }
+
+func (govz GovernorsByVotingPower) Less(i, j int) bool {
+	if govz[i].GetVotingPower().Equal(govz[j].GetVotingPower()) {
+		addrI := govz[i].GetAddress()
+		addrJ := govz[j].GetAddress()
+		return bytes.Compare(addrI, addrJ) == -1
+	}
+	return govz[i].GetVotingPower().GT(govz[j].GetVotingPower())
+}
+
+func (govz GovernorsByVotingPower) Swap(i, j int) {
+	govz[i], govz[j] = govz[j], govz[i]
 }
 
 func MustMarshalGovernor(cdc codec.BinaryCodec, governor *Governor) []byte {
@@ -170,6 +193,8 @@ func (g *Governor) Equal(v2 *Governor) bool {
 	return g.MinEqual(v2)
 }
 
+func (g Governor) GetVotingPower() sdk.Dec             { return g.VotingPower }
+func (g Governor) SetVotingPower(votingPower sdk.Dec)  { g.VotingPower = votingPower }
 func (g Governor) GetMoniker() string                  { return g.Description.Moniker }
 func (g Governor) GetStatus() GovernorStatus           { return g.Status }
 func (g Governor) GetDescription() GovernorDescription { return g.Description }

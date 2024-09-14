@@ -74,3 +74,35 @@ func (k Keeper) IterateGovernors(ctx sdk.Context, cb func(index int64, governor 
 		i++
 	}
 }
+
+// governor by power index
+func (k Keeper) SetGovernorByPowerIndex(ctx sdk.Context, governor v1.Governor) {
+	store := ctx.KVStore(k.storeKey)
+	store.Set(types.GovernorsByPowerKey(governor.GetAddress(), governor.GetVotingPower()), governor.GetAddress())
+}
+
+// governor by power index
+func (k Keeper) DeleteValidatorByPowerIndex(ctx sdk.Context, governor v1.Governor) {
+	store := ctx.KVStore(k.storeKey)
+	store.Delete(types.GovernorsByPowerKey(governor.GetAddress(), governor.GetVotingPower()))
+}
+
+// IterateMaxGovernorsByGovernancePower iterates over the top params.MaxGovernors governors by governance power
+func (k Keeper) IterateMaxGovernorsByGovernancePower(ctx sdk.Context, cb func(index int64, governor v1.GovernorI) (stop bool)) {
+	store := ctx.KVStore(k.storeKey)
+	maxGovernors := k.GetParams(ctx).MaxGovernors
+	var totGovernors uint64 = 0
+
+	iterator := sdk.KVStoreReversePrefixIterator(store, types.GovernorsByPowerKeyPrefix)
+	defer iterator.Close()
+
+	for ; iterator.Valid() && totGovernors < maxGovernors; iterator.Next() {
+		governor := v1.MustUnmarshalGovernor(k.cdc, iterator.Value())
+		if governor.IsActive() {
+			if cb(int64(totGovernors), governor) {
+				break
+			}
+			totGovernors++
+		}
+	}
+}

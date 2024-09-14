@@ -16,6 +16,9 @@ type ParamSubspace interface {
 
 // StakingKeeper expected staking keeper (Validator and Delegator sets) (noalias)
 type StakingKeeper interface {
+	GetValidator(ctx sdk.Context, addr sdk.ValAddress) (validator stakingtypes.Validator, found bool)
+	GetDelegation(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) (delegation stakingtypes.Delegation, found bool)
+
 	// iterate through bonded validators by operator address, execute func for each validator
 	IterateBondedValidatorsByPower(
 		sdk.Context, func(index int64, validator stakingtypes.ValidatorI) (stop bool),

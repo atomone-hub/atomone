@@ -31,11 +31,8 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 		return false
 	})
 
-	// fetch all the active governors, insert them into currGovernors
-	keeper.IterateGovernors(ctx, func(index int64, governor v1.GovernorI) (stop bool) {
-		if !governor.IsActive() {
-			return false
-		}
+	// fetch all the active param.MaxGovernors top governors by voting power, insert them into currGovernors
+	keeper.IterateMaxGovernorsByGovernancePower(ctx, func(index int64, governor v1.GovernorI) (stop bool) {
 		currGovernors[governor.GetAddress().String()] = v1.NewGovernorGovInfo(
 			governor.GetAddress(),
 			keeper.GetAllGovernorValShares(ctx, governor.GetAddress()),
@@ -56,13 +53,11 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 			currGovernors[govAddrStr] = gov
 		}
 
-		governorDelegationPercentage := sdk.ZeroDec()
 		gd, hasGovernor := keeper.GetGovernanceDelegation(ctx, voter)
 		if hasGovernor {
 			if gi, ok := currGovernors[gd.GovernorAddress]; ok {
 				governor = gi
 			}
-			governorDelegationPercentage = sdk.MustNewDecFromStr(gd.Percentage)
 		}
 
 		// iterate over all delegations from voter
@@ -82,7 +77,7 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 
 				// remove the delegation shares from the governor
 				if hasGovernor {
-					governor.ValSharesDeductions[valAddrStr] = governor.ValSharesDeductions[valAddrStr].Add(delegation.GetShares().Mul(governorDelegationPercentage))
+					governor.ValSharesDeductions[valAddrStr] = governor.ValSharesDeductions[valAddrStr].Add(delegation.GetShares())
 				}
 			}
 
