@@ -8,19 +8,24 @@ import (
 
 // GovernorGovInfo used for tallying
 type GovernorGovInfo struct {
-	Address               GovernorAddress           // address of the governor
-	Delegations           []*ValidatorGovDelegation // Delegations of the governor
-	DelegationsDeductions []ValidatorGovDelegation  // Delegator deductions from validator's delegators voting independently
-	Vote                  WeightedVoteOptions       // Vote of the validator
+	Address             GovernorAddress     // address of the governor
+	ValShares           map[string]sdk.Dec  // shares held for each validator
+	ValSharesDeductions map[string]sdk.Dec  // deductions from validator's shares when a delegator votes independently
+	Vote                WeightedVoteOptions // vote of the governor
 }
 
 // NewGovernorGovInfo creates a GovernorGovInfo instance
-func NewGovernorGovInfo(address GovernorAddress, delegations []*ValidatorGovDelegation, deductions []ValidatorGovDelegation, options WeightedVoteOptions) GovernorGovInfo {
+func NewGovernorGovInfo(address GovernorAddress, valShares []*GovernorValShares, options WeightedVoteOptions) GovernorGovInfo {
+	valSharesMap := make(map[string]sdk.Dec)
+	for _, valShare := range valShares {
+		valSharesMap[valShare.ValidatorAddress] = valShare.Shares
+	}
+
 	return GovernorGovInfo{
-		Address:               address,
-		Delegations:           delegations,
-		DelegationsDeductions: deductions,
-		Vote:                  options,
+		Address:             address,
+		ValShares:           valSharesMap,
+		ValSharesDeductions: make(map[string]sdk.Dec),
+		Vote:                options,
 	}
 }
 

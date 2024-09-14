@@ -235,8 +235,6 @@ message Governor {
   GovernorStatus status = 2;
   // description defines the description terms for the governor.
   GovernorDescription description = 3 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
-  // delegations define the validator delegations for the governor.
-  repeated ValidatorGovDelegation delegatedShares = 4;
 }
 
 // GovernorStatus is the status of a governor.
@@ -267,9 +265,9 @@ message GovernorDescription {
   string details = 5;
 }
 
-// ValidatorGovDelegation holds the number of shares from the specified validator
-// a governor can use to vote on proposals.
-message ValidatorGovDelegation {
+// GovernorValShares holds the number of shares from the specific validator
+// that a governor can use to vote on proposals.
+message GovernorValShares {
   option (gogoproto.equal)           = false;
   option (gogoproto.goproto_getters) = false;
 

@@ -34,15 +34,14 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 	keeper.IterateGovernorsByPower(ctx, func(index int64, governor v1.GovernorI) (stop bool) {
 		currGovernors[governor.GetAddress().String()] = v1.NewGovernorGovInfo(
 			governor.GetAddress(),
-			governor.GetDelegations(),
-			make([]v1.ValidatorGovDelegation, 0),
+			keeper.GovernorValShares(ctx, governor.GetAddress()),
 			v1.WeightedVoteOptions{},
 		)
 		return false
 	})
 
 	keeper.IterateVotes(ctx, proposal.Id, func(vote v1.Vote) bool {
-		var governor v1.GovernorI = nil
+		var governor v1.GovernorGovInfo
 
 		voter := sdk.MustAccAddressFromBech32(vote.Voter)
 
@@ -53,10 +52,10 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 			currGovernors[govAddrStr] = gov
 		}
 
-		g, governorDelegationPercentage := keeper.GetGovernor(ctx, voter)
-		if g != nil {
-			if g, ok := currGovernors[g.GetAddress().String()]; ok {
-				governor = g
+		g, governorDelegationPercentage, hasGovernor := keeper.GetDelegatorGovernor(ctx, voter)
+		if hasGovernor {
+			if gi, ok := currGovernors[g.GetAddress().String()]; ok {
+				governor = gi
 			}
 		}
 
@@ -76,10 +75,8 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 				totalVotingPower = totalVotingPower.Add(votingPower)
 
 				// remove the delegation shares from the governor
-				if governor != nil {
-					d := governor.GetDelegationDeductions(delegation.GetValidatorAddr())
-					d = d.Add(delegation.GetShares().Mul(governorDelegationPercentage))
-					governor.SetDelegatorDeductions(delegation.GetValidatorAddr(), d)
+				if hasGovernor {
+					governor.ValSharesDeductions[valAddrStr] = governor.ValSharesDeductions[valAddrStr].Add(delegation.GetShares().Mul(governorDelegationPercentage))
 				}
 			}
 
@@ -120,11 +117,9 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 		// As governor are simply voters that need to have 100% of their bonded tokens
 		// delegated to them and their shares were deducted when iterating over votes
 		// we don't need to handle special cases.
-		for _, d := range gov.Delegations {
-			valAddrStr := d.ValidatorAddress
-			shares := d.Shares
+		for valAddrStr, shares := range gov.ValShares {
 			if val, ok := currValidators[valAddrStr]; ok {
-				sharesAfterDeductions := shares.Sub(gov.GetDelegationDeductions(val.GetOperator()))
+				sharesAfterDeductions := shares.Sub(gov.ValSharesDeductions[valAddrStr])
 				votingPower := sharesAfterDeductions.MulInt(val.GetBondedTokens()).Quo(val.GetDelegatorShares())
 
 				for _, option := range gov.Vote {

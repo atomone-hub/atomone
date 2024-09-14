@@ -209,9 +209,9 @@ message MsgEditGovernor {
   option (gogoproto.equal)           = false;
   option (gogoproto.goproto_getters) = false;
 
-  GovernorDescription description = 1 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
-  GovernorStatus     status       = 2;
-  string      governor_address    = 3 [(cosmos_proto.scalar) = "atomone.GovernorAddressString"];
+  GovernorDescription description      = 1 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
+  GovernorStatus      status           = 2;
+  string              governor_address = 3 [(cosmos_proto.scalar) = "atomone.GovernorAddressString"];
 }
 
 // MsgEditGovernorResponse defines the Msg/EditGovernor response type.
@@ -229,7 +229,7 @@ message MsgDelegateGovernor {
   string delegator_address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   string governor_address  = 2 [(cosmos_proto.scalar) = "atomone.GovernorAddressString"];
   // percentage is the percentage of the delegator's bonded tokens that are delegated to the governor.
-  string percentage = 6 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  string percentage        = 6 [(cosmos_proto.scalar) = "cosmos.Dec"];
 }
 
 // MsgDelegateGovernorResponse defines the Msg/Delegate response type.

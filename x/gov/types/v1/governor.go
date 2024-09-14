@@ -10,7 +10,6 @@ import (
 	"cosmossdk.io/math"
 
 	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
@@ -35,7 +34,6 @@ func NewGovernor(address string, description GovernorDescription) (Governor, err
 	return Governor{
 		GovernorAddress: address,
 		Description:     description,
-		DelegatedShares: make([]*ValidatorGovDelegation, 0),
 		Status:          Active,
 	}, nil
 }
@@ -207,29 +205,11 @@ func (d GovernorDescription) EnsureLength() (GovernorDescription, error) {
 	return d, nil
 }
 
-// GetDelegations returns the delegations of the governor
-func (g Governor) GetDelegations() []*ValidatorGovDelegation {
-	return g.DelegatedShares
-}
-
-// GetDelegationShares returns the shares delegated to the governor for a specific validator
-func (g Governor) GetDelegationShares(valAddr sdk.ValAddress) sdk.Dec {
-	valAddrStr := valAddr.String()
-	for _, del := range g.DelegatedShares {
-		if del.ValidatorAddress == valAddrStr {
-			return del.Shares
-		}
-	}
-
-	return sdk.ZeroDec()
-}
-
 // MinEqual defines a more minimum set of equality conditions when comparing two
 // governors.
 func (g *Governor) MinEqual(other *Governor) bool {
 	return g.GovernorAddress == other.GovernorAddress &&
 		g.Status == other.Status &&
-		g.DelegatedShares.Equal(other.DelegatedShares) &&
 		g.Description.Equal(other.Description)
 }
 
@@ -240,5 +220,11 @@ func (g *Governor) Equal(v2 *Governor) bool {
 
 func (g Governor) GetMoniker() string                  { return g.Description.Moniker }
 func (g Governor) GetStatus() GovernorStatus           { return g.Status }
-func (g Governor) GetAddress() GovernorAddress         { return GovernorAddressFromBech32(g.GovernorAddress) }
 func (g Governor) GetDescription() GovernorDescription { return g.Description }
+func (g Governor) GetAddress() GovernorAddress {
+	addr, err := GovernorAddressFromBech32(g.GovernorAddress)
+	if err != nil {
+		panic(err)
+	}
+	return addr
+}
