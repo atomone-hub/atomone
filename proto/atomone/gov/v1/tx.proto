@@ -187,15 +187,15 @@ message MsgUpdateParamsResponse {}
 
 // MsgCreateGovernor defines a SDK message for creating a new governor.
 message MsgCreateGovernor {
-  option (cosmos.msg.v1.signer) = "governor_address";
+  option (cosmos.msg.v1.signer) = "address";
   option (amino.name)           = "atomone/MsgCreateGovernor";
 
   option (gogoproto.equal)           = false;
   option (gogoproto.goproto_getters) = false;
 
-  GovernorDescription      description      = 1 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
-  string                   governor_address = 2 [(cosmos_proto.scalar) = "atomone.GovernorAddressString"];
-  google.protobuf.Any      pubkey           = 3 [(cosmos_proto.accepts_interface) = "cosmos.crypto.PubKey"];
+  GovernorDescription      description = 1 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
+  string                   address     = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  google.protobuf.Any      pubkey      = 3 [(cosmos_proto.accepts_interface) = "cosmos.crypto.PubKey"];
 }
 
 // MsgCreateGovernorrResponse defines the Msg/CreateGovernor response type.
@@ -203,15 +203,15 @@ message MsgCreateGovernorResponse {}
 
 // MsgEditGovernor defines a SDK message for editing an existing governor.
 message MsgEditGovernor {
-  option (cosmos.msg.v1.signer) = "governor_address";
+  option (cosmos.msg.v1.signer) = "address";
   option (amino.name)           = "cosmos-sdk/MsgEditGovernor";
 
   option (gogoproto.equal)           = false;
   option (gogoproto.goproto_getters) = false;
 
-  GovernorDescription description      = 1 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
-  GovernorStatus      status           = 2;
-  string              governor_address = 3 [(cosmos_proto.scalar) = "atomone.GovernorAddressString"];
+  GovernorDescription description = 1 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
+  GovernorStatus      status      = 2;
+  string              address     = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 }
 
 // MsgEditGovernorResponse defines the Msg/EditGovernor response type.
@@ -228,8 +228,6 @@ message MsgDelegateGovernor {
 
   string delegator_address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   string governor_address  = 2 [(cosmos_proto.scalar) = "atomone.GovernorAddressString"];
-  // percentage is the percentage of the delegator's bonded tokens that are delegated to the governor.
-  string percentage        = 6 [(cosmos_proto.scalar) = "cosmos.Dec"];
 }
 
 // MsgDelegateGovernorResponse defines the Msg/Delegate response type.

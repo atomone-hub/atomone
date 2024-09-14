@@ -174,6 +174,99 @@ func (k msgServer) UpdateParams(goCtx context.Context, msg *v1.MsgUpdateParams) 
 	return &v1.MsgUpdateParamsResponse{}, nil
 }
 
+func (k msgServer) CreateGovernor(goCtx context.Context, msg *v1.MsgCreateGovernor) (*v1.MsgCreateGovernorResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	// Ensure the governor does not already exist
+	addr := sdk.MustAccAddressFromBech32(msg.Address)
+	govAddr := govtypes.GovernorAddress(addr.Bytes())
+	if _, found := k.GetGovernor(ctx, govAddr); found {
+		return nil, govtypes.ErrGovernorExists
+	}
+
+	// Ensure the governor has a valid description
+	if _, err := msg.Description.EnsureLength(); err != nil {
+		return nil, err
+	}
+
+	governor, err := v1.NewGovernor(govAddr.String(), msg.Description)
+	if err != nil {
+		return nil, err
+	}
+
+	k.SetGovernor(ctx, governor)
+
+	return &v1.MsgCreateGovernorResponse{}, nil
+}
+
+func (k msgServer) EditGovernor(goCtx context.Context, msg *v1.MsgEditGovernor) (*v1.MsgEditGovernorResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	// Ensure the governor exists
+	addr := sdk.MustAccAddressFromBech32(msg.Address)
+	govAddr := govtypes.GovernorAddress(addr.Bytes())
+	governor, found := k.GetGovernor(ctx, govAddr)
+	if !found {
+		return nil, govtypes.ErrUnknownGovernor
+	}
+
+	// Ensure the governor has a valid description
+	if _, err := msg.Description.EnsureLength(); err != nil {
+		return nil, err
+	}
+
+	// Ensure the governor has a valid status
+	if !msg.Status.EnsureValid() {
+		return nil, govtypes.ErrInvalidGovernorStatus
+	}
+
+	// Update the governor
+	governor.Description = msg.Description
+	governor.Status = msg.Status
+	k.SetGovernor(ctx, governor)
+
+	return &v1.MsgEditGovernorResponse{}, nil
+}
+
+func (k msgServer) DelegateGovernor(goCtx context.Context, msg *v1.MsgDelegateGovernor) (*v1.MsgDelegateGovernorResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	delAddr := sdk.MustAccAddressFromBech32(msg.DelegatorAddress)
+	govAddr := govtypes.MustGovernorAddressFromBech32(msg.GovernorAddress)
+
+	// Ensure the delegation is not already present
+	gd, found := k.GetGovernanceDelegation(ctx, delAddr)
+	if found && govAddr.Equals(govtypes.MustGovernorAddressFromBech32(gd.GovernorAddress)) {
+		return nil, govtypes.ErrGovernanceDelegationExists
+	}
+	// redelegate if a delegation to another governor already exists
+	if found {
+		k.redelegateGovernor(ctx, delAddr, govAddr)
+	} else {
+		// Create the delegation
+		k.delegateGovernor(ctx, delAddr, govAddr)
+	}
+
+	return &v1.MsgDelegateGovernorResponse{}, nil
+}
+
+func (k msgServer) UndelegateGovernor(goCtx context.Context, msg *v1.MsgUndelegateGovernor) (*v1.MsgUndelegateGovernorResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	delAddr := sdk.MustAccAddressFromBech32(msg.DelegatorAddress)
+
+	// Ensure the delegation exists
+	_, found := k.GetGovernanceDelegation(ctx, delAddr)
+	if !found {
+		return nil, govtypes.ErrUnknownGovernanceDelegation
+	}
+
+	// Remove the delegation
+	k.undelegateGovernor(ctx, delAddr)
+
+	return &v1.MsgUndelegateGovernorResponse{}, nil
+}
+
 type legacyMsgServer struct {
 	govAcct string
 	server  v1.MsgServer

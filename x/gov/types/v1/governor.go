@@ -180,6 +180,10 @@ func (d GovernorDescription) EnsureLength() (GovernorDescription, error) {
 	return d, nil
 }
 
+func (s GovernorStatus) EnsureValid() bool {
+	return s == Active || s == Inactive
+}
+
 // MinEqual defines a more minimum set of equality conditions when comparing two
 // governors.
 func (g *Governor) MinEqual(other *Governor) bool {
