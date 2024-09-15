@@ -21,6 +21,8 @@ func (k Keeper) StakingHooks() Hooks {
 }
 
 // BeforeDelegationSharesModified is called when a delegation's shares are modified
+// We trigger a governor shares decrease here subtracting all delegation shares.
+// The right amount of shares will be possibly added back in AfterDelegationModified
 func (h Hooks) BeforeDelegationSharesModified(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
 	// does the delegator have a governance delegation?
 	govDelegation, found := h.k.GetGovernanceDelegation(ctx, delAddr)
@@ -39,6 +41,8 @@ func (h Hooks) BeforeDelegationSharesModified(ctx sdk.Context, delAddr sdk.AccAd
 }
 
 // AfterDelegationModified is called when a delegation is created or modified
+// We trigger a governor shares increase here adding all delegation shares.
+// It is balanced by the full-amount decrease in BeforeDelegationSharesModified
 func (h Hooks) AfterDelegationModified(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
 	// does the delegator have a governance delegation?
 	govDelegation, found := h.k.GetGovernanceDelegation(ctx, delAddr)

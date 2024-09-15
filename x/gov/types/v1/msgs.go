@@ -322,3 +322,134 @@ func (msg MsgUpdateParams) GetSigners() []sdk.AccAddress {
 	authority, _ := sdk.AccAddressFromBech32(msg.Authority)
 	return []sdk.AccAddress{authority}
 }
+
+// NewMsgCreateGovernor creates a new MsgCreateGovernor instance
+func NewMsgCreateGovernor(address sdk.AccAddress, description GovernorDescription) *MsgCreateGovernor {
+	return &MsgCreateGovernor{Address: address.String(), Description: description}
+}
+
+// Route implements the sdk.Msg interface.
+func (msg MsgCreateGovernor) Route() string { return types.RouterKey }
+
+// Type implements the sdk.Msg interface.
+func (msg MsgCreateGovernor) Type() string { return sdk.MsgTypeURL(&msg) }
+
+// ValidateBasic implements the sdk.Msg interface.
+func (msg MsgCreateGovernor) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(msg.Address); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrap(err.Error())
+	}
+
+	if _, err := msg.Description.EnsureLength(); err != nil {
+		types.ErrInvalidGovernanceDescription.Wrap(err.Error())
+	}
+	return nil
+}
+
+// GetSignBytes returns the message bytes to sign over.
+func (msg MsgCreateGovernor) GetSignBytes() []byte {
+	bz := codec.ModuleCdc.MustMarshalJSON(&msg)
+	return sdk.MustSortJSON(bz)
+}
+
+// GetSigners returns the expected signers for a MsgCreateGovernor.
+func (msg MsgCreateGovernor) GetSigners() []sdk.AccAddress {
+	addr, _ := sdk.AccAddressFromBech32(msg.Address)
+	return []sdk.AccAddress{addr}
+}
+
+// NewMsgEditGovernor creates a new MsgEditGovernor instance
+func NewMsgEditGovernor(addr sdk.AccAddress, description GovernorDescription, status GovernorStatus) *MsgEditGovernor {
+	return &MsgEditGovernor{Address: addr.String(), Description: description, Status: status}
+}
+
+// Route implements the sdk.Msg interface.
+func (msg MsgEditGovernor) Route() string { return types.RouterKey }
+
+// Type implements the sdk.Msg interface.
+func (msg MsgEditGovernor) Type() string { return sdk.MsgTypeURL(&msg) }
+
+// ValidateBasic implements the sdk.Msg interface.
+func (msg MsgEditGovernor) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(msg.Address); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrap(err.Error())
+	}
+	return nil
+}
+
+// GetSignBytes returns the message bytes to sign over.
+func (msg MsgEditGovernor) GetSignBytes() []byte {
+	bz := codec.ModuleCdc.MustMarshalJSON(&msg)
+	return sdk.MustSortJSON(bz)
+}
+
+// GetSigners returns the expected signers for a MsgEditGovernor.
+func (msg MsgEditGovernor) GetSigners() []sdk.AccAddress {
+	addr, _ := sdk.AccAddressFromBech32(msg.Address)
+	return []sdk.AccAddress{addr}
+}
+
+// NewMsgDelegateGovernor creates a new MsgDelegateGovernor instance
+func NewMsgDelegateGovernor(delegator sdk.AccAddress, governor types.GovernorAddress) *MsgDelegateGovernor {
+	return &MsgDelegateGovernor{DelegatorAddress: delegator.String(), GovernorAddress: governor.String()}
+}
+
+// Route implements the sdk.Msg interface.
+func (msg MsgDelegateGovernor) Route() string { return types.RouterKey }
+
+// Type implements the sdk.Msg interface.
+func (msg MsgDelegateGovernor) Type() string { return sdk.MsgTypeURL(&msg) }
+
+// ValidateBasic implements the sdk.Msg interface.
+func (msg MsgDelegateGovernor) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(msg.DelegatorAddress); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrap(err.Error())
+	}
+	if _, err := types.GovernorAddressFromBech32(msg.GovernorAddress); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid governor address: %s", err)
+	}
+	return nil
+}
+
+// GetSignBytes returns the message bytes to sign over.
+func (msg MsgDelegateGovernor) GetSignBytes() []byte {
+	bz := codec.ModuleCdc.MustMarshalJSON(&msg)
+	return sdk.MustSortJSON(bz)
+}
+
+// GetSigners returns the expected signers for a MsgDelegateGovernor.
+func (msg MsgDelegateGovernor) GetSigners() []sdk.AccAddress {
+	delegator, _ := sdk.AccAddressFromBech32(msg.DelegatorAddress)
+	return []sdk.AccAddress{delegator}
+}
+
+// NewMsgUndelegateGovernor creates a new MsgUndelegateGovernor instance
+func NewMsgUndelegateGovernor(delegator sdk.AccAddress) *MsgUndelegateGovernor {
+	return &MsgUndelegateGovernor{DelegatorAddress: delegator.String()}
+}
+
+// Route implements the sdk.Msg interface.
+func (msg MsgUndelegateGovernor) Route() string { return types.RouterKey }
+
+// Type implements the sdk.Msg interface.
+func (msg MsgUndelegateGovernor) Type() string { return sdk.MsgTypeURL(&msg) }
+
+// ValidateBasic implements the sdk.Msg interface.
+func (msg MsgUndelegateGovernor) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(msg.DelegatorAddress); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrap(err.Error())
+	}
+	return nil
+}
+
+// GetSignBytes returns the message bytes to sign over.
+func (msg MsgUndelegateGovernor) GetSignBytes() []byte {
+	bz := codec.ModuleCdc.MustMarshalJSON(&msg)
+	return sdk.MustSortJSON(bz)
+}
+
+// GetSigners returns the expected signers for a MsgUndelegateGovernor.
+func (msg MsgUndelegateGovernor) GetSigners() []sdk.AccAddress {
+	delegator, _ := sdk.AccAddressFromBech32(msg.DelegatorAddress)
+	return []sdk.AccAddress{delegator}
+}
