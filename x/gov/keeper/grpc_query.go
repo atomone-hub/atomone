@@ -282,6 +282,155 @@ func (q Keeper) TallyResult(c context.Context, req *v1.QueryTallyResultRequest) 
 	return &v1.QueryTallyResultResponse{Tally: &tallyResult}, nil
 }
 
+// Governor queries governor information based on governor address.
+func (q Keeper) Governor(c context.Context, req *v1.QueryGovernorRequest) (*v1.QueryGovernorResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	if req.GovernorAddress == "" {
+		return nil, status.Error(codes.InvalidArgument, "empty governor address")
+	}
+
+	governorAddr, err := types.GovernorAddressFromBech32(req.GovernorAddress)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+
+	governor, found := q.GetGovernor(ctx, governorAddr)
+	if !found {
+		return nil, status.Errorf(codes.NotFound, "governor %s doesn't exist", req.GovernorAddress)
+	}
+
+	return &v1.QueryGovernorResponse{Governor: &governor}, nil
+}
+
+// Governors queries all governors.
+func (q Keeper) Governors(c context.Context, req *v1.QueryGovernorsRequest) (*v1.QueryGovernorsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	store := ctx.KVStore(q.storeKey)
+	governorStore := prefix.NewStore(store, types.GovernorKeyPrefix)
+
+	var governors v1.Governors
+	pageRes, err := query.Paginate(governorStore, req.Pagination, func(key []byte, value []byte) error {
+		var governor v1.Governor
+		if err := q.cdc.Unmarshal(value, &governor); err != nil {
+			return err
+		}
+
+		governors = append(governors, &governor)
+		return nil
+	})
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return &v1.QueryGovernorsResponse{Governors: governors, Pagination: pageRes}, nil
+}
+
+// GovernanceDelegations queries all delegations of a governor.
+func (q Keeper) GovernanceDelegations(c context.Context, req *v1.QueryGovernanceDelegationsRequest) (*v1.QueryGovernanceDelegationsResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	if req.GovernorAddress == "" {
+		return nil, status.Error(codes.InvalidArgument, "empty governor address")
+	}
+
+	governorAddr, err := types.GovernorAddressFromBech32(req.GovernorAddress)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+
+	store := ctx.KVStore(q.storeKey)
+	delegationStore := prefix.NewStore(store, types.GovernanceDelegationsByGovernorKey(governorAddr, []byte{}))
+
+	var delegations []*v1.GovernanceDelegation
+	pageRes, err := query.Paginate(delegationStore, req.Pagination, func(key []byte, value []byte) error {
+		var delegation v1.GovernanceDelegation
+		if err := q.cdc.Unmarshal(value, &delegation); err != nil {
+			return err
+		}
+
+		delegations = append(delegations, &delegation)
+		return nil
+	})
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return &v1.QueryGovernanceDelegationsResponse{Delegations: delegations, Pagination: pageRes}, nil
+}
+
+// GovernanceDelegation queries a delegation
+func (q Keeper) GovernanceDelegation(c context.Context, req *v1.QueryGovernanceDelegationRequest) (*v1.QueryGovernanceDelegationResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	if req.DelegatorAddress == "" {
+		return nil, status.Error(codes.InvalidArgument, "empty delegator address")
+	}
+
+	delegatorAddr, err := sdk.AccAddressFromBech32(req.DelegatorAddress)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+
+	delegation, found := q.GetGovernanceDelegation(ctx, delegatorAddr)
+	if !found {
+		return nil, status.Errorf(codes.NotFound, "governance delegation for %s does not exist", req.DelegatorAddress)
+	}
+
+	return &v1.QueryGovernanceDelegationResponse{GovernorAddress: delegation.GovernorAddress}, nil
+}
+
+// GovernorValShares queries all validator shares of a governor.
+func (q Keeper) GovernorValShares(c context.Context, req *v1.QueryGovernorValSharesRequest) (*v1.QueryGovernorValSharesResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	if req.GovernorAddress == "" {
+		return nil, status.Error(codes.InvalidArgument, "empty governor address")
+	}
+
+	governorAddr, err := types.GovernorAddressFromBech32(req.GovernorAddress)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+
+	store := ctx.KVStore(q.storeKey)
+	valShareStore := prefix.NewStore(store, types.ValidatorSharesByGovernorKey(governorAddr, []byte{}))
+
+	var valShares []*v1.GovernorValShares
+	pageRes, err := query.Paginate(valShareStore, req.Pagination, func(key []byte, value []byte) error {
+		var valShare v1.GovernorValShares
+		if err := q.cdc.Unmarshal(value, &valShare); err != nil {
+			return err
+		}
+
+		valShares = append(valShares, &valShare)
+
+		return nil
+	})
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return &v1.QueryGovernorValSharesResponse{ValShares: valShares, Pagination: pageRes}, nil
+}
+
 var _ v1beta1.QueryServer = legacyQueryServer{}
 
 type legacyQueryServer struct {

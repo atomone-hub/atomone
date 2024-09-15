@@ -653,3 +653,223 @@ $ %s query gov proposer 1
 
 	return cmd
 }
+
+// GetCmdQueryGovernor implements the query governor command.
+func GetCmdQueryGovernor() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "governor [address]",
+		Args:  cobra.ExactArgs(1),
+		Short: "Query details of a single governor",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query details for a governor by its address.
+
+Example:
+$ %s query gov governor cosmosgov1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			addr, err := types.GovernorAddressFromBech32(args[0])
+			if err != nil {
+				return err
+			}
+
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			queryClient := v1.NewQueryClient(clientCtx)
+
+			res, err := queryClient.Governor(
+				cmd.Context(),
+				&v1.QueryGovernorRequest{GovernorAddress: addr.String()},
+			)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res.Governor)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetCmdQueryGovernors implements the query governors command.
+func GetCmdQueryGovernors() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "governors",
+		Short: "Query all governors",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query all governors.
+
+Example:
+$ %s query gov governors
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			queryClient := v1.NewQueryClient(clientCtx)
+
+			res, err := queryClient.Governors(
+				cmd.Context(),
+				&v1.QueryGovernorsRequest{},
+			)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetCmdQueryGovernanceDelegation implements the query governance delegation command.
+func GetCmdQueryGovernanceDelegation() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "delegation [address]",
+		Args:  cobra.ExactArgs(1),
+		Short: "Query governance delegation for a delegator",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query details for a governance delegation by a delegator.
+
+Example:
+$ %s query gov delegation cosmos1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			addr, err := sdk.AccAddressFromBech32(args[0])
+			if err != nil {
+				return err
+			}
+
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			queryClient := v1.NewQueryClient(clientCtx)
+
+			res, err := queryClient.GovernanceDelegation(
+				cmd.Context(),
+				&v1.QueryGovernanceDelegationRequest{DelegatorAddress: addr.String()},
+			)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetCmdQueryGovernanceDelegations implements the query governance delegations command.
+func GetCmdQueryGovernanceDelegations() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "delegations [governor_address]",
+		Short: "Query all governance delegations for a governor",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query all governance delegations for a governor.
+
+Example:
+$ %s query gov delegations cosmosgov1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
+`,
+				version.AppName,
+			),
+		),
+		Args: cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			addr, err := types.GovernorAddressFromBech32(args[0])
+			if err != nil {
+				return err
+			}
+
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			queryClient := v1.NewQueryClient(clientCtx)
+
+			res, err := queryClient.GovernanceDelegations(
+				cmd.Context(),
+				&v1.QueryGovernanceDelegationsRequest{GovernorAddress: addr.String()},
+			)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetCmdQueryGovernorValShares implements the query governor validator shares command.
+func GetCmdQueryGovernorValShares() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "valshares [governor_address]",
+		Args:  cobra.ExactArgs(1),
+		Short: "Query governor validators shares",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query details for a governor validators shares by its address.
+
+Example:
+$ %s query gov valshares cosmosgov1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+
+			addr, err := types.GovernorAddressFromBech32(args[0])
+			if err != nil {
+				return err
+			}
+
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			queryClient := v1.NewQueryClient(clientCtx)
+
+			res, err := queryClient.GovernorValShares(
+				cmd.Context(),
+				&v1.QueryGovernorValSharesRequest{GovernorAddress: addr.String()},
+			)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}

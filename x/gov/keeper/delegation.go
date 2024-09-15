@@ -115,16 +115,15 @@ func (k Keeper) RemoveGovernorValShares(ctx sdk.Context, governorAddr types.Gove
 }
 
 // GetAllGovernanceDelegationsByGovernor gets all governance delegations for a specific governor
-func (k Keeper) GetAllGovernanceDelegationsByGovernor(ctx sdk.Context, governorAddr types.GovernorAddress) []v1.GovernanceDelegation {
+func (k Keeper) GetAllGovernanceDelegationsByGovernor(ctx sdk.Context, governorAddr types.GovernorAddress) (delegations []*v1.GovernanceDelegation) {
 	store := ctx.KVStore(k.storeKey)
 	iterator := sdk.KVStorePrefixIterator(store, types.GovernanceDelegationsByGovernorKey(governorAddr, []byte{}))
 	defer iterator.Close()
 
-	var delegations []v1.GovernanceDelegation
 	for ; iterator.Valid(); iterator.Next() {
 		var delegation v1.GovernanceDelegation
 		k.cdc.MustUnmarshal(iterator.Value(), &delegation)
-		delegations = append(delegations, delegation)
+		delegations = append(delegations, &delegation)
 	}
 	return delegations
 }

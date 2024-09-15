@@ -375,3 +375,133 @@ $ %s tx gov weighted-vote 1 yes=0.6,no=0.3,abstain=0.05,no_with_veto=0.05 --from
 
 	return cmd
 }
+
+// CreateGovernorCmd creates a new Governor
+func CreateGovernorCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "create-governor [address] [moniker] [identity] [website] [security-contact] [details]",
+		Short: "Create a new Governor",
+		Args:  cobra.ExactArgs(6),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			address, err := sdk.AccAddressFromBech32(args[0])
+			if err != nil {
+				return err
+			}
+
+			description := v1.GovernorDescription{
+				Moniker:         args[1],
+				Identity:        args[2],
+				Website:         args[3],
+				SecurityContact: args[4],
+				Details:         args[5],
+			}
+
+			msg := v1.NewMsgCreateGovernor(address, description)
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+// EditGovernorCmd edits a Governor
+func EditGovernorCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "edit-governor [address] [status] [moniker] [identity] [website] [security-contact] [details]",
+		Short: "Edit a Governor. Can also update the Governor status.",
+		Args:  cobra.ExactArgs(7),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			address, err := sdk.AccAddressFromBech32(args[0])
+			if err != nil {
+				return err
+			}
+
+			status, err := v1.GovernorStatusFromString(args[1])
+			if err != nil {
+				return err
+			}
+
+			description := v1.GovernorDescription{
+				Moniker:         args[2],
+				Identity:        args[3],
+				Website:         args[4],
+				SecurityContact: args[5],
+				Details:         args[6],
+			}
+
+			msg := v1.NewMsgEditGovernor(address, description, status)
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+// DelegateGovernorCmd delegates or redelegates to a Governor
+func DelegateGovernorCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "delegate-governor [delegator-address] [governor-address]",
+		Short: "Delegate governance power to a Governor. Triggers a redelegation if a governance delegation already exists",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			delegatorAddress, err := sdk.AccAddressFromBech32(args[0])
+			if err != nil {
+				return err
+			}
+
+			governorAddress, err := types.GovernorAddressFromBech32(args[1])
+			if err != nil {
+				return err
+			}
+
+			msg := v1.NewMsgDelegateGovernor(delegatorAddress, governorAddress)
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+// UndelegateGovernorCmd undelegates from a Governor
+func UndelegateGovernorCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "undelegate-governor [delegator-address]",
+		Short: "Undelegate tokens from a Governor",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			delegatorAddress, err := sdk.AccAddressFromBech32(args[0])
+			if err != nil {
+				return err
+			}
+
+			msg := v1.NewMsgUndelegateGovernor(delegatorAddress)
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}

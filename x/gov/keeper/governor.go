@@ -40,7 +40,7 @@ func (k Keeper) GetAllGovernors(ctx sdk.Context) (governors v1.Governors) {
 
 	for ; iterator.Valid(); iterator.Next() {
 		governor := v1.MustUnmarshalGovernor(k.cdc, iterator.Value())
-		governors = append(governors, governor)
+		governors = append(governors, &governor)
 	}
 
 	return governors
@@ -56,7 +56,7 @@ func (k Keeper) GetAllActiveGovernors(ctx sdk.Context) (governors v1.Governors) 
 	for ; iterator.Valid(); iterator.Next() {
 		governor := v1.MustUnmarshalGovernor(k.cdc, iterator.Value())
 		if governor.IsActive() {
-			governors = append(governors, governor)
+			governors = append(governors, &governor)
 		}
 	}
 

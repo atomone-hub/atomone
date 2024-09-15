@@ -33,7 +33,7 @@ func NewGovernor(address string, description GovernorDescription) (Governor, err
 }
 
 // Governors is a collection of Governor
-type Governors []Governor
+type Governors []*Governor
 
 func (g Governors) String() (out string) {
 	for _, gov := range g {
@@ -182,6 +182,19 @@ func (d GovernorDescription) EnsureLength() (GovernorDescription, error) {
 
 func (s GovernorStatus) EnsureValid() bool {
 	return s == Active || s == Inactive
+}
+
+// GovernorStatusFromString returns a GovernorStatus from a string. It returns an
+// error if the string is invalid.
+func GovernorStatusFromString(str string) (GovernorStatus, error) {
+	switch str {
+	case GovernorStatusActive:
+		return Active, nil
+	case GovernorStatusInactive:
+		return Inactive, nil
+	default:
+		return Unspecified, types.ErrInvalidGovernorStatus.Wrapf("unrecognized governor status %s", str)
+	}
 }
 
 // MinEqual defines a more minimum set of equality conditions when comparing two
