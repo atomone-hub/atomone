@@ -204,7 +204,7 @@ func (k Keeper) undelegateGovernor(ctx sdk.Context, delegatorAddr sdk.AccAddress
 
 // DelegateGovernor creates a governor delegation for the given delegator
 // and increases all governor validator shares in the store
-func (k Keeper) delegateGovernor(ctx sdk.Context, delegatorAddr sdk.AccAddress, governorAddr types.GovernorAddress) {
+func (k Keeper) DelegateToGovernor(ctx sdk.Context, delegatorAddr sdk.AccAddress, governorAddr types.GovernorAddress) {
 	delegation := v1.NewGovernanceDelegation(delegatorAddr, governorAddr)
 	k.SetGovernanceDelegation(ctx, delegation)
 	// iterate all delegations of delegator and increase shares
@@ -215,9 +215,9 @@ func (k Keeper) delegateGovernor(ctx sdk.Context, delegatorAddr sdk.AccAddress, 
 }
 
 // RedelegateGovernor re-delegates all governor validator shares from one governor to another
-func (k Keeper) redelegateGovernor(ctx sdk.Context, delegatorAddr sdk.AccAddress, dstGovernorAddr types.GovernorAddress) {
+func (k Keeper) RedelegateToGovernor(ctx sdk.Context, delegatorAddr sdk.AccAddress, dstGovernorAddr types.GovernorAddress) {
 	// undelegate from the source governor
 	k.undelegateGovernor(ctx, delegatorAddr)
 	// delegate to the destination governor
-	k.delegateGovernor(ctx, delegatorAddr, dstGovernorAddr)
+	k.DelegateToGovernor(ctx, delegatorAddr, dstGovernorAddr)
 }

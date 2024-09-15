@@ -30,4 +30,9 @@ message GenesisState {
   //
   // Since: cosmos-sdk 0.47
   Params params = 8;
+
+  // governors defines all the governors present at genesis.
+  repeated Governor governors = 9;
+  // governance_delegations defines all the governance delegations present at genesis.
+  repeated GovernanceDelegation governance_delegations = 10;
 }

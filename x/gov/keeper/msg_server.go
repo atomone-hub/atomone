@@ -197,7 +197,7 @@ func (k msgServer) CreateGovernor(goCtx context.Context, msg *v1.MsgCreateGovern
 	k.SetGovernor(ctx, governor)
 
 	// a base account automatically creates a governance delegation to itself
-	k.delegateGovernor(ctx, addr, govAddr)
+	k.DelegateToGovernor(ctx, addr, govAddr)
 
 	return &v1.MsgCreateGovernorResponse{}, nil
 }
@@ -259,7 +259,7 @@ func (k msgServer) UpdateGovernorStatus(goCtx context.Context, msg *v1.MsgUpdate
 	// if status changes to active, create governance self-delegation
 	// in case it didn't exist
 	if governor.IsActive() {
-		k.redelegateGovernor(ctx, addr, govAddr)
+		k.RedelegateToGovernor(ctx, addr, govAddr)
 	}
 	return &v1.MsgUpdateGovernorStatusResponse{}, nil
 }
@@ -282,10 +282,10 @@ func (k msgServer) DelegateGovernor(goCtx context.Context, msg *v1.MsgDelegateGo
 	}
 	// redelegate if a delegation to another governor already exists
 	if found {
-		k.redelegateGovernor(ctx, delAddr, govAddr)
+		k.RedelegateToGovernor(ctx, delAddr, govAddr)
 	} else {
 		// Create the delegation
-		k.delegateGovernor(ctx, delAddr, govAddr)
+		k.DelegateToGovernor(ctx, delAddr, govAddr)
 	}
 
 	return &v1.MsgDelegateGovernorResponse{}, nil
