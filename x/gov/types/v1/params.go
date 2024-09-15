@@ -11,7 +11,8 @@ import (
 
 // Default period for deposits & voting
 const (
-	DefaultPeriod time.Duration = time.Hour * 24 * 2 // 2 days
+	DefaultPeriod                     time.Duration = time.Hour * 24 * 2  // 2 days
+	DefaultGovernorStatusChangePeriod time.Duration = time.Hour * 24 * 28 // 28 days
 )
 
 // Default governance params
@@ -55,7 +56,7 @@ func NewVotingParams(votingPeriod *time.Duration) VotingParams {
 func NewParams(
 	minDeposit sdk.Coins, maxDepositPeriod, votingPeriod time.Duration,
 	quorum, threshold, vetoThreshold, minInitialDepositRatio string, burnProposalDeposit, burnVoteQuorum, burnVoteVeto bool,
-	maxGovernors uint64,
+	maxGovernors uint64, governorStatusChangePeriod time.Duration,
 ) Params {
 	return Params{
 		MinDeposit:                 minDeposit,
@@ -69,6 +70,7 @@ func NewParams(
 		BurnVoteQuorum:             burnVoteQuorum,
 		BurnVoteVeto:               burnVoteVeto,
 		MaxGovernors:               maxGovernors,
+		GovernorStatusChangePeriod: &governorStatusChangePeriod,
 	}
 }
 
@@ -86,6 +88,7 @@ func DefaultParams() Params {
 		DefaultBurnVoteQuorom,
 		DefaultBurnVoteVeto,
 		DefaultMaxGovernors,
+		DefaultGovernorStatusChangePeriod,
 	)
 }
 
@@ -153,6 +156,14 @@ func (p Params) ValidateBasic() error {
 	}
 	if minInitialDepositRatio.GT(math.LegacyOneDec()) {
 		return fmt.Errorf("mininum initial deposit ratio of proposal is too large: %s", minInitialDepositRatio)
+	}
+
+	if p.GovernorStatusChangePeriod == nil {
+		return fmt.Errorf("governor status change period must not be nil: %d", p.GovernorStatusChangePeriod)
+	}
+
+	if p.GovernorStatusChangePeriod.Seconds() <= 0 {
+		return fmt.Errorf("governor status change period must be positive: %d", p.GovernorStatusChangePeriod)
 	}
 
 	return nil

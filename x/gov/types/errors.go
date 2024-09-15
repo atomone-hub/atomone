@@ -28,4 +28,7 @@ var (
 	ErrGovernanceDelegationExists   = sdkerrors.Register(ModuleName, 200, "governance delegation already exists")                     //nolint:staticcheck
 	ErrUnknownGovernanceDelegation  = sdkerrors.Register(ModuleName, 210, "unknown governance delegation")                            //nolint:staticcheck
 	ErrInvalidGovernanceDescription = sdkerrors.Register(ModuleName, 220, "invalid governance description")                           //nolint:staticcheck
+	ErrDelegatorIsGovernor          = sdkerrors.Register(ModuleName, 230, "cannot delegate, delegator is an active governor")         //nolint:staticcheck
+	ErrGovernorStatusEqual          = sdkerrors.Register(ModuleName, 240, "cannot change governor status to the same status")         //nolint:staticcheck
+	ErrGovernorStatusChangePeriod   = sdkerrors.Register(ModuleName, 250, "governor status change period not elapsed")                //nolint:staticcheck
 )

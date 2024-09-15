@@ -27,6 +27,7 @@ const (
 	TallyParamsQuorum          = "tally_params_quorum"
 	TallyParamsThreshold       = "tally_params_threshold"
 	TallyParamsVeto            = "tally_params_veto"
+	GovernorStatusChangePeriod = "governor_status_change_period"
 )
 
 // GenDepositParamsDepositPeriod returns randomized DepositParamsDepositPeriod
@@ -112,9 +113,15 @@ func RandomizedGenState(simState *module.SimulationState) {
 
 	maxGovernors := uint64(simState.Rand.Intn(100))
 
+	var governorStatusChangePeriod time.Duration
+	simState.AppParams.GetOrGenerate(
+		simState.Cdc, GovernorStatusChangePeriod, &governorStatusChangePeriod, simState.Rand,
+		func(r *rand.Rand) { governorStatusChangePeriod = GenDepositParamsDepositPeriod(r) },
+	)
+
 	govGenesis := v1.NewGenesisState(
 		startingProposalID,
-		v1.NewParams(minDeposit, depositPeriod, votingPeriod, quorum.String(), threshold.String(), veto.String(), minInitialDepositRatio.String(), simState.Rand.Intn(2) == 0, simState.Rand.Intn(2) == 0, simState.Rand.Intn(2) == 0, maxGovernors),
+		v1.NewParams(minDeposit, depositPeriod, votingPeriod, quorum.String(), threshold.String(), veto.String(), minInitialDepositRatio.String(), simState.Rand.Intn(2) == 0, simState.Rand.Intn(2) == 0, simState.Rand.Intn(2) == 0, maxGovernors, governorStatusChangePeriod),
 	)
 
 	bz, err := json.MarshalIndent(&govGenesis, "", " ")

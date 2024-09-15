@@ -25,10 +25,6 @@ func (k Keeper) SetGovernor(ctx sdk.Context, governor v1.Governor) {
 	store := ctx.KVStore(k.storeKey)
 	bz := v1.MustMarshalGovernor(k.cdc, &governor)
 	store.Set(types.GovernorKey(governor.GetAddress()), bz)
-
-	if governor.VotingPower.GT(sdk.ZeroDec()) {
-		k.SetGovernorByPowerIndex(ctx, governor)
-	}
 }
 
 // GetAllGovernors returns all governors

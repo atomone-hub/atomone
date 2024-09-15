@@ -78,7 +78,7 @@ func (h Hooks) BeforeValidatorSlashed(ctx sdk.Context, valAddr sdk.ValAddress, f
 		if governorVP.IsNegative() {
 			panic("negative governor voting power")
 		}
-		governor.SetVotingPower(governorVP)
+		governor.VotingPower = governorVP
 		h.k.UpdateGovernorByPowerIndex(ctx, governor)
 		return false
 	})

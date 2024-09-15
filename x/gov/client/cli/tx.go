@@ -413,9 +413,43 @@ func CreateGovernorCmd() *cobra.Command {
 // EditGovernorCmd edits a Governor
 func EditGovernorCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "edit-governor [address] [status] [moniker] [identity] [website] [security-contact] [details]",
-		Short: "Edit a Governor. Can also update the Governor status.",
-		Args:  cobra.ExactArgs(7),
+		Use:   "edit-governor [address] [moniker] [identity] [website] [security-contact] [details]",
+		Short: "Edit a Governor.",
+		Args:  cobra.ExactArgs(6),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			address, err := sdk.AccAddressFromBech32(args[0])
+			if err != nil {
+				return err
+			}
+
+			description := v1.GovernorDescription{
+				Moniker:         args[1],
+				Identity:        args[2],
+				Website:         args[3],
+				SecurityContact: args[4],
+				Details:         args[5],
+			}
+
+			msg := v1.NewMsgEditGovernor(address, description)
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+// UpdateGovernorStatusCmd updates the status of a Governor
+func UpdateGovernorStatusCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "update-governor-status [address] [status]",
+		Short: "Update the status of a Governor",
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -432,15 +466,7 @@ func EditGovernorCmd() *cobra.Command {
 				return err
 			}
 
-			description := v1.GovernorDescription{
-				Moniker:         args[2],
-				Identity:        args[3],
-				Website:         args[4],
-				SecurityContact: args[5],
-				Details:         args[6],
-			}
-
-			msg := v1.NewMsgEditGovernor(address, description, status)
+			msg := v1.NewMsgUpdateGovernorStatus(address, status)
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}

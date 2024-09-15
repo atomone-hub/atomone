@@ -155,7 +155,7 @@ func (k Keeper) IncreaseGovernorShares(ctx sdk.Context, governorAddr types.Gover
 	governor, _ := k.GetGovernor(ctx, governorAddr)
 	validator, _ := k.sk.GetValidator(ctx, validatorAddr)
 	vp := shares.MulInt(validator.GetBondedTokens()).Quo(validator.GetDelegatorShares())
-	governor.SetVotingPower(governor.GetVotingPower().Add(vp))
+	governor.VotingPower = governor.GetVotingPower().Add(vp)
 	k.UpdateGovernorByPowerIndex(ctx, governor)
 }
 
@@ -181,7 +181,7 @@ func (k Keeper) DecreaseGovernorShares(ctx sdk.Context, governorAddr types.Gover
 	if governorVP.IsNegative() {
 		panic("negative governor voting power")
 	}
-	governor.SetVotingPower(governorVP)
+	governor.VotingPower = governorVP
 	k.UpdateGovernorByPowerIndex(ctx, governor)
 }
 

@@ -359,8 +359,8 @@ func (msg MsgCreateGovernor) GetSigners() []sdk.AccAddress {
 }
 
 // NewMsgEditGovernor creates a new MsgEditGovernor instance
-func NewMsgEditGovernor(addr sdk.AccAddress, description GovernorDescription, status GovernorStatus) *MsgEditGovernor {
-	return &MsgEditGovernor{Address: addr.String(), Description: description, Status: status}
+func NewMsgEditGovernor(addr sdk.AccAddress, description GovernorDescription) *MsgEditGovernor {
+	return &MsgEditGovernor{Address: addr.String(), Description: description}
 }
 
 // Route implements the sdk.Msg interface.
@@ -452,4 +452,38 @@ func (msg MsgUndelegateGovernor) GetSignBytes() []byte {
 func (msg MsgUndelegateGovernor) GetSigners() []sdk.AccAddress {
 	delegator, _ := sdk.AccAddressFromBech32(msg.DelegatorAddress)
 	return []sdk.AccAddress{delegator}
+}
+
+// NewMsgUpdateGovernorStatus creates a new MsgUpdateGovernorStatus instance
+func NewMsgUpdateGovernorStatus(address sdk.AccAddress, status GovernorStatus) *MsgUpdateGovernorStatus {
+	return &MsgUpdateGovernorStatus{Address: address.String(), Status: status}
+}
+
+// Route implements the sdk.Msg interface.
+func (msg MsgUpdateGovernorStatus) Route() string { return types.RouterKey }
+
+// Type implements the sdk.Msg interface.
+func (msg MsgUpdateGovernorStatus) Type() string { return sdk.MsgTypeURL(&msg) }
+
+// ValidateBasic implements the sdk.Msg interface.
+func (msg MsgUpdateGovernorStatus) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(msg.Address); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrap(err.Error())
+	}
+	if !msg.Status.IsValid() {
+		return types.ErrInvalidGovernorStatus.Wrap(msg.Status.String())
+	}
+	return nil
+}
+
+// GetSignBytes returns the message bytes to sign over.
+func (msg MsgUpdateGovernorStatus) GetSignBytes() []byte {
+	bz := codec.ModuleCdc.MustMarshalJSON(&msg)
+	return sdk.MustSortJSON(bz)
+}
+
+// GetSigners returns the expected signers for a MsgUpdateGovernorStatus.
+func (msg MsgUpdateGovernorStatus) GetSigners() []sdk.AccAddress {
+	addr, _ := sdk.AccAddressFromBech32(msg.Address)
+	return []sdk.AccAddress{addr}
 }

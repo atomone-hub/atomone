@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"sort"
 	"strings"
+	time "time"
 
 	"cosmossdk.io/errors"
 
@@ -23,12 +24,13 @@ var (
 var _ GovernorI = Governor{}
 
 // NewGovernor constructs a new Governor
-func NewGovernor(address string, description GovernorDescription) (Governor, error) {
+func NewGovernor(address string, description GovernorDescription, creationTime time.Time) (Governor, error) {
 	return Governor{
-		GovernorAddress: address,
-		Description:     description,
-		Status:          Active,
-		VotingPower:     sdk.ZeroDec(),
+		GovernorAddress:      address,
+		Description:          description,
+		Status:               Active,
+		VotingPower:          sdk.ZeroDec(),
+		LastStatusChangeTime: &creationTime,
 	}, nil
 }
 
@@ -180,7 +182,7 @@ func (d GovernorDescription) EnsureLength() (GovernorDescription, error) {
 	return d, nil
 }
 
-func (s GovernorStatus) EnsureValid() bool {
+func (s GovernorStatus) IsValid() bool {
 	return s == Active || s == Inactive
 }
 
@@ -212,10 +214,10 @@ func (g *Governor) Equal(v2 *Governor) bool {
 }
 
 func (g Governor) GetVotingPower() sdk.Dec             { return g.VotingPower }
-func (g Governor) SetVotingPower(votingPower sdk.Dec)  { g.VotingPower = votingPower }
 func (g Governor) GetMoniker() string                  { return g.Description.Moniker }
 func (g Governor) GetStatus() GovernorStatus           { return g.Status }
 func (g Governor) GetDescription() GovernorDescription { return g.Description }
+func (g Governor) GetLastStatusChangeTime() *time.Time { return g.LastStatusChangeTime }
 func (g Governor) GetAddress() types.GovernorAddress {
 	return types.MustGovernorAddressFromBech32(g.GovernorAddress)
 }
