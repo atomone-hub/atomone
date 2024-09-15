@@ -76,6 +76,22 @@ func (k Keeper) GetGovernorValShares(ctx sdk.Context, governorAddr types.Governo
 	return share, true
 }
 
+// IterateGovernorValShares iterates over all governor validator shares
+func (k Keeper) IterateGovernorValShares(ctx sdk.Context, governorAddr types.GovernorAddress, cb func(index int64, share v1.GovernorValShares) (stop bool)) {
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.ValidatorSharesByGovernorKey(governorAddr, []byte{}))
+	defer iterator.Close()
+
+	for i := int64(0); iterator.Valid(); iterator.Next() {
+		var share v1.GovernorValShares
+		k.cdc.MustUnmarshal(iterator.Value(), &share)
+		if cb(i, share) {
+			break
+		}
+		i++
+	}
+}
+
 // GetGovernorValSharesByValidator gets all governor validator shares for a specific validator
 func (k Keeper) GetGovernorValSharesByValidator(ctx sdk.Context, validatorAddr sdk.ValAddress) []v1.GovernorValShares {
 	store := ctx.KVStore(k.storeKey)
@@ -185,9 +201,9 @@ func (k Keeper) DecreaseGovernorShares(ctx sdk.Context, governorAddr types.Gover
 	k.UpdateGovernorByPowerIndex(ctx, governor)
 }
 
-// UndelegateGovernor decreases all governor validator shares in the store
+// UndelegateFromGovernor decreases all governor validator shares in the store
 // and then removes the governor delegation for the given delegator
-func (k Keeper) undelegateGovernor(ctx sdk.Context, delegatorAddr sdk.AccAddress) {
+func (k Keeper) UndelegateFromGovernor(ctx sdk.Context, delegatorAddr sdk.AccAddress) {
 	delegation, found := k.GetGovernanceDelegation(ctx, delegatorAddr)
 	if !found {
 		return
@@ -217,7 +233,7 @@ func (k Keeper) DelegateToGovernor(ctx sdk.Context, delegatorAddr sdk.AccAddress
 // RedelegateGovernor re-delegates all governor validator shares from one governor to another
 func (k Keeper) RedelegateToGovernor(ctx sdk.Context, delegatorAddr sdk.AccAddress, dstGovernorAddr types.GovernorAddress) {
 	// undelegate from the source governor
-	k.undelegateGovernor(ctx, delegatorAddr)
+	k.UndelegateFromGovernor(ctx, delegatorAddr)
 	// delegate to the destination governor
 	k.DelegateToGovernor(ctx, delegatorAddr, dstGovernorAddr)
 }

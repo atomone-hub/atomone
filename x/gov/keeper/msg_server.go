@@ -303,7 +303,7 @@ func (k msgServer) UndelegateGovernor(goCtx context.Context, msg *v1.MsgUndelega
 	}
 
 	// Remove the delegation
-	k.undelegateGovernor(ctx, delAddr)
+	k.UndelegateFromGovernor(ctx, delAddr)
 
 	return &v1.MsgUndelegateGovernorResponse{}, nil
 }
