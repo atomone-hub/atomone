@@ -49,14 +49,15 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 // HasReachedQuorum returns whether or not a proposal has reached quorum
 // this is just a stripped down version of the Tally function above
 func (keeper Keeper) HasReachedQuorum(ctx sdk.Context, proposal v1.Proposal) (quorumPassed bool, err error) {
-	currValidators := keeper.getBondedValidatorsByAddress(ctx)
-	params := keeper.GetParams(ctx)
-
 	// If there is no staked coins, the proposal has not reached quorum
 	totalBonded := keeper.sk.TotalBondedTokens(ctx)
 	if totalBonded.IsZero() {
 		return false, nil
 	}
+
+	/* DISABLED on AtomOne - no possible increase of computation by iterating over
+	 validators since vote inheritance is disabled.
+	 Keeping as comment because this should be adapted with governors loop
 
 	// we check first if voting power of validators alone is enough to pass quorum
 	// and if so, we return true skipping the iteration over all votes
@@ -64,22 +65,24 @@ func (keeper Keeper) HasReachedQuorum(ctx sdk.Context, proposal v1.Proposal) (qu
 	approxTotalVotingPower := math.LegacyZeroDec()
 	for _, val := range currValidators {
 		_, ok := keeper.GetVote(ctx, proposal.Id, sdk.AccAddress(val.GetOperator()))
-		if !ok {
-			continue
+		if ok {
+			approxTotalVotingPower = approxTotalVotingPower.Add(math.LegacyNewDecFromInt(val.GetBondedTokens()))
 		}
-		approxTotalVotingPower = approxTotalVotingPower.Add(math.LegacyNewDecFromInt(val.GetBondedTokens()))
 	}
 	// check and return whether or not the proposal has reached quorum
 	approxPercentVoting := approxTotalVotingPower.Quo(math.LegacyNewDecFromInt(totalBonded))
-	quorum, _ := math.LegacyNewDecFromStr(params.Quorum)
 	if approxPercentVoting.GTE(quorum) {
 		return true, nil
 	}
+	*/
+
 	// voting power of validators does not reach quorum, let's tally all votes
+	currValidators := keeper.getBondedValidatorsByAddress(ctx)
 	totalVotingPower, _ := keeper.tallyVotes(ctx, proposal, currValidators, false)
 
 	// check and return whether or not the proposal has reached quorum
 	percentVoting := totalVotingPower.Quo(math.LegacyNewDecFromInt(totalBonded))
+	quorum, _ := math.LegacyNewDecFromStr(keeper.GetParams(ctx).Quorum)
 	return percentVoting.GTE(quorum), nil
 }
 
@@ -87,7 +90,6 @@ func (keeper Keeper) HasReachedQuorum(ctx sdk.Context, proposal v1.Proposal) (qu
 // them in map using their operator address as the key.
 func (keeper Keeper) getBondedValidatorsByAddress(ctx sdk.Context) map[string]stakingtypes.ValidatorI {
 	vals := make(map[string]stakingtypes.ValidatorI)
-
 	keeper.sk.IterateBondedValidatorsByPower(ctx, func(index int64, validator stakingtypes.ValidatorI) (stop bool) {
 		vals[validator.GetOperator().String()] = validator
 		return false
@@ -105,7 +107,6 @@ func (keeper Keeper) tallyVotes(
 ) (totalVotingPower math.LegacyDec, results map[v1.VoteOption]math.LegacyDec) {
 	totalVotingPower = math.LegacyZeroDec()
 	if isFinal {
-		// TODO find something else than isFinal for the dual usage
 		results = make(map[v1.VoteOption]math.LegacyDec)
 		results[v1.OptionYes] = math.LegacyZeroDec()
 		results[v1.OptionAbstain] = math.LegacyZeroDec()

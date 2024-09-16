@@ -494,21 +494,6 @@ func TestHasReachedQuorum(t *testing.T) {
 			expectedQuorum: false,
 		},
 		{
-			name: "enough votes: quorum (with only validators)",
-			setup: func(s *tallyFixture) {
-				// NOTE: don't use validatorVote helper here, because when validator
-				// votes reach quorum, we don't iterate over delegations, so we don't
-				// want the EXPECT registered in validatorVote helper.
-				for i := 0; i < 4; i++ {
-					voter := sdk.AccAddress(s.valAddrs[i])
-					vote := v1.VoteOption_VOTE_OPTION_ABSTAIN
-					err := s.keeper.AddVote(s.ctx, s.proposal.Id, voter, v1.NewNonSplitVoteOption(vote), "")
-					require.NoError(s.t, err)
-				}
-			},
-			expectedQuorum: true,
-		},
-		{
 			name: "enough votes: quorum",
 			setup: func(s *tallyFixture) {
 				s.validatorVote(s.valAddrs[0], v1.VoteOption_VOTE_OPTION_NO)
