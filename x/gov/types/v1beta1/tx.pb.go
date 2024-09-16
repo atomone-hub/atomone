@@ -6,10 +6,6 @@ package v1beta1
 import (
 	context "context"
 	fmt "fmt"
-	io "io"
-	math "math"
-	math_bits "math/bits"
-
 	_ "github.com/cosmos/cosmos-proto"
 	types "github.com/cosmos/cosmos-sdk/codec/types"
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
@@ -22,14 +18,15 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	io "io"
+	math "math"
+	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ = proto.Marshal
-	_ = fmt.Errorf
-	_ = math.Inf
-)
+var _ = proto.Marshal
+var _ = fmt.Errorf
+var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -54,11 +51,9 @@ func (*MsgSubmitProposal) ProtoMessage() {}
 func (*MsgSubmitProposal) Descriptor() ([]byte, []int) {
 	return fileDescriptor_c121a56b868812b2, []int{0}
 }
-
 func (m *MsgSubmitProposal) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *MsgSubmitProposal) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgSubmitProposal.Marshal(b, m, deterministic)
@@ -71,15 +66,12 @@ func (m *MsgSubmitProposal) XXX_Marshal(b []byte, deterministic bool) ([]byte, e
 		return b[:n], nil
 	}
 }
-
 func (m *MsgSubmitProposal) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgSubmitProposal.Merge(m, src)
 }
-
 func (m *MsgSubmitProposal) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *MsgSubmitProposal) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgSubmitProposal.DiscardUnknown(m)
 }
@@ -98,11 +90,9 @@ func (*MsgSubmitProposalResponse) ProtoMessage()    {}
 func (*MsgSubmitProposalResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_c121a56b868812b2, []int{1}
 }
-
 func (m *MsgSubmitProposalResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *MsgSubmitProposalResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgSubmitProposalResponse.Marshal(b, m, deterministic)
@@ -115,15 +105,12 @@ func (m *MsgSubmitProposalResponse) XXX_Marshal(b []byte, deterministic bool) ([
 		return b[:n], nil
 	}
 }
-
 func (m *MsgSubmitProposalResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgSubmitProposalResponse.Merge(m, src)
 }
-
 func (m *MsgSubmitProposalResponse) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *MsgSubmitProposalResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgSubmitProposalResponse.DiscardUnknown(m)
 }
@@ -152,11 +139,9 @@ func (*MsgVote) ProtoMessage() {}
 func (*MsgVote) Descriptor() ([]byte, []int) {
 	return fileDescriptor_c121a56b868812b2, []int{2}
 }
-
 func (m *MsgVote) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *MsgVote) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgVote.Marshal(b, m, deterministic)
@@ -169,15 +154,12 @@ func (m *MsgVote) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-
 func (m *MsgVote) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgVote.Merge(m, src)
 }
-
 func (m *MsgVote) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *MsgVote) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgVote.DiscardUnknown(m)
 }
@@ -185,7 +167,8 @@ func (m *MsgVote) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgVote proto.InternalMessageInfo
 
 // MsgVoteResponse defines the Msg/Vote response type.
-type MsgVoteResponse struct{}
+type MsgVoteResponse struct {
+}
 
 func (m *MsgVoteResponse) Reset()         { *m = MsgVoteResponse{} }
 func (m *MsgVoteResponse) String() string { return proto.CompactTextString(m) }
@@ -193,11 +176,9 @@ func (*MsgVoteResponse) ProtoMessage()    {}
 func (*MsgVoteResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_c121a56b868812b2, []int{3}
 }
-
 func (m *MsgVoteResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *MsgVoteResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgVoteResponse.Marshal(b, m, deterministic)
@@ -210,15 +191,12 @@ func (m *MsgVoteResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, err
 		return b[:n], nil
 	}
 }
-
 func (m *MsgVoteResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgVoteResponse.Merge(m, src)
 }
-
 func (m *MsgVoteResponse) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *MsgVoteResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgVoteResponse.DiscardUnknown(m)
 }
@@ -242,11 +220,9 @@ func (*MsgVoteWeighted) ProtoMessage() {}
 func (*MsgVoteWeighted) Descriptor() ([]byte, []int) {
 	return fileDescriptor_c121a56b868812b2, []int{4}
 }
-
 func (m *MsgVoteWeighted) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *MsgVoteWeighted) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgVoteWeighted.Marshal(b, m, deterministic)
@@ -259,15 +235,12 @@ func (m *MsgVoteWeighted) XXX_Marshal(b []byte, deterministic bool) ([]byte, err
 		return b[:n], nil
 	}
 }
-
 func (m *MsgVoteWeighted) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgVoteWeighted.Merge(m, src)
 }
-
 func (m *MsgVoteWeighted) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *MsgVoteWeighted) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgVoteWeighted.DiscardUnknown(m)
 }
@@ -277,7 +250,8 @@ var xxx_messageInfo_MsgVoteWeighted proto.InternalMessageInfo
 // MsgVoteWeightedResponse defines the Msg/VoteWeighted response type.
 //
 // Since: cosmos-sdk 0.43
-type MsgVoteWeightedResponse struct{}
+type MsgVoteWeightedResponse struct {
+}
 
 func (m *MsgVoteWeightedResponse) Reset()         { *m = MsgVoteWeightedResponse{} }
 func (m *MsgVoteWeightedResponse) String() string { return proto.CompactTextString(m) }
@@ -285,11 +259,9 @@ func (*MsgVoteWeightedResponse) ProtoMessage()    {}
 func (*MsgVoteWeightedResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_c121a56b868812b2, []int{5}
 }
-
 func (m *MsgVoteWeightedResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *MsgVoteWeightedResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgVoteWeightedResponse.Marshal(b, m, deterministic)
@@ -302,15 +274,12 @@ func (m *MsgVoteWeightedResponse) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return b[:n], nil
 	}
 }
-
 func (m *MsgVoteWeightedResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgVoteWeightedResponse.Merge(m, src)
 }
-
 func (m *MsgVoteWeightedResponse) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *MsgVoteWeightedResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgVoteWeightedResponse.DiscardUnknown(m)
 }
@@ -332,11 +301,9 @@ func (*MsgDeposit) ProtoMessage() {}
 func (*MsgDeposit) Descriptor() ([]byte, []int) {
 	return fileDescriptor_c121a56b868812b2, []int{6}
 }
-
 func (m *MsgDeposit) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *MsgDeposit) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgDeposit.Marshal(b, m, deterministic)
@@ -349,15 +316,12 @@ func (m *MsgDeposit) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-
 func (m *MsgDeposit) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgDeposit.Merge(m, src)
 }
-
 func (m *MsgDeposit) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *MsgDeposit) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgDeposit.DiscardUnknown(m)
 }
@@ -365,7 +329,8 @@ func (m *MsgDeposit) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgDeposit proto.InternalMessageInfo
 
 // MsgDepositResponse defines the Msg/Deposit response type.
-type MsgDepositResponse struct{}
+type MsgDepositResponse struct {
+}
 
 func (m *MsgDepositResponse) Reset()         { *m = MsgDepositResponse{} }
 func (m *MsgDepositResponse) String() string { return proto.CompactTextString(m) }
@@ -373,11 +338,9 @@ func (*MsgDepositResponse) ProtoMessage()    {}
 func (*MsgDepositResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_c121a56b868812b2, []int{7}
 }
-
 func (m *MsgDepositResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *MsgDepositResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgDepositResponse.Marshal(b, m, deterministic)
@@ -390,15 +353,12 @@ func (m *MsgDepositResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, 
 		return b[:n], nil
 	}
 }
-
 func (m *MsgDepositResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgDepositResponse.Merge(m, src)
 }
-
 func (m *MsgDepositResponse) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *MsgDepositResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgDepositResponse.DiscardUnknown(m)
 }
@@ -470,10 +430,8 @@ var fileDescriptor_c121a56b868812b2 = []byte{
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ context.Context
-	_ grpc.ClientConn
-)
+var _ context.Context
+var _ grpc.ClientConn
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
@@ -556,20 +514,18 @@ type MsgServer interface {
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
-type UnimplementedMsgServer struct{}
+type UnimplementedMsgServer struct {
+}
 
 func (*UnimplementedMsgServer) SubmitProposal(ctx context.Context, req *MsgSubmitProposal) (*MsgSubmitProposalResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SubmitProposal not implemented")
 }
-
 func (*UnimplementedMsgServer) Vote(ctx context.Context, req *MsgVote) (*MsgVoteResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Vote not implemented")
 }
-
 func (*UnimplementedMsgServer) VoteWeighted(ctx context.Context, req *MsgVoteWeighted) (*MsgVoteWeightedResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VoteWeighted not implemented")
 }
-
 func (*UnimplementedMsgServer) Deposit(ctx context.Context, req *MsgDeposit) (*MsgDepositResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Deposit not implemented")
 }
@@ -977,7 +933,6 @@ func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-
 func (m *MsgSubmitProposal) Size() (n int) {
 	if m == nil {
 		return 0
@@ -1106,11 +1061,9 @@ func (m *MsgDepositResponse) Size() (n int) {
 func sovTx(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
-
 func sozTx(x uint64) (n int) {
 	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-
 func (m *MsgSubmitProposal) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1263,7 +1216,6 @@ func (m *MsgSubmitProposal) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *MsgSubmitProposalResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1333,7 +1285,6 @@ func (m *MsgSubmitProposalResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *MsgVote) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1454,7 +1405,6 @@ func (m *MsgVote) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *MsgVoteResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1505,7 +1455,6 @@ func (m *MsgVoteResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *MsgVoteWeighted) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1641,7 +1590,6 @@ func (m *MsgVoteWeighted) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *MsgVoteWeightedResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1692,7 +1640,6 @@ func (m *MsgVoteWeightedResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *MsgDeposit) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1828,7 +1775,6 @@ func (m *MsgDeposit) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *MsgDepositResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1879,7 +1825,6 @@ func (m *MsgDepositResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func skipTx(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0
