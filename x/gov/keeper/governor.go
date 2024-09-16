@@ -104,8 +104,10 @@ func (k Keeper) IterateMaxGovernorsByGovernancePower(ctx sdk.Context, cb func(in
 	iterator := sdk.KVStoreReversePrefixIterator(store, types.GovernorsByPowerKeyPrefix)
 	defer iterator.Close()
 
-	for ; iterator.Valid() && totGovernors < maxGovernors; iterator.Next() {
-		governor := v1.MustUnmarshalGovernor(k.cdc, iterator.Value())
+	for ; iterator.Valid() && totGovernors <= maxGovernors; iterator.Next() {
+		// the value stored is the governor address
+		governorAddr := types.GovernorAddress(iterator.Value())
+		governor, _ := k.GetGovernor(ctx, governorAddr)
 		if governor.IsActive() {
 			if cb(int64(totGovernors), governor) {
 				break
