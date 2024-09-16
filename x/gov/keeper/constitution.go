@@ -1,9 +1,9 @@
 package keeper
 
 import (
-	"github.com/atomone-hub/atomone/x/gov/types"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/atomone-hub/atomone/x/gov/types"
 )
 
 func (keeper Keeper) GetConstitution(ctx sdk.Context) (constitution string) {
@@ -15,5 +15,5 @@ func (keeper Keeper) GetConstitution(ctx sdk.Context) (constitution string) {
 
 func (keeper Keeper) SetConstitution(ctx sdk.Context, constitution string) {
 	store := ctx.KVStore(keeper.storeKey)
-	store.Set([]byte(types.KeyConstitution), []byte(constitution))
+	store.Set(types.KeyConstitution, []byte(constitution))
 }
