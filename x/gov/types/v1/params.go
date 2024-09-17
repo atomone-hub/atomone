@@ -9,13 +9,16 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// Default period for deposits & voting
+// Default period for deposits & voting and min voting period
 const (
-	DefaultPeriod time.Duration = time.Hour * 24 * 2 // 2 days
+	DefaultVotingPeriod  time.Duration = time.Hour * 24 * 21 // 21 days
+	MinVotingPeriod      time.Duration = time.Hour * 24 * 21 // 21 days
+	DefaultDepositPeriod time.Duration = time.Hour * 24 * 14 // 14 days
 )
 
 // Default governance params
 var (
+	minVotingPeriod               = MinVotingPeriod
 	DefaultMinDepositTokens       = sdk.NewInt(10000000)
 	DefaultQuorum                 = sdk.NewDecWithPrec(334, 3)
 	DefaultThreshold              = sdk.NewDecWithPrec(5, 1)
@@ -73,8 +76,8 @@ func NewParams(
 func DefaultParams() Params {
 	return NewParams(
 		sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, DefaultMinDepositTokens)),
-		DefaultPeriod,
-		DefaultPeriod,
+		DefaultDepositPeriod,
+		DefaultVotingPeriod,
 		DefaultQuorum.String(),
 		DefaultThreshold.String(),
 		DefaultVetoThreshold.String(),
@@ -133,11 +136,11 @@ func (p Params) ValidateBasic() error {
 	}
 
 	if p.VotingPeriod == nil {
-		return fmt.Errorf("voting period must not be nil: %d", p.VotingPeriod)
+		return fmt.Errorf("voting period must not be nil")
 	}
 
-	if p.VotingPeriod.Seconds() <= 0 {
-		return fmt.Errorf("voting period must be positive: %s", p.VotingPeriod)
+	if p.VotingPeriod.Seconds() < minVotingPeriod.Seconds() {
+		return fmt.Errorf("voting period must be at least %s: %s", minVotingPeriod.String(), p.VotingPeriod.String())
 	}
 
 	minInitialDepositRatio, err := math.LegacyNewDecFromStr(p.MinInitialDepositRatio)
