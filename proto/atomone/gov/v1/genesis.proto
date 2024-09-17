@@ -30,4 +30,8 @@ message GenesisState {
   //
   // Since: cosmos-sdk 0.47
   Params params = 8;
+  // The constitution allows builders to lay a foundation and define purpose.
+  //
+  // Since: cosmos-sdk 0.48
+  string constitution = 9;
 }
