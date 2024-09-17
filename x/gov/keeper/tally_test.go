@@ -131,10 +131,9 @@ func TestTally(t *testing.T) {
 			expectedPass: false,
 			expectedBurn: true,
 			expectedTally: v1.TallyResult{
-				YesCount:        "0",
-				AbstainCount:    "0",
-				NoCount:         "0",
-				NoWithVetoCount: "0",
+				YesCount:     "0",
+				AbstainCount: "0",
+				NoCount:      "0",
 			},
 		},
 		{
@@ -145,10 +144,9 @@ func TestTally(t *testing.T) {
 			expectedPass: false,
 			expectedBurn: true, // burn because quorum not reached
 			expectedTally: v1.TallyResult{
-				YesCount:        "0",
-				AbstainCount:    "0",
-				NoCount:         "1",
-				NoWithVetoCount: "0",
+				YesCount:     "0",
+				AbstainCount: "0",
+				NoCount:      "1",
 			},
 		},
 		{
@@ -159,10 +157,9 @@ func TestTally(t *testing.T) {
 			expectedPass: false,
 			expectedBurn: true, // burn because quorum not reached
 			expectedTally: v1.TallyResult{
-				YesCount:        "0",
-				AbstainCount:    "0",
-				NoCount:         "0",
-				NoWithVetoCount: "0",
+				YesCount:     "0",
+				AbstainCount: "0",
+				NoCount:      "0",
 			},
 		},
 		{
@@ -174,42 +171,39 @@ func TestTally(t *testing.T) {
 			expectedPass: false,
 			expectedBurn: true, // burn because quorum not reached
 			expectedTally: v1.TallyResult{
-				YesCount:        "2",
-				AbstainCount:    "0",
-				NoCount:         "0",
-				NoWithVetoCount: "0",
+				YesCount:     "2",
+				AbstainCount: "0",
+				NoCount:      "0",
 			},
 		},
 		{
 			name: "one delegator votes yes, validator votes also yes: prop fails/burn deposit",
 			setup: func(s *tallyFixture) {
-				s.delegate(s.delAddrs[0], s.valAddrs[0], 2)
+				s.delegate(s.delAddrs[0], s.valAddrs[0], 1)
 				s.vote(s.delAddrs[0], v1.VoteOption_VOTE_OPTION_YES)
 				s.validatorVote(s.valAddrs[0], v1.VoteOption_VOTE_OPTION_YES)
 			},
 			expectedPass: false,
 			expectedBurn: true, // burn because quorum not reached
 			expectedTally: v1.TallyResult{
-				YesCount:        "3",
-				AbstainCount:    "0",
-				NoCount:         "0",
-				NoWithVetoCount: "0",
+				YesCount:     "2",
+				AbstainCount: "0",
+				NoCount:      "0",
 			},
 		},
 		{
 			name: "one delegator votes yes, validator votes no: prop fails/burn deposit",
 			setup: func(s *tallyFixture) {
-				s.delegate(s.delAddrs[0], s.valAddrs[0], 2)
+				s.delegate(s.delAddrs[0], s.valAddrs[0], 1)
 				s.vote(s.delAddrs[0], v1.VoteOption_VOTE_OPTION_YES)
 				s.validatorVote(s.valAddrs[0], v1.VoteOption_VOTE_OPTION_NO)
 			},
 			expectedPass: false,
 			expectedBurn: true, // burn because quorum not reached
 			expectedTally: v1.TallyResult{
-				YesCount:        "2",
-				AbstainCount:    "0",
-				NoCount:         "1",
-				NoWithVetoCount: "0",
+				YesCount:     "1",
+				AbstainCount: "0",
+				NoCount:      "1",
 			},
 		},
 		{
@@ -222,10 +216,9 @@ func TestTally(t *testing.T) {
 			expectedPass: false,
 			expectedBurn: true, // burn because quorum not reached
 			expectedTally: v1.TallyResult{
-				YesCount:        "0",
-				AbstainCount:    "0",
-				NoCount:         "1",
-				NoWithVetoCount: "0",
+				YesCount:     "0",
+				AbstainCount: "0",
+				NoCount:      "1",
 			},
 		},
 		{
@@ -246,10 +239,9 @@ func TestTally(t *testing.T) {
 			expectedPass: true,
 			expectedBurn: false,
 			expectedTally: v1.TallyResult{
-				YesCount:        "5",
-				AbstainCount:    "1",
-				NoCount:         "1",
-				NoWithVetoCount: "0",
+				YesCount:     "5",
+				AbstainCount: "1",
+				NoCount:      "1",
 			},
 		},
 		{
@@ -263,34 +255,13 @@ func TestTally(t *testing.T) {
 			expectedPass: false,
 			expectedBurn: false,
 			expectedTally: v1.TallyResult{
-				YesCount:        "0",
-				AbstainCount:    "4",
-				NoCount:         "0",
-				NoWithVetoCount: "0",
+				YesCount:     "0",
+				AbstainCount: "4",
+				NoCount:      "0",
 			},
 		},
 		{
-			name: "quorum reached with veto>1/3: prop fails/burn deposit",
-			setup: func(s *tallyFixture) {
-				s.validatorVote(s.valAddrs[0], v1.VoteOption_VOTE_OPTION_YES)
-				s.validatorVote(s.valAddrs[1], v1.VoteOption_VOTE_OPTION_YES)
-				s.validatorVote(s.valAddrs[2], v1.VoteOption_VOTE_OPTION_YES)
-				s.validatorVote(s.valAddrs[3], v1.VoteOption_VOTE_OPTION_YES)
-				s.validatorVote(s.valAddrs[4], v1.VoteOption_VOTE_OPTION_NO_WITH_VETO)
-				s.validatorVote(s.valAddrs[5], v1.VoteOption_VOTE_OPTION_NO_WITH_VETO)
-				s.validatorVote(s.valAddrs[6], v1.VoteOption_VOTE_OPTION_NO_WITH_VETO)
-			},
-			expectedPass: false,
-			expectedBurn: true,
-			expectedTally: v1.TallyResult{
-				YesCount:        "4",
-				AbstainCount:    "0",
-				NoCount:         "0",
-				NoWithVetoCount: "3",
-			},
-		},
-		{
-			name: "quorum reached with yes<=.5: prop fails",
+			name: "quorum reached with yes<=.667: prop fails",
 			setup: func(s *tallyFixture) {
 				s.validatorVote(s.valAddrs[0], v1.VoteOption_VOTE_OPTION_YES)
 				s.validatorVote(s.valAddrs[1], v1.VoteOption_VOTE_OPTION_YES)
@@ -300,49 +271,45 @@ func TestTally(t *testing.T) {
 			expectedPass: false,
 			expectedBurn: false,
 			expectedTally: v1.TallyResult{
-				YesCount:        "2",
-				AbstainCount:    "0",
-				NoCount:         "2",
-				NoWithVetoCount: "0",
+				YesCount:     "2",
+				AbstainCount: "0",
+				NoCount:      "2",
 			},
 		},
 		{
-			name: "quorum reached with yes>.5: prop succeeds",
+			name: "quorum reached with yes>.667: prop succeeds",
 			setup: func(s *tallyFixture) {
 				s.validatorVote(s.valAddrs[0], v1.VoteOption_VOTE_OPTION_YES)
 				s.validatorVote(s.valAddrs[1], v1.VoteOption_VOTE_OPTION_YES)
 				s.validatorVote(s.valAddrs[2], v1.VoteOption_VOTE_OPTION_YES)
 				s.validatorVote(s.valAddrs[3], v1.VoteOption_VOTE_OPTION_YES)
-				s.validatorVote(s.valAddrs[4], v1.VoteOption_VOTE_OPTION_NO)
+				s.validatorVote(s.valAddrs[4], v1.VoteOption_VOTE_OPTION_YES)
 				s.validatorVote(s.valAddrs[5], v1.VoteOption_VOTE_OPTION_NO)
-				s.validatorVote(s.valAddrs[6], v1.VoteOption_VOTE_OPTION_NO_WITH_VETO)
 			},
 			expectedPass: true,
 			expectedBurn: false,
 			expectedTally: v1.TallyResult{
-				YesCount:        "4",
-				AbstainCount:    "0",
-				NoCount:         "2",
-				NoWithVetoCount: "1",
+				YesCount:     "5",
+				AbstainCount: "0",
+				NoCount:      "1",
 			},
 		},
 		{
-			name: "quorum reached thanks to abstain, yes>.5: prop succeeds",
+			name: "quorum reached thanks to abstain, yes>.667: prop succeeds",
 			setup: func(s *tallyFixture) {
 				s.validatorVote(s.valAddrs[0], v1.VoteOption_VOTE_OPTION_YES)
 				s.validatorVote(s.valAddrs[1], v1.VoteOption_VOTE_OPTION_YES)
 				s.validatorVote(s.valAddrs[2], v1.VoteOption_VOTE_OPTION_NO)
-				s.validatorVote(s.valAddrs[3], v1.VoteOption_VOTE_OPTION_ABSTAIN)
+				s.validatorVote(s.valAddrs[3], v1.VoteOption_VOTE_OPTION_YES)
 				s.validatorVote(s.valAddrs[4], v1.VoteOption_VOTE_OPTION_ABSTAIN)
 				s.validatorVote(s.valAddrs[5], v1.VoteOption_VOTE_OPTION_ABSTAIN)
 			},
 			expectedPass: true,
 			expectedBurn: false,
 			expectedTally: v1.TallyResult{
-				YesCount:        "2",
-				AbstainCount:    "3",
-				NoCount:         "1",
-				NoWithVetoCount: "0",
+				YesCount:     "3",
+				AbstainCount: "2",
+				NoCount:      "1",
 			},
 		},
 	}
@@ -352,7 +319,6 @@ func TestTally(t *testing.T) {
 			params := v1.DefaultParams()
 			// Ensure params value are different than false
 			params.BurnVoteQuorum = true
-			params.BurnVoteVeto = true
 			err := govKeeper.SetParams(ctx, params)
 			require.NoError(t, err)
 			var (

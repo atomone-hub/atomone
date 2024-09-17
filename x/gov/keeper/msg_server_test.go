@@ -956,48 +956,6 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 			expErrMsg: "vote threshold too large",
 		},
 		{
-			name: "invalid veto threshold",
-			input: func() *v1.MsgUpdateParams {
-				params1 := params
-				params1.VetoThreshold = "abc"
-
-				return &v1.MsgUpdateParams{
-					Authority: authority,
-					Params:    params1,
-				}
-			},
-			expErr:    true,
-			expErrMsg: "invalid vetoThreshold string",
-		},
-		{
-			name: "negative veto threshold",
-			input: func() *v1.MsgUpdateParams {
-				params1 := params
-				params1.VetoThreshold = "-0.1"
-
-				return &v1.MsgUpdateParams{
-					Authority: authority,
-					Params:    params1,
-				}
-			},
-			expErr:    true,
-			expErrMsg: "veto threshold must be positive",
-		},
-		{
-			name: "veto threshold > 1",
-			input: func() *v1.MsgUpdateParams {
-				params1 := params
-				params1.VetoThreshold = "2"
-
-				return &v1.MsgUpdateParams{
-					Authority: authority,
-					Params:    params1,
-				}
-			},
-			expErr:    true,
-			expErrMsg: "veto threshold too large",
-		},
-		{
 			name: "invalid voting period",
 			input: func() *v1.MsgUpdateParams {
 				params1 := params

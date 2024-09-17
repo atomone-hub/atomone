@@ -20,13 +20,11 @@ const (
 var (
 	minVotingPeriod               = MinVotingPeriod
 	DefaultMinDepositTokens       = sdk.NewInt(10000000)
-	DefaultQuorum                 = sdk.NewDecWithPrec(334, 3)
-	DefaultThreshold              = sdk.NewDecWithPrec(5, 1)
-	DefaultVetoThreshold          = sdk.NewDecWithPrec(334, 3)
+	DefaultQuorum                 = sdk.NewDecWithPrec(25, 2)
+	DefaultThreshold              = sdk.NewDecWithPrec(667, 3)
 	DefaultMinInitialDepositRatio = sdk.ZeroDec()
 	DefaultBurnProposalPrevote    = false // set to false to replicate behavior of when this change was made (0.47)
 	DefaultBurnVoteQuorom         = false // set to false to  replicate behavior of when this change was made (0.47)
-	DefaultBurnVoteVeto           = true  // set to true to replicate behavior of when this change was made (0.47)
 )
 
 // Deprecated: NewDepositParams creates a new DepositParams object
@@ -38,11 +36,10 @@ func NewDepositParams(minDeposit sdk.Coins, maxDepositPeriod *time.Duration) Dep
 }
 
 // Deprecated: NewTallyParams creates a new TallyParams object
-func NewTallyParams(quorum, threshold, vetoThreshold string) TallyParams {
+func NewTallyParams(quorum, threshold string) TallyParams {
 	return TallyParams{
-		Quorum:        quorum,
-		Threshold:     threshold,
-		VetoThreshold: vetoThreshold,
+		Quorum:    quorum,
+		Threshold: threshold,
 	}
 }
 
@@ -56,7 +53,7 @@ func NewVotingParams(votingPeriod *time.Duration) VotingParams {
 // NewParams creates a new Params instance with given values.
 func NewParams(
 	minDeposit sdk.Coins, maxDepositPeriod, votingPeriod time.Duration,
-	quorum, threshold, vetoThreshold, minInitialDepositRatio string, burnProposalDeposit, burnVoteQuorum, burnVoteVeto bool,
+	quorum, threshold, minInitialDepositRatio string, burnProposalDeposit, burnVoteQuorum bool,
 ) Params {
 	return Params{
 		MinDeposit:                 minDeposit,
@@ -64,11 +61,9 @@ func NewParams(
 		VotingPeriod:               &votingPeriod,
 		Quorum:                     quorum,
 		Threshold:                  threshold,
-		VetoThreshold:              vetoThreshold,
 		MinInitialDepositRatio:     minInitialDepositRatio,
 		BurnProposalDepositPrevote: burnProposalDeposit,
 		BurnVoteQuorum:             burnVoteQuorum,
-		BurnVoteVeto:               burnVoteVeto,
 	}
 }
 
@@ -80,11 +75,9 @@ func DefaultParams() Params {
 		DefaultVotingPeriod,
 		DefaultQuorum.String(),
 		DefaultThreshold.String(),
-		DefaultVetoThreshold.String(),
 		DefaultMinInitialDepositRatio.String(),
 		DefaultBurnProposalPrevote,
 		DefaultBurnVoteQuorom,
-		DefaultBurnVoteVeto,
 	)
 }
 
@@ -122,17 +115,6 @@ func (p Params) ValidateBasic() error {
 	}
 	if threshold.GT(math.LegacyOneDec()) {
 		return fmt.Errorf("vote threshold too large: %s", threshold)
-	}
-
-	vetoThreshold, err := sdk.NewDecFromStr(p.VetoThreshold)
-	if err != nil {
-		return fmt.Errorf("invalid vetoThreshold string: %w", err)
-	}
-	if !vetoThreshold.IsPositive() {
-		return fmt.Errorf("veto threshold must be positive: %s", vetoThreshold)
-	}
-	if vetoThreshold.GT(math.LegacyOneDec()) {
-		return fmt.Errorf("veto threshold too large: %s", vetoThreshold)
 	}
 
 	if p.VotingPeriod == nil {

@@ -547,7 +547,7 @@ $ %s query gov params
 			vp := v1.NewVotingParams(res.Params.VotingPeriod)
 			res.VotingParams = &vp
 
-			tp := v1.NewTallyParams(res.Params.Quorum, res.Params.Threshold, res.Params.VetoThreshold)
+			tp := v1.NewTallyParams(res.Params.Quorum, res.Params.Threshold)
 			res.TallyParams = &tp
 
 			return clientCtx.PrintProto(res)
