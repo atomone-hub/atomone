@@ -39,7 +39,8 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 type MsgSubmitProposal struct {
 	// content is the proposal's content.
 	Content *types.Any `protobuf:"bytes,1,opt,name=content,proto3" json:"content,omitempty"`
-	// initial_deposit is the deposit value that must be paid at proposal submission.
+	// initial_deposit is the deposit value that must be paid at proposal
+	// submission.
 	InitialDeposit github_com_cosmos_cosmos_sdk_types.Coins `protobuf:"bytes,2,rep,name=initial_deposit,json=initialDeposit,proto3,castrepeated=github.com/cosmos/cosmos-sdk/types.Coins" json:"initial_deposit"`
 	// proposer is the account address of the proposer.
 	Proposer string `protobuf:"bytes,3,opt,name=proposer,proto3" json:"proposer,omitempty"`
@@ -444,7 +445,8 @@ type MsgClient interface {
 	SubmitProposal(ctx context.Context, in *MsgSubmitProposal, opts ...grpc.CallOption) (*MsgSubmitProposalResponse, error)
 	// Vote defines a method to add a vote on a specific proposal.
 	Vote(ctx context.Context, in *MsgVote, opts ...grpc.CallOption) (*MsgVoteResponse, error)
-	// VoteWeighted defines a method to add a weighted vote on a specific proposal.
+	// VoteWeighted defines a method to add a weighted vote on a specific
+	// proposal.
 	//
 	// Since: cosmos-sdk 0.43
 	VoteWeighted(ctx context.Context, in *MsgVoteWeighted, opts ...grpc.CallOption) (*MsgVoteWeightedResponse, error)
@@ -502,7 +504,8 @@ type MsgServer interface {
 	SubmitProposal(context.Context, *MsgSubmitProposal) (*MsgSubmitProposalResponse, error)
 	// Vote defines a method to add a vote on a specific proposal.
 	Vote(context.Context, *MsgVote) (*MsgVoteResponse, error)
-	// VoteWeighted defines a method to add a weighted vote on a specific proposal.
+	// VoteWeighted defines a method to add a weighted vote on a specific
+	// proposal.
 	//
 	// Since: cosmos-sdk 0.43
 	VoteWeighted(context.Context, *MsgVoteWeighted) (*MsgVoteWeightedResponse, error)

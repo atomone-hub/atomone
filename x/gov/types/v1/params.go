@@ -23,8 +23,9 @@ var (
 	DefaultQuorum                 = sdk.NewDecWithPrec(25, 2)
 	DefaultThreshold              = sdk.NewDecWithPrec(667, 3)
 	DefaultMinInitialDepositRatio = sdk.ZeroDec()
-	DefaultBurnProposalPrevote    = false // set to false to replicate behavior of when this change was made (0.47)
-	DefaultBurnVoteQuorom         = false // set to false to  replicate behavior of when this change was made (0.47)
+	DefaultBurnProposalPrevote    = false                         // set to false to replicate behavior of when this change was made (0.47)
+	DefaultBurnVoteQuorom         = false                         // set to false to  replicate behavior of when this change was made (0.47)
+	DefaultMinDepositRatio        = sdk.MustNewDecFromStr("0.01") // NOTE: backport from v50
 )
 
 // Deprecated: NewDepositParams creates a new DepositParams object
@@ -53,7 +54,7 @@ func NewVotingParams(votingPeriod *time.Duration) VotingParams {
 // NewParams creates a new Params instance with given values.
 func NewParams(
 	minDeposit sdk.Coins, maxDepositPeriod, votingPeriod time.Duration,
-	quorum, threshold, minInitialDepositRatio string, burnProposalDeposit, burnVoteQuorum bool,
+	quorum, threshold, minInitialDepositRatio string, burnProposalDeposit, burnVoteQuorum bool, minDepositRatio string,
 ) Params {
 	return Params{
 		MinDeposit:                 minDeposit,
@@ -64,6 +65,7 @@ func NewParams(
 		MinInitialDepositRatio:     minInitialDepositRatio,
 		BurnProposalDepositPrevote: burnProposalDeposit,
 		BurnVoteQuorum:             burnVoteQuorum,
+		MinDepositRatio:            minDepositRatio,
 	}
 }
 
@@ -78,6 +80,7 @@ func DefaultParams() Params {
 		DefaultMinInitialDepositRatio.String(),
 		DefaultBurnProposalPrevote,
 		DefaultBurnVoteQuorom,
+		DefaultMinDepositRatio.String(),
 	)
 }
 
