@@ -233,14 +233,14 @@ func (p Params) ValidateBasic() error {
 		if p.QuorumTimeout.Seconds() < 0 {
 			return fmt.Errorf("quorum timeout must be 0 or greater: %s", p.QuorumTimeout)
 		}
-		if p.QuorumTimeout.Seconds() >= p.VotingPeriod.Seconds() {
+		if p.QuorumTimeout.Nanoseconds() >= p.VotingPeriod.Nanoseconds() {
 			return fmt.Errorf("quorum timeout %s must be strictly less than the voting period %s", p.QuorumTimeout, p.VotingPeriod)
 		}
 
 		if p.MaxVotingPeriodExtension == nil {
 			return fmt.Errorf("max voting period extension must not be nil: %d", p.MaxVotingPeriodExtension)
 		}
-		if p.MaxVotingPeriodExtension.Seconds() < p.VotingPeriod.Seconds()-p.QuorumTimeout.Seconds() {
+		if p.MaxVotingPeriodExtension.Nanoseconds() < p.VotingPeriod.Nanoseconds()-p.QuorumTimeout.Nanoseconds() {
 			return fmt.Errorf("max voting period extension %s must be greater than or equal to the difference between the voting period %s and the quorum timeout %s", p.MaxVotingPeriodExtension, p.VotingPeriod, p.QuorumTimeout)
 		}
 	}
