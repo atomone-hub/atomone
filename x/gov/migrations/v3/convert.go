@@ -78,10 +78,6 @@ func ConvertToLegacyTallyResult(tally *v1.TallyResult) (v1beta1.TallyResult, err
 	if !ok {
 		return v1beta1.TallyResult{}, fmt.Errorf("unable to convert no tally string (%s) to int", tally.NoCount)
 	}
-	veto, ok := types.NewIntFromString(tally.NoWithVetoCount)
-	if !ok {
-		return v1beta1.TallyResult{}, fmt.Errorf("unable to convert no with veto tally string (%s) to int", tally.NoWithVetoCount)
-	}
 	abstain, ok := types.NewIntFromString(tally.AbstainCount)
 	if !ok {
 		return v1beta1.TallyResult{}, fmt.Errorf("unable to convert abstain tally string (%s) to int", tally.AbstainCount)
@@ -90,7 +86,7 @@ func ConvertToLegacyTallyResult(tally *v1.TallyResult) (v1beta1.TallyResult, err
 	return v1beta1.TallyResult{
 		Yes:        yes,
 		No:         no,
-		NoWithVeto: veto,
+		NoWithVeto: types.ZeroInt(),
 		Abstain:    abstain,
 	}, nil
 }

@@ -75,7 +75,6 @@ func TestMsgVote(t *testing.T) {
 		{0, addrs[0], v1.OptionYes, metadata, true},
 		{0, sdk.AccAddress{}, v1.OptionYes, "", false},
 		{0, addrs[0], v1.OptionNo, metadata, true},
-		{0, addrs[0], v1.OptionNoWithVeto, "", true},
 		{0, addrs[0], v1.OptionAbstain, "", true},
 		{0, addrs[0], v1.VoteOption(0x13), "", false},
 	}
@@ -103,7 +102,6 @@ func TestMsgVoteWeighted(t *testing.T) {
 		{0, addrs[0], v1.NewNonSplitVoteOption(v1.OptionYes), metadata, true},
 		{0, sdk.AccAddress{}, v1.NewNonSplitVoteOption(v1.OptionYes), "", false},
 		{0, addrs[0], v1.NewNonSplitVoteOption(v1.OptionNo), "", true},
-		{0, addrs[0], v1.NewNonSplitVoteOption(v1.OptionNoWithVeto), "", true},
 		{0, addrs[0], v1.NewNonSplitVoteOption(v1.OptionAbstain), "", true},
 		{0, addrs[0], v1.WeightedVoteOptions{ // weight sum > 1
 			v1.NewWeightedVoteOption(v1.OptionYes, math.LegacyNewDec(1)),

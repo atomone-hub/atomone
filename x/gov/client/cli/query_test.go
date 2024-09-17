@@ -6,6 +6,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/testutil"
+	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 
 	"github.com/atomone-hub/atomone/x/gov/client/cli"
 )
@@ -379,6 +380,29 @@ func (s *CLITestSuite) TestCmdQueryVote() {
 			if len(tc.args) != 0 {
 				s.Require().Contains(fmt.Sprint(cmd), strings.TrimSpace(tc.expCmdOutput))
 			}
+		})
+	}
+}
+
+func (s *CLITestSuite) TestCmdGetConstitution() {
+	testCases := []struct {
+		name      string
+		expOutput string
+	}{
+		{
+			name:      "get constitution",
+			expOutput: "constitution",
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+
+		s.Run(tc.name, func() {
+			cmd := cli.GetCmdConstitution()
+			out, err := clitestutil.ExecTestCLICmd(s.clientCtx, cmd, []string{})
+			s.Require().NoError(err)
+			s.Require().Contains(out.String(), tc.expOutput)
 		})
 	}
 }

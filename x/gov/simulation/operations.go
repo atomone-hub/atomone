@@ -513,15 +513,13 @@ func randomProposalID(r *rand.Rand, k *keeper.Keeper, ctx sdk.Context, status v1
 
 // Pick a random voting option
 func randomVotingOption(r *rand.Rand) v1.VoteOption {
-	switch r.Intn(4) {
+	switch r.Intn(3) {
 	case 0:
 		return v1.OptionYes
 	case 1:
 		return v1.OptionAbstain
 	case 2:
 		return v1.OptionNo
-	case 3:
-		return v1.OptionNoWithVeto
 	default:
 		panic("invalid vote option")
 	}
@@ -531,8 +529,7 @@ func randomVotingOption(r *rand.Rand) v1.VoteOption {
 func randomWeightedVotingOptions(r *rand.Rand) v1.WeightedVoteOptions {
 	w1 := r.Intn(100 + 1)
 	w2 := r.Intn(100 - w1 + 1)
-	w3 := r.Intn(100 - w1 - w2 + 1)
-	w4 := 100 - w1 - w2 - w3
+	w3 := 100 - w1 - w2
 	weightedVoteOptions := v1.WeightedVoteOptions{}
 	if w1 > 0 {
 		weightedVoteOptions = append(weightedVoteOptions, &v1.WeightedVoteOption{
@@ -550,12 +547,6 @@ func randomWeightedVotingOptions(r *rand.Rand) v1.WeightedVoteOptions {
 		weightedVoteOptions = append(weightedVoteOptions, &v1.WeightedVoteOption{
 			Option: v1.OptionNo,
 			Weight: sdk.NewDecWithPrec(int64(w3), 2).String(),
-		})
-	}
-	if w4 > 0 {
-		weightedVoteOptions = append(weightedVoteOptions, &v1.WeightedVoteOption{
-			Option: v1.OptionNoWithVeto,
-			Weight: sdk.NewDecWithPrec(int64(w4), 2).String(),
 		})
 	}
 	return weightedVoteOptions

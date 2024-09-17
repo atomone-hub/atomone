@@ -267,7 +267,7 @@ message TallyParams {
     (gogoproto.jsontag) = "quorum,omitempty"
   ];
 
-  // Minimum proportion of Yes votes for proposal to pass. Default value: 0.5.
+  // Minimum proportion of Yes votes for proposal to pass. Default value: 2/3.
   bytes threshold = 2 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false,
@@ -275,7 +275,7 @@ message TallyParams {
   ];
 
   // Minimum value of Veto votes to Total votes ratio for proposal to be
-  // vetoed. Default value: 1/3.
+  // vetoed. Default value: 0 (disabled).
   bytes veto_threshold = 3 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false,
