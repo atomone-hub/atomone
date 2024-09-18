@@ -83,16 +83,6 @@ func TestValidateGenesis(t *testing.T) {
 			expErrMsg: "vote threshold too large",
 		},
 		{
-			name: "invalid veto threshold",
-			genesisState: func() *v1.GenesisState {
-				params1 := params
-				params1.VetoThreshold = "2"
-
-				return v1.NewGenesisState(v1.DefaultStartingProposalID, params1)
-			},
-			expErrMsg: "veto threshold too large",
-		},
-		{
 			name: "invalid constitution amendment quorum",
 			genesisState: func() *v1.GenesisState {
 				params1 := params

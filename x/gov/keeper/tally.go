@@ -19,7 +19,6 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 	results[v1.OptionYes] = math.LegacyZeroDec()
 	results[v1.OptionAbstain] = math.LegacyZeroDec()
 	results[v1.OptionNo] = math.LegacyZeroDec()
-	results[v1.OptionNoWithVeto] = math.LegacyZeroDec()
 
 	totalVotingPower := math.LegacyZeroDec()
 	currValidators := make(map[string]stakingtypes.ValidatorI)
@@ -138,17 +137,12 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 		return false, false, tallyResults
 	}
 
-	// If more than 1/3 of voters veto, proposal fails
-	vetoThreshold, _ := sdk.NewDecFromStr(params.VetoThreshold)
-	if results[v1.OptionNoWithVeto].Quo(totalVotingPower).GT(vetoThreshold) {
-		return false, params.BurnVoteVeto, tallyResults
-	}
-
-	// If more than 1/2 of non-abstaining voters vote Yes, proposal passes
+	// If more than 2/3 of non-abstaining voters vote Yes, proposal passes
+	threshold, _ := sdk.NewDecFromStr(params.Threshold)
 	if results[v1.OptionYes].Quo(totalVotingPower.Sub(results[v1.OptionAbstain])).GT(threshold) {
 		return true, false, tallyResults
 	}
 
-	// If more than 1/2 of non-abstaining voters vote No, proposal fails
+	// If more than 1/3 of non-abstaining voters vote No, proposal fails
 	return false, false, tallyResults
 }

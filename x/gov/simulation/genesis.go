@@ -26,11 +26,13 @@ const (
 	VotingParamsVotingPeriod                  = "voting_params_voting_period"
 	TallyParamsQuorum                         = "tally_params_quorum"
 	TallyParamsThreshold                      = "tally_params_threshold"
-	TallyParamsVeto                           = "tally_params_veto"
 	TallyParamsConstitutionAmendmentQuorum    = "tally_params_constitution_amendment_quorum"
 	TallyParamsConstitutionAmendmentThreshold = "tally_params_constitution_amendment_threshold"
 	TallyParamsLawQuorum                      = "tally_params_law_quorum"
 	TallyParamsLawThreshold                   = "tally_params_law_threshold"
+
+	// NOTE: backport from v50
+	MinDepositRatio = "min_deposit_ratio"
 )
 
 // GenDepositParamsDepositPeriod returns randomized DepositParamsDepositPeriod
@@ -55,17 +57,17 @@ func GenVotingParamsVotingPeriod(r *rand.Rand) time.Duration {
 
 // GenTallyParamsQuorum returns randomized TallyParamsQuorum
 func GenTallyParamsQuorum(r *rand.Rand) math.LegacyDec {
-	return sdk.NewDecWithPrec(int64(simulation.RandIntBetween(r, 334, 500)), 3)
+	return sdk.NewDecWithPrec(int64(simulation.RandIntBetween(r, 200, 400)), 3)
 }
 
 // GenTallyParamsThreshold returns randomized TallyParamsThreshold
 func GenTallyParamsThreshold(r *rand.Rand) math.LegacyDec {
-	return sdk.NewDecWithPrec(int64(simulation.RandIntBetween(r, 450, 550)), 3)
+	return sdk.NewDecWithPrec(int64(simulation.RandIntBetween(r, 550, 700)), 3)
 }
 
-// GenTallyParamsVeto returns randomized TallyParamsVeto
-func GenTallyParamsVeto(r *rand.Rand) math.LegacyDec {
-	return sdk.NewDecWithPrec(int64(simulation.RandIntBetween(r, 250, 334)), 3)
+// GenMinDepositRatio returns randomized DepositMinRatio
+func GenMinDepositRatio(r *rand.Rand) math.LegacyDec {
+	return math.LegacyMustNewDecFromStr("0.01")
 }
 
 // GenTallyParamsQuorum returns randomized TallyParamsQuorum
@@ -120,11 +122,8 @@ func RandomizedGenState(simState *module.SimulationState) {
 		func(r *rand.Rand) { threshold = GenTallyParamsThreshold(r) },
 	)
 
-	var veto sdk.Dec
-	simState.AppParams.GetOrGenerate(
-		simState.Cdc, TallyParamsVeto, &veto, simState.Rand,
-		func(r *rand.Rand) { veto = GenTallyParamsVeto(r) },
-	)
+	var minDepositRatio math.LegacyDec
+	simState.AppParams.GetOrGenerate(simState.Cdc, MinDepositRatio, &minDepositRatio, simState.Rand, func(r *rand.Rand) { minDepositRatio = GenMinDepositRatio(r) })
 
 	var lawQuorum sdk.Dec
 	simState.AppParams.GetOrGenerate(
@@ -152,7 +151,7 @@ func RandomizedGenState(simState *module.SimulationState) {
 
 	govGenesis := v1.NewGenesisState(
 		startingProposalID,
-		v1.NewParams(minDeposit, depositPeriod, votingPeriod, quorum.String(), threshold.String(), veto.String(), amendmentsQuorum.String(), amendmentsThreshold.String(), lawQuorum.String(), lawThreshold.String(), minInitialDepositRatio.String(), simState.Rand.Intn(2) == 0, simState.Rand.Intn(2) == 0, simState.Rand.Intn(2) == 0),
+		v1.NewParams(minDeposit, depositPeriod, votingPeriod, quorum.String(), threshold.String(), amendmentsQuorum.String(), amendmentsThreshold.String(), lawQuorum.String(), lawThreshold.String(), minInitialDepositRatio.String(), minInitialDepositRatio.String(), simState.Rand.Intn(2) == 0, simState.Rand.Intn(2) == 0, simState.Rand.Intn(2) == 0),
 	)
 
 	bz, err := json.MarshalIndent(&govGenesis, "", " ")

@@ -16,6 +16,7 @@ func InitGenesis(ctx sdk.Context, ak types.AccountKeeper, bk types.BankKeeper, k
 	if err := k.SetParams(ctx, *data.Params); err != nil {
 		panic(fmt.Sprintf("%s module params has not been set", types.ModuleName))
 	}
+	k.SetConstitution(ctx, data.Constitution)
 
 	// check if the deposits pool account exists
 	moduleAcc := k.GetGovernanceAccount(ctx)
@@ -60,6 +61,7 @@ func ExportGenesis(ctx sdk.Context, k *keeper.Keeper) *v1.GenesisState {
 	startingProposalID, _ := k.GetProposalID(ctx)
 	proposals := k.GetProposals(ctx)
 	params := k.GetParams(ctx)
+	constitution := k.GetConstitution(ctx)
 
 	var proposalsDeposits v1.Deposits
 	var proposalsVotes v1.Votes
@@ -77,5 +79,6 @@ func ExportGenesis(ctx sdk.Context, k *keeper.Keeper) *v1.GenesisState {
 		Votes:              proposalsVotes,
 		Proposals:          proposals,
 		Params:             &params,
+		Constitution:       constitution,
 	}
 }

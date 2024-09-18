@@ -38,7 +38,8 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 type MsgSubmitProposal struct {
 	// messages are the arbitrary messages to be executed if proposal passes.
 	Messages []*types.Any `protobuf:"bytes,1,rep,name=messages,proto3" json:"messages,omitempty"`
-	// initial_deposit is the deposit value that must be paid at proposal submission.
+	// initial_deposit is the deposit value that must be paid at proposal
+	// submission.
 	InitialDeposit []types1.Coin `protobuf:"bytes,2,rep,name=initial_deposit,json=initialDeposit,proto3" json:"initial_deposit"`
 	// proposer is the account address of the proposer.
 	Proposer string `protobuf:"bytes,3,opt,name=proposer,proto3" json:"proposer,omitempty"`
@@ -593,7 +594,8 @@ var xxx_messageInfo_MsgDepositResponse proto.InternalMessageInfo
 //
 // Since: cosmos-sdk 0.47
 type MsgUpdateParams struct {
-	// authority is the address that controls the module (defaults to x/gov unless overwritten).
+	// authority is the address that controls the module (defaults to x/gov unless
+	// overwritten).
 	Authority string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
 	// params defines the x/gov parameters to update.
 	//
@@ -785,7 +787,8 @@ type MsgClient interface {
 	ExecLegacyContent(ctx context.Context, in *MsgExecLegacyContent, opts ...grpc.CallOption) (*MsgExecLegacyContentResponse, error)
 	// Vote defines a method to add a vote on a specific proposal.
 	Vote(ctx context.Context, in *MsgVote, opts ...grpc.CallOption) (*MsgVoteResponse, error)
-	// VoteWeighted defines a method to add a weighted vote on a specific proposal.
+	// VoteWeighted defines a method to add a weighted vote on a specific
+	// proposal.
 	VoteWeighted(ctx context.Context, in *MsgVoteWeighted, opts ...grpc.CallOption) (*MsgVoteWeightedResponse, error)
 	// Deposit defines a method to add deposit on a specific proposal.
 	Deposit(ctx context.Context, in *MsgDeposit, opts ...grpc.CallOption) (*MsgDepositResponse, error)
@@ -867,7 +870,8 @@ type MsgServer interface {
 	ExecLegacyContent(context.Context, *MsgExecLegacyContent) (*MsgExecLegacyContentResponse, error)
 	// Vote defines a method to add a vote on a specific proposal.
 	Vote(context.Context, *MsgVote) (*MsgVoteResponse, error)
-	// VoteWeighted defines a method to add a weighted vote on a specific proposal.
+	// VoteWeighted defines a method to add a weighted vote on a specific
+	// proposal.
 	VoteWeighted(context.Context, *MsgVoteWeighted) (*MsgVoteWeightedResponse, error)
 	// Deposit defines a method to add deposit on a specific proposal.
 	Deposit(context.Context, *MsgDeposit) (*MsgDepositResponse, error)

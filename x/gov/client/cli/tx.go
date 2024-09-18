@@ -273,7 +273,7 @@ func NewCmdVote() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "vote [proposal-id] [option]",
 		Args:  cobra.ExactArgs(2),
-		Short: "Vote for an active proposal, options: yes/no/no_with_veto/abstain",
+		Short: "Vote for an active proposal, options: yes/no/abstain",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Submit a vote for an active proposal. You can
 find the proposal-id by running "%s query gov proposals".
@@ -327,13 +327,13 @@ func NewCmdWeightedVote() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "weighted-vote [proposal-id] [weighted-options]",
 		Args:  cobra.ExactArgs(2),
-		Short: "Vote for an active proposal, options: yes/no/no_with_veto/abstain",
+		Short: "Vote for an active proposal, options: yes/no/abstain",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Submit a vote for an active proposal. You can
 find the proposal-id by running "%s query gov proposals".
 
 Example:
-$ %s tx gov weighted-vote 1 yes=0.6,no=0.3,abstain=0.05,no_with_veto=0.05 --from mykey
+$ %s tx gov weighted-vote 1 yes=0.6,no=0.3,abstain=0.1 --from mykey
 `,
 				version.AppName, version.AppName,
 			),

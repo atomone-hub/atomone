@@ -70,17 +70,6 @@ func validateTallyParams(i interface{}) error {
 		return fmt.Errorf("vote threshold too large: %s", v)
 	}
 
-	vetoThreshold, err := sdk.NewDecFromStr(v.VetoThreshold)
-	if err != nil {
-		return fmt.Errorf("invalid vetoThreshold string: %w", err)
-	}
-	if !vetoThreshold.IsPositive() {
-		return fmt.Errorf("veto threshold must be positive: %s", vetoThreshold)
-	}
-	if vetoThreshold.GT(math.LegacyOneDec()) {
-		return fmt.Errorf("veto threshold too large: %s", v)
-	}
-
 	return nil
 }
 
@@ -94,8 +83,8 @@ func validateVotingParams(i interface{}) error {
 		return errors.New("voting period must not be nil")
 	}
 
-	if v.VotingPeriod.Seconds() <= 0 {
-		return fmt.Errorf("voting period must be positive: %s", v.VotingPeriod)
+	if v.VotingPeriod.Seconds() < MinVotingPeriod.Seconds() {
+		return fmt.Errorf("voting period must be at least %s: %s", MinVotingPeriod.String(), v.VotingPeriod.String())
 	}
 
 	return nil

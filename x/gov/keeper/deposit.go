@@ -2,10 +2,12 @@ package keeper
 
 import (
 	"fmt"
+	"strings"
 
 	sdkerrors "cosmossdk.io/errors"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors1 "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
@@ -120,8 +122,50 @@ func (keeper Keeper) AddDeposit(ctx sdk.Context, proposalID uint64, depositorAdd
 		return false, sdkerrors.Wrapf(types.ErrInactiveProposal, "%d", proposalID)
 	}
 
+	// Check coins to be deposited match the proposal's deposit params
+	params := keeper.GetParams(ctx)
+
+	// NOTE: backported from v50
+	// v47 does not have expedited proposals so we always use params.MinDeposit
+	minDepositAmount := params.MinDeposit
+	minDepositRatio, err := sdk.NewDecFromStr(params.GetMinDepositRatio())
+	if err != nil {
+		return false, err
+	}
+
+	// If minDepositRatio is set, the deposit must be equal or greater than minDepositAmount*minDepositRatio
+	// for at least one denom. If minDepositRatio is zero we skip this check.
+	if !minDepositRatio.IsZero() {
+		var (
+			depositThresholdMet bool
+			thresholds          []string
+		)
+		for _, minDep := range minDepositAmount {
+			// calculate the threshold for this denom, and hold a list to later return a useful error message
+			threshold := sdk.NewCoin(minDep.GetDenom(), minDep.Amount.ToLegacyDec().Mul(minDepositRatio).TruncateInt())
+			thresholds = append(thresholds, threshold.String())
+
+			found, deposit := depositAmount.Find(minDep.Denom)
+			if !found { // if not found, continue, as we know the deposit contains at least 1 valid denom
+				continue
+			}
+
+			// Once we know at least one threshold has been met, we can break. The deposit
+			// might contain other denoms but we don't care.
+			if deposit.IsGTE(threshold) {
+				depositThresholdMet = true
+				break
+			}
+		}
+
+		// the threshold must be met with at least one denom, if not, return the list of minimum deposits
+		if !depositThresholdMet {
+			return false, sdkerrors.Wrapf(types.ErrMinDepositTooSmall, "received %s but need at least one of the following: %s", depositAmount, strings.Join(thresholds, ","))
+		}
+	}
+
 	// update the governance module's account coins pool
-	err := keeper.bankKeeper.SendCoinsFromAccountToModule(ctx, depositorAddr, types.ModuleName, depositAmount)
+	err = keeper.bankKeeper.SendCoinsFromAccountToModule(ctx, depositorAddr, types.ModuleName, depositAmount)
 	if err != nil {
 		return false, err
 	}
@@ -185,6 +229,10 @@ func (keeper Keeper) RefundAndDeleteDeposits(ctx sdk.Context, proposalID uint64)
 // required at the time of proposal submission. This threshold amount is determined by
 // the deposit parameters. Returns nil on success, error otherwise.
 func (keeper Keeper) validateInitialDeposit(ctx sdk.Context, initialDeposit sdk.Coins) error {
+	if !initialDeposit.IsValid() || initialDeposit.IsAnyNegative() {
+		return sdkerrors.Wrapf(sdkerrors1.ErrInvalidCoins, initialDeposit.String())
+	}
+
 	params := keeper.GetParams(ctx)
 	minInitialDepositRatio, err := sdk.NewDecFromStr(params.MinInitialDepositRatio)
 	if err != nil {

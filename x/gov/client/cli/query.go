@@ -39,6 +39,7 @@ func GetQueryCmd() *cobra.Command {
 		GetCmdQueryDeposit(),
 		GetCmdQueryDeposits(),
 		GetCmdQueryTally(),
+		GetCmdConstitution(),
 	)
 
 	return govQueryCmd
@@ -547,7 +548,7 @@ $ %s query gov params
 			vp := v1.NewVotingParams(res.Params.VotingPeriod)
 			res.VotingParams = &vp
 
-			tp := v1.NewTallyParams(res.Params.Quorum, res.Params.Threshold, res.Params.VetoThreshold)
+			tp := v1.NewTallyParams(res.Params.Quorum, res.Params.Threshold)
 			res.TallyParams = &tp
 
 			return clientCtx.PrintProto(res)
@@ -652,4 +653,26 @@ $ %s query gov proposer 1
 	flags.AddQueryFlagsToCmd(cmd)
 
 	return cmd
+}
+
+func GetCmdConstitution() *cobra.Command {
+	return &cobra.Command{
+		Use:   "constitution",
+		Short: "Get the constitution",
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := v1.NewQueryClient(clientCtx)
+
+			resp, err := queryClient.Constitution(cmd.Context(), &v1.QueryConstitutionRequest{})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(resp)
+		},
+	}
 }
