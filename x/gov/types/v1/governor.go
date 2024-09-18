@@ -8,11 +8,12 @@ import (
 
 	"cosmossdk.io/errors"
 
-	"github.com/atomone-hub/atomone/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+
+	"github.com/atomone-hub/atomone/x/gov/types"
 )
 
 var (

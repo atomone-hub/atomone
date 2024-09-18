@@ -3,8 +3,9 @@ package v1
 import (
 	"cosmossdk.io/math"
 
-	"github.com/atomone-hub/atomone/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/atomone-hub/atomone/x/gov/types"
 )
 
 // GovernorGovInfo used for tallying

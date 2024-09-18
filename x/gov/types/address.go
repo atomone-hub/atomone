@@ -8,13 +8,12 @@ import (
 	"fmt"
 	"strings"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"gopkg.in/yaml.v2"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-var (
-	_ sdk.Address = GovernorAddress{}
-)
+var _ sdk.Address = GovernorAddress{}
 
 const (
 	// Prefix for governor addresses

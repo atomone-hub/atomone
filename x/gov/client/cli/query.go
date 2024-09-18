@@ -844,7 +844,6 @@ $ %s query gov valshares cosmosgov1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
-
 			addr, err := types.GovernorAddressFromBech32(args[0])
 			if err != nil {
 				return err

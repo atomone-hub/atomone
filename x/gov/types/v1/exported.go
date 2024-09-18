@@ -1,8 +1,9 @@
 package v1
 
 import (
-	"github.com/atomone-hub/atomone/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/atomone-hub/atomone/x/gov/types"
 )
 
 type GovernorI interface {
