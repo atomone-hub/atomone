@@ -18,7 +18,7 @@ const (
 
 // Default governance params
 var (
-  minVotingPeriod                       = MinVotingPeriod
+	minVotingPeriod                       = MinVotingPeriod
 	DefaultMinDepositTokens               = sdk.NewInt(10000000)
 	DefaultQuorum                         = sdk.NewDecWithPrec(25, 2)
 	DefaultThreshold                      = sdk.NewDecWithPrec(667, 3)
@@ -27,8 +27,8 @@ var (
 	DefaultLawQuorum                      = sdk.NewDecWithPrec(4, 1)
 	DefaultLawThreshold                   = sdk.NewDecWithPrec(9, 1)
 	DefaultMinInitialDepositRatio         = sdk.ZeroDec()
-	DefaultBurnProposalPrevote            = false // set to false to replicate behavior of when this change was made (0.47)
-	DefaultBurnVoteQuorom                 = false // set to false to  replicate behavior of when this change was made (0.47)
+	DefaultBurnProposalPrevote            = false                         // set to false to replicate behavior of when this change was made (0.47)
+	DefaultBurnVoteQuorom                 = false                         // set to false to  replicate behavior of when this change was made (0.47)
 	DefaultMinDepositRatio                = sdk.MustNewDecFromStr("0.01") // NOTE: backport from v50
 )
 
@@ -58,7 +58,7 @@ func NewVotingParams(votingPeriod *time.Duration) VotingParams {
 // NewParams creates a new Params instance with given values.
 func NewParams(
 	minDeposit sdk.Coins, maxDepositPeriod, votingPeriod time.Duration,
-	quorum, threshold, vetoThreshold, constitutionAmendmentQuorum, constitutionAmendmentThreshold, lawQuorum, lawThreshold, minInitialDepositRatio string,
+	quorum, threshold, constitutionAmendmentQuorum, constitutionAmendmentThreshold, lawQuorum, lawThreshold, minInitialDepositRatio string,
 	burnProposalDeposit, burnVoteQuorum bool, minDepositRatio string,
 ) Params {
 	return Params{

@@ -137,7 +137,7 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 			sdk.NewCoins(sdk.NewCoin(denom, amnt)), maxDepositPeriod,
 			votingPeriod,
 			quorum.String(), threshold.String(),
-      amendmentsQuorum.String(), amendmentsThreshold.String(), lawQuorum.String(), lawThreshold.String(),
+			amendmentsQuorum.String(), amendmentsThreshold.String(), lawQuorum.String(), lawThreshold.String(),
 			sdk.ZeroDec().String(),
 			false, false, govv1.DefaultMinDepositRatio.String(),
 		),

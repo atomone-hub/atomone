@@ -336,10 +336,9 @@ func TestTally(t *testing.T) {
 			expectedPass: false,
 			expectedBurn: true,
 			expectedTally: v1.TallyResult{
-				YesCount:        "2",
-				AbstainCount:    "0",
-				NoCount:         "1",
-				NoWithVetoCount: "0",
+				YesCount:     "2",
+				AbstainCount: "0",
+				NoCount:      "1",
 			},
 		},
 		{
@@ -356,10 +355,9 @@ func TestTally(t *testing.T) {
 			expectedPass: false,
 			expectedBurn: false,
 			expectedTally: v1.TallyResult{
-				YesCount:        "2",
-				AbstainCount:    "3",
-				NoCount:         "1",
-				NoWithVetoCount: "0",
+				YesCount:     "2",
+				AbstainCount: "3",
+				NoCount:      "1",
 			},
 		},
 		{
@@ -381,10 +379,9 @@ func TestTally(t *testing.T) {
 			expectedPass: true,
 			expectedBurn: false,
 			expectedTally: v1.TallyResult{
-				YesCount:        "10",
-				AbstainCount:    "0",
-				NoCount:         "1",
-				NoWithVetoCount: "0",
+				YesCount:     "10",
+				AbstainCount: "0",
+				NoCount:      "1",
 			},
 		},
 		{
@@ -398,10 +395,9 @@ func TestTally(t *testing.T) {
 			expectedPass: false,
 			expectedBurn: true,
 			expectedTally: v1.TallyResult{
-				YesCount:        "2",
-				AbstainCount:    "0",
-				NoCount:         "1",
-				NoWithVetoCount: "0",
+				YesCount:     "2",
+				AbstainCount: "0",
+				NoCount:      "1",
 			},
 		},
 		{
@@ -418,10 +414,9 @@ func TestTally(t *testing.T) {
 			expectedPass: false,
 			expectedBurn: false,
 			expectedTally: v1.TallyResult{
-				YesCount:        "2",
-				AbstainCount:    "3",
-				NoCount:         "1",
-				NoWithVetoCount: "0",
+				YesCount:     "2",
+				AbstainCount: "3",
+				NoCount:      "1",
 			},
 		},
 		{
@@ -436,10 +431,9 @@ func TestTally(t *testing.T) {
 			expectedPass: true,
 			expectedBurn: false,
 			expectedTally: v1.TallyResult{
-				YesCount:        "3",
-				AbstainCount:    "1",
-				NoCount:         "0",
-				NoWithVetoCount: "0",
+				YesCount:     "3",
+				AbstainCount: "1",
+				NoCount:      "0",
 			},
 		},
 	}
