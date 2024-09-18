@@ -341,7 +341,7 @@ func (msg MsgCreateGovernor) ValidateBasic() error {
 	}
 
 	if _, err := msg.Description.EnsureLength(); err != nil {
-		types.ErrInvalidGovernanceDescription.Wrap(err.Error())
+		return types.ErrInvalidGovernanceDescription.Wrap(err.Error())
 	}
 	return nil
 }
