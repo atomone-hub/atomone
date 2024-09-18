@@ -472,9 +472,10 @@ func TestEndBlockerQuorumCheck(t *testing.T) {
 			staking.EndBlocker(ctx, suite.StakingKeeper)
 			// Create a proposal
 			govMsgSvr := keeper.NewMsgServerImpl(suite.GovKeeper)
+			deposit := v1.DefaultMinDepositTokens.ToLegacyDec().Mul(v1.DefaultMinDepositRatio)
 			newProposalMsg, err := v1.NewMsgSubmitProposal(
 				[]sdk.Msg{mkTestLegacyContent(t)},
-				sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 5)},
+				sdk.Coins{sdk.NewCoin(sdk.DefaultBondDenom, deposit.RoundInt())},
 				addrs[0].String(), "", "Proposal", "description of proposal",
 			)
 			require.NoError(t, err)

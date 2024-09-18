@@ -1149,7 +1149,7 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 				}
 			},
 			expErr:    true,
-			expErrMsg: "quorum timeout 48h0m0.000000001s must be strictly less than the voting period 48h0m0s",
+			expErrMsg: "quorum timeout 504h0m0.000000001s must be strictly less than the voting period 504h0m0s",
 		},
 		{
 			name: "invalid max voting period extension",
@@ -1184,7 +1184,7 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 				}
 			},
 			expErr:    true,
-			expErrMsg: "max voting period extension 1h59m59.999999999s must be greater than or equal to the difference between the voting period 48h0m0s and the quorum timeout 46h0m0s",
+			expErrMsg: "max voting period extension 1h59m59.999999999s must be greater than or equal to the difference between the voting period 504h0m0s and the quorum timeout 502h0m0s",
 		},
 		{
 			name: "valid with quorum check enabled",

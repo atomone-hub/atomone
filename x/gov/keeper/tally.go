@@ -1,12 +1,15 @@
 package keeper
 
 import (
+	"fmt"
+
 	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
+	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 )
 
 // Tally iterates over the votes and updates the tally of a proposal based on the voting power of the
@@ -27,7 +30,10 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 
 	// If there is not enough quorum of votes, the proposal fails
 	percentVoting := totalVotingPower.Quo(math.LegacyNewDecFromInt(totalBonded))
-	quorum, _ := math.LegacyNewDecFromStr(params.Quorum)
+	quorum, threshold, err := keeper.getQuorumAndThreshold(ctx, proposal)
+	if err != nil {
+		return false, false, tallyResults
+	}
 	if percentVoting.LT(quorum) {
 		return false, params.BurnVoteQuorum, tallyResults
 	}
@@ -37,7 +43,6 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 		return false, false, tallyResults
 	}
 
-	threshold, _ := math.LegacyNewDecFromStr(params.GetThreshold())
 	if results[v1.OptionYes].Quo(totalVotingPower.Sub(results[v1.OptionAbstain])).GT(threshold) {
 		return true, false, tallyResults
 	}
@@ -55,8 +60,8 @@ func (keeper Keeper) HasReachedQuorum(ctx sdk.Context, proposal v1.Proposal) (qu
 		return false, nil
 	}
 
-	/* DISABLED on AtomOne - no possible increase of computation by iterating over
-	 validators since vote inheritance is disabled.
+	/* DISABLED on AtomOne - no possible increase of computation speed by
+	 iterating over validators since vote inheritance is disabled.
 	 Keeping as comment because this should be adapted with governors loop
 
 	// we check first if voting power of validators alone is enough to pass quorum
@@ -82,7 +87,10 @@ func (keeper Keeper) HasReachedQuorum(ctx sdk.Context, proposal v1.Proposal) (qu
 
 	// check and return whether or not the proposal has reached quorum
 	percentVoting := totalVotingPower.Quo(math.LegacyNewDecFromInt(totalBonded))
-	quorum, _ := math.LegacyNewDecFromStr(keeper.GetParams(ctx).Quorum)
+	quorum, _, err := keeper.getQuorumAndThreshold(ctx, proposal)
+	if err != nil {
+		return false, err
+	}
 	return percentVoting.GTE(quorum), nil
 }
 
@@ -162,4 +170,71 @@ func (keeper Keeper) tallyVotes(
 	*/
 
 	return totalVotingPower, results
+}
+
+// getQuorumAndThreshold iterates over the proposal's messages to returns the
+// appropriate quorum and threshold.
+func (keeper Keeper) getQuorumAndThreshold(ctx sdk.Context, proposal v1.Proposal) (sdk.Dec, sdk.Dec, error) {
+	params := keeper.GetParams(ctx)
+	quorum, err := sdk.NewDecFromStr(params.Quorum)
+	if err != nil {
+		return sdk.Dec{}, sdk.Dec{}, fmt.Errorf("parsing params.Quorum: %v", err)
+	}
+	threshold, err := sdk.NewDecFromStr(params.Threshold)
+	if err != nil {
+		return sdk.Dec{}, sdk.Dec{}, fmt.Errorf("parsing params.Threshold: %v", err)
+	}
+
+	// Check if a proposal message is an ExecLegacyContent message
+	if len(proposal.Messages) > 0 {
+		var sdkMsg sdk.Msg
+		for _, msg := range proposal.Messages {
+			if err := keeper.cdc.UnpackAny(msg, &sdkMsg); err == nil {
+				execMsg, ok := sdkMsg.(*v1.MsgExecLegacyContent)
+				if !ok {
+					continue
+				}
+				var content v1beta1.Content
+				if err := keeper.cdc.UnpackAny(execMsg.Content, &content); err != nil {
+					return sdk.Dec{}, sdk.Dec{}, err
+				}
+
+				// Check if proposal is a law or constitution amendment and adjust the
+				// quorum and threshold accordingly
+				switch content.(type) {
+				case *v1beta1.ConstitutionAmendmentProposal:
+					q, err := sdk.NewDecFromStr(params.ConstitutionAmendmentQuorum)
+					if err != nil {
+						return sdk.Dec{}, sdk.Dec{}, fmt.Errorf("parsing params.ConstitutionAmendmentQuorum: %v", err)
+					}
+					if quorum.LT(q) {
+						quorum = q
+					}
+					t, err := sdk.NewDecFromStr(params.ConstitutionAmendmentThreshold)
+					if err != nil {
+						return sdk.Dec{}, sdk.Dec{}, fmt.Errorf("parsing params.ConstitutionAmendmentThreshold: %v", err)
+					}
+					if threshold.LT(t) {
+						threshold = t
+					}
+				case *v1beta1.LawProposal:
+					q, err := sdk.NewDecFromStr(params.LawQuorum)
+					if err != nil {
+						return sdk.Dec{}, sdk.Dec{}, fmt.Errorf("parsing params.LawQuorum: %v", err)
+					}
+					if quorum.LT(q) {
+						quorum = q
+					}
+					t, err := sdk.NewDecFromStr(params.LawThreshold)
+					if err != nil {
+						return sdk.Dec{}, sdk.Dec{}, fmt.Errorf("parsing params.LawThreshold: %v", err)
+					}
+					if threshold.LT(t) {
+						threshold = t
+					}
+				}
+			}
+		}
+	}
+	return quorum, threshold, nil
 }

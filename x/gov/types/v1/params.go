@@ -27,9 +27,9 @@ var (
 	DefaultLawQuorum                      = sdk.NewDecWithPrec(4, 1)
 	DefaultLawThreshold                   = sdk.NewDecWithPrec(9, 1)
 	DefaultMinInitialDepositRatio         = sdk.ZeroDec()
-	DefaultBurnProposalPrevote            = false                         // set to false to replicate behavior of when this change was made (0.47)
-	DefaultBurnVoteQuorom                 = false                         // set to false to  replicate behavior of when this change was made (0.47)
-	DefaultMinDepositRatio                = sdk.MustNewDecFromStr("0.01") // NOTE: backport from v50
+	DefaultBurnProposalPrevote            = false                    // set to false to replicate behavior of when this change was made (0.47)
+	DefaultBurnVoteQuorom                 = false                    // set to false to  replicate behavior of when this change was made (0.47)
+	DefaultMinDepositRatio                = sdk.NewDecWithPrec(1, 2) // NOTE: backport from v50
 
 	DefaultQuorumTimeout            time.Duration = DefaultVotingPeriod - (time.Hour * 24 * 1) // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
 	DefaultMaxVotingPeriodExtension time.Duration = DefaultVotingPeriod - DefaultQuorumTimeout // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
