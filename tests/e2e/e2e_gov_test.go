@@ -210,14 +210,16 @@ func (s *IntegrationTestSuite) verifyChainHaltedAtUpgradeHeight(c *chain, valIdx
 }
 
 func (s *IntegrationTestSuite) verifyChainPassesUpgradeHeight(c *chain, valIdx, upgradeHeight int) {
+	var currentHeight int
 	s.Require().Eventually(
 		func() bool {
-			currentHeight := s.getLatestBlockHeight(c, valIdx)
+			currentHeight = s.getLatestBlockHeight(c, valIdx)
 
 			return currentHeight > upgradeHeight
 		},
 		30*time.Second,
 		time.Second,
+		"expected chain height min=%d: got %d", upgradeHeight, currentHeight,
 	)
 }
 
