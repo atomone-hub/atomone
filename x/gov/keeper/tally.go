@@ -178,11 +178,11 @@ func (keeper Keeper) getQuorumAndThreshold(ctx sdk.Context, proposal v1.Proposal
 	params := keeper.GetParams(ctx)
 	quorum, err := sdk.NewDecFromStr(params.Quorum)
 	if err != nil {
-		return sdk.Dec{}, sdk.Dec{}, fmt.Errorf("parsing params.Quorum: %v", err)
+		return sdk.Dec{}, sdk.Dec{}, fmt.Errorf("parsing params.Quorum: %w", err)
 	}
 	threshold, err := sdk.NewDecFromStr(params.Threshold)
 	if err != nil {
-		return sdk.Dec{}, sdk.Dec{}, fmt.Errorf("parsing params.Threshold: %v", err)
+		return sdk.Dec{}, sdk.Dec{}, fmt.Errorf("parsing params.Threshold: %w", err)
 	}
 
 	// Check if a proposal message is an ExecLegacyContent message
@@ -205,14 +205,14 @@ func (keeper Keeper) getQuorumAndThreshold(ctx sdk.Context, proposal v1.Proposal
 				case *v1beta1.ConstitutionAmendmentProposal:
 					q, err := sdk.NewDecFromStr(params.ConstitutionAmendmentQuorum)
 					if err != nil {
-						return sdk.Dec{}, sdk.Dec{}, fmt.Errorf("parsing params.ConstitutionAmendmentQuorum: %v", err)
+						return sdk.Dec{}, sdk.Dec{}, fmt.Errorf("parsing params.ConstitutionAmendmentQuorum: %w", err)
 					}
 					if quorum.LT(q) {
 						quorum = q
 					}
 					t, err := sdk.NewDecFromStr(params.ConstitutionAmendmentThreshold)
 					if err != nil {
-						return sdk.Dec{}, sdk.Dec{}, fmt.Errorf("parsing params.ConstitutionAmendmentThreshold: %v", err)
+						return sdk.Dec{}, sdk.Dec{}, fmt.Errorf("parsing params.ConstitutionAmendmentThreshold: %w", err)
 					}
 					if threshold.LT(t) {
 						threshold = t
@@ -220,14 +220,14 @@ func (keeper Keeper) getQuorumAndThreshold(ctx sdk.Context, proposal v1.Proposal
 				case *v1beta1.LawProposal:
 					q, err := sdk.NewDecFromStr(params.LawQuorum)
 					if err != nil {
-						return sdk.Dec{}, sdk.Dec{}, fmt.Errorf("parsing params.LawQuorum: %v", err)
+						return sdk.Dec{}, sdk.Dec{}, fmt.Errorf("parsing params.LawQuorum: %w", err)
 					}
 					if quorum.LT(q) {
 						quorum = q
 					}
 					t, err := sdk.NewDecFromStr(params.LawThreshold)
 					if err != nil {
-						return sdk.Dec{}, sdk.Dec{}, fmt.Errorf("parsing params.LawThreshold: %v", err)
+						return sdk.Dec{}, sdk.Dec{}, fmt.Errorf("parsing params.LawThreshold: %w", err)
 					}
 					if threshold.LT(t) {
 						threshold = t
