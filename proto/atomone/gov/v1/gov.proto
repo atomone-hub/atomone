@@ -179,6 +179,18 @@ message TallyParams {
 
   // Minimum proportion of Yes votes for proposal to pass. Default value: 2/3.
   string threshold = 2 [(cosmos_proto.scalar) = "cosmos.Dec"];
+
+  // quorum for constitution amendment proposals
+  string constitution_amendment_quorum = 3 [(cosmos_proto.scalar) = "cosmos.Dec"];
+
+  // Minimum proportion of Yes votes for a Constitution Amendment proposal to pass. Default value: 0.9.
+  string constitution_amendment_threshold = 4 [(cosmos_proto.scalar) = "cosmos.Dec"];
+
+  // quorum for law proposals
+  string law_quorum = 5 [(cosmos_proto.scalar) = "cosmos.Dec"];
+
+  // Minimum proportion of Yes votes for a Law proposal to pass. Default value: 0.9.
+  string law_threshold = 6 [(cosmos_proto.scalar) = "cosmos.Dec"];
 }
 
 // Params defines the parameters for the x/gov module.
@@ -213,9 +225,6 @@ message Params {
   // burn deposits if the proposal does not enter voting period
   bool burn_proposal_deposit_prevote = 14;
 
-  // burn deposits if quorum with vote type no_veto is met
-  bool burn_vote_veto = 15;
-
   // The ratio representing the proportion of the deposit value minimum that
   // must be met when making a deposit. Default value: 0.01. Meaning that for a
   // chain with a min_deposit of 100stake, a deposit of 1stake would be
@@ -223,5 +232,17 @@ message Params {
   //
   // Since: cosmos-sdk 0.50
   // NOTE: backported from v50 (https://github.com/cosmos/cosmos-sdk/pull/18146)
-  string min_deposit_ratio = 16 [ (cosmos_proto.scalar) = "cosmos.Dec" ];
+  string min_deposit_ratio = 15 [ (cosmos_proto.scalar) = "cosmos.Dec" ];
+
+  // quorum for constitution amendment proposals
+  string constitution_amendment_quorum = 16 [(cosmos_proto.scalar) = "cosmos.Dec"];
+
+  // Minimum proportion of Yes votes for a Constitution Amendment proposal to pass. Default value: 0.9.
+  string constitution_amendment_threshold = 17 [(cosmos_proto.scalar) = "cosmos.Dec"];
+
+  // quorum for law proposals
+  string law_quorum = 18 [(cosmos_proto.scalar) = "cosmos.Dec"];
+
+  // Minimum proportion of Yes votes for a Law proposal to pass. Default value: 0.9.
+  string law_threshold = 19 [(cosmos_proto.scalar) = "cosmos.Dec"];
 }

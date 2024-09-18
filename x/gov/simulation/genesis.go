@@ -20,13 +20,16 @@ import (
 
 // Simulation parameter constants
 const (
-	DepositParamsMinDeposit    = "deposit_params_min_deposit"
-	DepositParamsDepositPeriod = "deposit_params_deposit_period"
-	DepositMinInitialRatio     = "deposit_params_min_initial_ratio"
-	VotingParamsVotingPeriod   = "voting_params_voting_period"
-	TallyParamsQuorum          = "tally_params_quorum"
-	TallyParamsThreshold       = "tally_params_threshold"
-	TallyParamsVeto            = "tally_params_veto"
+	DepositParamsMinDeposit                   = "deposit_params_min_deposit"
+	DepositParamsDepositPeriod                = "deposit_params_deposit_period"
+	DepositMinInitialRatio                    = "deposit_params_min_initial_ratio"
+	VotingParamsVotingPeriod                  = "voting_params_voting_period"
+	TallyParamsQuorum                         = "tally_params_quorum"
+	TallyParamsThreshold                      = "tally_params_threshold"
+	TallyParamsConstitutionAmendmentQuorum    = "tally_params_constitution_amendment_quorum"
+	TallyParamsConstitutionAmendmentThreshold = "tally_params_constitution_amendment_threshold"
+	TallyParamsLawQuorum                      = "tally_params_law_quorum"
+	TallyParamsLawThreshold                   = "tally_params_law_threshold"
 
 	// NOTE: backport from v50
 	MinDepositRatio = "min_deposit_ratio"
@@ -65,6 +68,18 @@ func GenTallyParamsThreshold(r *rand.Rand) math.LegacyDec {
 // GenMinDepositRatio returns randomized DepositMinRatio
 func GenMinDepositRatio(r *rand.Rand) math.LegacyDec {
 	return math.LegacyMustNewDecFromStr("0.01")
+}
+
+// GenTallyParamsQuorum returns randomized TallyParamsQuorum
+func GenTallyParamsConstitutionalQuorum(r *rand.Rand, minDec sdk.Dec) math.LegacyDec {
+	min := int(minDec.Mul(sdk.NewDec(1000)).RoundInt64())
+	return sdk.NewDecWithPrec(int64(simulation.RandIntBetween(r, min, 600)), 3)
+}
+
+// GenTallyParamsThreshold returns randomized TallyParamsThreshold
+func GenTallyParamsConstitutionalThreshold(r *rand.Rand, minDec sdk.Dec) math.LegacyDec {
+	min := int(minDec.Mul(sdk.NewDec(1000)).RoundInt64())
+	return sdk.NewDecWithPrec(int64(simulation.RandIntBetween(r, min, 950)), 3)
 }
 
 // RandomizedGenState generates a random GenesisState for gov
@@ -110,9 +125,33 @@ func RandomizedGenState(simState *module.SimulationState) {
 	var minDepositRatio math.LegacyDec
 	simState.AppParams.GetOrGenerate(simState.Cdc, MinDepositRatio, &minDepositRatio, simState.Rand, func(r *rand.Rand) { minDepositRatio = GenMinDepositRatio(r) })
 
+	var lawQuorum sdk.Dec
+	simState.AppParams.GetOrGenerate(
+		simState.Cdc, TallyParamsLawQuorum, &lawQuorum, simState.Rand,
+		func(r *rand.Rand) { lawQuorum = GenTallyParamsConstitutionalQuorum(r, quorum) },
+	)
+
+	var lawThreshold sdk.Dec
+	simState.AppParams.GetOrGenerate(
+		simState.Cdc, TallyParamsLawThreshold, &lawThreshold, simState.Rand,
+		func(r *rand.Rand) { lawThreshold = GenTallyParamsConstitutionalThreshold(r, threshold) },
+	)
+
+	var amendmentsQuorum sdk.Dec
+	simState.AppParams.GetOrGenerate(
+		simState.Cdc, TallyParamsConstitutionAmendmentQuorum, &amendmentsQuorum, simState.Rand,
+		func(r *rand.Rand) { amendmentsQuorum = GenTallyParamsConstitutionalQuorum(r, lawQuorum) },
+	)
+
+	var amendmentsThreshold sdk.Dec
+	simState.AppParams.GetOrGenerate(
+		simState.Cdc, TallyParamsConstitutionAmendmentThreshold, &amendmentsThreshold, simState.Rand,
+		func(r *rand.Rand) { amendmentsThreshold = GenTallyParamsConstitutionalThreshold(r, lawThreshold) },
+	)
+
 	govGenesis := v1.NewGenesisState(
 		startingProposalID,
-		v1.NewParams(minDeposit, depositPeriod, votingPeriod, quorum.String(), threshold.String(), minInitialDepositRatio.String(), simState.Rand.Intn(2) == 0, simState.Rand.Intn(2) == 0, minDepositRatio.String()),
+		v1.NewParams(minDeposit, depositPeriod, votingPeriod, quorum.String(), threshold.String(), amendmentsQuorum.String(), amendmentsThreshold.String(), lawQuorum.String(), lawThreshold.String(), minInitialDepositRatio.String(), simState.Rand.Intn(2) == 0, simState.Rand.Intn(2) == 0, minDepositRatio.String()),
 	)
 
 	bz, err := json.MarshalIndent(&govGenesis, "", " ")

@@ -121,6 +121,7 @@ func TestTally(t *testing.T) {
 	tests := []struct {
 		name          string
 		setup         func(*tallyFixture)
+		proposalMsgs  []sdk.Msg
 		expectedPass  bool
 		expectedBurn  bool
 		expectedTally v1.TallyResult
@@ -128,6 +129,7 @@ func TestTally(t *testing.T) {
 	}{
 		{
 			name:         "no votes: prop fails/burn deposit",
+			proposalMsgs: TestProposal,
 			expectedPass: false,
 			expectedBurn: true,
 			expectedTally: v1.TallyResult{
@@ -141,6 +143,7 @@ func TestTally(t *testing.T) {
 			setup: func(s *tallyFixture) {
 				s.validatorVote(s.valAddrs[0], v1.VoteOption_VOTE_OPTION_NO)
 			},
+			proposalMsgs: TestProposal,
 			expectedPass: false,
 			expectedBurn: true, // burn because quorum not reached
 			expectedTally: v1.TallyResult{
@@ -154,6 +157,7 @@ func TestTally(t *testing.T) {
 			setup: func(s *tallyFixture) {
 				s.vote(s.delAddrs[0], v1.VoteOption_VOTE_OPTION_YES)
 			},
+			proposalMsgs: TestProposal,
 			expectedPass: false,
 			expectedBurn: true, // burn because quorum not reached
 			expectedTally: v1.TallyResult{
@@ -168,6 +172,7 @@ func TestTally(t *testing.T) {
 				s.delegate(s.delAddrs[0], s.valAddrs[0], 2)
 				s.vote(s.delAddrs[0], v1.VoteOption_VOTE_OPTION_YES)
 			},
+			proposalMsgs: TestProposal,
 			expectedPass: false,
 			expectedBurn: true, // burn because quorum not reached
 			expectedTally: v1.TallyResult{
@@ -183,6 +188,7 @@ func TestTally(t *testing.T) {
 				s.vote(s.delAddrs[0], v1.VoteOption_VOTE_OPTION_YES)
 				s.validatorVote(s.valAddrs[0], v1.VoteOption_VOTE_OPTION_YES)
 			},
+			proposalMsgs: TestProposal,
 			expectedPass: false,
 			expectedBurn: true, // burn because quorum not reached
 			expectedTally: v1.TallyResult{
@@ -198,6 +204,7 @@ func TestTally(t *testing.T) {
 				s.vote(s.delAddrs[0], v1.VoteOption_VOTE_OPTION_YES)
 				s.validatorVote(s.valAddrs[0], v1.VoteOption_VOTE_OPTION_NO)
 			},
+			proposalMsgs: TestProposal,
 			expectedPass: false,
 			expectedBurn: true, // burn because quorum not reached
 			expectedTally: v1.TallyResult{
@@ -213,6 +220,7 @@ func TestTally(t *testing.T) {
 				s.delegate(s.delAddrs[1], s.valAddrs[0], 2)
 				s.validatorVote(s.valAddrs[0], v1.VoteOption_VOTE_OPTION_NO)
 			},
+			proposalMsgs: TestProposal,
 			expectedPass: false,
 			expectedBurn: true, // burn because quorum not reached
 			expectedTally: v1.TallyResult{
@@ -236,6 +244,7 @@ func TestTally(t *testing.T) {
 				s.validatorVote(s.valAddrs[1], v1.VoteOption_VOTE_OPTION_YES)
 				s.validatorVote(s.valAddrs[2], v1.VoteOption_VOTE_OPTION_ABSTAIN)
 			},
+			proposalMsgs: TestProposal,
 			expectedPass: true,
 			expectedBurn: false,
 			expectedTally: v1.TallyResult{
@@ -252,6 +261,7 @@ func TestTally(t *testing.T) {
 				s.validatorVote(s.valAddrs[2], v1.VoteOption_VOTE_OPTION_ABSTAIN)
 				s.validatorVote(s.valAddrs[3], v1.VoteOption_VOTE_OPTION_ABSTAIN)
 			},
+			proposalMsgs: TestProposal,
 			expectedPass: false,
 			expectedBurn: false,
 			expectedTally: v1.TallyResult{
@@ -268,6 +278,7 @@ func TestTally(t *testing.T) {
 				s.validatorVote(s.valAddrs[2], v1.VoteOption_VOTE_OPTION_NO)
 				s.validatorVote(s.valAddrs[3], v1.VoteOption_VOTE_OPTION_NO)
 			},
+			proposalMsgs: TestProposal,
 			expectedPass: false,
 			expectedBurn: false,
 			expectedTally: v1.TallyResult{
@@ -286,6 +297,7 @@ func TestTally(t *testing.T) {
 				s.validatorVote(s.valAddrs[4], v1.VoteOption_VOTE_OPTION_YES)
 				s.validatorVote(s.valAddrs[5], v1.VoteOption_VOTE_OPTION_NO)
 			},
+			proposalMsgs: TestProposal,
 			expectedPass: true,
 			expectedBurn: false,
 			expectedTally: v1.TallyResult{
@@ -304,12 +316,124 @@ func TestTally(t *testing.T) {
 				s.validatorVote(s.valAddrs[4], v1.VoteOption_VOTE_OPTION_ABSTAIN)
 				s.validatorVote(s.valAddrs[5], v1.VoteOption_VOTE_OPTION_ABSTAIN)
 			},
+			proposalMsgs: TestProposal,
 			expectedPass: true,
 			expectedBurn: false,
 			expectedTally: v1.TallyResult{
 				YesCount:     "3",
 				AbstainCount: "2",
 				NoCount:      "1",
+			},
+		},
+		{
+			name: "amendment quorum not reached: prop fails",
+			setup: func(s *tallyFixture) {
+				s.validatorVote(s.valAddrs[0], v1.VoteOption_VOTE_OPTION_YES)
+				s.validatorVote(s.valAddrs[1], v1.VoteOption_VOTE_OPTION_YES)
+				s.validatorVote(s.valAddrs[2], v1.VoteOption_VOTE_OPTION_NO)
+			},
+			proposalMsgs: TestAmendmentProposal,
+			expectedPass: false,
+			expectedBurn: true,
+			expectedTally: v1.TallyResult{
+				YesCount:     "2",
+				AbstainCount: "0",
+				NoCount:      "1",
+			},
+		},
+		{
+			name: "amendment quorum reached and threshold not reached: prop fails",
+			setup: func(s *tallyFixture) {
+				s.validatorVote(s.valAddrs[0], v1.VoteOption_VOTE_OPTION_YES)
+				s.validatorVote(s.valAddrs[1], v1.VoteOption_VOTE_OPTION_YES)
+				s.validatorVote(s.valAddrs[2], v1.VoteOption_VOTE_OPTION_NO)
+				s.validatorVote(s.valAddrs[3], v1.VoteOption_VOTE_OPTION_ABSTAIN)
+				s.validatorVote(s.valAddrs[4], v1.VoteOption_VOTE_OPTION_ABSTAIN)
+				s.validatorVote(s.valAddrs[5], v1.VoteOption_VOTE_OPTION_ABSTAIN)
+			},
+			proposalMsgs: TestAmendmentProposal,
+			expectedPass: false,
+			expectedBurn: false,
+			expectedTally: v1.TallyResult{
+				YesCount:     "2",
+				AbstainCount: "3",
+				NoCount:      "1",
+			},
+		},
+		{
+			name: "amendment quorum reached and threshold reached: prop passes",
+			setup: func(s *tallyFixture) {
+				s.validatorVote(s.valAddrs[0], v1.VoteOption_VOTE_OPTION_YES)
+				s.validatorVote(s.valAddrs[1], v1.VoteOption_VOTE_OPTION_YES)
+				s.validatorVote(s.valAddrs[2], v1.VoteOption_VOTE_OPTION_NO)
+				s.validatorVote(s.valAddrs[3], v1.VoteOption_VOTE_OPTION_YES)
+				s.validatorVote(s.valAddrs[4], v1.VoteOption_VOTE_OPTION_YES)
+				s.delegate(s.delAddrs[0], s.valAddrs[5], 2)
+				s.delegate(s.delAddrs[0], s.valAddrs[6], 2)
+				s.vote(s.delAddrs[0], v1.VoteOption_VOTE_OPTION_YES)
+				s.delegate(s.delAddrs[1], s.valAddrs[5], 1)
+				s.delegate(s.delAddrs[1], s.valAddrs[6], 1)
+				s.vote(s.delAddrs[1], v1.VoteOption_VOTE_OPTION_YES)
+			},
+			proposalMsgs: TestAmendmentProposal,
+			expectedPass: true,
+			expectedBurn: false,
+			expectedTally: v1.TallyResult{
+				YesCount:     "10",
+				AbstainCount: "0",
+				NoCount:      "1",
+			},
+		},
+		{
+			name: "law quorum not reached: prop fails",
+			setup: func(s *tallyFixture) {
+				s.validatorVote(s.valAddrs[0], v1.VoteOption_VOTE_OPTION_YES)
+				s.validatorVote(s.valAddrs[1], v1.VoteOption_VOTE_OPTION_YES)
+				s.validatorVote(s.valAddrs[2], v1.VoteOption_VOTE_OPTION_NO)
+			},
+			proposalMsgs: TestLawProposal,
+			expectedPass: false,
+			expectedBurn: true,
+			expectedTally: v1.TallyResult{
+				YesCount:     "2",
+				AbstainCount: "0",
+				NoCount:      "1",
+			},
+		},
+		{
+			name: "law quorum reached and threshold not reached: prop fails",
+			setup: func(s *tallyFixture) {
+				s.validatorVote(s.valAddrs[0], v1.VoteOption_VOTE_OPTION_YES)
+				s.validatorVote(s.valAddrs[1], v1.VoteOption_VOTE_OPTION_YES)
+				s.validatorVote(s.valAddrs[2], v1.VoteOption_VOTE_OPTION_NO)
+				s.validatorVote(s.valAddrs[3], v1.VoteOption_VOTE_OPTION_ABSTAIN)
+				s.validatorVote(s.valAddrs[4], v1.VoteOption_VOTE_OPTION_ABSTAIN)
+				s.validatorVote(s.valAddrs[5], v1.VoteOption_VOTE_OPTION_ABSTAIN)
+			},
+			proposalMsgs: TestLawProposal,
+			expectedPass: false,
+			expectedBurn: false,
+			expectedTally: v1.TallyResult{
+				YesCount:     "2",
+				AbstainCount: "3",
+				NoCount:      "1",
+			},
+		},
+		{
+			name: "law quorum reached and threshold reached: prop passes",
+			setup: func(s *tallyFixture) {
+				s.validatorVote(s.valAddrs[0], v1.VoteOption_VOTE_OPTION_YES)
+				s.validatorVote(s.valAddrs[1], v1.VoteOption_VOTE_OPTION_YES)
+				s.validatorVote(s.valAddrs[3], v1.VoteOption_VOTE_OPTION_YES)
+				s.validatorVote(s.valAddrs[5], v1.VoteOption_VOTE_OPTION_ABSTAIN)
+			},
+			proposalMsgs: TestLawProposal,
+			expectedPass: true,
+			expectedBurn: false,
+			expectedTally: v1.TallyResult{
+				YesCount:     "3",
+				AbstainCount: "1",
+				NoCount:      "0",
 			},
 		},
 	}
@@ -329,7 +453,7 @@ func TestTally(t *testing.T) {
 				delAddrs      = addrs[numVals:]
 			)
 			// Submit and activate a proposal
-			proposal, err := govKeeper.SubmitProposal(ctx, TestProposal, "", "title", "summary", delAddrs[0])
+			proposal, err := govKeeper.SubmitProposal(ctx, tt.proposalMsgs, "", "title", "summary", delAddrs[0])
 			require.NoError(t, err)
 			govKeeper.ActivateVotingPeriod(ctx, proposal)
 			// Create the test fixture

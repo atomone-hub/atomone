@@ -905,7 +905,7 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 				}
 			},
 			expErr:    true,
-			expErrMsg: "quorom cannot be negative",
+			expErrMsg: "quorum must be positive",
 		},
 		{
 			name: "quorum > 1",
@@ -919,7 +919,7 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 				}
 			},
 			expErr:    true,
-			expErrMsg: "quorom too large",
+			expErrMsg: "quorum too large",
 		},
 		{
 			name: "invalid threshold",
@@ -962,6 +962,118 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 			},
 			expErr:    true,
 			expErrMsg: "vote threshold too large",
+		},
+		{
+			name: "negative constitution amendment quorum",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.ConstitutionAmendmentQuorum = "-0.1"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "constitution amendment quorum must be positive",
+		},
+		{
+			name: "constitution amendments quorum > 1",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.ConstitutionAmendmentQuorum = "2"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "constitution amendment quorum too large",
+		},
+		{
+			name: "negative constitution amendment threshold",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.ConstitutionAmendmentThreshold = "-0.1"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "constitution amendment threshold must be positive",
+		},
+		{
+			name: "constitution amendments threshold > 1",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.ConstitutionAmendmentThreshold = "2"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "constitution amendment threshold too large",
+		},
+		{
+			name: "negative law quorum",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.LawQuorum = "-0.1"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "law quorum must be positive",
+		},
+		{
+			name: "law quorum > 1",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.LawQuorum = "2"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "law quorum too large",
+		},
+		{
+			name: "negative law threshold",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.LawThreshold = "-0.1"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "law threshold must be positive",
+		},
+		{
+			name: "law threshold > 1",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.LawThreshold = "2"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "law threshold too large",
 		},
 		{
 			name: "invalid voting period",

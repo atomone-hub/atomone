@@ -40,6 +40,16 @@ func ProposalContents() []simtypes.WeightedProposalContent {
 			DefaultWeightTextProposal,
 			SimulateLegacyTextProposalContent,
 		),
+		simulation.NewWeightedProposalContent(
+			OpWeightMsgDeposit,
+			DefaultWeightTextProposal,
+			SimulateConstitutionAmendmentProposalContent,
+		),
+		simulation.NewWeightedProposalContent(
+			OpWeightMsgDeposit,
+			DefaultWeightTextProposal,
+			SimulateLawProposalContent,
+		),
 	}
 }
 
@@ -48,6 +58,26 @@ func ProposalContents() []simtypes.WeightedProposalContent {
 //nolint:staticcheck
 func SimulateLegacyTextProposalContent(r *rand.Rand, _ sdk.Context, _ []simtypes.Account) simtypes.Content {
 	return v1beta1.NewTextProposal(
+		simtypes.RandStringOfLength(r, 140),
+		simtypes.RandStringOfLength(r, 5000),
+	)
+}
+
+// SimulateConstitutionAmendmentProposalContent returns a random constitution amendment proposal content.
+//
+//nolint:staticcheck
+func SimulateConstitutionAmendmentProposalContent(r *rand.Rand, _ sdk.Context, _ []simtypes.Account) simtypes.Content {
+	return v1beta1.NewConstitutionAmendmentProposal(
+		simtypes.RandStringOfLength(r, 140),
+		simtypes.RandStringOfLength(r, 5000),
+	)
+}
+
+// SimulateLawProposalContent returns a random law proposal content.
+//
+//nolint:staticcheck
+func SimulateLawProposalContent(r *rand.Rand, _ sdk.Context, _ []simtypes.Account) simtypes.Content {
+	return v1beta1.NewLawProposal(
 		simtypes.RandStringOfLength(r, 140),
 		simtypes.RandStringOfLength(r, 5000),
 	)

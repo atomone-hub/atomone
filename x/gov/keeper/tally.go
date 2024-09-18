@@ -7,6 +7,7 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
+	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 )
 
 // TODO: Break into several smaller functions for clarity
@@ -85,6 +86,48 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 	// If there is not enough quorum of votes, the proposal fails
 	percentVoting := totalVotingPower.Quo(sdk.NewDecFromInt(totalBondedTokens))
 	quorum, _ := sdk.NewDecFromStr(params.Quorum)
+	threshold, _ := sdk.NewDecFromStr(params.Threshold)
+
+	// Check if a proposal message is an ExecLegacyContent message
+	if len(proposal.Messages) > 0 {
+		var sdkMsg sdk.Msg
+		for _, msg := range proposal.Messages {
+			if err := keeper.cdc.UnpackAny(msg, &sdkMsg); err == nil {
+				execMsg, ok := sdkMsg.(*v1.MsgExecLegacyContent)
+				if !ok {
+					continue
+				}
+				var content v1beta1.Content
+				if err := keeper.cdc.UnpackAny(execMsg.Content, &content); err != nil {
+					return false, false, tallyResults
+				}
+
+				// Check if proposal is a law or constitution amendment and adjust the
+				// quorum and threshold accordingly
+				switch content.(type) {
+				case *v1beta1.ConstitutionAmendmentProposal:
+					q, _ := sdk.NewDecFromStr(params.ConstitutionAmendmentQuorum)
+					if quorum.LT(q) {
+						quorum = q
+					}
+					t, _ := sdk.NewDecFromStr(params.ConstitutionAmendmentThreshold)
+					if threshold.LT(t) {
+						threshold = t
+					}
+				case *v1beta1.LawProposal:
+					q, _ := sdk.NewDecFromStr(params.LawQuorum)
+					if quorum.LT(q) {
+						quorum = q
+					}
+					t, _ := sdk.NewDecFromStr(params.LawThreshold)
+					if threshold.LT(t) {
+						threshold = t
+					}
+				}
+			}
+		}
+	}
+
 	if percentVoting.LT(quorum) {
 		return false, params.BurnVoteQuorum, tallyResults
 	}
@@ -95,7 +138,6 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 	}
 
 	// If more than 2/3 of non-abstaining voters vote Yes, proposal passes
-	threshold, _ := sdk.NewDecFromStr(params.Threshold)
 	if results[v1.OptionYes].Quo(totalVotingPower.Sub(results[v1.OptionAbstain])).GT(threshold) {
 		return true, false, tallyResults
 	}
