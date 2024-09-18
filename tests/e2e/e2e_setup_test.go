@@ -1,6 +1,7 @@
 package e2e
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -15,6 +16,7 @@ import (
 
 	"github.com/atomone-hub/atomone/cmd/atomoned/cmd"
 	"github.com/ory/dockertest/v3"
+	"github.com/stretchr/testify/assert"
 
 	// "github.com/cosmos/cosmos-sdk/crypto/hd"
 	// "github.com/cosmos/cosmos-sdk/crypto/keyring"
@@ -73,6 +75,7 @@ const (
 )
 
 var (
+	runInCI           = os.Getenv("GITHUB_ACTIONS") == "true"
 	atomoneConfigPath = filepath.Join(atomoneHomePath, "config")
 	stakingAmount     = sdk.NewInt(100000000000)
 	stakingAmountCoin = sdk.NewCoin(uatoneDenom, stakingAmount)
@@ -514,6 +517,8 @@ func (s *IntegrationTestSuite) initValidatorConfigs(c *chain) {
 func (s *IntegrationTestSuite) runValidators(c *chain, portOffset int) {
 	s.T().Logf("starting AtomOne %s validator containers...", c.id)
 
+	const dockerImage = "cosmos/atomoned-e2e"
+
 	s.valResources[c.id] = make([]*dockertest.Resource, len(c.validators))
 	for i, val := range c.validators {
 		runOpts := &dockertest.RunOptions{
@@ -522,7 +527,7 @@ func (s *IntegrationTestSuite) runValidators(c *chain, portOffset int) {
 			Mounts: []string{
 				fmt.Sprintf("%s/:%s", val.configDir(), atomoneHomePath),
 			},
-			Repository: "cosmos/atomoned-e2e",
+			Repository: dockerImage,
 		}
 
 		s.Require().NoError(exec.Command("chmod", "-R", "0777", val.configDir()).Run()) //nolint:gosec // this is a test
@@ -553,26 +558,42 @@ func (s *IntegrationTestSuite) runValidators(c *chain, portOffset int) {
 	rpcClient, err := rpchttp.New("tcp://localhost:26657", "/websocket")
 	s.Require().NoError(err)
 
-	s.Require().Eventually(
-		func() bool {
-			ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-			defer cancel()
+	nodeReadyTimeout := time.Minute
+	if runInCI {
+		nodeReadyTimeout = 5 * time.Minute
+	}
+	if !assert.Eventually(s.T(), func() bool {
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+		defer cancel()
 
-			status, err := rpcClient.Status(ctx)
-			if err != nil {
-				return false
-			}
+		status, err := rpcClient.Status(ctx)
+		if err != nil {
+			return false
+		}
 
-			// let the node produce a few blocks
-			if status.SyncInfo.CatchingUp || status.SyncInfo.LatestBlockHeight < 3 {
-				return false
-			}
-			return true
-		},
-		5*time.Minute,
+		// let the node produce a few blocks
+		if status.SyncInfo.CatchingUp || status.SyncInfo.LatestBlockHeight < 3 {
+			return false
+		}
+		return true
+	},
+		nodeReadyTimeout,
 		time.Second,
-		"AtomOne node failed to produce blocks",
-	)
+	) {
+		// Print first container logs in case no blocks are produced
+		var b bytes.Buffer
+		err := s.dkrPool.Client.Logs(docker.LogsOptions{
+			Container:    s.valResources[c.id][0].Container.ID,
+			OutputStream: &b,
+			ErrorStream:  &b,
+			Stdout:       true,
+			Stderr:       true,
+		})
+		if err == nil {
+			s.T().Logf("Node logs: %s", b.String())
+		}
+		s.T().Fatalf("AtomOne node failed to produce blocks. Is docker image %q up-to-date?", dockerImage)
+	}
 }
 
 func noRestart(config *docker.HostConfig) {

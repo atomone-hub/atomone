@@ -49,7 +49,7 @@ func (s *IntegrationTestSuite) testDelayedVestingAccount(api string) {
 	sender, _ := val.keyInfo.GetAddress()
 	valOpAddr := sdk.ValAddress(sender).String()
 
-	s.Run("test delayed vesting genesis account", func() {
+	s.Run("delayed vesting genesis account", func() {
 		acc, err := queryDelayedVestingAccount(api, vestingDelayedAcc.String())
 		s.Require().NoError(err)
 
@@ -109,7 +109,7 @@ func (s *IntegrationTestSuite) testDelayedVestingAccount(api string) {
 }
 
 func (s *IntegrationTestSuite) testContinuousVestingAccount(api string) {
-	s.Run("test continuous vesting genesis account", func() {
+	s.Run("continuous vesting genesis account", func() {
 		var (
 			valIdx               = 0
 			chain                = s.chainA

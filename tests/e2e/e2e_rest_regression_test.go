@@ -46,7 +46,7 @@ const (
 )
 
 func (s *IntegrationTestSuite) testRestInterfaces() {
-	s.Run("test rest interfaces", func() {
+	s.Run("rest interfaces", func() {
 		var (
 			valIdx        = 0
 			c             = s.chainA

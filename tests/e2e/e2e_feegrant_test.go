@@ -18,7 +18,7 @@ import (
 //
 //	*/
 func (s *IntegrationTestSuite) testFeeGrant() {
-	s.Run("test fee grant module", func() {
+	s.Run("fee grant module", func() {
 		var (
 			valIdx = 0
 			c      = s.chainA

@@ -8,7 +8,7 @@ import (
 )
 
 func (s *IntegrationTestSuite) testBankTokenTransfer() {
-	s.Run("send_tokens_between_accounts", func() {
+	s.Run("send tokens between accounts", func() {
 		var (
 			err           error
 			valIdx        = 0

@@ -10,49 +10,51 @@ import (
 )
 
 func (s *IntegrationTestSuite) testDistribution() {
-	chainEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
+	s.Run("distribution", func() {
+		chainEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
 
-	validatorB := s.chainA.validators[1]
-	validatorBAddr, _ := validatorB.keyInfo.GetAddress()
+		validatorB := s.chainA.validators[1]
+		validatorBAddr, _ := validatorB.keyInfo.GetAddress()
 
-	valOperAddressA := sdk.ValAddress(validatorBAddr).String()
+		valOperAddressA := sdk.ValAddress(validatorBAddr).String()
 
-	delegatorAddress, _ := s.chainA.genesisAccounts[2].keyInfo.GetAddress()
+		delegatorAddress, _ := s.chainA.genesisAccounts[2].keyInfo.GetAddress()
 
-	newWithdrawalAddress, _ := s.chainA.genesisAccounts[3].keyInfo.GetAddress()
-	fees := sdk.NewCoin(uatoneDenom, sdk.NewInt(1000))
+		newWithdrawalAddress, _ := s.chainA.genesisAccounts[3].keyInfo.GetAddress()
+		fees := sdk.NewCoin(uatoneDenom, sdk.NewInt(1000))
 
-	beforeBalance, err := getSpecificBalance(chainEndpoint, newWithdrawalAddress.String(), uatoneDenom)
-	s.Require().NoError(err)
-	if beforeBalance.IsNil() {
-		beforeBalance = sdk.NewCoin(uatoneDenom, sdk.NewInt(0))
-	}
+		beforeBalance, err := getSpecificBalance(chainEndpoint, newWithdrawalAddress.String(), uatoneDenom)
+		s.Require().NoError(err)
+		if beforeBalance.IsNil() {
+			beforeBalance = sdk.NewCoin(uatoneDenom, sdk.NewInt(0))
+		}
 
-	s.execSetWithdrawAddress(s.chainA, 0, fees.String(), delegatorAddress.String(), newWithdrawalAddress.String(), atomoneHomePath)
+		s.execSetWithdrawAddress(s.chainA, 0, fees.String(), delegatorAddress.String(), newWithdrawalAddress.String(), atomoneHomePath)
 
-	// Verify
-	s.Require().Eventually(
-		func() bool {
-			res, err := queryDelegatorWithdrawalAddress(chainEndpoint, delegatorAddress.String())
-			s.Require().NoError(err)
+		// Verify
+		s.Require().Eventually(
+			func() bool {
+				res, err := queryDelegatorWithdrawalAddress(chainEndpoint, delegatorAddress.String())
+				s.Require().NoError(err)
 
-			return res.WithdrawAddress == newWithdrawalAddress.String()
-		},
-		10*time.Second,
-		5*time.Second,
-	)
+				return res.WithdrawAddress == newWithdrawalAddress.String()
+			},
+			10*time.Second,
+			5*time.Second,
+		)
 
-	s.execWithdrawReward(s.chainA, 0, delegatorAddress.String(), valOperAddressA, atomoneHomePath)
-	s.Require().Eventually(
-		func() bool {
-			afterBalance, err := getSpecificBalance(chainEndpoint, newWithdrawalAddress.String(), uatoneDenom)
-			s.Require().NoError(err)
+		s.execWithdrawReward(s.chainA, 0, delegatorAddress.String(), valOperAddressA, atomoneHomePath)
+		s.Require().Eventually(
+			func() bool {
+				afterBalance, err := getSpecificBalance(chainEndpoint, newWithdrawalAddress.String(), uatoneDenom)
+				s.Require().NoError(err)
 
-			return afterBalance.IsGTE(beforeBalance)
-		},
-		10*time.Second,
-		5*time.Second,
-	)
+				return afterBalance.IsGTE(beforeBalance)
+			},
+			10*time.Second,
+			5*time.Second,
+		)
+	})
 }
 
 /*
