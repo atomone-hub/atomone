@@ -143,8 +143,6 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.initGenesis(s.chainA, vestingMnemonic, jailedValMnemonic)
 	s.initValidatorConfigs(s.chainA)
 	s.runValidators(s.chainA, 0)
-
-	time.Sleep(10 * time.Second)
 }
 
 func (s *IntegrationTestSuite) TearDownSuite() {

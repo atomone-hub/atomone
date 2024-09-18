@@ -40,7 +40,7 @@ func (s *IntegrationTestSuite) testDistribution() {
 				return res.WithdrawAddress == newWithdrawalAddress.String()
 			},
 			10*time.Second,
-			5*time.Second,
+			time.Second,
 		)
 
 		s.execWithdrawReward(s.chainA, 0, delegatorAddress.String(), valOperAddressA, atomoneHomePath)
@@ -52,7 +52,7 @@ func (s *IntegrationTestSuite) testDistribution() {
 				return afterBalance.IsGTE(beforeBalance)
 			},
 			10*time.Second,
-			5*time.Second,
+			time.Second,
 		)
 	})
 }
@@ -86,9 +86,9 @@ func (s *IntegrationTestSuite) fundCommunityPool() {
 			afterDistPhotonBalance, err := getSpecificBalance(chainAAPIEndpoint, distModuleAddress, tokenAmount.Denom)
 			s.Require().NoErrorf(err, "Error getting balance: %s", afterDistPhotonBalance)
 
-			return afterDistPhotonBalance.Sub(beforeDistUatoneBalance.Add(tokenAmount.Add(standardFees))).IsLT(marginOfErrorForBlockReward)
+			return beforeDistUatoneBalance.Add(tokenAmount.Add(standardFees)).Sub(afterDistPhotonBalance).IsLT(marginOfErrorForBlockReward)
 		},
 		15*time.Second,
-		5*time.Second,
+		time.Second,
 	)
 }

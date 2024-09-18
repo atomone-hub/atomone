@@ -60,7 +60,7 @@ func (s *IntegrationTestSuite) testGovSoftwareUpgrade() {
 				return h > 0
 			},
 			30*time.Second,
-			5*time.Second,
+			time.Second,
 		)
 
 		proposalCounter = 0
@@ -147,7 +147,7 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 				return afterRecipientBalance.Sub(sendAmount).IsEqual(beforeRecipientBalance)
 			},
 			10*time.Second,
-			5*time.Second,
+			time.Second,
 		)
 	})
 }
@@ -188,7 +188,7 @@ func (s *IntegrationTestSuite) verifyChainHaltedAtUpgradeHeight(c *chain, valIdx
 			return currentHeight == upgradeHeight
 		},
 		30*time.Second,
-		5*time.Second,
+		time.Second,
 	)
 
 	counter := 0
@@ -205,7 +205,7 @@ func (s *IntegrationTestSuite) verifyChainHaltedAtUpgradeHeight(c *chain, valIdx
 			return counter >= 2
 		},
 		8*time.Second,
-		2*time.Second,
+		time.Second,
 	)
 }
 
@@ -217,7 +217,7 @@ func (s *IntegrationTestSuite) verifyChainPassesUpgradeHeight(c *chain, valIdx, 
 			return currentHeight > upgradeHeight
 		},
 		30*time.Second,
-		5*time.Second,
+		time.Second,
 	)
 }
 
@@ -231,6 +231,6 @@ func (s *IntegrationTestSuite) submitGovCommand(chainAAPIEndpoint, sender string
 			return proposal.GetProposal().Status == expectedSuccessStatus
 		},
 		15*time.Second,
-		5*time.Second,
+		time.Second,
 	)
 }

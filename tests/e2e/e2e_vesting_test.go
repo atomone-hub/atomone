@@ -72,7 +72,7 @@ func (s *IntegrationTestSuite) testDelayedVestingAccount(api string) {
 				return amt.Equal(sdk.NewDecFromInt(vestingDelegationAmount.Amount))
 			},
 			20*time.Second,
-			5*time.Second,
+			time.Second,
 		)
 
 		waitTime := acc.EndTime - time.Now().Unix()
@@ -141,7 +141,7 @@ func (s *IntegrationTestSuite) testContinuousVestingAccount(api string) {
 				return amt.Equal(sdk.NewDecFromInt(vestingDelegationAmount.Amount))
 			},
 			20*time.Second,
-			5*time.Second,
+			time.Second,
 		)
 
 		waitStartTime := acc.StartTime - time.Now().Unix()
@@ -280,7 +280,7 @@ func (s *IntegrationTestSuite) testPeriodicVestingAccount(api string) { //nolint
 				return amt.Equal(sdk.NewDecFromInt(vestingDelegationAmount.Amount))
 			},
 			20*time.Second,
-			5*time.Second,
+			time.Second,
 		)
 
 		//	Transfer coins should succeed

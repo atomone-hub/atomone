@@ -613,7 +613,7 @@ func (s *IntegrationTestSuite) getLatestBlockHeight(c *chain, valIdx int) int {
 // 			return afterAtomBalance.IsEqual(expectedAmount)
 // 		},
 // 		20*time.Second,
-// 		5*time.Second,
+// 		time.Second,
 // 	)
 // }
 
@@ -730,7 +730,7 @@ func (s *IntegrationTestSuite) expectErrExecValidation(chain *chain, valIdx int,
 				return gotErr == expectErr
 			},
 			time.Minute,
-			5*time.Second,
+			time.Second,
 			"stdOut: %s, stdErr: %s",
 			string(stdOut), string(stdErr),
 		)
@@ -751,7 +751,7 @@ func (s *IntegrationTestSuite) defaultExecValidation(chain *chain, valIdx int) f
 					return queryAtomOneTx(endpoint, txResp.TxHash) == nil
 				},
 				time.Minute,
-				5*time.Second,
+				time.Second,
 				"stdOut: %s, stdErr: %s",
 				string(stdOut), string(stdErr),
 			)

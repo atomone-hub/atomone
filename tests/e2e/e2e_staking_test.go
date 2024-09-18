@@ -49,7 +49,7 @@ func (s *IntegrationTestSuite) testStaking() {
 				return amt.Equal(existingDelegation.Add(sdk.NewDecFromInt(delegationAmount)))
 			},
 			20*time.Second,
-			5*time.Second,
+			time.Second,
 		)
 
 		redelegationAmount := delegationAmount.Quo(sdk.NewInt(2))
@@ -68,7 +68,7 @@ func (s *IntegrationTestSuite) testStaking() {
 				return amt.Equal(sdk.NewDecFromInt(redelegationAmount))
 			},
 			20*time.Second,
-			5*time.Second,
+			time.Second,
 		)
 
 		var (
@@ -89,7 +89,7 @@ func (s *IntegrationTestSuite) testStaking() {
 				return currDelegation.IsValid()
 			},
 			20*time.Second,
-			5*time.Second,
+			time.Second,
 		)
 
 		// Alice unbonds all her uatone delegation from Validator A
@@ -109,7 +109,7 @@ func (s *IntegrationTestSuite) testStaking() {
 				return ubdDelegationEntry.Balance.Equal(currDelegationAmount)
 			},
 			20*time.Second,
-			5*time.Second,
+			time.Second,
 		)
 
 		// cancel the full amount of unbonding delegations from Validator A
@@ -139,7 +139,7 @@ func (s *IntegrationTestSuite) testStaking() {
 				return amt.Equal(sdk.NewDecFromInt(currDelegationAmount))
 			},
 			20*time.Second,
-			5*time.Second,
+			time.Second,
 		)
 	})
 }
