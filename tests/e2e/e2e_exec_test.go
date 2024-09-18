@@ -580,28 +580,21 @@ func (s *IntegrationTestSuite) execRedelegate(c *chain, valIdx int, amount, orig
 }
 
 func (s *IntegrationTestSuite) getLatestBlockHeight(c *chain, valIdx int) int {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
-	defer cancel()
+	consensusEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][valIdx].GetHostPort("26657/tcp"))
+	body, err := httpGet(fmt.Sprintf("%s/status", consensusEndpoint))
+	s.Require().NoError(err)
 
-	type syncInfo struct {
-		SyncInfo struct {
-			LatestHeight string `json:"latest_block_height"`
-		} `json:"SyncInfo"`
+	var status struct {
+		Result struct {
+			SyncInfo struct {
+				LatestHeight string `json:"latest_block_height"`
+			} `json:"sync_info"`
+		} `json:"result"`
 	}
-
-	var currentHeight int
-	atomoneCommand := []string{atomonedBinary, "status"}
-	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, func(stdOut []byte, stdErr []byte) bool {
-		var (
-			err   error
-			block syncInfo
-		)
-		s.Require().NoError(json.Unmarshal(stdOut, &block))
-		currentHeight, err = strconv.Atoi(block.SyncInfo.LatestHeight)
-		s.Require().NoError(err)
-		return currentHeight > 0
-	})
-	return currentHeight
+	s.Require().NoError(json.Unmarshal(body, &status))
+	h, err := strconv.Atoi(status.Result.SyncInfo.LatestHeight)
+	s.Require().NoError(err, "atoi on latest_block_height %s", status.Result.SyncInfo.LatestHeight)
+	return h
 }
 
 // func (s *IntegrationTestSuite) verifyBalanceChange(endpoint string, expectedAmount sdk.Coin, recipientAddress string) {
