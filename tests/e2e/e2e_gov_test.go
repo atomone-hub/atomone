@@ -30,8 +30,6 @@ func (s *IntegrationTestSuite) testGovSoftwareUpgrade() {
 		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
 		proposalCounter++
 
-		s.writeGovLegProposal(s.chainA, int64(height), "upgrade-v0")
-
 		submitGovFlags := []string{
 			"software-upgrade",
 			"Upgrade-0",
@@ -39,7 +37,7 @@ func (s *IntegrationTestSuite) testGovSoftwareUpgrade() {
 			"--description='Software Upgrade'",
 			"--no-validate",
 			fmt.Sprintf("--upgrade-height=%d", proposalHeight),
-			fmt.Sprintf("--upgrade-info=%s", configFile(proposalCommunitySpendFilename)),
+			"--upgrade-info=my-info",
 		}
 
 		depositGovFlags := []string{strconv.Itoa(proposalCounter), depositAmount.String()}
@@ -81,7 +79,6 @@ func (s *IntegrationTestSuite) testGovCancelSoftwareUpgrade() {
 		sender := senderAddress.String()
 		height := s.getLatestBlockHeight(s.chainA, 0)
 		proposalHeight := height + 50
-		s.writeGovLegProposal(s.chainA, int64(height), "upgrade-v1")
 
 		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
 		proposalCounter++
@@ -92,7 +89,6 @@ func (s *IntegrationTestSuite) testGovCancelSoftwareUpgrade() {
 			"--description='Software Upgrade'",
 			"--no-validate",
 			fmt.Sprintf("--upgrade-height=%d", proposalHeight),
-			fmt.Sprintf("--upgrade-info=%s", configFile(proposalCommunitySpendFilename)),
 		}
 
 		depositGovFlags := []string{strconv.Itoa(proposalCounter), depositAmount.String()}

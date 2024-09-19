@@ -3,14 +3,14 @@ package e2e
 import (
 	"bytes"
 	"context"
-	"encoding/json"
 	"fmt"
 	"path/filepath"
-	"strconv"
 	"strings"
 	"time"
 
 	"github.com/ory/dockertest/v3/docker"
+
+	rpchttp "github.com/cometbft/cometbft/rpc/client/http"
 
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -580,21 +580,11 @@ func (s *IntegrationTestSuite) execRedelegate(c *chain, valIdx int, amount, orig
 }
 
 func (s *IntegrationTestSuite) getLatestBlockHeight(c *chain, valIdx int) int {
-	consensusEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][valIdx].GetHostPort("26657/tcp"))
-	body, err := httpGet(fmt.Sprintf("%s/status", consensusEndpoint))
+	rpcClient, err := rpchttp.New("tcp://"+s.valResources[c.id][valIdx].GetHostPort("26657/tcp"), "/websocket")
 	s.Require().NoError(err)
-
-	var status struct {
-		Result struct {
-			SyncInfo struct {
-				LatestHeight string `json:"latest_block_height"`
-			} `json:"sync_info"`
-		} `json:"result"`
-	}
-	s.Require().NoError(json.Unmarshal(body, &status))
-	h, err := strconv.Atoi(status.Result.SyncInfo.LatestHeight)
-	s.Require().NoError(err, "atoi on latest_block_height %s", status.Result.SyncInfo.LatestHeight)
-	return h
+	status, err := rpcClient.Status(context.Background())
+	s.Require().NoError(err)
+	return int(status.SyncInfo.LatestBlockHeight)
 }
 
 // func (s *IntegrationTestSuite) verifyBalanceChange(endpoint string, expectedAmount sdk.Coin, recipientAddress string) {

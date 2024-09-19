@@ -41,7 +41,6 @@ import (
 	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 )
@@ -626,61 +625,6 @@ func (s *IntegrationTestSuite) writeGovCommunitySpendProposal(c *chain, amount s
 	`
 	propMsgBody := fmt.Sprintf(template, govModuleAddress, recipient, amount.Denom, amount.Amount.String())
 	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalCommunitySpendFilename), []byte(propMsgBody))
-	s.Require().NoError(err)
-}
-
-func (s *IntegrationTestSuite) writeGovLegProposal(c *chain, height int64, name string) {
-	prop := &upgradetypes.Plan{
-		Name:   name,
-		Height: height,
-		Info:   `{"binaries":{"os1/arch1":"url1","os2/arch2":"url2"}}`,
-	}
-
-	commSpendBody, err := json.MarshalIndent(prop, "", " ")
-	s.Require().NoError(err)
-
-	err = writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalCommunitySpendFilename), commSpendBody)
-	s.Require().NoError(err)
-}
-
-func (s *IntegrationTestSuite) writeLiquidStakingParamsUpdateProposal(c *chain, oldParams stakingtypes.Params) { //nolint:unused
-	template := `
-	{
-		"messages": [
-		 {
-		  "@type": "/cosmos.staking.v1beta1.MsgUpdateParams",
-		  "authority": "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
-		  "params": {
-		   "unbonding_time": "%s",
-		   "max_validators": %d,
-		   "max_entries": %d,
-		   "historical_entries": %d,
-		   "bond_denom": "%s",
-		   "min_commission_rate": "%s",
-		   "validator_bond_factor": "%s",
-		   "global_liquid_staking_cap": "%s",
-		   "validator_liquid_staking_cap": "%s"
-		  }
-		 }
-		],
-		"metadata": "ipfs://CID",
-		"deposit": "100uatone",
-		"title": "Update LSM Params",
-		"summary": "e2e-test updating LSM staking params"
-	   }`
-	propMsgBody := fmt.Sprintf(template,
-		oldParams.UnbondingTime,
-		oldParams.MaxValidators,
-		oldParams.MaxEntries,
-		oldParams.HistoricalEntries,
-		oldParams.BondDenom,
-		oldParams.MinCommissionRate,
-		sdk.NewDec(250),           // validator bond factor
-		sdk.NewDecWithPrec(25, 2), // 25 global_liquid_staking_cap
-		sdk.NewDecWithPrec(50, 2), // 50 validator_liquid_staking_cap
-	)
-
-	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalLSMParamUpdateFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
