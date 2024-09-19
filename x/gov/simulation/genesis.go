@@ -32,7 +32,10 @@ const (
 	TallyParamsLawThreshold                   = "tally_params_law_threshold"
 
 	// NOTE: backport from v50
-	MinDepositRatio = "min_deposit_ratio"
+	MinDepositRatio          = "min_deposit_ratio"
+	QuorumTimeout            = "quorum_timeout"
+	MaxVotingPeriodExtension = "max_voting_period_extension"
+	QuorumCheckCount         = "quorum_check_count"
 )
 
 // GenDepositParamsDepositPeriod returns randomized DepositParamsDepositPeriod
@@ -80,6 +83,22 @@ func GenTallyParamsConstitutionalQuorum(r *rand.Rand, minDec sdk.Dec) math.Legac
 func GenTallyParamsConstitutionalThreshold(r *rand.Rand, minDec sdk.Dec) math.LegacyDec {
 	min := int(minDec.Mul(sdk.NewDec(1000)).RoundInt64())
 	return sdk.NewDecWithPrec(int64(simulation.RandIntBetween(r, min, 950)), 3)
+}
+
+// GenQuorumTimeout returns a randomized QuorumTimeout between 0 and votingPeriod
+func GenQuorumTimeout(r *rand.Rand, votingPeriod time.Duration) time.Duration {
+	return time.Duration(simulation.RandIntBetween(r, 1, int(votingPeriod.Seconds()))) * time.Second
+}
+
+// GenMaxVotingPeriodExtension returns a randomized MaxVotingPeriodExtension
+// greater than votingPeriod-quorumTimout.
+func GenMaxVotingPeriodExtension(r *rand.Rand, votingPeriod, quorumTimout time.Duration) time.Duration {
+	return time.Duration(simulation.RandIntBetween(r, 1, int(votingPeriod.Seconds())))*time.Second + (votingPeriod - quorumTimout)
+}
+
+// GenQuorumCheckCount returns a randomized QuorumCheckCount between 0 and 30
+func GenQuorumCheckCount(r *rand.Rand) uint64 {
+	return uint64(simulation.RandIntBetween(r, 0, 30))
 }
 
 // RandomizedGenState generates a random GenesisState for gov
@@ -149,9 +168,20 @@ func RandomizedGenState(simState *module.SimulationState) {
 		func(r *rand.Rand) { amendmentsThreshold = GenTallyParamsConstitutionalThreshold(r, lawThreshold) },
 	)
 
+	var quorumTimout time.Duration
+	simState.AppParams.GetOrGenerate(simState.Cdc, QuorumTimeout, &quorumTimout, simState.Rand, func(r *rand.Rand) { quorumTimout = GenQuorumTimeout(r, votingPeriod) })
+
+	var maxVotingPeriodExtension time.Duration
+	simState.AppParams.GetOrGenerate(simState.Cdc, MaxVotingPeriodExtension, &maxVotingPeriodExtension, simState.Rand, func(r *rand.Rand) {
+		maxVotingPeriodExtension = GenMaxVotingPeriodExtension(r, votingPeriod, quorumTimout)
+	})
+
+	var quorumCheckCount uint64
+	simState.AppParams.GetOrGenerate(simState.Cdc, QuorumCheckCount, &quorumCheckCount, simState.Rand, func(r *rand.Rand) { quorumCheckCount = GenQuorumCheckCount(r) })
+
 	govGenesis := v1.NewGenesisState(
 		startingProposalID,
-		v1.NewParams(minDeposit, depositPeriod, votingPeriod, quorum.String(), threshold.String(), amendmentsQuorum.String(), amendmentsThreshold.String(), lawQuorum.String(), lawThreshold.String(), minInitialDepositRatio.String(), simState.Rand.Intn(2) == 0, simState.Rand.Intn(2) == 0, minDepositRatio.String()),
+		v1.NewParams(minDeposit, depositPeriod, votingPeriod, quorum.String(), threshold.String(), amendmentsQuorum.String(), amendmentsThreshold.String(), lawQuorum.String(), lawThreshold.String(), minInitialDepositRatio.String(), simState.Rand.Intn(2) == 0, simState.Rand.Intn(2) == 0, minDepositRatio.String(), quorumTimout, maxVotingPeriodExtension, quorumCheckCount),
 	)
 
 	bz, err := json.MarshalIndent(&govGenesis, "", " ")

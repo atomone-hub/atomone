@@ -471,3 +471,120 @@ func TestTally(t *testing.T) {
 		})
 	}
 }
+
+func TestHasReachedQuorum(t *testing.T) {
+	tests := []struct {
+		name           string
+		proposalMsgs   []sdk.Msg
+		setup          func(*tallyFixture)
+		expectedQuorum bool
+	}{
+		{
+			name:         "no votes: no quorum",
+			proposalMsgs: TestProposal,
+			setup: func(s *tallyFixture) {
+			},
+			expectedQuorum: false,
+		},
+		{
+			name:         "not enough votes: no quorum",
+			proposalMsgs: TestProposal,
+			setup: func(s *tallyFixture) {
+				s.validatorVote(s.valAddrs[0], v1.VoteOption_VOTE_OPTION_NO)
+				s.validatorVote(s.valAddrs[1], v1.VoteOption_VOTE_OPTION_YES)
+			},
+			expectedQuorum: false,
+		},
+		{
+			name:         "enough votes: quorum",
+			proposalMsgs: TestProposal,
+			setup: func(s *tallyFixture) {
+				s.validatorVote(s.valAddrs[0], v1.VoteOption_VOTE_OPTION_NO)
+				s.validatorVote(s.valAddrs[1], v1.VoteOption_VOTE_OPTION_YES)
+				s.delegate(s.delAddrs[0], s.valAddrs[2], 500000)
+				s.delegate(s.delAddrs[0], s.valAddrs[3], 500000)
+				s.delegate(s.delAddrs[0], s.valAddrs[4], 500000)
+				s.delegate(s.delAddrs[0], s.valAddrs[5], 500000)
+				s.vote(s.delAddrs[0], v1.VoteOption_VOTE_OPTION_ABSTAIN)
+			},
+			expectedQuorum: true,
+		},
+		{
+			name: "amendment quorum not reached",
+			setup: func(s *tallyFixture) {
+				s.validatorVote(s.valAddrs[0], v1.VoteOption_VOTE_OPTION_YES)
+				s.validatorVote(s.valAddrs[1], v1.VoteOption_VOTE_OPTION_YES)
+				s.validatorVote(s.valAddrs[2], v1.VoteOption_VOTE_OPTION_NO)
+			},
+			proposalMsgs:   TestAmendmentProposal,
+			expectedQuorum: false,
+		},
+		{
+			name: "amendment quorum reached",
+			setup: func(s *tallyFixture) {
+				s.validatorVote(s.valAddrs[0], v1.VoteOption_VOTE_OPTION_YES)
+				s.validatorVote(s.valAddrs[1], v1.VoteOption_VOTE_OPTION_YES)
+				s.validatorVote(s.valAddrs[2], v1.VoteOption_VOTE_OPTION_NO)
+				s.validatorVote(s.valAddrs[3], v1.VoteOption_VOTE_OPTION_YES)
+				s.validatorVote(s.valAddrs[4], v1.VoteOption_VOTE_OPTION_YES)
+				s.delegate(s.delAddrs[0], s.valAddrs[5], 2)
+				s.delegate(s.delAddrs[0], s.valAddrs[6], 2)
+				s.vote(s.delAddrs[0], v1.VoteOption_VOTE_OPTION_YES)
+				s.delegate(s.delAddrs[1], s.valAddrs[5], 1)
+				s.delegate(s.delAddrs[1], s.valAddrs[6], 1)
+				s.vote(s.delAddrs[1], v1.VoteOption_VOTE_OPTION_YES)
+			},
+			proposalMsgs:   TestAmendmentProposal,
+			expectedQuorum: true,
+		},
+		{
+			name: "law quorum not reached",
+			setup: func(s *tallyFixture) {
+				s.validatorVote(s.valAddrs[0], v1.VoteOption_VOTE_OPTION_YES)
+				s.validatorVote(s.valAddrs[1], v1.VoteOption_VOTE_OPTION_YES)
+				s.validatorVote(s.valAddrs[2], v1.VoteOption_VOTE_OPTION_NO)
+			},
+			proposalMsgs:   TestLawProposal,
+			expectedQuorum: false,
+		},
+		{
+			name: "law quorum reached",
+			setup: func(s *tallyFixture) {
+				s.validatorVote(s.valAddrs[0], v1.VoteOption_VOTE_OPTION_YES)
+				s.validatorVote(s.valAddrs[1], v1.VoteOption_VOTE_OPTION_YES)
+				s.validatorVote(s.valAddrs[3], v1.VoteOption_VOTE_OPTION_YES)
+				s.validatorVote(s.valAddrs[5], v1.VoteOption_VOTE_OPTION_ABSTAIN)
+			},
+			proposalMsgs:   TestLawProposal,
+			expectedQuorum: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			govKeeper, mocks, _, ctx := setupGovKeeper(t, mockAccountKeeperExpectations)
+			var (
+				numVals       = 10
+				numDelegators = 5
+				addrs         = simtestutil.CreateRandomAccounts(numVals + numDelegators)
+				valAddrs      = simtestutil.ConvertAddrsToValAddrs(addrs[:numVals])
+				delAddrs      = addrs[numVals:]
+			)
+			// Submit and activate a proposal
+			proposal, err := govKeeper.SubmitProposal(ctx, tt.proposalMsgs, "", "title", "summary", delAddrs[0])
+			require.NoError(t, err)
+			govKeeper.ActivateVotingPeriod(ctx, proposal)
+			suite := newTallyFixture(t, ctx, proposal, valAddrs, delAddrs, govKeeper, mocks)
+			tt.setup(suite)
+
+			quorum, err := govKeeper.HasReachedQuorum(ctx, proposal)
+
+			require.NoError(t, err)
+			assert.Equal(t, tt.expectedQuorum, quorum)
+			if tt.expectedQuorum {
+				// Assert votes are still here after HasReachedQuorum
+				votes := suite.keeper.GetVotes(suite.ctx, proposal.Id)
+				assert.NotEmpty(t, votes, "votes must be kept after HasReachedQuorum")
+			}
+		})
+	}
+}

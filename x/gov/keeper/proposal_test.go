@@ -12,6 +12,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
+	"github.com/atomone-hub/atomone/x/gov/client/testutil"
 	"github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
@@ -47,6 +48,15 @@ func (suite *KeeperTestSuite) TestDeleteProposal() {
 }
 
 func (suite *KeeperTestSuite) TestActivateVotingPeriod() {
+	params := v1.DefaultParams()
+	params.QuorumCheckCount = 10 // enable quorum check
+	quorumTimeout := *params.VotingPeriod - time.Hour*16
+	params.QuorumTimeout = &quorumTimeout
+	maxVotingPeriodExtension := time.Hour * 16
+	params.MaxVotingPeriodExtension = &maxVotingPeriodExtension
+	err := suite.govKeeper.SetParams(suite.ctx, params)
+	suite.Require().NoError(err)
+
 	tp := TestProposal
 	proposal, err := suite.govKeeper.SubmitProposal(suite.ctx, tp, "", "test", "summary", sdk.AccAddress("cosmos1ghekyjucln7y67ntx7cf27m9dpuxxemn4c8g4r"))
 	suite.Require().NoError(err)
@@ -65,6 +75,13 @@ func (suite *KeeperTestSuite) TestActivateVotingPeriod() {
 	proposalID := types.GetProposalIDFromBytes(activeIterator.Value())
 	suite.Require().Equal(proposalID, proposal.Id)
 	activeIterator.Close()
+
+	quorumTimeoutTime := proposal.VotingStartTime.Add(*params.QuorumTimeout)
+	quorumCheckEntry, ok := testutil.GetQuorumCheckQueueEntry(suite.ctx, suite.govKeeper, proposal.Id, quorumTimeoutTime)
+	suite.Require().True(ok)
+	suite.Require().EqualValues(quorumTimeoutTime, *quorumCheckEntry.QuorumTimeoutTime)
+	suite.Require().EqualValues(params.QuorumCheckCount, quorumCheckEntry.QuorumCheckCount)
+	suite.Require().Zero(quorumCheckEntry.QuorumChecksDone)
 
 	// delete the proposal to avoid issues with other tests
 	suite.Require().NotPanics(func() {

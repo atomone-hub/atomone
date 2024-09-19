@@ -149,6 +149,21 @@ message Vote {
   string metadata = 5;
 }
 
+// QuorumCheckQueueEntry defines a quorum check queue entry.
+message QuorumCheckQueueEntry {
+  // quorum_timeout_time is the time after which quorum checks start happening
+  // and voting period is extended if proposal reaches quorum.
+  google.protobuf.Timestamp quorum_timeout_time = 1 [(gogoproto.stdtime) = true];
+
+  // quorum_check_count is the number of times quorum will be checked.
+  // This is a snapshot of the parameter value with the same name when the
+  // proposal is initially added to the queue.
+  uint64 quorum_check_count = 2;
+
+  // quorum_checks_done is the number of quorum checks that have been done.
+  uint64 quorum_checks_done = 3;
+}
+
 // DepositParams defines the params for deposits on governance proposals.
 message DepositParams {
   // Minimum deposit for a proposal to enter voting period.
@@ -245,4 +260,16 @@ message Params {
 
   // Minimum proportion of Yes votes for a Law proposal to pass. Default value: 0.9.
   string law_threshold = 19 [(cosmos_proto.scalar) = "cosmos.Dec"];
+
+  // Duration of time after a proposal enters the voting period, during which quorum
+  // must be achieved to not incur in a voting period extension.
+  google.protobuf.Duration quorum_timeout = 20 [(gogoproto.stdduration) = true];
+
+  // Duration that expresses the maximum amount of time by which a proposal voting period
+  // can be extended.
+  google.protobuf.Duration max_voting_period_extension = 21 [(gogoproto.stdduration) = true];
+
+  // Number of times a proposal should be checked for quorum after the quorum timeout
+  // has elapsed. Used to compute the amount of time in between quorum checks.
+  uint64 quorum_check_count = 22;
 }

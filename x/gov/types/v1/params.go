@@ -27,9 +27,13 @@ var (
 	DefaultLawQuorum                      = sdk.NewDecWithPrec(4, 1)
 	DefaultLawThreshold                   = sdk.NewDecWithPrec(9, 1)
 	DefaultMinInitialDepositRatio         = sdk.ZeroDec()
-	DefaultBurnProposalPrevote            = false                         // set to false to replicate behavior of when this change was made (0.47)
-	DefaultBurnVoteQuorom                 = false                         // set to false to  replicate behavior of when this change was made (0.47)
-	DefaultMinDepositRatio                = sdk.MustNewDecFromStr("0.01") // NOTE: backport from v50
+	DefaultBurnProposalPrevote            = false                    // set to false to replicate behavior of when this change was made (0.47)
+	DefaultBurnVoteQuorom                 = false                    // set to false to  replicate behavior of when this change was made (0.47)
+	DefaultMinDepositRatio                = sdk.NewDecWithPrec(1, 2) // NOTE: backport from v50
+
+	DefaultQuorumTimeout            time.Duration = DefaultVotingPeriod - (time.Hour * 24 * 1) // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
+	DefaultMaxVotingPeriodExtension time.Duration = DefaultVotingPeriod - DefaultQuorumTimeout // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
+	DefaultQuorumCheckCount         uint64        = 0                                          // disabled by default (0 means no check)
 )
 
 // Deprecated: NewDepositParams creates a new DepositParams object
@@ -60,6 +64,7 @@ func NewParams(
 	minDeposit sdk.Coins, maxDepositPeriod, votingPeriod time.Duration,
 	quorum, threshold, constitutionAmendmentQuorum, constitutionAmendmentThreshold, lawQuorum, lawThreshold, minInitialDepositRatio string,
 	burnProposalDeposit, burnVoteQuorum bool, minDepositRatio string,
+	quorumTimeout, maxVotingPeriodExtension time.Duration, quorumCheckCount uint64,
 ) Params {
 	return Params{
 		MinDeposit:                     minDeposit,
@@ -75,6 +80,9 @@ func NewParams(
 		BurnProposalDepositPrevote:     burnProposalDeposit,
 		BurnVoteQuorum:                 burnVoteQuorum,
 		MinDepositRatio:                minDepositRatio,
+		QuorumTimeout:                  &quorumTimeout,
+		MaxVotingPeriodExtension:       &maxVotingPeriodExtension,
+		QuorumCheckCount:               quorumCheckCount,
 	}
 }
 
@@ -94,6 +102,9 @@ func DefaultParams() Params {
 		DefaultBurnProposalPrevote,
 		DefaultBurnVoteQuorom,
 		DefaultMinDepositRatio.String(),
+		DefaultQuorumTimeout,
+		DefaultMaxVotingPeriodExtension,
+		DefaultQuorumCheckCount,
 	)
 }
 
@@ -212,6 +223,26 @@ func (p Params) ValidateBasic() error {
 	}
 	if minInitialDepositRatio.GT(math.LegacyOneDec()) {
 		return fmt.Errorf("mininum initial deposit ratio of proposal is too large: %s", minInitialDepositRatio)
+	}
+
+	if p.QuorumCheckCount > 0 {
+		// If quorum check is enabled, validate quorum check params
+		if p.QuorumTimeout == nil {
+			return fmt.Errorf("quorum timeout must not be nil: %d", p.QuorumTimeout)
+		}
+		if p.QuorumTimeout.Seconds() < 0 {
+			return fmt.Errorf("quorum timeout must be 0 or greater: %s", p.QuorumTimeout)
+		}
+		if p.QuorumTimeout.Nanoseconds() >= p.VotingPeriod.Nanoseconds() {
+			return fmt.Errorf("quorum timeout %s must be strictly less than the voting period %s", p.QuorumTimeout, p.VotingPeriod)
+		}
+
+		if p.MaxVotingPeriodExtension == nil {
+			return fmt.Errorf("max voting period extension must not be nil: %d", p.MaxVotingPeriodExtension)
+		}
+		if p.MaxVotingPeriodExtension.Nanoseconds() < p.VotingPeriod.Nanoseconds()-p.QuorumTimeout.Nanoseconds() {
+			return fmt.Errorf("max voting period extension %s must be greater than or equal to the difference between the voting period %s and the quorum timeout %s", p.MaxVotingPeriodExtension, p.VotingPeriod, p.QuorumTimeout)
+		}
 	}
 
 	return nil
