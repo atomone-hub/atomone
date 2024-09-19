@@ -579,12 +579,22 @@ func (s *IntegrationTestSuite) execRedelegate(c *chain, valIdx int, amount, orig
 	s.T().Logf("%s successfully redelegated %s from %s to %s", delegatorAddr, amount, originalValOperAddress, newValOperAddress)
 }
 
-func (s *IntegrationTestSuite) getLatestBlockHeight(c *chain, valIdx int) int {
-	rpcClient, err := rpchttp.New("tcp://"+s.valResources[c.id][valIdx].GetHostPort("26657/tcp"), "/websocket")
+func (s *IntegrationTestSuite) rpcClient(c *chain, valIdx int) *rpchttp.HTTP {
+	rc, err := rpchttp.New("tcp://"+s.valResources[c.id][valIdx].GetHostPort("26657/tcp"), "/websocket")
 	s.Require().NoError(err)
-	status, err := rpcClient.Status(context.Background())
+	return rc
+}
+
+func (s *IntegrationTestSuite) getLatestBlockHeight(c *chain, valIdx int) int64 {
+	status, err := s.rpcClient(c, valIdx).Status(context.Background())
 	s.Require().NoError(err)
-	return int(status.SyncInfo.LatestBlockHeight)
+	return status.SyncInfo.LatestBlockHeight
+}
+
+func (s *IntegrationTestSuite) getLatestBlockTime(c *chain, valIdx int) time.Time {
+	status, err := s.rpcClient(c, valIdx).Status(context.Background())
+	s.Require().NoError(err)
+	return status.SyncInfo.LatestBlockTime
 }
 
 // func (s *IntegrationTestSuite) verifyBalanceChange(endpoint string, expectedAmount sdk.Coin, recipientAddress string) {

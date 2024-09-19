@@ -27,7 +27,6 @@ import (
 	tmconfig "github.com/cometbft/cometbft/config"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	tmjson "github.com/cometbft/cometbft/libs/json"
-	rpchttp "github.com/cometbft/cometbft/rpc/client/http"
 
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
@@ -57,7 +56,7 @@ const (
 	initBalanceStr                  = "110000000000stake,100000000000000000photon,100000000000000000uatone"
 	minGasPrice                     = "0.00001"
 	gas                             = 200000
-	govProposalBlockBuffer          = 35
+	govProposalBlockBuffer    int64 = 35
 	relayerAccountIndexHermes       = 0
 	numberOfEvidences               = 10
 	slashingShares            int64 = 10000
@@ -552,9 +551,7 @@ func (s *IntegrationTestSuite) runValidators(c *chain, portOffset int) {
 		s.T().Logf("started AtomOne %s validator container: %s", c.id, resource.Container.ID)
 	}
 
-	rpcClient, err := rpchttp.New("tcp://localhost:26657", "/websocket")
-	s.Require().NoError(err)
-
+	rpcClient := s.rpcClient(s.chainA, 0)
 	nodeReadyTimeout := time.Minute
 	if runInCI {
 		nodeReadyTimeout = 5 * time.Minute
