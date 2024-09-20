@@ -28,3 +28,9 @@ Github Release section.
 Run `make build-ledger` to have ledger support in `./build/atomoned` binary.
 Note that this will disable reproducible builds, as it introduces OS
 dependencies.
+
+## Acknowledgements
+
+Portions of this codebase are copied or adapted from [cosmos/gaia@v15](https://github.com/cosmos/gaia/tree/v15.0.0), and [cosmos/cosmos-sdk@v47.10](https://github.com/cosmos/cosmos-sdk/tree/v0.47.10).
+
+Their original licenses are both included in [ATTRIBUTION](ATTRIBUTION)
