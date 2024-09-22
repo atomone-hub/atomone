@@ -2,12 +2,16 @@ package e2e
 
 import (
 	"fmt"
+	"path/filepath"
 	"strconv"
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
+	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	govtypesv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 )
 
@@ -147,6 +151,31 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 	})
 }
 
+// testGovParamChange tests passing a param change proposal.
+func (s *IntegrationTestSuite) testGovParamChange() {
+	s.Run("staking param change", func() {
+		// check existing params
+		chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
+		senderAddress, _ := s.chainA.validators[0].keyInfo.GetAddress()
+		sender := senderAddress.String()
+		params := s.queryStakingParams(chainAAPIEndpoint)
+		oldMaxValidator := params.Params.MaxValidators
+		// add 10 to actual max validators
+		params.Params.MaxValidators = oldMaxValidator + 10
+
+		s.writeStakingParamChangeProposal(s.chainA, params.Params)
+		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
+		proposalCounter++
+		submitGovFlags := []string{configFile(proposalParamChangeFilename)}
+		depositGovFlags := []string{strconv.Itoa(proposalCounter), depositAmount.String()}
+		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
+		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "cosmos.staking.v1beta1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote")
+
+		newParams := s.queryStakingParams(chainAAPIEndpoint)
+		s.Assert().NotEqual(oldMaxValidator, newParams.Params.MaxValidators)
+	})
+}
+
 func (s *IntegrationTestSuite) submitLegacyGovProposal(chainAAPIEndpoint, sender string, proposalID int, proposalType string, submitFlags []string, depositFlags []string, voteFlags []string, voteCommand string, withDeposit bool) {
 	s.T().Logf("Submitting Gov Proposal: %s", proposalType)
 	// min deposit of 1000uatone is required in e2e tests, otherwise the gov antehandler causes the proposal to be dropped
@@ -162,7 +191,7 @@ func (s *IntegrationTestSuite) submitLegacyGovProposal(chainAAPIEndpoint, sender
 }
 
 // NOTE: in SDK >= v0.47 the submit-proposal does not have a --deposit flag
-// Instead, the depoist is added to the "deposit" field of the proposal JSON (usually stored as a file)
+// Instead, the deposit is added to the "deposit" field of the proposal JSON (usually stored as a file)
 // you can use `atomoned tx gov draft-proposal` to create a proposal file that you can use
 // min initial deposit of 100uatone is required in e2e tests, otherwise the proposal would be dropped
 func (s *IntegrationTestSuite) submitGovProposal(chainAAPIEndpoint, sender string, proposalID int, proposalType string, submitFlags []string, depositFlags []string, voteFlags []string, voteCommand string) {
@@ -229,4 +258,28 @@ func (s *IntegrationTestSuite) submitGovCommand(chainAAPIEndpoint, sender string
 		15*time.Second,
 		time.Second,
 	)
+}
+
+func (s *IntegrationTestSuite) writeStakingParamChangeProposal(c *chain, params stakingtypes.Params) {
+	govModuleAddress := authtypes.NewModuleAddress(govtypes.ModuleName).String()
+
+	template := `
+	{
+		"messages":[
+		  {
+			"@type": "/cosmos.staking.v1beta1.MsgUpdateParams",
+			"authority": "%s",
+			"params": %s
+		  }
+		],
+		"deposit": "100uatone",
+		"proposer": "Proposing staking param change",
+		"metadata": "",
+		"title": "Change in staking params",
+		"summary": "summary"
+	}
+	`
+	propMsgBody := fmt.Sprintf(template, govModuleAddress, cdc.MustMarshalJSON(&params))
+	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
+	s.Require().NoError(err)
 }

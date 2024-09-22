@@ -741,7 +741,13 @@ func (s *IntegrationTestSuite) defaultExecValidation(chain *chain, valIdx int) f
 			endpoint := fmt.Sprintf("http://%s", s.valResources[chain.id][valIdx].GetHostPort("1317/tcp"))
 			s.Require().Eventually(
 				func() bool {
-					return queryAtomOneTx(endpoint, txResp.TxHash) == nil
+					err := queryAtomOneTx(endpoint, txResp.TxHash)
+					if isErrNotFound(err) {
+						// tx not processed yet, continue
+						return false
+					}
+					s.Require().NoError(err)
+					return true
 				},
 				time.Minute,
 				time.Second,

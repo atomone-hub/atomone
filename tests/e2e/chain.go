@@ -10,6 +10,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/tx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	authvesting "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
@@ -37,6 +38,8 @@ var (
 
 func init() {
 	encodingConfig = atomoneparams.MakeEncodingConfig()
+	sdk.RegisterInterfaces(encodingConfig.InterfaceRegistry)
+	tx.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 	banktypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 	authtypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 	authvesting.RegisterInterfaces(encodingConfig.InterfaceRegistry)

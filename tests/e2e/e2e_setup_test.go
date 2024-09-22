@@ -64,7 +64,7 @@ const (
 	proposalBypassMsgFilename      = "proposal_bypass_msg.json"
 	proposalMaxTotalBypassFilename = "proposal_max_total_bypass.json"
 	proposalCommunitySpendFilename = "proposal_community_spend.json"
-	proposalLSMParamUpdateFilename = "proposal_lsm_param_update.json"
+	proposalParamChangeFilename    = "param_change.json"
 
 	// hermesBinary              = "hermes"
 	// hermesConfigWithGasPrices = "/root/.hermes/config.toml"

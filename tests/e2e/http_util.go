@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -13,6 +14,10 @@ func httpGet(endpoint string) ([]byte, error) {
 }
 
 const maxAttempt = 5
+
+func isErrNotFound(err error) bool {
+	return err != nil && strings.HasSuffix(err.Error(), http.StatusText(http.StatusNotFound))
+}
 
 func httpGet_(endpoint string, attempt int) ([]byte, error) {
 	resp, err := http.Get(endpoint) //nolint:gosec // this is only used during tests
@@ -27,7 +32,7 @@ func httpGet_(endpoint string, attempt int) ([]byte, error) {
 		return httpGet_(endpoint, attempt+1)
 	}
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("server responsed status %s", resp.Status)
+		return nil, fmt.Errorf("server status %s", resp.Status)
 	}
 
 	body, err := io.ReadAll(resp.Body)
