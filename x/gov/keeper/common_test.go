@@ -50,27 +50,25 @@ func getTestProposal() []sdk.Msg {
 
 // getTestConstitutionAmendmentProposal creates and returns a test constitution amendment proposal message.
 func getTestConstitutionAmendmentProposal() []sdk.Msg {
-	legacyProposalMsg, err := v1.NewLegacyContent(v1beta1.NewConstitutionAmendmentProposal("Title", "description"), authtypes.NewModuleAddress(types.ModuleName).String())
-	if err != nil {
-		panic(err)
+	proposalMsg := v1.MsgProposeConstitutionAmendment{
+		Authority: authtypes.NewModuleAddress(types.ModuleName).String(),
 	}
 
 	return []sdk.Msg{
 		banktypes.NewMsgSend(govAcct, addr, sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(1000)))),
-		legacyProposalMsg,
+		&proposalMsg,
 	}
 }
 
 // getTestLawProposal creates and returns a test law proposal message.
 func getTestLawProposal() []sdk.Msg {
-	legacyProposalMsg, err := v1.NewLegacyContent(v1beta1.NewLawProposal("Title", "description"), authtypes.NewModuleAddress(types.ModuleName).String())
-	if err != nil {
-		panic(err)
+	proposalMsg := v1.MsgProposeLaw{
+		Authority: authtypes.NewModuleAddress(types.ModuleName).String(),
 	}
 
 	return []sdk.Msg{
 		banktypes.NewMsgSend(govAcct, addr, sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(1000)))),
-		legacyProposalMsg,
+		&proposalMsg,
 	}
 }
 

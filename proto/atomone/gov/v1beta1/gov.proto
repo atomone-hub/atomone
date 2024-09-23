@@ -65,32 +65,6 @@ message TextProposal {
   string description = 2;
 }
 
-message LawProposal {
-  option (cosmos_proto.implements_interface) = "atomone.gov.v1beta1.Content";
-  option (amino.name)                        = "atomone/LawProposal";
-
-  option (gogoproto.equal) = true;
-
-  // title of the proposal.
-  string title       = 1;
-
-  // description associated with the proposal.
-  string description = 2;
-}
-
-message ConstitutionAmendmentProposal {
-  option (cosmos_proto.implements_interface) = "atomone.gov.v1beta1.Content";
-  option (amino.name)                        = "atomone/ConstitutionAmendmentProposal";
-
-  option (gogoproto.equal) = true;
-
-  // title of the proposal.
-  string title       = 1;
-
-  // description associated with the proposal.
-  string description = 2;
-}
-
 // Deposit defines an amount deposited by an account address to an active
 // proposal.
 message Deposit {

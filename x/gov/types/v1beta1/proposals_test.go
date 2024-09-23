@@ -42,14 +42,6 @@ func TestContentFromProposalType(t *testing.T) {
 			proposalType: "Text",
 			expectedType: v1beta1.ProposalTypeText,
 		},
-		{
-			proposalType: "ConstitutionAmendment",
-			expectedType: v1beta1.ProposalTypeConstitutionAmendment,
-		},
-		{
-			proposalType: "Law",
-			expectedType: v1beta1.ProposalTypeLaw,
-		},
 	}
 
 	for _, test := range tests {

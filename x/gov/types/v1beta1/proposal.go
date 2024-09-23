@@ -192,72 +192,6 @@ func (tp TextProposal) String() string {
 	return string(out)
 }
 
-// Law and Constitution Amendment Proposal types
-const (
-	ProposalTypeLaw                   string = "Law"
-	ProposalTypeConstitutionAmendment string = "ConstitutionAmendment"
-)
-
-// Implements Content Interface
-var (
-	_ Content = &LawProposal{}
-	_ Content = &ConstitutionAmendmentProposal{}
-)
-
-// NewLawProposal creates a law proposal Content
-func NewLawProposal(title, description string) Content {
-	return &LawProposal{title, description}
-}
-
-// NewConstitutionAmendmentProposal creates a constitution amendment proposal Content
-func NewConstitutionAmendmentProposal(title, description string) Content {
-	return &ConstitutionAmendmentProposal{title, description}
-}
-
-// GetTitle returns the proposal title
-func (lp *LawProposal) GetTitle() string { return lp.Title }
-
-// GetDescription returns the proposal description
-func (lp *LawProposal) GetDescription() string { return lp.Description }
-
-// ProposalRoute returns the proposal router key
-func (lp *LawProposal) ProposalRoute() string { return types.RouterKey }
-
-// ProposalType is "Law"
-func (lp *LawProposal) ProposalType() string { return ProposalTypeLaw }
-
-// ValidateBasic validates the content's title and description of the proposal
-func (lp *LawProposal) ValidateBasic() error { return ValidateAbstract(lp) }
-
-// String implements Stringer interface
-func (lp LawProposal) String() string {
-	out, _ := yaml.Marshal(lp)
-	return string(out)
-}
-
-// GetTitle returns the proposal title
-func (cap *ConstitutionAmendmentProposal) GetTitle() string { return cap.Title }
-
-// GetDescription returns the proposal description
-func (cap *ConstitutionAmendmentProposal) GetDescription() string { return cap.Description }
-
-// ProposalRoute returns the proposal router key
-func (cap *ConstitutionAmendmentProposal) ProposalRoute() string { return types.RouterKey }
-
-// ProposalType is "ConstitutionAmendment"
-func (cap *ConstitutionAmendmentProposal) ProposalType() string {
-	return ProposalTypeConstitutionAmendment
-}
-
-// ValidateBasic validates the content's title and description of the proposal
-func (cap *ConstitutionAmendmentProposal) ValidateBasic() error { return ValidateAbstract(cap) }
-
-// String implements Stringer interface
-func (cap ConstitutionAmendmentProposal) String() string {
-	out, _ := yaml.Marshal(cap)
-	return string(out)
-}
-
 // ValidProposalStatus checks if the proposal status is valid
 func ValidProposalStatus(status ProposalStatus) bool {
 	if status == StatusDepositPeriod ||
@@ -293,9 +227,7 @@ func ValidateAbstract(c Content) error {
 }
 
 var validProposalTypes = map[string]struct{}{
-	ProposalTypeText:                  {},
-	ProposalTypeLaw:                   {},
-	ProposalTypeConstitutionAmendment: {},
+	ProposalTypeText: {},
 }
 
 // RegisterProposalType registers a proposal type. It will panic if the type is
@@ -312,14 +244,6 @@ func RegisterProposalType(ty string) {
 func ContentFromProposalType(title, desc, ty string) (Content, bool) {
 	if strings.EqualFold(ty, ProposalTypeText) {
 		return NewTextProposal(title, desc), true
-	}
-
-	if strings.EqualFold(ty, ProposalTypeLaw) {
-		return NewLawProposal(title, desc), true
-	}
-
-	if strings.EqualFold(ty, ProposalTypeConstitutionAmendment) {
-		return NewConstitutionAmendmentProposal(title, desc), true
 	}
 
 	return nil, false
@@ -342,10 +266,6 @@ func ProposalHandler(_ sdk.Context, c Content) error {
 	switch c.ProposalType() {
 	case ProposalTypeText:
 		// both proposal types do not change state so this performs a no-op
-		return nil
-	case ProposalTypeConstitutionAmendment:
-		return nil
-	case ProposalTypeLaw:
 		return nil
 
 	default:

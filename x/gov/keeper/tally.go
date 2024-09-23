@@ -9,7 +9,6 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
-	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 )
 
 // Tally iterates over the votes and updates the tally of a proposal based on the voting power of the
@@ -190,19 +189,10 @@ func (keeper Keeper) getQuorumAndThreshold(ctx sdk.Context, proposal v1.Proposal
 		var sdkMsg sdk.Msg
 		for _, msg := range proposal.Messages {
 			if err := keeper.cdc.UnpackAny(msg, &sdkMsg); err == nil {
-				execMsg, ok := sdkMsg.(*v1.MsgExecLegacyContent)
-				if !ok {
-					continue
-				}
-				var content v1beta1.Content
-				if err := keeper.cdc.UnpackAny(execMsg.Content, &content); err != nil {
-					return sdk.Dec{}, sdk.Dec{}, err
-				}
-
 				// Check if proposal is a law or constitution amendment and adjust the
 				// quorum and threshold accordingly
-				switch content.(type) {
-				case *v1beta1.ConstitutionAmendmentProposal:
+				switch sdkMsg.(type) {
+				case *v1.MsgProposeConstitutionAmendment:
 					q, err := sdk.NewDecFromStr(params.ConstitutionAmendmentQuorum)
 					if err != nil {
 						return sdk.Dec{}, sdk.Dec{}, fmt.Errorf("parsing params.ConstitutionAmendmentQuorum: %w", err)
@@ -217,7 +207,7 @@ func (keeper Keeper) getQuorumAndThreshold(ctx sdk.Context, proposal v1.Proposal
 					if threshold.LT(t) {
 						threshold = t
 					}
-				case *v1beta1.LawProposal:
+				case *v1.MsgProposeLaw:
 					q, err := sdk.NewDecFromStr(params.LawQuorum)
 					if err != nil {
 						return sdk.Dec{}, sdk.Dec{}, fmt.Errorf("parsing params.LawQuorum: %w", err)

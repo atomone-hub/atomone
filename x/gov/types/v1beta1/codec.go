@@ -23,8 +23,6 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgVote{}, "atomone/MsgVote")
 	legacy.RegisterAminoMsg(cdc, &MsgVoteWeighted{}, "atomone/MsgVoteWeighted")
 	cdc.RegisterConcrete(&TextProposal{}, "atomone/TextProposal", nil)
-	cdc.RegisterConcrete(&ConstitutionAmendmentProposal{}, "atomone/ConstitutionAmendmentProposal", nil)
-	cdc.RegisterConcrete(&LawProposal{}, "atomone/LawProposal", nil)
 }
 
 // RegisterInterfaces registers the interfaces types with the Interface Registry.
@@ -39,8 +37,6 @@ func RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 		"atomone.gov.v1beta1.Content",
 		(*Content)(nil),
 		&TextProposal{},
-		&ConstitutionAmendmentProposal{},
-		&LawProposal{},
 	)
 
 	// Register proposal types (this is actually done in related modules, but

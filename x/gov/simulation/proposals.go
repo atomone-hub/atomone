@@ -5,13 +5,22 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 
+	govtypes "github.com/atomone-hub/atomone/x/gov/types"
+	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 )
 
-// OpWeightSubmitTextProposal app params key for text proposal
-const OpWeightSubmitTextProposal = "op_weight_submit_text_proposal"
+const (
+	// OpWeightSubmitTextProposal app params key for text proposal
+	OpWeightSubmitTextProposal = "op_weight_submit_text_proposal"
+	// OpWeightSubmitConstitutionAmendmentProposal app params key for constitution amendment proposal
+	OpWeightSubmitConstitutionAmendmentProposal = "op_weight_submit_constitution_amendment_proposal"
+	// OpWeightSubmitLawProposal app params key for law proposal
+	OpWeightSubmitLawProposal = "op_weight_submit_law_proposal"
+)
 
 // ProposalMsgs defines the module weighted proposals' contents
 func ProposalMsgs() []simtypes.WeightedProposalMsg {
@@ -20,6 +29,16 @@ func ProposalMsgs() []simtypes.WeightedProposalMsg {
 			OpWeightSubmitTextProposal,
 			DefaultWeightTextProposal,
 			SimulateTextProposal,
+		),
+		simulation.NewWeightedProposalMsg(
+			OpWeightSubmitConstitutionAmendmentProposal,
+			DefaultWeightConstitutionAmendment,
+			SimulateConstitutionAmendmentProposal,
+		),
+		simulation.NewWeightedProposalMsg(
+			OpWeightSubmitLawProposal,
+			DefaultWeightLawProposal,
+			SimulateLawProposal,
 		),
 	}
 }
@@ -40,16 +59,6 @@ func ProposalContents() []simtypes.WeightedProposalContent {
 			DefaultWeightTextProposal,
 			SimulateLegacyTextProposalContent,
 		),
-		simulation.NewWeightedProposalContent(
-			OpWeightMsgDeposit,
-			DefaultWeightTextProposal,
-			SimulateConstitutionAmendmentProposalContent,
-		),
-		simulation.NewWeightedProposalContent(
-			OpWeightMsgDeposit,
-			DefaultWeightTextProposal,
-			SimulateLawProposalContent,
-		),
 	}
 }
 
@@ -63,22 +72,16 @@ func SimulateLegacyTextProposalContent(r *rand.Rand, _ sdk.Context, _ []simtypes
 	)
 }
 
-// SimulateConstitutionAmendmentProposalContent returns a random constitution amendment proposal content.
-//
-//nolint:staticcheck
-func SimulateConstitutionAmendmentProposalContent(r *rand.Rand, _ sdk.Context, _ []simtypes.Account) simtypes.Content {
-	return v1beta1.NewConstitutionAmendmentProposal(
-		simtypes.RandStringOfLength(r, 140),
-		simtypes.RandStringOfLength(r, 5000),
-	)
+// SimulateConstitutionAmendmentProposal returns a random constitution amendment proposal.
+func SimulateConstitutionAmendmentProposal(_ *rand.Rand, _ sdk.Context, _ []simtypes.Account) sdk.Msg {
+	return &v1.MsgProposeConstitutionAmendment{
+		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	}
 }
 
-// SimulateLawProposalContent returns a random law proposal content.
-//
-//nolint:staticcheck
-func SimulateLawProposalContent(r *rand.Rand, _ sdk.Context, _ []simtypes.Account) simtypes.Content {
-	return v1beta1.NewLawProposal(
-		simtypes.RandStringOfLength(r, 140),
-		simtypes.RandStringOfLength(r, 5000),
-	)
+// SimulateLawProposal returns a random law proposal.
+func SimulateLawProposal(_ *rand.Rand, _ sdk.Context, _ []simtypes.Account) sdk.Msg {
+	return &v1.MsgProposeLaw{
+		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	}
 }
