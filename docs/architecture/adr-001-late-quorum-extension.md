@@ -22,7 +22,7 @@ This ADR proposes a mechanism for extending the voting period of active governan
 
 ## Context
 
-In the current implementation of the **`x/governance`** module in the Cosmos SDK, a governance proposal that reaches quorum near the end of the voting period may not have sufficient time for discussion and deliberation among stakeholders.
+In the current implementation of the `x/gov` module in the Cosmos SDK, a governance proposal that reaches quorum near the end of the voting period may not have sufficient time for discussion and deliberation among stakeholders.
 
 The majority of community interest in a proposal arises when the vote quorum is reached. This is because a proposal's outcome only becomes valid after achieving quorum. Reaching quorum near the end of the proposal voting period could therefore be a symptom of low awareness about the proposal or could potentially be a form of governance manipulation.
 
@@ -36,7 +36,7 @@ Another alternative could be the implementation of a notification mechanism that
 
 ## Decision
 
-We propose the introduction of three new parameters in the **`x/governance`** module:
+We propose the introduction of three new parameters in the `x/gov` module:
 
 - **`QuorumTimeout`**: This parameter defines the time window after which, if the quorum is reached, the voting end time is extended. This value must be strictly less than **`params.VotingPeriod`**.
 - **`MaxVotingPeriodExtension`**: This parameter defines the maximum amount of time by which a proposal's voting end time can be extended. This value must be greater or equal than **`VotingPeriod - QuorumTimeout`**.
@@ -50,7 +50,7 @@ We also introduce a new **`keeper.QuorumCheckQueue`** similar to **`keeper.Activ
 
 When a proposal is added to the **`keeper.ActiveProposalsQueue`**, it is also added to the **`keeper.QuorumCheckQueue`**, unless it is an *expedited proposal*. The time part of the key for the proposal in the **`QuorumCheckQueue`** is initially calculated as **`proposal.VotingStartTime + QuorumTimeout`** (i.e. the **`QuorumTimeoutTime`**), therefore scheduling the first quorum check to happen right after **`QuorumTimeout`** has expired. Note that expedited proposals are not scheduled for quorum checks - i.e. are exempt from the mechanism described in this ADR. This is true unless an expedited proposal fails and is converted to a regular proposal, in which case they are also added to the **`QuorumCheckQueue`**.
 
-In the **`EndBlocker()`** function of the governance module, we add a new call to **`keeper.QuorumCheckQueue.Walk()`** between the calls to **`keeper.InactiveProposalsQueue.Walk()`** and **`keeper.ActiveProposalsQueue.Walk()`**. In this **`Walk()`** we iterate over proposals that are due to be checked for quorum, meaning that their time part of the key is before the current block time.
+In the **`EndBlocker()`** function of the `x/gov` module, we add a new call to **`keeper.QuorumCheckQueue.Walk()`** between the calls to **`keeper.InactiveProposalsQueue.Walk()`** and **`keeper.ActiveProposalsQueue.Walk()`**. In this **`Walk()`** we iterate over proposals that are due to be checked for quorum, meaning that their time part of the key is before the current block time.
 
 We can check if quorum is reached by extracting only the relevant code from the **`Tally()`** method and create a new method **`HasReachedQuorum()`**. 
 
@@ -72,7 +72,7 @@ If a proposal has passed its **`VoteEndTime`** and has not reached quorum, it sh
 
 ### Backwards Compatibility
 
-The proposed modifications preserve backwards compatibility with the existing governance module of the Cosmos SDK. The introduction of new parameters—**`QuorumTimeout`**, **`MaxVotingPeriodExtension`**, and **`QuorumCheckCount`**—and the **`QuorumCheckQueue`** do not disrupt the current functionality of the governance module. These new elements will be activated for proposals initiated post-implementation of these changes. The governance process for pre-existing proposals will continue to adhere to the established voting period rules, because they won’t be present in the **`QuorumCheckQueue`**.
+The proposed modifications preserve backwards compatibility with the existing `x/gov` module of the Cosmos SDK. The introduction of new parameters—**`QuorumTimeout`**, **`MaxVotingPeriodExtension`**, and **`QuorumCheckCount`**—and the **`QuorumCheckQueue`** do not disrupt the current functionality of the `x/gov` module. These new elements will be activated for proposals initiated post-implementation of these changes. The governance process for pre-existing proposals will continue to adhere to the established voting period rules, because they won’t be present in the **`QuorumCheckQueue`**.
 
 ### Positive
 
@@ -85,7 +85,7 @@ The proposed modifications preserve backwards compatibility with the existing go
 
 ### Neutral
 
-- Requires changes to the governance module and the introduction of new parameters.
+- Requires changes to the `x/gov` module and the introduction of new parameters.
 
 ## Further Discussions
 
