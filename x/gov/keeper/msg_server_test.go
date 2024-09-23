@@ -10,6 +10,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
+	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 )
@@ -1297,6 +1298,57 @@ func (suite *KeeperTestSuite) TestSubmitProposal_InitialDeposit() {
 				return
 			}
 			suite.Require().NoError(err)
+		})
+	}
+}
+
+func (suite *KeeperTestSuite) TestProposeConstitutionAmendment() {
+	ctx := suite.ctx
+	suite.govKeeper.SetConstitution(ctx, "Hello  World")
+
+	cases := map[string]struct {
+		msg       *v1.MsgProposeConstitutionAmendment
+		expErr    bool
+		expErrMsg string
+		expResult string
+	}{
+		"successful amendment": {
+			msg: v1.NewMsgProposeConstitutionAmendment(
+				suite.govKeeper.GetGovernanceAccount(ctx).GetAddress(),
+				"@@ -1 +1 @@\n-Hello  World\n+Hi  World",
+			),
+			expErr:    false,
+			expResult: "Hi  World",
+		},
+		"failed amendment": {
+			msg: v1.NewMsgProposeConstitutionAmendment(
+				suite.govKeeper.GetGovernanceAccount(ctx).GetAddress(),
+				"invalid patch",
+			),
+			expErr: true,
+		},
+		"invalid authority": {
+			msg: v1.NewMsgProposeConstitutionAmendment(
+				sdk.AccAddress("invalid"),
+				"@@ -1 +1 @@\n-Hello  World\n+Hi  World",
+			),
+			expErr:    true,
+			expErrMsg: govtypes.ErrInvalidSigner.Error(),
+		},
+	}
+
+	for name, tc := range cases {
+		suite.Run(name, func() {
+			_, err := suite.msgSrvr.ProposeConstitutionAmendment(sdk.WrapSDKContext(ctx), tc.msg)
+			if tc.expErr {
+				suite.Require().Error(err)
+				if tc.expErrMsg != "" {
+					suite.Require().Contains(err.Error(), tc.expErrMsg)
+				}
+			} else {
+				suite.Require().NoError(err)
+				suite.Require().Equal(tc.expResult, suite.govKeeper.GetConstitution(ctx))
+			}
 		})
 	}
 }

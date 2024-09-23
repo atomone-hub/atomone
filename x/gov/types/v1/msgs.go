@@ -323,6 +323,13 @@ func (msg MsgUpdateParams) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{authority}
 }
 
+func NewMsgProposeConstitutionAmendment(authority sdk.AccAddress, amendment string) *MsgProposeConstitutionAmendment {
+	return &MsgProposeConstitutionAmendment{
+		Authority: authority.String(),
+		Amendment: amendment,
+	}
+}
+
 // Route implements the sdk.Msg interface.
 func (msg MsgProposeConstitutionAmendment) Route() string { return types.RouterKey }
 
@@ -333,6 +340,15 @@ func (msg MsgProposeConstitutionAmendment) Type() string { return sdk.MsgTypeURL
 func (msg MsgProposeConstitutionAmendment) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Authority); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", err)
+	}
+
+	if msg.Amendment == "" {
+		return types.ErrInvalidProposalContent.Wrap("amendment cannot be empty")
+	}
+
+	_, err := types.ParseUnifiedDiff(msg.Amendment)
+	if err != nil {
+		return types.ErrInvalidProposalContent.Wrap(err.Error())
 	}
 
 	return nil
