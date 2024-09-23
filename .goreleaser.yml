@@ -3,6 +3,7 @@ project_name: atomone
 
 env:
   - GO111MODULE=on
+  - CGO_ENABLED=1
 
 builds:
   - main: ./cmd/atomoned
@@ -12,8 +13,6 @@ builds:
     flags:
       - -tags=netgo ledger
       - -trimpath
-    env:
-      - CGO_ENABLED=0
     ldflags:
       # .Env.TM_VERSION is provided in the workflow runner environment -> see .github/workflows/release.yml
       - -X github.com/cosmos/cosmos-sdk/version.Name=atomone -X github.com/cosmos/cosmos-sdk/version.AppName=atomoned -X github.com/cosmos/cosmos-sdk/version.Version=v{{ .Version }} -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }} -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger -X github.com/cometbft/cometbft/version.TMCoreSemVer={{ .Env.TM_VERSION }} -w -s

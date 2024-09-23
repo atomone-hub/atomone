@@ -25,7 +25,7 @@ GO_SYSTEM_VERSION = $(shell go version | cut -c 14- | cut -d' ' -f1 | cut -d'.' 
 REQUIRE_GO_VERSION = 1.21
 
 export GO111MODULE = on
-export CGO_ENABLED = 0
+export CGO_ENABLED = 1
 
 # process build tags
 
