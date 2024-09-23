@@ -28,8 +28,8 @@ export GO111MODULE = on
 export CGO_ENABLED = 0
 
 build-ledger: check_version go.sum $(BUILDDIR)/
-        @echo "WARNING: Ledger build involves enabling cgo, which disables the ability to have reproducible builds."
-        CGO_ENABLED=1 go build -mod=readonly $(BUILD_FLAGS) $(BUILD_ARGS) -o $(BUILDDIR)/ ./...
+	@echo "WARNING: Ledger build involves enabling cgo, which disables the ability to have reproducible builds."
+	CGO_ENABLED=1 go build -mod=readonly $(BUILD_FLAGS) $(BUILD_ARGS) -o $(BUILDDIR)/ ./...
 
 # process build tags
 
