@@ -58,6 +58,7 @@ func (s *IntegrationTestSuite) TestGov() {
 	s.testGovCancelSoftwareUpgrade()
 	s.testGovCommunityPoolSpend()
 	s.testGovParamChange()
+	s.testGovConstitutionAmendment()
 }
 
 func (s *IntegrationTestSuite) TestSlashing() {

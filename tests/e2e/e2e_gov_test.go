@@ -176,6 +176,31 @@ func (s *IntegrationTestSuite) testGovParamChange() {
 	})
 }
 
+func (s *IntegrationTestSuite) testGovConstitutionAmendment() {
+	s.Run("constitution amendment", func() {
+		chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
+		senderAddress, _ := s.chainA.validators[0].keyInfo.GetAddress()
+		sender := senderAddress.String()
+
+		s.writeGovConstitutionAmendmentProposal(s.chainA)
+		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
+		proposalCounter++
+		submitGovFlags := []string{configFile(proposalConstitutionAmendmentFilename)}
+		depositGovFlags := []string{strconv.Itoa(proposalCounter), depositAmount.String()}
+		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
+		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "gov/MsgSubmitProposal", submitGovFlags, depositGovFlags, voteGovFlags, "vote")
+
+		s.Require().Eventually(
+			func() bool {
+				res := s.queryConstitution(chainAAPIEndpoint)
+				return res.Constitution != "" // constitution should remain an empty string
+			},
+			10*time.Second,
+			time.Second,
+		)
+	})
+}
+
 func (s *IntegrationTestSuite) submitLegacyGovProposal(chainAAPIEndpoint, sender string, proposalID int, proposalType string, submitFlags []string, depositFlags []string, voteFlags []string, voteCommand string, withDeposit bool) {
 	s.T().Logf("Submitting Gov Proposal: %s", proposalType)
 	// min deposit of 1000uatone is required in e2e tests, otherwise the gov antehandler causes the proposal to be dropped

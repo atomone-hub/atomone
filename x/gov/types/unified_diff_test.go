@@ -175,10 +175,36 @@ func TestApplyUnifiedDiff(t *testing.T) {
 			wantErr:  true,
 		},
 		{
-			name:    "Empty diff",
-			src:     "Line one\nLine two",
-			diffStr: ``,
+			name: "Empty diff",
+			src:  "Line one\nLine two",
+			diffStr: `--- src
++++ dst
+`,
 			wantErr: true,
+		},
+		{
+			name: "Empty source",
+			src:  "",
+			diffStr: `--- src
++++ dst
+@@ -1 +1 @@
+-
++Line one
+`,
+			expected: "Line one",
+			wantErr:  false,
+		},
+		{
+			name: "Empty source and no-op dst",
+			src:  "",
+			diffStr: `--- src
++++ dst
+@@ -1 +1 @@
+-
++
+`,
+			expected: "",
+			wantErr:  false,
 		},
 	}
 

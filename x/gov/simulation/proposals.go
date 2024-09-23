@@ -73,9 +73,9 @@ func SimulateLegacyTextProposalContent(r *rand.Rand, _ sdk.Context, _ []simtypes
 }
 
 // SimulateConstitutionAmendmentProposal returns a random constitution amendment proposal.
-func SimulateConstitutionAmendmentProposal(r *rand.Rand, ctx sdk.Context, _ []simtypes.Account) sdk.Msg {
-	amendment := simtypes.RandStringOfLength(r, 140)
-	return v1.NewMsgProposeConstitutionAmendment(authtypes.NewModuleAddress(govtypes.ModuleName), amendment)
+func SimulateConstitutionAmendmentProposal(_ *rand.Rand, ctx sdk.Context, _ []simtypes.Account) sdk.Msg {
+	emptyAmendment := "@@ -1 +1 @@\n-\n+\n" // valid diff with no changes
+	return v1.NewMsgProposeConstitutionAmendment(authtypes.NewModuleAddress(govtypes.ModuleName), emptyAmendment)
 }
 
 // SimulateLawProposal returns a random law proposal.
