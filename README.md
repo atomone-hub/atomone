@@ -12,10 +12,16 @@ The following modifications have been made to the Cosmos Hub software to create 
 5. Changed Bech32 prefixes to `atone` (see `cmd/atomoned/cmd/config.go`)
 6. Removed ability for validators to vote on proposals with delegations, they can only use their own stake
 
-## Reproducible builds (TODO)
+## Reproducible builds
 
 An effort has been made to make it possible to build the exact same binary
 locally as the Github Release section. To do this, checkout to the expected
 version and then simply run `make build` (which will output the binary to the
 `build` directory) or `make install`. The resulted binary should have the same
 sha256 hash than the one from the Github Release section.
+
+## Ledger support
+
+Run `make build-ledger` to have ledger support in `./build/atomoned` binary.
+Note that this will disable reproducible builds, as it introduces OS
+dependencies.
