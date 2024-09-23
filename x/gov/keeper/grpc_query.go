@@ -185,9 +185,10 @@ func (q Keeper) Params(c context.Context, req *v1.QueryParamsRequest) (*v1.Query
 		response.TallyParams = &tallyParams
 
 	default:
-		return nil, status.Errorf(codes.InvalidArgument,
-			"%s is not a valid parameter type", req.ParamsType)
-
+		if len(req.ParamsType) > 1 {
+			return nil, status.Errorf(codes.InvalidArgument,
+				"%s is not a valid parameter type", req.ParamsType)
+		}
 	}
 	response.Params = &params
 

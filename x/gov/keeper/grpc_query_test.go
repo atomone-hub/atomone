@@ -814,8 +814,11 @@ func (suite *KeeperTestSuite) TestGRPCQueryParams() {
 			"empty request",
 			func() {
 				req = &v1.QueryParamsRequest{}
+				expRes = &v1.QueryParamsResponse{
+					Params: &params,
+				}
 			},
-			false,
+			true,
 		},
 		{
 			"deposit params request",
@@ -824,6 +827,7 @@ func (suite *KeeperTestSuite) TestGRPCQueryParams() {
 				depositParams := v1.NewDepositParams(params.MinDeposit, params.MaxDepositPeriod)
 				expRes = &v1.QueryParamsResponse{
 					DepositParams: &depositParams,
+					Params:        &params,
 				}
 			},
 			true,
@@ -835,6 +839,7 @@ func (suite *KeeperTestSuite) TestGRPCQueryParams() {
 				votingParams := v1.NewVotingParams(params.VotingPeriod)
 				expRes = &v1.QueryParamsResponse{
 					VotingParams: &votingParams,
+					Params:       &params,
 				}
 			},
 			true,
@@ -846,6 +851,7 @@ func (suite *KeeperTestSuite) TestGRPCQueryParams() {
 				tallyParams := v1.NewTallyParams(params.Quorum, params.Threshold)
 				expRes = &v1.QueryParamsResponse{
 					TallyParams: &tallyParams,
+					Params:      &params,
 				}
 			},
 			true,
@@ -871,6 +877,7 @@ func (suite *KeeperTestSuite) TestGRPCQueryParams() {
 				suite.Require().Equal(expRes.GetDepositParams(), params.GetDepositParams())
 				suite.Require().Equal(expRes.GetVotingParams(), params.GetVotingParams())
 				suite.Require().Equal(expRes.GetTallyParams(), params.GetTallyParams())
+				suite.Require().Equal(expRes.Params, params.Params)
 			} else {
 				suite.Require().Error(err)
 				suite.Require().Nil(params)
@@ -902,8 +909,11 @@ func (suite *KeeperTestSuite) TestLegacyGRPCQueryParams() {
 			"empty request",
 			func() {
 				req = &v1beta1.QueryParamsRequest{}
+				expRes = &v1beta1.QueryParamsResponse{
+					TallyParams: defaultTallyParams,
+				}
 			},
-			false,
+			true,
 		},
 		{
 			"deposit params request",

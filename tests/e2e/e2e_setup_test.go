@@ -1,6 +1,7 @@
 package e2e
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -15,6 +16,7 @@ import (
 
 	"github.com/atomone-hub/atomone/cmd/atomoned/cmd"
 	"github.com/ory/dockertest/v3"
+	"github.com/stretchr/testify/assert"
 
 	// "github.com/cosmos/cosmos-sdk/crypto/hd"
 	// "github.com/cosmos/cosmos-sdk/crypto/keyring"
@@ -25,7 +27,6 @@ import (
 	tmconfig "github.com/cometbft/cometbft/config"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	tmjson "github.com/cometbft/cometbft/libs/json"
-	rpchttp "github.com/cometbft/cometbft/rpc/client/http"
 
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
@@ -39,7 +40,6 @@ import (
 	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 )
@@ -56,7 +56,7 @@ const (
 	initBalanceStr                  = "110000000000stake,100000000000000000photon,100000000000000000uatone"
 	minGasPrice                     = "0.00001"
 	gas                             = 200000
-	govProposalBlockBuffer          = 35
+	govProposalBlockBuffer    int64 = 35
 	relayerAccountIndexHermes       = 0
 	numberOfEvidences               = 10
 	slashingShares            int64 = 10000
@@ -64,7 +64,7 @@ const (
 	proposalBypassMsgFilename      = "proposal_bypass_msg.json"
 	proposalMaxTotalBypassFilename = "proposal_max_total_bypass.json"
 	proposalCommunitySpendFilename = "proposal_community_spend.json"
-	proposalLSMParamUpdateFilename = "proposal_lsm_param_update.json"
+	proposalParamChangeFilename    = "param_change.json"
 
 	// hermesBinary              = "hermes"
 	// hermesConfigWithGasPrices = "/root/.hermes/config.toml"
@@ -73,6 +73,7 @@ const (
 )
 
 var (
+	runInCI           = os.Getenv("GITHUB_ACTIONS") == "true"
 	atomoneConfigPath = filepath.Join(atomoneHomePath, "config")
 	stakingAmount     = sdk.NewInt(100000000000)
 	stakingAmountCoin = sdk.NewCoin(uatoneDenom, stakingAmount)
@@ -140,8 +141,6 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.initGenesis(s.chainA, vestingMnemonic, jailedValMnemonic)
 	s.initValidatorConfigs(s.chainA)
 	s.runValidators(s.chainA, 0)
-
-	time.Sleep(10 * time.Second)
 }
 
 func (s *IntegrationTestSuite) TearDownSuite() {
@@ -514,6 +513,8 @@ func (s *IntegrationTestSuite) initValidatorConfigs(c *chain) {
 func (s *IntegrationTestSuite) runValidators(c *chain, portOffset int) {
 	s.T().Logf("starting AtomOne %s validator containers...", c.id)
 
+	const dockerImage = "cosmos/atomoned-e2e"
+
 	s.valResources[c.id] = make([]*dockertest.Resource, len(c.validators))
 	for i, val := range c.validators {
 		runOpts := &dockertest.RunOptions{
@@ -522,7 +523,7 @@ func (s *IntegrationTestSuite) runValidators(c *chain, portOffset int) {
 			Mounts: []string{
 				fmt.Sprintf("%s/:%s", val.configDir(), atomoneHomePath),
 			},
-			Repository: "cosmos/atomoned-e2e",
+			Repository: dockerImage,
 		}
 
 		s.Require().NoError(exec.Command("chmod", "-R", "0777", val.configDir()).Run()) //nolint:gosec // this is a test
@@ -550,29 +551,43 @@ func (s *IntegrationTestSuite) runValidators(c *chain, portOffset int) {
 		s.T().Logf("started AtomOne %s validator container: %s", c.id, resource.Container.ID)
 	}
 
-	rpcClient, err := rpchttp.New("tcp://localhost:26657", "/websocket")
-	s.Require().NoError(err)
+	rpcClient := s.rpcClient(s.chainA, 0)
+	nodeReadyTimeout := time.Minute
+	if runInCI {
+		nodeReadyTimeout = 5 * time.Minute
+	}
+	if !assert.Eventually(s.T(), func() bool {
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+		defer cancel()
 
-	s.Require().Eventually(
-		func() bool {
-			ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-			defer cancel()
+		status, err := rpcClient.Status(ctx)
+		if err != nil {
+			return false
+		}
 
-			status, err := rpcClient.Status(ctx)
-			if err != nil {
-				return false
-			}
-
-			// let the node produce a few blocks
-			if status.SyncInfo.CatchingUp || status.SyncInfo.LatestBlockHeight < 3 {
-				return false
-			}
-			return true
-		},
-		5*time.Minute,
+		// let the node produce a few blocks
+		if status.SyncInfo.CatchingUp || status.SyncInfo.LatestBlockHeight < 3 {
+			return false
+		}
+		return true
+	},
+		nodeReadyTimeout,
 		time.Second,
-		"AtomOne node failed to produce blocks",
-	)
+	) {
+		// Print first container logs in case no blocks are produced
+		var b bytes.Buffer
+		err := s.dkrPool.Client.Logs(docker.LogsOptions{
+			Container:    s.valResources[c.id][0].Container.ID,
+			OutputStream: &b,
+			ErrorStream:  &b,
+			Stdout:       true,
+			Stderr:       true,
+		})
+		if err == nil {
+			s.T().Logf("Node logs: %s", b.String())
+		}
+		s.T().Fatalf("AtomOne node failed to produce blocks. Is docker image %q up-to-date?", dockerImage)
+	}
 }
 
 func noRestart(config *docker.HostConfig) {
@@ -607,61 +622,6 @@ func (s *IntegrationTestSuite) writeGovCommunitySpendProposal(c *chain, amount s
 	`
 	propMsgBody := fmt.Sprintf(template, govModuleAddress, recipient, amount.Denom, amount.Amount.String())
 	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalCommunitySpendFilename), []byte(propMsgBody))
-	s.Require().NoError(err)
-}
-
-func (s *IntegrationTestSuite) writeGovLegProposal(c *chain, height int64, name string) {
-	prop := &upgradetypes.Plan{
-		Name:   name,
-		Height: height,
-		Info:   `{"binaries":{"os1/arch1":"url1","os2/arch2":"url2"}}`,
-	}
-
-	commSpendBody, err := json.MarshalIndent(prop, "", " ")
-	s.Require().NoError(err)
-
-	err = writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalCommunitySpendFilename), commSpendBody)
-	s.Require().NoError(err)
-}
-
-func (s *IntegrationTestSuite) writeLiquidStakingParamsUpdateProposal(c *chain, oldParams stakingtypes.Params) { //nolint:unused
-	template := `
-	{
-		"messages": [
-		 {
-		  "@type": "/cosmos.staking.v1beta1.MsgUpdateParams",
-		  "authority": "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
-		  "params": {
-		   "unbonding_time": "%s",
-		   "max_validators": %d,
-		   "max_entries": %d,
-		   "historical_entries": %d,
-		   "bond_denom": "%s",
-		   "min_commission_rate": "%s",
-		   "validator_bond_factor": "%s",
-		   "global_liquid_staking_cap": "%s",
-		   "validator_liquid_staking_cap": "%s"
-		  }
-		 }
-		],
-		"metadata": "ipfs://CID",
-		"deposit": "100uatone",
-		"title": "Update LSM Params",
-		"summary": "e2e-test updating LSM staking params"
-	   }`
-	propMsgBody := fmt.Sprintf(template,
-		oldParams.UnbondingTime,
-		oldParams.MaxValidators,
-		oldParams.MaxEntries,
-		oldParams.HistoricalEntries,
-		oldParams.BondDenom,
-		oldParams.MinCommissionRate,
-		sdk.NewDec(250),           // validator bond factor
-		sdk.NewDecWithPrec(25, 2), // 25 global_liquid_staking_cap
-		sdk.NewDecWithPrec(50, 2), // 50 validator_liquid_staking_cap
-	)
-
-	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalLSMParamUpdateFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 

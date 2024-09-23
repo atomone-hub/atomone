@@ -8,7 +8,7 @@ import (
 )
 
 func (s *IntegrationTestSuite) testBankTokenTransfer() {
-	s.Run("send_tokens_between_accounts", func() {
+	s.Run("send tokens between accounts", func() {
 		var (
 			err           error
 			valIdx        = 0
@@ -43,7 +43,7 @@ func (s *IntegrationTestSuite) testBankTokenTransfer() {
 				return beforeAliceUAtoneBalance.IsValid() && beforeBobUAtoneBalance.IsValid() && beforeCharlieUAtoneBalance.IsValid()
 			},
 			10*time.Second,
-			5*time.Second,
+			time.Second,
 		)
 
 		// alice sends tokens to bob
@@ -64,7 +64,7 @@ func (s *IntegrationTestSuite) testBankTokenTransfer() {
 				return decremented && incremented
 			},
 			10*time.Second,
-			5*time.Second,
+			time.Second,
 		)
 
 		// save the updated account balances of alice and bob
@@ -92,7 +92,7 @@ func (s *IntegrationTestSuite) testBankTokenTransfer() {
 				return decremented && incremented
 			},
 			10*time.Second,
-			5*time.Second,
+			time.Second,
 		)
 	})
 }

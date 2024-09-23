@@ -3,7 +3,7 @@ package e2e
 const jailedValidatorKey = "jailed"
 
 func (s *IntegrationTestSuite) testSlashing(chainEndpoint string) {
-	s.Run("test unjail validator", func() {
+	s.Run("unjail validator", func() {
 		validators, err := queryValidators(chainEndpoint)
 		s.Require().NoError(err)
 
