@@ -272,7 +272,7 @@ func (s *IntegrationTestSuite) queryStakingParams(endpoint string) stakingtypes.
 
 func (s *IntegrationTestSuite) queryConstitution(endpoint string) govtypesv1.QueryConstitutionResponse {
 	var res govtypesv1.QueryConstitutionResponse
-	body, err := httpGet(fmt.Sprintf("%s/atomone/gov/v1beta1/constitution", endpoint))
+	body, err := httpGet(fmt.Sprintf("%s/atomone/gov/v1/constitution", endpoint))
 	s.Require().NoError(err)
 	err = cdc.UnmarshalJSON(body, &res)
 	s.Require().NoError(err)

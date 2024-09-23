@@ -626,30 +626,6 @@ func (s *IntegrationTestSuite) writeGovCommunitySpendProposal(c *chain, amount s
 	s.Require().NoError(err)
 }
 
-func (s *IntegrationTestSuite) writeGovConstitutionAmendmentProposal(c *chain) {
-	govModuleAddress := authtypes.NewModuleAddress(govtypes.ModuleName).String()
-	emptyAmendment := "@@ -1 +1 @@\n-\n+\n" // valid diff for empty constitution with no changes
-	template := `
-	{
-		"messages":[
-		  {
-			"@type": "/atomone.gov.v1.MsgProposeConstitutionAmendment",
-			"authority": "%s",
-			"amendment": "%s"
-		  }
-		],
-		"deposit": "100uatone",
-		"proposer": "Proposing validator address",
-		"metadata": "Constitution Amendment",
-		"title": "Constitution Amendment",
-		"summary": "summary"
-	}
-	`
-	propMsgBody := fmt.Sprintf(template, govModuleAddress, emptyAmendment)
-	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalConstitutionAmendmentFilename), []byte(propMsgBody))
-	s.Require().NoError(err)
-}
-
 func configFile(filename string) string {
 	filepath := filepath.Join(atomoneConfigPath, filename)
 	return filepath

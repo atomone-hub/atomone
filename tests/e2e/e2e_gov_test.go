@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -182,7 +183,11 @@ func (s *IntegrationTestSuite) testGovConstitutionAmendment() {
 		senderAddress, _ := s.chainA.validators[0].keyInfo.GetAddress()
 		sender := senderAddress.String()
 
-		s.writeGovConstitutionAmendmentProposal(s.chainA)
+		res := s.queryConstitution(chainAAPIEndpoint)
+		newConstitution := "New test constitution"
+		amendment, err := govtypes.GenerateUnifiedDiff(res.Constitution, newConstitution)
+		s.Require().NoError(err)
+		s.writeGovConstitutionAmendmentProposal(s.chainA, amendment)
 		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
 		proposalCounter++
 		submitGovFlags := []string{configFile(proposalConstitutionAmendmentFilename)}
@@ -193,7 +198,7 @@ func (s *IntegrationTestSuite) testGovConstitutionAmendment() {
 		s.Require().Eventually(
 			func() bool {
 				res := s.queryConstitution(chainAAPIEndpoint)
-				return res.Constitution != "" // constitution should remain an empty string
+				return res.Constitution == newConstitution
 			},
 			10*time.Second,
 			time.Second,
@@ -306,5 +311,30 @@ func (s *IntegrationTestSuite) writeStakingParamChangeProposal(c *chain, params 
 	`
 	propMsgBody := fmt.Sprintf(template, govModuleAddress, cdc.MustMarshalJSON(&params))
 	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
+	s.Require().NoError(err)
+}
+
+func (s *IntegrationTestSuite) writeGovConstitutionAmendmentProposal(c *chain, amendment string) {
+	govModuleAddress := authtypes.NewModuleAddress(govtypes.ModuleName).String()
+	// escape newlines in amendment
+	amendment = strings.ReplaceAll(amendment, "\n", "\\n")
+	template := `
+	{
+		"messages":[
+		  {
+			"@type": "/atomone.gov.v1.MsgProposeConstitutionAmendment",
+			"authority": "%s",
+			"amendment": "%s"
+		  }
+		],
+		"deposit": "100uatone",
+		"proposer": "Proposing validator address",
+		"metadata": "Constitution Amendment",
+		"title": "Constitution Amendment",
+		"summary": "summary"
+	}
+	`
+	propMsgBody := fmt.Sprintf(template, govModuleAddress, amendment)
+	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalConstitutionAmendmentFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
