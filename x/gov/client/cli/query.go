@@ -11,7 +11,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/version"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	gcutils "github.com/atomone-hub/atomone/x/gov/client/utils"
 	"github.com/atomone-hub/atomone/x/gov/types"
@@ -677,61 +676,4 @@ func GetCmdConstitution() *cobra.Command {
 			return clientCtx.PrintProto(resp)
 		},
 	}
-}
-
-// GetCmdConstitutionAmendmentMsg returns the command to generate the sdk.Msg
-// required for a constitution amendment proposal generating the unified diff
-// between the current constitution (queried) and the updated constitution
-// from the provided markdown file.
-func GetCmdGenerateConstitutionAmendment() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "generate-constitution-amendment [path/to/updated/constitution.md]",
-		Args:  cobra.ExactArgs(1),
-		Short: "Generate a constitution amendment proposal message",
-		Long: strings.TrimSpace(
-			fmt.Sprintf(`Generate a constitution amendment proposal message from the current
-constitution and the provided updated constitution.
-Queries the current constitution and generates the valid sdk.Msg for a 
-constitution amendment proposal containing the unified diff between the 
-current constitution and the updated constitution from the provided markdown file.
-
-Example:
-$ %s tx gov generate-constitution-amendment path/to/updated/constitution.md
-`,
-				version.AppName,
-			),
-		),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			// Read the updated constitution from the provided markdown file
-			updatedConstitution, err := readFromMarkdownFile(args[0])
-			if err != nil {
-				return err
-			}
-
-			// Query the current constitution
-			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
-			queryClient := v1.NewQueryClient(clientCtx)
-			resp, err := queryClient.Constitution(cmd.Context(), &v1.QueryConstitutionRequest{})
-			if err != nil {
-				return err
-			}
-
-			// Generate the unified diff between the current and updated constitutions
-			diff, err := types.GenerateUnifiedDiff(resp.Constitution, updatedConstitution)
-			if err != nil {
-				return err
-			}
-
-			// Generate the sdk.Msg for the constitution amendment proposal
-			msg := v1.NewMsgProposeConstitutionAmendment(authtypes.NewModuleAddress(types.ModuleName), diff)
-			return clientCtx.PrintProto(msg)
-		},
-	}
-
-	flags.AddTxFlagsToCmd(cmd)
-
-	return cmd
 }

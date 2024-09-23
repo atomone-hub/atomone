@@ -406,32 +406,3 @@ func (s *CLITestSuite) TestCmdGetConstitution() {
 		})
 	}
 }
-
-func (s *CLITestSuite) TestCmdGenerateConstitutionAmendment() {
-	newConstitution := `Modified Constitution`
-	newConstitutionFile := testutil.WriteToNewTempFile(s.T(), newConstitution)
-	defer newConstitutionFile.Close()
-
-	testCases := []struct {
-		name         string
-		args         []string
-		expCmdOutput string
-	}{
-		{
-			"generate constitution amendment",
-			[]string{newConstitutionFile.Name()},
-			"{\"authority\":\"cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn\",\"amendment\":\"--- src\\n+++ dst\\n@@ -1 +1 @@\\n-\\n+Modified Constitution\\n\"}",
-		},
-	}
-
-	for _, tc := range testCases {
-		tc := tc
-
-		s.Run(tc.name, func() {
-			cmd := cli.GetCmdGenerateConstitutionAmendment()
-			out, err := clitestutil.ExecTestCLICmd(s.clientCtx, cmd, tc.args)
-			s.Require().NoError(err)
-			s.Require().Contains(out.String(), tc.expCmdOutput)
-		})
-	}
-}
