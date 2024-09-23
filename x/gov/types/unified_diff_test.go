@@ -89,7 +89,9 @@ func TestApplyUnifiedDiff(t *testing.T) {
 		{
 			name: "Apply addition",
 			src:  "Line one\nLine two",
-			diffStr: `@@ -1,2 +1,3 @@
+			diffStr: `--- src
++++ dst
+@@ -1,2 +1,3 @@
  Line one
  Line two
 +Line three
@@ -111,7 +113,9 @@ func TestApplyUnifiedDiff(t *testing.T) {
 		{
 			name: "Apply modification",
 			src:  "Line one\nLine two\nLine three",
-			diffStr: `@@ -2 +2 @@
+			diffStr: `--- a
++++ b
+@@ -2 +2 @@
 -Line two
 +Line two modified
 `,
@@ -129,6 +133,25 @@ func TestApplyUnifiedDiff(t *testing.T) {
 +Line four
 `,
 			expected: "Line zero\nLine one\nLine three\nLine four",
+			wantErr:  false,
+		},
+		{
+			name: "Apply multiple hunks",
+			src:  "Line one\nLine two\nLine three\nLine four\nLine five\nLine six\nLine seven\nLine eight\nLine nine",
+			diffStr: `@@ -1,4 +1,4 @@
+-Line one
++Line one modified
+ Line two
+ Line three
+ Line four
+@@ -6,4 +6,4 @@
+ Line six
+ Line seven
+ Line eight
+-Line nine
++Line nine modified
+`,
+			expected: "Line one modified\nLine two\nLine three\nLine four\nLine five\nLine six\nLine seven\nLine eight\nLine nine modified",
 			wantErr:  false,
 		},
 		{

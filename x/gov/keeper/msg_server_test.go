@@ -1304,7 +1304,7 @@ func (suite *KeeperTestSuite) TestSubmitProposal_InitialDeposit() {
 
 func (suite *KeeperTestSuite) TestProposeConstitutionAmendment() {
 	ctx := suite.ctx
-	suite.govKeeper.SetConstitution(ctx, "Hello  World")
+	suite.govKeeper.SetConstitution(ctx, "Hello World")
 
 	cases := map[string]struct {
 		msg       *v1.MsgProposeConstitutionAmendment
@@ -1315,12 +1315,19 @@ func (suite *KeeperTestSuite) TestProposeConstitutionAmendment() {
 		"successful amendment": {
 			msg: v1.NewMsgProposeConstitutionAmendment(
 				suite.govKeeper.GetGovernanceAccount(ctx).GetAddress(),
-				"@@ -1 +1 @@\n-Hello  World\n+Hi  World",
+				"@@ -1 +1 @@\n-Hello World\n+Hi  World",
 			),
 			expErr:    false,
 			expResult: "Hi  World",
 		},
 		"failed amendment": {
+			msg: v1.NewMsgProposeConstitutionAmendment(
+				suite.govKeeper.GetGovernanceAccount(ctx).GetAddress(),
+				"@@ -1 +1 @@\n-Hello  World\n+Hi  World",
+			),
+			expErr: true,
+		},
+		"invalid patch": {
 			msg: v1.NewMsgProposeConstitutionAmendment(
 				suite.govKeeper.GetGovernanceAccount(ctx).GetAddress(),
 				"invalid patch",

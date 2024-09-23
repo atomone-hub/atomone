@@ -27,7 +27,6 @@ func (k Keeper) ApplyConstitutionAmendment(ctx sdk.Context, amendment string) (u
 
 	currentConstitution := k.GetConstitution(ctx)
 	updatedConstitution, err = types.ApplyUnifiedDiff(currentConstitution, amendment)
-
 	if err != nil {
 		return "", types.ErrInvalidConstitutionAmendment.Wrapf("failed to apply amendment: %v", err)
 	}

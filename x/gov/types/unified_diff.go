@@ -276,22 +276,18 @@ func ApplyUnifiedDiff(src, diffStr string) (string, error) {
 // This is the only function that uses the gotextdiff library as its primary use is for
 // clients.
 func GenerateUnifiedDiff(src, dst string) (string, error) {
-	if src == "" || dst == "" {
-		return "", fmt.Errorf("source and destination strings cannot be empty")
-	}
-
 	// Create spans for the source and destination texts
 	srcURI := span.URIFromPath("src")
-	// add an EOL to src and dst if they don't have one
-	if src[len(src)-1] != '\n' {
-		src += "\n"
+
+	if src == "" || src[len(src)-1] != '\n' {
+		src += "\n" // Add an EOL to src if it's empty or newline is missing
 	}
-	if dst[len(dst)-1] != '\n' {
-		dst += "\n"
+	if dst == "" || dst[len(dst)-1] != '\n' {
+		dst += "\n" // Add an EOL to dst if it's empty or newline is missing
 	}
 
 	// Compute the edits using the Myers diff algorithm
-	eds := myers.ComputeEdits(span.URI(srcURI), src, dst)
+	eds := myers.ComputeEdits(srcURI, src, dst)
 
 	// Generate the unified diff string
 	diff := gotextdiff.ToUnified("src", "dst", src, eds)
