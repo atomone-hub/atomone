@@ -36,10 +36,12 @@ const (
 	OpWeightMsgVote         = "op_weight_msg_vote"
 	OpWeightMsgVoteWeighted = "op_weight_msg_weighted_vote"
 
-	DefaultWeightMsgDeposit      = 100
-	DefaultWeightMsgVote         = 67
-	DefaultWeightMsgVoteWeighted = 33
-	DefaultWeightTextProposal    = 5
+	DefaultWeightMsgDeposit            = 100
+	DefaultWeightMsgVote               = 67
+	DefaultWeightMsgVoteWeighted       = 33
+	DefaultWeightTextProposal          = 5
+	DefaultWeightConstitutionAmendment = 5
+	DefaultWeightLawProposal           = 5
 )
 
 // WeightedOperations returns all the operations from the module with their respective weights

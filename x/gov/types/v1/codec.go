@@ -30,6 +30,8 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgVoteWeighted{}, "atomone/v1/MsgVoteWeighted")
 	legacy.RegisterAminoMsg(cdc, &MsgExecLegacyContent{}, "atomone/v1/MsgExecLegacyContent")
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "atomone/x/gov/v1/MsgUpdateParams")
+	legacy.RegisterAminoMsg(cdc, &MsgProposeConstitutionAmendment{}, "atomone/x/gov/v1/MsgProposeAmendment")
+	legacy.RegisterAminoMsg(cdc, &MsgProposeLaw{}, "atomone/x/gov/v1/MsgProposeLaw")
 }
 
 // RegisterInterfaces registers the interfaces types with the Interface Registry.
@@ -41,6 +43,8 @@ func RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 		&MsgDeposit{},
 		&MsgExecLegacyContent{},
 		&MsgUpdateParams{},
+		&MsgProposeConstitutionAmendment{},
+		&MsgProposeLaw{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
