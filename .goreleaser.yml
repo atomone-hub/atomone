@@ -10,6 +10,8 @@ builds:
     id: "atomoned"
     binary: atomoned
     mod_timestamp: "{{ .CommitTimestamp }}"
+    env:
+      - CC=aarch64-linux-gnu-gcc
     flags:
       - -tags=netgo ledger
       - -trimpath
