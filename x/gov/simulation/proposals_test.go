@@ -55,7 +55,6 @@ func TestProposalMsgs(t *testing.T) {
 	msg = w2.MsgSimulatorFn()(r, ctx, accounts)
 	_, ok = msg.(*v1.MsgProposeLaw)
 	assert.Assert(t, ok)
-
 }
 
 func TestProposalContents(t *testing.T) {
