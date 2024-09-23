@@ -11,7 +11,7 @@ builds:
     binary: atomoned
     mod_timestamp: "{{ .CommitTimestamp }}"
     env:
-      - CC=aarch64-linux-gnu-gcc
+      - CC=x86_64-linux-gnu-gcc
     flags:
       - -tags=netgo ledger
       - -trimpath
@@ -19,12 +19,12 @@ builds:
       # .Env.TM_VERSION is provided in the workflow runner environment -> see .github/workflows/release.yml
       - -X github.com/cosmos/cosmos-sdk/version.Name=atomone -X github.com/cosmos/cosmos-sdk/version.AppName=atomoned -X github.com/cosmos/cosmos-sdk/version.Version=v{{ .Version }} -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }} -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger -X github.com/cometbft/cometbft/version.TMCoreSemVer={{ .Env.TM_VERSION }} -w -s
     goos:
-      - darwin
+      # - darwin
       - linux
-      - windows
+      #- windows
     goarch:
       - amd64
-      - arm64
+      #- arm64
 
 archives:
   # disables archiving; to enable use commented lines below
