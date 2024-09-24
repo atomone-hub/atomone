@@ -15,9 +15,7 @@ func (k Keeper) GetGovernor(ctx sdk.Context, addr types.GovernorAddress) (v1.Gov
 		return v1.Governor{}, false
 	}
 
-	var governor v1.Governor
-	v1.MustMarshalGovernor(k.cdc, &governor)
-	return governor, true
+	return v1.MustUnmarshalGovernor(k.cdc, bz), true
 }
 
 // SetGovernor sets the governor in the store

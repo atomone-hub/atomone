@@ -40,6 +40,11 @@ func GetQueryCmd() *cobra.Command {
 		GetCmdQueryDeposits(),
 		GetCmdQueryTally(),
 		GetCmdConstitution(),
+		GetCmdQueryGovernor(),
+		GetCmdQueryGovernors(),
+		GetCmdQueryGovernanceDelegation(),
+		GetCmdQueryGovernanceDelegations(),
+		GetCmdQueryGovernorValShares(),
 	)
 
 	return govQueryCmd
@@ -854,14 +859,14 @@ $ %s query gov delegations cosmosgov1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 // GetCmdQueryGovernorValShares implements the query governor validator shares command.
 func GetCmdQueryGovernorValShares() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "valshares [governor_address]",
+		Use:   "vshares [governor_address]",
 		Args:  cobra.ExactArgs(1),
-		Short: "Query governor validators shares",
+		Short: "Query governor virtual validators shares",
 		Long: strings.TrimSpace(
-			fmt.Sprintf(`Query details for a governor validators shares by its address.
+			fmt.Sprintf(`Query details for a governor virtual validators shares by its address.
 
 Example:
-$ %s query gov valshares cosmosgov1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
+$ %s query gov vshares cosmosgov1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 `,
 				version.AppName,
 			),

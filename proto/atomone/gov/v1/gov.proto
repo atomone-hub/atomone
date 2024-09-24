@@ -334,8 +334,8 @@ message GovernorDescription {
   string details = 5;
 }
 
-// GovernorValShares holds the number of shares from the specific validator
-// that a governor can use to vote on proposals.
+// GovernorValShares holds the number of virtual shares from the 
+// specific validator that a governor can use to vote on proposals.
 message GovernorValShares {
   option (gogoproto.equal)           = false;
   option (gogoproto.goproto_getters) = false;

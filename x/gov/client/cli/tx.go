@@ -72,6 +72,11 @@ func NewTxCmd(legacyPropCmds []*cobra.Command) *cobra.Command {
 		NewCmdWeightedVote(),
 		NewCmdSubmitProposal(),
 		NewCmdDraftProposal(),
+		CreateGovernorCmd(),
+		EditGovernorCmd(),
+		UpdateGovernorStatusCmd(),
+		DelegateGovernorCmd(),
+		UndelegateGovernorCmd(),
 
 		// Deprecated
 		cmdSubmitLegacyProp,

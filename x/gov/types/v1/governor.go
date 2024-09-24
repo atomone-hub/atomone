@@ -206,7 +206,7 @@ func (g *Governor) MinEqual(other *Governor) bool {
 	return g.GovernorAddress == other.GovernorAddress &&
 		g.Status == other.Status &&
 		g.Description.Equal(other.Description) &&
-		g.VotingPower.Equal(other.VotingPower)
+		g.GetVotingPower().Equal(other.GetVotingPower())
 }
 
 // Equal checks if the receiver equals the parameter
