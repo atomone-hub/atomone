@@ -29,6 +29,13 @@ func TestApplyConstitutionAmendment(t *testing.T) {
 			expectError:         false,
 			expectedResult:      "Hi\nWorld",
 		},
+		{
+			name:                "successful patch application with multiple hunks",
+			initialConstitution: "Line one\nLine two\nLine three\nLine four\nLine five\nLine six\nLine seven\nLine eight\nLine nine",
+			amendment:           "--- src\n+++ dst\n@@ -1,2 +1,2 @@\n-Line one\n+Line one modified\n Line two\n@@ -8,2 +8,2 @@\n Line eight\n-Line nine\n+Line nine modified",
+			expectError:         false,
+			expectedResult:      "Line one modified\nLine two\nLine three\nLine four\nLine five\nLine six\nLine seven\nLine eight\nLine nine modified",
+		},
 	}
 
 	for _, tt := range tests {
