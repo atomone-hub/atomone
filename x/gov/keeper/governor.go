@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
@@ -117,7 +119,7 @@ func (k Keeper) IterateMaxGovernorsByGovernancePower(ctx sdk.Context, cb func(in
 	}
 }
 
-func (k Keeper) getGovernorBondedTokens(ctx sdk.Context, govAddr types.GovernorAddress) (bondedTokens sdk.Int) {
+func (k Keeper) getGovernorBondedTokens(ctx sdk.Context, govAddr types.GovernorAddress) (bondedTokens math.Int) {
 	bondedTokens = sdk.ZeroInt()
 	addr := sdk.AccAddress(govAddr)
 	k.sk.IterateDelegations(ctx, addr, func(_ int64, delegation stakingtypes.DelegationI) (stop bool) {
@@ -134,7 +136,7 @@ func (k Keeper) getGovernorBondedTokens(ctx sdk.Context, govAddr types.GovernorA
 }
 
 func (k Keeper) ValidateGovernorMinSelfDelegation(ctx sdk.Context, governor v1.Governor) bool {
-	minGovernorSelfDelegation, _ := sdk.NewIntFromString(k.GetParams(ctx).MinGovernorSelfDelegation)
+	minGovernorSelfDelegation, _ := math.NewIntFromString(k.GetParams(ctx).MinGovernorSelfDelegation)
 	bondedTokens := k.getGovernorBondedTokens(ctx, governor.GetAddress())
 	delAddr := sdk.AccAddress(governor.GetAddress())
 

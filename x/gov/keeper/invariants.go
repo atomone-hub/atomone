@@ -109,7 +109,7 @@ func GovernorsVotingPowerInvariant(keeper *Keeper, sk types.StakingKeeper) sdk.I
 func GovernorsDelegationsInvariant(keeper *Keeper, sk types.StakingKeeper) sdk.Invariant {
 	return func(ctx sdk.Context) (string, bool) {
 		var (
-			broken       bool = false
+			broken       = false
 			invariantStr string
 		)
 

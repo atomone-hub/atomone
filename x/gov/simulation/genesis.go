@@ -104,8 +104,8 @@ func GenQuorumCheckCount(r *rand.Rand) uint64 {
 }
 
 // GenMinGovernorSelfDelegation returns a randomized MinGovernorSelfDelegation
-func GenMinGovernorSelfDelegation(r *rand.Rand) sdk.Int {
-	return sdk.NewInt(int64(simulation.RandIntBetween(r, 1000, 10000000)))
+func GenMinGovernorSelfDelegation(r *rand.Rand) math.Int {
+	return math.NewInt(int64(simulation.RandIntBetween(r, 1000, 10000000)))
 }
 
 // RandomizedGenState generates a random GenesisState for gov
@@ -194,7 +194,7 @@ func RandomizedGenState(simState *module.SimulationState) {
 		func(r *rand.Rand) { governorStatusChangePeriod = GenDepositParamsDepositPeriod(r) },
 	)
 
-	var minGovernorSelfDelegation sdk.Int
+	var minGovernorSelfDelegation math.Int
 	simState.AppParams.GetOrGenerate(
 		simState.Cdc, MinGovernorSelfDelegation, &minGovernorSelfDelegation, simState.Rand,
 		func(r *rand.Rand) { minGovernorSelfDelegation = GenMinGovernorSelfDelegation(r) },
