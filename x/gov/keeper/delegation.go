@@ -93,6 +93,22 @@ func (k Keeper) IterateGovernorValShares(ctx sdk.Context, governorAddr types.Gov
 	}
 }
 
+// IterateGovernorDelegations iterates over all governor delegations
+func (k Keeper) IterateGovernorDelegations(ctx sdk.Context, governorAddr types.GovernorAddress, cb func(index int64, delegation v1.GovernanceDelegation) (stop bool)) {
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.GovernanceDelegationsByGovernorKey(governorAddr, []byte{}))
+	defer iterator.Close()
+
+	for i := int64(0); iterator.Valid(); iterator.Next() {
+		var delegation v1.GovernanceDelegation
+		k.cdc.MustUnmarshal(iterator.Value(), &delegation)
+		if cb(i, delegation) {
+			break
+		}
+		i++
+	}
+}
+
 // GetGovernorValSharesByValidator gets all governor validator shares for a specific validator
 func (k Keeper) GetGovernorValSharesByValidator(ctx sdk.Context, validatorAddr sdk.ValAddress) []v1.GovernorValShares {
 	store := ctx.KVStore(k.storeKey)
