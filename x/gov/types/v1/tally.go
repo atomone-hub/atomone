@@ -14,10 +14,11 @@ type GovernorGovInfo struct {
 	ValShares           map[string]sdk.Dec    // shares held for each validator
 	ValSharesDeductions map[string]sdk.Dec    // deductions from validator's shares when a delegator votes independently
 	Vote                WeightedVoteOptions   // vote of the governor
+	VotingPower         sdk.Dec               // voting power of the governor
 }
 
 // NewGovernorGovInfo creates a GovernorGovInfo instance
-func NewGovernorGovInfo(address types.GovernorAddress, valShares []GovernorValShares, options WeightedVoteOptions) GovernorGovInfo {
+func NewGovernorGovInfo(address types.GovernorAddress, valShares []GovernorValShares, options WeightedVoteOptions, votingPower sdk.Dec) GovernorGovInfo {
 	valSharesMap := make(map[string]sdk.Dec)
 	for _, valShare := range valShares {
 		valSharesMap[valShare.ValidatorAddress] = valShare.Shares
@@ -28,6 +29,7 @@ func NewGovernorGovInfo(address types.GovernorAddress, valShares []GovernorValSh
 		ValShares:           valSharesMap,
 		ValSharesDeductions: make(map[string]sdk.Dec),
 		Vote:                options,
+		VotingPower:         votingPower,
 	}
 }
 

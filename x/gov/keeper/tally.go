@@ -60,18 +60,16 @@ func (keeper Keeper) HasReachedQuorum(ctx sdk.Context, proposal v1.Proposal) (qu
 		return false, nil
 	}
 
-	/* DISABLED on AtomOne - no possible increase of computation speed by
-	 iterating over validators since vote inheritance is disabled.
-	 Keeping as comment because this should be adapted with governors loop
-
-	// we check first if voting power of validators alone is enough to pass quorum
-	// and if so, we return true skipping the iteration over all votes
-	// can speed up computation in case quorum is already reached by validator votes alone
+	quorum, _, err := keeper.getQuorumAndThreshold(ctx, proposal)
+	currGovernors := keeper.getGovernorsByAddress(ctx)
+	// we check first if voting power of governors alone is enough to pass quorum
+	// and if so, we return true skipping the iteration over all votes.
+	// Can speed up computation in case quorum is already reached by governor votes alone
 	approxTotalVotingPower := math.LegacyZeroDec()
-	for _, val := range currValidators {
-		_, ok := keeper.GetVote(ctx, proposal.Id, sdk.AccAddress(val.GetOperator()))
+	for _, gov := range currGovernors {
+		_, ok := keeper.GetVote(ctx, proposal.Id, sdk.AccAddress(gov.Address))
 		if ok {
-			approxTotalVotingPower = approxTotalVotingPower.Add(math.LegacyNewDecFromInt(val.GetBondedTokens()))
+			approxTotalVotingPower = approxTotalVotingPower.Add(gov.VotingPower)
 		}
 	}
 	// check and return whether or not the proposal has reached quorum
@@ -79,15 +77,12 @@ func (keeper Keeper) HasReachedQuorum(ctx sdk.Context, proposal v1.Proposal) (qu
 	if approxPercentVoting.GTE(quorum) {
 		return true, nil
 	}
-	*/
 
-	currGovernors := keeper.getGovernorsByAddress(ctx)
 	currValidators := keeper.getBondedValidatorsByAddress(ctx)
 	totalVotingPower, _ := keeper.tallyVotes(ctx, proposal, currValidators, currGovernors, false)
 
 	// check and return whether or not the proposal has reached quorum
 	percentVoting := totalVotingPower.Quo(math.LegacyNewDecFromInt(totalBonded))
-	quorum, _, err := keeper.getQuorumAndThreshold(ctx, proposal)
 	if err != nil {
 		return false, err
 	}
@@ -114,6 +109,7 @@ func (keeper Keeper) getGovernorsByAddress(ctx sdk.Context) map[string]v1.Govern
 			governor.GetAddress(),
 			keeper.GetAllGovernorValShares(ctx, governor.GetAddress()),
 			v1.WeightedVoteOptions{},
+			governor.GetVotingPower(),
 		)
 		return false
 	})
