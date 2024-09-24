@@ -18,10 +18,12 @@ jobs:
         with:
           fetch-depth: 0
       - run: git fetch --force --tags
+      - name: Set Go version
+        run: echo "GO_VERSION=$(make required_go_version_full)" >> $GITHUB_ENV
 
       - uses: actions/setup-go@v5
         with:
-          go-version: "1.21.13"
+          go-version: $GO_VERSION
 
       - name: Set Env
         run: echo "TM_VERSION=$(go list -m github.com/cometbft/cometbft | sed 's:.* ::')" >> $GITHUB_ENV

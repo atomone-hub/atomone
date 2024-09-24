@@ -23,6 +23,7 @@ TEST_DOCKER_REPO=cosmos/contrib-atomonetest
 
 GO_SYSTEM_VERSION = $(shell go version | cut -c 14- | cut -d' ' -f1 | cut -d'.' -f1-2)
 REQUIRE_GO_VERSION = 1.21
+REQUIRE_GO_VERSION_FULL = 1.21.13
 
 export GO111MODULE = on
 export CGO_ENABLED = 0
@@ -100,6 +101,9 @@ include contrib/devtools/Makefile
 ###############################################################################
 ###                              Build                                      ###
 ###############################################################################
+
+required_go_version_full:
+	@echo $(REQUIRE_GO_VERSION_FULL)
 
 check_version:
 ifneq ($(GO_SYSTEM_VERSION), $(REQUIRE_GO_VERSION))
