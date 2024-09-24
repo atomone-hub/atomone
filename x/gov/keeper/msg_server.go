@@ -9,6 +9,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors1 "github.com/cosmos/cosmos-sdk/types/errors"
 
+	"github.com/atomone-hub/atomone/x/gov/types"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
@@ -220,6 +221,12 @@ func (k msgServer) CreateGovernor(goCtx context.Context, msg *v1.MsgCreateGovern
 	// Ensure the governor has a valid description
 	if _, err := msg.Description.EnsureLength(); err != nil {
 		return nil, err
+	}
+
+	minSelfDelegation, _ := sdk.NewIntFromString(k.GetParams(ctx).MinGovernorSelfDelegation)
+	bondedTokens := k.getGovernorBondedTokens(ctx, govAddr)
+	if bondedTokens.LT(minSelfDelegation) {
+		types.ErrInsufficientGovernorDelegation.Wrapf("minimum self-delegation required: %s, total bonded tokens: %s", minSelfDelegation, bondedTokens)
 	}
 
 	governor, err := v1.NewGovernor(govAddr.String(), msg.Description, ctx.BlockTime())

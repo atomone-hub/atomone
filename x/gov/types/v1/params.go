@@ -32,10 +32,11 @@ var (
 	DefaultBurnVoteQuorom                 = false                    // set to false to  replicate behavior of when this change was made (0.47)
 	DefaultMinDepositRatio                = sdk.NewDecWithPrec(1, 2) // NOTE: backport from v50
 
-	DefaultQuorumTimeout            time.Duration = DefaultVotingPeriod - (time.Hour * 24 * 1) // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
-	DefaultMaxVotingPeriodExtension time.Duration = DefaultVotingPeriod - DefaultQuorumTimeout // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
-	DefaultQuorumCheckCount         uint64        = 0                                          // disabled by default (0 means no check)
-	DefaultMaxGovernors             uint64        = 100
+	DefaultQuorumTimeout             time.Duration = DefaultVotingPeriod - (time.Hour * 24 * 1) // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
+	DefaultMaxVotingPeriodExtension  time.Duration = DefaultVotingPeriod - DefaultQuorumTimeout // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
+	DefaultQuorumCheckCount          uint64        = 0                                          // disabled by default (0 means no check)
+	DefaultMaxGovernors              uint64        = 100
+	DefaultMinGovernorSelfDelegation               = sdk.NewInt(1000_000000)
 )
 
 // Deprecated: NewDepositParams creates a new DepositParams object
@@ -67,7 +68,7 @@ func NewParams(
 	quorum, threshold, constitutionAmendmentQuorum, constitutionAmendmentThreshold, lawQuorum, lawThreshold, minInitialDepositRatio string,
 	burnProposalDeposit, burnVoteQuorum bool, minDepositRatio string,
 	quorumTimeout, maxVotingPeriodExtension time.Duration, quorumCheckCount uint64,
-	maxGovernors uint64, governorStatusChangePeriod time.Duration,
+	maxGovernors uint64, governorStatusChangePeriod time.Duration, minGovernorSelfDelegation string,
 ) Params {
 	return Params{
 		MinDeposit:                     minDeposit,
@@ -88,6 +89,7 @@ func NewParams(
 		QuorumCheckCount:               quorumCheckCount,
 		MaxGovernors:                   maxGovernors,
 		GovernorStatusChangePeriod:     &governorStatusChangePeriod,
+		MinGovernorSelfDelegation:      minGovernorSelfDelegation,
 	}
 }
 
@@ -112,6 +114,7 @@ func DefaultParams() Params {
 		DefaultQuorumCheckCount,
 		DefaultMaxGovernors,
 		DefaultGovernorStatusChangePeriod,
+		DefaultMinGovernorSelfDelegation.String(),
 	)
 }
 
@@ -258,6 +261,14 @@ func (p Params) ValidateBasic() error {
 
 	if p.GovernorStatusChangePeriod.Seconds() <= 0 {
 		return fmt.Errorf("governor status change period must be positive: %d", p.GovernorStatusChangePeriod)
+	}
+
+	minGovernorSelfDelegation, ok := sdk.NewIntFromString(p.MinGovernorSelfDelegation)
+	if !ok {
+		return fmt.Errorf("invalid minimum governor self delegation: %s", p.MinGovernorSelfDelegation)
+	}
+	if minGovernorSelfDelegation.IsNegative() {
+		return fmt.Errorf("minimum governor self delegation must be positive: %s", minGovernorSelfDelegation)
 	}
 
 	return nil

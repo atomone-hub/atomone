@@ -128,6 +128,7 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 	lawThreshold, _ := sdk.NewDecFromStr("0.000000000000000001")
 	amendmentsQuorum, _ := sdk.NewDecFromStr("0.000000000000000001")
 	amendmentsThreshold, _ := sdk.NewDecFromStr("0.000000000000000001")
+	minGovernorSelfDelegation, _ := sdk.NewIntFromString("10000000")
 
 	maxDepositPeriod := 10 * time.Minute
 	votingPeriod := 15 * time.Second
@@ -143,7 +144,7 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 			sdk.ZeroDec().String(),
 			false, false, govv1.DefaultMinDepositRatio.String(),
 			govv1.DefaultQuorumTimeout, govv1.DefaultMaxVotingPeriodExtension, govv1.DefaultQuorumCheckCount,
-			maxGovernors, governorStatusChangePeriod,
+			maxGovernors, governorStatusChangePeriod, minGovernorSelfDelegation.String(),
 		),
 	)
 	govGenStateBz, err := cdc.MarshalJSON(govGenState)

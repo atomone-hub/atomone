@@ -2,6 +2,7 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	"github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
@@ -94,6 +95,7 @@ func (k Keeper) UpdateGovernorByPowerIndex(ctx sdk.Context, governor v1.Governor
 }
 
 // IterateMaxGovernorsByGovernancePower iterates over the top params.MaxGovernors governors by governance power
+// inactive governors or governors that don't meet the minimum self-delegation requirement are not included
 func (k Keeper) IterateMaxGovernorsByGovernancePower(ctx sdk.Context, cb func(index int64, governor v1.GovernorI) (stop bool)) {
 	store := ctx.KVStore(k.storeKey)
 	maxGovernors := k.GetParams(ctx).MaxGovernors
@@ -106,11 +108,47 @@ func (k Keeper) IterateMaxGovernorsByGovernancePower(ctx sdk.Context, cb func(in
 		// the value stored is the governor address
 		governorAddr := types.GovernorAddress(iterator.Value())
 		governor, _ := k.GetGovernor(ctx, governorAddr)
-		if governor.IsActive() {
+		if governor.IsActive() && k.ValidateGovernorMinSelfDelegation(ctx, governor) {
 			if cb(int64(totGovernors), governor) {
 				break
 			}
 			totGovernors++
 		}
 	}
+}
+
+func (k Keeper) getGovernorBondedTokens(ctx sdk.Context, govAddr types.GovernorAddress) (bondedTokens sdk.Int) {
+	bondedTokens = sdk.ZeroInt()
+	addr := sdk.AccAddress(govAddr)
+	k.sk.IterateDelegations(ctx, addr, func(_ int64, delegation stakingtypes.DelegationI) (stop bool) {
+		validatorAddr := delegation.GetValidatorAddr()
+		validator, _ := k.sk.GetValidator(ctx, validatorAddr)
+		shares := delegation.GetShares()
+		bt := shares.MulInt(validator.GetBondedTokens()).Quo(validator.GetDelegatorShares()).TruncateInt()
+		bondedTokens = bondedTokens.Add(bt)
+
+		return false
+	})
+
+	return bondedTokens
+}
+
+func (k Keeper) ValidateGovernorMinSelfDelegation(ctx sdk.Context, governor v1.Governor) bool {
+	minGovernorSelfDelegation, _ := sdk.NewIntFromString(k.GetParams(ctx).MinGovernorSelfDelegation)
+	bondedTokens := k.getGovernorBondedTokens(ctx, governor.GetAddress())
+	delAddr := sdk.AccAddress(governor.GetAddress())
+
+	// ensure that the governor is active and that has a valid governance self-delegation
+	if !governor.IsActive() {
+		return false
+	}
+	if del, found := k.GetGovernanceDelegation(ctx, delAddr); !found || !governor.GetAddress().Equals(types.MustGovernorAddressFromBech32(del.GovernorAddress)) {
+		panic("active governor without governance self-delegation")
+	}
+
+	if bondedTokens.LT(minGovernorSelfDelegation) {
+		return false
+	}
+
+	return true
 }
