@@ -1177,8 +1177,8 @@ func (m *GovernorDescription) GetDetails() string {
 	return ""
 }
 
-// GovernorValShares holds the number of shares from the specific validator
-// that a governor can use to vote on proposals.
+// GovernorValShares holds the number of virtual shares from the
+// specific validator that a governor can use to vote on proposals.
 type GovernorValShares struct {
 	GovernorAddress  string `protobuf:"bytes,1,opt,name=governor_address,json=governorAddress,proto3" json:"governor_address,omitempty"`
 	ValidatorAddress string `protobuf:"bytes,2,opt,name=validator_address,json=validatorAddress,proto3" json:"validator_address,omitempty"`

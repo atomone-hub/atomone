@@ -82,7 +82,7 @@ service Query {
     option (google.api.http).get = "/atomone/gov/v1/delegations/{delegator_address}";
   }
 
-  // GovernorVShares queries all governor virtual validator shares resulting from all governance delegations.
+  // GovernorValShares queries all governor virtual validator shares resulting from all governance delegations.
   rpc GovernorValShares(QueryGovernorValSharesRequest) returns (QueryGovernorValSharesResponse) {
     option (google.api.http).get = "/atomone/gov/v1/vshares/{governor_address}";
   }
