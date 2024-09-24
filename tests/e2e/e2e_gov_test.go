@@ -1,6 +1,7 @@
 package e2e
 
 import (
+	"context"
 	"fmt"
 	"path/filepath"
 	"strconv"
@@ -13,6 +14,7 @@ import (
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
+	govtypesv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	govtypesv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 )
 
@@ -183,11 +185,10 @@ func (s *IntegrationTestSuite) testGovConstitutionAmendment() {
 		senderAddress, _ := s.chainA.validators[0].keyInfo.GetAddress()
 		sender := senderAddress.String()
 
-		res := s.queryConstitution(chainAAPIEndpoint)
 		newConstitution := "New test constitution"
-		amendment, err := govtypes.GenerateUnifiedDiff(res.Constitution, newConstitution)
-		s.Require().NoError(err)
-		s.writeGovConstitutionAmendmentProposal(s.chainA, amendment)
+		amendmentMsg := s.generateConstitutionAmendment(s.chainA, newConstitution)
+
+		s.writeGovConstitutionAmendmentProposal(s.chainA, amendmentMsg.Amendment)
 		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
 		proposalCounter++
 		submitGovFlags := []string{configFile(proposalConstitutionAmendmentFilename)}
@@ -337,4 +338,43 @@ func (s *IntegrationTestSuite) writeGovConstitutionAmendmentProposal(c *chain, a
 	propMsgBody := fmt.Sprintf(template, govModuleAddress, amendment)
 	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalConstitutionAmendmentFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
+}
+
+func (s *IntegrationTestSuite) generateConstitutionAmendment(c *chain, newConstitution string) govtypesv1.MsgProposeConstitutionAmendment {
+	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", newConstitutionFilename), []byte(newConstitution))
+	s.Require().NoError(err)
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+
+	govCommand := "generate-constitution-amendment"
+	cmd := []string{
+		atomonedBinary,
+		txCommand,
+		govtypes.ModuleName,
+		govCommand,
+		configFile(newConstitutionFilename),
+	}
+
+	s.T().Logf("Executing atomoned tx gov %s on chain %s", govCommand, c.id)
+	var msg govtypesv1.MsgProposeConstitutionAmendment
+	s.executeAtomoneTxCommand(ctx, c, cmd, 0, s.parseGenerateConstitutionAmendmentOutput(&msg))
+	s.T().Logf("Successfully executed %s", govCommand)
+
+	s.Require().NoError(err)
+	return msg
+}
+
+func (s *IntegrationTestSuite) parseGenerateConstitutionAmendmentOutput(msg *govtypesv1.MsgProposeConstitutionAmendment) func([]byte, []byte) bool {
+	return func(stdOut []byte, stdErr []byte) bool {
+		if len(stdErr) > 0 {
+			s.T().Logf("Error: %s", string(stdErr))
+			return false
+		}
+
+		err := cdc.UnmarshalJSON(stdOut, msg)
+		s.Require().NoError(err)
+
+		return true
+	}
 }

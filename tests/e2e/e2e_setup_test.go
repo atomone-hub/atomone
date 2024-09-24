@@ -66,6 +66,7 @@ const (
 	proposalCommunitySpendFilename        = "proposal_community_spend.json"
 	proposalParamChangeFilename           = "param_change.json"
 	proposalConstitutionAmendmentFilename = "constitution_amendment.json"
+	newConstitutionFilename               = "new_constitution.md"
 
 	// hermesBinary              = "hermes"
 	// hermesConfigWithGasPrices = "/root/.hermes/config.toml"

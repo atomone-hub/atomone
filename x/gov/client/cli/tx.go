@@ -14,7 +14,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/version"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	"github.com/atomone-hub/atomone/x/gov/client/utils"
 	govutils "github.com/atomone-hub/atomone/x/gov/client/utils"
 	"github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
@@ -425,7 +424,7 @@ $ %s tx gov generate-constitution-amendment path/to/updated/constitution.md
 			}
 
 			// Generate the unified diff between the current and updated constitutions
-			diff, err := utils.GenerateUnifiedDiff(resp.Constitution, updatedConstitution)
+			diff, err := govutils.GenerateUnifiedDiff(resp.Constitution, updatedConstitution)
 			if err != nil {
 				return err
 			}
@@ -441,7 +440,11 @@ $ %s tx gov generate-constitution-amendment path/to/updated/constitution.md
 	flags.AddQueryFlagsToCmd(cmd)
 	// query commands have the FlagOutput default to "text", but we want to override it to "json"
 	// in this case.
-	cmd.Flags().Set(flags.FlagOutput, "json")
+	cmd.Flags().Lookup(flags.FlagOutput).DefValue = "json"
+	err := cmd.Flags().Set(flags.FlagOutput, "json")
+	if err != nil {
+		panic(err)
+	}
 
 	return cmd
 }
