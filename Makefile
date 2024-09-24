@@ -21,16 +21,11 @@ DOCKER := $(shell which docker)
 BUILDDIR ?= $(CURDIR)/build
 TEST_DOCKER_REPO=cosmos/contrib-atomonetest
 
-GO_SYSTEM_VERSION = $(shell go version | cut -c 14- | cut -d' ' -f1 | cut -d'.' -f1-2)
-REQUIRE_GO_VERSION = 1.21
-REQUIRE_GO_VERSION_FULL = 1.21.13
+GO_SYSTEM_VERSION = $(shell go version | cut -c 14- | cut -d' ' -f1)
+REQUIRE_GO_VERSION = 1.21.13
 
 export GO111MODULE = on
 export CGO_ENABLED = 0
-
-build-ledger: check_version go.sum $(BUILDDIR)/
-	@echo "WARNING: Ledger build involves enabling cgo, which disables the ability to have reproducible builds."
-	CGO_ENABLED=1 go build -mod=readonly $(BUILD_FLAGS) $(BUILD_ARGS) -o $(BUILDDIR)/ ./...
 
 # process build tags
 
@@ -102,12 +97,17 @@ include contrib/devtools/Makefile
 ###                              Build                                      ###
 ###############################################################################
 
-required_go_version_full:
-	@echo $(REQUIRE_GO_VERSION_FULL)
+print_required_go_version:
+	@echo $(REQUIRE_GO_VERSION)
 
 check_version:
 ifneq ($(GO_SYSTEM_VERSION), $(REQUIRE_GO_VERSION))
-	@echo "ERROR: Go version $(REQUIRE_GO_VERSION) is required for $(VERSION) of AtomOne."
+	@echo 'ERROR: Go version $(REQUIRE_GO_VERSION) is required for building AtomOne'
+	@echo '--> You can install it using:'
+	@echo 'go install golang.org/dl/go$(REQUIRE_GO_VERSION)@latest && go$(REQUIRE_GO_VERSION) download'
+	@echo '--> Then prefix your make command with:'
+	@echo 'GOROOT=$$(go$(REQUIRE_GO_VERSION) env GOROOT) PATH=$$GOROOT/bin:$$PATH'
+	exit 1
 endif
 
 all: install lint run-tests test-e2e vulncheck
@@ -118,6 +118,10 @@ build: BUILD_ARGS=-o $(BUILDDIR)/
 
 $(BUILD_TARGETS): check_version go.sum $(BUILDDIR)/
 	go $@ -mod=readonly $(BUILD_FLAGS) $(BUILD_ARGS) ./...
+
+build-ledger: go.sum $(BUILDDIR)/
+	@echo "WARNING: Ledger build involves enabling cgo, which disables the ability to have reproducible builds."
+	CGO_ENABLED=1 go build -mod=readonly $(BUILD_FLAGS) $(BUILD_ARGS) -o $(BUILDDIR)/ ./...
 
 $(BUILDDIR)/:
 	mkdir -p $(BUILDDIR)/

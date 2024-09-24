@@ -18,8 +18,9 @@ jobs:
         with:
           fetch-depth: 0
       - run: git fetch --force --tags
-      - name: Set Go version
-        run: echo "GO_VERSION=$(make required_go_version_full)" >> $GITHUB_ENV
+
+      - name: Set go version
+        run: echo "GO_VERSION=$(make print_required_go_version)" >> $GITHUB_ENV
 
       - uses: actions/setup-go@v5
         with:
