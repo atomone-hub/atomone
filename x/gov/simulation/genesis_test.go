@@ -44,9 +44,12 @@ func TestRandomizedGenState(t *testing.T) {
 	simState.Cdc.MustUnmarshalJSON(simState.GenState[types.ModuleName], &govGenesis)
 
 	const (
-		tallyQuorum          = "0.400000000000000000"
-		tallyThreshold       = "0.539000000000000000"
-		tallyVetoThreshold   = "0.314000000000000000"
+		tallyQuorum          = "0.362000000000000000"
+		tallyThreshold       = "0.639000000000000000"
+		amendmentQuorum      = "0.579000000000000000"
+		amendmentThreshold   = "0.895000000000000000"
+		lawQuorum            = "0.552000000000000000"
+		lawThreshold         = "0.816000000000000000"
 		minInitialDepositDec = "0.590000000000000000"
 	)
 
@@ -55,7 +58,14 @@ func TestRandomizedGenState(t *testing.T) {
 	require.Equal(t, float64(275567), govGenesis.Params.VotingPeriod.Seconds())
 	require.Equal(t, tallyQuorum, govGenesis.Params.Quorum)
 	require.Equal(t, tallyThreshold, govGenesis.Params.Threshold)
-	require.Equal(t, tallyVetoThreshold, govGenesis.Params.VetoThreshold)
+	require.Equal(t, amendmentQuorum, govGenesis.Params.ConstitutionAmendmentQuorum)
+	require.Equal(t, amendmentThreshold, govGenesis.Params.ConstitutionAmendmentThreshold)
+	require.Equal(t, lawQuorum, govGenesis.Params.LawQuorum)
+	require.Equal(t, lawThreshold, govGenesis.Params.LawThreshold)
+	require.Equal(t, minInitialDepositDec, govGenesis.Params.MinInitialDepositRatio)
+	require.Equal(t, "7h46m6s", govGenesis.Params.QuorumTimeout.String())
+	require.Equal(t, "82h43m30s", govGenesis.Params.MaxVotingPeriodExtension.String())
+	require.Equal(t, uint64(5), govGenesis.Params.QuorumCheckCount)
 	require.Equal(t, uint64(0x28), govGenesis.StartingProposalId)
 	require.Equal(t, []*v1.Deposit{}, govGenesis.Deposits)
 	require.Equal(t, []*v1.Vote{}, govGenesis.Votes)

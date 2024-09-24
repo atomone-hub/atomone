@@ -16,8 +16,8 @@ import (
 )
 
 var (
-	_, _, _, _, _, _ sdk.Msg                            = &MsgSubmitProposal{}, &MsgDeposit{}, &MsgVote{}, &MsgVoteWeighted{}, &MsgExecLegacyContent{}, &MsgUpdateParams{}
-	_, _             codectypes.UnpackInterfacesMessage = &MsgSubmitProposal{}, &MsgExecLegacyContent{}
+	_, _, _, _, _, _, _, _ sdk.Msg                            = &MsgSubmitProposal{}, &MsgDeposit{}, &MsgVote{}, &MsgVoteWeighted{}, &MsgExecLegacyContent{}, &MsgUpdateParams{}, &MsgProposeConstitutionAmendment{}, &MsgProposeLaw{}
+	_, _                   codectypes.UnpackInterfacesMessage = &MsgSubmitProposal{}, &MsgExecLegacyContent{}
 )
 
 // NewMsgSubmitProposal creates a new MsgSubmitProposal.
@@ -319,6 +319,59 @@ func (msg MsgUpdateParams) GetSignBytes() []byte {
 
 // GetSigners returns the expected signers for a MsgUpdateParams.
 func (msg MsgUpdateParams) GetSigners() []sdk.AccAddress {
+	authority, _ := sdk.AccAddressFromBech32(msg.Authority)
+	return []sdk.AccAddress{authority}
+}
+
+// Route implements the sdk.Msg interface.
+func (msg MsgProposeConstitutionAmendment) Route() string { return types.RouterKey }
+
+// Type implements the sdk.Msg interface.
+func (msg MsgProposeConstitutionAmendment) Type() string { return sdk.MsgTypeURL(&msg) }
+
+// ValidateBasic implements the sdk.Msg interface.
+func (msg MsgProposeConstitutionAmendment) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(msg.Authority); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", err)
+	}
+	return nil
+}
+
+// GetSignBytes returns the message bytes to sign over.
+func (msg MsgProposeConstitutionAmendment) GetSignBytes() []byte {
+	bz := codec.ModuleCdc.MustMarshalJSON(&msg)
+	return sdk.MustSortJSON(bz)
+}
+
+// GetSigners returns the expected signers for a MsgProposeConstitutionAmendment.
+func (msg MsgProposeConstitutionAmendment) GetSigners() []sdk.AccAddress {
+	authority, _ := sdk.AccAddressFromBech32(msg.Authority)
+	return []sdk.AccAddress{authority}
+}
+
+// Route implements the sdk.Msg interface.
+func (msg MsgProposeLaw) Route() string { return types.RouterKey }
+
+// Type implements the sdk.Msg interface.
+func (msg MsgProposeLaw) Type() string { return sdk.MsgTypeURL(&msg) }
+
+// ValidateBasic implements the sdk.Msg interface.
+func (msg MsgProposeLaw) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(msg.Authority); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", err)
+	}
+
+	return nil
+}
+
+// GetSignBytes returns the message bytes to sign over.
+func (msg MsgProposeLaw) GetSignBytes() []byte {
+	bz := codec.ModuleCdc.MustMarshalJSON(&msg)
+	return sdk.MustSortJSON(bz)
+}
+
+// GetSigners returns the expected signers for a MsgProposeLaw.
+func (msg MsgProposeLaw) GetSigners() []sdk.AccAddress {
 	authority, _ := sdk.AccAddressFromBech32(msg.Authority)
 	return []sdk.AccAddress{authority}
 }

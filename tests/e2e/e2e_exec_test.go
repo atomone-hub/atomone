@@ -3,14 +3,14 @@ package e2e
 import (
 	"bytes"
 	"context"
-	"encoding/json"
 	"fmt"
 	"path/filepath"
-	"strconv"
 	"strings"
 	"time"
 
 	"github.com/ory/dockertest/v3/docker"
+
+	rpchttp "github.com/cometbft/cometbft/rpc/client/http"
 
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -579,29 +579,22 @@ func (s *IntegrationTestSuite) execRedelegate(c *chain, valIdx int, amount, orig
 	s.T().Logf("%s successfully redelegated %s from %s to %s", delegatorAddr, amount, originalValOperAddress, newValOperAddress)
 }
 
-func (s *IntegrationTestSuite) getLatestBlockHeight(c *chain, valIdx int) int {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
-	defer cancel()
+func (s *IntegrationTestSuite) rpcClient(c *chain, valIdx int) *rpchttp.HTTP {
+	rc, err := rpchttp.New("tcp://"+s.valResources[c.id][valIdx].GetHostPort("26657/tcp"), "/websocket")
+	s.Require().NoError(err)
+	return rc
+}
 
-	type syncInfo struct {
-		SyncInfo struct {
-			LatestHeight string `json:"latest_block_height"`
-		} `json:"SyncInfo"`
-	}
+func (s *IntegrationTestSuite) getLatestBlockHeight(c *chain, valIdx int) int64 {
+	status, err := s.rpcClient(c, valIdx).Status(context.Background())
+	s.Require().NoError(err)
+	return status.SyncInfo.LatestBlockHeight
+}
 
-	var currentHeight int
-	atomoneCommand := []string{atomonedBinary, "status"}
-	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, func(stdOut []byte, stdErr []byte) bool {
-		var (
-			err   error
-			block syncInfo
-		)
-		s.Require().NoError(json.Unmarshal(stdOut, &block))
-		currentHeight, err = strconv.Atoi(block.SyncInfo.LatestHeight)
-		s.Require().NoError(err)
-		return currentHeight > 0
-	})
-	return currentHeight
+func (s *IntegrationTestSuite) getLatestBlockTime(c *chain, valIdx int) time.Time {
+	status, err := s.rpcClient(c, valIdx).Status(context.Background())
+	s.Require().NoError(err)
+	return status.SyncInfo.LatestBlockTime
 }
 
 // func (s *IntegrationTestSuite) verifyBalanceChange(endpoint string, expectedAmount sdk.Coin, recipientAddress string) {
@@ -613,7 +606,7 @@ func (s *IntegrationTestSuite) getLatestBlockHeight(c *chain, valIdx int) int {
 // 			return afterAtomBalance.IsEqual(expectedAmount)
 // 		},
 // 		20*time.Second,
-// 		5*time.Second,
+// 		time.Second,
 // 	)
 // }
 
@@ -730,7 +723,7 @@ func (s *IntegrationTestSuite) expectErrExecValidation(chain *chain, valIdx int,
 				return gotErr == expectErr
 			},
 			time.Minute,
-			5*time.Second,
+			time.Second,
 			"stdOut: %s, stdErr: %s",
 			string(stdOut), string(stdErr),
 		)
@@ -748,10 +741,16 @@ func (s *IntegrationTestSuite) defaultExecValidation(chain *chain, valIdx int) f
 			endpoint := fmt.Sprintf("http://%s", s.valResources[chain.id][valIdx].GetHostPort("1317/tcp"))
 			s.Require().Eventually(
 				func() bool {
-					return queryAtomOneTx(endpoint, txResp.TxHash) == nil
+					err := queryAtomOneTx(endpoint, txResp.TxHash)
+					if isErrNotFound(err) {
+						// tx not processed yet, continue
+						return false
+					}
+					s.Require().NoError(err)
+					return true
 				},
 				time.Minute,
-				5*time.Second,
+				time.Second,
 				"stdOut: %s, stdErr: %s",
 				string(stdOut), string(stdErr),
 			)

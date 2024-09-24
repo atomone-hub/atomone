@@ -18,6 +18,13 @@ import (
 
 var _ v1.QueryServer = Keeper{}
 
+func (q Keeper) Constitution(c context.Context, req *v1.QueryConstitutionRequest) (*v1.QueryConstitutionResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+	constitution := q.GetConstitution(ctx)
+
+	return &v1.QueryConstitutionResponse{Constitution: constitution}, nil
+}
+
 // Proposal returns proposal details based on ProposalID
 func (q Keeper) Proposal(c context.Context, req *v1.QueryProposalRequest) (*v1.QueryProposalResponse, error) {
 	if req == nil {
@@ -174,13 +181,14 @@ func (q Keeper) Params(c context.Context, req *v1.QueryParamsRequest) (*v1.Query
 		response.VotingParams = &votingParams
 
 	case v1.ParamTallying:
-		tallyParams := v1.NewTallyParams(params.Quorum, params.Threshold, params.VetoThreshold)
+		tallyParams := v1.NewTallyParams(params.Quorum, params.Threshold)
 		response.TallyParams = &tallyParams
 
 	default:
-		return nil, status.Errorf(codes.InvalidArgument,
-			"%s is not a valid parameter type", req.ParamsType)
-
+		if len(req.ParamsType) > 1 {
+			return nil, status.Errorf(codes.InvalidArgument,
+				"%s is not a valid parameter type", req.ParamsType)
+		}
 	}
 	response.Params = &params
 
@@ -552,12 +560,8 @@ func (q legacyQueryServer) Params(c context.Context, req *v1beta1.QueryParamsReq
 		if err != nil {
 			return nil, err
 		}
-		vetoThreshold, err := sdk.NewDecFromStr(resp.TallyParams.VetoThreshold)
-		if err != nil {
-			return nil, err
-		}
 
-		response.TallyParams = v1beta1.NewTallyParams(quorum, threshold, vetoThreshold)
+		response.TallyParams = v1beta1.NewTallyParams(quorum, threshold, sdk.ZeroDec())
 	}
 
 	return response, nil

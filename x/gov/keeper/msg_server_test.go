@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"fmt"
 	"strings"
 	"time"
 
@@ -19,7 +20,7 @@ func (suite *KeeperTestSuite) TestSubmitProposalReq() {
 	addrs := suite.addrs
 	proposer := addrs[0]
 
-	coins := sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(100)))
+	coins := sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(100000)))
 	initialDeposit := coins
 	minDeposit := suite.govKeeper.GetParams(suite.ctx).MinDeposit
 	bankMsg := &banktypes.MsgSend{
@@ -139,7 +140,7 @@ func (suite *KeeperTestSuite) TestVoteReq() {
 	addrs := suite.addrs
 	proposer := addrs[0]
 
-	coins := sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(100)))
+	coins := sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(100000)))
 	minDeposit := suite.govKeeper.GetParams(suite.ctx).MinDeposit
 	bankMsg := &banktypes.MsgSend{
 		FromAddress: govAcct.String(),
@@ -258,7 +259,7 @@ func (suite *KeeperTestSuite) TestVoteWeightedReq() {
 	addrs := suite.addrs
 	proposer := addrs[0]
 
-	coins := sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(100)))
+	coins := sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(100000)))
 	minDeposit := suite.govKeeper.GetParams(suite.ctx).MinDeposit
 	bankMsg := &banktypes.MsgSend{
 		FromAddress: govAcct.String(),
@@ -377,8 +378,8 @@ func (suite *KeeperTestSuite) TestDepositReq() {
 	addrs := suite.addrs
 	proposer := addrs[0]
 
-	coins := sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(100)))
-	minDeposit := suite.govKeeper.GetParams(suite.ctx).MinDeposit
+	coins := sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(100000)))
+	minDeposit := sdk.Coins(suite.govKeeper.GetParams(suite.ctx).MinDeposit)
 	bankMsg := &banktypes.MsgSend{
 		FromAddress: govAcct.String(),
 		ToAddress:   proposer.String(),
@@ -426,6 +427,14 @@ func (suite *KeeperTestSuite) TestDepositReq() {
 			expErr:    false,
 			options:   v1.NewNonSplitVoteOption(v1.OptionYes),
 		},
+		"invalid deposited coin ": {
+			preRun: func() uint64 {
+				return pId
+			},
+			depositor: proposer,
+			deposit:   minDeposit.Add(sdk.NewCoin("ibc/badcoin", sdk.NewInt(1000))), expErr: true,
+			options: v1.NewNonSplitVoteOption(v1.OptionYes),
+		},
 	}
 
 	for name, tc := range cases {
@@ -447,7 +456,7 @@ func (suite *KeeperTestSuite) TestLegacyMsgSubmitProposal() {
 	addrs := suite.addrs
 	proposer := addrs[0]
 
-	coins := sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(100)))
+	coins := sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(100000)))
 	initialDeposit := coins
 	minDeposit := suite.govKeeper.GetParams(suite.ctx).MinDeposit
 
@@ -497,7 +506,7 @@ func (suite *KeeperTestSuite) TestLegacyMsgVote() {
 	addrs := suite.addrs
 	proposer := addrs[0]
 
-	coins := sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(100)))
+	coins := sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(100000)))
 	minDeposit := suite.govKeeper.GetParams(suite.ctx).MinDeposit
 	bankMsg := &banktypes.MsgSend{
 		FromAddress: govAcct.String(),
@@ -606,7 +615,7 @@ func (suite *KeeperTestSuite) TestLegacyVoteWeighted() {
 	addrs := suite.addrs
 	proposer := addrs[0]
 
-	coins := sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(100)))
+	coins := sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(100000)))
 	minDeposit := suite.govKeeper.GetParams(suite.ctx).MinDeposit
 	bankMsg := &banktypes.MsgSend{
 		FromAddress: govAcct.String(),
@@ -715,7 +724,7 @@ func (suite *KeeperTestSuite) TestLegacyMsgDeposit() {
 	addrs := suite.addrs
 	proposer := addrs[0]
 
-	coins := sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(100)))
+	coins := sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(100000)))
 	minDeposit := suite.govKeeper.GetParams(suite.ctx).MinDeposit
 	bankMsg := &banktypes.MsgSend{
 		FromAddress: govAcct.String(),
@@ -896,7 +905,7 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 				}
 			},
 			expErr:    true,
-			expErrMsg: "quorom cannot be negative",
+			expErrMsg: "quorum must be positive",
 		},
 		{
 			name: "quorum > 1",
@@ -910,7 +919,7 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 				}
 			},
 			expErr:    true,
-			expErrMsg: "quorom too large",
+			expErrMsg: "quorum too large",
 		},
 		{
 			name: "invalid threshold",
@@ -955,10 +964,10 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 			expErrMsg: "vote threshold too large",
 		},
 		{
-			name: "invalid veto threshold",
+			name: "negative constitution amendment quorum",
 			input: func() *v1.MsgUpdateParams {
 				params1 := params
-				params1.VetoThreshold = "abc"
+				params1.ConstitutionAmendmentQuorum = "-0.1"
 
 				return &v1.MsgUpdateParams{
 					Authority: authority,
@@ -966,13 +975,13 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 				}
 			},
 			expErr:    true,
-			expErrMsg: "invalid vetoThreshold string",
+			expErrMsg: "constitution amendment quorum must be positive",
 		},
 		{
-			name: "negative veto threshold",
+			name: "constitution amendments quorum > 1",
 			input: func() *v1.MsgUpdateParams {
 				params1 := params
-				params1.VetoThreshold = "-0.1"
+				params1.ConstitutionAmendmentQuorum = "2"
 
 				return &v1.MsgUpdateParams{
 					Authority: authority,
@@ -980,13 +989,13 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 				}
 			},
 			expErr:    true,
-			expErrMsg: "veto threshold must be positive",
+			expErrMsg: "constitution amendment quorum too large",
 		},
 		{
-			name: "veto threshold > 1",
+			name: "negative constitution amendment threshold",
 			input: func() *v1.MsgUpdateParams {
 				params1 := params
-				params1.VetoThreshold = "2"
+				params1.ConstitutionAmendmentThreshold = "-0.1"
 
 				return &v1.MsgUpdateParams{
 					Authority: authority,
@@ -994,7 +1003,77 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 				}
 			},
 			expErr:    true,
-			expErrMsg: "veto threshold too large",
+			expErrMsg: "constitution amendment threshold must be positive",
+		},
+		{
+			name: "constitution amendments threshold > 1",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.ConstitutionAmendmentThreshold = "2"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "constitution amendment threshold too large",
+		},
+		{
+			name: "negative law quorum",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.LawQuorum = "-0.1"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "law quorum must be positive",
+		},
+		{
+			name: "law quorum > 1",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.LawQuorum = "2"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "law quorum too large",
+		},
+		{
+			name: "negative law threshold",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.LawThreshold = "-0.1"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "law threshold must be positive",
+		},
+		{
+			name: "law threshold > 1",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.LawThreshold = "2"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "law threshold too large",
 		},
 		{
 			name: "invalid voting period",
@@ -1023,7 +1102,105 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 				}
 			},
 			expErr:    true,
-			expErrMsg: "voting period must be positive",
+			expErrMsg: fmt.Sprintf("voting period must be at least %s: 0s", v1.MinVotingPeriod.String()),
+		},
+		{
+			name: "invalid quorum timeout",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.QuorumCheckCount = 1 // enable quorum check
+				params1.QuorumTimeout = nil
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "quorum timeout must not be nil: 0",
+		},
+		{
+			name: "negative quorum timeout",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.QuorumCheckCount = 1 // enable quorum check
+				d := time.Duration(-1)
+				params1.QuorumTimeout = &d
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "quorum timeout must be 0 or greater: -1ns",
+		},
+		{
+			name: "quorum timeout exceeds voting period",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.QuorumCheckCount = 1 // enable quorum check
+				d := *params.VotingPeriod + 1
+				params1.QuorumTimeout = &d
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "quorum timeout 504h0m0.000000001s must be strictly less than the voting period 504h0m0s",
+		},
+		{
+			name: "invalid max voting period extension",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.QuorumCheckCount = 1 // enable quorum check
+				d := *params.VotingPeriod - time.Hour*2
+				params1.QuorumTimeout = &d
+				params1.MaxVotingPeriodExtension = nil
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "max voting period extension must not be nil: 0",
+		},
+		{
+			name: "voting period extension below voting period - quorum timeout",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.QuorumCheckCount = 1 // enable quorum check
+				d := *params.VotingPeriod - time.Hour*2
+				params1.QuorumTimeout = &d
+				d2 := *params1.VotingPeriod - *params1.QuorumTimeout - 1
+				params1.MaxVotingPeriodExtension = &d2
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "max voting period extension 1h59m59.999999999s must be greater than or equal to the difference between the voting period 504h0m0s and the quorum timeout 502h0m0s",
+		},
+		{
+			name: "valid with quorum check enabled",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.QuorumCheckCount = 1 // enable quorum check
+				d := *params.VotingPeriod - time.Hour*2
+				params1.QuorumTimeout = &d
+				d2 := *params1.VotingPeriod - *params1.QuorumTimeout + time.Hour*24
+				params1.MaxVotingPeriodExtension = &d2
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
 		},
 	}
 

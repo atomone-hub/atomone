@@ -2,6 +2,7 @@ package testutil
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -10,6 +11,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	govcli "github.com/atomone-hub/atomone/x/gov/client/cli"
+	"github.com/atomone-hub/atomone/x/gov/keeper"
+	"github.com/atomone-hub/atomone/x/gov/types"
+	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 )
 
 var commonArgs = []string{
@@ -58,4 +62,48 @@ func MsgDeposit(clientCtx client.Context, from, id, deposit string, extraArgs ..
 	args = append(args, extraArgs...)
 
 	return clitestutil.ExecTestCLICmd(clientCtx, govcli.NewCmdDeposit(), args)
+}
+
+func HasActiveProposal(ctx sdk.Context, k *keeper.Keeper, id uint64, t time.Time) bool {
+	it := k.ActiveProposalQueueIterator(ctx, t)
+	defer it.Close()
+	for ; it.Valid(); it.Next() {
+		proposalID, _ := types.SplitActiveProposalQueueKey(it.Key())
+		if proposalID == id {
+			return true
+		}
+	}
+	return false
+}
+
+func HasInactiveProposal(ctx sdk.Context, k *keeper.Keeper, id uint64, t time.Time) bool {
+	it := k.InactiveProposalQueueIterator(ctx, t)
+	defer it.Close()
+	for ; it.Valid(); it.Next() {
+		proposalID, _ := types.SplitInactiveProposalQueueKey(it.Key())
+		if proposalID == id {
+			return true
+		}
+	}
+	return false
+}
+
+func HasQuorumCheck(ctx sdk.Context, k *keeper.Keeper, id uint64, t time.Time) bool {
+	_, ok := GetQuorumCheckQueueEntry(ctx, k, id, t)
+	return ok
+}
+
+func GetQuorumCheckQueueEntry(ctx sdk.Context, k *keeper.Keeper, id uint64, t time.Time) (v1.QuorumCheckQueueEntry, bool) {
+	it := k.QuorumCheckQueueIterator(ctx, t)
+	defer it.Close()
+	for ; it.Valid(); it.Next() {
+		proposalID, _ := types.SplitQuorumQueueKey(it.Key())
+		if proposalID == id {
+			bz := it.Value()
+			var q v1.QuorumCheckQueueEntry
+			err := q.Unmarshal(bz)
+			return q, err == nil
+		}
+	}
+	return v1.QuorumCheckQueueEntry{}, false
 }

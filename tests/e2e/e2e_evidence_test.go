@@ -9,8 +9,8 @@ import (
 	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
 )
 
-func (s *IntegrationTestSuite) testEvidence() {
-	s.Run("test evidence queries", func() {
+func (s *IntegrationTestSuite) testEvidenceQueries() {
+	s.Run("queries", func() {
 		var (
 			valIdx   = 0
 			chain    = s.chainA

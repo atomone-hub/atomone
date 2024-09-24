@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	abci "github.com/cometbft/cometbft/abci/types"
@@ -42,7 +43,7 @@ func TestTickExpiredDepositPeriod(t *testing.T) {
 
 	newProposalMsg, err := v1.NewMsgSubmitProposal(
 		[]sdk.Msg{mkTestLegacyContent(t)},
-		sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 5)},
+		sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 100000)},
 		addrs[0].String(),
 		"",
 		"Proposal",
@@ -98,7 +99,7 @@ func TestTickMultipleExpiredDepositPeriod(t *testing.T) {
 
 	newProposalMsg, err := v1.NewMsgSubmitProposal(
 		[]sdk.Msg{mkTestLegacyContent(t)},
-		sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 5)},
+		sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 100000)},
 		addrs[0].String(),
 		"",
 		"Proposal",
@@ -124,7 +125,7 @@ func TestTickMultipleExpiredDepositPeriod(t *testing.T) {
 
 	newProposalMsg2, err := v1.NewMsgSubmitProposal(
 		[]sdk.Msg{mkTestLegacyContent(t)},
-		sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 5)},
+		sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 100000)},
 		addrs[0].String(),
 		"",
 		"Proposal",
@@ -185,7 +186,7 @@ func TestTickPassedDepositPeriod(t *testing.T) {
 
 	newProposalMsg, err := v1.NewMsgSubmitProposal(
 		[]sdk.Msg{mkTestLegacyContent(t)},
-		sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 5)},
+		sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 100000)},
 		addrs[0].String(),
 		"",
 		"Proposal",
@@ -211,7 +212,7 @@ func TestTickPassedDepositPeriod(t *testing.T) {
 	require.False(t, inactiveQueue.Valid())
 	inactiveQueue.Close()
 
-	newDepositMsg := v1.NewMsgDeposit(addrs[1], proposalID, sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 5)})
+	newDepositMsg := v1.NewMsgDeposit(addrs[1], proposalID, sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 100000)})
 
 	res1, err := govMsgSvr.Deposit(sdk.WrapSDKContext(ctx), newDepositMsg)
 	require.NoError(t, err)
@@ -385,6 +386,141 @@ func TestEndBlockerProposalHandlerFailed(t *testing.T) {
 	proposal, ok := suite.GovKeeper.GetProposal(ctx, proposal.Id)
 	require.True(t, ok)
 	require.Equal(t, v1.StatusFailed, proposal.Status)
+}
+
+func TestEndBlockerQuorumCheck(t *testing.T) {
+	params := v1.DefaultParams()
+	params.QuorumCheckCount = 10 // enable quorum check
+	quorumTimeout := *params.VotingPeriod - time.Hour*8
+	params.QuorumTimeout = &quorumTimeout
+	oneHour := time.Hour
+	testcases := []struct {
+		name string
+		// the value of the MaxVotingPeriodExtension param
+		maxVotingPeriodExtension *time.Duration
+		// the duration after which the proposal reaches quorum
+		reachQuorumAfter time.Duration
+		// the expected status of the proposal after the original voting period has elapsed
+		expectedStatusAfterVotingPeriod v1.ProposalStatus
+		// the expected final voting period after the original period has elapsed
+		// the value would be modified if voting period is extended due to quorum being reached
+		// after the quorum timeout
+		expectedVotingPeriod time.Duration
+	}{
+		{
+			name:                            "reach quorum before timeout: voting period not extended",
+			maxVotingPeriodExtension:        params.MaxVotingPeriodExtension,
+			reachQuorumAfter:                quorumTimeout - time.Hour,
+			expectedStatusAfterVotingPeriod: v1.StatusPassed,
+			expectedVotingPeriod:            *params.VotingPeriod,
+		},
+		{
+			name:                            "reach quorum exactly at timeout: voting period not extended",
+			maxVotingPeriodExtension:        params.MaxVotingPeriodExtension,
+			reachQuorumAfter:                quorumTimeout,
+			expectedStatusAfterVotingPeriod: v1.StatusPassed,
+			expectedVotingPeriod:            *params.VotingPeriod,
+		},
+		{
+			name:                            "quorum never reached: voting period not extended",
+			maxVotingPeriodExtension:        params.MaxVotingPeriodExtension,
+			reachQuorumAfter:                0,
+			expectedStatusAfterVotingPeriod: v1.StatusRejected,
+			expectedVotingPeriod:            *params.VotingPeriod,
+		},
+		{
+			name:                            "reach quorum after timeout, voting period extended",
+			maxVotingPeriodExtension:        params.MaxVotingPeriodExtension,
+			reachQuorumAfter:                quorumTimeout + time.Hour,
+			expectedStatusAfterVotingPeriod: v1.StatusVotingPeriod,
+			expectedVotingPeriod: *params.VotingPeriod + *params.MaxVotingPeriodExtension -
+				(*params.VotingPeriod - quorumTimeout - time.Hour),
+		},
+		{
+			name:                            "reach quorum exactly at voting period, voting period extended",
+			maxVotingPeriodExtension:        params.MaxVotingPeriodExtension,
+			reachQuorumAfter:                *params.VotingPeriod,
+			expectedStatusAfterVotingPeriod: v1.StatusVotingPeriod,
+			expectedVotingPeriod:            *params.VotingPeriod + *params.MaxVotingPeriodExtension,
+		},
+		{
+			name:                            "reach quorum after timeout but voting period extension too short, voting period not extended",
+			maxVotingPeriodExtension:        &oneHour,
+			reachQuorumAfter:                quorumTimeout + time.Hour,
+			expectedStatusAfterVotingPeriod: v1.StatusPassed,
+			expectedVotingPeriod:            *params.VotingPeriod,
+		},
+	}
+	for _, tc := range testcases {
+		t.Run(tc.name, func(t *testing.T) {
+			suite := createTestSuite(t)
+			app := suite.App
+			ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+			params.MaxVotingPeriodExtension = tc.maxVotingPeriodExtension
+			err := suite.GovKeeper.SetParams(ctx, params)
+			require.NoError(t, err)
+			addrs := simtestutil.AddTestAddrs(suite.BankKeeper, suite.StakingKeeper, ctx, 10, valTokens)
+			// _, err = app.FinalizeBlock(&abci.RequestFinalizeBlock{
+			// Height: app.LastBlockHeight() + 1,
+			// Hash:   app.LastCommitID().Hash,
+			// })
+			// require.NoError(t, err)
+			// Create a validator
+			valAddr := sdk.ValAddress(addrs[0])
+			stakingMsgSvr := stakingkeeper.NewMsgServerImpl(suite.StakingKeeper)
+			createValidators(t, stakingMsgSvr, ctx, []sdk.ValAddress{valAddr}, []int64{10})
+			staking.EndBlocker(ctx, suite.StakingKeeper)
+			// Create a proposal
+			govMsgSvr := keeper.NewMsgServerImpl(suite.GovKeeper)
+			deposit := v1.DefaultMinDepositTokens.ToLegacyDec().Mul(v1.DefaultMinDepositRatio)
+			newProposalMsg, err := v1.NewMsgSubmitProposal(
+				[]sdk.Msg{mkTestLegacyContent(t)},
+				sdk.Coins{sdk.NewCoin(sdk.DefaultBondDenom, deposit.RoundInt())},
+				addrs[0].String(), "", "Proposal", "description of proposal",
+			)
+			require.NoError(t, err)
+			res, err := govMsgSvr.SubmitProposal(ctx, newProposalMsg)
+			require.NoError(t, err)
+			require.NotNil(t, res)
+			// Activate proposal
+			newDepositMsg := v1.NewMsgDeposit(addrs[1], res.ProposalId, params.MinDeposit)
+			res1, err := govMsgSvr.Deposit(ctx, newDepositMsg)
+			require.NoError(t, err)
+			require.NotNil(t, res1)
+			prop, ok := suite.GovKeeper.GetProposal(ctx, res.ProposalId)
+			require.True(t, ok, "prop not found")
+
+			// Call EndBlock until the initial voting period has elapsed
+			// Tick is one hour
+			var (
+				startTime = ctx.BlockTime()
+				tick      = time.Hour
+			)
+			for ctx.BlockTime().Sub(startTime) < *params.VotingPeriod {
+				// Forward in time
+				newTime := ctx.BlockTime().Add(tick)
+				ctx = ctx.WithBlockTime(newTime)
+				if tc.reachQuorumAfter != 0 && newTime.Sub(startTime) >= tc.reachQuorumAfter {
+					// Set quorum as reached
+					err := suite.GovKeeper.AddVote(ctx, prop.Id, addrs[0], v1.NewNonSplitVoteOption(v1.OptionYes), "")
+					require.NoError(t, err)
+					// Don't go there again
+					tc.reachQuorumAfter = 0
+				}
+
+				gov.EndBlocker(ctx, suite.GovKeeper)
+
+			}
+
+			// Assertions
+			prop, ok = suite.GovKeeper.GetProposal(ctx, prop.Id) // Get fresh prop
+			if assert.True(t, ok, "prop not found") {
+				assert.Equal(t, tc.expectedStatusAfterVotingPeriod.String(), prop.Status.String())
+				assert.Equal(t, tc.expectedVotingPeriod, prop.VotingEndTime.Sub(*prop.VotingStartTime))
+				assert.False(t, suite.GovKeeper.QuorumCheckQueueIterator(ctx, *prop.VotingStartTime).Valid(), "quorum check queue invalid")
+			}
+		})
+	}
 }
 
 func createValidators(t *testing.T, stakingMsgSvr stakingtypes.MsgServer, ctx sdk.Context, addrs []sdk.ValAddress, powerAmt []int64) {

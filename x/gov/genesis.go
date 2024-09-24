@@ -16,6 +16,7 @@ func InitGenesis(ctx sdk.Context, ak types.AccountKeeper, bk types.BankKeeper, k
 	if err := k.SetParams(ctx, *data.Params); err != nil {
 		panic(fmt.Sprintf("%s module params has not been set", types.ModuleName))
 	}
+	k.SetConstitution(ctx, data.Constitution)
 
 	// check if the deposits pool account exists
 	moduleAcc := k.GetGovernanceAccount(ctx)
@@ -41,6 +42,29 @@ func InitGenesis(ctx sdk.Context, ak types.AccountKeeper, bk types.BankKeeper, k
 			k.InsertActiveProposalQueue(ctx, proposal.Id, *proposal.VotingEndTime)
 		}
 		k.SetProposal(ctx, *proposal)
+
+		if data.Params.QuorumCheckCount > 0 && proposal.Status == v1.StatusVotingPeriod {
+			quorumTimeoutTime := proposal.VotingStartTime.Add(*data.Params.QuorumTimeout)
+			quorumCheckEntry := v1.NewQuorumCheckQueueEntry(quorumTimeoutTime, data.Params.QuorumCheckCount)
+			quorum := false
+			if ctx.BlockTime().After(quorumTimeoutTime) {
+				var err error
+				quorum, err = k.HasReachedQuorum(ctx, *proposal)
+				if err != nil {
+					panic(err)
+				}
+				if !quorum {
+					// since we don't export the state of the quorum check queue, we can't know how many checks were actually
+					// done. However, in order to trigger a vote time extension, it is enough to have QuorumChecksDone > 0 to
+					// trigger a vote time extension, so we set it to 1
+					quorumCheckEntry.QuorumChecksDone = 1
+				}
+			}
+			if !quorum {
+				k.InsertQuorumCheckQueue(ctx, proposal.Id, quorumTimeoutTime, quorumCheckEntry)
+			}
+		}
+
 	}
 
 	// if account has zero balance it probably means it's not set, so we set it
@@ -98,6 +122,7 @@ func ExportGenesis(ctx sdk.Context, k *keeper.Keeper) *v1.GenesisState {
 	startingProposalID, _ := k.GetProposalID(ctx)
 	proposals := k.GetProposals(ctx)
 	params := k.GetParams(ctx)
+	constitution := k.GetConstitution(ctx)
 	governors := k.GetAllGovernors(ctx)
 
 	var proposalsDeposits v1.Deposits
@@ -121,6 +146,7 @@ func ExportGenesis(ctx sdk.Context, k *keeper.Keeper) *v1.GenesisState {
 		Votes:                 proposalsVotes,
 		Proposals:             proposals,
 		Params:                &params,
+		Constitution:          constitution,
 		Governors:             governors,
 		GovernanceDelegations: governanceDelegations,
 	}

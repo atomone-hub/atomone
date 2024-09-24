@@ -57,21 +57,18 @@ func TestVotes(t *testing.T) {
 		v1.NewWeightedVoteOption(v1.OptionYes, sdk.NewDecWithPrec(60, 2)),
 		v1.NewWeightedVoteOption(v1.OptionNo, sdk.NewDecWithPrec(30, 2)),
 		v1.NewWeightedVoteOption(v1.OptionAbstain, sdk.NewDecWithPrec(5, 2)),
-		v1.NewWeightedVoteOption(v1.OptionNoWithVeto, sdk.NewDecWithPrec(5, 2)),
 	}, ""))
 	vote, found = govKeeper.GetVote(ctx, proposalID, addrs[1])
 	require.True(t, found)
 	require.Equal(t, addrs[1].String(), vote.Voter)
 	require.Equal(t, proposalID, vote.ProposalId)
-	require.True(t, len(vote.Options) == 4)
+	require.True(t, len(vote.Options) == 3)
 	require.Equal(t, v1.OptionYes, vote.Options[0].Option)
 	require.Equal(t, v1.OptionNo, vote.Options[1].Option)
 	require.Equal(t, v1.OptionAbstain, vote.Options[2].Option)
-	require.Equal(t, v1.OptionNoWithVeto, vote.Options[3].Option)
 	require.Equal(t, vote.Options[0].Weight, sdk.NewDecWithPrec(60, 2).String())
 	require.Equal(t, vote.Options[1].Weight, sdk.NewDecWithPrec(30, 2).String())
 	require.Equal(t, vote.Options[2].Weight, sdk.NewDecWithPrec(5, 2).String())
-	require.Equal(t, vote.Options[3].Weight, sdk.NewDecWithPrec(5, 2).String())
 
 	// Test vote iterator
 	// NOTE order of deposits is determined by the addresses
@@ -84,9 +81,8 @@ func TestVotes(t *testing.T) {
 	require.Equal(t, v1.OptionYes, votes[0].Options[0].Option)
 	require.Equal(t, addrs[1].String(), votes[1].Voter)
 	require.Equal(t, proposalID, votes[1].ProposalId)
-	require.True(t, len(votes[1].Options) == 4)
+	require.True(t, len(votes[1].Options) == 3)
 	require.Equal(t, votes[1].Options[0].Weight, sdk.NewDecWithPrec(60, 2).String())
 	require.Equal(t, votes[1].Options[1].Weight, sdk.NewDecWithPrec(30, 2).String())
 	require.Equal(t, votes[1].Options[2].Weight, sdk.NewDecWithPrec(5, 2).String())
-	require.Equal(t, votes[1].Options[3].Weight, sdk.NewDecWithPrec(5, 2).String())
 }

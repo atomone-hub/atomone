@@ -1,13 +1,13 @@
 package e2e
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/tx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	authvesting "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
@@ -18,28 +18,20 @@ import (
 	govtypesv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 )
 
+// queryAtomOneTx returns an error if the tx is not found or is failed.
 func queryAtomOneTx(endpoint, txHash string) error {
-	resp, err := http.Get(fmt.Sprintf("%s/cosmos/tx/v1beta1/txs/%s", endpoint, txHash))
+	body, err := httpGet(fmt.Sprintf("%s/cosmos/tx/v1beta1/txs/%s", endpoint, txHash))
 	if err != nil {
-		return fmt.Errorf("failed to execute HTTP request: %w", err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != 200 {
-		return fmt.Errorf("tx query returned non-200 status: %d", resp.StatusCode)
+		return err
 	}
 
-	var result map[string]interface{}
-
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+	var resp tx.GetTxResponse
+	if err := cdc.UnmarshalJSON(body, &resp); err != nil {
 		return fmt.Errorf("failed to read response body: %w", err)
 	}
-
-	txResp := result["tx_response"].(map[string]interface{})
-	if v := txResp["code"]; v.(float64) != 0 {
-		return fmt.Errorf("tx %s failed with status code %v", txHash, v)
+	if resp.TxResponse.Code != 0 {
+		return fmt.Errorf("tx %s is failed with code=%d log='%s'", txHash, resp.TxResponse.Code, resp.TxResponse.RawLog)
 	}
-
 	return nil
 }
 
@@ -266,4 +258,13 @@ func queryAllEvidence(endpoint string) (evidencetypes.QueryAllEvidenceResponse, 
 		return res, err
 	}
 	return res, nil
+}
+
+func (s *IntegrationTestSuite) queryStakingParams(endpoint string) stakingtypes.QueryParamsResponse {
+	var res stakingtypes.QueryParamsResponse
+	body, err := httpGet(fmt.Sprintf("%s/cosmos/staking/v1beta1/params", endpoint))
+	s.Require().NoError(err)
+	err = cdc.UnmarshalJSON(body, &res)
+	s.Require().NoError(err)
+	return res
 }

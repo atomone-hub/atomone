@@ -40,7 +40,7 @@ func (s *IntegrationTestSuite) TestEvidence() {
 	if !runEvidenceTest {
 		s.T().Skip()
 	}
-	s.testEvidence()
+	s.testEvidenceQueries()
 }
 
 func (s *IntegrationTestSuite) TestFeeGrant() {
@@ -54,9 +54,10 @@ func (s *IntegrationTestSuite) TestGov() {
 	if !runGovTest {
 		s.T().Skip()
 	}
-	s.GovSoftwareUpgrade()
-	s.GovCancelSoftwareUpgrade()
-	s.GovCommunityPoolSpend()
+	s.testGovSoftwareUpgrade()
+	s.testGovCancelSoftwareUpgrade()
+	s.testGovCommunityPoolSpend()
+	s.testGovParamChange()
 }
 
 func (s *IntegrationTestSuite) TestSlashing() {

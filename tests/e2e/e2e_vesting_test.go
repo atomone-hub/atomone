@@ -49,7 +49,7 @@ func (s *IntegrationTestSuite) testDelayedVestingAccount(api string) {
 	sender, _ := val.keyInfo.GetAddress()
 	valOpAddr := sdk.ValAddress(sender).String()
 
-	s.Run("test delayed vesting genesis account", func() {
+	s.Run("delayed vesting genesis account", func() {
 		acc, err := queryDelayedVestingAccount(api, vestingDelayedAcc.String())
 		s.Require().NoError(err)
 
@@ -72,7 +72,7 @@ func (s *IntegrationTestSuite) testDelayedVestingAccount(api string) {
 				return amt.Equal(sdk.NewDecFromInt(vestingDelegationAmount.Amount))
 			},
 			20*time.Second,
-			5*time.Second,
+			time.Second,
 		)
 
 		waitTime := acc.EndTime - time.Now().Unix()
@@ -109,7 +109,7 @@ func (s *IntegrationTestSuite) testDelayedVestingAccount(api string) {
 }
 
 func (s *IntegrationTestSuite) testContinuousVestingAccount(api string) {
-	s.Run("test continuous vesting genesis account", func() {
+	s.Run("continuous vesting genesis account", func() {
 		var (
 			valIdx               = 0
 			chain                = s.chainA
@@ -141,7 +141,7 @@ func (s *IntegrationTestSuite) testContinuousVestingAccount(api string) {
 				return amt.Equal(sdk.NewDecFromInt(vestingDelegationAmount.Amount))
 			},
 			20*time.Second,
-			5*time.Second,
+			time.Second,
 		)
 
 		waitStartTime := acc.StartTime - time.Now().Unix()
@@ -280,7 +280,7 @@ func (s *IntegrationTestSuite) testPeriodicVestingAccount(api string) { //nolint
 				return amt.Equal(sdk.NewDecFromInt(vestingDelegationAmount.Amount))
 			},
 			20*time.Second,
-			5*time.Second,
+			time.Second,
 		)
 
 		//	Transfer coins should succeed

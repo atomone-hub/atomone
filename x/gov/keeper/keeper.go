@@ -168,6 +168,19 @@ func (keeper Keeper) RemoveFromInactiveProposalQueue(ctx sdk.Context, proposalID
 	store.Delete(types.InactiveProposalQueueKey(proposalID, endTime))
 }
 
+// InsertQuorumCheckQueue inserts a QuorumCheckEntry into the quorum check queue.
+func (keeper Keeper) InsertQuorumCheckQueue(ctx sdk.Context, proposalID uint64, endTime time.Time, q v1.QuorumCheckQueueEntry) {
+	store := ctx.KVStore(keeper.storeKey)
+	bz := keeper.cdc.MustMarshal(&q)
+	store.Set(types.QuorumCheckQueueKey(proposalID, endTime), bz)
+}
+
+// RemoveFromQuorumCheckQueue removes from the quorum check queue.
+func (keeper Keeper) RemoveFromQuorumCheckQueue(ctx sdk.Context, proposalID uint64, endTime time.Time) {
+	store := ctx.KVStore(keeper.storeKey)
+	store.Delete(types.QuorumCheckQueueKey(proposalID, endTime))
+}
+
 // Iterators
 
 // IterateActiveProposalsQueue iterates over the proposals in the active proposal queue
@@ -208,6 +221,26 @@ func (keeper Keeper) IterateInactiveProposalsQueue(ctx sdk.Context, endTime time
 	}
 }
 
+// IterateQuorumCheckQueue iterates over the proposals in the quorum check queue
+// and performs a callback function
+func (keeper Keeper) IterateQuorumCheckQueue(ctx sdk.Context, endTime time.Time, cb func(v1.Proposal, time.Time, v1.QuorumCheckQueueEntry) (stop bool)) {
+	iterator := keeper.QuorumCheckQueueIterator(ctx, endTime)
+
+	defer iterator.Close()
+	for ; iterator.Valid(); iterator.Next() {
+		proposalID, endTime := types.SplitQuorumQueueKey(iterator.Key())
+		proposal, found := keeper.GetProposal(ctx, proposalID)
+		if !found {
+			panic(fmt.Sprintf("proposal %d does not exist", proposalID))
+		}
+		var q v1.QuorumCheckQueueEntry
+		keeper.cdc.MustUnmarshal(iterator.Value(), &q)
+		if cb(proposal, endTime, q) {
+			break
+		}
+	}
+}
+
 // ActiveProposalQueueIterator returns an sdk.Iterator for all the proposals in the Active Queue that expire by endTime
 func (keeper Keeper) ActiveProposalQueueIterator(ctx sdk.Context, endTime time.Time) sdk.Iterator {
 	store := ctx.KVStore(keeper.storeKey)
@@ -218,6 +251,12 @@ func (keeper Keeper) ActiveProposalQueueIterator(ctx sdk.Context, endTime time.T
 func (keeper Keeper) InactiveProposalQueueIterator(ctx sdk.Context, endTime time.Time) sdk.Iterator {
 	store := ctx.KVStore(keeper.storeKey)
 	return store.Iterator(types.InactiveProposalQueuePrefix, sdk.PrefixEndBytes(types.InactiveProposalByTimeKey(endTime)))
+}
+
+// QuorumCheckQueueIterator returns an sdk.Iterator for all the proposals in the QuorumCheck Queue that expire by endTime
+func (keeper Keeper) QuorumCheckQueueIterator(ctx sdk.Context, endTime time.Time) sdk.Iterator {
+	store := ctx.KVStore(keeper.storeKey)
+	return store.Iterator(types.QuorumCheckQueuePrefix, sdk.PrefixEndBytes(types.QuorumCheckByTimeKey(endTime)))
 }
 
 // assertMetadataLength returns an error if given metadata length

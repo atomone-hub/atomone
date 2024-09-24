@@ -7,6 +7,7 @@ import (
 	"cosmossdk.io/errors"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors1 "github.com/cosmos/cosmos-sdk/types/errors"
 
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
@@ -143,6 +144,11 @@ func (k msgServer) Deposit(goCtx context.Context, msg *v1.MsgDeposit) (*v1.MsgDe
 	if err != nil {
 		return nil, err
 	}
+
+	if err := validateDeposit(msg.Amount); err != nil {
+		return nil, err
+	}
+
 	votingStarted, err := k.Keeper.AddDeposit(ctx, msg.ProposalId, accAddr, msg.Amount)
 	if err != nil {
 		return nil, err
@@ -160,6 +166,15 @@ func (k msgServer) Deposit(goCtx context.Context, msg *v1.MsgDeposit) (*v1.MsgDe
 	return &v1.MsgDepositResponse{}, nil
 }
 
+// validateDeposit validates the deposit amount, do not use for initial deposit.
+func validateDeposit(amount sdk.Coins) error {
+	if !amount.IsValid() || !amount.IsAllPositive() {
+		return sdkerrors1.ErrInvalidCoins.Wrap(amount.String())
+	}
+
+	return nil
+}
+
 // UpdateParams implements the MsgServer.UpdateParams method.
 func (k msgServer) UpdateParams(goCtx context.Context, msg *v1.MsgUpdateParams) (*v1.MsgUpdateParamsResponse, error) {
 	if k.authority != msg.Authority {
@@ -172,6 +187,24 @@ func (k msgServer) UpdateParams(goCtx context.Context, msg *v1.MsgUpdateParams) 
 	}
 
 	return &v1.MsgUpdateParamsResponse{}, nil
+}
+
+// ProposeLaw implements the MsgServer.ProposeLaw method.
+func (k msgServer) ProposeLaw(goCtx context.Context, msg *v1.MsgProposeLaw) (*v1.MsgProposeLawResponse, error) {
+	if k.authority != msg.Authority {
+		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
+	}
+	// only a no-op for now
+	return &v1.MsgProposeLawResponse{}, nil
+}
+
+// ProposeConstitutionAmendment implements the MsgServer.ProposeConstitutionAmendment method.
+func (k msgServer) ProposeConstitutionAmendment(goCtx context.Context, msg *v1.MsgProposeConstitutionAmendment) (*v1.MsgProposeConstitutionAmendmentResponse, error) {
+	if k.authority != msg.Authority {
+		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
+	}
+	// only a no-op for now
+	return &v1.MsgProposeConstitutionAmendmentResponse{}, nil
 }
 
 func (k msgServer) CreateGovernor(goCtx context.Context, msg *v1.MsgCreateGovernor) (*v1.MsgCreateGovernorResponse, error) {

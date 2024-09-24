@@ -70,7 +70,7 @@ func TestValidateGenesis(t *testing.T) {
 
 				return v1.NewGenesisState(v1.DefaultStartingProposalID, params1)
 			},
-			expErrMsg: "quorom too large",
+			expErrMsg: "quorum too large",
 		},
 		{
 			name: "invalid threshold",
@@ -83,14 +83,44 @@ func TestValidateGenesis(t *testing.T) {
 			expErrMsg: "vote threshold too large",
 		},
 		{
-			name: "invalid veto threshold",
+			name: "invalid constitution amendment quorum",
 			genesisState: func() *v1.GenesisState {
 				params1 := params
-				params1.VetoThreshold = "2"
+				params1.ConstitutionAmendmentQuorum = "2"
 
 				return v1.NewGenesisState(v1.DefaultStartingProposalID, params1)
 			},
-			expErrMsg: "veto threshold too large",
+			expErrMsg: "constitution amendment quorum too large",
+		},
+		{
+			name: "invalid constitution amendment threshold",
+			genesisState: func() *v1.GenesisState {
+				params1 := params
+				params1.ConstitutionAmendmentThreshold = "-1"
+
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, params1)
+			},
+			expErrMsg: "constitution amendment threshold must be positive",
+		},
+		{
+			name: "invalid law quorum",
+			genesisState: func() *v1.GenesisState {
+				params1 := params
+				params1.LawQuorum = "2"
+
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, params1)
+			},
+			expErrMsg: "law quorum too large",
+		},
+		{
+			name: "invalid law threshold",
+			genesisState: func() *v1.GenesisState {
+				params1 := params
+				params1.LawThreshold = "-2"
+
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, params1)
+			},
+			expErrMsg: "law threshold must be positive",
 		},
 		{
 			name: "duplicate proposals",

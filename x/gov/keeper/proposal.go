@@ -3,6 +3,7 @@ package keeper
 import (
 	"errors"
 	"fmt"
+	"time"
 
 	sdkerrors "cosmossdk.io/errors"
 
@@ -161,6 +162,19 @@ func (keeper Keeper) DeleteProposal(ctx sdk.Context, proposalID uint64) {
 	if proposal.VotingEndTime != nil {
 		keeper.RemoveFromActiveProposalQueue(ctx, proposalID, *proposal.VotingEndTime)
 		store.Delete(types.VotingPeriodProposalKey(proposalID))
+		// Delete from QuorumCheckQueue: as we do not know with certainty the value
+		// of the first part of the key (the time part), we need to iterate over it,
+		// starting by proposal.VotingStartTime, because we know for sure that the
+		// time part is greater than that.
+		keeper.IterateQuorumCheckQueue(ctx, *proposal.VotingStartTime,
+			func(p v1.Proposal, t time.Time, _ v1.QuorumCheckQueueEntry) bool {
+				if p.Id == proposalID {
+					// found the proposal, delete from queue and stop
+					keeper.RemoveFromQuorumCheckQueue(ctx, p.Id, t)
+					return true
+				}
+				return false
+			})
 	}
 
 	store.Delete(types.ProposalKey(proposalID))
@@ -264,14 +278,21 @@ func (keeper Keeper) SetProposalID(ctx sdk.Context, proposalID uint64) {
 func (keeper Keeper) ActivateVotingPeriod(ctx sdk.Context, proposal v1.Proposal) {
 	startTime := ctx.BlockHeader().Time
 	proposal.VotingStartTime = &startTime
-	votingPeriod := keeper.GetParams(ctx).VotingPeriod
-	endTime := proposal.VotingStartTime.Add(*votingPeriod)
+	params := keeper.GetParams(ctx)
+	endTime := proposal.VotingStartTime.Add(*params.VotingPeriod)
 	proposal.VotingEndTime = &endTime
 	proposal.Status = v1.StatusVotingPeriod
 	keeper.SetProposal(ctx, proposal)
 
 	keeper.RemoveFromInactiveProposalQueue(ctx, proposal.Id, *proposal.DepositEndTime)
 	keeper.InsertActiveProposalQueue(ctx, proposal.Id, *proposal.VotingEndTime)
+	if params.QuorumCheckCount > 0 {
+		// add proposal to quorum check queue
+		quorumTimeoutTime := proposal.VotingStartTime.Add(*params.QuorumTimeout)
+		keeper.InsertQuorumCheckQueue(ctx, proposal.Id, quorumTimeoutTime,
+			v1.NewQuorumCheckQueueEntry(quorumTimeoutTime, params.QuorumCheckCount),
+		)
+	}
 }
 
 // MarshalProposal marshals the proposal and returns binary encoded bytes.
