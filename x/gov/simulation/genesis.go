@@ -30,7 +30,7 @@ const (
 	TallyParamsConstitutionAmendmentThreshold = "tally_params_constitution_amendment_threshold"
 	TallyParamsLawQuorum                      = "tally_params_law_quorum"
 	TallyParamsLawThreshold                   = "tally_params_law_threshold"
-	GovernorStatusChangePeriod 				  = "governor_status_change_period"
+	GovernorStatusChangePeriod                = "governor_status_change_period"
 
 	// NOTE: backport from v50
 	MinDepositRatio          = "min_deposit_ratio"
@@ -190,7 +190,7 @@ func RandomizedGenState(simState *module.SimulationState) {
 
 	govGenesis := v1.NewGenesisState(
 		startingProposalID,
-		v1.NewParams(minDeposit, depositPeriod, votingPeriod, quorum.String(), threshold.String(), amendmentsQuorum.String(), amendmentsThreshold.String(), lawQuorum.String(), lawThreshold.String(), minInitialDepositRatio.String(), simState.Rand.Intn(2) == 0, simState.Rand.Intn(2) == 0, minDepositRatio.String(), quorumTimout, maxVotingPeriodExtension, quorumCheckCount, maxGovernors, governorStatusChangePeriod),main
+		v1.NewParams(minDeposit, depositPeriod, votingPeriod, quorum.String(), threshold.String(), amendmentsQuorum.String(), amendmentsThreshold.String(), lawQuorum.String(), lawThreshold.String(), minInitialDepositRatio.String(), simState.Rand.Intn(2) == 0, simState.Rand.Intn(2) == 0, minDepositRatio.String(), quorumTimout, maxVotingPeriodExtension, quorumCheckCount, maxGovernors, governorStatusChangePeriod),
 	)
 
 	bz, err := json.MarshalIndent(&govGenesis, "", " ")
