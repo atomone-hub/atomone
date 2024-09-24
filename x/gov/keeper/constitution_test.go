@@ -22,6 +22,13 @@ func TestApplyConstitutionAmendment(t *testing.T) {
 			amendment:           "Hi World",
 			expectError:         true,
 		},
+		{
+			name:                "successful patch application",
+			initialConstitution: "Hello\nWorld",
+			amendment:           "@@ -1,2 +1,2 @@\n-Hello\n+Hi\n World",
+			expectError:         false,
+			expectedResult:      "Hi\nWorld",
+		},
 	}
 
 	for _, tt := range tests {
