@@ -518,7 +518,7 @@ func (s *CLITestSuite) TestCmdGenerateConstitutionAmendment() {
 		tc := tc
 
 		s.Run(tc.name, func() {
-			cmd := cli.GetCmdGenerateConstitutionAmendment()
+			cmd := cli.NewCmdGenerateConstitutionAmendment()
 			out, err := clitestutil.ExecTestCLICmd(s.clientCtx, cmd, tc.args)
 			s.Require().NoError(err)
 			s.Require().Contains(out.String(), tc.expCmdOutput)

@@ -40,7 +40,6 @@ func GetQueryCmd() *cobra.Command {
 		GetCmdQueryDeposits(),
 		GetCmdQueryTally(),
 		GetCmdConstitution(),
-		GetCmdGenerateConstitutionAmendment(),
 	)
 
 	return govQueryCmd

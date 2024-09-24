@@ -14,6 +14,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/version"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
+	"github.com/atomone-hub/atomone/x/gov/client/utils"
 	govutils "github.com/atomone-hub/atomone/x/gov/client/utils"
 	"github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
@@ -73,6 +74,7 @@ func NewTxCmd(legacyPropCmds []*cobra.Command) *cobra.Command {
 		NewCmdWeightedVote(),
 		NewCmdSubmitProposal(),
 		NewCmdDraftProposal(),
+		NewCmdGenerateConstitutionAmendment(),
 
 		// Deprecated
 		cmdSubmitLegacyProp,
@@ -377,11 +379,11 @@ $ %s tx gov weighted-vote 1 yes=0.6,no=0.3,abstain=0.1 --from mykey
 	return cmd
 }
 
-// GetCmdConstitutionAmendmentMsg returns the command to generate the sdk.Msg
+// NewCmdConstitutionAmendmentMsg returns the command to generate the sdk.Msg
 // required for a constitution amendment proposal generating the unified diff
 // between the current constitution (queried) and the updated constitution
 // from the provided markdown file.
-func GetCmdGenerateConstitutionAmendment() *cobra.Command {
+func NewCmdGenerateConstitutionAmendment() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "generate-constitution-amendment [path/to/updated/constitution.md]",
 		Args:  cobra.ExactArgs(1),
@@ -393,6 +395,10 @@ Queries the current constitution from the node and generates a
 valid constitution amendment proposal message containing the unified diff 
 between the current constitution and the updated constitution provided
 in a markdown file.
+
+NOTE: this is just a utility command, it is not able to generate or submit a valid Tx
+to submit on-chain. Use the 'tx gov submit-proposal' command in conjunction with the
+result of this one to submit the proposal.
 
 Example:
 $ %s tx gov generate-constitution-amendment path/to/updated/constitution.md
@@ -419,7 +425,7 @@ $ %s tx gov generate-constitution-amendment path/to/updated/constitution.md
 			}
 
 			// Generate the unified diff between the current and updated constitutions
-			diff, err := types.GenerateUnifiedDiff(resp.Constitution, updatedConstitution)
+			diff, err := utils.GenerateUnifiedDiff(resp.Constitution, updatedConstitution)
 			if err != nil {
 				return err
 			}
@@ -430,7 +436,12 @@ $ %s tx gov generate-constitution-amendment path/to/updated/constitution.md
 		},
 	}
 
-	flags.AddTxFlagsToCmd(cmd)
+	// This is not a tx command (but a utility for the proposal tx), so we don't need to add tx flags.
+	// It might actually be confusing, so we just add the query flags.
+	flags.AddQueryFlagsToCmd(cmd)
+	// query commands have the FlagOutput default to "text", but we want to override it to "json"
+	// in this case.
+	cmd.Flags().Set(flags.FlagOutput, "json")
 
 	return cmd
 }
