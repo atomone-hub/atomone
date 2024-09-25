@@ -263,7 +263,7 @@ func (p Params) ValidateBasic() error {
 		return fmt.Errorf("governor status change period must be positive: %d", p.GovernorStatusChangePeriod)
 	}
 
-	minGovernorSelfDelegation, ok := sdk.NewIntFromString(p.MinGovernorSelfDelegation)
+	minGovernorSelfDelegation, ok := math.NewIntFromString(p.MinGovernorSelfDelegation)
 	if !ok {
 		return fmt.Errorf("invalid minimum governor self delegation: %s", p.MinGovernorSelfDelegation)
 	}
