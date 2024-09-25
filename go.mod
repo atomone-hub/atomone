@@ -20,6 +20,7 @@ require (
 	github.com/golang/mock v1.6.0
 	github.com/google/gofuzz v1.2.0
 	github.com/gorilla/mux v1.8.1
+	github.com/hexops/gotextdiff v1.0.3
 	github.com/manifoldco/promptui v0.9.0
 	github.com/ory/dockertest/v3 v3.10.0
 	github.com/rakyll/statik v0.1.7

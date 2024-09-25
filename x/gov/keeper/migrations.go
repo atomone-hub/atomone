@@ -1,19 +1,13 @@
 package keeper
 
-import (
-	"github.com/atomone-hub/atomone/x/gov/exported"
-)
-
 // Migrator is a struct for handling in-place store migrations.
 type Migrator struct {
-	keeper         *Keeper
-	legacySubspace exported.ParamSubspace
+	keeper *Keeper
 }
 
 // NewMigrator returns a new Migrator.
-func NewMigrator(keeper *Keeper, legacySubspace exported.ParamSubspace) Migrator {
+func NewMigrator(keeper *Keeper) Migrator {
 	return Migrator{
-		keeper:         keeper,
-		legacySubspace: legacySubspace,
+		keeper: keeper,
 	}
 }

@@ -22,14 +22,15 @@ var (
 	ErrInvalidSignalMsg               = sdkerrors.Register(ModuleName, 140, "signal message is invalid")                                //nolint:staticcheck
 	ErrMetadataTooLong                = sdkerrors.Register(ModuleName, 150, "metadata too long")                                        //nolint:staticcheck
 	ErrMinDepositTooSmall             = sdkerrors.Register(ModuleName, 160, "minimum deposit is too small")                             //nolint:staticcheck
-	ErrGovernorExists                 = sdkerrors.Register(ModuleName, 170, "governor already exists")                                  //nolint:staticcheck
-	ErrUnknownGovernor                = sdkerrors.Register(ModuleName, 180, "unknown governor")                                         //nolint:staticcheck
-	ErrInvalidGovernorStatus          = sdkerrors.Register(ModuleName, 190, "invalid governor status")                                  //nolint:staticcheck
-	ErrGovernanceDelegationExists     = sdkerrors.Register(ModuleName, 200, "governance delegation already exists")                     //nolint:staticcheck
-	ErrUnknownGovernanceDelegation    = sdkerrors.Register(ModuleName, 210, "unknown governance delegation")                            //nolint:staticcheck
-	ErrInvalidGovernanceDescription   = sdkerrors.Register(ModuleName, 220, "invalid governance description")                           //nolint:staticcheck
-	ErrDelegatorIsGovernor            = sdkerrors.Register(ModuleName, 230, "cannot delegate, delegator is an active governor")         //nolint:staticcheck
-	ErrGovernorStatusEqual            = sdkerrors.Register(ModuleName, 240, "cannot change governor status to the same status")         //nolint:staticcheck
-	ErrGovernorStatusChangePeriod     = sdkerrors.Register(ModuleName, 250, "governor status change period not elapsed")                //nolint:staticcheck
-	ErrInsufficientGovernorDelegation = sdkerrors.Register(ModuleName, 260, "insufficient governor self-delegation")                    //nolint:staticcheck
+	ErrInvalidConstitutionAmendment   = sdkerrors.Register(ModuleName, 170, "invalid constitution amendment")
+	ErrGovernorExists                 = sdkerrors.Register(ModuleName, 170, "governor already exists")                          //nolint:staticcheck
+	ErrUnknownGovernor                = sdkerrors.Register(ModuleName, 180, "unknown governor")                                 //nolint:staticcheck
+	ErrInvalidGovernorStatus          = sdkerrors.Register(ModuleName, 190, "invalid governor status")                          //nolint:staticcheck
+	ErrGovernanceDelegationExists     = sdkerrors.Register(ModuleName, 200, "governance delegation already exists")             //nolint:staticcheck
+	ErrUnknownGovernanceDelegation    = sdkerrors.Register(ModuleName, 210, "unknown governance delegation")                    //nolint:staticcheck
+	ErrInvalidGovernanceDescription   = sdkerrors.Register(ModuleName, 220, "invalid governance description")                   //nolint:staticcheck
+	ErrDelegatorIsGovernor            = sdkerrors.Register(ModuleName, 230, "cannot delegate, delegator is an active governor") //nolint:staticcheck
+	ErrGovernorStatusEqual            = sdkerrors.Register(ModuleName, 240, "cannot change governor status to the same status") //nolint:staticcheck
+	ErrGovernorStatusChangePeriod     = sdkerrors.Register(ModuleName, 250, "governor status change period not elapsed")        //nolint:staticcheck
+	ErrInsufficientGovernorDelegation = sdkerrors.Register(ModuleName, 260, "insufficient governor self-delegation")            //nolint:staticcheck
 )

@@ -15,6 +15,7 @@ import (
 	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
+	govtypesv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	govtypesv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 )
 
@@ -263,6 +264,15 @@ func queryAllEvidence(endpoint string) (evidencetypes.QueryAllEvidenceResponse, 
 func (s *IntegrationTestSuite) queryStakingParams(endpoint string) stakingtypes.QueryParamsResponse {
 	var res stakingtypes.QueryParamsResponse
 	body, err := httpGet(fmt.Sprintf("%s/cosmos/staking/v1beta1/params", endpoint))
+	s.Require().NoError(err)
+	err = cdc.UnmarshalJSON(body, &res)
+	s.Require().NoError(err)
+	return res
+}
+
+func (s *IntegrationTestSuite) queryConstitution(endpoint string) govtypesv1.QueryConstitutionResponse {
+	var res govtypesv1.QueryConstitutionResponse
+	body, err := httpGet(fmt.Sprintf("%s/atomone/gov/v1/constitution", endpoint))
 	s.Require().NoError(err)
 	err = cdc.UnmarshalJSON(body, &res)
 	s.Require().NoError(err)

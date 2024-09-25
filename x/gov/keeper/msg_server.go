@@ -204,7 +204,15 @@ func (k msgServer) ProposeConstitutionAmendment(goCtx context.Context, msg *v1.M
 	if k.authority != msg.Authority {
 		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
 	}
-	// only a no-op for now
+	if msg.Amendment == "" {
+		return nil, govtypes.ErrInvalidProposalMsg.Wrap("amendment cannot be empty")
+	}
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	constitution, err := k.ApplyConstitutionAmendment(ctx, msg.Amendment)
+	if err != nil {
+		return nil, govtypes.ErrInvalidProposalMsg.Wrap(err.Error())
+	}
+	k.SetConstitution(ctx, constitution)
 	return &v1.MsgProposeConstitutionAmendmentResponse{}, nil
 }
 

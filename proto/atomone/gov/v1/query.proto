@@ -14,7 +14,7 @@ option go_package = "github.com/atomone-hub/atomone/x/gov/types/v1";
 service Query {
   // Constitution queries the chain's constitution.
   rpc Constitution(QueryConstitutionRequest) returns (QueryConstitutionResponse) {
-    option (google.api.http).get = "/cosmos/gov/v1/constitution";
+    option (google.api.http).get = "/atomone/gov/v1/constitution";
   }
 
   // Proposal queries proposal details based on ProposalID.

@@ -53,7 +53,7 @@ snapshot:
   name_template: "{{ .Version }}-{{ .ShortCommit }}"
 
 changelog:
-  skip: false
+  disable: true
 
 git:
   # What should be used to sort tags when gathering the current and previous

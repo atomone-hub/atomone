@@ -70,6 +70,7 @@ func TestRandomizedGenState(t *testing.T) {
 	require.Equal(t, []*v1.Deposit{}, govGenesis.Deposits)
 	require.Equal(t, []*v1.Vote{}, govGenesis.Votes)
 	require.Equal(t, []*v1.Proposal{}, govGenesis.Proposals)
+	require.Equal(t, "", govGenesis.Constitution)
 }
 
 // TestRandomizedGenState tests abnormal scenarios of applying RandomizedGenState.

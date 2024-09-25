@@ -50,13 +50,12 @@ func getTestProposal() []sdk.Msg {
 
 // getTestConstitutionAmendmentProposal creates and returns a test constitution amendment proposal message.
 func getTestConstitutionAmendmentProposal() []sdk.Msg {
-	proposalMsg := v1.MsgProposeConstitutionAmendment{
-		Authority: authtypes.NewModuleAddress(types.ModuleName).String(),
-	}
+	amendment := "@@ -1 +1 @@\n-\n+Test"
+	proposalMsg := v1.NewMsgProposeConstitutionAmendment(authtypes.NewModuleAddress(types.ModuleName), amendment)
 
 	return []sdk.Msg{
 		banktypes.NewMsgSend(govAcct, addr, sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(1000)))),
-		&proposalMsg,
+		proposalMsg,
 	}
 }
 

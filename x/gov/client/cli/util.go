@@ -170,3 +170,30 @@ func ReadGovPropFlags(clientCtx client.Context, flagSet *pflag.FlagSet) (*govv1.
 
 	return rv, nil
 }
+
+// readFromMarkdownFile reads the contents of a markdown file
+// and returns it as a string.
+func readFromMarkdownFile(filePath string) (string, error) {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return "", fmt.Errorf("failed to open file: %w", err)
+	}
+	defer file.Close()
+
+	stat, err := file.Stat()
+	if err != nil {
+		return "", fmt.Errorf("failed to get file info: %w", err)
+	}
+
+	if stat.Size() == 0 {
+		return "", fmt.Errorf("file is empty")
+	}
+
+	contents := make([]byte, stat.Size())
+	_, err = file.Read(contents)
+	if err != nil {
+		return "", fmt.Errorf("failed to read file: %w", err)
+	}
+
+	return string(contents), nil
+}
