@@ -1,8 +1,6 @@
 package v1
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/atomone-hub/atomone/x/gov/types"
 )
 
@@ -13,5 +11,4 @@ type GovernorI interface {
 	IsInactive() bool                    // check if has status inactive
 	GetAddress() types.GovernorAddress   // governor address to receive/return governors delegations
 	GetDescription() GovernorDescription // description of the governor
-	GetVotingPower() sdk.Dec             // voting power of the governor
 }

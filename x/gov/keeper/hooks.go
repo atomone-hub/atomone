@@ -5,7 +5,6 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	"github.com/atomone-hub/atomone/x/gov/types"
-	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 )
 
 // Hooks wrapper struct for gov keeper
@@ -68,21 +67,6 @@ func (h Hooks) AfterDelegationModified(ctx sdk.Context, delAddr sdk.AccAddress, 
 
 // BeforeValidatorSlashed is called when a validator is slashed
 func (h Hooks) BeforeValidatorSlashed(ctx sdk.Context, valAddr sdk.ValAddress, fraction sdk.Dec) error {
-	// iterate through all GovernorValShares and reduce the governor VP by the appropriate amount
-	h.k.IterateGovernorValSharesByValidator(ctx, valAddr, func(index int64, shares v1.GovernorValShares) bool {
-		govAddr := types.MustGovernorAddressFromBech32(shares.GovernorAddress)
-		governor, _ := h.k.GetGovernor(ctx, govAddr)
-		validator, _ := h.k.sk.GetValidator(ctx, valAddr)
-		tokensBurned := shares.Shares.MulInt(validator.GetBondedTokens()).Quo(validator.GetDelegatorShares()).Mul(fraction)
-		governorVP := governor.GetVotingPower().Sub(tokensBurned)
-		if governorVP.IsNegative() {
-			panic("negative governor voting power")
-		}
-		governor.VotingPower = governorVP
-		h.k.UpdateGovernorByPowerIndex(ctx, governor)
-		return false
-	})
-
 	return nil
 }
 

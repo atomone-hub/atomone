@@ -1,15 +1,11 @@
 package v1
 
 import (
-	"bytes"
-	"sort"
-	"strings"
 	time "time"
 
 	"cosmossdk.io/errors"
 
 	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
@@ -30,61 +26,8 @@ func NewGovernor(address string, description GovernorDescription, creationTime t
 		GovernorAddress:      address,
 		Description:          description,
 		Status:               Active,
-		VotingPower:          sdk.ZeroDec(),
 		LastStatusChangeTime: &creationTime,
 	}, nil
-}
-
-// Governors is a collection of Governor
-type Governors []*Governor
-
-func (g Governors) String() (out string) {
-	for _, gov := range g {
-		out += gov.String() + "\n"
-	}
-
-	return strings.TrimSpace(out)
-}
-
-// Sort Governors sorts governor array in ascending governor address order
-func (g Governors) Sort() {
-	sort.Sort(g)
-}
-
-// Implements sort interface
-func (g Governors) Len() int {
-	return len(g)
-}
-
-// Implements sort interface
-func (g Governors) Less(i, j int) bool {
-	return bytes.Compare(g[i].GetAddress().Bytes(), g[j].GetAddress().Bytes()) == -1
-}
-
-// Implements sort interface
-func (g Governors) Swap(i, j int) {
-	g[i], g[j] = g[j], g[i]
-}
-
-// GovernorsByVotingPower implements sort.Interface for []Governor based on
-// the VotingPower and Address fields.
-// The governors are sorted first by their voting power (descending). Secondary index - Address (ascending).
-// Copied from tendermint/types/validator_set.go
-type GovernorsByVotingPower []Governor
-
-func (govz GovernorsByVotingPower) Len() int { return len(govz) }
-
-func (govz GovernorsByVotingPower) Less(i, j int) bool {
-	if govz[i].GetVotingPower().Equal(govz[j].GetVotingPower()) {
-		addrI := govz[i].GetAddress()
-		addrJ := govz[j].GetAddress()
-		return bytes.Compare(addrI, addrJ) == -1
-	}
-	return govz[i].GetVotingPower().GT(govz[j].GetVotingPower())
-}
-
-func (govz GovernorsByVotingPower) Swap(i, j int) {
-	govz[i], govz[j] = govz[j], govz[i]
 }
 
 func MustMarshalGovernor(cdc codec.BinaryCodec, governor *Governor) []byte {
@@ -205,8 +148,7 @@ func GovernorStatusFromString(str string) (GovernorStatus, error) {
 func (g *Governor) MinEqual(other *Governor) bool {
 	return g.GovernorAddress == other.GovernorAddress &&
 		g.Status == other.Status &&
-		g.Description.Equal(other.Description) &&
-		g.GetVotingPower().Equal(other.GetVotingPower())
+		g.Description.Equal(other.Description)
 }
 
 // Equal checks if the receiver equals the parameter
@@ -214,7 +156,6 @@ func (g *Governor) Equal(v2 *Governor) bool {
 	return g.MinEqual(v2)
 }
 
-func (g Governor) GetVotingPower() sdk.Dec             { return g.VotingPower }
 func (g Governor) GetMoniker() string                  { return g.Description.Moniker }
 func (g Governor) GetStatus() GovernorStatus           { return g.Status }
 func (g Governor) GetDescription() GovernorDescription { return g.Description }

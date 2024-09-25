@@ -29,7 +29,7 @@ func (k Keeper) SetGovernor(ctx sdk.Context, governor v1.Governor) {
 }
 
 // GetAllGovernors returns all governors
-func (k Keeper) GetAllGovernors(ctx sdk.Context) (governors v1.Governors) {
+func (k Keeper) GetAllGovernors(ctx sdk.Context) (governors []*v1.Governor) {
 	store := ctx.KVStore(k.storeKey)
 
 	iterator := sdk.KVStorePrefixIterator(store, types.GovernorKeyPrefix)
@@ -44,7 +44,7 @@ func (k Keeper) GetAllGovernors(ctx sdk.Context) (governors v1.Governors) {
 }
 
 // GetAllActiveGovernors returns all active governors
-func (k Keeper) GetAllActiveGovernors(ctx sdk.Context) (governors v1.Governors) {
+func (k Keeper) GetAllActiveGovernors(ctx sdk.Context) (governors []*v1.Governor) {
 	store := ctx.KVStore(k.storeKey)
 
 	iterator := sdk.KVStorePrefixIterator(store, types.GovernorKeyPrefix)
@@ -73,49 +73,6 @@ func (k Keeper) IterateGovernors(ctx sdk.Context, cb func(index int64, governor 
 			break
 		}
 		i++
-	}
-}
-
-// governor by power index
-func (k Keeper) SetGovernorByPowerIndex(ctx sdk.Context, governor v1.Governor) {
-	store := ctx.KVStore(k.storeKey)
-	store.Set(types.GovernorsByPowerKey(governor.GetAddress(), governor.GetVotingPower()), governor.GetAddress())
-}
-
-// governor by power index
-func (k Keeper) DeleteGovernorByPowerIndex(ctx sdk.Context, governor v1.Governor) {
-	store := ctx.KVStore(k.storeKey)
-	store.Delete(types.GovernorsByPowerKey(governor.GetAddress(), governor.GetVotingPower()))
-}
-
-// UpdateGovernorByPowerIndex updates the governor in the governor by power index
-func (k Keeper) UpdateGovernorByPowerIndex(ctx sdk.Context, governor v1.Governor) {
-	oldGovernor, _ := k.GetGovernor(ctx, governor.GetAddress())
-	k.DeleteGovernorByPowerIndex(ctx, oldGovernor)
-	k.SetGovernorByPowerIndex(ctx, governor)
-	k.SetGovernor(ctx, governor)
-}
-
-// IterateMaxGovernorsByGovernancePower iterates over the top params.MaxGovernors governors by governance power
-// inactive governors or governors that don't meet the minimum self-delegation requirement are not included
-func (k Keeper) IterateMaxGovernorsByGovernancePower(ctx sdk.Context, cb func(index int64, governor v1.GovernorI) (stop bool)) {
-	store := ctx.KVStore(k.storeKey)
-	maxGovernors := k.GetParams(ctx).MaxGovernors
-	var totGovernors uint64 = 0
-
-	iterator := sdk.KVStoreReversePrefixIterator(store, types.GovernorsByPowerKeyPrefix)
-	defer iterator.Close()
-
-	for ; iterator.Valid() && totGovernors <= maxGovernors; iterator.Next() {
-		// the value stored is the governor address
-		governorAddr := types.GovernorAddress(iterator.Value())
-		governor, _ := k.GetGovernor(ctx, governorAddr)
-		if governor.IsActive() && k.ValidateGovernorMinSelfDelegation(ctx, governor) {
-			if cb(int64(totGovernors), governor) {
-				break
-			}
-			totGovernors++
-		}
 	}
 }
 

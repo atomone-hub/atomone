@@ -59,10 +59,6 @@ func (k Keeper) SetGovernorValShares(ctx sdk.Context, share v1.GovernorValShares
 		panic(err)
 	}
 	store.Set(types.ValidatorSharesByGovernorKey(govAddr, valAddr), b)
-
-	// set the reverse mapping from validator to governor
-	// TODO: see if we can avoid duplicate storage
-	store.Set(types.ValidatorSharesByValidatorKey(valAddr, govAddr), b)
 }
 
 // GetGovernorValShares gets a governor validator shares from the store
@@ -109,42 +105,10 @@ func (k Keeper) IterateGovernorDelegations(ctx sdk.Context, governorAddr types.G
 	}
 }
 
-// GetGovernorValSharesByValidator gets all governor validator shares for a specific validator
-func (k Keeper) GetGovernorValSharesByValidator(ctx sdk.Context, validatorAddr sdk.ValAddress) []v1.GovernorValShares {
-	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.ValidatorSharesByValidatorKey(validatorAddr, []byte{}))
-	defer iterator.Close()
-
-	var shares []v1.GovernorValShares
-	for ; iterator.Valid(); iterator.Next() {
-		var share v1.GovernorValShares
-		k.cdc.MustUnmarshal(iterator.Value(), &share)
-		shares = append(shares, share)
-	}
-	return shares
-}
-
-// IterateGovernorValSharesByValidator iterates over all governor validator shares for a specific validator
-func (k Keeper) IterateGovernorValSharesByValidator(ctx sdk.Context, validatorAddr sdk.ValAddress, cb func(index int64, share v1.GovernorValShares) (stop bool)) {
-	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.ValidatorSharesByValidatorKey(validatorAddr, []byte{}))
-	defer iterator.Close()
-
-	for i := int64(0); iterator.Valid(); iterator.Next() {
-		var share v1.GovernorValShares
-		k.cdc.MustUnmarshal(iterator.Value(), &share)
-		if cb(i, share) {
-			break
-		}
-		i++
-	}
-}
-
 // RemoveGovernorValShares removes a governor validator shares from the store
 func (k Keeper) RemoveGovernorValShares(ctx sdk.Context, governorAddr types.GovernorAddress, validatorAddr sdk.ValAddress) {
 	store := ctx.KVStore(k.storeKey)
 	store.Delete(types.ValidatorSharesByGovernorKey(governorAddr, validatorAddr))
-	store.Delete(types.ValidatorSharesByValidatorKey(validatorAddr, governorAddr))
 }
 
 // GetAllGovernanceDelegationsByGovernor gets all governance delegations for a specific governor
@@ -185,11 +149,6 @@ func (k Keeper) IncreaseGovernorShares(ctx sdk.Context, governorAddr types.Gover
 		valShares.Shares = valShares.Shares.Add(shares)
 	}
 	k.SetGovernorValShares(ctx, valShares)
-	governor, _ := k.GetGovernor(ctx, governorAddr)
-	validator, _ := k.sk.GetValidator(ctx, validatorAddr)
-	vp := shares.MulInt(validator.GetBondedTokens()).Quo(validator.GetDelegatorShares())
-	governor.VotingPower = governor.GetVotingPower().Add(vp)
-	k.UpdateGovernorByPowerIndex(ctx, governor)
 }
 
 // DecreaseGovernorShares decreases the governor validator shares in the store
@@ -207,15 +166,6 @@ func (k Keeper) DecreaseGovernorShares(ctx sdk.Context, governorAddr types.Gover
 	} else {
 		k.SetGovernorValShares(ctx, share)
 	}
-	governor, _ := k.GetGovernor(ctx, governorAddr)
-	validator, _ := k.sk.GetValidator(ctx, validatorAddr)
-	vp := shares.MulInt(validator.GetBondedTokens()).Quo(validator.GetDelegatorShares())
-	governorVP := governor.GetVotingPower().Sub(vp)
-	if governorVP.IsNegative() {
-		panic("negative governor voting power")
-	}
-	governor.VotingPower = governorVP
-	k.UpdateGovernorByPowerIndex(ctx, governor)
 }
 
 // UndelegateFromGovernor decreases all governor validator shares in the store

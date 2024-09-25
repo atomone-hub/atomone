@@ -299,15 +299,9 @@ message Governor {
   GovernorStatus status = 2;
   // description defines the description terms for the governor.
   GovernorDescription description = 3 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
-  // voting_power defines the (estimated) voting power of the governor.
-  string voting_power = 4 [
-    (cosmos_proto.scalar)  = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable)   = false
-  ];
 
   // last_status_change_time is the time when the governor's status was last changed.
-  google.protobuf.Timestamp last_status_change_time = 5 [(gogoproto.stdtime) = true];
+  google.protobuf.Timestamp last_status_change_time = 4 [(gogoproto.stdtime) = true];
 }
 
 // GovernorStatus is the status of a governor.

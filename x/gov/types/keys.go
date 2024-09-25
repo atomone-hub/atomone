@@ -58,11 +58,9 @@ var (
 
 	// GovernorKeyPrefix is the prefix for governor key
 	GovernorKeyPrefix                        = []byte{0x50}
-	GovernorsByPowerKeyPrefix                = []byte{0x51}
-	GovernanceDelegationKeyPrefix            = []byte{0x52}
-	ValidatorSharesByGovernorKeyPrefix       = []byte{0x53}
-	GovernanceDelegationsByGovernorKeyPrefix = []byte{0x54}
-	ValidatorSharesByValidatorKeyPrefix      = []byte{0x55}
+	GovernanceDelegationKeyPrefix            = []byte{0x51}
+	ValidatorSharesByGovernorKeyPrefix       = []byte{0x52}
+	GovernanceDelegationsByGovernorKeyPrefix = []byte{0x53}
 )
 
 var lenTime = len(sdk.FormatTimeBytes(time.Now()))
@@ -144,13 +142,6 @@ func GovernorKey(governorAddr GovernorAddress) []byte {
 	return append(GovernorKeyPrefix, address.MustLengthPrefix(governorAddr.Bytes())...)
 }
 
-// GovernorsByPowerKey gets the first part of the governors by power key based on the power and governor address
-func GovernorsByPowerKey(governorAddr GovernorAddress, power sdk.Dec) []byte {
-	powerBytes := make([]byte, 8)
-	binary.BigEndian.PutUint64(powerBytes, uint64(power.TruncateInt64()))
-	return append(GovernorsByPowerKeyPrefix, append(powerBytes, address.MustLengthPrefix(governorAddr.Bytes())...)...)
-}
-
 // GovernanceDelegationKey gets the first part of the governance delegation key based on the delegator address
 func GovernanceDelegationKey(delegatorAddr sdk.AccAddress) []byte {
 	return append(GovernanceDelegationKeyPrefix, address.MustLengthPrefix(delegatorAddr.Bytes())...)
@@ -166,12 +157,6 @@ func GovernanceDelegationsByGovernorKey(governorAddr GovernorAddress, delegatorA
 // on the governor address and validator address
 func ValidatorSharesByGovernorKey(governorAddr GovernorAddress, validatorAddr sdk.ValAddress) []byte {
 	return append(ValidatorSharesByGovernorKeyPrefix, append(address.MustLengthPrefix(governorAddr.Bytes()), address.MustLengthPrefix(validatorAddr.Bytes())...)...)
-}
-
-// ValidatorSharesByValidatorKey gets the first part of the key for validator shares indexed by validator based on
-// on the validator address and governor address
-func ValidatorSharesByValidatorKey(validatorAddr sdk.ValAddress, governorAddr GovernorAddress) []byte {
-	return append(ValidatorSharesByValidatorKeyPrefix, append(address.MustLengthPrefix(validatorAddr.Bytes()), address.MustLengthPrefix(governorAddr.Bytes())...)...)
 }
 
 // Split keys function; used for iterators

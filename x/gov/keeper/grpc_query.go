@@ -322,7 +322,7 @@ func (q Keeper) Governors(c context.Context, req *v1.QueryGovernorsRequest) (*v1
 	store := ctx.KVStore(q.storeKey)
 	governorStore := prefix.NewStore(store, types.GovernorKeyPrefix)
 
-	var governors v1.Governors
+	var governors []*v1.Governor
 	pageRes, err := query.Paginate(governorStore, req.Pagination, func(key []byte, value []byte) error {
 		var governor v1.Governor
 		if err := q.cdc.Unmarshal(value, &governor); err != nil {
