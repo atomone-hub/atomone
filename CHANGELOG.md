@@ -30,7 +30,7 @@
 - Add x/gov/types [#8](https://github.com/atomone-hub/atomone/pull/8)
 - Remove No With Veto, and set default pass threshold to 2/3 and quorum to 25% [#9](https://github.com/atomone-hub/atomone/pull/9)
 - Change min voting period to 3 weeks [#10](https://github.com/atomone-hub/atomone/pull/10)
-- Add constitution amendment and law proposals with specific quorum and pass thresholds [#11](https://github.com/atomone-hub/atomone/pull/11)
+- Add constitution amendment and law proposals with specific quorum and pass thresholds [#11](https://github.com/atomone-hub/atomone/pull/11) [#20](https://github.com/atomone-hub/atomone/pull/20) [#25](https://github.com/atomone-hub/atomone/pull/25)
 - Add late quorum voting period extension [#13](https://github.com/atomone-hub/atomone/pull/12)
 - Add a minimum amount per deposit [#13](https://github.com/atomone-hub/atomone/pull/13)
 - Add constitution to x/gov [#15](https://github.com/atomone-hub/atomone/pull/15)
