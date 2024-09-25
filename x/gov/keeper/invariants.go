@@ -4,7 +4,6 @@ package keeper
 
 import (
 	"fmt"
-	"sort"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
@@ -126,6 +125,7 @@ func GovernorsDelegationsInvariant(keeper *Keeper, sk types.StakingKeeper) sdk.I
 			}
 
 			valShares := make(map[string]sdk.Dec)
+			valSharesKeys := make([]string, 0)
 			keeper.IterateGovernorDelegations(ctx, governor.GetAddress(), func(index int64, delegation v1.GovernanceDelegation) bool {
 				delAddr := sdk.MustAccAddressFromBech32(delegation.DelegatorAddress)
 				keeper.sk.IterateDelegations(ctx, delAddr, func(_ int64, delegation stakingtypes.DelegationI) (stop bool) {
@@ -135,20 +135,13 @@ func GovernorsDelegationsInvariant(keeper *Keeper, sk types.StakingKeeper) sdk.I
 						valShares[validatorAddr.String()] = sdk.ZeroDec()
 					}
 					valShares[validatorAddr.String()] = valShares[validatorAddr.String()].Add(shares)
+					valSharesKeys = append(valSharesKeys, validatorAddr.String())
 					return false
 				})
 				return false
 			})
 
-			// Extract keys and sort them
-			// since the order of the keys in the map is not guaranteed
-			keys := make([]string, 0, len(valShares))
-			for key := range valShares {
-				keys = append(keys, key)
-			}
-			sort.Strings(keys)
-
-			for _, valAddrStr := range keys {
+			for _, valAddrStr := range valSharesKeys {
 				shares := valShares[valAddrStr]
 				validatorAddr, _ := sdk.ValAddressFromBech32(valAddrStr)
 				valShares, ok := keeper.GetGovernorValShares(ctx, governor.GetAddress(), validatorAddr)
