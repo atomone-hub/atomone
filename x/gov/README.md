@@ -18,10 +18,8 @@ currently supports:
 * **Proposal submission:** Users can submit proposals with a deposit. Once the
 minimum deposit is reached, the proposal enters voting period. The minimum deposit can be reached by collecting deposits from different users (including proposer) within deposit period.
 * **Vote:** Participants can vote on proposals that reached MinDeposit and entered voting period.
-* **Inheritance and penalties:** Delegators inherit their validator's vote if
-they don't vote themselves.
 * **Claiming deposit:** Users that deposited on proposals can recover their
-deposits if the proposal was accepted or rejected. If the proposal was vetoed, or never entered voting period (minimum deposit not reached within deposit period), the deposit is burned.
+deposits if the proposal was accepted or rejected. If the proposal never entered voting period (minimum deposit not reached within deposit period), the deposit is burned.
 
 This module is in use in [AtomOne](https://github.com/atomone-hub/atomone)).
 Features that may be added in the future are described in [Future Improvements](#future-improvements).
@@ -72,7 +70,7 @@ The governance process is divided in a few steps that are outlined below:
 * **Proposal submission:** Proposal is submitted to the blockchain with a
   deposit.
 * **Vote:** Once deposit reaches a certain value (`MinDeposit`), proposal is
-  confirmed and vote opens. Bonded Atom holders can then send `TxGovVote`
+  confirmed and vote opens. Bonded Atom holders can then send `MsgVote`
   transactions to vote on the proposal.
 * **Execution** After a period of time, the votes are tallied and depending
   on the result, the messages in the proposal will be executed.
@@ -97,7 +95,7 @@ and have a respective path to execute on but do not perform a full validity chec
 ### Deposit
 
 To prevent spam, proposals must be submitted with a deposit in the coins defined by
-the `MinDeposit` param.
+the `MinDeposit` param multiplied by the `MinInitialDepositRatio` param.
 
 When a proposal is submitted, it has to be accompanied with a deposit that must be
 strictly positive, but can be inferior to `MinDeposit`. The submitter doesn't need
@@ -114,30 +112,24 @@ submission) before the deposit end time, the proposal will be moved into the
 The deposit is kept in escrow and held by the governance `ModuleAccount` until the
 proposal is finalized (passed or rejected).
 
-#### Deposit refund and burn
+#### Deposit refund
 
-When a proposal is finalized, the coins from the deposit are either refunded or burned
-according to the final tally of the proposal:
-
-* If the proposal is approved or rejected but *not* vetoed, each deposit will be
-  automatically refunded to its respective depositor (transferred from the governance
-  `ModuleAccount`).
-* When the proposal is vetoed with greater than 1/3, deposits will be burned from the
-  governance `ModuleAccount` and the proposal information along with its deposit
-  information will be removed from state.
-* All refunded or burned deposits are removed from the state. Events are issued when
-  burning or refunding a deposit.
+When a proposal is finalized, the coins from the deposit are refunded
+regardless of wether the proposal is approved or rejected.
+All refunded or burned deposits are removed from the state. Events are issued
+when burning or refunding a deposit.
 
 ### Vote
 
 #### Participants
 
 *Participants* are users that have the right to vote on proposals. On the
-Cosmos Hub, participants are bonded Atom holders. Unbonded Atom holders and
+AtomOne, participants are bonded Atone holders. Unbonded Atone holders and
 other users do not get the right to participate in governance. However, they
 can submit and deposit on proposals.
 
-Note that when *participants* have bonded and unbonded Atoms, their voting power is calculated from their bonded Atom holdings only.
+Note that when *participants* have bonded and unbonded Atones, their voting
+power is calculated from their bonded Atone holdings only.
 
 #### Voting period
 
@@ -145,7 +137,7 @@ Once a proposal reaches `MinDeposit`, it immediately enters `Voting period`. We
 define `Voting period` as the interval between the moment the vote opens and
 the moment the vote closes. `Voting period` should always be shorter than
 `Unbonding period` to prevent double voting. The initial value of
-`Voting period` is 2 weeks.
+`Voting period` is 3 weeks.
 
 #### Option set
 
@@ -156,14 +148,10 @@ The initial option set includes the following options:
 
 * `Yes`
 * `No`
-* `NoWithVeto`
 * `Abstain`
 
-`NoWithVeto` counts as `No` but also adds a `Veto` vote. `Abstain` option
-allows voters to signal that they do not intend to vote in favor or against the
-proposal but accept the result of the vote.
-
-*Note: from the UI, for urgent proposals we should maybe add a ‘Not Urgent’ option that casts a `NoWithVeto` vote.*
+`Abstain` option allows voters to signal that they do not intend to vote in
+favor or against the proposal but accept the result of the vote.
 
 #### Weighted Votes
 
@@ -174,11 +162,11 @@ Often times the entity owning that address might not be a single individual. For
 To represent weighted vote on chain, we use the following Protobuf message.
 
 ```protobuf reference
-https://github.com/cosmos/cosmos-sdk/blob/v0.47.0-rc1/proto/cosmos/gov/v1beta1/gov.proto#L34-L47
+https://github.com/atomone-hub/atomone/blob/31f030722f801f0c2836c17f6d163a106f30ec0b/proto/atomone/gov/v1/gov.proto#L27-L35
 ```
 
 ```protobuf reference
-https://github.com/cosmos/cosmos-sdk/blob/v0.47.0-rc1/proto/cosmos/gov/v1beta1/gov.proto#L181-L201
+https://github.com/atomone-hub/atomone/blob/31f030722f801f0c2836c17f6d163a106f30ec0b/proto/atomone/gov/v1/gov.proto#L134-L150
 ```
 
 For a weighted vote to be valid, the `options` field must not contain duplicate vote options, and the sum of weights of all options must be equal to 1.
@@ -193,19 +181,15 @@ cast on a proposal for the result to be valid.
 Threshold is defined as the minimum proportion of `Yes` votes (excluding
 `Abstain` votes) for the proposal to be accepted.
 
-Initially, the threshold is set at 50% of `Yes` votes, excluding `Abstain`
-votes. A possibility to veto exists if more than 1/3rd of all votes are
-`NoWithVeto` votes.  Note, both of these values are derived from the `TallyParams`
-on-chain parameter, which is modifiable by governance.
-This means that proposals are accepted iff:
+Initially, the threshold is set at 66.7% of `Yes` votes, excluding `Abstain`
+votes. Note, the value is derived from the `TallyParams` on-chain parameter,
+which is modifiable by governance. This means that proposals are accepted if:
 
 * There exist bonded tokens.
 * Quorum has been achieved.
 * The proportion of `Abstain` votes is inferior to 1/1.
-* The proportion of `NoWithVeto` votes is inferior to 1/3, including
-  `Abstain` votes.
 * The proportion of `Yes` votes, excluding `Abstain` votes, at the end of
-  the voting period is superior to 1/2.
+  the voting period is superior to 2/3.
 
 #### No inheritance
 
@@ -225,7 +209,6 @@ Later, we may add permissioned keys that could only sign txs from certain module
 
 There are three parameters that define if the deposit of a proposal should be burned or returned to the depositors. 
 
-* `BurnVoteVeto` burns the proposal deposit if the proposal gets vetoed. 
 * `BurnVoteQuorum` burns the proposal deposit if the proposal deposit if the vote does not reach quorum.
 * `BurnProposalDepositPrevote` burns the proposal deposit if it does not enter the voting phase. 
 
@@ -242,7 +225,7 @@ unique id and contains a series of timestamps: `submit_time`, `deposit_end_time`
 `voting_start_time`, `voting_end_time` which track the lifecycle of a proposal
 
 ```protobuf reference
-https://github.com/cosmos/cosmos-sdk/blob/v0.47.0-rc1/proto/cosmos/gov/v1/gov.proto#L51-L99
+https://github.com/atomone-hub/atomone/blob/31f030722f801f0c2836c17f6d163a106f30ec0b/proto/atomone/gov/v1/gov.proto#L51-L101
 ```
 
 A proposal will generally require more than just a set of messages to explain its
@@ -290,19 +273,19 @@ parameter set has to be created and the previous one rendered inactive.
 #### DepositParams
 
 ```protobuf reference
-https://github.com/cosmos/cosmos-sdk/blob/v0.47.0-rc1/proto/cosmos/gov/v1/gov.proto#L152-L162
+https://github.com/atomone-hub/atomone/blob/31f030722f801f0c2836c17f6d163a106f30ec0b/proto/atomone/gov/v1/gov.proto#L167-L181
 ```
 
 #### VotingParams
 
 ```protobuf reference
-https://github.com/cosmos/cosmos-sdk/blob/v0.47.0-rc1/proto/cosmos/gov/v1/gov.proto#L164-L168
+https://github.com/atomone-hub/atomone/blob/31f030722f801f0c2836c17f6d163a106f30ec0b/proto/atomone/gov/v1/gov.proto#L183-L187
 ```
 
 #### TallyParams
 
 ```protobuf reference
-https://github.com/cosmos/cosmos-sdk/blob/v0.47.0-rc1/proto/cosmos/gov/v1/gov.proto#L170-L182
+https://github.com/atomone-hub/atomone/blob/31f030722f801f0c2836c17f6d163a106f30ec0b/proto/atomone/gov/v1/gov.proto#L189-L209
 ```
 
 Parameters are stored in a global `GlobalParams` KVStore.
@@ -314,9 +297,8 @@ type Vote byte
 
 const (
     VoteYes         = 0x1
-    VoteNo          = 0x2
-    VoteNoWithVeto  = 0x3
-    VoteAbstain     = 0x4
+    VoteAbstain     = 0x2
+    VoteNo          = 0x3
 )
 
 type ProposalType  string
@@ -342,18 +324,7 @@ const (
 ### Deposit
 
 ```protobuf reference
-https://github.com/cosmos/cosmos-sdk/blob/v0.47.0-rc1/proto/cosmos/gov/v1/gov.proto#L38-L49
-```
-
-### ValidatorGovInfo
-
-This type is used in a temp map when tallying
-
-```go
-  type ValidatorGovInfo struct {
-    Minus     sdk.Dec
-    Vote      Vote
-  }
+https://github.com/atomone-hub/atomone/blob/31f030722f801f0c2836c17f6d163a106f30ec0b/proto/atomone/gov/v1/gov.proto#L37-L49
 ```
 
 ## Stores
@@ -399,11 +370,7 @@ And the pseudocode for the `ProposalProcessingQueue`:
       proposal = load(Governance, <proposalID|'proposal'>) // proposal is a const key
 
       validators = Keeper.getAllValidators()
-      tmpValMap := map(sdk.AccAddress)ValidatorGovInfo
-
-      // Initiate mapping at 0. This is the amount of shares of the validator's vote that will be overridden by their delegator's votes
-      for each validator in validators
-        tmpValMap(validator.OperatorAddr).Minus = 0
+      tmpValMap := map(sdk.AccAddress)stakingtypes.ValidatorI
 
       // Tally
       voterIterator = rangeQuery(Governance, <proposalID|'addresses'>) //return all the addresses that voted on the proposal
@@ -411,8 +378,6 @@ And the pseudocode for the `ProposalProcessingQueue`:
         delegations = stakingKeeper.getDelegations(voterAddress) // get all delegations for current voter
 
         for each delegation in delegations
-          // make sure delegation.Shares does NOT include shares being unbonded
-          tmpValMap(delegation.ValidatorAddr).Minus += delegation.Shares
           proposal.updateTally(vote, delegation.Shares)
 
         _, isVal = stakingKeeper.getValidator(voterAddress)
@@ -421,16 +386,9 @@ And the pseudocode for the `ProposalProcessingQueue`:
 
       tallyingParam = load(GlobalParams, 'TallyingParam')
 
-      // Update tally if validator voted
-      for each validator in validators
-        if tmpValMap(validator).HasVoted
-          proposal.updateTally(tmpValMap(validator).Vote, (validator.TotalShares - tmpValMap(validator).Minus))
-
-
-
       // Check if proposal is accepted or rejected
-      totalNonAbstain := proposal.YesVotes + proposal.NoVotes + proposal.NoWithVetoVotes
-      if (proposal.Votes.YesVotes/totalNonAbstain > tallyingParam.Threshold AND proposal.Votes.NoWithVetoVotes/totalNonAbstain  < tallyingParam.Veto)
+      totalNonAbstain := proposal.YesVotes + proposal.NoVotes
+      if (proposal.Votes.YesVotes/totalNonAbstain > tallyingParam.Threshold)
         //  proposal was accepted at the end of the voting period
         //  refund deposits (non-voters already punished)
         for each (amount, depositor) in proposal.Deposits
@@ -468,7 +426,7 @@ More information on how to submit proposals in the [client section](#client).
 Proposals can be submitted by any account via a `MsgSubmitProposal` transaction.
 
 ```protobuf reference
-https://github.com/cosmos/cosmos-sdk/blob/v0.47.0-rc1/proto/cosmos/gov/v1/tx.proto#L42-L69
+https://github.com/atomone-hub/atomone/blob/31f030722f801f0c2836c17f6d163a106f30ec0b/proto/atomone/gov/v1/tx.proto#L53-L82
 ```
 
 All `sdk.Msgs` passed into the `messages` field of a `MsgSubmitProposal` message
@@ -524,7 +482,6 @@ upon receiving txGovSubmitProposal from sender do
   proposal.Submitter = sender
   proposal.YesVotes = 0
   proposal.NoVotes = 0
-  proposal.NoWithVetoVotes = 0
   proposal.AbstainVotes = 0
   proposal.CurrentStatus = ProposalStatusOpen
 
@@ -539,7 +496,7 @@ Once a proposal is submitted, if
 `MsgDeposit` transactions to increase the proposal's deposit.
 
 ```protobuf reference
-https://github.com/cosmos/cosmos-sdk/blob/v0.47.0-rc1/proto/cosmos/gov/v1/tx.proto#L134-L147
+https://github.com/atomone-hub/atomone/blob/31f030722f801f0c2836c17f6d163a106f30ec0b/proto/atomone/gov/v1/tx.proto#L150-L165
 ```
 
 **State modifications:**
@@ -607,7 +564,7 @@ bonded Atom holders are able to send `MsgVote` transactions to cast their
 vote on the proposal.
 
 ```protobuf reference
-https://github.com/cosmos/cosmos-sdk/blob/v0.47.0-rc1/proto/cosmos/gov/v1/tx.proto#L92-L108
+https://github.com/atomone-hub/atomone/blob/31f030722f801f0c2836c17f6d163a106f30ec0b/proto/atomone/gov/v1/tx.proto#L106-L123
 ```
 
 **State modifications:**
@@ -659,6 +616,8 @@ The governance module emits the following events:
 | inactive_proposal | proposal_result | {proposalResult} |
 | active_proposal   | proposal_id     | {proposalID}     |
 | active_proposal   | proposal_result | {proposalResult} |
+| quorum_check      | proposal_id     | {proposalID}     |
+| quorum_check      | proposal_result | {proposalResult} |
 
 ### Handlers
 
@@ -720,10 +679,8 @@ The governance module contains the following parameters:
 | voting_period                 | string (time ns) | "172800000000000" (17280s)              |
 | quorum                        | string (dec)     | "0.334000000000000000"                  |
 | threshold                     | string (dec)     | "0.500000000000000000"                  |
-| veto                          | string (dec)     | "0.334000000000000000"                  |
 | burn_proposal_deposit_prevote | bool             | false                                   |
 | burn_vote_quorum              | bool             | false                                   |
-| burn_vote_veto                | bool             | true                                    |
 
 **NOTE**: The governance module contains parameters that are objects unlike other
 modules. If only a subset of parameters are desired to be changed, only they need
@@ -740,7 +697,7 @@ A user can query and interact with the `gov` module using the CLI.
 The `query` commands allow users to query `gov` state.
 
 ```bash
-simd query gov --help
+atomoned query gov --help
 ```
 
 ##### deposit
@@ -748,13 +705,13 @@ simd query gov --help
 The `deposit` command allows users to query a deposit for a given proposal from a given depositor.
 
 ```bash
-simd query gov deposit [proposal-id] [depositer-addr] [flags]
+atomoned query gov deposit [proposal-id] [depositer-addr] [flags]
 ```
 
 Example:
 
 ```bash
-simd query gov deposit 1 cosmos1..
+atomoned query gov deposit 1 atone1..
 ```
 
 Example Output:
@@ -762,8 +719,8 @@ Example Output:
 ```bash
 amount:
 - amount: "100"
-  denom: stake
-depositor: cosmos1..
+  denom: atone
+depositor: atone1..
 proposal_id: "1"
 ```
 
@@ -772,13 +729,13 @@ proposal_id: "1"
 The `deposits` command allows users to query all deposits for a given proposal.
 
 ```bash
-simd query gov deposits [proposal-id] [flags]
+atomoned query gov deposits [proposal-id] [flags]
 ```
 
 Example:
 
 ```bash
-simd query gov deposits 1
+atomoned query gov deposits 1
 ```
 
 Example Output:
@@ -787,8 +744,8 @@ Example Output:
 deposits:
 - amount:
   - amount: "100"
-    denom: stake
-  depositor: cosmos1..
+    denom: atone
+  depositor: atone1..
   proposal_id: "1"
 pagination:
   next_key: null
@@ -800,13 +757,13 @@ pagination:
 The `param` command allows users to query a given parameter for the `gov` module.
 
 ```bash
-simd query gov param [param-type] [flags]
+atomoned query gov param [param-type] [flags]
 ```
 
 Example:
 
 ```bash
-simd query gov param voting
+atomoned query gov param voting
 ```
 
 Example Output:
@@ -820,13 +777,13 @@ voting_period: "172800000000000"
 The `params` command allows users to query all parameters for the `gov` module.
 
 ```bash
-simd query gov params [flags]
+atomoned query gov params [flags]
 ```
 
 Example:
 
 ```bash
-simd query gov params
+atomoned query gov params
 ```
 
 Example Output:
@@ -836,11 +793,10 @@ deposit_params:
   max_deposit_period: "172800000000000"
   min_deposit:
   - amount: "10000000"
-    denom: stake
+    denom: atone
 tally_params:
   quorum: "0.334000000000000000"
   threshold: "0.500000000000000000"
-  veto_threshold: "0.334000000000000000"
 voting_params:
   voting_period: "172800000000000"
 ```
@@ -850,13 +806,13 @@ voting_params:
 The `proposal` command allows users to query a given proposal.
 
 ```bash
-simd query gov proposal [proposal-id] [flags]
+atomoned query gov proposal [proposal-id] [flags]
 ```
 
 Example:
 
 ```bash
-simd query gov proposal 1
+atomoned query gov proposal 1
 ```
 
 Example Output:
@@ -866,22 +822,21 @@ deposit_end_time: "2022-03-30T11:50:20.819676256Z"
 final_tally_result:
   abstain_count: "0"
   no_count: "0"
-  no_with_veto_count: "0"
   yes_count: "0"
 id: "1"
 messages:
 - '@type': /cosmos.bank.v1beta1.MsgSend
   amount:
   - amount: "10"
-    denom: stake
-  from_address: cosmos1..
-  to_address: cosmos1..
+    denom: atone
+  from_address: atone1..
+  to_address: atone1..
 metadata: AQ==
 status: PROPOSAL_STATUS_DEPOSIT_PERIOD
 submit_time: "2022-03-28T11:50:20.819676256Z"
 total_deposit:
 - amount: "10"
-  denom: stake
+  denom: atone
 voting_end_time: null
 voting_start_time: null
 ```
@@ -891,13 +846,13 @@ voting_start_time: null
 The `proposals` command allows users to query all proposals with optional filters.
 
 ```bash
-simd query gov proposals [flags]
+atomoned query gov proposals [flags]
 ```
 
 Example:
 
 ```bash
-simd query gov proposals
+atomoned query gov proposals
 ```
 
 Example Output:
@@ -911,44 +866,42 @@ proposals:
   final_tally_result:
     abstain_count: "0"
     no_count: "0"
-    no_with_veto_count: "0"
     yes_count: "0"
   id: "1"
   messages:
   - '@type': /cosmos.bank.v1beta1.MsgSend
     amount:
     - amount: "10"
-      denom: stake
-    from_address: cosmos1..
-    to_address: cosmos1..
+      denom: atone
+    from_address: atone1..
+    to_address: atone1..
   metadata: AQ==
   status: PROPOSAL_STATUS_DEPOSIT_PERIOD
   submit_time: "2022-03-28T11:50:20.819676256Z"
   total_deposit:
   - amount: "10"
-    denom: stake
+    denom: atone
   voting_end_time: null
   voting_start_time: null
 - deposit_end_time: "2022-03-30T14:02:41.165025015Z"
   final_tally_result:
     abstain_count: "0"
     no_count: "0"
-    no_with_veto_count: "0"
     yes_count: "0"
   id: "2"
   messages:
   - '@type': /cosmos.bank.v1beta1.MsgSend
     amount:
     - amount: "10"
-      denom: stake
-    from_address: cosmos1..
-    to_address: cosmos1..
+      denom: atone
+    from_address: atone1..
+    to_address: atone1..
   metadata: AQ==
   status: PROPOSAL_STATUS_DEPOSIT_PERIOD
   submit_time: "2022-03-28T14:02:41.165025015Z"
   total_deposit:
   - amount: "10"
-    denom: stake
+    denom: atone
   voting_end_time: null
   voting_start_time: null
 ```
@@ -958,20 +911,20 @@ proposals:
 The `proposer` command allows users to query the proposer for a given proposal.
 
 ```bash
-simd query gov proposer [proposal-id] [flags]
+atomoned query gov proposer [proposal-id] [flags]
 ```
 
 Example:
 
 ```bash
-simd query gov proposer 1
+atomoned query gov proposer 1
 ```
 
 Example Output:
 
 ```bash
 proposal_id: "1"
-proposer: cosmos1..
+proposer: atone1..
 ```
 
 ##### tally
@@ -979,13 +932,13 @@ proposer: cosmos1..
 The `tally` command allows users to query the tally of a given proposal vote.
 
 ```bash
-simd query gov tally [proposal-id] [flags]
+atomoned query gov tally [proposal-id] [flags]
 ```
 
 Example:
 
 ```bash
-simd query gov tally 1
+atomoned query gov tally 1
 ```
 
 Example Output:
@@ -993,7 +946,6 @@ Example Output:
 ```bash
 abstain: "0"
 "no": "0"
-no_with_veto: "0"
 "yes": "1"
 ```
 
@@ -1002,13 +954,13 @@ no_with_veto: "0"
 The `vote` command allows users to query a vote for a given proposal.
 
 ```bash
-simd query gov vote [proposal-id] [voter-addr] [flags]
+atomoned query gov vote [proposal-id] [voter-addr] [flags]
 ```
 
 Example:
 
 ```bash
-simd query gov vote 1 cosmos1..
+atomoned query gov vote 1 atone1..
 ```
 
 Example Output:
@@ -1019,7 +971,7 @@ options:
 - option: VOTE_OPTION_YES
   weight: "1.000000000000000000"
 proposal_id: "1"
-voter: cosmos1..
+voter: atone1..
 ```
 
 ##### votes
@@ -1027,13 +979,13 @@ voter: cosmos1..
 The `votes` command allows users to query all votes for a given proposal.
 
 ```bash
-simd query gov votes [proposal-id] [flags]
+atomoned query gov votes [proposal-id] [flags]
 ```
 
 Example:
 
 ```bash
-simd query gov votes 1
+atomoned query gov votes 1
 ```
 
 Example Output:
@@ -1048,7 +1000,7 @@ votes:
   - option: VOTE_OPTION_YES
     weight: "1.000000000000000000"
   proposal_id: "1"
-  voter: cosmos1..
+  voter: atone1..
 ```
 
 #### Transactions
@@ -1056,7 +1008,7 @@ votes:
 The `tx` commands allow users to interact with the `gov` module.
 
 ```bash
-simd tx gov --help
+atomoned tx gov --help
 ```
 
 ##### deposit
@@ -1064,13 +1016,13 @@ simd tx gov --help
 The `deposit` command allows users to deposit tokens for a given proposal.
 
 ```bash
-simd tx gov deposit [proposal-id] [deposit] [flags]
+atomoned tx gov deposit [proposal-id] [deposit] [flags]
 ```
 
 Example:
 
 ```bash
-simd tx gov deposit 1 10000000stake --from cosmos1..
+atomoned tx gov deposit 1 10000000atone --from atone1..
 ```
 
 ##### draft-proposal
@@ -1080,7 +1032,7 @@ The command returns a `draft_proposal.json`, to be used by `submit-proposal` aft
 The `draft_metadata.json` is meant to be uploaded to [IPFS](#metadata).
 
 ```bash
-simd tx gov draft-proposal
+atomoned tx gov draft-proposal
 ```
 
 ##### submit-proposal
@@ -1089,13 +1041,13 @@ The `submit-proposal` command allows users to submit a governance proposal along
 Messages, metadata and deposit are defined in a JSON file.
 
 ```bash
-simd tx gov submit-proposal [path-to-proposal-json] [flags]
+atomoned tx gov submit-proposal [path-to-proposal-json] [flags]
 ```
 
 Example:
 
 ```bash
-simd tx gov submit-proposal /path/to/proposal.json --from cosmos1..
+atomoned tx gov submit-proposal /path/to/proposal.json --from atone1..
 ```
 
 where `proposal.json` contains:
@@ -1105,13 +1057,13 @@ where `proposal.json` contains:
   "messages": [
     {
       "@type": "/cosmos.bank.v1beta1.MsgSend",
-      "from_address": "cosmos1...", // The gov module module address
-      "to_address": "cosmos1...",
-      "amount":[{"denom": "stake","amount": "10"}]
+      "from_address": "atone1...", // The gov module module address
+      "to_address": "atone1...",
+      "amount":[{"denom": "atone","amount": "10"}]
     }
   ],
   "metadata": "AQ==",
-  "deposit": "10stake",
+  "deposit": "10atone",
   "title": "Proposal Title",
   "summary": "Proposal Summary"
 }
@@ -1126,25 +1078,25 @@ By default the metadata, summary and title are both limited by 255 characters, t
 The `submit-legacy-proposal` command allows users to submit a governance legacy proposal along with an initial deposit.
 
 ```bash
-simd tx gov submit-legacy-proposal [command] [flags]
+atomoned tx gov submit-legacy-proposal [command] [flags]
 ```
 
 Example:
 
 ```bash
-simd tx gov submit-legacy-proposal --title="Test Proposal" --description="testing" --type="Text" --deposit="100000000stake" --from cosmos1..
+atomoned tx gov submit-legacy-proposal --title="Test Proposal" --description="testing" --type="Text" --deposit="100000000atone" --from atone1..
 ```
 
 Example (`cancel-software-upgrade`):
 
 ```bash
-simd tx gov submit-legacy-proposal cancel-software-upgrade --title="Test Proposal" --description="testing" --deposit="100000000stake" --from cosmos1..
+atomoned tx gov submit-legacy-proposal cancel-software-upgrade --title="Test Proposal" --description="testing" --deposit="100000000atone" --from atone1..
 ```
 
 Example (`param-change`):
 
 ```bash
-simd tx gov submit-legacy-proposal param-change proposal.json --from cosmos1..
+atomoned tx gov submit-legacy-proposal param-change proposal.json --from atone1..
 ```
 
 ```json
@@ -1158,14 +1110,14 @@ simd tx gov submit-legacy-proposal param-change proposal.json --from cosmos1..
       "value": 100
     }
   ],
-  "deposit": "10000000stake"
+  "deposit": "10000000atone"
 }
 ```
 
 Example (`software-upgrade`):
 
 ```bash
-simd tx gov submit-legacy-proposal software-upgrade v2 --title="Test Proposal" --description="testing, testing, 1, 2, 3" --upgrade-height 1000000 --from cosmos1..
+atomoned tx gov submit-legacy-proposal software-upgrade v2 --title="Test Proposal" --description="testing, testing, 1, 2, 3" --upgrade-height 1000000 --from atone1..
 ```
 
 ##### vote
@@ -1173,13 +1125,13 @@ simd tx gov submit-legacy-proposal software-upgrade v2 --title="Test Proposal" -
 The `vote` command allows users to submit a vote for a given governance proposal.
 
 ```bash
-simd tx gov vote [command] [flags]
+atomoned tx gov vote [command] [flags]
 ```
 
 Example:
 
 ```bash
-simd tx gov vote 1 yes --from cosmos1..
+atomoned tx gov vote 1 yes --from atone1..
 ```
 
 ##### weighted-vote
@@ -1187,13 +1139,13 @@ simd tx gov vote 1 yes --from cosmos1..
 The `weighted-vote` command allows users to submit a weighted vote for a given governance proposal.
 
 ```bash
-simd tx gov weighted-vote [proposal-id] [weighted-options] [flags]
+atomoned tx gov weighted-vote [proposal-id] [weighted-options] [flags]
 ```
 
 Example:
 
 ```bash
-simd tx gov weighted-vote 1 yes=0.5,no=0.5 --from cosmos1..
+atomoned tx gov weighted-vote 1 yes=0.5,no=0.5 --from atone1..
 ```
 
 ### gRPC
@@ -1231,13 +1183,12 @@ Example Output:
       "yes": "0",
       "abstain": "0",
       "no": "0",
-      "noWithVeto": "0"
     },
     "submitTime": "2021-09-16T19:40:08.712440474Z",
     "depositEndTime": "2021-09-18T19:40:08.712440474Z",
     "totalDeposit": [
       {
-        "denom": "stake",
+        "denom": "atone",
         "amount": "10000000"
       }
     ],
@@ -1271,20 +1222,19 @@ Example Output:
   "proposal": {
     "id": "1",
     "messages": [
-      {"@type":"/cosmos.bank.v1beta1.MsgSend","amount":[{"denom":"stake","amount":"10"}],"fromAddress":"cosmos1..","toAddress":"cosmos1.."}
+      {"@type":"/cosmos.bank.v1beta1.MsgSend","amount":[{"denom":"atone","amount":"10"}],"fromAddress":"atone1..","toAddress":"atone1.."}
     ],
     "status": "PROPOSAL_STATUS_VOTING_PERIOD",
     "finalTallyResult": {
       "yesCount": "0",
       "abstainCount": "0",
       "noCount": "0",
-      "noWithVetoCount": "0"
     },
     "submitTime": "2022-03-28T11:50:20.819676256Z",
     "depositEndTime": "2022-03-30T11:50:20.819676256Z",
     "totalDeposit": [
       {
-        "denom": "stake",
+        "denom": "atone",
         "amount": "10000000"
       }
     ],
@@ -1328,13 +1278,12 @@ Example Output:
         "yes": "0",
         "abstain": "0",
         "no": "0",
-        "noWithVeto": "0"
       },
       "submitTime": "2022-03-28T11:50:20.819676256Z",
       "depositEndTime": "2022-03-30T11:50:20.819676256Z",
       "totalDeposit": [
         {
-          "denom": "stake",
+          "denom": "atone",
           "amount": "10000000010"
         }
       ],
@@ -1348,13 +1297,12 @@ Example Output:
         "yes": "0",
         "abstain": "0",
         "no": "0",
-        "noWithVeto": "0"
       },
       "submitTime": "2022-03-28T14:02:41.165025015Z",
       "depositEndTime": "2022-03-30T14:02:41.165025015Z",
       "totalDeposit": [
         {
-          "denom": "stake",
+          "denom": "atone",
           "amount": "10"
         }
       ],
@@ -1391,20 +1339,19 @@ Example Output:
     {
       "id": "1",
       "messages": [
-        {"@type":"/cosmos.bank.v1beta1.MsgSend","amount":[{"denom":"stake","amount":"10"}],"fromAddress":"cosmos1..","toAddress":"cosmos1.."}
+        {"@type":"/cosmos.bank.v1beta1.MsgSend","amount":[{"denom":"atone","amount":"10"}],"fromAddress":"atone1..","toAddress":"atone1.."}
       ],
       "status": "PROPOSAL_STATUS_VOTING_PERIOD",
       "finalTallyResult": {
         "yesCount": "0",
         "abstainCount": "0",
         "noCount": "0",
-        "noWithVetoCount": "0"
       },
       "submitTime": "2022-03-28T11:50:20.819676256Z",
       "depositEndTime": "2022-03-30T11:50:20.819676256Z",
       "totalDeposit": [
         {
-          "denom": "stake",
+          "denom": "atone",
           "amount": "10000000010"
         }
       ],
@@ -1417,20 +1364,19 @@ Example Output:
     {
       "id": "2",
       "messages": [
-        {"@type":"/cosmos.bank.v1beta1.MsgSend","amount":[{"denom":"stake","amount":"10"}],"fromAddress":"cosmos1..","toAddress":"cosmos1.."}
+        {"@type":"/cosmos.bank.v1beta1.MsgSend","amount":[{"denom":"atone","amount":"10"}],"fromAddress":"atone1..","toAddress":"atone1.."}
       ],
       "status": "PROPOSAL_STATUS_DEPOSIT_PERIOD",
       "finalTallyResult": {
         "yesCount": "0",
         "abstainCount": "0",
         "noCount": "0",
-        "noWithVetoCount": "0"
       },
       "submitTime": "2022-03-28T14:02:41.165025015Z",
       "depositEndTime": "2022-03-30T14:02:41.165025015Z",
       "totalDeposit": [
         {
-          "denom": "stake",
+          "denom": "atone",
           "amount": "10"
         }
       ],
@@ -1459,7 +1405,7 @@ Example:
 
 ```bash
 grpcurl -plaintext \
-    -d '{"proposal_id":"1","voter":"cosmos1.."}' \
+    -d '{"proposal_id":"1","voter":"atone1.."}' \
     localhost:9090 \
     cosmos.gov.v1beta1.Query/Vote
 ```
@@ -1470,7 +1416,7 @@ Example Output:
 {
   "vote": {
     "proposalId": "1",
-    "voter": "cosmos1..",
+    "voter": "atone1..",
     "option": "VOTE_OPTION_YES",
     "options": [
       {
@@ -1492,7 +1438,7 @@ Example:
 
 ```bash
 grpcurl -plaintext \
-    -d '{"proposal_id":"1","voter":"cosmos1.."}' \
+    -d '{"proposal_id":"1","voter":"atone1.."}' \
     localhost:9090 \
     cosmos.gov.v1.Query/Vote
 ```
@@ -1503,7 +1449,7 @@ Example Output:
 {
   "vote": {
     "proposalId": "1",
-    "voter": "cosmos1..",
+    "voter": "atone1..",
     "option": "VOTE_OPTION_YES",
     "options": [
       {
@@ -1541,7 +1487,7 @@ Example Output:
   "votes": [
     {
       "proposalId": "1",
-      "voter": "cosmos1..",
+      "voter": "atone1..",
       "options": [
         {
           "option": "VOTE_OPTION_YES",
@@ -1578,7 +1524,7 @@ Example Output:
   "votes": [
     {
       "proposalId": "1",
-      "voter": "cosmos1..",
+      "voter": "atone1..",
       "options": [
         {
           "option": "VOTE_OPTION_YES",
@@ -1627,7 +1573,6 @@ Example Output:
   "tallyParams": {
     "quorum": "MA==",
     "threshold": "MA==",
-    "vetoThreshold": "MA=="
   }
 }
 ```
@@ -1671,7 +1616,7 @@ Example:
 
 ```bash
 grpcurl -plaintext \
-    '{"proposal_id":"1","depositor":"cosmos1.."}' \
+    '{"proposal_id":"1","depositor":"atone1.."}' \
     localhost:9090 \
     cosmos.gov.v1beta1.Query/Deposit
 ```
@@ -1682,10 +1627,10 @@ Example Output:
 {
   "deposit": {
     "proposalId": "1",
-    "depositor": "cosmos1..",
+    "depositor": "atone1..",
     "amount": [
       {
-        "denom": "stake",
+        "denom": "atone",
         "amount": "10000000"
       }
     ]
@@ -1703,7 +1648,7 @@ Example:
 
 ```bash
 grpcurl -plaintext \
-    '{"proposal_id":"1","depositor":"cosmos1.."}' \
+    '{"proposal_id":"1","depositor":"atone1.."}' \
     localhost:9090 \
     cosmos.gov.v1.Query/Deposit
 ```
@@ -1714,10 +1659,10 @@ Example Output:
 {
   "deposit": {
     "proposalId": "1",
-    "depositor": "cosmos1..",
+    "depositor": "atone1..",
     "amount": [
       {
-        "denom": "stake",
+        "denom": "atone",
         "amount": "10000000"
       }
     ]
@@ -1751,10 +1696,10 @@ Example Output:
   "deposits": [
     {
       "proposalId": "1",
-      "depositor": "cosmos1..",
+      "depositor": "atone1..",
       "amount": [
         {
-          "denom": "stake",
+          "denom": "atone",
           "amount": "10000000"
         }
       ]
@@ -1788,10 +1733,10 @@ Example Output:
   "deposits": [
     {
       "proposalId": "1",
-      "depositor": "cosmos1..",
+      "depositor": "atone1..",
       "amount": [
         {
-          "denom": "stake",
+          "denom": "atone",
           "amount": "10000000"
         }
       ]
@@ -1830,7 +1775,6 @@ Example Output:
     "yes": "1000000",
     "abstain": "0",
     "no": "0",
-    "noWithVeto": "0"
   }
 }
 ```
@@ -1858,7 +1802,6 @@ Example Output:
     "yes": "1000000",
     "abstain": "0",
     "no": "0",
-    "noWithVeto": "0"
   }
 }
 ```
@@ -1895,13 +1838,12 @@ Example Output:
       "yes": "0",
       "abstain": "0",
       "no": "0",
-      "no_with_veto": "0"
     },
     "submit_time": "2022-03-28T11:50:20.819676256Z",
     "deposit_end_time": "2022-03-30T11:50:20.819676256Z",
     "total_deposit": [
       {
-        "denom": "stake",
+        "denom": "atone",
         "amount": "10000000010"
       }
     ],
@@ -1932,11 +1874,11 @@ Example Output:
     "messages": [
       {
         "@type": "/cosmos.bank.v1beta1.MsgSend",
-        "from_address": "cosmos1..",
-        "to_address": "cosmos1..",
+        "from_address": "atone1..",
+        "to_address": "atone1..",
         "amount": [
           {
-            "denom": "stake",
+            "denom": "atone",
             "amount": "10"
           }
         ]
@@ -1947,13 +1889,12 @@ Example Output:
       "yes_count": "0",
       "abstain_count": "0",
       "no_count": "0",
-      "no_with_veto_count": "0"
     },
     "submit_time": "2022-03-28T11:50:20.819676256Z",
     "deposit_end_time": "2022-03-30T11:50:20.819676256Z",
     "total_deposit": [
       {
-        "denom": "stake",
+        "denom": "atone",
         "amount": "10000000"
       }
     ],
@@ -1995,13 +1936,12 @@ Example Output:
         "yes": "0",
         "abstain": "0",
         "no": "0",
-        "no_with_veto": "0"
       },
       "submit_time": "2022-03-28T11:50:20.819676256Z",
       "deposit_end_time": "2022-03-30T11:50:20.819676256Z",
       "total_deposit": [
         {
-          "denom": "stake",
+          "denom": "atone",
           "amount": "10000000"
         }
       ],
@@ -2016,13 +1956,12 @@ Example Output:
         "yes": "0",
         "abstain": "0",
         "no": "0",
-        "no_with_veto": "0"
       },
       "submit_time": "2022-03-28T14:02:41.165025015Z",
       "deposit_end_time": "2022-03-30T14:02:41.165025015Z",
       "total_deposit": [
         {
-          "denom": "stake",
+          "denom": "atone",
           "amount": "10"
         }
       ],
@@ -2059,11 +1998,11 @@ Example Output:
       "messages": [
         {
           "@type": "/cosmos.bank.v1beta1.MsgSend",
-          "from_address": "cosmos1..",
-          "to_address": "cosmos1..",
+          "from_address": "atone1..",
+          "to_address": "atone1..",
           "amount": [
             {
-              "denom": "stake",
+              "denom": "atone",
               "amount": "10"
             }
           ]
@@ -2074,13 +2013,12 @@ Example Output:
         "yes_count": "0",
         "abstain_count": "0",
         "no_count": "0",
-        "no_with_veto_count": "0"
       },
       "submit_time": "2022-03-28T11:50:20.819676256Z",
       "deposit_end_time": "2022-03-30T11:50:20.819676256Z",
       "total_deposit": [
         {
-          "denom": "stake",
+          "denom": "atone",
           "amount": "10000000010"
         }
       ],
@@ -2095,11 +2033,11 @@ Example Output:
       "messages": [
         {
           "@type": "/cosmos.bank.v1beta1.MsgSend",
-          "from_address": "cosmos1..",
-          "to_address": "cosmos1..",
+          "from_address": "atone1..",
+          "to_address": "atone1..",
           "amount": [
             {
-              "denom": "stake",
+              "denom": "atone",
               "amount": "10"
             }
           ]
@@ -2110,13 +2048,12 @@ Example Output:
         "yes_count": "0",
         "abstain_count": "0",
         "no_count": "0",
-        "no_with_veto_count": "0"
       },
       "submit_time": "2022-03-28T14:02:41.165025015Z",
       "deposit_end_time": "2022-03-30T14:02:41.165025015Z",
       "total_deposit": [
         {
-          "denom": "stake",
+          "denom": "atone",
           "amount": "10"
         }
       ],
@@ -2147,7 +2084,7 @@ Using legacy v1beta1:
 Example:
 
 ```bash
-curl localhost:1317/cosmos/gov/v1beta1/proposals/1/votes/cosmos1..
+curl localhost:1317/cosmos/gov/v1beta1/proposals/1/votes/atone1..
 ```
 
 Example Output:
@@ -2156,7 +2093,7 @@ Example Output:
 {
   "vote": {
     "proposal_id": "1",
-    "voter": "cosmos1..",
+    "voter": "atone1..",
     "option": "VOTE_OPTION_YES",
     "options": [
       {
@@ -2177,7 +2114,7 @@ Using v1:
 Example:
 
 ```bash
-curl localhost:1317/cosmos/gov/v1/proposals/1/votes/cosmos1..
+curl localhost:1317/cosmos/gov/v1/proposals/1/votes/atone1..
 ```
 
 Example Output:
@@ -2186,7 +2123,7 @@ Example Output:
 {
   "vote": {
     "proposal_id": "1",
-    "voter": "cosmos1..",
+    "voter": "atone1..",
     "options": [
       {
         "option": "VOTE_OPTION_YES",
@@ -2221,7 +2158,7 @@ Example Output:
   "votes": [
     {
       "proposal_id": "1",
-      "voter": "cosmos1..",
+      "voter": "atone1..",
       "option": "VOTE_OPTION_YES",
       "options": [
         {
@@ -2257,7 +2194,7 @@ Example Output:
   "votes": [
     {
       "proposal_id": "1",
-      "voter": "cosmos1..",
+      "voter": "atone1..",
       "options": [
         {
           "option": "VOTE_OPTION_YES",
@@ -2307,7 +2244,6 @@ Example Output:
   "tally_params": {
     "quorum": "0.000000000000000000",
     "threshold": "0.000000000000000000",
-    "veto_threshold": "0.000000000000000000"
   }
 }
 ```
@@ -2339,7 +2275,6 @@ Example Output:
   "tally_params": {
     "quorum": "0.000000000000000000",
     "threshold": "0.000000000000000000",
-    "veto_threshold": "0.000000000000000000"
   }
 }
 ```
@@ -2357,7 +2292,7 @@ Using legacy v1beta1:
 Example:
 
 ```bash
-curl localhost:1317/cosmos/gov/v1beta1/proposals/1/deposits/cosmos1..
+curl localhost:1317/cosmos/gov/v1beta1/proposals/1/deposits/atone1..
 ```
 
 Example Output:
@@ -2366,10 +2301,10 @@ Example Output:
 {
   "deposit": {
     "proposal_id": "1",
-    "depositor": "cosmos1..",
+    "depositor": "atone1..",
     "amount": [
       {
-        "denom": "stake",
+        "denom": "atone",
         "amount": "10000000"
       }
     ]
@@ -2386,7 +2321,7 @@ Using v1:
 Example:
 
 ```bash
-curl localhost:1317/cosmos/gov/v1/proposals/1/deposits/cosmos1..
+curl localhost:1317/cosmos/gov/v1/proposals/1/deposits/atone1..
 ```
 
 Example Output:
@@ -2395,10 +2330,10 @@ Example Output:
 {
   "deposit": {
     "proposal_id": "1",
-    "depositor": "cosmos1..",
+    "depositor": "atone1..",
     "amount": [
       {
-        "denom": "stake",
+        "denom": "atone",
         "amount": "10000000"
       }
     ]
@@ -2429,10 +2364,10 @@ Example Output:
   "deposits": [
     {
       "proposal_id": "1",
-      "depositor": "cosmos1..",
+      "depositor": "atone1..",
       "amount": [
         {
-          "denom": "stake",
+          "denom": "atone",
           "amount": "10000000"
         }
       ]
@@ -2464,10 +2399,10 @@ Example Output:
   "deposits": [
     {
       "proposal_id": "1",
-      "depositor": "cosmos1..",
+      "depositor": "atone1..",
       "amount": [
         {
-          "denom": "stake",
+          "denom": "atone",
           "amount": "10000000"
         }
       ]
@@ -2504,7 +2439,6 @@ Example Output:
     "yes": "1000000",
     "abstain": "0",
     "no": "0",
-    "no_with_veto": "0"
   }
 }
 ```
@@ -2529,7 +2463,6 @@ Example Output:
     "yes": "1000000",
     "abstain": "0",
     "no": "0",
-    "no_with_veto": "0"
   }
 }
 ```
