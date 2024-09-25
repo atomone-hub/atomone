@@ -153,7 +153,7 @@ func GovernorsDelegationsInvariant(keeper *Keeper, sk types.StakingKeeper) sdk.I
 				}
 				if !vs.Shares.Equal(shares) {
 					invariantStr = sdk.FormatInvariant(types.ModuleName, fmt.Sprintf("governor %s delegations", governor.GetAddress().String()),
-						fmt.Sprintf("stored shares %s for validator %s do not match actual shares %s", valShares.Shares, valAddrStr, shares))
+						fmt.Sprintf("stored shares %s for validator %s do not match actual shares %s", vs.Shares, valAddrStr, shares))
 					broken = true
 					return true
 				}
