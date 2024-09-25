@@ -19,17 +19,20 @@ jobs:
           fetch-depth: 0
       - run: git fetch --force --tags
 
+      - name: Set go version
+        run: echo "GO_VERSION=$(make print_required_go_version)" >> $GITHUB_ENV
+
       - uses: actions/setup-go@v5
         with:
-          go-version: "1.21"
+          go-version: "${{ env.GO_VERSION }}"
 
       - name: Set Env
-        run: echo "TM_VERSION=$(go list -m github.com/tendermint/tendermint | sed 's:.* ::')" >> $GITHUB_ENV
+        run: echo "TM_VERSION=$(go list -m github.com/cometbft/cometbft | sed 's:.* ::')" >> $GITHUB_ENV
 
       - name: Release
         uses: goreleaser/goreleaser-action@v5
         with:
           version: latest
-          args: release --clean --release-notes ./RELEASE_NOTES.md
+          args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
