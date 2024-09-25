@@ -232,6 +232,25 @@ func (keeper Keeper) tallyVotes(
 				totalVotingPower = totalVotingPower.Add(votingPower)
 			}
 		}
+
+		/*
+			// Alternative to the for loop above. It assumes a VotingPowerDeductions
+			// field in the GovernorGovInfo struct that is updated when iterating over votes
+			// instead of updating the ValSharesDeductions map.
+			// This also assumes that gov.VotingPower is always accurate, which needs to be fully verified.
+			// However, in such a case, this would be the more efficient way to calculate the voting power.
+
+			votingPower := gov.VotingPower.Sub(gov.VotingPowerDeductions))
+			if isFinal {
+				for _, option := range gov.Vote {
+					weight, _ := sdk.NewDecFromStr(option.Weight)
+					subPower := votingPower.Mul(weight)
+					results[option.Option] = results[option.Option].Add(subPower)
+				}
+			}
+			totalVotingPower = totalVotingPower.Add(votingPower)
+		*/
+
 	}
 	return totalVotingPower, results
 }
