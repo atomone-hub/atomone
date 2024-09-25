@@ -4,6 +4,7 @@ package keeper
 
 import (
 	"fmt"
+	"sort"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
@@ -139,7 +140,16 @@ func GovernorsDelegationsInvariant(keeper *Keeper, sk types.StakingKeeper) sdk.I
 				return false
 			})
 
-			for valAddrStr, shares := range valShares {
+			// Extract keys and sort them
+			// since the order of the keys in the map is not guaranteed
+			keys := make([]string, 0, len(valShares))
+			for key := range valShares {
+				keys = append(keys, key)
+			}
+			sort.Strings(keys)
+
+			for _, valAddrStr := range keys {
+				shares := valShares[valAddrStr]
 				validatorAddr, _ := sdk.ValAddressFromBech32(valAddrStr)
 				valShares, ok := keeper.GetGovernorValShares(ctx, governor.GetAddress(), validatorAddr)
 				if !ok {
