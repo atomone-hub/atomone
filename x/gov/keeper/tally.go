@@ -218,21 +218,21 @@ func (keeper Keeper) tallyVotes(
 		// As governor are simply voters that need to have 100% of their bonded tokens
 		// delegated to them and their shares were deducted when iterating over votes
 		// we don't need to handle special cases.
+		votingPower := math.LegacyZeroDec()
 		for valAddrStr, shares := range gov.ValShares {
-			votingPower := math.LegacyZeroDec()
 			if val, ok := currValidators[valAddrStr]; ok {
 				sharesAfterDeductions := shares.Sub(gov.ValSharesDeductions[valAddrStr])
 				votingPower = votingPower.Add(sharesAfterDeductions.MulInt(val.GetBondedTokens()).Quo(val.GetDelegatorShares()))
 			}
-			if isFinal {
-				for _, option := range gov.Vote {
-					weight, _ := sdk.NewDecFromStr(option.Weight)
-					subPower := votingPower.Mul(weight)
-					results[option.Option] = results[option.Option].Add(subPower)
-				}
-			}
-			totalVotingPower = totalVotingPower.Add(votingPower)
 		}
+		if isFinal {
+			for _, option := range gov.Vote {
+				weight, _ := sdk.NewDecFromStr(option.Weight)
+				subPower := votingPower.Mul(weight)
+				results[option.Option] = results[option.Option].Add(subPower)
+			}
+		}
+		totalVotingPower = totalVotingPower.Add(votingPower)
 
 		/*
 			// Alternative to the for loop above. It assumes a VotingPowerDeductions
