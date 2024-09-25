@@ -133,9 +133,9 @@ func GovernorsDelegationsInvariant(keeper *Keeper, sk types.StakingKeeper) sdk.I
 					shares := delegation.GetShares()
 					if _, ok := valShares[validatorAddr.String()]; !ok {
 						valShares[validatorAddr.String()] = sdk.ZeroDec()
+						valSharesKeys = append(valSharesKeys, validatorAddr.String())
 					}
 					valShares[validatorAddr.String()] = valShares[validatorAddr.String()].Add(shares)
-					valSharesKeys = append(valSharesKeys, validatorAddr.String())
 					return false
 				})
 				return false
