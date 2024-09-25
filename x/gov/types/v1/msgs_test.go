@@ -210,3 +210,28 @@ func TestMsgSubmitProposal_GetSignBytes(t *testing.T) {
 		})
 	}
 }
+
+func TestMsgProposeConstitutionAmendment_ValidateBasic(t *testing.T) {
+	tests := []struct {
+		name      string
+		proposer  string
+		amendment string
+		expErr    bool
+	}{
+		{"invalid proposer", "", "amendment", true},
+		{"empty amendment", addrs[0].String(), "", true},
+		{"valid", addrs[0].String(), "@@ -1 +1 @@\n-\n+Test", false},
+	}
+
+	for _, tc := range tests {
+		msg := v1.MsgProposeConstitutionAmendment{
+			Authority: tc.proposer,
+			Amendment: tc.amendment,
+		}
+		if tc.expErr {
+			require.Error(t, msg.ValidateBasic(), "test: %s", tc.name)
+		} else {
+			require.NoError(t, msg.ValidateBasic(), "test: %s", tc.name)
+		}
+	}
+}

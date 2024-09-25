@@ -61,10 +61,12 @@ const (
 	numberOfEvidences               = 10
 	slashingShares            int64 = 10000
 
-	proposalBypassMsgFilename      = "proposal_bypass_msg.json"
-	proposalMaxTotalBypassFilename = "proposal_max_total_bypass.json"
-	proposalCommunitySpendFilename = "proposal_community_spend.json"
-	proposalParamChangeFilename    = "param_change.json"
+	proposalBypassMsgFilename             = "proposal_bypass_msg.json"
+	proposalMaxTotalBypassFilename        = "proposal_max_total_bypass.json"
+	proposalCommunitySpendFilename        = "proposal_community_spend.json"
+	proposalParamChangeFilename           = "param_change.json"
+	proposalConstitutionAmendmentFilename = "constitution_amendment.json"
+	newConstitutionFilename               = "new_constitution.md"
 
 	// hermesBinary              = "hermes"
 	// hermesConfigWithGasPrices = "/root/.hermes/config.toml"

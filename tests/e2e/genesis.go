@@ -143,6 +143,7 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 			govv1.DefaultQuorumTimeout, govv1.DefaultMaxVotingPeriodExtension, govv1.DefaultQuorumCheckCount,
 		),
 	)
+	govGenState.Constitution = "This is a test constitution"
 	govGenStateBz, err := cdc.MarshalJSON(govGenState)
 	if err != nil {
 		return fmt.Errorf("failed to marshal gov genesis state: %w", err)

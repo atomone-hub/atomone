@@ -1,9 +1,11 @@
 package e2e
 
 import (
+	"context"
 	"fmt"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -12,6 +14,7 @@ import (
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
+	govtypesv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	govtypesv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 )
 
@@ -176,6 +179,34 @@ func (s *IntegrationTestSuite) testGovParamChange() {
 	})
 }
 
+func (s *IntegrationTestSuite) testGovConstitutionAmendment() {
+	s.Run("constitution amendment", func() {
+		chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
+		senderAddress, _ := s.chainA.validators[0].keyInfo.GetAddress()
+		sender := senderAddress.String()
+
+		newConstitution := "New test constitution"
+		amendmentMsg := s.generateConstitutionAmendment(s.chainA, newConstitution)
+
+		s.writeGovConstitutionAmendmentProposal(s.chainA, amendmentMsg.Amendment)
+		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
+		proposalCounter++
+		submitGovFlags := []string{configFile(proposalConstitutionAmendmentFilename)}
+		depositGovFlags := []string{strconv.Itoa(proposalCounter), depositAmount.String()}
+		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
+		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "gov/MsgSubmitProposal", submitGovFlags, depositGovFlags, voteGovFlags, "vote")
+
+		s.Require().Eventually(
+			func() bool {
+				res := s.queryConstitution(chainAAPIEndpoint)
+				return res.Constitution == newConstitution
+			},
+			10*time.Second,
+			time.Second,
+		)
+	})
+}
+
 func (s *IntegrationTestSuite) submitLegacyGovProposal(chainAAPIEndpoint, sender string, proposalID int, proposalType string, submitFlags []string, depositFlags []string, voteFlags []string, voteCommand string, withDeposit bool) {
 	s.T().Logf("Submitting Gov Proposal: %s", proposalType)
 	// min deposit of 1000uatone is required in e2e tests, otherwise the gov antehandler causes the proposal to be dropped
@@ -282,4 +313,68 @@ func (s *IntegrationTestSuite) writeStakingParamChangeProposal(c *chain, params 
 	propMsgBody := fmt.Sprintf(template, govModuleAddress, cdc.MustMarshalJSON(&params))
 	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
+}
+
+func (s *IntegrationTestSuite) writeGovConstitutionAmendmentProposal(c *chain, amendment string) {
+	govModuleAddress := authtypes.NewModuleAddress(govtypes.ModuleName).String()
+	// escape newlines in amendment
+	amendment = strings.ReplaceAll(amendment, "\n", "\\n")
+	template := `
+	{
+		"messages":[
+		  {
+			"@type": "/atomone.gov.v1.MsgProposeConstitutionAmendment",
+			"authority": "%s",
+			"amendment": "%s"
+		  }
+		],
+		"deposit": "100uatone",
+		"proposer": "Proposing validator address",
+		"metadata": "Constitution Amendment",
+		"title": "Constitution Amendment",
+		"summary": "summary"
+	}
+	`
+	propMsgBody := fmt.Sprintf(template, govModuleAddress, amendment)
+	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalConstitutionAmendmentFilename), []byte(propMsgBody))
+	s.Require().NoError(err)
+}
+
+func (s *IntegrationTestSuite) generateConstitutionAmendment(c *chain, newConstitution string) govtypesv1.MsgProposeConstitutionAmendment {
+	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", newConstitutionFilename), []byte(newConstitution))
+	s.Require().NoError(err)
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+
+	govCommand := "generate-constitution-amendment"
+	cmd := []string{
+		atomonedBinary,
+		txCommand,
+		govtypes.ModuleName,
+		govCommand,
+		configFile(newConstitutionFilename),
+	}
+
+	s.T().Logf("Executing atomoned tx gov %s on chain %s", govCommand, c.id)
+	var msg govtypesv1.MsgProposeConstitutionAmendment
+	s.executeAtomoneTxCommand(ctx, c, cmd, 0, s.parseGenerateConstitutionAmendmentOutput(&msg))
+	s.T().Logf("Successfully executed %s", govCommand)
+
+	s.Require().NoError(err)
+	return msg
+}
+
+func (s *IntegrationTestSuite) parseGenerateConstitutionAmendmentOutput(msg *govtypesv1.MsgProposeConstitutionAmendment) func([]byte, []byte) bool {
+	return func(stdOut []byte, stdErr []byte) bool {
+		if len(stdErr) > 0 {
+			s.T().Logf("Error: %s", string(stdErr))
+			return false
+		}
+
+		err := cdc.UnmarshalJSON(stdOut, msg)
+		s.Require().NoError(err)
+
+		return true
+	}
 }
