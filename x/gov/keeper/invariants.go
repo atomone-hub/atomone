@@ -144,14 +144,14 @@ func GovernorsDelegationsInvariant(keeper *Keeper, sk types.StakingKeeper) sdk.I
 			for _, valAddrStr := range valSharesKeys {
 				shares := valShares[valAddrStr]
 				validatorAddr, _ := sdk.ValAddressFromBech32(valAddrStr)
-				valShares, ok := keeper.GetGovernorValShares(ctx, governor.GetAddress(), validatorAddr)
+				vs, ok := keeper.GetGovernorValShares(ctx, governor.GetAddress(), validatorAddr)
 				if !ok {
 					invariantStr = sdk.FormatInvariant(types.ModuleName, fmt.Sprintf("governor %s delegations", governor.GetAddress().String()),
 						fmt.Sprintf("validator %s shares not found", valAddrStr))
 					broken = true
 					return true
 				}
-				if !valShares.Shares.Equal(shares) {
+				if !vs.Shares.Equal(shares) {
 					invariantStr = sdk.FormatInvariant(types.ModuleName, fmt.Sprintf("governor %s delegations", governor.GetAddress().String()),
 						fmt.Sprintf("stored shares %s for validator %s do not match actual shares %s", valShares.Shares, valAddrStr, shares))
 					broken = true
