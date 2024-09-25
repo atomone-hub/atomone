@@ -1,4 +1,7 @@
-Portions of this codebase are copied or adapted from cosmos/gaia@v15 and cosmos/cosmos-sdk@V47.10;
+Portions of this codebase are derived from 
+cosmos/gaia@v15 and cosmos/cosmos-sdk@V47.10, 
+licensed under the Apache License, Version 2.0. 
+See LICENSE file and below for more details.
 
 Copied below are the original LICENSE(s).
 
