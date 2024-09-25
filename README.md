@@ -15,10 +15,13 @@ The following modifications have been made to the Cosmos Hub software to create 
 ## Reproducible builds
 
 An effort has been made to make it possible to build the exact same binary
-locally as the Github Release section. To do this, checkout to the expected
-version and then simply run `make build` (which will output the binary to the
-`build` directory) or `make install`. The resulted binary should have the same
-sha256 hash than the one from the Github Release section.
+locally as the Github Release section. To do this:
+- Checkout to the expected released version
+- Run `make build` (which will output the binary to the `build` directory) or
+`make install`. Note that a fixed version of the `go` binary is required,
+follow the command instructions to install this specific version if needed.
+- The resulted binary should have the same sha256 hash than the one from the
+Github Release section.
 
 ## Ledger support
 
