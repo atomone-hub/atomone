@@ -144,23 +144,24 @@ func (keeper Keeper) tallyVotes(
 		// iterate over all delegations from voter
 		keeper.sk.IterateDelegations(ctx, voter, func(index int64, delegation stakingtypes.DelegationI) (stop bool) {
 			valAddrStr := delegation.GetValidatorAddr().String()
+			votingPower := math.LegacyZeroDec()
 
 			if val, ok := currValidators[valAddrStr]; ok {
 				// delegation shares * bonded / total shares
-				votingPower := delegation.GetShares().MulInt(val.GetBondedTokens()).Quo(val.GetDelegatorShares())
-
-				if isFinal {
-					for _, option := range vote.Options {
-						weight, _ := math.LegacyNewDecFromStr(option.Weight)
-						subPower := votingPower.Mul(weight)
-						results[option.Option] = results[option.Option].Add(subPower)
-					}
-				}
-				totalVotingPower = totalVotingPower.Add(votingPower)
+				votingPower = votingPower.Add(delegation.GetShares().MulInt(val.GetBondedTokens()).Quo(val.GetDelegatorShares()))
 
 				// remove the delegation shares from the governor
 				if hasGovernor {
 					governor.ValSharesDeductions[valAddrStr] = governor.ValSharesDeductions[valAddrStr].Add(delegation.GetShares())
+				}
+			}
+
+			totalVotingPower = totalVotingPower.Add(votingPower)
+			if isFinal {
+				for _, option := range vote.Options {
+					weight, _ := math.LegacyNewDecFromStr(option.Weight)
+					subPower := votingPower.Mul(weight)
+					results[option.Option] = results[option.Option].Add(subPower)
 				}
 			}
 
