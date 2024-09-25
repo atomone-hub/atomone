@@ -15,7 +15,6 @@ type GovernorGovInfo struct {
 	ValSharesDeductions map[string]sdk.Dec    // deductions from validator's shares when a delegator votes independently
 	Vote                WeightedVoteOptions   // vote of the governor
 	IsActive            bool                  // whether the governor is active
-	VotingPower         sdk.Dec               // voting power of the governor
 }
 
 // NewGovernorGovInfo creates a GovernorGovInfo instance

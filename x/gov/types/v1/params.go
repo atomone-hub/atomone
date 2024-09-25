@@ -87,7 +87,6 @@ func NewParams(
 		QuorumTimeout:                  &quorumTimeout,
 		MaxVotingPeriodExtension:       &maxVotingPeriodExtension,
 		QuorumCheckCount:               quorumCheckCount,
-		MaxGovernors:                   maxGovernors,
 		GovernorStatusChangePeriod:     &governorStatusChangePeriod,
 		MinGovernorSelfDelegation:      minGovernorSelfDelegation,
 	}

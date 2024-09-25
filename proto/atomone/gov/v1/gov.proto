@@ -273,14 +273,12 @@ message Params {
   // has elapsed. Used to compute the amount of time in between quorum checks.
   uint64 quorum_check_count = 22;
 
-  // defines the maximum number of governors that can be active at any given time.
-  uint64 max_governors = 23;
   // defines the duration of time that need to elapse between governor status changes.
-  google.protobuf.Duration governor_status_change_period = 24 [(gogoproto.stdduration) = true];
+  google.protobuf.Duration governor_status_change_period = 23 [(gogoproto.stdduration) = true];
   // defines the minimum amound of bonded tokens, aka the "self-delegation" (because active governors
   // must have the governance VP from the base account automatically delegated to them), that a governor
   // must have to be considered active.
-  string min_governor_self_delegation = 25 [(cosmos_proto.scalar) = "cosmos.Int" ];
+  string min_governor_self_delegation = 24 [(cosmos_proto.scalar) = "cosmos.Int" ];
 }
 
 

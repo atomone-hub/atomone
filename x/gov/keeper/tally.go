@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"fmt"
-	"sort"
 
 	"cosmossdk.io/math"
 
@@ -174,17 +173,15 @@ func (keeper Keeper) tallyVotes(
 		return false
 	})
 
-	// sort governors by voting power, and insert in currGovernors only
-	// the top param.MaxGovernors among the voting governors that are
-	// active and have the niminum self-delegation requirement met.
+	// get only the voting governors that are active and have the niminum self-delegation requirement met.
+	currGovernors := keeper.getCurrGovernors(ctx, allGovernors)
+
+	// iterate over the governors again to tally their voting power
 	// As active governor are simply voters that need to have 100% of their bonded tokens
 	// delegated to them and their shares were deducted when iterating over votes
 	// we don't need to handle special cases.
-	currGovernors := keeper.getCurrGovernors(ctx, allGovernors, currValidators)
-
-	// iterate over the governors again to tally their voting power
 	for _, gov := range currGovernors {
-		votingPower := gov.VotingPower
+		votingPower := getGovernorVotingPower(gov, currValidators)
 
 		if isFinal {
 			for _, option := range gov.Vote {
@@ -256,37 +253,18 @@ func (keeper Keeper) getQuorumAndThreshold(ctx sdk.Context, proposal v1.Proposal
 	return quorum, threshold, nil
 }
 
-// getCurrGovernors sorts the governors by voting power and returns the top params.MaxGovernors
-// among the validators that voted, are active and meet the minimum self-delegation requirement
-func (k Keeper) getCurrGovernors(ctx sdk.Context, allGovernors map[string]v1.GovernorGovInfo, currValidators map[string]stakingtypes.ValidatorI) (governors []v1.GovernorGovInfo) {
-	governorInfos := make([]v1.GovernorGovInfo, 0)
+// getCurrGovernors returns the governors that voted, are active and meet the minimum self-delegation requirement
+func (k Keeper) getCurrGovernors(ctx sdk.Context, allGovernors map[string]v1.GovernorGovInfo) (governors []v1.GovernorGovInfo) {
+	governorsInfos := make([]v1.GovernorGovInfo, 0)
 	for _, govInfo := range allGovernors {
 		governor, _ := k.GetGovernor(ctx, govInfo.Address)
 
-		if k.ValidateGovernorMinSelfDelegation(ctx, governor) && len(govInfo.Vote) > 0 && govInfo.IsActive {
-			governorInfos = append(governorInfos, govInfo)
+		if k.ValidateGovernorMinSelfDelegation(ctx, governor) && len(govInfo.Vote) > 0 {
+			governorsInfos = append(governorsInfos, govInfo)
 		}
 	}
 
-	// sort governors by voting power
-	sort.Slice(governorInfos, func(i, j int) bool {
-		if governorInfos[i].VotingPower.IsNil() {
-			governorInfos[i].VotingPower = getGovernorVotingPower(governorInfos[i], currValidators)
-		}
-		if governorInfos[j].VotingPower.IsNil() {
-			governorInfos[j].VotingPower = getGovernorVotingPower(governorInfos[j], currValidators)
-		}
-
-		// using GT so that order is descending
-		return governorInfos[i].VotingPower.GT(governorInfos[j].VotingPower)
-	})
-
-	// get the top params.MaxGovernors governors
-	if len(governorInfos) > int(k.GetParams(ctx).MaxGovernors) {
-		governorInfos = governorInfos[:k.GetParams(ctx).MaxGovernors]
-	}
-
-	return governorInfos
+	return governorsInfos
 }
 
 func getGovernorVotingPower(governor v1.GovernorGovInfo, currValidators map[string]stakingtypes.ValidatorI) (votingPower math.LegacyDec) {
