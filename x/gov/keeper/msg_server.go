@@ -288,7 +288,7 @@ func (k msgServer) UpdateGovernorStatus(goCtx context.Context, msg *v1.MsgUpdate
 	// Ensure the governor has been in the current status for the required period
 	governorStatusChangePeriod := *k.GetParams(ctx).GovernorStatusChangePeriod
 	changeTime := ctx.BlockTime()
-	if governor.LastStatusChangeTime.Add(governorStatusChangePeriod).Before(changeTime) {
+	if governor.LastStatusChangeTime.Add(governorStatusChangePeriod).After(changeTime) {
 		return nil, govtypes.ErrGovernorStatusChangePeriod.Wrapf("last status change time: %s, need to wait until: %s", governor.LastStatusChangeTime, governor.LastStatusChangeTime.Add(governorStatusChangePeriod))
 	}
 

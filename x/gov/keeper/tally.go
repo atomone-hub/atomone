@@ -150,6 +150,8 @@ func (keeper Keeper) tallyVotes(
 		if hasGovernor {
 			if gi, ok := currGovernors[gd.GovernorAddress]; ok {
 				governor = gi
+			} else {
+				hasGovernor = false
 			}
 		}
 
@@ -220,10 +222,12 @@ func (keeper Keeper) tallyVotes(
 				sharesAfterDeductions := shares.Sub(gov.ValSharesDeductions[valAddrStr])
 				votingPower := sharesAfterDeductions.MulInt(val.GetBondedTokens()).Quo(val.GetDelegatorShares())
 
-				for _, option := range gov.Vote {
-					weight, _ := sdk.NewDecFromStr(option.Weight)
-					subPower := votingPower.Mul(weight)
-					results[option.Option] = results[option.Option].Add(subPower)
+				if isFinal {
+					for _, option := range gov.Vote {
+						weight, _ := sdk.NewDecFromStr(option.Weight)
+						subPower := votingPower.Mul(weight)
+						results[option.Option] = results[option.Option].Add(subPower)
+					}
 				}
 				totalVotingPower = totalVotingPower.Add(votingPower)
 			}

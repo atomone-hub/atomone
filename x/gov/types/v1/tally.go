@@ -20,14 +20,16 @@ type GovernorGovInfo struct {
 // NewGovernorGovInfo creates a GovernorGovInfo instance
 func NewGovernorGovInfo(address types.GovernorAddress, valShares []GovernorValShares, options WeightedVoteOptions, votingPower sdk.Dec) GovernorGovInfo {
 	valSharesMap := make(map[string]sdk.Dec)
+	valSharesDeductionsMap := make(map[string]sdk.Dec)
 	for _, valShare := range valShares {
 		valSharesMap[valShare.ValidatorAddress] = valShare.Shares
+		valSharesDeductionsMap[valShare.ValidatorAddress] = math.LegacyZeroDec()
 	}
 
 	return GovernorGovInfo{
 		Address:             address,
 		ValShares:           valSharesMap,
-		ValSharesDeductions: make(map[string]sdk.Dec),
+		ValSharesDeductions: valSharesDeductionsMap,
 		Vote:                options,
 		VotingPower:         votingPower,
 	}
