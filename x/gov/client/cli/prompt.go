@@ -13,7 +13,6 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -320,7 +319,6 @@ func NewCmdDraftProposal() *cobra.Command {
 		},
 	}
 
-	flags.AddTxFlagsToCmd(cmd)
 	cmd.Flags().Bool(flagSkipMetadata, false, "skip metadata prompt")
 
 	return cmd
