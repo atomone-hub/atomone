@@ -256,7 +256,7 @@ A proposal will generally require more than just a set of messages to explain it
 purpose but need some greater justification and allow a means for interested participants
 to discuss and debate the proposal.
 In most cases, **it is encouraged to have an off-chain system that supports the on-chain governance process**.
-To accommodate for this, a proposal contains a special `metadata` field, a string,
+To accommodate for this, a proposal contains a special **`metadata`** field, a string,
 which can be used to add context to the proposal. The `metadata` field allows custom use for networks,
 however, it is expected that the field contains a URL or some form of CID using a system such as
 [IPFS](https://docs.ipfs.io/concepts/content-addressing/). To support the case of
@@ -2718,7 +2718,7 @@ Location: on-chain as json within 255 character limit (mirrors [group vote](../g
 The current documentation only describes the minimum viable product for the
 governance module. Future improvements may include:
 
-* `BountyProposals`:** If accepted, a `BountyProposal` creates an open
+* **`BountyProposals`:** If accepted, a `BountyProposal` creates an open
   bounty. The `BountyProposal` specifies how many Atones will be given upon
   completion. These Atones will be taken from the `reserve pool`. After a
   `BountyProposal` is accepted by governance, anybody can submit a
