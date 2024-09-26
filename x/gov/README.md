@@ -180,11 +180,11 @@ proportionally to the results of the poll.
 To represent weighted vote on chain, we use the following Protobuf message.
 
 ```protobuf reference
-https://github.com/atomone-hub/atomone/blob/31f030722f801f0c2836c17f6d163a106f30ec0b/proto/atomone/gov/v1/gov.proto#L27-L35
+https://github.com/atomone-hub/atomone/blob/b9631ed2e3b781cd82a14316f6086802d8cb4dcf/proto/atomone/gov/v1/gov.proto#L27-L35
 ```
 
 ```protobuf reference
-https://github.com/atomone-hub/atomone/blob/31f030722f801f0c2836c17f6d163a106f30ec0b/proto/atomone/gov/v1/gov.proto#L134-L150
+https://github.com/atomone-hub/atomone/blob/b9631ed2e3b781cd82a14316f6086802d8cb4dcf/proto/atomone/gov/v1/gov.proto#L134-L150
 ```
 
 For a weighted vote to be valid, the `options` field must not contain duplicate
@@ -249,7 +249,7 @@ unique id and contains a series of timestamps: `submit_time`, `deposit_end_time`
 `voting_start_time`, `voting_end_time` which track the lifecycle of a proposal
 
 ```protobuf reference
-https://github.com/atomone-hub/atomone/blob/31f030722f801f0c2836c17f6d163a106f30ec0b/proto/atomone/gov/v1/gov.proto#L51-L101
+https://github.com/atomone-hub/atomone/blob/b9631ed2e3b781cd82a14316f6086802d8cb4dcf/proto/atomone/gov/v1/gov.proto#L51-L101
 ```
 
 A proposal will generally require more than just a set of messages to explain its
@@ -297,19 +297,19 @@ parameter set has to be created and the previous one rendered inactive.
 #### DepositParams
 
 ```protobuf reference
-https://github.com/atomone-hub/atomone/blob/31f030722f801f0c2836c17f6d163a106f30ec0b/proto/atomone/gov/v1/gov.proto#L167-L181
+https://github.com/atomone-hub/atomone/blob/b9631ed2e3b781cd82a14316f6086802d8cb4dcf/proto/atomone/gov/v1/gov.proto#L167-L181
 ```
 
 #### VotingParams
 
 ```protobuf reference
-https://github.com/atomone-hub/atomone/blob/31f030722f801f0c2836c17f6d163a106f30ec0b/proto/atomone/gov/v1/gov.proto#L183-L187
+https://github.com/atomone-hub/atomone/blob/b9631ed2e3b781cd82a14316f6086802d8cb4dcf/proto/atomone/gov/v1/gov.proto#L183-L187
 ```
 
 #### TallyParams
 
 ```protobuf reference
-https://github.com/atomone-hub/atomone/blob/31f030722f801f0c2836c17f6d163a106f30ec0b/proto/atomone/gov/v1/gov.proto#L189-L209
+https://github.com/atomone-hub/atomone/blob/b9631ed2e3b781cd82a14316f6086802d8cb4dcf/proto/atomone/gov/v1/gov.proto#L189-L209
 ```
 
 Parameters are stored in a global `GlobalParams` KVStore.
@@ -348,7 +348,7 @@ const (
 ### Deposit
 
 ```protobuf reference
-https://github.com/atomone-hub/atomone/blob/31f030722f801f0c2836c17f6d163a106f30ec0b/proto/atomone/gov/v1/gov.proto#L37-L49
+https://github.com/atomone-hub/atomone/blob/b9631ed2e3b781cd82a14316f6086802d8cb4dcf/proto/atomone/gov/v1/gov.proto#L37-L49
 ```
 
 ## Stores
@@ -573,6 +573,10 @@ of Laws is entirely defined in the proposal `summary`. Example:
 }
 ```
 
+```protobuf reference
+https://github.com/atomone-hub/atomone/blob/b9631ed2e3b781cd82a14316f6086802d8cb4dcf/proto/atomone/gov/v1/tx.proto#L195-L202
+```
+
 The `MsgProposeConstitutionAmendment` contains the `authority` field and also an `amendment` field
 that needs to be a string representing a valid patch for the `constitution` expressed in 
 unified diff format. Example:
@@ -582,6 +586,10 @@ unified diff format. Example:
    "authority": "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
    "amendment": "--- src\\n+++ dst\\n@@ -1 +1 @@\\n-Old Constitution\\n+Modified Constitution\\n\"
 }
+```
+
+```protobuf reference
+https://github.com/atomone-hub/atomone/blob/b9631ed2e3b781cd82a14316f6086802d8cb4dcf/proto/atomone/gov/v1/tx.proto#L209-L219
 ```
 
 Upon execution of the `MsgProposeConstitutionAmendment` (which will happen if the proposal passes)
@@ -596,7 +604,7 @@ need to be crafted with care.
 Proposals can be submitted by any account via a `MsgSubmitProposal` transaction.
 
 ```protobuf reference
-https://github.com/atomone-hub/atomone/blob/31f030722f801f0c2836c17f6d163a106f30ec0b/proto/atomone/gov/v1/tx.proto#L53-L82
+https://github.com/atomone-hub/atomone/blob/b9631ed2e3b781cd82a14316f6086802d8cb4dcf/proto/atomone/gov/v1/tx.proto#L53-L82
 ```
 
 All `sdk.Msgs` passed into the `messages` field of a `MsgSubmitProposal` message
@@ -679,7 +687,7 @@ Generally it is expected that
 
 
 ```protobuf reference
-https://github.com/atomone-hub/atomone/blob/31f030722f801f0c2836c17f6d163a106f30ec0b/proto/atomone/gov/v1/tx.proto#L150-L165
+https://github.com/atomone-hub/atomone/blob/b9631ed2e3b781cd82a14316f6086802d8cb4dcf/proto/atomone/gov/v1/tx.proto#L150-L165
 ```
 
 **State modifications:**
@@ -747,7 +755,7 @@ bonded Atone holders are able to send `MsgVote` transactions to cast their
 vote on the proposal.
 
 ```protobuf reference
-https://github.com/atomone-hub/atomone/blob/31f030722f801f0c2836c17f6d163a106f30ec0b/proto/atomone/gov/v1/tx.proto#L106-L123
+https://github.com/atomone-hub/atomone/blob/b9631ed2e3b781cd82a14316f6086802d8cb4dcf/proto/atomone/gov/v1/tx.proto#L106-L123
 ```
 
 **State modifications:**
