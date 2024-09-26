@@ -6,28 +6,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// ValidatorGovInfo used for tallying
-type ValidatorGovInfo struct {
-	Address             sdk.ValAddress      // address of the validator operator
-	BondedTokens        math.Int            // Power of a Validator
-	DelegatorShares     math.LegacyDec      // Total outstanding delegator shares
-	DelegatorDeductions math.LegacyDec      // Delegator deductions from validator's delegators voting independently
-	Vote                WeightedVoteOptions // Vote of the validator
-}
-
-// NewValidatorGovInfo creates a ValidatorGovInfo instance
-func NewValidatorGovInfo(address sdk.ValAddress, bondedTokens math.Int, delegatorShares,
-	delegatorDeductions sdk.Dec, options WeightedVoteOptions,
-) ValidatorGovInfo {
-	return ValidatorGovInfo{
-		Address:             address,
-		BondedTokens:        bondedTokens,
-		DelegatorShares:     delegatorShares,
-		DelegatorDeductions: delegatorDeductions,
-		Vote:                options,
-	}
-}
-
 // NewTallyResult creates a new TallyResult instance
 func NewTallyResult(yes, abstain, no math.Int) TallyResult {
 	return TallyResult{
