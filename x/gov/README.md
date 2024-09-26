@@ -525,7 +525,7 @@ A `constitution` string can be set at genesis with arbitrary content and is inte
 to store the chain established constitution upon launch.
 The `constitution` can be updated through Constitution Amendment Proposals which must include
 a valid patch of the `constitution` string expressed in **unified diff** format.
-Example (from [gnu.org](https://www.gnu.org/software/diffutils/manual/html_node/Example-Unified.html):
+Example (from [gnu.org](https://www.gnu.org/software/diffutils/manual/html_node/Example-Unified.html)):
 
 ```
 --- lao	2002-02-21 23:30:39.942229878 -0800
