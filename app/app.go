@@ -219,6 +219,7 @@ func NewAtomOneApp(
 				SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
 			},
 			Codec:         appCodec,
+			IBCkeeper:     app.IBCKeeper,
 			StakingKeeper: app.StakingKeeper,
 			// If TxFeeChecker is nil the default ante TxFeeChecker is used
 			TxFeeChecker: nil,
