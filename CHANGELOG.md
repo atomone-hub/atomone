@@ -21,7 +21,7 @@
 ### FEATURES
 
 - Fork the gaia codebase and renamed it to AtomOne [d49b8634](https://github.com/atomone-hub/atomone/commit/d49b86344c3ee42f5182278601c6ce2bd1eff48e)
-- Remove ibc, ibc-middleware, ica and ics [9e75d78b](https://github.com/atomone-hub/atomone/commit/9e75d78bd6adc490acee869ac98217a1623a9c6d)
+- Remove ICS [9e75d78b](https://github.com/atomone-hub/atomone/commit/9e75d78bd6adc490acee869ac98217a1623a9c6d)
 - Remove x/metaprotocols module [8cc9a025](https://github.com/atomone-hub/atomone/commit/8cc9a02587c96f819d346673e40b4b683f3c0f5b)
 - Add reproducible builds [707f1426](https://github.com/atomone-hub/atomone/commit/707f142613794e1fc8dc6371390d003f9245a457) [#24](https://github.com/atomone-hub/atomone/pull/24)
 - Fork x/gov [ca0724f0](https://github.com/atomone-hub/atomone/commit/ca0724f036f077ffd3b2efc2a43db2ed98ad885e)
