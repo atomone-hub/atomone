@@ -332,8 +332,7 @@ func NewAppKeeper(
 	appKeepers.TransferModule = transfer.NewAppModule(appKeepers.TransferKeeper)
 
 	// create IBC module from bottom to top of stack
-	var transferStack porttypes.IBCModule
-	transferStack = transfer.NewIBCModule(appKeepers.TransferKeeper)
+	var transferStack porttypes.IBCModule = transfer.NewIBCModule(appKeepers.TransferKeeper)
 
 	// Add transfer stack to IBC Router
 
