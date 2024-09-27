@@ -8,6 +8,7 @@ var (
 	runEvidenceTest               = true
 	runFeeGrantTest               = true
 	runGovTest                    = true
+	runIBCTest                    = true
 	runSlashingTest               = true
 	runStakingAndDistributionTest = true
 	runVestingTest                = true
@@ -59,6 +60,14 @@ func (s *IntegrationTestSuite) TestGov() {
 	s.testGovCommunityPoolSpend()
 	s.testGovParamChange()
 	s.testGovConstitutionAmendment()
+}
+
+func (s *IntegrationTestSuite) TestIBC() {
+	if !runIBCTest {
+		s.T().Skip()
+	}
+
+	s.testIBCTokenTransfer()
 }
 
 func (s *IntegrationTestSuite) TestSlashing() {

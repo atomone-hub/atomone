@@ -6,6 +6,8 @@ import (
 
 	tmrand "github.com/cometbft/cometbft/libs/rand"
 
+	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
@@ -56,9 +58,9 @@ func init() {
 	paramsproptypes.RegisterLegacyAminoCodec(encodingConfig.Amino)
 	feegrant.RegisterLegacyAminoCodec(encodingConfig.Amino)
 	slashingtypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-
 	upgradetypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 	distribtypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
+	ibctransfertypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 
 	cdc = encodingConfig.Marshaler
 	txConfig = encodingConfig.TxConfig

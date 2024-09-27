@@ -75,6 +75,8 @@ jobs:
             go.sum
       - name: Build AtomOne Docker Image
         run: make docker-build-debug
+      - name: Build Hermes Docker Image
+        run: make docker-build-hermes
       - name: Test E2E
         run: make test-e2e
 
