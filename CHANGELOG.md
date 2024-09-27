@@ -34,4 +34,3 @@
 - Add late quorum voting period extension [#13](https://github.com/atomone-hub/atomone/pull/12)
 - Add a minimum amount per deposit [#13](https://github.com/atomone-hub/atomone/pull/13)
 - Add constitution to x/gov [#15](https://github.com/atomone-hub/atomone/pull/15)
-- Remove usage of x/params module [#21](https://github.com/atomone-hub/atomone/pull/21)
