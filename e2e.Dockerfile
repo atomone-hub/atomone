@@ -1,7 +1,8 @@
+ARG GO_VERSION
 ARG IMG_TAG=latest
 
 # Compile the atomoned binary
-FROM golang:1.21-alpine AS atomoned-builder
+FROM golang:$GO_VERSION-alpine AS atomoned-builder
 WORKDIR /src/app/
 COPY go.mod go.sum* ./
 RUN go mod download
