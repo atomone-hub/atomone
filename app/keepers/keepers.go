@@ -314,6 +314,7 @@ func NewAppKeeper(
 		appKeepers.ScopedICAHostKeeper,
 		bApp.MsgServiceRouter(),
 	)
+	appKeepers.ICAHostKeeper.WithQueryRouter(bApp.GRPCQueryRouter())
 
 	appKeepers.TransferKeeper = ibctransferkeeper.NewKeeper(
 		appCodec,
