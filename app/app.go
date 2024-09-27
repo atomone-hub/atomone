@@ -20,6 +20,8 @@ import (
 	"github.com/cometbft/cometbft/libs/log"
 	tmos "github.com/cometbft/cometbft/libs/os"
 
+	ibctesting "github.com/cosmos/ibc-go/v7/testing"
+
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
 
@@ -62,6 +64,7 @@ var (
 var (
 	_ runtime.AppI            = (*AtomOneApp)(nil)
 	_ servertypes.Application = (*AtomOneApp)(nil)
+	_ ibctesting.TestingApp   = (*AtomOneApp)(nil)
 )
 
 // AtomOneApp extends an ABCI application, but with most of its parameters exported.
