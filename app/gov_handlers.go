@@ -315,7 +315,7 @@ func newCmdSubmitUpdateIBCClientProposal() *cobra.Command {
 				return err
 			}
 
-			title, err := cmd.Flags().GetString(govcli.FlagTitle) //nolint:staticcheck // need this till full govv1 conversion.
+			title, err := cmd.Flags().GetString(govcli.FlagTitle)
 			if err != nil {
 				return err
 			}
@@ -354,7 +354,7 @@ func newCmdSubmitUpdateIBCClientProposal() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().String(govcli.FlagTitle, "", "title of proposal")             //nolint:staticcheck // need this till full govv1 conversion.
+	cmd.Flags().String(govcli.FlagTitle, "", "title of proposal")
 	cmd.Flags().String(govcli.FlagDescription, "", "description of proposal") //nolint:staticcheck // need this till full govv1 conversion.
 	cmd.Flags().String(govcli.FlagDeposit, "", "deposit of proposal")
 
@@ -386,7 +386,7 @@ func NewCmdSubmitUpgradeProposal() *cobra.Command {
 			}
 			cdc := codec.NewProtoCodec(clientCtx.InterfaceRegistry)
 
-			title, err := cmd.Flags().GetString(govcli.FlagTitle) //nolint:staticcheck // need this till full govv1 conversion.
+			title, err := cmd.Flags().GetString(govcli.FlagTitle)
 			if err != nil {
 				return err
 			}
@@ -453,7 +453,7 @@ func NewCmdSubmitUpgradeProposal() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().String(govcli.FlagTitle, "", "title of proposal")             //nolint:staticcheck // need this till full govv1 conversion.
+	cmd.Flags().String(govcli.FlagTitle, "", "title of proposal")
 	cmd.Flags().String(govcli.FlagDescription, "", "description of proposal") //nolint:staticcheck // need this till full govv1 conversion.
 	cmd.Flags().String(govcli.FlagDeposit, "", "deposit of proposal")
 
