@@ -229,7 +229,12 @@ endif
 .PHONY: run-tests $(TEST_TARGETS)
 
 docker-build-debug:
-	@docker build -t cosmos/atomoned-e2e -f e2e.Dockerfile .
+	@docker build -t cosmos/atomoned-e2e -f e2e.Dockerfile --build-arg GO_VERSION=$(REQUIRE_GO_VERSION) .
+
+docker-build-hermes:
+	@cd tests/e2e/docker; docker build -t ghcr.io/cosmos/hermes-e2e:1.0.0 -f hermes.Dockerfile .
+
+docker-build-all: docker-build-debug docker-build-hermes
 
 ###############################################################################
 ###                                Linting                                  ###
