@@ -6,6 +6,7 @@ import (
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 )
 
+// TODO remove usage of x/params
 var _ paramtypes.ParamSet = (*Params)(nil)
 
 // ParamKeyTable the param key table for launch module
@@ -14,13 +15,19 @@ func ParamKeyTable() paramtypes.KeyTable {
 }
 
 // NewParams creates a new Params instance
-func NewParams() Params {
-	return Params{}
+func NewParams(mintDisabled bool) Params {
+	return Params{
+		MintDisabled: mintDisabled,
+	}
 }
+
+const (
+	defaultMintDisabled = false
+)
 
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
-	return NewParams()
+	return NewParams(defaultMintDisabled)
 }
 
 // ParamSetPairs get the params.ParamSet
