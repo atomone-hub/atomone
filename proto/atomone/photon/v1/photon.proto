@@ -9,6 +9,6 @@ option go_package = "github.com/atomone-hub/atomone/x/photon/types";
 message Params {
   option (gogoproto.goproto_stringer) = false;
 
-  // mint photon
-  bool mint_enabled = 1;
+  // mint photon or not
+  bool mint_disabled = 1;
 }

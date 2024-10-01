@@ -3,9 +3,9 @@ package photon
 import (
 	"math/rand"
 
-	"github.com/atomone-hub/atomone/testutil/sample"
 	photonsimulation "github.com/atomone-hub/atomone/x/photon/simulation"
 	"github.com/atomone-hub/atomone/x/photon/types"
+
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
@@ -15,7 +15,6 @@ import (
 
 // avoid unused import issue
 var (
-	_ = sample.AccAddress
 	_ = photonsimulation.FindAccount
 	_ = simulation.MsgEntryKind
 	_ = baseapp.Paramspace
@@ -23,7 +22,9 @@ var (
 )
 
 const (
-    // this line is used by starport scaffolding # simapp/module/const
+	opWeightMsgBurn = "op_weight_msg_burn"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgBurn int = 100
 )
 
 // GenerateGenesisState creates a randomized GenState of the module.
@@ -33,8 +34,7 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 		accs[i] = acc.Address.String()
 	}
 	photonGenesis := types.GenesisState{
-		Params:	types.DefaultParams(),
-		// this line is used by starport scaffolding # simapp/module/genesisState
+		Params: types.DefaultParams(),
 	}
 	simState.GenState[types.ModuleName] = simState.Cdc.MustMarshalJSON(&photonGenesis)
 }
@@ -51,7 +51,16 @@ func (AppModule) ProposalContents(_ module.SimulationState) []simtypes.WeightedP
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	operations := make([]simtypes.WeightedOperation, 0)
 
-	// this line is used by starport scaffolding # simapp/module/operation
+	var weightMsgBurn int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgBurn, &weightMsgBurn, nil,
+		func(_ *rand.Rand) {
+			weightMsgBurn = defaultWeightMsgBurn
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgBurn,
+		photonsimulation.SimulateMsgBurn(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
 
 	return operations
 }
@@ -59,6 +68,13 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 // ProposalMsgs returns msgs used for governance proposals for simulations.
 func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.WeightedProposalMsg {
 	return []simtypes.WeightedProposalMsg{
-	    // this line is used by starport scaffolding # simapp/module/OpMsg
+		simulation.NewWeightedProposalMsg(
+			opWeightMsgBurn,
+			defaultWeightMsgBurn,
+			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+				photonsimulation.SimulateMsgBurn(am.accountKeeper, am.bankKeeper, am.keeper)
+				return nil
+			},
+		),
 	}
 }
