@@ -1,0 +1,41 @@
+syntax = "proto3";
+package atomone.photon.v1;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "atomone/photon/v1/photon.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "amino/amino.proto";
+
+option go_package = "github.com/atomone-hub/atomone/x/photon/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Parameters queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/atomone-hub/atomone/photon/v1/params";
+  }
+
+  rpc Supply(QuerySupplyRequest) returns (QuerySupplyResponse) {
+    option (google.api.http).get = "/atomone-hub/atomone/photon/v1/supply";
+  }
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1 [ (gogoproto.nullable) = false ];
+}
+
+// QuerySupplyRequest is request type for the Query/Supply RPC method.
+message QuerySupplyRequest {}
+
+// QuerySupplyResponse is response type for the Query/Supply RPC method.
+message QuerySupplyResponse {
+  cosmos.base.v1beta1.Coin supply = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}

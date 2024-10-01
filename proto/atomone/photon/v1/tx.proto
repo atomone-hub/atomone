@@ -1,0 +1,39 @@
+syntax = "proto3";
+package atomone.photon.v1;
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos_proto/cosmos.proto";
+import "cosmos/msg/v1/msg.proto";
+import "amino/amino.proto";
+
+option go_package = "github.com/atomone-hub/atomone/x/photon/types";
+
+// Msg defines the Msg service.
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+
+  // Mint defines a method to mint photons.
+  rpc Mint(MsgMint) returns (MsgMintResponse);
+}
+
+// MsgMint defines an sdk.Msg for minting photons.
+message MsgMint {
+  option (cosmos.msg.v1.signer) = "to_address";
+  option (amino.name) = "atomone/photon/v1/MsgMint";
+
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string to_address = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  cosmos.base.v1beta1.Coin to_burn = 2
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+message MsgMintResponse {
+  cosmos.base.v1beta1.Coin minted = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+}
