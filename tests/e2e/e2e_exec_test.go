@@ -1,8 +1,10 @@
 package e2e
 
 import (
+	"bufio"
 	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"path/filepath"
 	"strings"
@@ -705,6 +707,50 @@ func (s *IntegrationTestSuite) executeAtomoneTxCommand(ctx context.Context, c *c
 		s.Require().FailNowf("Exec validation failed", "stdout: %s, stderr: %s",
 			string(stdOut), string(stdErr))
 	}
+}
+
+func (s *IntegrationTestSuite) executeHermesCommand(ctx context.Context, hermesCmd []string) ([]byte, error) {
+	var outBuf bytes.Buffer
+	exec, err := s.dkrPool.Client.CreateExec(docker.CreateExecOptions{
+		Context:      ctx,
+		AttachStdout: true,
+		AttachStderr: true,
+		Container:    s.hermesResource.Container.ID,
+		User:         "root",
+		Cmd:          hermesCmd,
+	})
+	s.Require().NoError(err)
+
+	err = s.dkrPool.Client.StartExec(exec.ID, docker.StartExecOptions{
+		Context:      ctx,
+		Detach:       false,
+		OutputStream: &outBuf,
+	})
+	s.Require().NoError(err)
+
+	// Check that the stdout output contains the expected status
+	// and look for errors, e.g "insufficient fees"
+	stdOut := []byte{}
+	scanner := bufio.NewScanner(&outBuf)
+	for scanner.Scan() {
+		stdOut = scanner.Bytes()
+		var out map[string]interface{}
+		err = json.Unmarshal(stdOut, &out)
+		s.Require().NoError(err)
+		if err != nil {
+			return nil, fmt.Errorf("hermes relayer command returned failed with error: %s", err)
+		}
+		// errors are catched by observing the logs level in the stderr output
+		if lvl := out["level"]; lvl != nil && strings.ToLower(lvl.(string)) == "error" {
+			errMsg := out["fields"].(map[string]interface{})["message"]
+			return nil, fmt.Errorf("hermes relayer command failed: %s", errMsg)
+		}
+		if s := out["status"]; s != nil && s != "success" {
+			return nil, fmt.Errorf("hermes relayer command returned failed with status: %s", s)
+		}
+	}
+
+	return stdOut, nil
 }
 
 func (s *IntegrationTestSuite) expectErrExecValidation(chain *chain, valIdx int, expectErr bool) func([]byte, []byte) bool {

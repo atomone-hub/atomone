@@ -28,6 +28,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
 	govclient "github.com/atomone-hub/atomone/x/gov/client"
 	"github.com/atomone-hub/atomone/x/gov/client/cli"
@@ -129,18 +130,22 @@ type AppModule struct {
 	keeper        *keeper.Keeper
 	accountKeeper govtypes.AccountKeeper
 	bankKeeper    govtypes.BankKeeper
+
+	// legacySubspace is used solely for migration of x/params managed parameters
+	legacySubspace govtypes.ParamSubspace
 }
 
 // NewAppModule creates a new AppModule object
 func NewAppModule(
 	cdc codec.Codec, keeper *keeper.Keeper,
-	ak govtypes.AccountKeeper, bk govtypes.BankKeeper,
+	ak govtypes.AccountKeeper, bk govtypes.BankKeeper, ss govtypes.ParamSubspace,
 ) AppModule {
 	return AppModule{
 		AppModuleBasic: AppModuleBasic{cdc: cdc},
 		keeper:         keeper,
 		accountKeeper:  ak,
 		bankKeeper:     bk,
+		legacySubspace: ss,
 	}
 }
 
@@ -155,7 +160,7 @@ func (am AppModule) IsAppModule() {}
 func init() {
 	appmodule.Register(
 		&modulev1.Module{},
-		appmodule.Provide(ProvideModule),
+		appmodule.Provide(ProvideModule, ProvideKeyTable),
 		appmodule.Invoke(InvokeAddRoutes, InvokeSetHooks))
 }
 
@@ -171,6 +176,9 @@ type GovInputs struct {
 	AccountKeeper govtypes.AccountKeeper
 	BankKeeper    govtypes.BankKeeper
 	StakingKeeper govtypes.StakingKeeper
+
+	// LegacySubspace is used solely for migration of x/params managed parameters
+	LegacySubspace govtypes.ParamSubspace `optional:"true"`
 }
 
 type GovOutputs struct {
@@ -203,10 +211,14 @@ func ProvideModule(in GovInputs) GovOutputs {
 		kConfig,
 		authority.String(),
 	)
-	m := NewAppModule(in.Cdc, k, in.AccountKeeper, in.BankKeeper)
+	m := NewAppModule(in.Cdc, k, in.AccountKeeper, in.BankKeeper, in.LegacySubspace)
 	hr := v1beta1.HandlerRoute{Handler: v1beta1.ProposalHandler, RouteKey: govtypes.RouterKey}
 
 	return GovOutputs{Module: m, Keeper: k, HandlerRoute: hr}
+}
+
+func ProvideKeyTable() paramtypes.KeyTable {
+	return v1.ParamKeyTable() //nolint:staticcheck
 }
 
 func InvokeAddRoutes(keeper *keeper.Keeper, routes []v1beta1.HandlerRoute) {
@@ -271,7 +283,7 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 	v1beta1.RegisterQueryServer(cfg.QueryServer(), legacyQueryServer)
 	v1.RegisterQueryServer(cfg.QueryServer(), am.keeper)
 
-	m := keeper.NewMigrator(am.keeper)
+	m := keeper.NewMigrator(am.keeper, am.legacySubspace)
 	_ = m
 }
 

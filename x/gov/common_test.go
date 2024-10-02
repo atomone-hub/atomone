@@ -28,22 +28,22 @@ import (
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	govkeeper "github.com/atomone-hub/atomone/x/gov/keeper"
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
-	govv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
-	govv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
+	"github.com/atomone-hub/atomone/x/gov/keeper"
+	"github.com/atomone-hub/atomone/x/gov/types"
+	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
+	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 )
 
 var (
 	valTokens           = sdk.TokensFromConsensusPower(42, sdk.DefaultPowerReduction)
-	TestProposal        = govv1beta1.NewTextProposal("Test", "description")
+	TestProposal        = v1beta1.NewTextProposal("Test", "description")
 	TestDescription     = stakingtypes.NewDescription("T", "E", "S", "T", "Z")
 	TestCommissionRates = stakingtypes.NewCommissionRates(math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec())
 )
 
 // mkTestLegacyContent creates a MsgExecLegacyContent for testing purposes.
-func mkTestLegacyContent(t *testing.T) *govv1.MsgExecLegacyContent {
-	msgContent, err := govv1.NewLegacyContent(TestProposal, authtypes.NewModuleAddress(govtypes.ModuleName).String())
+func mkTestLegacyContent(t *testing.T) *v1.MsgExecLegacyContent {
+	msgContent, err := v1.NewLegacyContent(TestProposal, authtypes.NewModuleAddress(types.ModuleName).String())
 	require.NoError(t, err)
 
 	return msgContent
@@ -104,7 +104,7 @@ var pubkeys = []cryptotypes.PubKey{
 type suite struct {
 	AccountKeeper authkeeper.AccountKeeper
 	BankKeeper    bankkeeper.Keeper
-	GovKeeper     *govkeeper.Keeper
+	GovKeeper     *keeper.Keeper
 	StakingKeeper *stakingkeeper.Keeper
 	App           *runtime.App
 }
