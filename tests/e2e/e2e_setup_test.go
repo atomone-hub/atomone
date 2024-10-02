@@ -8,6 +8,7 @@ import (
 	"math/rand"
 	"os"
 	"os/exec"
+	"path"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -68,10 +69,10 @@ const (
 	proposalConstitutionAmendmentFilename = "constitution_amendment.json"
 	newConstitutionFilename               = "new_constitution.md"
 
-	// hermesBinary              = "hermes"
-	// hermesConfigWithGasPrices = "/root/.hermes/config.toml"
-	// hermesConfigNoGasPrices   = "/root/.hermes/config-zero.toml"
-	// transferChannel           = "channel-0"
+	hermesBinary              = "hermes"
+	hermesConfigWithGasPrices = "/root/.hermes/config.toml"
+	hermesConfigNoGasPrices   = "/root/.hermes/config-zero.toml"
+	transferChannel           = "channel-0"
 )
 
 var (
@@ -88,12 +89,12 @@ var (
 type IntegrationTestSuite struct {
 	suite.Suite
 
-	tmpDirs []string
-	chainA  *chain
-	// chainB         *chain
-	dkrPool *dockertest.Pool
-	dkrNet  *dockertest.Network
-	// hermesResource *dockertest.Resource
+	tmpDirs        []string
+	chainA         *chain
+	chainB         *chain
+	dkrPool        *dockertest.Pool
+	dkrNet         *dockertest.Network
+	hermesResource *dockertest.Resource
 
 	valResources map[string][]*dockertest.Resource
 }
@@ -118,10 +119,13 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.chainA, err = newChain()
 	s.Require().NoError(err)
 
+	s.chainB, err = newChain()
+	s.Require().NoError(err)
+
 	s.dkrPool, err = dockertest.NewPool("")
 	s.Require().NoError(err)
 
-	s.dkrNet, err = s.dkrPool.CreateNetwork(fmt.Sprintf("%s-testnet", s.chainA.id))
+	s.dkrNet, err = s.dkrPool.CreateNetwork(fmt.Sprintf("%s-%s-testnet", s.chainA.id, s.chainB.id))
 	s.Require().NoError(err)
 
 	s.valResources = make(map[string][]*dockertest.Resource)
@@ -134,15 +138,24 @@ func (s *IntegrationTestSuite) SetupSuite() {
 
 	// The boostrapping phase is as follows:
 	//
-	// 1. Initialize AtomOne validator nodes.
-	// 2. Create and initialize AtomOne validator genesis files
-	// 3. Start network.
+	// 1. Initialize Gaia validator nodes.
+	// 2. Create and initialize AtomOne validator genesis files (both chains)
+	// 3. Start both networks.
+	// 4. Create and run IBC relayer (Hermes) containers.
 
 	s.T().Logf("starting e2e infrastructure for chain A; chain-id: %s; datadir: %s", s.chainA.id, s.chainA.dataDir)
 	s.initNodes(s.chainA)
 	s.initGenesis(s.chainA, vestingMnemonic, jailedValMnemonic)
 	s.initValidatorConfigs(s.chainA)
 	s.runValidators(s.chainA, 0)
+
+	s.T().Logf("starting e2e infrastructure for chain B; chain-id: %s; datadir: %s", s.chainB.id, s.chainB.dataDir)
+	s.initNodes(s.chainB)
+	s.initGenesis(s.chainB, vestingMnemonic, jailedValMnemonic)
+	s.initValidatorConfigs(s.chainB)
+	s.runValidators(s.chainB, 10)
+
+	s.runIBCRelayer()
 }
 
 func (s *IntegrationTestSuite) TearDownSuite() {
@@ -157,7 +170,7 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 
 	s.T().Log("tearing down e2e integration test suite...")
 
-	// s.Require().NoError(s.dkrPool.Purge(s.hermesResource))
+	s.Require().NoError(s.dkrPool.Purge(s.hermesResource))
 
 	for _, vr := range s.valResources {
 		for _, r := range vr {
@@ -168,7 +181,7 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 	s.Require().NoError(s.dkrPool.RemoveNetwork(s.dkrNet))
 
 	os.RemoveAll(s.chainA.dataDir)
-	// os.RemoveAll(s.chainB.dataDir)
+	os.RemoveAll(s.chainB.dataDir)
 
 	for _, td := range s.tmpDirs {
 		os.RemoveAll(td)
@@ -597,6 +610,74 @@ func noRestart(config *docker.HostConfig) {
 	config.RestartPolicy = docker.RestartPolicy{
 		Name: "no",
 	}
+}
+
+// runIBCRelayer bootstraps an IBC Hermes relayer by creating an IBC connection and
+// a transfer channel between chainA and chainB.
+func (s *IntegrationTestSuite) runIBCRelayer() {
+	s.T().Log("starting Hermes relayer container")
+
+	tmpDir, err := os.MkdirTemp("", "atomone-e2e-testnet-hermes-")
+	s.Require().NoError(err)
+	s.tmpDirs = append(s.tmpDirs, tmpDir)
+
+	valA := s.chainA.validators[0]
+	valB := s.chainB.validators[0]
+
+	rlyA := s.chainA.genesisAccounts[relayerAccountIndexHermes]
+	rlyB := s.chainB.genesisAccounts[relayerAccountIndexHermes]
+
+	hermesCfgPath := path.Join(tmpDir, "hermes")
+
+	s.Require().NoError(os.MkdirAll(hermesCfgPath, 0o755))
+	_, err = copyFile(
+		filepath.Join("./scripts/", "hermes_bootstrap.sh"),
+		filepath.Join(hermesCfgPath, "hermes_bootstrap.sh"),
+	)
+	s.Require().NoError(err)
+
+	s.hermesResource, err = s.dkrPool.RunWithOptions(
+		&dockertest.RunOptions{
+			Name:       fmt.Sprintf("%s-%s-relayer", s.chainA.id, s.chainB.id),
+			Repository: "ghcr.io/cosmos/hermes-e2e",
+			Tag:        "1.0.0",
+			NetworkID:  s.dkrNet.Network.ID,
+			Mounts: []string{
+				fmt.Sprintf("%s/:/root/hermes", hermesCfgPath),
+			},
+			PortBindings: map[docker.Port][]docker.PortBinding{
+				"3031/tcp": {{HostIP: "", HostPort: "3031"}},
+			},
+			Env: []string{
+				fmt.Sprintf("ATOMONE_A_E2E_CHAIN_ID=%s", s.chainA.id),
+				fmt.Sprintf("ATOMONE_B_E2E_CHAIN_ID=%s", s.chainB.id),
+				fmt.Sprintf("ATOMONE_A_E2E_VAL_MNEMONIC=%s", valA.mnemonic),
+				fmt.Sprintf("ATOMONE_B_E2E_VAL_MNEMONIC=%s", valB.mnemonic),
+				fmt.Sprintf("ATOMONE_A_E2E_RLY_MNEMONIC=%s", rlyA.mnemonic),
+				fmt.Sprintf("ATOMONE_B_E2E_RLY_MNEMONIC=%s", rlyB.mnemonic),
+				fmt.Sprintf("ATOMONE_A_E2E_VAL_HOST=%s", s.valResources[s.chainA.id][0].Container.Name[1:]),
+				fmt.Sprintf("ATOMONE_B_E2E_VAL_HOST=%s", s.valResources[s.chainB.id][0].Container.Name[1:]),
+			},
+			User: "root",
+			Entrypoint: []string{
+				"sh",
+				"-c",
+				"chmod +x /root/hermes/hermes_bootstrap.sh && /root/hermes/hermes_bootstrap.sh && tail -f /dev/null",
+			},
+		},
+		noRestart,
+	)
+	s.Require().NoError(err)
+
+	s.T().Logf("started Hermes relayer container: %s", s.hermesResource.Container.ID)
+
+	// XXX: Give time to both networks to start, otherwise we might see gRPC
+	// transport errors.
+	time.Sleep(10 * time.Second)
+
+	// create the client, connection and channel between the two Gaia chains
+	s.createConnection()
+	s.createChannel()
 }
 
 func (s *IntegrationTestSuite) writeGovCommunitySpendProposal(c *chain, amount sdk.Coin, recipient string) {
