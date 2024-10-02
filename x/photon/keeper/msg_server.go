@@ -3,9 +3,9 @@ package keeper
 import (
 	"context"
 
-	"github.com/atomone-hub/atomone/x/photon/types"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/atomone-hub/atomone/x/photon/types"
 )
 
 type msgServer struct {
@@ -27,8 +27,26 @@ func (k msgServer) Burn(goCtx context.Context, msg *types.MsgBurn) (*types.MsgBu
 		return nil, types.ErrMintDisabled
 	}
 
-	// TODO: Handling the message
-	_ = ctx
+	// Ensure burned amount denom is bond denom (atone)
+	bondDenom := k.stakingKeeper.BondDenom(ctx)
+	if msg.Amount.Denom != bondDenom {
+		return nil, types.ErrMintInvalidDenom
+	}
+	// Send amount to photon module
+	to, err := sdk.AccAddressFromBech32(msg.ToAddress)
+	if err != nil {
+		return nil, err
+	}
+	coins := sdk.NewCoins(msg.Amount)
+	if err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, to, types.ModuleName, coins); err != nil {
+		return nil, err
+	}
+	// Burn amount
+	if err := k.bankKeeper.BurnCoins(ctx, types.ModuleName, coins); err != nil {
+		return nil, err
+	}
+	// Compute photons to mint
+	// TODO
 
 	return &types.MsgBurnResponse{}, nil
 }

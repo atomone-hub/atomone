@@ -59,7 +59,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	)
 	operations = append(operations, simulation.NewWeightedOperation(
 		weightMsgBurn,
-		photonsimulation.SimulateMsgBurn(am.accountKeeper, am.bankKeeper, am.keeper),
+		photonsimulation.SimulateMsgBurn(am.accountKeeper, am.bankKeeper, am.stakingKeeper, am.keeper),
 	))
 
 	return operations
@@ -72,7 +72,7 @@ func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.Wei
 			opWeightMsgBurn,
 			defaultWeightMsgBurn,
 			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
-				photonsimulation.SimulateMsgBurn(am.accountKeeper, am.bankKeeper, am.keeper)
+				photonsimulation.SimulateMsgBurn(am.accountKeeper, am.bankKeeper, am.stakingKeeper, am.keeper)
 				return nil
 			},
 		),

@@ -6,5 +6,6 @@ import (
 
 // x/photon module sentinel errors
 var (
-	ErrMintDisabled = sdkerrors.Register(ModuleName, 1, "photo mint disabled")
+	ErrMintDisabled     = sdkerrors.Register(ModuleName, 1, "photon mint disabled")
+	ErrMintInvalidDenom = sdkerrors.Register(ModuleName, 2, "invalid burned amount denom: expected bond denom")
 )
