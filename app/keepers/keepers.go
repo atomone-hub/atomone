@@ -62,6 +62,8 @@ import (
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	govv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	govv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
+	photonkeeper "github.com/atomone-hub/atomone/x/photon/keeper"
+	photontypes "github.com/atomone-hub/atomone/x/photon/types"
 )
 
 type AppKeepers struct {
@@ -90,6 +92,7 @@ type AppKeepers struct {
 	FeeGrantKeeper        feegrantkeeper.Keeper
 	AuthzKeeper           authzkeeper.Keeper
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
+	PhotonKeeper          *photonkeeper.Keeper
 
 	// Modules
 	ICAModule      ica.AppModule
@@ -206,6 +209,15 @@ func NewAppKeeper(
 		appKeepers.AccountKeeper,
 		appKeepers.BankKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
+	appKeepers.PhotonKeeper = photonkeeper.NewKeeper(
+		appCodec,
+		appKeepers.keys[photontypes.StoreKey],
+		appKeepers.GetSubspace(photontypes.ModuleName),
+		appKeepers.BankKeeper,
+		appKeepers.AccountKeeper,
+		appKeepers.StakingKeeper,
 	)
 
 	appKeepers.MintKeeper = mintkeeper.NewKeeper(
@@ -375,6 +387,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName)
 	paramsKeeper.Subspace(ibcexported.ModuleName)
 	paramsKeeper.Subspace(icahosttypes.SubModuleName)
+	paramsKeeper.Subspace(photontypes.ModuleName).WithKeyTable(photontypes.ParamKeyTable())
 
 	return paramsKeeper
 }

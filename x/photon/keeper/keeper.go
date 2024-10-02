@@ -12,20 +12,23 @@ import (
 	"github.com/atomone-hub/atomone/x/photon/types"
 )
 
-type (
-	Keeper struct {
-		cdc        codec.BinaryCodec
-		storeKey   storetypes.StoreKey
-		memKey     storetypes.StoreKey
-		paramstore paramtypes.Subspace
-	}
-)
+type Keeper struct {
+	cdc        codec.BinaryCodec
+	storeKey   storetypes.StoreKey
+	paramstore paramtypes.Subspace
+
+	bankKeeper    types.BankKeeper
+	accountKeeper types.AccountKeeper
+	stakingKeeper types.StakingKeeper
+}
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
-	storeKey,
-	memKey storetypes.StoreKey,
+	storeKey storetypes.StoreKey,
 	ps paramtypes.Subspace,
+	bankKeeper types.BankKeeper,
+	accountKeeper types.AccountKeeper,
+	stakingKeeper types.StakingKeeper,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -33,10 +36,12 @@ func NewKeeper(
 	}
 
 	return &Keeper{
-		cdc:        cdc,
-		storeKey:   storeKey,
-		memKey:     memKey,
-		paramstore: ps,
+		cdc:           cdc,
+		storeKey:      storeKey,
+		paramstore:    ps,
+		bankKeeper:    bankKeeper,
+		accountKeeper: accountKeeper,
+		stakingKeeper: stakingKeeper,
 	}
 }
 
