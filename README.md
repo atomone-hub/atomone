@@ -29,6 +29,14 @@ Run `make build-ledger` to have ledger support in `./build/atomoned` binary.
 Note that this will disable reproducible builds, as it introduces OS
 dependencies.
 
+## Genesis file
+
+The proposed genesis files for atomone can be found in the [genesis repo](https://github.com/atomone-hub/genesis).
+
+## Public RPC and fullnode endpoints
+
+The public RPC and fullnode endpoints directory can be found in the [registry repo](https://github.com/atomone-hub/registry).
+
 ## Acknowledgements
 
 Portions of this codebase are copied or adapted from [cosmos/gaia@v15](https://github.com/cosmos/gaia/tree/v15.0.0), and [cosmos/cosmos-sdk@v47.10](https://github.com/cosmos/cosmos-sdk/tree/v0.47.10).
