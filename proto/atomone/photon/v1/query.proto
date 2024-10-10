@@ -7,6 +7,7 @@ import "cosmos/base/query/v1beta1/pagination.proto";
 import "atomone/photon/v1/photon.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "amino/amino.proto";
+import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/atomone-hub/atomone/x/photon/types";
 
@@ -14,11 +15,11 @@ option go_package = "github.com/atomone-hub/atomone/x/photon/types";
 service Query {
   // Parameters queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/atomone-hub/atomone/photon/v1/params";
+    option (google.api.http).get = "/atomone/photon/v1/params";
   }
-
-  rpc Supply(QuerySupplyRequest) returns (QuerySupplyResponse) {
-    option (google.api.http).get = "/atomone-hub/atomone/photon/v1/supply";
+  // ConversionRate queries the photon's conversion rate
+  rpc ConversionRate(QueryConversionRateRequest) returns (QueryConversionRateResponse) {
+    option (google.api.http).get = "/atomone/photon/v1/conversion_rate";
   }
 }
 
@@ -31,11 +32,11 @@ message QueryParamsResponse {
   Params params = 1 [ (gogoproto.nullable) = false ];
 }
 
-// QuerySupplyRequest is request type for the Query/Supply RPC method.
-message QuerySupplyRequest {}
+// QueryConversionRateRequest is request type for the Query/ConversionRate RPC method.
+message QueryConversionRateRequest {}
 
-// QuerySupplyResponse is response type for the Query/Supply RPC method.
-message QuerySupplyResponse {
-  cosmos.base.v1beta1.Coin supply = 1
-      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+// QueryConversionRateResponse is response type for the Query/ConversionRate RPC method.
+message QueryConversionRateResponse {
+	// conversion_rate represents the factor used to convert atone to photon.
+  string conversion_rate = 1 [ (cosmos_proto.scalar) = "cosmos.Dec" ];
 }
