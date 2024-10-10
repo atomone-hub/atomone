@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"cosmossdk.io/errors"
+	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors1 "github.com/cosmos/cosmos-sdk/types/errors"
@@ -213,6 +214,146 @@ func (k msgServer) ProposeConstitutionAmendment(goCtx context.Context, msg *v1.M
 	}
 	k.SetConstitution(ctx, constitution)
 	return &v1.MsgProposeConstitutionAmendmentResponse{}, nil
+}
+
+func (k msgServer) CreateGovernor(goCtx context.Context, msg *v1.MsgCreateGovernor) (*v1.MsgCreateGovernorResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	// Ensure the governor does not already exist
+	addr := sdk.MustAccAddressFromBech32(msg.Address)
+	govAddr := govtypes.GovernorAddress(addr.Bytes())
+	if _, found := k.GetGovernor(ctx, govAddr); found {
+		return nil, govtypes.ErrGovernorExists
+	}
+
+	// Ensure the governor has a valid description
+	if _, err := msg.Description.EnsureLength(); err != nil {
+		return nil, err
+	}
+
+	minSelfDelegation, _ := math.NewIntFromString(k.GetParams(ctx).MinGovernorSelfDelegation)
+	bondedTokens := k.getGovernorBondedTokens(ctx, govAddr)
+	if bondedTokens.LT(minSelfDelegation) {
+		return nil, govtypes.ErrInsufficientGovernorDelegation.Wrapf("minimum self-delegation required: %s, total bonded tokens: %s", minSelfDelegation, bondedTokens)
+	}
+
+	governor, err := v1.NewGovernor(govAddr.String(), msg.Description, ctx.BlockTime())
+	if err != nil {
+		return nil, err
+	}
+
+	k.SetGovernor(ctx, governor)
+
+	// a base account automatically creates a governance delegation to itself
+	k.DelegateToGovernor(ctx, addr, govAddr)
+
+	return &v1.MsgCreateGovernorResponse{}, nil
+}
+
+func (k msgServer) EditGovernor(goCtx context.Context, msg *v1.MsgEditGovernor) (*v1.MsgEditGovernorResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	// Ensure the governor exists
+	addr := sdk.MustAccAddressFromBech32(msg.Address)
+	govAddr := govtypes.GovernorAddress(addr.Bytes())
+	governor, found := k.GetGovernor(ctx, govAddr)
+	if !found {
+		return nil, govtypes.ErrUnknownGovernor
+	}
+
+	// Ensure the governor has a valid description
+	if _, err := msg.Description.EnsureLength(); err != nil {
+		return nil, err
+	}
+
+	// Update the governor
+	governor.Description = msg.Description
+	k.SetGovernor(ctx, governor)
+
+	return &v1.MsgEditGovernorResponse{}, nil
+}
+
+func (k msgServer) UpdateGovernorStatus(goCtx context.Context, msg *v1.MsgUpdateGovernorStatus) (*v1.MsgUpdateGovernorStatusResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	// Ensure the governor exists
+	addr := sdk.MustAccAddressFromBech32(msg.Address)
+	govAddr := govtypes.GovernorAddress(addr.Bytes())
+	governor, found := k.GetGovernor(ctx, govAddr)
+	if !found {
+		return nil, govtypes.ErrUnknownGovernor
+	}
+
+	if !msg.Status.IsValid() {
+		return nil, govtypes.ErrInvalidGovernorStatus
+	}
+
+	// Ensure the governor is not already in the desired status
+	if governor.Status == msg.Status {
+		return nil, govtypes.ErrGovernorStatusEqual
+	}
+
+	// Ensure the governor has been in the current status for the required period
+	governorStatusChangePeriod := *k.GetParams(ctx).GovernorStatusChangePeriod
+	changeTime := ctx.BlockTime()
+	if governor.LastStatusChangeTime.Add(governorStatusChangePeriod).After(changeTime) {
+		return nil, govtypes.ErrGovernorStatusChangePeriod.Wrapf("last status change time: %s, need to wait until: %s", governor.LastStatusChangeTime, governor.LastStatusChangeTime.Add(governorStatusChangePeriod))
+	}
+
+	// Update the governor status
+	governor.Status = msg.Status
+	governor.LastStatusChangeTime = &changeTime
+	k.SetGovernor(ctx, governor)
+	// if status changes to active, create governance self-delegation
+	// in case it didn't exist
+	if governor.IsActive() {
+		k.RedelegateToGovernor(ctx, addr, govAddr)
+	}
+	return &v1.MsgUpdateGovernorStatusResponse{}, nil
+}
+
+func (k msgServer) DelegateGovernor(goCtx context.Context, msg *v1.MsgDelegateGovernor) (*v1.MsgDelegateGovernorResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	delAddr := sdk.MustAccAddressFromBech32(msg.DelegatorAddress)
+	govAddr := govtypes.MustGovernorAddressFromBech32(msg.GovernorAddress)
+
+	// Ensure the delegator is not already an active governor, as they cannot delegate
+	if g, found := k.GetGovernor(ctx, govtypes.GovernorAddress(delAddr.Bytes())); found && g.IsActive() {
+		return nil, govtypes.ErrDelegatorIsGovernor
+	}
+
+	// Ensure the delegation is not already present
+	gd, found := k.GetGovernanceDelegation(ctx, delAddr)
+	if found && govAddr.Equals(govtypes.MustGovernorAddressFromBech32(gd.GovernorAddress)) {
+		return nil, govtypes.ErrGovernanceDelegationExists
+	}
+	// redelegate if a delegation to another governor already exists
+	if found {
+		k.RedelegateToGovernor(ctx, delAddr, govAddr)
+	} else {
+		// Create the delegation
+		k.DelegateToGovernor(ctx, delAddr, govAddr)
+	}
+
+	return &v1.MsgDelegateGovernorResponse{}, nil
+}
+
+func (k msgServer) UndelegateGovernor(goCtx context.Context, msg *v1.MsgUndelegateGovernor) (*v1.MsgUndelegateGovernorResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	delAddr := sdk.MustAccAddressFromBech32(msg.DelegatorAddress)
+
+	// Ensure the delegation exists
+	_, found := k.GetGovernanceDelegation(ctx, delAddr)
+	if !found {
+		return nil, govtypes.ErrUnknownGovernanceDelegation
+	}
+
+	// Remove the delegation
+	k.UndelegateFromGovernor(ctx, delAddr)
+
+	return &v1.MsgUndelegateGovernorResponse{}, nil
 }
 
 type legacyMsgServer struct {
