@@ -4,15 +4,16 @@ import (
 	"context"
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/atomone-hub/atomone/x/photon/keeper"
+	"github.com/atomone-hub/atomone/x/photon/testutil"
+	"github.com/atomone-hub/atomone/x/photon/types"
 	"github.com/stretchr/testify/require"
-    "github.com/atomone-hub/atomone/x/photon/types"
-    "github.com/atomone-hub/atomone/x/photon/keeper"
-    keepertest "github.com/atomone-hub/atomone/testutil/keeper"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func setupMsgServer(t testing.TB) (types.MsgServer, context.Context) {
-	k, ctx := keepertest.PhotonKeeper(t)
+func setupMsgServer(t *testing.T) (types.MsgServer, context.Context) {
+	k, _, ctx := testutil.SetupPhotonKeeper(t)
 	return keeper.NewMsgServerImpl(*k), sdk.WrapSDKContext(ctx)
 }
 

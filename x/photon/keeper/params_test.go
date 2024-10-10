@@ -3,13 +3,13 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
-	testkeeper "github.com/atomone-hub/atomone/testutil/keeper"
+	"github.com/atomone-hub/atomone/x/photon/testutil"
 	"github.com/atomone-hub/atomone/x/photon/types"
+	"github.com/stretchr/testify/require"
 )
 
 func TestGetParams(t *testing.T) {
-	k, ctx := testkeeper.PhotonKeeper(t)
+	k, _, ctx := testutil.SetupPhotonKeeper(t)
 	params := types.DefaultParams()
 
 	k.SetParams(ctx, params)
