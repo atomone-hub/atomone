@@ -20,8 +20,7 @@ func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 
 var _ types.MsgServer = msgServer{}
 
-const photonMaxSupply = 1_000_000_000
-
+// Burn implements the MsgServer.Burn method.
 func (k msgServer) Burn(goCtx context.Context, msg *types.MsgBurn) (*types.MsgBurnResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	params := k.GetParams(ctx)
@@ -37,26 +36,22 @@ func (k msgServer) Burn(goCtx context.Context, msg *types.MsgBurn) (*types.MsgBu
 	}
 	// Compute photons to mint
 	var (
-		atomToBurn            = msg.Amount
-		atoneSupply           = k.bankKeeper.GetSupply(ctx, bondDenom)
-		photonSupply          = k.bankKeeper.GetSupply(ctx, "uphoton")
-		remainMintablePhotons = sdk.NewInt(photonMaxSupply).Sub(photonSupply.Amount)
-		photonToMint          = atomToBurn.Amount.Mul(
-			remainMintablePhotons.Quo(atoneSupply.Amount),
-		)
+		atoneToBurn  = msg.Amount
+		photonToMint = atoneToBurn.Amount.ToLegacyDec().Mul(k.conversionRate(ctx))
 	)
 
 	if photonToMint.IsZero() {
 		return nil, types.ErrNoMintablePhotons
 	}
 	// TODO check if photonToMint + remainMintablePhotons > photonMaxSupply ?
+	// TODO we probably needs to deal with round precision
+
+	// Send atone to photon module for burn
 	to, err := sdk.AccAddressFromBech32(msg.ToAddress)
 	if err != nil {
 		return nil, err
 	}
-
-	// Send atone to photon module for burn
-	coinsToBurn := sdk.NewCoins(atomToBurn)
+	coinsToBurn := sdk.NewCoins(atoneToBurn)
 	if err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, to, types.ModuleName, coinsToBurn); err != nil {
 		return nil, err
 	}
@@ -66,7 +61,7 @@ func (k msgServer) Burn(goCtx context.Context, msg *types.MsgBurn) (*types.MsgBu
 	}
 
 	// Mint photons
-	coinsToMint := sdk.NewCoins(sdk.NewCoin("uphoton", photonToMint))
+	coinsToMint := sdk.NewCoins(sdk.NewCoin("uphoton", photonToMint.RoundInt()))
 	if err := k.bankKeeper.MintCoins(ctx, types.ModuleName, coinsToMint); err != nil {
 		return nil, err
 	}
@@ -76,4 +71,17 @@ func (k msgServer) Burn(goCtx context.Context, msg *types.MsgBurn) (*types.MsgBu
 	}
 
 	return &types.MsgBurnResponse{Minted: coinsToMint[0]}, nil
+}
+
+const photonMaxSupply = 1_000_000_000
+
+// conversionRate returns the conversion rate for converting atone to photon.
+func (k Keeper) conversionRate(ctx sdk.Context) sdk.Dec {
+	var (
+		bondDenom             = k.stakingKeeper.BondDenom(ctx)
+		atoneSupply           = k.bankKeeper.GetSupply(ctx, bondDenom).Amount.ToLegacyDec()
+		photonSupply          = k.bankKeeper.GetSupply(ctx, "uphoton").Amount.ToLegacyDec()
+		remainMintablePhotons = sdk.NewDec(photonMaxSupply).Sub(photonSupply)
+	)
+	return remainMintablePhotons.Quo(atoneSupply)
 }
