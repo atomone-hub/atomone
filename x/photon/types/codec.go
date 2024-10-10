@@ -11,12 +11,13 @@ import (
 
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgBurn{}, "atomone/photon/v1/MsgBurn")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "atomone/x/photon/v1/MsgUpdateParams")
 	cdc.RegisterConcrete(&Params{}, "atomone/photo/v1/Params", nil)
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgBurn{},
+		&MsgBurn{}, &MsgUpdateParams{},
 	)
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 }
