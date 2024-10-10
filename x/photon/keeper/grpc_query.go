@@ -21,7 +21,11 @@ func (k Keeper) Params(goCtx context.Context, req *types.QueryParamsRequest) (*t
 	return &types.QueryParamsResponse{Params: k.GetParams(ctx)}, nil
 }
 
-func (k Keeper) Supply(goCtx context.Context, req *types.QuerySupplyRequest) (*types.QuerySupplyResponse, error) {
-	// TODO
-	return nil, nil
+// ConversionRate returns the atone to photon conversion ratio.
+func (k Keeper) ConversionRate(goCtx context.Context, req *types.QueryConversionRateRequest) (*types.QueryConversionRateResponse, error) {
+	var (
+		ctx = sdk.UnwrapSDKContext(goCtx)
+		cr  = k.conversionRate(ctx)
+	)
+	return &types.QueryConversionRateResponse{ConversionRate: cr.String()}, nil
 }
