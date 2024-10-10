@@ -22,15 +22,14 @@ func GetTxCmd() *cobra.Command {
 		SuggestionsMinimumDistance: 2,
 		RunE:                       client.ValidateCmd,
 	}
-	cmd.AddCommand(CmdBurn())
-
+	cmd.AddCommand(GetTxBurnCmd())
 	return cmd
 }
 
-func CmdBurn() *cobra.Command {
+func GetTxBurnCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "burn [amount]",
-		Short: "Broadcast Burm message which burns [amount] and mint photons.",
+		Short: "Broadcast Burn message which burns [amount] and mint photons.",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -41,7 +40,6 @@ func CmdBurn() *cobra.Command {
 			if err != nil {
 				return err
 			}
-
 			msg := types.NewMsgBurn(
 				clientCtx.GetFromAddress(),
 				toBurn,
@@ -52,8 +50,6 @@ func CmdBurn() *cobra.Command {
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
-
 	flags.AddTxFlagsToCmd(cmd)
-
 	return cmd
 }
