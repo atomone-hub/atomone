@@ -3,8 +3,10 @@ package keeper
 import (
 	"context"
 
+	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
+	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	"github.com/atomone-hub/atomone/x/photon/types"
 )
 
@@ -73,15 +75,16 @@ func (k msgServer) Burn(goCtx context.Context, msg *types.MsgBurn) (*types.MsgBu
 	return &types.MsgBurnResponse{Minted: coinsToMint[0]}, nil
 }
 
-const photonMaxSupply = 1_000_000_000
+// UpdateParams implements the MsgServer.UpdateParams method.
+func (k msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
+	if k.authority != msg.Authority {
+		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
+	}
 
-// conversionRate returns the conversion rate for converting atone to photon.
-func (k Keeper) conversionRate(ctx sdk.Context) sdk.Dec {
-	var (
-		bondDenom             = k.stakingKeeper.BondDenom(ctx)
-		atoneSupply           = k.bankKeeper.GetSupply(ctx, bondDenom).Amount.ToLegacyDec()
-		photonSupply          = k.bankKeeper.GetSupply(ctx, "uphoton").Amount.ToLegacyDec()
-		remainMintablePhotons = sdk.NewDec(photonMaxSupply).Sub(photonSupply)
-	)
-	return remainMintablePhotons.Quo(atoneSupply)
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	if err := k.SetParams(ctx, msg.Params); err != nil {
+		return nil, err
+	}
+
+	return &types.MsgUpdateParamsResponse{}, nil
 }
