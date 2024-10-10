@@ -7,15 +7,13 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
 	"github.com/atomone-hub/atomone/x/photon/types"
 )
 
 type Keeper struct {
-	cdc        codec.BinaryCodec
-	storeKey   storetypes.StoreKey
-	paramstore paramtypes.Subspace
+	cdc      codec.BinaryCodec
+	storeKey storetypes.StoreKey
 
 	bankKeeper    types.BankKeeper
 	accountKeeper types.AccountKeeper
@@ -25,20 +23,13 @@ type Keeper struct {
 func NewKeeper(
 	cdc codec.BinaryCodec,
 	storeKey storetypes.StoreKey,
-	ps paramtypes.Subspace,
 	bankKeeper types.BankKeeper,
 	accountKeeper types.AccountKeeper,
 	stakingKeeper types.StakingKeeper,
 ) *Keeper {
-	// set KeyTable if it has not already been set
-	if !ps.HasKeyTable() {
-		ps = ps.WithKeyTable(types.ParamKeyTable())
-	}
-
 	return &Keeper{
 		cdc:           cdc,
 		storeKey:      storeKey,
-		paramstore:    ps,
 		bankKeeper:    bankKeeper,
 		accountKeeper: accountKeeper,
 		stakingKeeper: stakingKeeper,
