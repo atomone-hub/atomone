@@ -107,24 +107,6 @@ func (keeper Keeper) tallyVotes(
 
 		voter := sdk.MustAccAddressFromBech32(vote.Voter)
 
-		// if voter is a governor record it in the map
-		selfGovAddr := types.GovernorAddress(voter.Bytes())
-		selfGovAddrStr := selfGovAddr.String()
-		if gov, ok := keeper.GetGovernor(ctx, selfGovAddr); ok {
-			gi, ok := allGovernors[selfGovAddrStr]
-			if ok {
-				gi.Vote = vote.Options
-				allGovernors[selfGovAddrStr] = gi
-			} else {
-				allGovernors[selfGovAddrStr] = v1.NewGovernorGovInfo(
-					selfGovAddr,
-					keeper.GetAllGovernorValShares(ctx, selfGovAddr),
-					vote.Options,
-					gov.IsActive(),
-				)
-			}
-		}
-
 		gd, hasGovernor := keeper.GetGovernanceDelegation(ctx, voter)
 		if hasGovernor {
 			if gi, ok := allGovernors[gd.GovernorAddress]; ok {
@@ -133,12 +115,18 @@ func (keeper Keeper) tallyVotes(
 				govAddr := types.MustGovernorAddressFromBech32(gd.GovernorAddress)
 				gov, _ := keeper.GetGovernor(ctx, govAddr)
 				governor = v1.NewGovernorGovInfo(
-					types.GovernorAddress(voter.Bytes()),
+					govAddr,
 					keeper.GetAllGovernorValShares(ctx, types.MustGovernorAddressFromBech32(gd.GovernorAddress)),
 					v1.WeightedVoteOptions{},
 					gov.IsActive(),
 				)
 			}
+			if gd.GovernorAddress == types.GovernorAddress(voter).String() {
+				// voter and governor are the same account, record his vote
+				governor.Vote = vote.Options
+			}
+			// Ensure allGovernors contains the updated governor
+			allGovernors[gd.GovernorAddress] = governor
 		}
 
 		// iterate over all delegations from voter
