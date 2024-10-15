@@ -68,7 +68,7 @@ func NewParams(
 	quorum, threshold, constitutionAmendmentQuorum, constitutionAmendmentThreshold, lawQuorum, lawThreshold, minInitialDepositRatio string,
 	burnProposalDeposit, burnVoteQuorum bool, minDepositRatio string,
 	quorumTimeout, maxVotingPeriodExtension time.Duration, quorumCheckCount uint64,
-	maxGovernors uint64, governorStatusChangePeriod time.Duration, minGovernorSelfDelegation string,
+	governorStatusChangePeriod time.Duration, minGovernorSelfDelegation string,
 ) Params {
 	return Params{
 		MinDeposit:                     minDeposit,
@@ -111,7 +111,6 @@ func DefaultParams() Params {
 		DefaultQuorumTimeout,
 		DefaultMaxVotingPeriodExtension,
 		DefaultQuorumCheckCount,
-		DefaultMaxGovernors,
 		DefaultGovernorStatusChangePeriod,
 		DefaultMinGovernorSelfDelegation.String(),
 	)

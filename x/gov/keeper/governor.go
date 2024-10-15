@@ -93,14 +93,14 @@ func (k Keeper) getGovernorBondedTokens(ctx sdk.Context, govAddr types.GovernorA
 }
 
 func (k Keeper) ValidateGovernorMinSelfDelegation(ctx sdk.Context, governor v1.Governor) bool {
-	minGovernorSelfDelegation, _ := math.NewIntFromString(k.GetParams(ctx).MinGovernorSelfDelegation)
-	bondedTokens := k.getGovernorBondedTokens(ctx, governor.GetAddress())
-	delAddr := sdk.AccAddress(governor.GetAddress())
-
 	// ensure that the governor is active and that has a valid governance self-delegation
 	if !governor.IsActive() {
 		return false
 	}
+	minGovernorSelfDelegation, _ := math.NewIntFromString(k.GetParams(ctx).MinGovernorSelfDelegation)
+	bondedTokens := k.getGovernorBondedTokens(ctx, governor.GetAddress())
+	delAddr := sdk.AccAddress(governor.GetAddress())
+
 	if del, found := k.GetGovernanceDelegation(ctx, delAddr); !found || !governor.GetAddress().Equals(types.MustGovernorAddressFromBech32(del.GovernorAddress)) {
 		panic("active governor without governance self-delegation")
 	}

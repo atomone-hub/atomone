@@ -177,7 +177,6 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 
 	maxDepositPeriod := 10 * time.Minute
 	votingPeriod := 15 * time.Second
-	maxGovernors := uint64(100)
 	governorStatusChangePeriod := 30 * time.Second
 
 	govGenState := govv1.NewGenesisState(1,
@@ -189,7 +188,7 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 			sdk.ZeroDec().String(),
 			false, false, govv1.DefaultMinDepositRatio.String(),
 			govv1.DefaultQuorumTimeout, govv1.DefaultMaxVotingPeriodExtension, govv1.DefaultQuorumCheckCount,
-			maxGovernors, governorStatusChangePeriod, minGovernorSelfDelegation.String(),
+			governorStatusChangePeriod, minGovernorSelfDelegation.String(),
 		),
 	)
 	govGenState.Constitution = "This is a test constitution"

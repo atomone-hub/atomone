@@ -186,8 +186,6 @@ func RandomizedGenState(simState *module.SimulationState) {
 	var quorumCheckCount uint64
 	simState.AppParams.GetOrGenerate(simState.Cdc, QuorumCheckCount, &quorumCheckCount, simState.Rand, func(r *rand.Rand) { quorumCheckCount = GenQuorumCheckCount(r) })
 
-	maxGovernors := uint64(simState.Rand.Intn(100))
-
 	var governorStatusChangePeriod time.Duration
 	simState.AppParams.GetOrGenerate(
 		simState.Cdc, GovernorStatusChangePeriod, &governorStatusChangePeriod, simState.Rand,
@@ -202,7 +200,7 @@ func RandomizedGenState(simState *module.SimulationState) {
 
 	govGenesis := v1.NewGenesisState(
 		startingProposalID,
-		v1.NewParams(minDeposit, depositPeriod, votingPeriod, quorum.String(), threshold.String(), amendmentsQuorum.String(), amendmentsThreshold.String(), lawQuorum.String(), lawThreshold.String(), minInitialDepositRatio.String(), simState.Rand.Intn(2) == 0, simState.Rand.Intn(2) == 0, minDepositRatio.String(), quorumTimout, maxVotingPeriodExtension, quorumCheckCount, maxGovernors, governorStatusChangePeriod, minGovernorSelfDelegation.String()),
+		v1.NewParams(minDeposit, depositPeriod, votingPeriod, quorum.String(), threshold.String(), amendmentsQuorum.String(), amendmentsThreshold.String(), lawQuorum.String(), lawThreshold.String(), minInitialDepositRatio.String(), simState.Rand.Intn(2) == 0, simState.Rand.Intn(2) == 0, minDepositRatio.String(), quorumTimout, maxVotingPeriodExtension, quorumCheckCount, governorStatusChangePeriod, minGovernorSelfDelegation.String()),
 	)
 
 	bz, err := json.MarshalIndent(&govGenesis, "", " ")
