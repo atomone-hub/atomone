@@ -57,19 +57,25 @@ the 0 value.
 ### `MsgBurn` message
 
 `MsgBurn` takes an amount of ATONE and returns an amount of PHOTON.
-The passed ATONEs are burnt while an amount of PHOTONS is minted and moved onto
-the message signer. The number of minted PHOTONs is equal to the number of
-burnt ATONE multiplied by the conversion rate explained in the `Convert` query
-section below.
+The passed ATONEs are burnt while the amount of PHOTONS is minted and moved
+onto the message signer wallet. The number of minted PHOTONs is equal to the
+number of burnt ATONE multiplied by the conversion rate described in the
+`Convert` query section below.
 
 ```math
 photons_{minted} = atones_{burned} \times conversion\_rate
 ```
 
+### Params
+
+The `photon` module has the following params:
+- `mint_disabled` (default to false): if true, disable the ability to call
+  `MsgBurn`.
+
 ### State
 
-The `photon` module doesn't require any state, as the PHOTON balances and
-supply are handled by the `bank` module.
+Aside from its params, the `photon` module doesn't have any additionnal state,
+as the PHOTON balances and supply are handled by the `bank` module.
 
 ### Migration
 
