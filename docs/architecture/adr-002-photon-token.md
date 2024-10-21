@@ -33,8 +33,10 @@ The PHOTON token is specified in the AtomOne Constitution Article 3 Section 5:
 
 The ADR proposes to create a new `photon` module to host the following
 features:
-- new query `ConvertRate`
-- new message `MsgBurn` (or `MsgMint`? or `MsgConvert` ? or something else?).
+- New query `ConvertRate`
+- New message `MsgBurn` (or `MsgMint`? or `MsgConvert` ? or something else?).
+- New [`TxFeeChecker`] implementation to enforce the PHOTON token as the only
+  fee token.
 
 ### `ConvertRate` query
 
@@ -66,6 +68,42 @@ number of burnt ATONE multiplied by the conversion rate described in the
 photons_{minted} = atones_{burned} \times conversion\_rate
 ```
 
+### `TxFeeChecker` implementation
+
+The [`TxFeeChecker`] is a function definition that is part of the ante handler
+`auth/ante.DeductFeeDecorator`. When this ante handler is invoked, it calls the
+`TxFeeChecker` to ensure the fee provided in the tx is enough.
+
+Currently, AtomOne uses the default `TxFeeChecker` (namely
+[`checkTxFeeWithValidatorMinGasPrices`]), so the photon module must provide an
+alternative `TxFeeChecker` implementation, which should:
+- enforce that the fee denom is PHOTON, also by returning a specific error
+  message of the tx fee denom is not the PHOTON (this to improve UX).
+- make exception for some messages, specifically like `MsgBurn`, because
+  `MsgBurn` is the only way to get PHOTON, so it should accept ATONE as fee
+  token.
+
+### Validator `minimum-gas-prices`
+
+Validators will have to update their `minimum-gas-prices` setting to reflect
+this new setup. It should basically allow both ATOM and PHOTON, so the setting
+should like:
+
+```toml
+minimum-gas-prices = "0.001uatone,0.001uphoton"
+```
+
+> [!IMPORTANT]
+> In the legacy `TxFeeChecker` implementation
+> ([`checkTxFeeWithValidatorMinGasPrices`]), the validator `minimum-gas-prices`
+> is checked against *all* mentionned denoms. For the photon module, the
+> implementation must be different, it must be checked on at least one denom
+> (ATONE or PHOTON, but not both).
+
+If the validator `minimum-gas-prices` does not match the required denom (ATONE
+or PHOTON for `MsgBurn, only `PHOTON` for all other messages), an error must be
+returned and the tx is rejected.
+
 ### Params
 
 The `photon` module has the following params:
@@ -74,7 +112,7 @@ The `photon` module has the following params:
 
 ### State
 
-Aside from its params, the `photon` module doesn't have any additionnal state,
+Aside from its params, the `photon` module do not have any additionnal state,
 as the PHOTON balances and supply are handled by the `bank` module.
 
 ### Migration
@@ -92,7 +130,13 @@ TODO
 
 ### Negative
 
-> {negative consequences}
+- Users will have to choose between PHOTON and ATONE for the fee token when
+  signing a transaction for AtomOne. Basically, for `MsgBurn` ATONE and PHOTON
+  are accepted, for all other messages, only PHOTON is accepted. While this
+  may seem obvious, it can be confusing because as far as we know, wallets do
+  not have logic regarding the choice of the fee tokens. Maybe it is time to
+  start discussion with some wallets dev regarding that, this would improve the
+  UX.
 
 ### Neutral
 
@@ -103,3 +147,6 @@ TODO
 > Are there any relevant PR comments, issues that led up to this, or articles referrenced for why we made the given design choice? If so link them here!
 
 * {reference link}
+
+[`TxFeeChecker`]: https://github.com/cosmos/cosmos-sdk/blob/44c5d17ca6d9d37fdd6adfa3169c986fbce22b8f/x/auth/ante/fee.go#L11-L13
+[`checkTxFeeWithValidatorMinGasPrices`]: https://github.com/cosmos/cosmos-sdk/blob/6e59ad0deea672a21e64fdc83939ca812dcd2b1b/x/auth/ante/validator_tx_fee.go#L17
