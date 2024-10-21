@@ -33,8 +33,8 @@ The PHOTON token is specified in the AtomOne Constitution Article 3 Section 5:
 
 The ADR proposes to create a new `photon` module to host the following
 features:
-- New query `ConvertRate`
-- New message `MsgBurn` (or `MsgMint`? or `MsgConvert` ? or something else?).
+- New `ConvertRate` query
+- New `MsgBurn` message (or `MsgMint`? or `MsgConvert` ? or something else?).
 - New [`TxFeeChecker`] implementation to enforce the PHOTON token as the only
   fee token.
 
@@ -83,6 +83,10 @@ alternative `TxFeeChecker` implementation, which should:
   `MsgBurn` is the only way to get PHOTON, so it should accept ATONE as fee
   token.
 
+> [!NOTE]
+> XXX Would any other message benefit from keeping ATONE as fee token ? For
+> example what about IBC messages ? 
+
 ### Validator `minimum-gas-prices`
 
 Validators will have to update their `minimum-gas-prices` setting to reflect
@@ -108,7 +112,16 @@ returned and the tx is rejected.
 
 The `photon` module has the following params:
 - `mint_disabled` (default to false): if true, disable the ability to call
-  `MsgBurn`.
+  `MsgBurn`. 
+
+> [!NOTE]
+> XXX is it really usefull to disable `MsgBurn` ? Looks like it is an urgency
+> method when something goes wrong, which is not very compatible with a
+> governance proposal to change the parameters... Suggestion: remove it 
+
+> [!NOTE]
+> Because the maximum supply of PHOTON is constitutionnal, it must be hosted in
+> a constant in the code, and not in the parameters.
 
 ### State
 
@@ -137,6 +150,12 @@ TODO
   not have logic regarding the choice of the fee tokens. Maybe it is time to
   start discussion with some wallets dev regarding that, this would improve the
   UX.
+
+> [!NOTE]
+> XXX [`TxFeeChecker`] allows to override the tx fee, one solution for the
+> problem above is to override the tx fee denom with PHOTON and keep the
+> amount. Note sure this is a good way though, sounds weird to accept a tx and
+> deduct from the tx signer balance a different denom than the one specified.
 
 ### Neutral
 
