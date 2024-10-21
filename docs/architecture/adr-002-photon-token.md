@@ -77,8 +77,8 @@ The [`TxFeeChecker`] is a function definition that is part of the ante handler
 Currently, AtomOne uses the default `TxFeeChecker` (namely
 [`checkTxFeeWithValidatorMinGasPrices`]), so the photon module must provide an
 alternative `TxFeeChecker` implementation, which should:
-- enforce that the fee denom is PHOTON, also by returning a specific error
-  message of the tx fee denom is not the PHOTON (this to improve UX).
+- enforce that the fee denom is PHOTON, and return a specific error message if
+  it does not.
 - make exception for some messages, specifically like `MsgBurn`, because
   `MsgBurn` is the only way to get PHOTON, so it should accept ATONE as fee
   token.
@@ -101,7 +101,7 @@ minimum-gas-prices = "0.001uatone,0.001uphoton"
 > (ATONE or PHOTON, but not both).
 
 If the validator `minimum-gas-prices` does not match the required denom (ATONE
-or PHOTON for `MsgBurn, only `PHOTON` for all other messages), an error must be
+or PHOTON for `MsgBurn, only `PHOTON` for all other messages), an error is
 returned and the tx is rejected.
 
 ### Params
