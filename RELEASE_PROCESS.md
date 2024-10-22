@@ -111,7 +111,7 @@ make create-release TAG=v11.0.0
 Before tagging a new version, please test the building releasing artifacts by running:
 
 ```bash
-TM_VERSION=$(go list -m github.com/tendermint/tendermint | sed 's:.* ::') goreleaser release --snapshot --clean --debug
+TM_VERSION=$(make print_tm_version) goreleaser release --snapshot --clean --debug
 ```
 
 #### Installing goreleaser

@@ -15,8 +15,7 @@ endif
 
 PACKAGES_SIMTEST=$(shell go list ./... | grep '/simulation')
 LEDGER_ENABLED ?= true
-SDK_PACK := $(shell go list -m github.com/cosmos/cosmos-sdk | sed  's/ /\@/g')
-TM_VERSION := $(shell go list -m github.com/cometbft/cometbft | sed 's:.* ::') # grab everything after the space in "github.com/cometbft/cometbft v0.34.7"
+TM_VERSION := $(shell go list -f {{.Version}} -m github.com/cometbft/cometbft)
 DOCKER := $(shell which docker)
 BUILDDIR ?= $(CURDIR)/build
 TEST_DOCKER_REPO=cosmos/contrib-atomonetest
@@ -96,6 +95,9 @@ include contrib/devtools/Makefile
 ###############################################################################
 ###                              Build                                      ###
 ###############################################################################
+
+print_tm_version:
+	@echo $(TM_VERSION)
 
 print_required_go_version:
 	@echo $(REQUIRE_GO_VERSION)
