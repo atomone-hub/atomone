@@ -18,15 +18,15 @@ fee token of AtomOne. The only way to get PHOTON is to burn ATONE.
 The PHOTON token is specified in the [AtomOne Constitution Article 3 Section 5]:
 
 > ### Section 5: The PHOTON Token
-> 
+>
 > The PHOTON shall be the only fee token except for ATONE to PHOTON burn
 > transactions. This applies for all transactions on the root and core shards,
 > and all IBC and ICS payments.
-> 
+>
 > ATONE tokens may be burned to PHOTON tokens at a conversion rate set by law
 > such that the total amount of PHOTONs mintable through burning ATONE tokens
 > shall be capped at 1B PHOTON tokens.
-> 
+>
 > PHOTONs cannot be converted back into ATONE tokens.
 
 ## Decision
@@ -90,6 +90,72 @@ alternative `TxFeeChecker` implementation, which should:
 > XXX Would any other message benefit from keeping ATONE as fee token ? For
 > example what about IBC messages ? 
 
+### Params
+
+The `photon` module has the following params:
+- `mint_disabled` (default to false): if true, disable the ability to call
+  `MsgBurn`. 
+
+> [!NOTE]
+> XXX is it really usefull to disable `MsgBurn` ? Looks like it is an urgency
+> method when something goes wrong, which is not very compatible with a
+> governance proposal to change the parameters... Suggestion: remove it 
+
+> [!NOTE]
+> Because the maximum supply of PHOTON is constitutionnal, it must be hosted in
+> a constant in the code, and not in the parameters. (XXX true or not?)
+
+### State
+
+Aside from its params, the `photon` module does not have any additionnal state,
+as the PHOTON balances and supply are handled by the `bank` module.
+
+### Migration
+
+The PHOTON denom metadata has to be added to the `bank` module state (XXX while
+admittedly this record does not look very usefull, it's only used in
+queries...)
+
+```json
+{
+  "description": "The fee token of AtomOne Hub",
+  "denom_units": [
+    {
+      "denom": "uphoton",
+      "exponent": 0,
+      "aliases": [
+        "microphoton"
+      ]
+    },
+    {
+      "denom": "mphoton",
+      "exponent": 3,
+      "aliases": [
+        "milliphoton"
+      ]
+    },
+    {
+      "denom": "photon",
+      "exponent": 6,
+      "aliases": [
+        "photon"
+      ]
+    }
+  ],
+  "base": "uphoton",
+  "display": "photon",
+  "name": "AtomOne Photon",
+  "symbol": "PHOTON",
+  "uri": "",
+  "uri_hash": ""
+}
+```
+
+In contrast, it is not required to provide an initial supply for PHOTON (still
+in the `bank` module), because the initial supply will be 0.
+
+## Consequences
+
 ### Validator `minimum-gas-prices`
 
 Validators will have to update their `minimum-gas-prices` setting to reflect
@@ -104,45 +170,23 @@ minimum-gas-prices = "0.001uatone,0.001uphoton"
 > In the legacy `TxFeeChecker` implementation
 > ([`checkTxFeeWithValidatorMinGasPrices`]), the validator `minimum-gas-prices`
 > is checked against *all* mentionned denoms. For the photon module, the
-> implementation must be different, it must be checked on at least one denom
-> (ATONE or PHOTON, but not both).
+> implementation must be different, it must be checked on at least one of the
+> denoms (ATONE or PHOTON, but not both).
 
 If the validator `minimum-gas-prices` does not match the required denom (ATONE
 or PHOTON for `MsgBurn, only `PHOTON` for all other messages), an error is
 returned and the tx is rejected.
 
-### Params
-
-The `photon` module has the following params:
-- `mint_disabled` (default to false): if true, disable the ability to call
-  `MsgBurn`. 
-
-> [!NOTE]
-> XXX is it really usefull to disable `MsgBurn` ? Looks like it is an urgency
-> method when something goes wrong, which is not very compatible with a
-> governance proposal to change the parameters... Suggestion: remove it 
-
-> [!NOTE]
-> Because the maximum supply of PHOTON is constitutionnal, it must be hosted in
-> a constant in the code, and not in the parameters.
-
-### State
-
-Aside from its params, the `photon` module do not have any additionnal state,
-as the PHOTON balances and supply are handled by the `bank` module.
-
-### Migration
-
-TODO
-
-## Consequences
-
-> This section describes the consequences, after applying the decision. 
-> All consequences should be summarized here, not just the "positive" ones.
-
 ### Positive
 
-> {positive consequences}
+- Having a non-inflationnary fee token (in contrast to ATONE) ensures PHOTON
+  will continue to gain value in line with AtomOne usage. The more
+  transactions there are, the more PHOTON is needed, bringing scarcity and
+  value. (XXX my 2cts tokenomica take ^^')
+
+- The requirement of burning ATONE to get PHOTON also has the side effect of
+  bringing more value to ATONE, thanks to the decrease of the total supply of
+  ATONE that happens in the process.
 
 ### Negative
 
@@ -162,7 +206,9 @@ TODO
 
 ### Neutral
 
-> {neutral consequences}
+- Dual token model like this has not been experimented at this scale in the
+  Cosmos ecosytem, we might experience some unexpected side effect, positive or
+  negative! (XXX true or not?)
 
 ## References
 
