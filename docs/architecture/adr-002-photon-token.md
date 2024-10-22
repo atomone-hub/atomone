@@ -15,7 +15,7 @@ fee token of AtomOne. The only way to get PHOTON is to burn ATONE.
 
 ## Context
 
-The PHOTON token is specified in the AtomOne Constitution Article 3 Section 5:
+The PHOTON token is specified in the [AtomOne Constitution Article 3 Section 5]:
 
 > ### Section 5: The PHOTON Token
 > 
@@ -68,11 +68,14 @@ number of burnt ATONE multiplied by the conversion rate described in the
 photons_{minted} = atones_{burned} \times conversion\_rate
 ```
 
+However, if `conversion_rate` is 0, i.e. the maximum supply of PHOTON has been
+reached, `MsgBurn` should fail to avoid burning ATONE without PHOTON in return.
+
 ### `TxFeeChecker` implementation
 
 The [`TxFeeChecker`] is a function definition that is part of the ante handler
 `auth/ante.DeductFeeDecorator`. When this ante handler is invoked, it calls the
-`TxFeeChecker` to ensure the fee provided in the tx is enough.
+`TxFeeChecker` to ensure that the fee specified in the tx is sufficient.
 
 Currently, AtomOne uses the default `TxFeeChecker` (namely
 [`checkTxFeeWithValidatorMinGasPrices`]), so the photon module must provide an
@@ -91,7 +94,7 @@ alternative `TxFeeChecker` implementation, which should:
 
 Validators will have to update their `minimum-gas-prices` setting to reflect
 this new setup. It should basically allow both ATOM and PHOTON, so the setting
-should like:
+should look like:
 
 ```toml
 minimum-gas-prices = "0.001uatone,0.001uphoton"
@@ -163,9 +166,8 @@ TODO
 
 ## References
 
-> Are there any relevant PR comments, issues that led up to this, or articles referrenced for why we made the given design choice? If so link them here!
+* [AtomOne Constitution Article 3 Section 5]: The PHOTON Token
 
-* {reference link}
-
+[AtomOne Constitution Article 3 Section 5]: https://github.com/atomone-hub/genesis/blob/b84df30364674c3f68b4bc0a43d7ed977ae22226/CONSTITUTION.md#section-5-the-photon-token
 [`TxFeeChecker`]: https://github.com/cosmos/cosmos-sdk/blob/44c5d17ca6d9d37fdd6adfa3169c986fbce22b8f/x/auth/ante/fee.go#L11-L13
 [`checkTxFeeWithValidatorMinGasPrices`]: https://github.com/cosmos/cosmos-sdk/blob/6e59ad0deea672a21e64fdc83939ca812dcd2b1b/x/auth/ante/validator_tx_fee.go#L17
