@@ -61,10 +61,10 @@ chance of getting changes merged into the codebase.
 
 To ensure a smooth workflow for all contributors, a general procedure for contributing has been established.
 
-1. Start by browsing [existing issues](https://github.com/atomone-hub/atomone/issues) and [discussions](https://github.com/atomone-hub/atomone/discussions). If you are looking for something interesting or if you have something in your mind, there is a chance it had been discussed.
+1. Start by browsing [existing issues](https://github.com/atomone-hub/atomone/issues). If you are looking for something interesting or if you have something in your mind, there is a chance it had been discussed.
    * Looking for a good place to start contributing? How about checking out some [good first issues](https://github.com/atomone-hub/atomone/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) or [bugs](https://github.com/atomone-hub/atomone/issues?q=is%3Aopen+is%3Aissue+label%3Abug)?
 2. Determine whether a GitHub issue or discussion is more appropriate for your needs:
-   1. If you want to propose something new that requires specification or an additional design, or you would like to change a process, start with a [new discussion](https://github.com/atomone-hub/atomone/discussions/new/choose). With discussions, we can better handle the design process using discussion threads. A discussion usually leads to one or more issues.
+   1. If you want to propose something new that requires specification or an additional design, or you would like to change a process, start with a [new issue](https://github.com/atomone-hub/atomone/issues/new/choose).
    2. If the issue you want addressed is a specific proposal or a bug, then open a [new issue](https://github.com/atomone-hub/atomone/issues/new/choose).
    3. Review existing [issues](https://github.com/atomone-hub/atomone/issues) to find an issue you'd like to help with.
 3. Participate in thoughtful discussion on that issue.
@@ -82,13 +82,9 @@ To ensure a smooth workflow for all contributors, a general procedure for contri
 For complex problems or features, please make sure to open an issue and provide context and problem description. 
 PRs opened before adequate design discussion has taken place in a GitHub issue have a high likelihood of being rejected without review.
 
-## Project Board
-
-We use self-organizing principles to coordinate and collaborate across organizations in structured "EPICs" that focus on specific problem domains or architectural components of AtomOne.
-
 ## Architecture Decision Records (ADR)
 
-When proposing an architecture decision for AtomOne, please start by opening an [issue](https://github.com/atomone-hub/atomone/issues/new/choose) or a [discussion](https://github.com/atomone-hub/atomone/discussions/new) with a summary of the proposal. Once the proposal has been discussed and there is rough alignment on a high-level approach to the design, you may either start development, or write an ADR.
+When proposing an architecture decision for AtomOne, please start by opening an [issue](https://github.com/atomone-hub/atomone/issues/new/choose) with a summary of the proposal. Once the proposal has been discussed and there is rough alignment on a high-level approach to the design, you may either start development, or write an ADR.
 
 If your architecture decision is a simple change, you may contribute directly without writing an ADR. However, if you are proposing a significant change, please include a corresponding ADR.
 
