@@ -25,7 +25,9 @@ Github Release section.
 
 ## Ledger support
 
-Run `make build-ledger` to have ledger support in `./build/atomoned` binary.
+Run `make build/install LEDGER_ENABLED=true` to have ledger support in
+`atomoned` binary.
+
 Note that this will disable reproducible builds, as it introduces OS
 dependencies.
 

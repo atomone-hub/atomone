@@ -9,7 +9,7 @@ ifeq (,$(VERSION))
   VERSION := $(PREVIOUS_TAG)-$(SHORT_COMMIT)
 endif
 
-LEDGER_ENABLED ?= true
+LEDGER_ENABLED ?= false
 TM_VERSION := $(shell go list -f {{.Version}} -m github.com/cometbft/cometbft)
 DOCKER := $(shell which docker)
 BUILDDIR ?= $(CURDIR)/build
@@ -19,12 +19,15 @@ GO_VERSION = $(shell go version | cut -c 14- | cut -d' ' -f1)
 REQUIRE_GO_VERSION = 1.21.13
 
 export GO111MODULE = on
-export CGO_ENABLED = 0
 
 # process build tags
 
 build_tags = netgo
-ifeq ($(LEDGER_ENABLED),true)
+ifeq ($(LEDGER_ENABLED),false)
+  export CGO_ENABLED = 0
+else
+  $(info WARNING: Ledger build involves enabling cgo, which disables the ability to have reproducible builds.)
+  export CGO_ENABLED = 1
   ifeq ($(OS),Windows_NT)
     GCCEXE = $(shell where gcc.exe 2> NUL)
     ifeq ($(GCCEXE),)
@@ -111,9 +114,8 @@ build: BUILD_ARGS=-o $(BUILDDIR)/
 $(BUILD_TARGETS): check_version go.sum $(BUILDDIR)/
 	go $@ -mod=readonly $(BUILD_FLAGS) $(BUILD_ARGS) ./...
 
-build-ledger: go.sum $(BUILDDIR)/
-	@echo "WARNING: Ledger build involves enabling cgo, which disables the ability to have reproducible builds."
-	CGO_ENABLED=1 go build -mod=readonly $(BUILD_FLAGS) $(BUILD_ARGS) -o $(BUILDDIR)/ ./...
+build-ledger: # Kept for convenience
+	$(MAKE) build LEDGER_ENABLED=true
 
 $(BUILDDIR)/:
 	mkdir -p $(BUILDDIR)/
