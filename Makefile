@@ -2,18 +2,13 @@
 
 COMMIT := $(shell git log -1 --format='%H')
 
-# don't override user values
+VERSION ?= $(shell git describe --tags --exact-match 2>/dev/null)
 ifeq (,$(VERSION))
-  VERSION := $(shell git describe --tags --exact-match 2>/dev/null)
-  # if VERSION is empty, then populate it with branch's name and raw commit hash
-  ifeq (,$(VERSION))
-    PREVIOUS_TAG := $(shell git describe --tags --abbrev=0)
-    SHORT_COMMIT := $(shell git rev-parse --short HEAD)
-    VERSION := $(PREVIOUS_TAG)-$(SHORT_COMMIT)
-  endif
+  PREVIOUS_TAG := $(shell git describe --tags --abbrev=0)
+  SHORT_COMMIT := $(shell git rev-parse --short HEAD)
+  VERSION := $(PREVIOUS_TAG)-$(SHORT_COMMIT)
 endif
 
-PACKAGES_SIMTEST=$(shell go list ./... | grep '/simulation')
 LEDGER_ENABLED ?= true
 TM_VERSION := $(shell go list -f {{.Version}} -m github.com/cometbft/cometbft)
 DOCKER := $(shell which docker)
