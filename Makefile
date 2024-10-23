@@ -20,7 +20,7 @@ DOCKER := $(shell which docker)
 BUILDDIR ?= $(CURDIR)/build
 TEST_DOCKER_REPO=cosmos/contrib-atomonetest
 
-GO_SYSTEM_VERSION = $(shell go version | cut -c 14- | cut -d' ' -f1)
+GO_VERSION = $(shell go version | cut -c 14- | cut -d' ' -f1)
 REQUIRE_GO_VERSION = 1.21.13
 
 export GO111MODULE = on
@@ -87,14 +87,11 @@ ifeq (,$(findstring nostrip,$(ATOMONE_BUILD_OPTIONS)))
   BUILD_FLAGS += -trimpath
 endif
 
-#$(info $$BUILD_FLAGS is [$(BUILD_FLAGS)])
-
-# The below include contains the tools target.
-include contrib/devtools/Makefile
-
 ###############################################################################
 ###                              Build                                      ###
 ###############################################################################
+
+all: install lint run-tests test-e2e vulncheck
 
 print_tm_version:
 	@echo $(TM_VERSION)
@@ -103,7 +100,7 @@ print_required_go_version:
 	@echo $(REQUIRE_GO_VERSION)
 
 check_version:
-ifneq ($(GO_SYSTEM_VERSION), $(REQUIRE_GO_VERSION))
+ifneq ($(GO_VERSION), $(REQUIRE_GO_VERSION))
 	@echo 'ERROR: Go version $(REQUIRE_GO_VERSION) is required for building AtomOne'
 	@echo '--> You can install it using:'
 	@echo 'go install golang.org/dl/go$(REQUIRE_GO_VERSION)@latest && go$(REQUIRE_GO_VERSION) download'
@@ -111,8 +108,6 @@ ifneq ($(GO_SYSTEM_VERSION), $(REQUIRE_GO_VERSION))
 	@echo 'GOROOT=$$(go$(REQUIRE_GO_VERSION) env GOROOT) PATH=$$GOROOT/bin:$$PATH'
 	exit 1
 endif
-
-all: install lint run-tests test-e2e vulncheck
 
 BUILD_TARGETS := build install
 
@@ -128,12 +123,8 @@ build-ledger: go.sum $(BUILDDIR)/
 $(BUILDDIR)/:
 	mkdir -p $(BUILDDIR)/
 
-vulncheck: $(BUILDDIR)/
-	GOBIN=$(BUILDDIR) go install golang.org/x/vuln/cmd/govulncheck@latest
-	$(BUILDDIR)/govulncheck ./...
-
-build-linux: go.sum
-	LEDGER_ENABLED=false GOOS=linux GOARCH=amd64 $(MAKE) build
+vulncheck: 
+	go run golang.org/x/vuln/cmd/govulncheck@latest ./...
 
 go-mod-cache: go.sum
 	@echo "--> Download go modules to local cache"
@@ -143,16 +134,11 @@ go.sum: go.mod
 	@echo "--> Ensure dependencies have not been modified"
 	@go mod verify
 
-draw-deps:
-	@# requires brew install graphviz or apt-get install graphviz
-	go install github.com/RobotsAndPencils/goviz
-	@goviz -i ./cmd/atomoned -d 2 | dot -Tpng -o dependency-graph.png
-
 clean:
 	rm -rf $(BUILDDIR)/ artifacts/
 
-distclean: clean
-	rm -rf vendor/
+.PHONY: all build build-ledger install vulncheck clean clean \
+	print_required_go_version print_tm_version go-mod-cache
 
 ###############################################################################
 ###                                Release                                  ###
@@ -190,15 +176,7 @@ else
 	@echo "--> No tag specified, skipping create-release"
 endif
 
-###############################################################################
-###                              Documentation                              ###
-###############################################################################
-
-build-docs:
-	@cd docs && ./build.sh
-
-.PHONY: build-docs
-
+.PHONY: create-release-dry-run create-release
 
 ###############################################################################
 ###                           Tests & Simulation                            ###
@@ -240,53 +218,37 @@ docker-build-hermes:
 
 docker-build-all: docker-build-debug docker-build-hermes
 
+.PHONY: docker-build-debug docker-build-hermes docker-build-all
+
 ###############################################################################
 ###                                Linting                                  ###
 ###############################################################################
-golangci_lint_cmd=golangci-lint
+# TODO fix version 
 golangci_version=v1.56.0 # note: needed to bump from v1.53.3 bc go.tmz.dev/musttag (A dep of golangci-lint) was no longer resolving
+golangci_lint_cmd=go run github.com/golangci/golangci-lint/cmd/golangci-lint@$(golangci_version)
 
 lint:
 	@echo "--> Running linter"
-	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@$(golangci_version)
+	# TODO Use proper go version or else it fails
 	@$(golangci_lint_cmd) run --timeout=10m
 
 lint-fix:
 	@echo "--> Running linter"
-	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@$(golangci_version)
+	# TODO Use proper go version or else it fails
 	@$(golangci_lint_cmd) run --fix --out-format=tab --issues-exit-code=0
 
-format:
-	@go install mvdan.cc/gofumpt@latest
-	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@$(golangci_version)
-	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./client/docs/statik/statik.go" -not -path "./tests/mocks/*" -not -name "*.pb.go" -not -name "*.pb.gw.go" -not -name "*.pulsar.go" -not -path "./crypto/keys/secp256k1/*" | xargs gofumpt -w -l
-	$(golangci_lint_cmd) run --fix
-.PHONY: format
+# TODO fix version
+gofumpt_cmd=go run mvdan.cc/gofumpt@latest
 
-# Get a list of all directories containing Go files, excluding vendor and other paths
-GO_DIRS=$(shell find . -name '*.go' -not -path "./vendor*" -not -path "*.git*" \
-	-not -path "./client/docs/statik/statik.go" \
-	-not -path "./tests/mocks/*" \
-	-not -path "./crypto/keys/secp256k1/*" \
-	-not -name "*.pb.go" \
-	-not -name "*.pb.gw.go" \
-	-not -name "*.pulsar.go" | xargs -n1 dirname | sort -u)
+format: lint-fix
+	find . -name '*.go' -type f \
+		-not -path "*.git*" \
+		-not -name "*.pb.go" \
+		-not -name "*.pb.gw.go" \
+		-not -name "*.pulsar.go" \
+		| xargs $(gofumpt_cmd) -w -l
 
-format-batch:
-	@go install mvdan.cc/gofumpt@latest
-	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@$(golangci_version)
-
-	# Run gofumpt in a loop over each directory
-	@for dir in $(GO_DIRS); do \
-		echo "Running gofumpt on $$dir"; \
-		find $$dir -name '*.go' -type f -print0 | xargs -0 gofumpt -w -l; \
-	done
-
-	# Run golangci-lint separately for each directory
-	@for dir in $(GO_DIRS); do \
-		$(golangci_lint_cmd) run --fix $$dir || exit 1; \
-	done
-.PHONY: format-batch
+.PHONY: format lint lint-fix
 
 ###############################################################################
 ###                                Localnet                                 ###
@@ -320,9 +282,7 @@ test-docker-push: test-docker
 	@docker push ${TEST_DOCKER_REPO}:$(shell git rev-parse --abbrev-ref HEAD | sed 's#/#_#g')
 	@docker push ${TEST_DOCKER_REPO}:latest
 
-.PHONY: all build-linux install format lint go-mod-cache draw-deps clean build \
-	docker-build-debug
-
+.PHONY: test-docker test-docker-push
 
 ###############################################################################
 ###                                Protobuf                                 ###
