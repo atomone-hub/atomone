@@ -168,7 +168,9 @@ ifneq ($(strip $(TAG)),)
 	@echo "--> Delete local tag: $(TAG)"
 	@git tag -d $(TAG)
 	@echo "--> Running goreleaser"
+	# TODO: Fix version of goreleaser
 	@go install github.com/goreleaser/goreleaser@latest
+	# TODO: run with appropriate go version
 	TM_VERSION=$(TM_VERSION) goreleaser release --snapshot --clean
 	@rm -rf dist/
 	@echo "--> Done create-release-dry-run for tag: $(TAG)"
