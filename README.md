@@ -35,7 +35,8 @@ The proposed genesis files for atomone can be found in the [genesis repo](https:
 
 ## Public RPC and fullnode endpoints
 
-The public RPC and fullnode endpoints directory can be found in the [registry repo](https://github.com/atomone-hub/registry).
+The public RPC and fullnode endpoints directory can be found in the [atom.one](https://atom.one)
+website.
 
 ## Acknowledgements
 
