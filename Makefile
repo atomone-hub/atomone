@@ -20,8 +20,10 @@ REQUIRE_GO_VERSION = 1.21.13
 
 export GO111MODULE = on
 
-# process build tags
+# command to run dependency utilities, like goimports.
+rundep=go run -modfile contrib/devdeps/go.mod
 
+# process build tags
 build_tags = netgo
 ifeq ($(LEDGER_ENABLED),false)
   export CGO_ENABLED = 0
@@ -121,7 +123,7 @@ $(BUILDDIR)/:
 	mkdir -p $(BUILDDIR)/
 
 vulncheck: 
-	go run golang.org/x/vuln/cmd/govulncheck@latest ./...
+	$(rundep) golang.org/x/vuln/cmd/govulncheck ./...
 
 go-mod-cache: go.sum
 	@echo "--> Download go modules to local cache"
@@ -151,10 +153,8 @@ ifneq ($(strip $(TAG)),)
 	@echo "--> Delete local tag: $(TAG)"
 	@git tag -d $(TAG)
 	@echo "--> Running goreleaser"
-	# TODO: Fix version of goreleaser
-	@go install github.com/goreleaser/goreleaser@latest
 	# TODO: run with appropriate go version
-	TM_VERSION=$(TM_VERSION) goreleaser release --snapshot --clean
+	TM_VERSION=$(TM_VERSION) $(rundep) github.com/goreleaser/goreleaser release --snapshot --clean
 	@rm -rf dist/
 	@echo "--> Done create-release-dry-run for tag: $(TAG)"
 else
@@ -220,9 +220,8 @@ docker-build-all: docker-build-debug docker-build-hermes
 ###############################################################################
 ###                                Linting                                  ###
 ###############################################################################
-# TODO fix version 
-golangci_version=v1.56.0 # note: needed to bump from v1.53.3 bc go.tmz.dev/musttag (A dep of golangci-lint) was no longer resolving
-golangci_lint_cmd=go run github.com/golangci/golangci-lint/cmd/golangci-lint@$(golangci_version)
+
+golangci_lint_cmd=$(rundep) github.com/golangci/golangci-lint/cmd/golangci-lint
 
 lint:
 	@echo "--> Running linter"
@@ -234,16 +233,14 @@ lint-fix:
 	# TODO Use proper go version or else it fails
 	@$(golangci_lint_cmd) run --fix --out-format=tab --issues-exit-code=0
 
-# TODO fix version
-gofumpt_cmd=go run mvdan.cc/gofumpt@latest
-
 format: lint-fix
-	find . -name '*.go' -type f \
+	@echo "--> Running gofumpt"
+	@find . -name '*.go' -type f \
 		-not -path "*.git*" \
 		-not -name "*.pb.go" \
 		-not -name "*.pb.gw.go" \
 		-not -name "*.pulsar.go" \
-		| xargs $(gofumpt_cmd) -w -l
+		| xargs $(rundep) mvdan.cc/gofumpt -w -l
 
 .PHONY: format lint lint-fix
 
