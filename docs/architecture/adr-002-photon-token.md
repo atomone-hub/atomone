@@ -179,10 +179,14 @@ returned and the tx is rejected.
 
 ### Positive
 
+- Create a clear distinction between money (PHOTON) and security (ATONE). ATONE
+  is not money and should only be thought of as a security token. PHOTON as the
+  only fee token reinforces this property.
+
 - Having a non-inflationnary fee token (in contrast to ATONE) ensures PHOTON
   will continue to gain value in line with AtomOne usage. The more
   transactions there are, the more PHOTON is needed, bringing scarcity and
-  value. (XXX my 2cts tokenomica take ^^')
+  value. (XXX my 2cts tokenomics ^^')
 
 - The requirement of burning ATONE to get PHOTON also has the side effect of
   bringing more value to ATONE, thanks to the decrease of the total supply of
