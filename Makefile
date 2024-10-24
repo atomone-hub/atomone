@@ -94,9 +94,6 @@ all: install lint run-tests test-e2e vulncheck
 print_tm_version:
 	@echo $(TM_VERSION)
 
-print_required_go_version:
-	@echo $(REQUIRE_GO_VERSION)
-
 check_go_version:
 ifneq ($(GO_VERSION), $(REQUIRE_GO_VERSION))
 	@echo 'ERROR: Go version $(REQUIRE_GO_VERSION) is required for building AtomOne'
@@ -134,8 +131,7 @@ go.sum: go.mod
 clean:
 	rm -rf $(BUILDDIR)/ artifacts/
 
-.PHONY: all build build-ledger install vulncheck clean clean \
-	print_required_go_version print_tm_version go-mod-cache
+.PHONY: all build build-ledger install vulncheck clean clean print_tm_version go-mod-cache
 
 ###############################################################################
 ###                                Release                                  ###
