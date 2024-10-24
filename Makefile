@@ -18,8 +18,6 @@ TEST_DOCKER_REPO=cosmos/contrib-atomonetest
 GO_VERSION = $(shell go version | cut -c 14- | cut -d' ' -f1)
 REQUIRE_GO_VERSION = 1.21.13
 
-export GO111MODULE = on
-
 # command to run dependency utilities, like goimports.
 rundep=go run -modfile contrib/devdeps/go.mod
 

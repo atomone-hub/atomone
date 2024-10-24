@@ -1,9 +1,6 @@
 ---
 project_name: atomone
 
-env:
-  - GO111MODULE=on
-
 builds:
   - main: ./cmd/atomoned
     id: "atomoned"
