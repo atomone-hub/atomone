@@ -142,19 +142,18 @@ clean:
 ###############################################################################
 
 # create tag and run goreleaser without publishing
-create-release-dry-run:
+create-release-dry-run: check_go_version
 ifneq ($(strip $(TAG)),)
 	@echo "--> Dry running release for tag: $(TAG)"
 	@echo "--> Create tag: $(TAG) dry run"
 	git tag -s $(TAG) -m $(TAG)
 	git push origin $(TAG) --dry-run
+	@echo "--> Running goreleaser"
+	TM_VERSION=$(TM_VERSION) $(rundep) github.com/goreleaser/goreleaser release --clean --skip=publish
+	@echo "--> Done create-release-dry-run for tag: $(TAG)"
+	cat dist/SHA256SUMS-$(TAG).txt
 	@echo "--> Delete local tag: $(TAG)"
 	@git tag -d $(TAG)
-	@echo "--> Running goreleaser"
-	# TODO: run with appropriate go version
-	TM_VERSION=$(TM_VERSION) $(rundep) github.com/goreleaser/goreleaser release --snapshot --clean
-	@rm -rf dist/
-	@echo "--> Done create-release-dry-run for tag: $(TAG)"
 else
 	@echo "--> No tag specified, skipping tag release"
 endif
