@@ -216,14 +216,14 @@ docker-build-all: docker-build-debug docker-build-hermes
 
 golangci_lint_cmd=$(rundep) github.com/golangci/golangci-lint/cmd/golangci-lint
 
-lint:
+# golangci might not work properly when run with newer versions of go, so we
+# add a restriction by adding check_go_version as a dependency.
+lint: check_go_version
 	@echo "--> Running linter"
-	# TODO Use proper go version or else it fails
 	@$(golangci_lint_cmd) run --timeout=10m
 
-lint-fix:
-	@echo "--> Running linter"
-	# TODO Use proper go version or else it fails
+lint-fix: check_go_version
+	@echo "--> Running linter fix"
 	@$(golangci_lint_cmd) run --fix --out-format=tab --issues-exit-code=0
 
 format: lint-fix
