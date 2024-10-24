@@ -15,10 +15,10 @@ DOCKER := $(shell which docker)
 BUILDDIR ?= $(CURDIR)/build
 TEST_DOCKER_REPO=cosmos/contrib-atomonetest
 
-GO_VERSION = $(shell go version | cut -c 14- | cut -d' ' -f1)
-REQUIRE_GO_VERSION = 1.21.13
+GO_SYSTEM_VERSION = $(shell go env GOVERSION | cut -c 3-)
+GO_REQUIRED_VERSION = $(shell go list -f {{.GoVersion}} -m)
 
-# command to run dependency utilities, like goimports.
+# command to run dependency utilities
 rundep=go run -modfile contrib/devdeps/go.mod
 
 # process build tags
@@ -95,12 +95,12 @@ print_tm_version:
 	@echo $(TM_VERSION)
 
 check_go_version:
-ifneq ($(GO_VERSION), $(REQUIRE_GO_VERSION))
-	@echo 'ERROR: Go version $(REQUIRE_GO_VERSION) is required for building AtomOne'
+ifneq ($(GO_SYSTEM_VERSION), $(GO_REQUIRED_VERSION))
+	@echo 'ERROR: Go version $(GO_REQUIRED_VERSION) is required for building AtomOne'
 	@echo '--> You can install it using:'
-	@echo 'go install golang.org/dl/go$(REQUIRE_GO_VERSION)@latest && go$(REQUIRE_GO_VERSION) download'
+	@echo 'go install golang.org/dl/go$(GO_REQUIRED_VERSION)@latest && go$(GO_REQUIRED_VERSION) download'
 	@echo '--> Then prefix your make command with:'
-	@echo 'GOROOT=$$(go$(REQUIRE_GO_VERSION) env GOROOT) PATH=$$GOROOT/bin:$$PATH'
+	@echo 'GOROOT=$$(go$(GO_REQUIRED_VERSION) env GOROOT) PATH=$$GOROOT/bin:$$PATH'
 	exit 1
 endif
 
@@ -201,7 +201,7 @@ endif
 .PHONY: run-tests $(TEST_TARGETS)
 
 docker-build-debug:
-	@docker build -t cosmos/atomoned-e2e -f e2e.Dockerfile --build-arg GO_VERSION=$(REQUIRE_GO_VERSION) .
+	@docker build -t cosmos/atomoned-e2e -f e2e.Dockerfile --build-arg GO_VERSION=$(GO_REQUIRED_VERSION) .
 
 docker-build-hermes:
 	@cd tests/e2e/docker; docker build -t ghcr.io/cosmos/hermes-e2e:1.0.0 -f hermes.Dockerfile .
