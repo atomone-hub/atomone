@@ -60,10 +60,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
-      - uses: actions/checkout@v4
       - uses: technote-space/get-diff-action@v6.0.1
         with:
           PATTERNS: |
