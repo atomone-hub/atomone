@@ -11,7 +11,7 @@ DRAFT
 ## Abstract
 
 This ADR proposes to introduce the PHOTON token (ticker `photon`) as the only
-fee token of AtomOne. The only way to get PHOTON is to burn ATONE.
+fee token of AtomOne. The only way to get PHOTONs is to burn ATONEs.
 
 ## Context
 
@@ -33,14 +33,14 @@ The PHOTON token is specified in the [AtomOne Constitution Article 3 Section 5]:
 
 The ADR proposes to create a new `photon` module to host the following
 features:
-- New `ConvertRate` query
-- New `MsgBurn` message (or `MsgMint`? or `MsgConvert` ? or something else?).
+- New `ConversionRate` query
+- New `MsgBurn` message (XXX or `MsgMint`? or `MsgConvert` ? or something else?).
 - New [`TxFeeChecker`] implementation to enforce the PHOTON token as the only
   fee token.
 
-### `ConvertRate` query
+### `ConversionRate` query
 
-The `ConvertRate` query returns a decimal which represents the current
+The `ConversionRate` query returns a decimal which represents the current
 conversion rate of ATONE to PHOTON. This conversion rate is computed as the
 following:
 
@@ -53,23 +53,24 @@ photon_{max\_supply} = 1,000,000,000
 ```
 
 Given this formula, when the PHOTON supply reaches the max supply of 1 billion,
-it's no longer possible to get PHOTON, because the conversion rate will return
+it is no longer possible to get PHOTONs, because the conversion rate will return
 the 0 value.
 
 ### `MsgBurn` message
 
-`MsgBurn` takes an amount of ATONE and returns an amount of PHOTON.
-The passed ATONEs are burnt while the amount of PHOTONS is minted and moved
-onto the message signer wallet. The number of minted PHOTONs is equal to the
-number of burnt ATONE multiplied by the conversion rate described in the
-`Convert` query section below.
+`MsgBurn` takes an amount of ATONEs and returns an amount of PHOTONs.
+The amount of ATONEs is burnt while the amount of PHOTONs is minted and moved
+onto the message signer account. The number of minted PHOTONs is equal to the
+number of burnt ATONEs multiplied by the conversion rate described in the
+`ConversionRate` query section below.
 
 ```math
 photons_{minted} = atones_{burned} \times conversion\_rate
 ```
 
 However, if `conversion_rate` is 0, i.e. the maximum supply of PHOTON has been
-reached, `MsgBurn` should fail to avoid burning ATONE without PHOTON in return.
+reached, `MsgBurn` should fail to avoid burning ATONEs without PHOTONs in
+return.
 
 ### `TxFeeChecker` implementation
 
@@ -81,14 +82,11 @@ Currently, AtomOne uses the default `TxFeeChecker` (namely
 [`checkTxFeeWithValidatorMinGasPrices`]), so the photon module must provide an
 alternative `TxFeeChecker` implementation, which should:
 - enforce that the fee denom is PHOTON, and return a specific error message if
-  it does not.
+  it does not (this to be explicitely separated with the insufficient fee error
+  message)
 - make exception for some messages, specifically like `MsgBurn`, because
-  `MsgBurn` is the only way to get PHOTON, so it should accept ATONE as fee
+  `MsgBurn` is the only way to get PHOTONs, so it should accept ATONEs as fee
   token.
-
-> [!NOTE]
-> XXX Would any other message benefit from keeping ATONE as fee token ? For
-> example what about IBC messages ? 
 
 ### Params
 
@@ -113,7 +111,7 @@ as the PHOTON balances and supply are handled by the `bank` module.
 ### Migration
 
 The PHOTON denom metadata has to be added to the `bank` module state (XXX while
-admittedly this record does not look very usefull, it's only used in
+admittedly this record does not look very usefull, it is only used in
 queries...)
 
 ```json
@@ -159,7 +157,7 @@ in the `bank` module), because the initial supply will be 0.
 ### Validator `minimum-gas-prices`
 
 Validators will have to update their `minimum-gas-prices` setting to reflect
-this new setup. It should basically allow both ATOM and PHOTON, so the setting
+this new setup. It should basically allow both ATONE and PHOTON, so the setting
 should look like:
 
 ```toml
@@ -186,7 +184,7 @@ returned and the tx is rejected.
 - Having a non-inflationnary fee token (in contrast to ATONE) ensures PHOTON
   will continue to gain value in line with AtomOne usage. The more
   transactions there are, the more PHOTON is needed, bringing scarcity and
-  value. (XXX my 2cts tokenomics ^^')
+  value.
 
 - The requirement of burning ATONE to get PHOTON also has the side effect of
   bringing more value to ATONE, thanks to the decrease of the total supply of
@@ -198,9 +196,9 @@ returned and the tx is rejected.
   signing a transaction for AtomOne. Basically, for `MsgBurn` ATONE and PHOTON
   are accepted, for all other messages, only PHOTON is accepted. While this
   may seem obvious, it can be confusing because as far as we know, wallets do
-  not have logic regarding the choice of the fee tokens. Maybe it is time to
-  start discussion with some wallets dev regarding that, this would improve the
-  UX.
+  not have message-based logic regarding the choice of the fee token. Maybe it
+  is time to start discussion with some wallets dev regarding that, this would
+  improve the UX.
 
 > [!NOTE]
 > XXX [`TxFeeChecker`] allows to override the tx fee, one solution for the
@@ -212,7 +210,7 @@ returned and the tx is rejected.
 
 - Dual token model like this has not been experimented at this scale in the
   Cosmos ecosytem, we might experience some unexpected side effect, positive or
-  negative! (XXX true or not?)
+  negative.
 
 ## References
 
