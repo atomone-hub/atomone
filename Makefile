@@ -97,7 +97,7 @@ print_tm_version:
 print_required_go_version:
 	@echo $(REQUIRE_GO_VERSION)
 
-check_version:
+check_go_version:
 ifneq ($(GO_VERSION), $(REQUIRE_GO_VERSION))
 	@echo 'ERROR: Go version $(REQUIRE_GO_VERSION) is required for building AtomOne'
 	@echo '--> You can install it using:'
@@ -111,7 +111,7 @@ BUILD_TARGETS := build install
 
 build: BUILD_ARGS=-o $(BUILDDIR)/
 
-$(BUILD_TARGETS): check_version go.sum $(BUILDDIR)/
+$(BUILD_TARGETS): check_go_version go.sum $(BUILDDIR)/
 	go $@ -mod=readonly $(BUILD_FLAGS) $(BUILD_ARGS) ./...
 
 build-ledger: # Kept for convenience
