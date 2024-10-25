@@ -238,6 +238,15 @@ format: lint-fix
 .PHONY: format lint lint-fix
 
 ###############################################################################
+###                              Documentation                              ###
+###############################################################################
+
+update-swagger-docs: proto-swagger-gen
+	$(rundep) github.com/rakyll/statik -ns atomone -src=client/docs/swagger-ui -dest=client/docs -f -m
+
+.PHONY: update-swagger-docs
+
+###############################################################################
 ###                                Localnet                                 ###
 ###############################################################################
 
@@ -281,11 +290,11 @@ protoImage=$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace $(pro
 proto-all: proto-format proto-lint proto-gen
 
 proto-gen:
-	@echo "Generating Protobuf files"
+	@echo "--> Generating Protobuf files"
 	@$(protoImage) sh ./proto/scripts/protocgen.sh
 
 proto-swagger-gen:
-	@echo "Generating Protobuf Swagger"
+	@echo "--> Generating Protobuf Swagger"
 	@$(protoImage) sh ./proto/scripts/protoc-swagger-gen.sh
 
 proto-format:
@@ -298,7 +307,7 @@ proto-check-breaking:
 	@$(protoImage) buf breaking --against $(HTTPS_GIT)#branch=main
 
 proto-update-deps:
-	@echo "Updating Protobuf dependencies"
+	@echo "--> Updating Protobuf dependencies"
 	$(DOCKER) run --rm -v $(CURDIR)/proto:/workspace --workdir /workspace $(protoImageName) buf mod update
 
 .PHONY: proto-all proto-gen proto-swagger-gen proto-format proto-lint proto-check-breaking proto-update-deps

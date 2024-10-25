@@ -12,5 +12,6 @@ import (
 	// for releases
 	_ "github.com/goreleaser/goreleaser"
 
+	_ "github.com/rakyll/statik"
 	_ "golang.org/x/vuln/cmd/govulncheck"
 )
