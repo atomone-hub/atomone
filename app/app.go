@@ -11,6 +11,9 @@ import (
 	"github.com/rakyll/statik/fs"
 	"github.com/spf13/cast"
 
+	// unnamed import of statik for swagger UI support
+	_ "github.com/atomone-hub/atomone/client/docs/statik"
+
 	dbm "github.com/cometbft/cometbft-db"
 	abci "github.com/cometbft/cometbft/abci/types"
 	tmjson "github.com/cometbft/cometbft/libs/json"
@@ -49,9 +52,6 @@ import (
 	"github.com/atomone-hub/atomone/app/params"
 	"github.com/atomone-hub/atomone/app/upgrades"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
-
-	// unnamed import of statik for swagger UI support
-	_ "github.com/atomone-hub/atomone/client/docs/statik"
 )
 
 var (
