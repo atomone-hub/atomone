@@ -46,12 +46,7 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 const photonMaxSupply = 1_000_000_000
 
 // conversionRate returns the conversion rate for converting atone to photon.
-func (k Keeper) conversionRate(ctx sdk.Context) sdk.Dec {
-	var (
-		bondDenom             = k.stakingKeeper.BondDenom(ctx)
-		atoneSupply           = k.bankKeeper.GetSupply(ctx, bondDenom).Amount.ToLegacyDec()
-		photonSupply          = k.bankKeeper.GetSupply(ctx, "uphoton").Amount.ToLegacyDec()
-		remainMintablePhotons = sdk.NewDec(photonMaxSupply).Sub(photonSupply)
-	)
+func (k Keeper) conversionRate(ctx sdk.Context, atoneSupply, photonSupply sdk.Dec) sdk.Dec {
+	remainMintablePhotons := sdk.NewDec(photonMaxSupply).Sub(photonSupply)
 	return remainMintablePhotons.Quo(atoneSupply)
 }

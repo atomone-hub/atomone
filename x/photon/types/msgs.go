@@ -40,7 +40,10 @@ func (msg *MsgBurn) ValidateBasic() error {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid toAddress: %s", err)
 	}
 	if err := msg.Amount.Validate(); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "invalid amount coin to burn: %s", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "invalid coin to burn: %s", err)
+	}
+	if !msg.Amount.IsPositive() {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "coin to burn must be positive")
 	}
 	return nil
 }

@@ -16,14 +16,14 @@ func TestMsgBurn_ValidateBasic(t *testing.T) {
 		err  error
 	}{
 		{
-			name: "invalid toAddress",
+			name: "fail: invalid toAddress",
 			msg: MsgBurn{
 				ToAddress: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		},
 		{
-			name: "invalid toBurn",
+			name: "fail: negative amount",
 			msg: MsgBurn{
 				ToAddress: sdk.AccAddress("test1").String(),
 				Amount: sdk.Coin{
@@ -34,7 +34,18 @@ func TestMsgBurn_ValidateBasic(t *testing.T) {
 			err: sdkerrors.ErrInvalidCoins,
 		},
 		{
-			name: "valid",
+			name: "fail: not positive amount",
+			msg: MsgBurn{
+				ToAddress: sdk.AccAddress("test1").String(),
+				Amount: sdk.Coin{
+					Denom:  "uatone",
+					Amount: sdk.NewInt(0),
+				},
+			},
+			err: sdkerrors.ErrInvalidCoins,
+		},
+		{
+			name: "ok",
 			msg: MsgBurn{
 				ToAddress: sdk.AccAddress("test1").String(),
 				Amount:    sdk.NewInt64Coin("uatone", 1),

@@ -38,41 +38,56 @@ func (k msgServer) Burn(goCtx context.Context, msg *types.MsgBurn) (*types.MsgBu
 	}
 	// Compute photons to mint
 	var (
-		atoneToBurn  = msg.Amount
-		photonToMint = atoneToBurn.Amount.ToLegacyDec().Mul(k.conversionRate(ctx))
+		atoneSupply    = k.bankKeeper.GetSupply(ctx, bondDenom).Amount.ToLegacyDec()
+		photonSupply   = k.bankKeeper.GetSupply(ctx, "uphoton").Amount.ToLegacyDec()
+		conversionRate = k.conversionRate(ctx, atoneSupply, photonSupply)
+		atoneToBurn    = msg.Amount
+		photonToMint   = atoneToBurn.Amount.ToLegacyDec().Mul(conversionRate)
 	)
-
+	// If no photon to mint, do not burn atoneToBurn, returns an error
 	if photonToMint.IsZero() {
 		return nil, types.ErrNoMintablePhotons
 	}
-	// TODO check if photonToMint + remainMintablePhotons > photonMaxSupply ?
-	// TODO we probably needs to deal with round precision
+	// If photonToMint + photonSupply > photonMaxSupply, returns an error
+	if photonSupply.Add(photonToMint).GT(sdk.NewDec(photonMaxSupply)) {
+		return nil, types.ErrNotEnoughPhotons
+	}
 
-	// Send atone to photon module for burn
+	// Burn/Mint phase:
+	// 1) move ATONEs from msg signer address to this module address
+	// 2) burn ATONEs from this module address
+	// 3) mint PHOTONs into this module address
+	// 4) move PHOTONs from this module address to msg signer address
+	var (
+		coinsToBurn = sdk.NewCoins(atoneToBurn)
+		coinsToMint = sdk.NewCoins(sdk.NewCoin("uphoton", photonToMint.RoundInt()))
+	)
+	// 1) Send atone to photon module for burn
 	to, err := sdk.AccAddressFromBech32(msg.ToAddress)
 	if err != nil {
 		return nil, err
 	}
-	coinsToBurn := sdk.NewCoins(atoneToBurn)
 	if err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, to, types.ModuleName, coinsToBurn); err != nil {
 		return nil, err
 	}
-	// Burn atone
+	// 2) Burn atone
 	if err := k.bankKeeper.BurnCoins(ctx, types.ModuleName, coinsToBurn); err != nil {
 		return nil, err
 	}
 
-	// Mint photons
-	coinsToMint := sdk.NewCoins(sdk.NewCoin("uphoton", photonToMint.RoundInt()))
+	// 3) Mint photons
 	if err := k.bankKeeper.MintCoins(ctx, types.ModuleName, coinsToMint); err != nil {
 		return nil, err
 	}
-	// Send minted photon to account
+	// 4) Send minted photon to account
 	if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, to, coinsToMint); err != nil {
 		return nil, err
 	}
 
-	return &types.MsgBurnResponse{Minted: coinsToMint[0]}, nil
+	return &types.MsgBurnResponse{
+		Minted:         coinsToMint[0],
+		ConversionRate: conversionRate.String(),
+	}, nil
 }
 
 // UpdateParams implements the MsgServer.UpdateParams method.

@@ -24,8 +24,11 @@ func (k Keeper) Params(goCtx context.Context, req *types.QueryParamsRequest) (*t
 // ConversionRate returns the atone to photon conversion ratio.
 func (k Keeper) ConversionRate(goCtx context.Context, req *types.QueryConversionRateRequest) (*types.QueryConversionRateResponse, error) {
 	var (
-		ctx = sdk.UnwrapSDKContext(goCtx)
-		cr  = k.conversionRate(ctx)
+		ctx          = sdk.UnwrapSDKContext(goCtx)
+		bondDenom    = k.stakingKeeper.BondDenom(ctx)
+		atoneSupply  = k.bankKeeper.GetSupply(ctx, bondDenom).Amount.ToLegacyDec()
+		photonSupply = k.bankKeeper.GetSupply(ctx, "uphoton").Amount.ToLegacyDec()
+		cr           = k.conversionRate(ctx, atoneSupply, photonSupply)
 	)
 	return &types.QueryConversionRateResponse{ConversionRate: cr.String()}, nil
 }
