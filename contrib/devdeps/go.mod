@@ -3,6 +3,7 @@ module github.com/atomone-hub/atomone/contrib/devdeps
 go 1.21
 
 require (
+	github.com/golang/mock v1.6.0
 	github.com/golangci/golangci-lint v1.56.0
 	github.com/goreleaser/goreleaser v1.25.1
 	github.com/rakyll/statik v0.1.7
