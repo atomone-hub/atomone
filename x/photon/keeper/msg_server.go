@@ -31,7 +31,6 @@ func (k msgServer) Burn(goCtx context.Context, msg *types.MsgBurn) (*types.MsgBu
 	}
 
 	// Ensure burned amount denom is bond denom (uatone)
-	// TODO ensure it is uatone
 	bondDenom := k.stakingKeeper.BondDenom(ctx)
 	if msg.Amount.Denom != bondDenom {
 		return nil, types.ErrBurnInvalidDenom
