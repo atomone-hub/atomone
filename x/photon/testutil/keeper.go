@@ -19,9 +19,9 @@ import (
 )
 
 type Mocks struct {
-	acctKeeper    *MockAccountKeeper
-	bankKeeper    *MockBankKeeper
-	stakingKeeper *MockStakingKeeper
+	AccountKeeper *MockAccountKeeper
+	BankKeeper    *MockBankKeeper
+	StakingKeeper *MockStakingKeeper
 }
 
 func SetupMsgServer(t *testing.T) (types.MsgServer, *keeper.Keeper, Mocks, sdk.Context) {
@@ -36,9 +36,9 @@ func SetupPhotonKeeper(t *testing.T) (
 ) {
 	ctrl := gomock.NewController(t)
 	m := Mocks{
-		acctKeeper:    NewMockAccountKeeper(ctrl),
-		bankKeeper:    NewMockBankKeeper(ctrl),
-		stakingKeeper: NewMockStakingKeeper(ctrl),
+		AccountKeeper: NewMockAccountKeeper(ctrl),
+		BankKeeper:    NewMockBankKeeper(ctrl),
+		StakingKeeper: NewMockStakingKeeper(ctrl),
 	}
 
 	key := sdk.NewKVStoreKey(types.StoreKey)
@@ -48,5 +48,5 @@ func SetupPhotonKeeper(t *testing.T) (
 	types.RegisterInterfaces(encCfg.InterfaceRegistry)
 	// banktypes.RegisterInterfaces(encCfg.InterfaceRegistry)
 	authority := authtypes.NewModuleAddress(govtypes.ModuleName).String()
-	return keeper.NewKeeper(encCfg.Codec, key, authority, m.bankKeeper, m.acctKeeper, m.stakingKeeper), m, ctx
+	return keeper.NewKeeper(encCfg.Codec, key, authority, m.BankKeeper, m.AccountKeeper, m.StakingKeeper), m, ctx
 }

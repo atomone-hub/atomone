@@ -40,6 +40,8 @@ message MsgBurnResponse {
     (gogoproto.nullable) = false,
     (amino.dont_omitempty) = true
   ];
+	// conversion_rate represents the factor used to convert atone to photon.
+  string conversion_rate = 2 [ (cosmos_proto.scalar) = "cosmos.Dec" ];
 }
 
 // MsgUpdateParams is the Msg/UpdateParams request type.
