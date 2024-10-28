@@ -104,11 +104,16 @@ ifneq ($(GO_SYSTEM_VERSION), $(GO_REQUIRED_VERSION))
 	exit 1
 endif
 
+check_ledger:
+ifeq ($(LEDGER_ENABLED),false)
+	$(info Building without Ledger support. Set LEDGER_ENABLED=true or use build-ledger target to build with Ledger support.)
+endif
+
 BUILD_TARGETS := build install
 
 build: BUILD_ARGS=-o $(BUILDDIR)/
 
-$(BUILD_TARGETS): check_go_version go.sum $(BUILDDIR)/
+$(BUILD_TARGETS): check_go_version check_ledger go.sum $(BUILDDIR)/
 	go $@ -mod=readonly $(BUILD_FLAGS) $(BUILD_ARGS) ./...
 
 build-ledger: # Kept for convenience
