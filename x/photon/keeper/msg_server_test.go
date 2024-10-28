@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"testing"
 
+	"github.com/atomone-hub/atomone/x/photon/keeper"
 	"github.com/atomone-hub/atomone/x/photon/testutil"
 	"github.com/atomone-hub/atomone/x/photon/types"
 	"github.com/stretchr/testify/require"
@@ -11,7 +12,10 @@ import (
 )
 
 func TestMsgServerBurn(t *testing.T) {
-	toAddress := sdk.AccAddress("test1")
+	var (
+		toAddress         = sdk.AccAddress("test1")
+		atoneSupply int64 = 107_775_332 * 1_000_000 // From genesis
+	)
 	tests := []struct {
 		name             string
 		params           types.Params
@@ -55,8 +59,8 @@ func TestMsgServerBurn(t *testing.T) {
 			},
 			setup: func(ctx sdk.Context, m testutil.Mocks) {
 				m.StakingKeeper.EXPECT().BondDenom(ctx).Return("uatone")
-				m.BankKeeper.EXPECT().GetSupply(ctx, "uatone").Return(sdk.NewInt64Coin("uatone", 1_000_000))
-				m.BankKeeper.EXPECT().GetSupply(ctx, "uphoton").Return(sdk.NewInt64Coin("uphoton", 1_000_000_000))
+				m.BankKeeper.EXPECT().GetSupply(ctx, "uatone").Return(sdk.NewInt64Coin("uatone", atoneSupply))
+				m.BankKeeper.EXPECT().GetSupply(ctx, "uphoton").Return(sdk.NewInt64Coin("uphoton", keeper.PhotonMaxSupply))
 			},
 			expectedErr: "no more photon can be minted",
 		},
@@ -65,12 +69,12 @@ func TestMsgServerBurn(t *testing.T) {
 			params: types.Params{MintDisabled: false},
 			msg: &types.MsgBurn{
 				ToAddress: toAddress.String(),
-				Amount:    sdk.NewInt64Coin("uatone", 1_000_001),
+				Amount:    sdk.NewInt64Coin("uatone", 1_000_000_000_000_000),
 			},
 			setup: func(ctx sdk.Context, m testutil.Mocks) {
 				m.StakingKeeper.EXPECT().BondDenom(ctx).Return("uatone")
-				m.BankKeeper.EXPECT().GetSupply(ctx, "uatone").Return(sdk.NewInt64Coin("uatone", 1_000_000))
-				m.BankKeeper.EXPECT().GetSupply(ctx, "uphoton").Return(sdk.NewInt64Coin("uphoton", 999_999_999))
+				m.BankKeeper.EXPECT().GetSupply(ctx, "uatone").Return(sdk.NewInt64Coin("uatone", atoneSupply))
+				m.BankKeeper.EXPECT().GetSupply(ctx, "uphoton").Return(sdk.NewInt64Coin("uphoton", keeper.PhotonMaxSupply-1_000_000))
 			},
 			expectedErr: "not enough photon can be minted",
 		},
@@ -83,7 +87,7 @@ func TestMsgServerBurn(t *testing.T) {
 			},
 			setup: func(ctx sdk.Context, m testutil.Mocks) {
 				m.StakingKeeper.EXPECT().BondDenom(ctx).Return("uatone")
-				m.BankKeeper.EXPECT().GetSupply(ctx, "uatone").Return(sdk.NewInt64Coin("uatone", 1_000_000))
+				m.BankKeeper.EXPECT().GetSupply(ctx, "uatone").Return(sdk.NewInt64Coin("uatone", atoneSupply))
 				m.BankKeeper.EXPECT().GetSupply(ctx, "uphoton").Return(sdk.NewInt64Coin("uphoton", 0))
 				m.BankKeeper.EXPECT().SendCoinsFromAccountToModule(
 					ctx, toAddress, types.ModuleName,
@@ -93,16 +97,16 @@ func TestMsgServerBurn(t *testing.T) {
 					sdk.NewCoins(sdk.NewInt64Coin("uatone", 1)),
 				)
 				m.BankKeeper.EXPECT().MintCoins(ctx, types.ModuleName,
-					sdk.NewCoins(sdk.NewInt64Coin("uphoton", 1000)),
+					sdk.NewCoins(sdk.NewInt64Coin("uphoton", 9)),
 				)
 				m.BankKeeper.EXPECT().SendCoinsFromModuleToAccount(
 					ctx, types.ModuleName, toAddress,
-					sdk.NewCoins(sdk.NewInt64Coin("uphoton", 1000)),
+					sdk.NewCoins(sdk.NewInt64Coin("uphoton", 9)),
 				)
 			},
 			expectedResponse: &types.MsgBurnResponse{
-				Minted:         sdk.NewInt64Coin("uphoton", 1000),
-				ConversionRate: "1000.000000000000000000",
+				Minted:         sdk.NewInt64Coin("uphoton", 9),
+				ConversionRate: "9.278561071841560182",
 			},
 		},
 	}

@@ -48,7 +48,7 @@ func (k msgServer) Burn(goCtx context.Context, msg *types.MsgBurn) (*types.MsgBu
 		return nil, types.ErrNoMintablePhotons
 	}
 	// If photonToMint + photonSupply > photonMaxSupply, returns an error
-	if photonSupply.Add(photonToMint).GT(sdk.NewDec(photonMaxSupply)) {
+	if photonSupply.Add(photonToMint).GT(sdk.NewDec(PhotonMaxSupply)) {
 		return nil, types.ErrNotEnoughPhotons
 	}
 
