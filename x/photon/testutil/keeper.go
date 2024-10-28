@@ -24,6 +24,11 @@ type Mocks struct {
 	stakingKeeper *MockStakingKeeper
 }
 
+func SetupMsgServer(t *testing.T) (types.MsgServer, *keeper.Keeper, Mocks, sdk.Context) {
+	k, m, ctx := SetupPhotonKeeper(t)
+	return keeper.NewMsgServerImpl(*k), k, m, ctx
+}
+
 func SetupPhotonKeeper(t *testing.T) (
 	*keeper.Keeper,
 	Mocks,
