@@ -4,6 +4,7 @@ run:
   timeout: 5m
   skip-dirs:
     - tests/
+    - client/docs/statik
 
 linters:
   disable-all: true

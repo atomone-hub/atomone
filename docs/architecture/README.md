@@ -36,7 +36,7 @@ If recorded decisions turn out to be lacking, convene a discussion, record the n
 
 ## Creating new ADR
 
-To create an ADR, copy the [template](./docs/architecture/adr-template.md) into
+To create an ADR, copy the [template](adr-template.md) into
 a new file starting with `ADR-XXX` where XXX is the number following the last
 ADR number in the directory.
 
