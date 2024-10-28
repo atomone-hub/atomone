@@ -43,10 +43,11 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-const photonMaxSupply = 1_000_000_000
+// Photon max supply is 1B
+const PhotonMaxSupply int64 = 1_000_000_000 * 1_000_000
 
 // conversionRate returns the conversion rate for converting atone to photon.
 func (k Keeper) conversionRate(ctx sdk.Context, atoneSupply, photonSupply sdk.Dec) sdk.Dec {
-	remainMintablePhotons := sdk.NewDec(photonMaxSupply).Sub(photonSupply)
+	remainMintablePhotons := sdk.NewDec(PhotonMaxSupply).Sub(photonSupply)
 	return remainMintablePhotons.Quo(atoneSupply)
 }
