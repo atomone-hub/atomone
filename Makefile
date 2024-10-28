@@ -106,7 +106,7 @@ endif
 
 check_ledger:
 ifeq ($(LEDGER_ENABLED),false)
-	$(info Building without Ledger support. Set LEDGER_ENABLED=true to enable or use build-ledger target to build with Ledger support.)
+	$(info Building without Ledger support. Set LEDGER_ENABLED=true or use build-ledger target to build with Ledger support.)
 endif
 
 BUILD_TARGETS := build install
