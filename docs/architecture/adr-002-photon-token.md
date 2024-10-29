@@ -10,8 +10,15 @@ DRAFT
 
 ## Abstract
 
-This ADR proposes to introduce the PHOTON token (ticker `photon`) as the only
-fee token of AtomOne. The only way to get PHOTONs is to burn ATONEs.
+This ADR proposes to introduce the PHOTON token as the only fee token of
+AtomOne. The only way to get PHOTONs is to burn ATONEs.
+
+The PHOTON denom is `photon`, while the base denom is `uphoton`, with:
+```
+1 photon = 1,000,000 uphoton
+```
+The following formulas in this document will use the `photon` denom for
+brevity.
 
 ## Context
 
@@ -34,13 +41,13 @@ The PHOTON token is specified in the [AtomOne Constitution Article 3 Section 5]:
 The ADR proposes to create a new `photon` module to host the following
 features:
 - New `ConversionRate` query
-- New `MsgBurn` message (XXX or `MsgMint`? or `MsgConvert` ? or something else?).
+- New `MsgMintPhoton` message
 - New [`TxFeeChecker`] implementation to enforce the PHOTON token as the only
   fee token.
 
 ### `ConversionRate` query
 
-The `ConversionRate` query returns a decimal which represents the current
+The `ConversionRate` query returns a `sdk.Dec` which represents the current
 conversion rate of ATONE to PHOTON. This conversion rate is computed as the
 following:
 
@@ -52,13 +59,16 @@ where
 photon_{max\_supply} = 1,000,000,000
 ```
 
-Given this formula, when the PHOTON supply reaches the max supply of 1 billion,
-it is no longer possible to get PHOTONs, because the conversion rate will return
-the 0 value.
+Given this formula and the initial supply of 107,775,332 ATONEs, the
+`conversion_rate` will start as a number greater than 1, until it becomes
+becomes a negligible number as the PHOTON supply approaches the maximum supply.
 
-### `MsgBurn` message
+The pivot point at which the `conversion_rate` becomes less than 1 depends on
+the ATONEs supply, which evolves over time given the inflation.
 
-`MsgBurn` takes an amount of ATONEs and returns an amount of PHOTONs.
+### `MsgMintPhoton` message
+
+`MsgMintPhoton` takes an amount of ATONEs and returns an amount of PHOTONs.
 The amount of ATONEs is burnt while the amount of PHOTONs is minted and moved
 onto the message signer account. The number of minted PHOTONs is equal to the
 number of burnt ATONEs multiplied by the conversion rate described in the
@@ -69,7 +79,7 @@ photons_{minted} = atones_{burned} \times conversion\_rate
 ```
 
 However, if `conversion_rate` is 0, i.e. the maximum supply of PHOTON has been
-reached, `MsgBurn` should fail to avoid burning ATONEs without PHOTONs in
+reached, `MsgMintPhoton` should fail to avoid burning ATONEs without PHOTONs in
 return.
 
 ### `TxFeeChecker` implementation
@@ -84,18 +94,18 @@ alternative `TxFeeChecker` implementation, which should:
 - enforce that the fee denom is PHOTON, and return a specific error message if
   it does not (this to be explicitely separated with the insufficient fee error
   message)
-- make exception for some messages, specifically like `MsgBurn`, because
-  `MsgBurn` is the only way to get PHOTONs, so it should accept ATONEs as fee
+- make exception for some messages, specifically like `MsgMintPhoton`, because
+  `MsgMintPhoton` is the only way to get PHOTONs, so it should accept ATONEs as fee
   token.
 
 ### Params
 
 The `photon` module has the following params:
 - `mint_disabled` (default to false): if true, disable the ability to call
-  `MsgBurn`. 
+  `MsgMintPhoton`. 
 
 > [!NOTE]
-> XXX is it really usefull to disable `MsgBurn` ? Looks like it is an urgency
+> XXX is it really usefull to disable `MsgMintPhoton` ? Looks like it is an urgency
 > method when something goes wrong, which is not very compatible with a
 > governance proposal to change the parameters... Suggestion: remove it 
 
@@ -172,8 +182,8 @@ minimum-gas-prices = "0.001uatone,0.001uphoton"
 > denoms (ATONE or PHOTON, but not both).
 
 If the validator `minimum-gas-prices` does not match the required denom (ATONE
-or PHOTON for `MsgBurn, only `PHOTON` for all other messages), an error is
-returned and the tx is rejected.
+or PHOTON for `MsgMintPhoton, only `PHOTON` for all other messages), an error
+is returned and the tx is rejected.
 
 ### Positive
 
@@ -182,29 +192,19 @@ returned and the tx is rejected.
   only fee token reinforces this property.
 
 - Having a non-inflationnary fee token (in contrast to ATONE) ensures PHOTON
-  will continue to gain value in line with AtomOne usage. The more
-  transactions there are, the more PHOTON is needed, bringing scarcity and
-  value.
-
-- The requirement of burning ATONE to get PHOTON also has the side effect of
-  bringing more value to ATONE, thanks to the decrease of the total supply of
-  ATONE that happens in the process.
+  will not be subject to the same dilution tax for non-stakers as ATONE does.
+  PHOTON holders will be subject to no dilution at all. The more stable nature
+  of PHOTON  makes it a perfect candidate for a fee token.
 
 ### Negative
 
 - Users will have to choose between PHOTON and ATONE for the fee token when
-  signing a transaction for AtomOne. Basically, for `MsgBurn` ATONE and PHOTON
-  are accepted, for all other messages, only PHOTON is accepted. While this
-  may seem obvious, it can be confusing because as far as we know, wallets do
-  not have message-based logic regarding the choice of the fee token. Maybe it
-  is time to start discussion with some wallets dev regarding that, this would
-  improve the UX.
-
-> [!NOTE]
-> XXX [`TxFeeChecker`] allows to override the tx fee, one solution for the
-> problem above is to override the tx fee denom with PHOTON and keep the
-> amount. Note sure this is a good way though, sounds weird to accept a tx and
-> deduct from the tx signer balance a different denom than the one specified.
+  signing a transaction for AtomOne. Basically, for `MsgMintPhoton` ATONE and
+  PHOTON are accepted, for all other messages, only PHOTON is accepted. While
+  this may seem obvious, it can be confusing because as far as we know, wallets
+  do not have message-based logic regarding the choice of the fee token. Maybe
+  it is time to start discussion with some wallets dev regarding that, this
+  would improve the UX.
 
 ### Neutral
 
