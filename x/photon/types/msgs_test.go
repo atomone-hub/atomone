@@ -9,22 +9,22 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-func TestMsgBurn_ValidateBasic(t *testing.T) {
+func TestMsgMintPhoton_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgBurn
+		msg  MsgMintPhoton
 		err  error
 	}{
 		{
 			name: "fail: invalid toAddress",
-			msg: MsgBurn{
+			msg: MsgMintPhoton{
 				ToAddress: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		},
 		{
 			name: "fail: negative amount",
-			msg: MsgBurn{
+			msg: MsgMintPhoton{
 				ToAddress: sdk.AccAddress("test1").String(),
 				Amount: sdk.Coin{
 					Denom:  "uatone",
@@ -35,7 +35,7 @@ func TestMsgBurn_ValidateBasic(t *testing.T) {
 		},
 		{
 			name: "fail: not positive amount",
-			msg: MsgBurn{
+			msg: MsgMintPhoton{
 				ToAddress: sdk.AccAddress("test1").String(),
 				Amount: sdk.Coin{
 					Denom:  "uatone",
@@ -46,7 +46,7 @@ func TestMsgBurn_ValidateBasic(t *testing.T) {
 		},
 		{
 			name: "ok",
-			msg: MsgBurn{
+			msg: MsgMintPhoton{
 				ToAddress: sdk.AccAddress("test1").String(),
 				Amount:    sdk.NewInt64Coin("uatone", 1),
 			},

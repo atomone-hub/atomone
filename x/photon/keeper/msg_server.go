@@ -22,9 +22,9 @@ func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 
 var _ types.MsgServer = msgServer{}
 
-// Burn implements the MsgServer.Burn method.
+// MintPhoton implements the MsgServer.MintPhoton method.
 // TODO add logs & events
-func (k msgServer) Burn(goCtx context.Context, msg *types.MsgBurn) (*types.MsgBurnResponse, error) {
+func (k msgServer) MintPhoton(goCtx context.Context, msg *types.MsgMintPhoton) (*types.MsgMintPhotonResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	params := k.GetParams(ctx)
 	if params.MintDisabled {
@@ -84,7 +84,7 @@ func (k msgServer) Burn(goCtx context.Context, msg *types.MsgBurn) (*types.MsgBu
 		return nil, err
 	}
 
-	return &types.MsgBurnResponse{
+	return &types.MsgMintPhotonResponse{
 		Minted:         coinsToMint[0],
 		ConversionRate: conversionRate.String(),
 	}, nil
