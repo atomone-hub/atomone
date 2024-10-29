@@ -14,18 +14,18 @@ option go_package = "github.com/atomone-hub/atomone/x/photon/types";
 service Msg {
   option (cosmos.msg.v1.service) = true;
 
-  // Burn defines a method to burn atone and mint photons.
-  rpc Burn(MsgBurn) returns (MsgBurnResponse);
+  // MintPhoton defines a method to burn atone and mint photons.
+  rpc MintPhoton(MsgMintPhoton) returns (MsgMintPhotonResponse);
 
   // UpdateParams defines a governance operation for updating the x/photon
 	// module parameters. The authority is defined in the keeper.
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
 }
 
-// MsgBurn defines an sdk.Msg for burning atone and minting photons.
-message MsgBurn {
+// MsgMintPhoton defines an sdk.Msg for burning atone and minting photons.
+message MsgMintPhoton {
   option (cosmos.msg.v1.signer) = "to_address";
-  option (amino.name) = "atomone/photon/v1/MsgBurn";
+  option (amino.name) = "atomone/photon/v1/MsgMintPhoton";
 
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
@@ -35,7 +35,7 @@ message MsgBurn {
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
-message MsgBurnResponse {
+message MsgMintPhotonResponse {
   cosmos.base.v1beta1.Coin minted = 1 [
     (gogoproto.nullable) = false,
     (amino.dont_omitempty) = true

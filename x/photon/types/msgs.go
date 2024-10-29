@@ -7,22 +7,22 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-var _, _ sdk.Msg = &MsgBurn{}, &MsgUpdateParams{}
+var _, _ sdk.Msg = &MsgMintPhoton{}, &MsgUpdateParams{}
 
-func NewMsgBurn(toAddr sdk.AccAddress, amount sdk.Coin) *MsgBurn {
-	return &MsgBurn{
+func NewMsgMintPhoton(toAddr sdk.AccAddress, amount sdk.Coin) *MsgMintPhoton {
+	return &MsgMintPhoton{
 		ToAddress: toAddr.String(),
 		Amount:    amount,
 	}
 }
 
-func (msg *MsgBurn) Route() string {
+func (msg *MsgMintPhoton) Route() string {
 	return RouterKey
 }
 
-func (msg *MsgBurn) Type() string { return sdk.MsgTypeURL(msg) }
+func (msg *MsgMintPhoton) Type() string { return sdk.MsgTypeURL(msg) }
 
-func (msg *MsgBurn) GetSigners() []sdk.AccAddress {
+func (msg *MsgMintPhoton) GetSigners() []sdk.AccAddress {
 	creator, err := sdk.AccAddressFromBech32(msg.ToAddress)
 	if err != nil {
 		panic(err)
@@ -30,12 +30,12 @@ func (msg *MsgBurn) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{creator}
 }
 
-func (msg *MsgBurn) GetSignBytes() []byte {
+func (msg *MsgMintPhoton) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgBurn) ValidateBasic() error {
+func (msg *MsgMintPhoton) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.ToAddress); err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid toAddress: %s", err)
 	}

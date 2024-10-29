@@ -11,7 +11,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func TestMsgServerBurn(t *testing.T) {
+func TestMsgServerMintPhoton(t *testing.T) {
 	var (
 		toAddress         = sdk.AccAddress("test1")
 		atoneSupply int64 = 107_775_332 * 1_000_000 // From genesis
@@ -19,30 +19,30 @@ func TestMsgServerBurn(t *testing.T) {
 	tests := []struct {
 		name             string
 		params           types.Params
-		msg              *types.MsgBurn
+		msg              *types.MsgMintPhoton
 		setup            func(sdk.Context, testutil.Mocks)
 		expectedErr      string
-		expectedResponse *types.MsgBurnResponse
+		expectedResponse *types.MsgMintPhotonResponse
 	}{
 		{
 			name:        "fail: mint disabled",
 			params:      types.Params{MintDisabled: true},
-			msg:         &types.MsgBurn{},
+			msg:         &types.MsgMintPhoton{},
 			expectedErr: "photon mint disabled",
 		},
 		{
-			name:   "fail: empty Burn field",
+			name:   "fail: empty Amount field",
 			params: types.Params{MintDisabled: false},
-			msg:    &types.MsgBurn{},
+			msg:    &types.MsgMintPhoton{},
 			setup: func(ctx sdk.Context, m testutil.Mocks) {
 				m.StakingKeeper.EXPECT().BondDenom(ctx).Return("uatone")
 			},
 			expectedErr: "invalid burned amount denom: expected bond denom",
 		},
 		{
-			name:   "fail: invalid Burn field denom",
+			name:   "fail: invalid Amount field denom",
 			params: types.Params{MintDisabled: false},
-			msg: &types.MsgBurn{
+			msg: &types.MsgMintPhoton{
 				Amount: sdk.NewInt64Coin("xxx", 42),
 			},
 			setup: func(ctx sdk.Context, m testutil.Mocks) {
@@ -53,7 +53,7 @@ func TestMsgServerBurn(t *testing.T) {
 		{
 			name:   "fail: photon_supply=max",
 			params: types.Params{MintDisabled: false},
-			msg: &types.MsgBurn{
+			msg: &types.MsgMintPhoton{
 				ToAddress: toAddress.String(),
 				Amount:    sdk.NewInt64Coin("uatone", 1),
 			},
@@ -67,7 +67,7 @@ func TestMsgServerBurn(t *testing.T) {
 		{
 			name:   "fail: photon_supply+minted>max",
 			params: types.Params{MintDisabled: false},
-			msg: &types.MsgBurn{
+			msg: &types.MsgMintPhoton{
 				ToAddress: toAddress.String(),
 				Amount:    sdk.NewInt64Coin("uatone", 1_000_000_000_000_000),
 			},
@@ -81,7 +81,7 @@ func TestMsgServerBurn(t *testing.T) {
 		{
 			name:   "ok: photon_supply=0",
 			params: types.Params{MintDisabled: false},
-			msg: &types.MsgBurn{
+			msg: &types.MsgMintPhoton{
 				ToAddress: toAddress.String(),
 				Amount:    sdk.NewInt64Coin("uatone", 1),
 			},
@@ -104,7 +104,7 @@ func TestMsgServerBurn(t *testing.T) {
 					sdk.NewCoins(sdk.NewInt64Coin("uphoton", 9)),
 				)
 			},
-			expectedResponse: &types.MsgBurnResponse{
+			expectedResponse: &types.MsgMintPhotonResponse{
 				Minted:         sdk.NewInt64Coin("uphoton", 9),
 				ConversionRate: "9.278561071841560182",
 			},
@@ -118,7 +118,7 @@ func TestMsgServerBurn(t *testing.T) {
 				tt.setup(ctx, mocks)
 			}
 
-			resp, err := ms.Burn(ctx, tt.msg)
+			resp, err := ms.MintPhoton(ctx, tt.msg)
 
 			if tt.expectedErr != "" {
 				require.EqualError(t, err, tt.expectedErr)

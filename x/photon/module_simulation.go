@@ -22,9 +22,9 @@ var (
 )
 
 const (
-	opWeightMsgBurn = "op_weight_msg_burn"
+	opWeightMsgMintPhoton = "op_weight_msg_burn"
 	// TODO: Determine the simulation weight value
-	defaultWeightMsgBurn int = 100
+	defaultWeightMsgMintPhoton int = 100
 )
 
 // GenerateGenesisState creates a randomized GenState of the module.
@@ -51,15 +51,15 @@ func (AppModule) ProposalContents(_ module.SimulationState) []simtypes.WeightedP
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	operations := make([]simtypes.WeightedOperation, 0)
 
-	var weightMsgBurn int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgBurn, &weightMsgBurn, nil,
+	var weightMsgMintPhoton int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgMintPhoton, &weightMsgMintPhoton, nil,
 		func(_ *rand.Rand) {
-			weightMsgBurn = defaultWeightMsgBurn
+			weightMsgMintPhoton = defaultWeightMsgMintPhoton
 		},
 	)
 	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgBurn,
-		photonsimulation.SimulateMsgBurn(am.accountKeeper, am.bankKeeper, am.stakingKeeper, am.keeper),
+		weightMsgMintPhoton,
+		photonsimulation.SimulateMsgMintPhoton(am.accountKeeper, am.bankKeeper, am.stakingKeeper, am.keeper),
 	))
 
 	return operations
@@ -69,10 +69,10 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.WeightedProposalMsg {
 	return []simtypes.WeightedProposalMsg{
 		simulation.NewWeightedProposalMsg(
-			opWeightMsgBurn,
-			defaultWeightMsgBurn,
+			opWeightMsgMintPhoton,
+			defaultWeightMsgMintPhoton,
 			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
-				photonsimulation.SimulateMsgBurn(am.accountKeeper, am.bankKeeper, am.stakingKeeper, am.keeper)
+				photonsimulation.SimulateMsgMintPhoton(am.accountKeeper, am.bankKeeper, am.stakingKeeper, am.keeper)
 				return nil
 			},
 		),
