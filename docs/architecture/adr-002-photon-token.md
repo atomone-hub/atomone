@@ -187,7 +187,7 @@ or `uphoton` for `MsgMintPhoton` or any message in `txfee_exceptions`, and only
 
 ### ICS payments and core shard fees enforcement
 
-The proposed x/photon module does not enforce the usage of PHOTON as payment
+The proposed `x/photon` module does not enforce the usage of PHOTON as payment
 token for ICS. This enforcement is left to be done by the ICS implementation.
 
 Seemingly, for future core shards the enforcement of PHOTON as the fee token
