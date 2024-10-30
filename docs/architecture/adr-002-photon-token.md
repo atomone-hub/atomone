@@ -94,15 +94,15 @@ The [`TxFeeChecker`] is a function definition that is part of the ante handler
 `TxFeeChecker` to ensure that the fee specified in the tx is sufficient.
 
 Currently, AtomOne uses the default `TxFeeChecker` (namely
-[`checkTxFeeWithValidatorMinGasPrices`]), so the photon module must provide an
+[`checkTxFeeWithValidatorMinGasPrices`]), so the `x/photon` module must provide an
 alternative `TxFeeChecker` implementation, which should:
 
-- enforce that the fee denom is PHOTON, and return a specific error message if
+- enforce that the fee denom is `uphoton`, and return a specific error message if
   it does not (this to be explicitely separated with the insufficient fee error
   message)
 - make exception for some messages, specifically like `MsgMintPhoton`, because
   `MsgMintPhoton` is the only way to get PHOTONs, so it should accept ATONEs as fee
-  token. Possibly, the list of exception could be a module parameter.
+  token. The list of exceptions will in fact be a module parameter.
 
 ### Params
 
