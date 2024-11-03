@@ -144,14 +144,20 @@ func ProposalStatusFromString(str string) (ProposalStatus, error) {
 }
 
 // Format implements the fmt.Formatter interface.
-func (status ProposalStatus) Format(s fmt.State, verb rune) {
+func (status ProposalStatus) Format(s fmt.State, verb rune) error {
 	switch verb {
 	case 's':
-		s.Write([]byte(status.String()))
+		_, err := s.Write([]byte(status.String()))
+		if err != nil {
+			return err
+		}
 	default:
-		// TODO: Do this conversion more directly
-		s.Write([]byte(fmt.Sprintf("%v", byte(status))))
+		_, err := s.Write([]byte(fmt.Sprintf("%v", byte(status))))
+		if err != nil {
+			return err
+		}
 	}
+	return nil
 }
 
 // Proposal types
