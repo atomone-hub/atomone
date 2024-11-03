@@ -132,18 +132,11 @@ func ValidVoteOption(option VoteOption) bool {
 }
 
 // Format implements the fmt.Formatter interface.
-func (vo VoteOption) Format(s fmt.State, verb rune) error {
+func (vo VoteOption) Format(s fmt.State, verb rune) {
 	switch verb {
 	case 's':
-		_, err := s.Write([]byte(vo.String()))
-		if err != nil {
-			return err
-		}
+		_, _ = s.Write([]byte(vo.String()))
 	default:
-		_, err := s.Write([]byte(fmt.Sprintf("%v", byte(vo))))
-		if err != nil {
-			return err
-		}
+		_, _ = s.Write([]byte(fmt.Sprintf("%v", byte(vo))))
 	}
-	return nil
 }

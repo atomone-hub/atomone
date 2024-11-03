@@ -1,10 +1,7 @@
 run:
-  tests: false
+  tests: true
   # timeout for analysis, e.g. 30s, 5m, default is 1m
   timeout: 5m
-  skip-dirs:
-    - tests/
-    - client/docs/statik
 
 linters:
   disable-all: true
@@ -32,26 +29,33 @@ linters:
     - unused
 
 issues:
+  exclude-dirs:
+    - tests/
+    - client/docs/statik
+  exclude-files:
+    - ".*\\.pb\\.go$"
+    - ".*\\.pb\\.gw\\.go$"
+    - ".*\\.pulsar\\.go$"
   exclude-rules:
-    - text: 'Use of weak random number generator'
+    - text: "Use of weak random number generator"
       linters:
         - gosec
-    - text: 'comment on exported var'
+    - text: "comment on exported var"
       linters:
         - golint
     - text: "don't use an underscore in package name"
       linters:
         - golint
-    - text: 'ST1003:'
+    - text: "ST1003:"
       linters:
         - stylecheck
     # FIXME: Disabled until golangci-lint updates stylecheck with this fix:
     # https://github.com/dominikh/go-tools/issues/389
-    - text: 'ST1016:'
+    - text: "ST1016:"
       linters:
         - stylecheck
-    - path: 'migrations'
-      text: 'SA1019:'
+    - path: "migrations"
+      text: "SA1019:"
       linters:
         - staticcheck
 
