@@ -226,7 +226,6 @@ func (s *CLITestSuite) TestNewCmdSubmitLegacyProposal() {
 		},
 		{
 			"valid transaction (file)",
-
 			[]string{
 				fmt.Sprintf("--%s=%s", cli.FlagProposal, validPropFile.Name()),
 				fmt.Sprintf("--%s=%s", flags.FlagFrom, val[0].Address.String()),
