@@ -12,14 +12,14 @@ jobs:
   golangci:
     name: golangci-lint
     runs-on: ubuntu-latest
+    env:
+      # ensure go uses the version from the go directive and not from the toolchain directive.
+      GOTOOLCHAIN: local
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
-        env:
-          # ensure actions/setup-go uses the version from the go directive and not from the toolchain directive.
-          GOTOOLCHAIN: local
       - uses: technote-space/get-diff-action@v6.1.2
         id: git_diff
         with:
