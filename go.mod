@@ -2,6 +2,8 @@ module github.com/atomone-hub/atomone
 
 go 1.22.7
 
+toolchain go1.23.2
+
 require (
 	cosmossdk.io/api v0.3.1
 	cosmossdk.io/core v0.5.1

@@ -17,6 +17,9 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
+        env:
+          # ensure actions/checkouts uses the version from the go directive and not from the toolchain directive.
+          GOTOOLCHAIN=local
       - uses: technote-space/get-diff-action@v6.1.2
         id: git_diff
         with:
