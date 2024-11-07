@@ -85,6 +85,14 @@ func (k msgServer) MintPhoton(goCtx context.Context, msg *types.MsgMintPhoton) (
 		return nil, err
 	}
 
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			types.EventTypeMintPhoton,
+			sdk.NewAttribute(types.AttributeKeyBurned, coinsToBurn.String()),
+			sdk.NewAttribute(types.AttributeKeyMinted, coinsToMint.String()),
+		),
+	})
+
 	return &types.MsgMintPhotonResponse{
 		Minted:         coinsToMint[0],
 		ConversionRate: conversionRate.String(),
