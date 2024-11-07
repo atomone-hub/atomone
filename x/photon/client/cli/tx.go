@@ -28,15 +28,15 @@ func GetTxCmd() *cobra.Command {
 
 func GetTxMintPhotonCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "mint-photon [amount]",
+		Use:   "mint [amount]",
 		Short: "Broadcast MintPhoton message which burns [amount] and mint photons.",
-		Args:  cobra.ExactArgs(0),
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
-			toBurn, err := sdk.ParseCoinNormalized(args[1])
+			toBurn, err := sdk.ParseCoinNormalized(args[0])
 			if err != nil {
 				return err
 			}
