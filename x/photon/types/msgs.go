@@ -1,10 +1,10 @@
 package types
 
 import (
-	"github.com/atomone-hub/atomone/x/gov/types"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
+	"github.com/atomone-hub/atomone/x/gov/types"
 )
 
 var _, _ sdk.Msg = &MsgMintPhoton{}, &MsgUpdateParams{}
@@ -37,13 +37,13 @@ func (msg *MsgMintPhoton) GetSignBytes() []byte {
 
 func (msg *MsgMintPhoton) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.ToAddress); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid toAddress: %s", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid toAddress: %s", err) //nolint:staticcheck
 	}
 	if err := msg.Amount.Validate(); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "invalid coin to burn: %s", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "invalid coin to burn: %s", err) //nolint:staticcheck
 	}
 	if !msg.Amount.IsPositive() {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "coin to burn must be positive")
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "coin to burn must be positive") //nolint:staticcheck
 	}
 	return nil
 }
