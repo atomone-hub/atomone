@@ -17,6 +17,7 @@ import (
 
 	govtypesv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	govtypesv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
+	photontypes "github.com/atomone-hub/atomone/x/photon/types"
 )
 
 // queryAtomOneTx returns an error if the tx is not found or is failed.
@@ -277,4 +278,22 @@ func (s *IntegrationTestSuite) queryConstitution(endpoint string) govtypesv1.Que
 	err = cdc.UnmarshalJSON(body, &res)
 	s.Require().NoError(err)
 	return res
+}
+
+func (s *IntegrationTestSuite) queryPhotonConversionRate(endpoint string) sdk.Dec {
+	body, err := httpGet(fmt.Sprintf("%s/atomone/photon/v1/conversion_rate", endpoint))
+	s.Require().NoError(err)
+	var resp photontypes.QueryConversionRateResponse
+	err = cdc.UnmarshalJSON(body, &resp)
+	s.Require().NoError(err)
+	return sdk.MustNewDecFromStr(resp.ConversionRate)
+}
+
+func (s *IntegrationTestSuite) queryBankSupply(endpoint string) sdk.Coins {
+	body, err := httpGet(fmt.Sprintf("%s/cosmos/bank/v1beta1/supply", endpoint))
+	s.Require().NoError(err)
+	var resp banktypes.QueryTotalSupplyResponse
+	err = cdc.UnmarshalJSON(body, &resp)
+	s.Require().NoError(err)
+	return resp.Supply
 }

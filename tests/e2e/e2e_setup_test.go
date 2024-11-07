@@ -51,10 +51,8 @@ const (
 	queryCommand                    = "query"
 	keysCommand                     = "keys"
 	atomoneHomePath                 = "/home/nonroot/.atomone"
-	photonDenom                     = "photon"
+	uphotonDenom                    = "uphoton"
 	uatoneDenom                     = "uatone"
-	stakeDenom                      = "stake"
-	initBalanceStr                  = "110000000000stake,100000000000000000photon,100000000000000000uatone"
 	minGasPrice                     = "0.00001"
 	gas                             = 200000
 	govProposalBlockBuffer    int64 = 35
@@ -76,14 +74,15 @@ const (
 )
 
 var (
-	runInCI           = os.Getenv("GITHUB_ACTIONS") == "true"
-	atomoneConfigPath = filepath.Join(atomoneHomePath, "config")
-	stakingAmount     = sdk.NewInt(100000000000)
-	stakingAmountCoin = sdk.NewCoin(uatoneDenom, stakingAmount)
-	tokenAmount       = sdk.NewCoin(uatoneDenom, sdk.NewInt(3300000000)) // 3,300uatom
-	standardFees      = sdk.NewCoin(uatoneDenom, sdk.NewInt(330000))     // 0.33uatom
-	depositAmount     = sdk.NewCoin(uatoneDenom, sdk.NewInt(330000000))  // 3,300uatom
-	proposalCounter   = 0
+	runInCI              = os.Getenv("GITHUB_ACTIONS") == "true"
+	atomoneConfigPath    = filepath.Join(atomoneHomePath, "config")
+	initBalanceStr       = sdk.NewInt64Coin(uatoneDenom, 10_000_000_000_000).String() // 10,000,000atone
+	stakingAmountCoin    = sdk.NewInt64Coin(uatoneDenom, 6_000_000_000_000)           // 6,000,000atone
+	tokenAmount          = sdk.NewInt64Coin(uatoneDenom, 100_000_000)                 // 100atone
+	standardFees         = sdk.NewInt64Coin(uatoneDenom, 330_000)                     // 0.33atone
+	depositAmount        = sdk.NewInt64Coin(uatoneDenom, 1_000_000_000)               // 1,000atone
+	initialDepositAmount = sdk.NewInt64Coin(uatoneDenom, 100_000_000)                 // 100atone
+	proposalCounter      = 0
 )
 
 type IntegrationTestSuite struct {
@@ -696,14 +695,15 @@ func (s *IntegrationTestSuite) writeGovCommunitySpendProposal(c *chain, amount s
 			}]
 		  }
 		],
-		"deposit": "100uatone",
+		"deposit": "%s",
 		"proposer": "Proposing validator address",
 		"metadata": "Community Pool Spend",
 		"title": "Fund Team!",
 		"summary": "summary"
 	}
 	`
-	propMsgBody := fmt.Sprintf(template, govModuleAddress, recipient, amount.Denom, amount.Amount.String())
+	propMsgBody := fmt.Sprintf(template, govModuleAddress, recipient,
+		amount.Denom, amount.Amount.String(), initialDepositAmount.String())
 	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalCommunitySpendFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }

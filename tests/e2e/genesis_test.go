@@ -17,6 +17,7 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
@@ -165,8 +166,16 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 	}
 	appState[stakingtypes.ModuleName] = stakingGenStateBz
 
+	var mintGenState minttypes.GenesisState
+	cdc.MustUnmarshalJSON(appState[minttypes.ModuleName], &mintGenState)
+	mintGenState.Params.MintDenom = denom
+	mintGenStateBz, err := cdc.MarshalJSON(&mintGenState)
+	if err != nil {
+		return fmt.Errorf("failed to marshal mint genesis state: %s", err)
+	}
+	appState[minttypes.ModuleName] = mintGenStateBz
+
 	// Refactor to separate method
-	amnt := sdk.NewInt(10000)
 	quorum, _ := sdk.NewDecFromStr("0.000000000000000001")
 	threshold, _ := sdk.NewDecFromStr("0.000000000000000001")
 	lawQuorum, _ := sdk.NewDecFromStr("0.000000000000000001")
@@ -179,7 +188,7 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 
 	govGenState := govv1.NewGenesisState(1,
 		govv1.NewParams(
-			sdk.NewCoins(sdk.NewCoin(denom, amnt)), maxDepositPeriod,
+			sdk.NewCoins(depositAmount), maxDepositPeriod,
 			votingPeriod,
 			quorum.String(), threshold.String(),
 			amendmentsQuorum.String(), amendmentsThreshold.String(), lawQuorum.String(), lawThreshold.String(),

@@ -24,6 +24,7 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
+	photontypes "github.com/atomone-hub/atomone/x/photon/types"
 )
 
 const (
@@ -756,9 +757,9 @@ func (s *IntegrationTestSuite) executeHermesCommand(ctx context.Context, hermesC
 func (s *IntegrationTestSuite) expectErrExecValidation(chain *chain, valIdx int, expectErr bool) func([]byte, []byte) bool {
 	return func(stdOut []byte, stdErr []byte) bool {
 		var txResp sdk.TxResponse
-		gotErr := cdc.UnmarshalJSON(stdOut, &txResp) != nil
-		if gotErr {
-			s.Require().True(expectErr)
+		err := cdc.UnmarshalJSON(stdOut, &txResp)
+		if !expectErr {
+			s.Require().NoError(err, "stdOut='%s' stdErr='%s'", string(stdOut), string(stdErr))
 		}
 
 		endpoint := fmt.Sprintf("http://%s", s.valResources[chain.id][valIdx].GetHostPort("1317/tcp"))
@@ -770,7 +771,7 @@ func (s *IntegrationTestSuite) expectErrExecValidation(chain *chain, valIdx int,
 			},
 			time.Minute,
 			time.Second,
-			"stdOut: %s, stdErr: %s",
+			"stdOut='%s', stdErr='%s'",
 			string(stdOut), string(stdErr),
 		)
 		return true
@@ -829,6 +830,40 @@ func (s *IntegrationTestSuite) executeValidatorBond(c *chain, valIdx int, valOpe
 
 	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx))
 	s.T().Logf("%s successfully executed validator bond tx to %s", delegatorAddr, valOperAddress)
+}
+
+func (s *IntegrationTestSuite) execPhotonMint(
+	c *chain,
+	valIdx int,
+	from,
+	amt,
+	fees string,
+	expectErr bool,
+	opt ...flagOption,
+) {
+	opt = append(opt, withKeyValue(flagFees, fees))
+	opt = append(opt, withKeyValue(flagFrom, from))
+	opts := applyOptions(c.id, opt)
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+
+	s.T().Logf("minting photon from %s from %s on chain %s", amt, from, c.id)
+
+	atomoneCommand := []string{
+		atomonedBinary,
+		txCommand,
+		photontypes.ModuleName,
+		"mint",
+		amt,
+		"-y",
+	}
+	for flag, value := range opts {
+		atomoneCommand = append(atomoneCommand, fmt.Sprintf("--%s=%v", flag, value))
+	}
+
+	// TODO retrieve tx response
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.expectErrExecValidation(c, valIdx, expectErr))
 }
 
 // signTxFileOnline signs a transaction file using the atomoned tx sign command
