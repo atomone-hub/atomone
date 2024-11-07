@@ -13,6 +13,7 @@ var (
 	runStakingAndDistributionTest = true
 	runVestingTest                = true
 	runRestInterfacesTest         = true
+	runPhotonTest                 = true
 )
 
 func (s *IntegrationTestSuite) TestRestInterfaces() {
@@ -95,4 +96,11 @@ func (s *IntegrationTestSuite) TestVesting() {
 	s.testDelayedVestingAccount(chainAAPI)
 	s.testContinuousVestingAccount(chainAAPI)
 	// s.testPeriodicVestingAccount(chainAAPI) TODO: add back when v0.45 adds the missing CLI command.
+}
+
+func (s *IntegrationTestSuite) TestPhoton() {
+	if !runPhotonTest {
+		s.T().Skip()
+	}
+	s.testMintPhoton()
 }

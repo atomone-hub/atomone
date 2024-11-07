@@ -128,7 +128,7 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 		sender := senderAddress.String()
 		recipientAddress, _ := s.chainA.validators[1].keyInfo.GetAddress()
 		recipient := recipientAddress.String()
-		sendAmount := sdk.NewCoin(uatoneDenom, sdk.NewInt(10000000)) // 10uatone
+		sendAmount := sdk.NewInt64Coin(uatoneDenom, 10_000_000) // 10atone
 		s.writeGovCommunitySpendProposal(s.chainA, sendAmount, recipient)
 
 		beforeRecipientBalance, err := getSpecificBalance(chainAAPIEndpoint, recipient, uatoneDenom)
@@ -212,7 +212,7 @@ func (s *IntegrationTestSuite) submitLegacyGovProposal(chainAAPIEndpoint, sender
 	// min deposit of 1000uatone is required in e2e tests, otherwise the gov antehandler causes the proposal to be dropped
 	sflags := submitFlags
 	if withDeposit {
-		sflags = append(sflags, "--deposit=1000uatone")
+		sflags = append(sflags, "--deposit="+initialDepositAmount.String())
 	}
 	s.submitGovCommand(chainAAPIEndpoint, sender, proposalID, "submit-legacy-proposal", sflags, govtypesv1beta1.StatusDepositPeriod)
 	s.T().Logf("Depositing Gov Proposal: %s", proposalType)
@@ -303,14 +303,14 @@ func (s *IntegrationTestSuite) writeStakingParamChangeProposal(c *chain, params 
 			"params": %s
 		  }
 		],
-		"deposit": "100uatone",
+		"deposit": "%s",
 		"proposer": "Proposing staking param change",
 		"metadata": "",
 		"title": "Change in staking params",
 		"summary": "summary"
 	}
 	`
-	propMsgBody := fmt.Sprintf(template, govModuleAddress, cdc.MustMarshalJSON(&params))
+	propMsgBody := fmt.Sprintf(template, govModuleAddress, cdc.MustMarshalJSON(&params), initialDepositAmount)
 	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
@@ -328,14 +328,14 @@ func (s *IntegrationTestSuite) writeGovConstitutionAmendmentProposal(c *chain, a
 			"amendment": "%s"
 		  }
 		],
-		"deposit": "100uatone",
+		"deposit": "%s",
 		"proposer": "Proposing validator address",
 		"metadata": "Constitution Amendment",
 		"title": "Constitution Amendment",
 		"summary": "summary"
 	}
 	`
-	propMsgBody := fmt.Sprintf(template, govModuleAddress, amendment)
+	propMsgBody := fmt.Sprintf(template, govModuleAddress, amendment, initialDepositAmount)
 	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalConstitutionAmendmentFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
