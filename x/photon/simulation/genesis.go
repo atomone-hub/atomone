@@ -3,9 +3,9 @@ package simulation
 import (
 	"math/rand"
 
-	"github.com/atomone-hub/atomone/x/photon/types"
-
 	"github.com/cosmos/cosmos-sdk/types/module"
+
+	"github.com/atomone-hub/atomone/x/photon/types"
 )
 
 const (

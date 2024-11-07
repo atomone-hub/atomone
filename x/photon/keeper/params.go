@@ -1,9 +1,9 @@
 package keeper
 
 import (
-	"github.com/atomone-hub/atomone/x/photon/types"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/atomone-hub/atomone/x/photon/types"
 )
 
 // GetParams get all parameters as types.Params

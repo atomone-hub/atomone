@@ -25,6 +25,7 @@ type Mocks struct {
 }
 
 func SetupMsgServer(t *testing.T) (types.MsgServer, *keeper.Keeper, Mocks, sdk.Context) {
+	t.Helper()
 	k, m, ctx := SetupPhotonKeeper(t)
 	return keeper.NewMsgServerImpl(*k), k, m, ctx
 }
@@ -34,6 +35,7 @@ func SetupPhotonKeeper(t *testing.T) (
 	Mocks,
 	sdk.Context,
 ) {
+	t.Helper()
 	ctrl := gomock.NewController(t)
 	m := Mocks{
 		AccountKeeper: NewMockAccountKeeper(ctrl),

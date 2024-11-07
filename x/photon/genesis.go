@@ -1,15 +1,19 @@
 package photon
 
 import (
-	"github.com/atomone-hub/atomone/x/photon/keeper"
-	"github.com/atomone-hub/atomone/x/photon/types"
+	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/atomone-hub/atomone/x/photon/keeper"
+	"github.com/atomone-hub/atomone/x/photon/types"
 )
 
 // InitGenesis initializes the module's state from a provided genesis state.
 func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) {
-	k.SetParams(ctx, genState.Params)
+	if err := k.SetParams(ctx, genState.Params); err != nil {
+		panic(fmt.Sprintf("%s module params has not been set", types.ModuleName))
+	}
 }
 
 // ExportGenesis returns the module's exported genesis

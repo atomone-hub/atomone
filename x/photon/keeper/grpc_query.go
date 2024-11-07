@@ -3,11 +3,12 @@ package keeper
 import (
 	"context"
 
-	"github.com/atomone-hub/atomone/x/photon/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/atomone-hub/atomone/x/photon/types"
 )
 
 var _ types.QueryServer = Keeper{}
