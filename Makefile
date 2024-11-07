@@ -264,12 +264,14 @@ update-swagger-docs: proto-swagger-gen
 
 start-localnet-ci: build
 	rm -rf ~/.atomoned-liveness
-	./build/atomoned init liveness --chain-id liveness --home ~/.atomoned-liveness
+	./build/atomoned init liveness --default-denom uatone --chain-id liveness --home ~/.atomoned-liveness
 	./build/atomoned config chain-id liveness --home ~/.atomoned-liveness
 	./build/atomoned config keyring-backend test --home ~/.atomoned-liveness
 	./build/atomoned keys add val --home ~/.atomoned-liveness
-	./build/atomoned genesis add-genesis-account val 10000000000000000000000000stake --home ~/.atomoned-liveness --keyring-backend test
-	./build/atomoned genesis gentx val 1000000000stake --home ~/.atomoned-liveness --chain-id liveness
+	./build/atomoned genesis add-genesis-account val 1000000000000uatone --home ~/.atomoned-liveness --keyring-backend test
+	./build/atomoned keys add user --home ~/.atomoned-liveness
+	./build/atomoned genesis add-genesis-account user 1000000000uatone --home ~/.atomoned-liveness --keyring-backend test
+	./build/atomoned genesis gentx val 1000000000uatone --home ~/.atomoned-liveness --chain-id liveness
 	./build/atomoned genesis collect-gentxs --home ~/.atomoned-liveness
 	sed -i.bak'' 's/minimum-gas-prices = ""/minimum-gas-prices = "0uatone"/' ~/.atomoned-liveness/config/app.toml
 	./build/atomoned start --home ~/.atomoned-liveness --x-crisis-skip-assert-invariants
