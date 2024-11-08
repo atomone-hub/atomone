@@ -60,7 +60,7 @@ func TestMsgServerMintPhoton(t *testing.T) {
 			setup: func(ctx sdk.Context, m testutil.Mocks) {
 				m.StakingKeeper.EXPECT().BondDenom(ctx).Return("uatone")
 				m.BankKeeper.EXPECT().GetSupply(ctx, "uatone").Return(sdk.NewInt64Coin("uatone", atoneSupply))
-				m.BankKeeper.EXPECT().GetSupply(ctx, "uphoton").Return(sdk.NewInt64Coin("uphoton", keeper.UphotonMaxSupply))
+				m.BankKeeper.EXPECT().GetSupply(ctx, types.Denom).Return(sdk.NewInt64Coin(types.Denom, keeper.UphotonMaxSupply))
 			},
 			expectedErr: "no more photon can be minted",
 		},
@@ -74,7 +74,7 @@ func TestMsgServerMintPhoton(t *testing.T) {
 			setup: func(ctx sdk.Context, m testutil.Mocks) {
 				m.StakingKeeper.EXPECT().BondDenom(ctx).Return("uatone")
 				m.BankKeeper.EXPECT().GetSupply(ctx, "uatone").Return(sdk.NewInt64Coin("uatone", atoneSupply))
-				m.BankKeeper.EXPECT().GetSupply(ctx, "uphoton").Return(sdk.NewInt64Coin("uphoton", keeper.UphotonMaxSupply-1_000_000))
+				m.BankKeeper.EXPECT().GetSupply(ctx, types.Denom).Return(sdk.NewInt64Coin(types.Denom, keeper.UphotonMaxSupply-1_000_000))
 			},
 			expectedErr: "not enough photon can be minted",
 		},
@@ -88,7 +88,7 @@ func TestMsgServerMintPhoton(t *testing.T) {
 			setup: func(ctx sdk.Context, m testutil.Mocks) {
 				m.StakingKeeper.EXPECT().BondDenom(ctx).Return("uatone")
 				m.BankKeeper.EXPECT().GetSupply(ctx, "uatone").Return(sdk.NewInt64Coin("uatone", atoneSupply))
-				m.BankKeeper.EXPECT().GetSupply(ctx, "uphoton").Return(sdk.NewInt64Coin("uphoton", 0))
+				m.BankKeeper.EXPECT().GetSupply(ctx, types.Denom).Return(sdk.NewInt64Coin(types.Denom, 0))
 				m.BankKeeper.EXPECT().SendCoinsFromAccountToModule(
 					ctx, toAddress, types.ModuleName,
 					sdk.NewCoins(sdk.NewInt64Coin("uatone", 1)),
@@ -97,15 +97,15 @@ func TestMsgServerMintPhoton(t *testing.T) {
 					sdk.NewCoins(sdk.NewInt64Coin("uatone", 1)),
 				)
 				m.BankKeeper.EXPECT().MintCoins(ctx, types.ModuleName,
-					sdk.NewCoins(sdk.NewInt64Coin("uphoton", 9)),
+					sdk.NewCoins(sdk.NewInt64Coin(types.Denom, 9)),
 				)
 				m.BankKeeper.EXPECT().SendCoinsFromModuleToAccount(
 					ctx, types.ModuleName, toAddress,
-					sdk.NewCoins(sdk.NewInt64Coin("uphoton", 9)),
+					sdk.NewCoins(sdk.NewInt64Coin(types.Denom, 9)),
 				)
 			},
 			expectedResponse: &types.MsgMintPhotonResponse{
-				Minted:         sdk.NewInt64Coin("uphoton", 9),
+				Minted:         sdk.NewInt64Coin(types.Denom, 9),
 				ConversionRate: "9.278561071841560182",
 			},
 		},

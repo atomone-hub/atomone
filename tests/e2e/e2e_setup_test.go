@@ -43,6 +43,7 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
+	photontypes "github.com/atomone-hub/atomone/x/photon/types"
 )
 
 const (
@@ -51,7 +52,7 @@ const (
 	queryCommand                    = "query"
 	keysCommand                     = "keys"
 	atomoneHomePath                 = "/home/nonroot/.atomone"
-	uphotonDenom                    = "uphoton"
+	uphotonDenom                    = photontypes.Denom
 	uatoneDenom                     = "uatone"
 	minGasPrice                     = "0.00001"
 	gas                             = 200000

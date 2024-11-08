@@ -28,7 +28,7 @@ func TestConversionRateQuery(t *testing.T) {
 	uatoneSupply := int64(100_000_000_000_000) // 100,000,000atone
 	m.BankKeeper.EXPECT().GetSupply(ctx, "uatone").Return(sdk.NewInt64Coin("uatone", uatoneSupply))
 	uphotonSupply := int64(100_000_000_000) // 100,000photon
-	m.BankKeeper.EXPECT().GetSupply(ctx, "uphoton").Return(sdk.NewInt64Coin("uatone", uphotonSupply))
+	m.BankKeeper.EXPECT().GetSupply(ctx, types.Denom).Return(sdk.NewInt64Coin("uatone", uphotonSupply))
 
 	resp, err := k.ConversionRate(ctx, &types.QueryConversionRateRequest{})
 
