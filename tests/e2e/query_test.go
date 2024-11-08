@@ -66,6 +66,15 @@ func queryAtomOneAllBalances(endpoint, addr string) (sdk.Coins, error) {
 	return balancesResp.Balances, nil
 }
 
+func (s *IntegrationTestSuite) queryBankSupply(endpoint string) sdk.Coins {
+	body, err := httpGet(fmt.Sprintf("%s/cosmos/bank/v1beta1/supply", endpoint))
+	s.Require().NoError(err)
+	var resp banktypes.QueryTotalSupplyResponse
+	err = cdc.UnmarshalJSON(body, &resp)
+	s.Require().NoError(err)
+	return resp.Supply
+}
+
 func queryStakingParams(endpoint string) (stakingtypes.QueryParamsResponse, error) { //nolint:unused
 	body, err := httpGet(fmt.Sprintf("%s/cosmos/staking/v1beta1/params", endpoint))
 	if err != nil {
@@ -289,11 +298,11 @@ func (s *IntegrationTestSuite) queryPhotonConversionRate(endpoint string) sdk.De
 	return sdk.MustNewDecFromStr(resp.ConversionRate)
 }
 
-func (s *IntegrationTestSuite) queryBankSupply(endpoint string) sdk.Coins {
-	body, err := httpGet(fmt.Sprintf("%s/cosmos/bank/v1beta1/supply", endpoint))
+func (s *IntegrationTestSuite) queryPhotonParams(endpoint string) photontypes.QueryParamsResponse {
+	body, err := httpGet(fmt.Sprintf("%s/atomone/photon/v1/params", endpoint))
 	s.Require().NoError(err)
-	var resp banktypes.QueryTotalSupplyResponse
-	err = cdc.UnmarshalJSON(body, &resp)
+	var res photontypes.QueryParamsResponse
+	err = cdc.UnmarshalJSON(body, &res)
 	s.Require().NoError(err)
-	return resp.Supply
+	return res
 }
