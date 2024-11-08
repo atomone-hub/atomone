@@ -49,7 +49,7 @@ func (k msgServer) MintPhoton(goCtx context.Context, msg *types.MsgMintPhoton) (
 		return nil, types.ErrNoMintablePhotons
 	}
 	// If photonToMint + photonSupply > photonMaxSupply, returns an error
-	if uphotonSupply.Add(uphotonToMint).GT(sdk.NewDec(UphotonMaxSupply)) {
+	if uphotonSupply.Add(uphotonToMint).GT(sdk.NewDec(types.MaxSupply)) {
 		return nil, types.ErrNotEnoughPhotons
 	}
 
