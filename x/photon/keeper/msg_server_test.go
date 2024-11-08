@@ -3,7 +3,6 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/atomone-hub/atomone/x/photon/keeper"
 	"github.com/atomone-hub/atomone/x/photon/testutil"
 	"github.com/atomone-hub/atomone/x/photon/types"
 	"github.com/stretchr/testify/require"
@@ -60,7 +59,7 @@ func TestMsgServerMintPhoton(t *testing.T) {
 			setup: func(ctx sdk.Context, m testutil.Mocks) {
 				m.StakingKeeper.EXPECT().BondDenom(ctx).Return("uatone")
 				m.BankKeeper.EXPECT().GetSupply(ctx, "uatone").Return(sdk.NewInt64Coin("uatone", atoneSupply))
-				m.BankKeeper.EXPECT().GetSupply(ctx, types.Denom).Return(sdk.NewInt64Coin(types.Denom, keeper.UphotonMaxSupply))
+				m.BankKeeper.EXPECT().GetSupply(ctx, types.Denom).Return(sdk.NewInt64Coin(types.Denom, types.MaxSupply))
 			},
 			expectedErr: "no more photon can be minted",
 		},
@@ -74,7 +73,7 @@ func TestMsgServerMintPhoton(t *testing.T) {
 			setup: func(ctx sdk.Context, m testutil.Mocks) {
 				m.StakingKeeper.EXPECT().BondDenom(ctx).Return("uatone")
 				m.BankKeeper.EXPECT().GetSupply(ctx, "uatone").Return(sdk.NewInt64Coin("uatone", atoneSupply))
-				m.BankKeeper.EXPECT().GetSupply(ctx, types.Denom).Return(sdk.NewInt64Coin(types.Denom, keeper.UphotonMaxSupply-1_000_000))
+				m.BankKeeper.EXPECT().GetSupply(ctx, types.Denom).Return(sdk.NewInt64Coin(types.Denom, types.MaxSupply-1_000_000))
 			},
 			expectedErr: "not enough photon can be minted",
 		},
