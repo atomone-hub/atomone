@@ -45,10 +45,11 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 }
 
 // Photon max supply is 1B
-const PhotonMaxSupply int64 = 1_000_000_000 * 1_000_000
+const UphotonMaxSupply int64 = 1_000_000_000 * 1_000_000
 
-// conversionRate returns the conversion rate for converting atone to photon.
-func (k Keeper) conversionRate(_ sdk.Context, atoneSupply, photonSupply sdk.Dec) sdk.Dec {
-	remainMintablePhotons := sdk.NewDec(PhotonMaxSupply).Sub(photonSupply)
-	return remainMintablePhotons.Quo(atoneSupply)
+// conversionRate returns the conversion rate for converting bond denom to
+// photon.
+func (k Keeper) conversionRate(_ sdk.Context, bondDenomSupply, uphotonSupply sdk.Dec) sdk.Dec {
+	remainMintableUphotons := sdk.NewDec(UphotonMaxSupply).Sub(uphotonSupply)
+	return remainMintableUphotons.Quo(bondDenomSupply)
 }

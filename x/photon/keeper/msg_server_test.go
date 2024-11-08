@@ -60,7 +60,7 @@ func TestMsgServerMintPhoton(t *testing.T) {
 			setup: func(ctx sdk.Context, m testutil.Mocks) {
 				m.StakingKeeper.EXPECT().BondDenom(ctx).Return("uatone")
 				m.BankKeeper.EXPECT().GetSupply(ctx, "uatone").Return(sdk.NewInt64Coin("uatone", atoneSupply))
-				m.BankKeeper.EXPECT().GetSupply(ctx, "uphoton").Return(sdk.NewInt64Coin("uphoton", keeper.PhotonMaxSupply))
+				m.BankKeeper.EXPECT().GetSupply(ctx, "uphoton").Return(sdk.NewInt64Coin("uphoton", keeper.UphotonMaxSupply))
 			},
 			expectedErr: "no more photon can be minted",
 		},
@@ -74,7 +74,7 @@ func TestMsgServerMintPhoton(t *testing.T) {
 			setup: func(ctx sdk.Context, m testutil.Mocks) {
 				m.StakingKeeper.EXPECT().BondDenom(ctx).Return("uatone")
 				m.BankKeeper.EXPECT().GetSupply(ctx, "uatone").Return(sdk.NewInt64Coin("uatone", atoneSupply))
-				m.BankKeeper.EXPECT().GetSupply(ctx, "uphoton").Return(sdk.NewInt64Coin("uphoton", keeper.PhotonMaxSupply-1_000_000))
+				m.BankKeeper.EXPECT().GetSupply(ctx, "uphoton").Return(sdk.NewInt64Coin("uphoton", keeper.UphotonMaxSupply-1_000_000))
 			},
 			expectedErr: "not enough photon can be minted",
 		},
