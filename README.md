@@ -6,7 +6,7 @@ AtomOne is built using the [Cosmos SDK](https://github.com/cosmos/cosmos-sdk) as
 The following modifications have been made to the Cosmos Hub software to create AtomOne:
 
 1. Removed x/globalfee module and revert to older and simpler fee decorator
-2. Removed IBC and related modules (e.g. ICA, Packet Forwarding Middleware, etc.)
+2. Disabled IBC transfer and ICA modules, removed Packet Forwarding Middleware module.
 3. Removed Interchain Security module
 4. Reverted to standard Cosmos SDK v0.47.10 without the Liquid Staking Module (LSM)
 5. Changed Bech32 prefixes to `atone` (see `cmd/atomoned/cmd/config.go`)
