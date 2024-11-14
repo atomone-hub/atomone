@@ -174,13 +174,6 @@ should look like:
 minimum-gas-prices = "0.001uatone,0.001uphoton"
 ```
 
-> [!IMPORTANT]
-> In the legacy `TxFeeChecker` implementation
-> ([`checkTxFeeWithValidatorMinGasPrices`]), the validator `minimum-gas-prices`
-> is checked against *all* mentionned denoms. For the `x/photon` module, the
-> implementation must be different, it must be checked on at least one of the
-> denoms (`uatone` or `uphoton`, but not both).
-
 If the validator `minimum-gas-prices` does not match the required denom (`uatone`
 or `uphoton` for `MsgMintPhoton` or any message in `txfee_exceptions`, and only
 `uphoton` for all other messages), an error is returned and the tx is rejected.
