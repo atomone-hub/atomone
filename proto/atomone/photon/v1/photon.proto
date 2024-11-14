@@ -9,4 +9,7 @@ option go_package = "github.com/atomone-hub/atomone/x/photon/types";
 message Params {
   // mint photon or not
   bool mint_disabled = 1;
+	// tx_fee_exceptions holds the msg type urls that are allowed to use a
+	// different tx fee than photon.
+	repeated string tx_fee_exceptions = 2;
 }
