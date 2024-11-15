@@ -4,6 +4,7 @@
 
 - 15 October 2024: Initial version
 - 30 October 2024: Revisions
+- 15 November 2024: Replace `TxFeeChecker` by `AnteDecorator`
 
 ## Status
 
@@ -44,7 +45,7 @@ The ADR proposes to create a new `x/photon` module to host the following
 features:
 - New `ConversionRate` query
 - New `MsgMintPhoton` message
-- New [`TxFeeChecker`] implementation to enforce the PHOTON token as the only
+- New `AnteDecorator` implementation to enforce the PHOTON token as the only
   fee token.
 
 ### `ConversionRate` query
@@ -87,22 +88,18 @@ expected to never be able to fail because of insufficient mintable PHOTONs.
 The total PHOTON supply will be a constant hard-coded within the `x/photon`
 module.
 
-### `TxFeeChecker` implementation
+### `AnteDecorator` implementation
 
-The [`TxFeeChecker`] is a function definition that is part of the ante handler
-`auth/ante.DeductFeeDecorator`. When this ante handler is invoked, it calls the
-`TxFeeChecker` to ensure that the fee specified in the tx is sufficient.
-
-Currently, AtomOne uses the default `TxFeeChecker` (namely
-[`checkTxFeeWithValidatorMinGasPrices`]), so the `x/photon` module must provide an
-alternative `TxFeeChecker` implementation, which should:
+The `AnteDecorator` is an interface that must be implemented to add a new
+decorator to the `AnteHandler`. Just before the `auth/ante.DeductFeeDecorator`,
+we want to add a decorator that should:
 
 - enforce that the fee denom is `uphoton`, and return a specific error message if
   it does not (this to be explicitely separated with the insufficient fee error
   message)
 - make exception for some messages, specifically like `MsgMintPhoton`, because
-  `MsgMintPhoton` is the only way to get PHOTONs, so it should accept ATONEs as fee
-  token. The list of exceptions will in fact be a module parameter.
+  `MsgMintPhoton` is the only way to get PHOTONs, so it should accept ATONEs as
+  fee token. The list of exceptions will in fact be a module parameter.
 
 ### Params
 
@@ -217,5 +214,3 @@ provided by the `x/photon` module).
 * [AtomOne Constitution Article 3 Section 5]: The PHOTON Token
 
 [AtomOne Constitution Article 3 Section 5]: https://github.com/atomone-hub/genesis/blob/b84df30364674c3f68b4bc0a43d7ed977ae22226/CONSTITUTION.md#section-5-the-photon-token
-[`TxFeeChecker`]: https://github.com/cosmos/cosmos-sdk/blob/44c5d17ca6d9d37fdd6adfa3169c986fbce22b8f/x/auth/ante/fee.go#L11-L13
-[`checkTxFeeWithValidatorMinGasPrices`]: https://github.com/cosmos/cosmos-sdk/blob/6e59ad0deea672a21e64fdc83939ca812dcd2b1b/x/auth/ante/validator_tx_fee.go#L17
