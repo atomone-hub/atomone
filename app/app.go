@@ -221,6 +221,7 @@ func NewAtomOneApp(
 			Codec:         appCodec,
 			IBCkeeper:     app.IBCKeeper,
 			StakingKeeper: app.StakingKeeper,
+			PhotonKeeper:  app.PhotonKeeper,
 			// If TxFeeChecker is nil the default ante TxFeeChecker is used
 			TxFeeChecker: nil,
 		},
