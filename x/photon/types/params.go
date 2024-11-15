@@ -1,9 +1,5 @@
 package types
 
-import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
-)
-
 // NewParams creates a new Params instance
 func NewParams(mintDisabled bool, txFeeExceptions []string) Params {
 	return Params{
@@ -16,7 +12,10 @@ const (
 	defaultMintDisabled = false
 )
 
-var defaultTxFeeExceptions = []string{sdk.MsgTypeURL(&MsgMintPhoton{})}
+// NOTE(tb): can't replace the plain text proto path with
+// `sdk.MsgTypeURL(types.MsgMintPhoton{})` because at this step it might not be
+// registered and so it would return only "/".
+var defaultTxFeeExceptions = []string{"/atomone.photon.v1.MsgMintPhoton"}
 
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
