@@ -16,11 +16,58 @@ import (
 
 func TestValidateFeeDecorator(t *testing.T) {
 	tests := []struct {
-		name            string
-		tx              sdk.Tx
-		txFeeExceptions []string
-		expectedError   string
+		name          string
+		tx            sdk.Tx
+		isGenTx       bool
+		simulateMode  bool
+		expectedError string
 	}{
+		{
+			name: "fail: no fee",
+			tx: &tx.Tx{
+				AuthInfo: &tx.AuthInfo{
+					Fee: &tx.Fee{},
+				},
+				Body: &tx.TxBody{
+					Messages: []*codectypes.Any{
+						codectypes.UnsafePackAny(&types.MsgMintPhoton{}),
+					},
+				},
+			},
+			isGenTx:       false,
+			simulateMode:  false,
+			expectedError: "no fee coins provided",
+		},
+		{
+			name: "ok: no fee and simulate",
+			tx: &tx.Tx{
+				AuthInfo: &tx.AuthInfo{
+					Fee: &tx.Fee{},
+				},
+				Body: &tx.TxBody{
+					Messages: []*codectypes.Any{
+						codectypes.UnsafePackAny(&types.MsgMintPhoton{}),
+					},
+				},
+			},
+			isGenTx:      false,
+			simulateMode: true,
+		},
+		{
+			name: "ok: no fee and genTx",
+			tx: &tx.Tx{
+				AuthInfo: &tx.AuthInfo{
+					Fee: &tx.Fee{},
+				},
+				Body: &tx.TxBody{
+					Messages: []*codectypes.Any{
+						codectypes.UnsafePackAny(&types.MsgMintPhoton{}),
+					},
+				},
+			},
+			isGenTx:      true,
+			simulateMode: false,
+		},
 		{
 			name: "fail: multiple fee denoms",
 			tx: &tx.Tx{
@@ -38,6 +85,8 @@ func TestValidateFeeDecorator(t *testing.T) {
 					},
 				},
 			},
+			isGenTx:       false,
+			simulateMode:  false,
 			expectedError: "too many fee coins, only accepts fees in one denom",
 		},
 		{
@@ -54,6 +103,8 @@ func TestValidateFeeDecorator(t *testing.T) {
 					},
 				},
 			},
+			isGenTx:      false,
+			simulateMode: false,
 		},
 		{
 			name: "ok: MsgMintPhoton fee uphoton",
@@ -69,6 +120,8 @@ func TestValidateFeeDecorator(t *testing.T) {
 					},
 				},
 			},
+			isGenTx:      false,
+			simulateMode: false,
 		},
 		{
 			name: "fail: MsgMintPhoton fee xxx",
@@ -84,6 +137,8 @@ func TestValidateFeeDecorator(t *testing.T) {
 					},
 				},
 			},
+			isGenTx:       false,
+			simulateMode:  false,
 			expectedError: "expected 1uatone,1uphoton got 1xxx: invalid fee token",
 		},
 		{
@@ -100,6 +155,8 @@ func TestValidateFeeDecorator(t *testing.T) {
 					},
 				},
 			},
+			isGenTx:      false,
+			simulateMode: false,
 		},
 		{
 			name: "fail: MsgUpdateParams fee uatone",
@@ -115,6 +172,8 @@ func TestValidateFeeDecorator(t *testing.T) {
 					},
 				},
 			},
+			isGenTx:       false,
+			simulateMode:  false,
 			expectedError: "expected 1uphoton got 1uatone: invalid fee token",
 		},
 		{
@@ -131,12 +190,19 @@ func TestValidateFeeDecorator(t *testing.T) {
 					},
 				},
 			},
+			isGenTx:       false,
+			simulateMode:  false,
 			expectedError: "expected 1uphoton got 1xxx: invalid fee token",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			k, _, ctx := testutil.SetupPhotonKeeper(t)
+			if !tt.isGenTx {
+				// default block height is 0, if the tx is not a genTx, then it should
+				// be higher than 0.
+				ctx = ctx.WithBlockHeight(1)
+			}
 			k.SetParams(ctx, types.DefaultParams())
 			var (
 				nextInvoked bool
@@ -147,7 +213,7 @@ func TestValidateFeeDecorator(t *testing.T) {
 				vfd = NewValidateFeeDecorator(k)
 			)
 
-			_, err := vfd.AnteHandle(ctx, tt.tx, false, next)
+			_, err := vfd.AnteHandle(ctx, tt.tx, tt.simulateMode, next)
 
 			if tt.expectedError != "" {
 				require.EqualError(t, err, tt.expectedError)
