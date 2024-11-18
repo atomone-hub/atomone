@@ -24,12 +24,12 @@ func NewValidateFeeDecorator(k *keeper.Keeper) ValidateFeeDecorator {
 //   - fee denom should be uphoton unless all the tx messages are present in
 //     txFeeExceptions, in that case both uphoton and uatone are accepted.
 func (vfd ValidateFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (sdk.Context, error) {
-	// If this is genesis height, don't validate the fee.
+	// If this is genesis height or simulate, don't validate the fee.
 	// This is required because AtomOne's gentxs have no fees.
-	// NOTE(tb): This could also be intercepted by validating the fees only if
-	// we are in checkTx mode, but that allows malicious validators to deliver
-	// txs without photon as the fee token.
-	if ctx.BlockHeight() == 0 {
+	// NOTE(tb): This could also be intercepted by checking if we are in checkTx
+	// mode, but that allows malicious validators to deliver txs without photon
+	// as the fee token.
+	if ctx.BlockHeight() == 0 || simulate {
 		return next(ctx, tx, simulate)
 	}
 
@@ -38,6 +38,10 @@ func (vfd ValidateFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate 
 		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "Tx must be a FeeTx")
 	}
 	feeCoins := feeTx.GetFee()
+	if len(feeCoins) == 0 {
+		// FIXME(tb): this discards tx w/o fees, even if validator minimum-gas-prices is 0
+		return ctx, types.ErrNoFeeCoin
+	}
 	if len(feeCoins) > 1 {
 		return ctx, types.ErrTooManyFeeCoins
 	}
@@ -49,7 +53,7 @@ func (vfd ValidateFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate 
 		acceptedFeeCoins = acceptedFeeCoins.Add(sdk.NewInt64Coin("uatone", 1))
 	}
 	// feeCoins must be at least higher than one of the acceptedFeeCoins.
-	// NOTE(tb): this check rejects tx with 0 fees, maybe this should not be there (does this work when simulate=true?)
+	// FIXME(tb): this check rejects tx with 0 fees, maybe this should not be there
 	if !feeCoins.IsAnyGTE(acceptedFeeCoins) {
 		return ctx, sdkerrors.Wrapf(types.ErrInvalidFeeToken, "expected %s got %s", acceptedFeeCoins, feeCoins)
 	}
