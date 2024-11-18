@@ -13,8 +13,8 @@ const (
 )
 
 // NOTE(tb): can't replace the plain text proto path with
-// `sdk.MsgTypeURL(types.MsgMintPhoton{})` because at this step it might not be
-// registered and so it would return only "/".
+// `sdk.MsgTypeURL(types.MsgMintPhoton{})` because at this step the msg is not
+// rehistered yet so the call will return an empty path.
 var defaultTxFeeExceptions = []string{"/atomone.photon.v1.MsgMintPhoton"}
 
 // DefaultParams returns a default set of parameters
