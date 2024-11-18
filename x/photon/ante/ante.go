@@ -24,6 +24,15 @@ func NewValidateFeeDecorator(k *keeper.Keeper) ValidateFeeDecorator {
 //   - fee denom should be uphoton unless all the tx messages are present in
 //     txFeeExceptions, in that case both uphoton and uatone are accepted.
 func (vfd ValidateFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (sdk.Context, error) {
+	// If this is genesis height, don't validate the fee.
+	// This is required because AtomOne's gentxs have no fees.
+	// NOTE(tb): This could also be intercepted by validating the fees only if
+	// we are in checkTx mode, but that allows malicious validators to deliver
+	// txs without photon as the fee token.
+	if ctx.BlockHeight() == 0 {
+		return next(ctx, tx, simulate)
+	}
+
 	feeTx, ok := tx.(sdk.FeeTx)
 	if !ok {
 		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "Tx must be a FeeTx")
