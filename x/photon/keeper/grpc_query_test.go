@@ -5,6 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
+	appparams "github.com/atomone-hub/atomone/app/params"
 	"github.com/atomone-hub/atomone/x/photon/testutil"
 	"github.com/atomone-hub/atomone/x/photon/types"
 	"github.com/stretchr/testify/require"
@@ -48,11 +49,11 @@ func TestConversionRateQuery(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			k, m, ctx := testutil.SetupPhotonKeeper(t)
-			m.StakingKeeper.EXPECT().BondDenom(ctx).Return("uatone")
-			m.BankKeeper.EXPECT().GetSupply(ctx, "uatone").
-				Return(sdk.NewInt64Coin("uatone", tt.uatoneSupply))
+			m.StakingKeeper.EXPECT().BondDenom(ctx).Return(appparams.BondDenom)
+			m.BankKeeper.EXPECT().GetSupply(ctx, appparams.BondDenom).
+				Return(sdk.NewInt64Coin(appparams.BondDenom, tt.uatoneSupply))
 			m.BankKeeper.EXPECT().GetSupply(ctx, types.Denom).
-				Return(sdk.NewInt64Coin("uatone", tt.uphotonSupply))
+				Return(sdk.NewInt64Coin(appparams.BondDenom, tt.uphotonSupply))
 
 			resp, err := k.ConversionRate(ctx, &types.QueryConversionRateRequest{})
 

@@ -7,6 +7,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
+	appparams "github.com/atomone-hub/atomone/app/params"
 )
 
 func TestMsgMintPhoton_ValidateBasic(t *testing.T) {
@@ -27,7 +29,7 @@ func TestMsgMintPhoton_ValidateBasic(t *testing.T) {
 			msg: MsgMintPhoton{
 				ToAddress: sdk.AccAddress("test1").String(),
 				Amount: sdk.Coin{
-					Denom:  "uatone",
+					Denom:  appparams.BondDenom,
 					Amount: sdk.NewInt(-1),
 				},
 			},
@@ -38,7 +40,7 @@ func TestMsgMintPhoton_ValidateBasic(t *testing.T) {
 			msg: MsgMintPhoton{
 				ToAddress: sdk.AccAddress("test1").String(),
 				Amount: sdk.Coin{
-					Denom:  "uatone",
+					Denom:  appparams.BondDenom,
 					Amount: sdk.NewInt(0),
 				},
 			},
@@ -48,7 +50,7 @@ func TestMsgMintPhoton_ValidateBasic(t *testing.T) {
 			name: "ok",
 			msg: MsgMintPhoton{
 				ToAddress: sdk.AccAddress("test1").String(),
-				Amount:    sdk.NewInt64Coin("uatone", 1),
+				Amount:    sdk.NewInt64Coin(appparams.BondDenom, 1),
 			},
 		},
 	}

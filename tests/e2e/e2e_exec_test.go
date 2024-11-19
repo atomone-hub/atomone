@@ -183,7 +183,7 @@ func (s *IntegrationTestSuite) execUnjail(
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	s.T().Logf("Executing atomoned slashing unjail %s with options: %v", c.id, opt)
+	s.T().Logf("Executing atomoned slashing unjail %s with options: %v", c.id, opts)
 	atomoneCommand := []string{
 		atomonedBinary,
 		txCommand,
@@ -256,13 +256,11 @@ func (s *IntegrationTestSuite) execBankSend(
 	valIdx int,
 	from,
 	to,
-	amt,
-	fees string,
+	amt string,
 	expectErr bool,
 	opt ...flagOption,
 ) {
 	// TODO remove the hardcode opt after refactor, all methods should accept custom flags
-	opt = append(opt, withKeyValue(flagFees, fees))
 	opt = append(opt, withKeyValue(flagFrom, from))
 	opts := applyOptions(c.id, opt)
 
@@ -294,12 +292,10 @@ func (s *IntegrationTestSuite) execBankMultiSend(
 	from string,
 	to []string,
 	amt string,
-	fees string,
 	expectErr bool,
 	opt ...flagOption,
 ) {
 	// TODO remove the hardcode opt after refactor, all methods should accept custom flags
-	opt = append(opt, withKeyValue(flagFees, fees))
 	opt = append(opt, withKeyValue(flagFrom, from))
 	opts := applyOptions(c.id, opt)
 
@@ -345,7 +341,7 @@ func (s *IntegrationTestSuite) execBankSendBatch( //nolint:unused
 	for i := range txs {
 		s.T().Logf(txs[i].log)
 
-		s.execBankSend(c, valIdx, txs[i].from, txs[i].to, txs[i].amt, txs[i].fees, txs[i].expectErr)
+		s.execBankSend(c, valIdx, txs[i].from, txs[i].to, txs[i].amt, txs[i].expectErr)
 		if !txs[i].expectErr {
 			if !txs[i].expectErr {
 				sucessBankSendCount++
@@ -356,7 +352,7 @@ func (s *IntegrationTestSuite) execBankSendBatch( //nolint:unused
 	return sucessBankSendCount
 }
 
-func (s *IntegrationTestSuite) execWithdrawAllRewards(c *chain, valIdx int, payee, fees string, expectErr bool) { //nolint:unused
+func (s *IntegrationTestSuite) execWithdrawAllRewards(c *chain, valIdx int, payee string, expectErr bool) { //nolint:unused
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
@@ -366,7 +362,7 @@ func (s *IntegrationTestSuite) execWithdrawAllRewards(c *chain, valIdx int, paye
 		distributiontypes.ModuleName,
 		"withdraw-all-rewards",
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, payee),
-		fmt.Sprintf("--%s=%s", flags.FlagGasPrices, fees),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, standardFees.String()),
 		fmt.Sprintf("--%s=%s", flags.FlagChainID, c.id),
 		"--keyring-backend=test",
 		"--output=json",
@@ -376,7 +372,7 @@ func (s *IntegrationTestSuite) execWithdrawAllRewards(c *chain, valIdx int, paye
 	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.expectErrExecValidation(c, valIdx, expectErr))
 }
 
-func (s *IntegrationTestSuite) execDistributionFundCommunityPool(c *chain, valIdx int, from, amt, fees string) {
+func (s *IntegrationTestSuite) execDistributionFundCommunityPool(c *chain, valIdx int, from, amt string) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
@@ -390,7 +386,7 @@ func (s *IntegrationTestSuite) execDistributionFundCommunityPool(c *chain, valId
 		amt,
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, from),
 		fmt.Sprintf("--%s=%s", flags.FlagChainID, c.id),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, fees),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, standardFees.String()),
 		"--keyring-backend=test",
 		"--output=json",
 		"-y",
@@ -400,7 +396,7 @@ func (s *IntegrationTestSuite) execDistributionFundCommunityPool(c *chain, valId
 	s.T().Logf("Successfully funded community pool")
 }
 
-func (s *IntegrationTestSuite) runGovExec(c *chain, valIdx int, submitterAddr, govCommand string, proposalFlags []string, fees string) {
+func (s *IntegrationTestSuite) runGovExec(c *chain, valIdx int, submitterAddr, govCommand string, proposalFlags []string) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
@@ -414,7 +410,7 @@ func (s *IntegrationTestSuite) runGovExec(c *chain, valIdx int, submitterAddr, g
 	generalFlags := []string{
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, submitterAddr),
 		fmt.Sprintf("--%s=%s", flags.FlagGas, "300000"), // default 200000 isn't enough
-		fmt.Sprintf("--%s=%s", flags.FlagGasPrices, fees),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, standardFees.String()),
 		fmt.Sprintf("--%s=%s", flags.FlagChainID, c.id),
 		"--keyring-backend=test",
 		"--output=json",
@@ -472,7 +468,7 @@ func (s *IntegrationTestSuite) runGovExec(c *chain, valIdx int, submitterAddr, g
 // 	})
 // }
 
-func (s *IntegrationTestSuite) execDelegate(c *chain, valIdx int, amount, valOperAddress, delegatorAddr, home, delegateFees string) { //nolint:unparam
+func (s *IntegrationTestSuite) execDelegate(c *chain, valIdx int, amount, valOperAddress, delegatorAddr, home string) { //nolint:unparam
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
@@ -488,7 +484,7 @@ func (s *IntegrationTestSuite) execDelegate(c *chain, valIdx int, amount, valOpe
 		amount,
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, delegatorAddr),
 		fmt.Sprintf("--%s=%s", flags.FlagChainID, c.id),
-		fmt.Sprintf("--%s=%s", flags.FlagGasPrices, delegateFees),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, standardFees.String()),
 		"--keyring-backend=test",
 		fmt.Sprintf("--%s=%s", flags.FlagHome, home),
 		"--output=json",
@@ -499,7 +495,7 @@ func (s *IntegrationTestSuite) execDelegate(c *chain, valIdx int, amount, valOpe
 	s.T().Logf("%s successfully delegated %s to %s", delegatorAddr, amount, valOperAddress)
 }
 
-func (s *IntegrationTestSuite) execUnbondDelegation(c *chain, valIdx int, amount, valOperAddress, delegatorAddr, home, delegateFees string) {
+func (s *IntegrationTestSuite) execUnbondDelegation(c *chain, valIdx int, amount, valOperAddress, delegatorAddr, home string) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
@@ -514,7 +510,7 @@ func (s *IntegrationTestSuite) execUnbondDelegation(c *chain, valIdx int, amount
 		amount,
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, delegatorAddr),
 		fmt.Sprintf("--%s=%s", flags.FlagChainID, c.id),
-		fmt.Sprintf("--%s=%s", flags.FlagGasPrices, delegateFees),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, standardFees.String()),
 		"--keyring-backend=test",
 		fmt.Sprintf("--%s=%s", flags.FlagHome, home),
 		"--output=json",
@@ -525,7 +521,7 @@ func (s *IntegrationTestSuite) execUnbondDelegation(c *chain, valIdx int, amount
 	s.T().Logf("%s successfully undelegated %s to %s", delegatorAddr, amount, valOperAddress)
 }
 
-func (s *IntegrationTestSuite) execCancelUnbondingDelegation(c *chain, valIdx int, amount, valOperAddress, creationHeight, delegatorAddr, home, delegateFees string) {
+func (s *IntegrationTestSuite) execCancelUnbondingDelegation(c *chain, valIdx int, amount, valOperAddress, creationHeight, delegatorAddr, home string) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
@@ -541,7 +537,7 @@ func (s *IntegrationTestSuite) execCancelUnbondingDelegation(c *chain, valIdx in
 		creationHeight,
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, delegatorAddr),
 		fmt.Sprintf("--%s=%s", flags.FlagChainID, c.id),
-		fmt.Sprintf("--%s=%s", flags.FlagGasPrices, delegateFees),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, standardFees.String()),
 		"--keyring-backend=test",
 		fmt.Sprintf("--%s=%s", flags.FlagHome, home),
 		"--output=json",
@@ -553,7 +549,7 @@ func (s *IntegrationTestSuite) execCancelUnbondingDelegation(c *chain, valIdx in
 }
 
 func (s *IntegrationTestSuite) execRedelegate(c *chain, valIdx int, amount, originalValOperAddress,
-	newValOperAddress, delegatorAddr, home, delegateFees string,
+	newValOperAddress, delegatorAddr, home string,
 ) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
@@ -571,7 +567,7 @@ func (s *IntegrationTestSuite) execRedelegate(c *chain, valIdx int, amount, orig
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, delegatorAddr),
 		fmt.Sprintf("--%s=%s", flags.FlagChainID, c.id),
 		fmt.Sprintf("--%s=%s", flags.FlagGas, "300000"), // default 200000 isn't enough
-		fmt.Sprintf("--%s=%s", flags.FlagGasPrices, delegateFees),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, standardFees.String()),
 		"--keyring-backend=test",
 		fmt.Sprintf("--%s=%s", flags.FlagHome, home),
 		"--output=json",
@@ -616,7 +612,6 @@ func (s *IntegrationTestSuite) getLatestBlockTime(c *chain, valIdx int) time.Tim
 func (s *IntegrationTestSuite) execSetWithdrawAddress(
 	c *chain,
 	valIdx int,
-	fees,
 	delegatorAddress,
 	newWithdrawalAddress,
 	homePath string,
@@ -632,7 +627,7 @@ func (s *IntegrationTestSuite) execSetWithdrawAddress(
 		"set-withdraw-addr",
 		newWithdrawalAddress,
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, delegatorAddress),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, fees),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, standardFees.String()),
 		fmt.Sprintf("--%s=%s", flags.FlagChainID, c.id),
 		fmt.Sprintf("--%s=%s", flags.FlagHome, homePath),
 		"--keyring-backend=test",
@@ -662,7 +657,7 @@ func (s *IntegrationTestSuite) execWithdrawReward(
 		"withdraw-rewards",
 		validatorAddress,
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, delegatorAddress),
-		fmt.Sprintf("--%s=%s", flags.FlagGasPrices, "300uatone"),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, standardFees.String()),
 		fmt.Sprintf("--%s=%s", flags.FlagGas, "auto"),
 		fmt.Sprintf("--%s=%s", flags.FlagGasAdjustment, "1.5"),
 		fmt.Sprintf("--%s=%s", flags.FlagChainID, c.id),
@@ -807,7 +802,7 @@ func (s *IntegrationTestSuite) defaultExecValidation(chain *chain, valIdx int) f
 	}
 }
 
-func (s *IntegrationTestSuite) executeValidatorBond(c *chain, valIdx int, valOperAddress, delegatorAddr, home, delegateFees string) { //nolint:unused
+func (s *IntegrationTestSuite) executeValidatorBond(c *chain, valIdx int, valOperAddress, delegatorAddr, home string) { //nolint:unused
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
@@ -821,7 +816,7 @@ func (s *IntegrationTestSuite) executeValidatorBond(c *chain, valIdx int, valOpe
 		valOperAddress,
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, delegatorAddr),
 		fmt.Sprintf("--%s=%s", flags.FlagChainID, c.id),
-		fmt.Sprintf("--%s=%s", flags.FlagGasPrices, delegateFees),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, standardFees.String()),
 		"--keyring-backend=test",
 		fmt.Sprintf("--%s=%s", flags.FlagHome, home),
 		"--output=json",
@@ -836,12 +831,9 @@ func (s *IntegrationTestSuite) execPhotonMint(
 	c *chain,
 	valIdx int,
 	from,
-	amt,
-	fees string,
-	expectErr bool,
+	amt string,
 	opt ...flagOption,
 ) {
-	opt = append(opt, withKeyValue(flagFees, fees))
 	opt = append(opt, withKeyValue(flagFrom, from))
 	opts := applyOptions(c.id, opt)
 
@@ -863,7 +855,8 @@ func (s *IntegrationTestSuite) execPhotonMint(
 	}
 
 	// TODO retrieve tx response
-	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.expectErrExecValidation(c, valIdx, expectErr))
+	// TODO add test that fails because of non photon fees (other message)
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, nil)
 }
 
 // signTxFileOnline signs a transaction file using the atomoned tx sign command

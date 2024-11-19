@@ -313,7 +313,7 @@ func (s *IntegrationTestSuite) verifyChainPassesUpgradeHeight(c *chain, valIdx i
 }
 
 func (s *IntegrationTestSuite) submitGovCommand(chainAAPIEndpoint, sender string, proposalID int, govCommand string, proposalFlags []string, expectedSuccessStatus govtypesv1beta1.ProposalStatus) {
-	s.runGovExec(s.chainA, 0, sender, govCommand, proposalFlags, standardFees.String())
+	s.runGovExec(s.chainA, 0, sender, govCommand, proposalFlags)
 
 	s.Require().Eventually(
 		func() bool {

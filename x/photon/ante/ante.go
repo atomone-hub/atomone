@@ -4,6 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
+	appparams "github.com/atomone-hub/atomone/app/params"
 	"github.com/atomone-hub/atomone/x/photon/keeper"
 	"github.com/atomone-hub/atomone/x/photon/types"
 )
@@ -49,8 +50,7 @@ func (vfd ValidateFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate 
 	acceptedFeeCoins := sdk.NewCoins(sdk.NewInt64Coin(types.Denom, 1))
 	if isTxFeeExcepted(tx, vfd.k.GetParams(ctx).TxFeeExceptions) {
 		// tx is fee excepted, add uatone as an other accepted fee denom
-		// TODO replace "uatone" with constant or parameter
-		acceptedFeeCoins = acceptedFeeCoins.Add(sdk.NewInt64Coin("uatone", 1))
+		acceptedFeeCoins = acceptedFeeCoins.Add(sdk.NewInt64Coin(appparams.BondDenom, 1))
 	}
 	// feeCoins must be at least higher than one of the acceptedFeeCoins.
 	// FIXME(tb): this check rejects tx with 0 fees, maybe this should not be there

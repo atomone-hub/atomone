@@ -5,6 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 
+	appparams "github.com/atomone-hub/atomone/app/params"
 	addressutil "github.com/atomone-hub/atomone/pkg/address"
 )
 
@@ -41,7 +42,7 @@ Example:
 		},
 	}
 
-	cmd.Flags().StringP(flagBech32Prefix, "p", "atone", "Bech32 Prefix to encode to")
+	cmd.Flags().StringP(flagBech32Prefix, "p", appparams.Bech32PrefixAccAddr, "Bech32 Prefix to encode to")
 
 	return cmd
 }
