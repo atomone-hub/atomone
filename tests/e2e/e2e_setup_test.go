@@ -1,7 +1,6 @@
 package e2e
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -42,6 +41,7 @@ import (
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
+	appparams "github.com/atomone-hub/atomone/app/params"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
 )
@@ -52,8 +52,8 @@ const (
 	queryCommand                    = "query"
 	keysCommand                     = "keys"
 	atomoneHomePath                 = "/home/nonroot/.atomone"
+	uatoneDenom                     = appparams.BondDenom
 	uphotonDenom                    = photontypes.Denom
-	uatoneDenom                     = "uatone"
 	minGasPrice                     = "0.00001"
 	gas                             = 200000
 	govProposalBlockBuffer    int64 = 35
@@ -75,14 +75,18 @@ const (
 )
 
 var (
-	runInCI              = os.Getenv("GITHUB_ACTIONS") == "true"
-	atomoneConfigPath    = filepath.Join(atomoneHomePath, "config")
-	initBalanceStr       = sdk.NewInt64Coin(uatoneDenom, 10_000_000_000_000).String() // 10,000,000atone
-	stakingAmountCoin    = sdk.NewInt64Coin(uatoneDenom, 6_000_000_000_000)           // 6,000,000atone
-	tokenAmount          = sdk.NewInt64Coin(uatoneDenom, 100_000_000)                 // 100atone
-	standardFees         = sdk.NewInt64Coin(uatoneDenom, 330_000)                     // 0.33atone
-	depositAmount        = sdk.NewInt64Coin(uatoneDenom, 1_000_000_000)               // 1,000atone
-	initialDepositAmount = sdk.NewInt64Coin(uatoneDenom, 100_000_000)                 // 100atone
+	runInCI           = os.Getenv("GITHUB_ACTIONS") == "true"
+	atomoneConfigPath = filepath.Join(atomoneHomePath, "config")
+	initBalance       = sdk.NewCoins(
+		sdk.NewInt64Coin(uatoneDenom, 10_000_000_000_000), // 10,000,000atone
+		sdk.NewInt64Coin(uphotonDenom, 10_000_000_000),    // 10,000photon
+	)
+	initBalanceStr       = initBalance.String()
+	stakingAmountCoin    = sdk.NewInt64Coin(uatoneDenom, 6_000_000_000_000) // 6,000,000atone
+	tokenAmount          = sdk.NewInt64Coin(uatoneDenom, 100_000_000)       // 100atone
+	standardFees         = sdk.NewInt64Coin(uphotonDenom, 330_000)          // 0.33photon
+	depositAmount        = sdk.NewInt64Coin(uatoneDenom, 1_000_000_000)     // 1,000atone
+	initialDepositAmount = sdk.NewInt64Coin(uatoneDenom, 100_000_000)       // 100atone
 	proposalCounter      = 0
 )
 
@@ -113,6 +117,14 @@ func TestIntegrationTestSuite(t *testing.T) {
 }
 
 func (s *IntegrationTestSuite) SetupSuite() {
+	defer func() {
+		if s.T().Failed() {
+			defer s.TearDownSuite()
+			s.saveChainLogs(s.chainA)
+			s.saveChainLogs(s.chainB)
+		}
+	}()
+
 	s.T().Log("setting up e2e integration test suite...")
 
 	var err error
@@ -348,7 +360,7 @@ func (s *IntegrationTestSuite) addGenesisVestingAndJailedAccounts(
 	}
 	jailedValidatorBalances := banktypes.Balance{
 		Address: jailedValAcc.String(),
-		Coins:   sdk.NewCoins(tokenAmount),
+		Coins:   initBalance,
 	}
 	stakingModuleBalances := banktypes.Balance{
 		Address: authtypes.NewModuleAddress(stakingtypes.NotBondedPoolName).String(),
@@ -516,7 +528,8 @@ func (s *IntegrationTestSuite) initValidatorConfigs(c *chain) {
 		appConfig := srvconfig.DefaultConfig()
 		appConfig.API.Enable = true
 		appConfig.API.Address = "tcp://0.0.0.0:1317"
-		appConfig.MinGasPrices = fmt.Sprintf("%s%s", minGasPrice, uatoneDenom)
+		appConfig.MinGasPrices = fmt.Sprintf("%s%s,%s%s", minGasPrice, uatoneDenom,
+			minGasPrice, uphotonDenom)
 		appConfig.GRPC.Address = "0.0.0.0:9090"
 
 		srvconfig.SetConfigTemplate(srvconfig.DefaultConfigTemplate)
@@ -589,19 +602,25 @@ func (s *IntegrationTestSuite) runValidators(c *chain, portOffset int) {
 		nodeReadyTimeout,
 		time.Second,
 	) {
-		// Print first container logs in case no blocks are produced
-		var b bytes.Buffer
-		err := s.dkrPool.Client.Logs(docker.LogsOptions{
-			Container:    s.valResources[c.id][0].Container.ID,
-			OutputStream: &b,
-			ErrorStream:  &b,
-			Stdout:       true,
-			Stderr:       true,
-		})
-		if err == nil {
-			s.T().Logf("Node logs: %s", b.String())
-		}
 		s.T().Fatalf("AtomOne node failed to produce blocks. Is docker image %q up-to-date?", dockerImage)
+	}
+}
+
+func (s *IntegrationTestSuite) saveChainLogs(c *chain) {
+	f, err := os.CreateTemp("", c.id)
+	if err != nil {
+		s.T().Fatal(err)
+	}
+	defer f.Close()
+	err = s.dkrPool.Client.Logs(docker.LogsOptions{
+		Container:    s.valResources[c.id][0].Container.ID,
+		OutputStream: f,
+		ErrorStream:  f,
+		Stdout:       true,
+		Stderr:       true,
+	})
+	if err == nil {
+		s.T().Logf("See chain %s log file %s", c.id, f.Name())
 	}
 }
 

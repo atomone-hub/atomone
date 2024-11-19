@@ -3,11 +3,13 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/atomone-hub/atomone/x/photon/testutil"
-	"github.com/atomone-hub/atomone/x/photon/types"
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	appparams "github.com/atomone-hub/atomone/app/params"
+	"github.com/atomone-hub/atomone/x/photon/testutil"
+	"github.com/atomone-hub/atomone/x/photon/types"
 )
 
 func TestMsgServerMintPhoton(t *testing.T) {
@@ -34,7 +36,7 @@ func TestMsgServerMintPhoton(t *testing.T) {
 			params: types.Params{MintDisabled: false},
 			msg:    &types.MsgMintPhoton{},
 			setup: func(ctx sdk.Context, m testutil.Mocks) {
-				m.StakingKeeper.EXPECT().BondDenom(ctx).Return("uatone")
+				m.StakingKeeper.EXPECT().BondDenom(ctx).Return(appparams.BondDenom)
 			},
 			expectedErr: "invalid burned amount denom: expected bond denom",
 		},
@@ -45,7 +47,7 @@ func TestMsgServerMintPhoton(t *testing.T) {
 				Amount: sdk.NewInt64Coin("xxx", 42),
 			},
 			setup: func(ctx sdk.Context, m testutil.Mocks) {
-				m.StakingKeeper.EXPECT().BondDenom(ctx).Return("uatone")
+				m.StakingKeeper.EXPECT().BondDenom(ctx).Return(appparams.BondDenom)
 			},
 			expectedErr: "invalid burned amount denom: expected bond denom",
 		},
@@ -54,11 +56,12 @@ func TestMsgServerMintPhoton(t *testing.T) {
 			params: types.Params{MintDisabled: false},
 			msg: &types.MsgMintPhoton{
 				ToAddress: toAddress.String(),
-				Amount:    sdk.NewInt64Coin("uatone", 1),
+				Amount:    sdk.NewInt64Coin(appparams.BondDenom, 1),
 			},
 			setup: func(ctx sdk.Context, m testutil.Mocks) {
-				m.StakingKeeper.EXPECT().BondDenom(ctx).Return("uatone")
-				m.BankKeeper.EXPECT().GetSupply(ctx, "uatone").Return(sdk.NewInt64Coin("uatone", atoneSupply))
+				m.StakingKeeper.EXPECT().BondDenom(ctx).Return(appparams.BondDenom)
+				m.BankKeeper.EXPECT().GetSupply(ctx, appparams.BondDenom).
+					Return(sdk.NewInt64Coin(appparams.BondDenom, atoneSupply))
 				m.BankKeeper.EXPECT().GetSupply(ctx, types.Denom).Return(sdk.NewInt64Coin(types.Denom, types.MaxSupply))
 			},
 			expectedErr: "no more photon can be minted",
@@ -68,11 +71,12 @@ func TestMsgServerMintPhoton(t *testing.T) {
 			params: types.Params{MintDisabled: false},
 			msg: &types.MsgMintPhoton{
 				ToAddress: toAddress.String(),
-				Amount:    sdk.NewInt64Coin("uatone", 1_000_000_000_000_000),
+				Amount:    sdk.NewInt64Coin(appparams.BondDenom, 1_000_000_000_000_000),
 			},
 			setup: func(ctx sdk.Context, m testutil.Mocks) {
-				m.StakingKeeper.EXPECT().BondDenom(ctx).Return("uatone")
-				m.BankKeeper.EXPECT().GetSupply(ctx, "uatone").Return(sdk.NewInt64Coin("uatone", atoneSupply))
+				m.StakingKeeper.EXPECT().BondDenom(ctx).Return(appparams.BondDenom)
+				m.BankKeeper.EXPECT().GetSupply(ctx, appparams.BondDenom).
+					Return(sdk.NewInt64Coin(appparams.BondDenom, atoneSupply))
 				m.BankKeeper.EXPECT().GetSupply(ctx, types.Denom).Return(sdk.NewInt64Coin(types.Denom, types.MaxSupply-1_000_000))
 			},
 			expectedErr: "not enough photon can be minted",
@@ -82,18 +86,19 @@ func TestMsgServerMintPhoton(t *testing.T) {
 			params: types.Params{MintDisabled: false},
 			msg: &types.MsgMintPhoton{
 				ToAddress: toAddress.String(),
-				Amount:    sdk.NewInt64Coin("uatone", 1),
+				Amount:    sdk.NewInt64Coin(appparams.BondDenom, 1),
 			},
 			setup: func(ctx sdk.Context, m testutil.Mocks) {
-				m.StakingKeeper.EXPECT().BondDenom(ctx).Return("uatone")
-				m.BankKeeper.EXPECT().GetSupply(ctx, "uatone").Return(sdk.NewInt64Coin("uatone", atoneSupply))
+				m.StakingKeeper.EXPECT().BondDenom(ctx).Return(appparams.BondDenom)
+				m.BankKeeper.EXPECT().GetSupply(ctx, appparams.BondDenom).
+					Return(sdk.NewInt64Coin(appparams.BondDenom, atoneSupply))
 				m.BankKeeper.EXPECT().GetSupply(ctx, types.Denom).Return(sdk.NewInt64Coin(types.Denom, 0))
 				m.BankKeeper.EXPECT().SendCoinsFromAccountToModule(
 					ctx, toAddress, types.ModuleName,
-					sdk.NewCoins(sdk.NewInt64Coin("uatone", 1)),
+					sdk.NewCoins(sdk.NewInt64Coin(appparams.BondDenom, 1)),
 				)
 				m.BankKeeper.EXPECT().BurnCoins(ctx, types.ModuleName,
-					sdk.NewCoins(sdk.NewInt64Coin("uatone", 1)),
+					sdk.NewCoins(sdk.NewInt64Coin(appparams.BondDenom, 1)),
 				)
 				m.BankKeeper.EXPECT().MintCoins(ctx, types.ModuleName,
 					sdk.NewCoins(sdk.NewInt64Coin(types.Denom, 9)),

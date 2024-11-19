@@ -273,7 +273,7 @@ start-localnet-ci: build
 	./build/atomoned genesis add-genesis-account user 1000000000uatone --home ~/.atomoned-liveness --keyring-backend test
 	./build/atomoned genesis gentx val 1000000000uatone --home ~/.atomoned-liveness --chain-id liveness
 	./build/atomoned genesis collect-gentxs --home ~/.atomoned-liveness
-	sed -i.bak'' 's/minimum-gas-prices = ""/minimum-gas-prices = "0.001uatone"/' ~/.atomoned-liveness/config/app.toml
+	sed -i.bak'' 's/minimum-gas-prices = ""/minimum-gas-prices = "0.001uatone,0.001uphoton"/' ~/.atomoned-liveness/config/app.toml
 	./build/atomoned start --home ~/.atomoned-liveness --x-crisis-skip-assert-invariants
 
 .PHONY: start-localnet-ci

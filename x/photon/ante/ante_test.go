@@ -5,6 +5,7 @@ import (
 
 	"gotest.tools/v3/assert"
 
+	appparams "github.com/atomone-hub/atomone/app/params"
 	"github.com/atomone-hub/atomone/x/photon/testutil"
 	"github.com/atomone-hub/atomone/x/photon/types"
 	"github.com/stretchr/testify/require"
@@ -74,8 +75,8 @@ func TestValidateFeeDecorator(t *testing.T) {
 				AuthInfo: &tx.AuthInfo{
 					Fee: &tx.Fee{
 						Amount: sdk.NewCoins(
-							sdk.NewInt64Coin("uatone", 1),
-							sdk.NewInt64Coin("uphoton", 1),
+							sdk.NewInt64Coin(appparams.BondDenom, 1),
+							sdk.NewInt64Coin(types.Denom, 1),
 						),
 					},
 				},
@@ -94,7 +95,7 @@ func TestValidateFeeDecorator(t *testing.T) {
 			tx: &tx.Tx{
 				AuthInfo: &tx.AuthInfo{
 					Fee: &tx.Fee{
-						Amount: sdk.NewCoins(sdk.NewInt64Coin("uatone", 1)),
+						Amount: sdk.NewCoins(sdk.NewInt64Coin(appparams.BondDenom, 1)),
 					},
 				},
 				Body: &tx.TxBody{
@@ -111,7 +112,7 @@ func TestValidateFeeDecorator(t *testing.T) {
 			tx: &tx.Tx{
 				AuthInfo: &tx.AuthInfo{
 					Fee: &tx.Fee{
-						Amount: sdk.NewCoins(sdk.NewInt64Coin("uphoton", 1)),
+						Amount: sdk.NewCoins(sdk.NewInt64Coin(types.Denom, 1)),
 					},
 				},
 				Body: &tx.TxBody{
@@ -146,7 +147,7 @@ func TestValidateFeeDecorator(t *testing.T) {
 			tx: &tx.Tx{
 				AuthInfo: &tx.AuthInfo{
 					Fee: &tx.Fee{
-						Amount: sdk.NewCoins(sdk.NewInt64Coin("uphoton", 1)),
+						Amount: sdk.NewCoins(sdk.NewInt64Coin(types.Denom, 1)),
 					},
 				},
 				Body: &tx.TxBody{
@@ -163,7 +164,7 @@ func TestValidateFeeDecorator(t *testing.T) {
 			tx: &tx.Tx{
 				AuthInfo: &tx.AuthInfo{
 					Fee: &tx.Fee{
-						Amount: sdk.NewCoins(sdk.NewInt64Coin("uatone", 1)),
+						Amount: sdk.NewCoins(sdk.NewInt64Coin(appparams.BondDenom, 1)),
 					},
 				},
 				Body: &tx.TxBody{
