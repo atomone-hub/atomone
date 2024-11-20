@@ -27,9 +27,6 @@ func NewValidateFeeDecorator(k *keeper.Keeper) ValidateFeeDecorator {
 func (vfd ValidateFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (sdk.Context, error) {
 	// If this is genesis height or simulate, don't validate the fee.
 	// This is required because AtomOne's gentxs have no fees.
-	// NOTE(tb): This could also be intercepted by checking if we are in checkTx
-	// mode, but that allows malicious validators to deliver txs without photon
-	// as the fee token.
 	if ctx.BlockHeight() == 0 || simulate {
 		return next(ctx, tx, simulate)
 	}
