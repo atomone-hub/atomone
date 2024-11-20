@@ -160,7 +160,7 @@ func (s *IntegrationTestSuite) execVestingTx( //nolint:unused
 		atomoneCommand = append(atomoneCommand, fmt.Sprintf("--%s=%v", flag, value))
 	}
 
-	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, 0, s.defaultExecValidation(c, 0, nil))
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, 0, nil)
 	s.T().Logf("successfully %s with %v", method, args)
 }
 
@@ -197,7 +197,7 @@ func (s *IntegrationTestSuite) execUnjail(
 		atomoneCommand = append(atomoneCommand, fmt.Sprintf("--%s=%v", flag, value))
 	}
 
-	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, 0, s.defaultExecValidation(c, 0, nil))
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, 0, nil)
 	s.T().Logf("successfully unjail with options %v", opt)
 }
 

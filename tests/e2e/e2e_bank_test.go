@@ -96,4 +96,18 @@ func (s *IntegrationTestSuite) testBankTokenTransfer() {
 			time.Second,
 		)
 	})
+
+	s.Run("send tokens with atone fees", func() {
+		var (
+			valIdx = 0
+			c      = s.chainA
+		)
+		alice, _ := c.genesisAccounts[1].keyInfo.GetAddress()
+		bob, _ := c.genesisAccounts[2].keyInfo.GetAddress()
+
+		// alice sends tokens to bob should fail because doesn't use photons for the fees.
+		atoneFees := sdk.NewCoin(uatoneDenom, standardFees.Amount)
+		s.execBankSend(s.chainA, valIdx, alice.String(), bob.String(),
+			tokenAmount.String(), true, withKeyValue(flagFees, atoneFees))
+	})
 }
