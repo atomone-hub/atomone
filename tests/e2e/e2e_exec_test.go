@@ -15,6 +15,7 @@ import (
 	rpchttp "github.com/cometbft/cometbft/rpc/client/http"
 
 	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
@@ -159,7 +160,7 @@ func (s *IntegrationTestSuite) execVestingTx( //nolint:unused
 		atomoneCommand = append(atomoneCommand, fmt.Sprintf("--%s=%v", flag, value))
 	}
 
-	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, 0, s.defaultExecValidation(c, 0))
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, 0, nil)
 	s.T().Logf("successfully %s with %v", method, args)
 }
 
@@ -196,7 +197,7 @@ func (s *IntegrationTestSuite) execUnjail(
 		atomoneCommand = append(atomoneCommand, fmt.Sprintf("--%s=%v", flag, value))
 	}
 
-	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, 0, s.defaultExecValidation(c, 0))
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, 0, nil)
 	s.T().Logf("successfully unjail with options %v", opt)
 }
 
@@ -223,7 +224,7 @@ func (s *IntegrationTestSuite) execFeeGrant(c *chain, valIdx int, granter, grant
 		atomoneCommand = append(atomoneCommand, fmt.Sprintf("--%s=%v", flag, value))
 	}
 
-	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx))
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx, nil))
 }
 
 func (s *IntegrationTestSuite) execFeeGrantRevoke(c *chain, valIdx int, granter, grantee string, opt ...flagOption) {
@@ -248,7 +249,7 @@ func (s *IntegrationTestSuite) execFeeGrantRevoke(c *chain, valIdx int, granter,
 		atomoneCommand = append(atomoneCommand, fmt.Sprintf("--%s=%v", flag, value))
 	}
 
-	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx))
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx, nil))
 }
 
 func (s *IntegrationTestSuite) execBankSend(
@@ -392,7 +393,7 @@ func (s *IntegrationTestSuite) execDistributionFundCommunityPool(c *chain, valId
 		"-y",
 	}
 
-	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx))
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx, nil))
 	s.T().Logf("Successfully funded community pool")
 }
 
@@ -419,7 +420,7 @@ func (s *IntegrationTestSuite) runGovExec(c *chain, valIdx int, submitterAddr, g
 
 	atomoneCommand = concatFlags(atomoneCommand, proposalFlags, generalFlags)
 	s.T().Logf("Executing atomoned tx gov %s on chain %s", govCommand, c.id)
-	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx))
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx, nil))
 	s.T().Logf("Successfully executed %s", govCommand)
 }
 
@@ -491,7 +492,7 @@ func (s *IntegrationTestSuite) execDelegate(c *chain, valIdx int, amount, valOpe
 		"-y",
 	}
 
-	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx))
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx, nil))
 	s.T().Logf("%s successfully delegated %s to %s", delegatorAddr, amount, valOperAddress)
 }
 
@@ -517,7 +518,7 @@ func (s *IntegrationTestSuite) execUnbondDelegation(c *chain, valIdx int, amount
 		"-y",
 	}
 
-	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx))
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx, nil))
 	s.T().Logf("%s successfully undelegated %s to %s", delegatorAddr, amount, valOperAddress)
 }
 
@@ -544,7 +545,7 @@ func (s *IntegrationTestSuite) execCancelUnbondingDelegation(c *chain, valIdx in
 		"-y",
 	}
 
-	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx))
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx, nil))
 	s.T().Logf("%s successfully canceled unbonding %s to %s", delegatorAddr, amount, valOperAddress)
 }
 
@@ -574,7 +575,7 @@ func (s *IntegrationTestSuite) execRedelegate(c *chain, valIdx int, amount, orig
 		"-y",
 	}
 
-	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx))
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx, nil))
 	s.T().Logf("%s successfully redelegated %s from %s to %s", delegatorAddr, amount, originalValOperAddress, newValOperAddress)
 }
 
@@ -635,7 +636,7 @@ func (s *IntegrationTestSuite) execSetWithdrawAddress(
 		"-y",
 	}
 
-	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx))
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx, nil))
 	s.T().Logf("Successfully set new distribution withdrawal address for %s to %s", delegatorAddress, newWithdrawalAddress)
 }
 
@@ -667,13 +668,13 @@ func (s *IntegrationTestSuite) execWithdrawReward(
 		"-y",
 	}
 
-	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx))
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx, nil))
 	s.T().Logf("Successfully withdrew distribution rewards for delegator %s from validator %s", delegatorAddress, validatorAddress)
 }
 
 func (s *IntegrationTestSuite) executeAtomoneTxCommand(ctx context.Context, c *chain, atomoneCommand []string, valIdx int, validation func([]byte, []byte) bool) {
 	if validation == nil {
-		validation = s.defaultExecValidation(s.chainA, 0)
+		validation = s.defaultExecValidation(s.chainA, 0, nil)
 	}
 	var (
 		outBuf bytes.Buffer
@@ -761,7 +762,7 @@ func (s *IntegrationTestSuite) expectErrExecValidation(chain *chain, valIdx int,
 		// wait for the tx to be committed on chain
 		s.Require().Eventuallyf(
 			func() bool {
-				gotErr := queryAtomOneTx(endpoint, txResp.TxHash) != nil
+				gotErr := queryAtomOneTx(endpoint, txResp.TxHash, nil) != nil
 				return gotErr == expectErr
 			},
 			time.Minute,
@@ -773,7 +774,7 @@ func (s *IntegrationTestSuite) expectErrExecValidation(chain *chain, valIdx int,
 	}
 }
 
-func (s *IntegrationTestSuite) defaultExecValidation(chain *chain, valIdx int) func([]byte, []byte) bool {
+func (s *IntegrationTestSuite) defaultExecValidation(chain *chain, valIdx int, msgResp codec.ProtoMarshaler) func([]byte, []byte) bool {
 	return func(stdOut []byte, stdErr []byte) bool {
 		var txResp sdk.TxResponse
 		if err := cdc.UnmarshalJSON(stdOut, &txResp); err != nil {
@@ -783,7 +784,7 @@ func (s *IntegrationTestSuite) defaultExecValidation(chain *chain, valIdx int) f
 			endpoint := fmt.Sprintf("http://%s", s.valResources[chain.id][valIdx].GetHostPort("1317/tcp"))
 			s.Require().Eventually(
 				func() bool {
-					err := queryAtomOneTx(endpoint, txResp.TxHash)
+					err := queryAtomOneTx(endpoint, txResp.TxHash, msgResp)
 					if isErrNotFound(err) {
 						// tx not processed yet, continue
 						return false
@@ -823,7 +824,7 @@ func (s *IntegrationTestSuite) executeValidatorBond(c *chain, valIdx int, valOpe
 		"-y",
 	}
 
-	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx))
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx, nil))
 	s.T().Logf("%s successfully executed validator bond tx to %s", delegatorAddr, valOperAddress)
 }
 
@@ -833,7 +834,7 @@ func (s *IntegrationTestSuite) execPhotonMint(
 	from,
 	amt string,
 	opt ...flagOption,
-) {
+) (resp photontypes.MsgMintPhotonResponse) {
 	opt = append(opt, withKeyValue(flagFrom, from))
 	opts := applyOptions(c.id, opt)
 
@@ -854,9 +855,8 @@ func (s *IntegrationTestSuite) execPhotonMint(
 		atomoneCommand = append(atomoneCommand, fmt.Sprintf("--%s=%v", flag, value))
 	}
 
-	// TODO retrieve tx response
-	// TODO add test that fails because of non photon fees (other message)
-	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, nil)
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx, &resp))
+	return
 }
 
 // signTxFileOnline signs a transaction file using the atomoned tx sign command

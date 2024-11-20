@@ -20,26 +20,23 @@ func (s *IntegrationTestSuite) testMintPhoton() {
 			beforeSupply := s.queryBankSupply(chainEndpoint)
 			conversionRate := s.queryPhotonConversionRate(chainEndpoint)
 			s.Require().Positive(conversionRate.MustFloat64())
-
 			burnedAtoneAmt := sdk.NewInt64Coin(uatoneDenom, 1_000_000)
-			s.execPhotonMint(s.chainA, valIdx, alice.String(), burnedAtoneAmt.String(),
+
+			resp := s.execPhotonMint(s.chainA, valIdx, alice.String(), burnedAtoneAmt.String(),
 				withKeyValue(flagFees, fees),
 			)
 
-			var (
-				expectedMintedPhoton = sdk.NewCoin(uphotonDenom,
-					burnedAtoneAmt.Amount.ToLegacyDec().Mul(conversionRate).TruncateInt())
-				expectedBalance = beforeBalance.
-						Sub(burnedAtoneAmt).       // remove burned atones
-						Add(expectedMintedPhoton). // add minted photons
-						Sub(fees)                  // remove fees
-			)
+			expectedBalance := beforeBalance.
+				Sub(burnedAtoneAmt). // remove burned atones
+				Add(resp.Minted).    // add minted photons
+				Sub(fees)            // remove fees
+
 			afterBalance, err := queryAtomOneAllBalances(chainEndpoint, alice.String())
 			s.Require().NoError(err)
 			s.Require().Equal(expectedBalance.String(), afterBalance.String())
 			var (
 				_, beforeUphotonSupply = beforeSupply.Find(uphotonDenom)
-				expectedUphotonSupply  = beforeUphotonSupply.Add(expectedMintedPhoton)
+				expectedUphotonSupply  = beforeUphotonSupply.Add(resp.Minted)
 				afterSupply            = s.queryBankSupply(chainEndpoint)
 				_, afterUphotonSupply  = afterSupply.Find(uphotonDenom)
 			)
