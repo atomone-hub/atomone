@@ -36,28 +36,27 @@ func (vfd ValidateFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate 
 
 	feeTx, ok := tx.(sdk.FeeTx)
 	if !ok {
-		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "Tx must be a FeeTx")
+		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "Tx must be a FeeTx") //nolint:staticcheck
 	}
 	feeCoins := feeTx.GetFee()
-	if len(feeCoins) == 0 {
-		// FIXME(tb): this discards tx w/o fees, even if validator minimum-gas-prices is 0
-		return ctx, types.ErrNoFeeCoin
+	if feeCoins.IsZero() {
+		// no fees are allowed
+		return next(ctx, tx, simulate)
 	}
 	if len(feeCoins) > 1 {
 		return ctx, types.ErrTooManyFeeCoins
 	}
-	// Base accepted fee denom is uphoton
-	acceptedFeeCoins := sdk.NewCoins(sdk.NewInt64Coin(types.Denom, 1))
-	if isTxFeeExcepted(tx, vfd.k.GetParams(ctx).TxFeeExceptions) {
-		// tx is fee excepted, add uatone as an other accepted fee denom
-		acceptedFeeCoins = acceptedFeeCoins.Add(sdk.NewInt64Coin(appparams.BondDenom, 1))
+	feeDenom := feeCoins[0].Denom
+	if feeDenom == types.Denom {
+		// feeDenom photon is allowed
+		return next(ctx, tx, simulate)
 	}
-	// feeCoins must be at least higher than one of the acceptedFeeCoins.
-	// FIXME(tb): this check rejects tx with 0 fees, maybe this should not be there
-	if !feeCoins.IsAnyGTE(acceptedFeeCoins) {
-		return ctx, sdkerrors.Wrapf(types.ErrInvalidFeeToken, "expected %s got %s", acceptedFeeCoins, feeCoins)
+	if feeDenom == appparams.BondDenom && isTxFeeExcepted(tx, vfd.k.GetParams(ctx).TxFeeExceptions) {
+		// feeDenom atone and tx fee excepted is allowed
+		return next(ctx, tx, simulate)
 	}
-	return next(ctx, tx, simulate)
+	// feeDenom not allowed
+	return ctx, sdkerrors.Wrapf(types.ErrInvalidFeeToken, "fee denom %s not allowed", feeDenom) //nolint:staticcheck
 }
 
 // isTxFeeExcepted returns true if all tx messages type URL are presents in
