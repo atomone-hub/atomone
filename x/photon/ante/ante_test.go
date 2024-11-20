@@ -24,23 +24,7 @@ func TestValidateFeeDecorator(t *testing.T) {
 		expectedError string
 	}{
 		{
-			name: "fail: no fee",
-			tx: &tx.Tx{
-				AuthInfo: &tx.AuthInfo{
-					Fee: &tx.Fee{},
-				},
-				Body: &tx.TxBody{
-					Messages: []*codectypes.Any{
-						codectypes.UnsafePackAny(&types.MsgMintPhoton{}),
-					},
-				},
-			},
-			isGenTx:       false,
-			simulateMode:  false,
-			expectedError: "no fee coins provided",
-		},
-		{
-			name: "ok: no fee and simulate",
+			name: "ok: no fee",
 			tx: &tx.Tx{
 				AuthInfo: &tx.AuthInfo{
 					Fee: &tx.Fee{},
@@ -52,21 +36,6 @@ func TestValidateFeeDecorator(t *testing.T) {
 				},
 			},
 			isGenTx:      false,
-			simulateMode: true,
-		},
-		{
-			name: "ok: no fee and genTx",
-			tx: &tx.Tx{
-				AuthInfo: &tx.AuthInfo{
-					Fee: &tx.Fee{},
-				},
-				Body: &tx.TxBody{
-					Messages: []*codectypes.Any{
-						codectypes.UnsafePackAny(&types.MsgMintPhoton{}),
-					},
-				},
-			},
-			isGenTx:      true,
 			simulateMode: false,
 		},
 		{
@@ -140,7 +109,41 @@ func TestValidateFeeDecorator(t *testing.T) {
 			},
 			isGenTx:       false,
 			simulateMode:  false,
-			expectedError: "expected 1uatone,1uphoton got 1xxx: invalid fee token",
+			expectedError: "fee denom xxx not allowed: invalid fee token",
+		},
+		{
+			name: "ok: MsgMintPhoton fee xxx and simulate",
+			tx: &tx.Tx{
+				AuthInfo: &tx.AuthInfo{
+					Fee: &tx.Fee{
+						Amount: sdk.NewCoins(sdk.NewInt64Coin("xxx", 1)),
+					},
+				},
+				Body: &tx.TxBody{
+					Messages: []*codectypes.Any{
+						codectypes.UnsafePackAny(&types.MsgMintPhoton{}),
+					},
+				},
+			},
+			isGenTx:      false,
+			simulateMode: true,
+		},
+		{
+			name: "ok: MsgMintPhoton fee xxx and gentx",
+			tx: &tx.Tx{
+				AuthInfo: &tx.AuthInfo{
+					Fee: &tx.Fee{
+						Amount: sdk.NewCoins(sdk.NewInt64Coin("xxx", 1)),
+					},
+				},
+				Body: &tx.TxBody{
+					Messages: []*codectypes.Any{
+						codectypes.UnsafePackAny(&types.MsgMintPhoton{}),
+					},
+				},
+			},
+			isGenTx:      true,
+			simulateMode: false,
 		},
 		{
 			name: "ok: MsgUpdateParams fee uphoton",
@@ -175,7 +178,7 @@ func TestValidateFeeDecorator(t *testing.T) {
 			},
 			isGenTx:       false,
 			simulateMode:  false,
-			expectedError: "expected 1uphoton got 1uatone: invalid fee token",
+			expectedError: "fee denom uatone not allowed: invalid fee token",
 		},
 		{
 			name: "fail: MsgUpdateParams fee xxx",
@@ -193,7 +196,7 @@ func TestValidateFeeDecorator(t *testing.T) {
 			},
 			isGenTx:       false,
 			simulateMode:  false,
-			expectedError: "expected 1uphoton got 1xxx: invalid fee token",
+			expectedError: "fee denom xxx not allowed: invalid fee token",
 		},
 	}
 	for _, tt := range tests {
