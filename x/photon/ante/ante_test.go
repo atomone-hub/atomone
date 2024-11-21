@@ -39,13 +39,13 @@ func TestValidateFeeDecorator(t *testing.T) {
 			simulateMode: false,
 		},
 		{
-			name: "fail: multiple fee denoms",
+			name: "ok: excepted tx MsgMintPhoton accepts any fee denom",
 			tx: &tx.Tx{
 				AuthInfo: &tx.AuthInfo{
 					Fee: &tx.Fee{
 						Amount: sdk.NewCoins(
 							sdk.NewInt64Coin(appparams.BondDenom, 1),
-							sdk.NewInt64Coin(types.Denom, 1),
+							sdk.NewInt64Coin("xxx", 1),
 						),
 					},
 				},
@@ -55,94 +55,7 @@ func TestValidateFeeDecorator(t *testing.T) {
 					},
 				},
 			},
-			isGenTx:       false,
-			simulateMode:  false,
-			expectedError: "too many fee coins, only accepts fees in one denom",
-		},
-		{
-			name: "ok: MsgMintPhoton fee uatone",
-			tx: &tx.Tx{
-				AuthInfo: &tx.AuthInfo{
-					Fee: &tx.Fee{
-						Amount: sdk.NewCoins(sdk.NewInt64Coin(appparams.BondDenom, 1)),
-					},
-				},
-				Body: &tx.TxBody{
-					Messages: []*codectypes.Any{
-						codectypes.UnsafePackAny(&types.MsgMintPhoton{}),
-					},
-				},
-			},
 			isGenTx:      false,
-			simulateMode: false,
-		},
-		{
-			name: "ok: MsgMintPhoton fee uphoton",
-			tx: &tx.Tx{
-				AuthInfo: &tx.AuthInfo{
-					Fee: &tx.Fee{
-						Amount: sdk.NewCoins(sdk.NewInt64Coin(types.Denom, 1)),
-					},
-				},
-				Body: &tx.TxBody{
-					Messages: []*codectypes.Any{
-						codectypes.UnsafePackAny(&types.MsgMintPhoton{}),
-					},
-				},
-			},
-			isGenTx:      false,
-			simulateMode: false,
-		},
-		{
-			name: "fail: MsgMintPhoton fee xxx",
-			tx: &tx.Tx{
-				AuthInfo: &tx.AuthInfo{
-					Fee: &tx.Fee{
-						Amount: sdk.NewCoins(sdk.NewInt64Coin("xxx", 1)),
-					},
-				},
-				Body: &tx.TxBody{
-					Messages: []*codectypes.Any{
-						codectypes.UnsafePackAny(&types.MsgMintPhoton{}),
-					},
-				},
-			},
-			isGenTx:       false,
-			simulateMode:  false,
-			expectedError: "fee denom xxx not allowed: invalid fee token",
-		},
-		{
-			name: "ok: MsgMintPhoton fee xxx and simulate",
-			tx: &tx.Tx{
-				AuthInfo: &tx.AuthInfo{
-					Fee: &tx.Fee{
-						Amount: sdk.NewCoins(sdk.NewInt64Coin("xxx", 1)),
-					},
-				},
-				Body: &tx.TxBody{
-					Messages: []*codectypes.Any{
-						codectypes.UnsafePackAny(&types.MsgMintPhoton{}),
-					},
-				},
-			},
-			isGenTx:      false,
-			simulateMode: true,
-		},
-		{
-			name: "ok: MsgMintPhoton fee xxx and gentx",
-			tx: &tx.Tx{
-				AuthInfo: &tx.AuthInfo{
-					Fee: &tx.Fee{
-						Amount: sdk.NewCoins(sdk.NewInt64Coin("xxx", 1)),
-					},
-				},
-				Body: &tx.TxBody{
-					Messages: []*codectypes.Any{
-						codectypes.UnsafePackAny(&types.MsgMintPhoton{}),
-					},
-				},
-			},
-			isGenTx:      true,
 			simulateMode: false,
 		},
 		{
@@ -197,6 +110,61 @@ func TestValidateFeeDecorator(t *testing.T) {
 			isGenTx:       false,
 			simulateMode:  false,
 			expectedError: "fee denom xxx not allowed: invalid fee token",
+		},
+		{
+			name: "fail: MsgUpdateParams multiple fee denom",
+			tx: &tx.Tx{
+				AuthInfo: &tx.AuthInfo{
+					Fee: &tx.Fee{
+						Amount: sdk.NewCoins(
+							sdk.NewInt64Coin(appparams.BondDenom, 1),
+							sdk.NewInt64Coin("xxx", 1),
+						),
+					},
+				},
+				Body: &tx.TxBody{
+					Messages: []*codectypes.Any{
+						codectypes.UnsafePackAny(&types.MsgUpdateParams{}),
+					},
+				},
+			},
+			isGenTx:       false,
+			simulateMode:  false,
+			expectedError: "too many fee coins, only accepts fees in one denom",
+		},
+		{
+			name: "ok: MsgUpdateParams fee xxx with simulate",
+			tx: &tx.Tx{
+				AuthInfo: &tx.AuthInfo{
+					Fee: &tx.Fee{
+						Amount: sdk.NewCoins(sdk.NewInt64Coin("xxx", 1)),
+					},
+				},
+				Body: &tx.TxBody{
+					Messages: []*codectypes.Any{
+						codectypes.UnsafePackAny(&types.MsgUpdateParams{}),
+					},
+				},
+			},
+			isGenTx:      false,
+			simulateMode: true,
+		},
+		{
+			name: "ok: MsgUpdateParams fee xxx with gentx",
+			tx: &tx.Tx{
+				AuthInfo: &tx.AuthInfo{
+					Fee: &tx.Fee{
+						Amount: sdk.NewCoins(sdk.NewInt64Coin("xxx", 1)),
+					},
+				},
+				Body: &tx.TxBody{
+					Messages: []*codectypes.Any{
+						codectypes.UnsafePackAny(&types.MsgUpdateParams{}),
+					},
+				},
+			},
+			isGenTx:      true,
+			simulateMode: false,
 		},
 	}
 	for _, tt := range tests {
