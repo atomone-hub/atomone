@@ -25,7 +25,7 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // Params defines the parameters for the x/photon module.
 type Params struct {
-	// mint photon or not
+	// Allow to mint photon or not
 	MintDisabled bool `protobuf:"varint,1,opt,name=mint_disabled,json=mintDisabled,proto3" json:"mint_disabled,omitempty"`
 	// tx_fee_exceptions holds the msg type urls that are allowed to use some
 	// different tx fee coins than photon.

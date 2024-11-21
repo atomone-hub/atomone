@@ -8,9 +8,8 @@ import (
 	"github.com/atomone-hub/atomone/x/photon/types"
 )
 
-// ValidateFeeDecorator implements sdk.AnteDecorator and ensures that uphoton
-// is the only fee token, except for some specific messages for which the type
-// URLs are stored in the module parameters.
+var _ sdk.AnteDecorator = ValidateFeeDecorator{}
+
 type ValidateFeeDecorator struct {
 	k *keeper.Keeper
 }
@@ -19,18 +18,21 @@ func NewValidateFeeDecorator(k *keeper.Keeper) ValidateFeeDecorator {
 	return ValidateFeeDecorator{k: k}
 }
 
-// AnteHandle returns an error if tx fees doesn't follow the expectations:
-//   - tx should have a single fee denom
-//   - fee denom should be uphoton unless all the tx messages are present in
-//     txFeeExceptions, in that case both uphoton and uatone are accepted.
+// AnteHandle implements the sdk.AnteDecorator interface.
+// It returns an error if the tx fee denom is not photon, with some exceptions:
+//   - tx is a gentx
+//   - tx mode is simulate
+//   - tx messages' type URLs match the `TxFeeExceptions` field of the
+//     [types.Params].
+//   - tx has no fees or 0 fees.
 func (vfd ValidateFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (sdk.Context, error) {
-	// If this is genesis height or simulate, don't validate the fee.
-	// This is required because genesis and simulated txs might have no fees.
 	if ctx.BlockHeight() == 0 || simulate {
+		// Skip if this is genesis height or simulate mode, because genesis and
+		// simulated transactions might have no fees.
 		return next(ctx, tx, simulate)
 	}
-	// If tx is excepted, don't validate the fee
 	if isTxFeeExcepted(tx, vfd.k.GetParams(ctx).TxFeeExceptions) {
+		// Skip if tx is excepted (any fee coins are allowed).
 		return next(ctx, tx, simulate)
 	}
 
@@ -40,7 +42,7 @@ func (vfd ValidateFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate 
 	}
 	feeCoins := feeTx.GetFee()
 	if feeCoins.IsZero() {
-		// no fees are allowed
+		// Skip if no fees
 		return next(ctx, tx, simulate)
 	}
 	if len(feeCoins) > 1 {
