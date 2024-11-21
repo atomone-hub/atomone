@@ -4,7 +4,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	appparams "github.com/atomone-hub/atomone/app/params"
 	"github.com/atomone-hub/atomone/x/photon/keeper"
 	"github.com/atomone-hub/atomone/x/photon/types"
 )
@@ -26,8 +25,12 @@ func NewValidateFeeDecorator(k *keeper.Keeper) ValidateFeeDecorator {
 //     txFeeExceptions, in that case both uphoton and uatone are accepted.
 func (vfd ValidateFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (sdk.Context, error) {
 	// If this is genesis height or simulate, don't validate the fee.
-	// This is required because AtomOne's gentxs have no fees.
+	// This is required because genesis and simulated txs might have no fees.
 	if ctx.BlockHeight() == 0 || simulate {
+		return next(ctx, tx, simulate)
+	}
+	// If tx is excepted, don't validate the fee
+	if isTxFeeExcepted(tx, vfd.k.GetParams(ctx).TxFeeExceptions) {
 		return next(ctx, tx, simulate)
 	}
 
@@ -43,17 +46,12 @@ func (vfd ValidateFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate 
 	if len(feeCoins) > 1 {
 		return ctx, types.ErrTooManyFeeCoins
 	}
-	feeDenom := feeCoins[0].Denom
-	if feeDenom == types.Denom {
-		// feeDenom photon is allowed
-		return next(ctx, tx, simulate)
+	if feeDenom := feeCoins[0].Denom; feeDenom != types.Denom {
+		// feeDenom not allowed
+		return ctx, sdkerrors.Wrapf(types.ErrInvalidFeeToken, "fee denom %s not allowed", feeDenom) //nolint:staticcheck
 	}
-	if feeDenom == appparams.BondDenom && isTxFeeExcepted(tx, vfd.k.GetParams(ctx).TxFeeExceptions) {
-		// feeDenom atone and tx fee excepted is allowed
-		return next(ctx, tx, simulate)
-	}
-	// feeDenom not allowed
-	return ctx, sdkerrors.Wrapf(types.ErrInvalidFeeToken, "fee denom %s not allowed", feeDenom) //nolint:staticcheck
+	// feeDenom photon is allowed
+	return next(ctx, tx, simulate)
 }
 
 // isTxFeeExcepted returns true if all tx messages type URL are presents in
