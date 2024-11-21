@@ -18,9 +18,12 @@ func GenMintDisabled(r *rand.Rand) bool {
 	return r.Int63n(101) <= 15 // 15% chance of mint being disabled
 }
 
-// GenTxFeeExceptions returns an empty slices.
+// GenTxFeeExceptions returns a wildcard to make all transactions to be fee
+// excepted (not forced to use photon for the fee denom).
+// This is needed because other modules' simulations do not allow the fee coins
+// to be changed, so w/o this configuration all transactions would fail.
 func GenTxFeeExceptions(r *rand.Rand) []string {
-	return []string{}
+	return []string{"*"}
 }
 
 // RandomizedGenState generates a random GenesisState for gov

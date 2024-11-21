@@ -55,8 +55,12 @@ func (vfd ValidateFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate 
 }
 
 // isTxFeeExcepted returns true if all tx messages type URL are presents in
-// txFeeExceptions.
+// txFeeExceptions, or if it starts with a wildcard "*".
 func isTxFeeExcepted(tx sdk.Tx, txFeeExceptions []string) bool {
+	if len(txFeeExceptions) > 0 && txFeeExceptions[0] == "*" {
+		// wildcard detected, all tx are excepted.
+		return true
+	}
 	var exceptedMsgCount int
 	for _, msg := range tx.GetMsgs() {
 		msgTypeURL := sdk.MsgTypeURL(msg)
