@@ -205,6 +205,18 @@ func TestIsTxFeeExcepted(t *testing.T) {
 		expectedRes     bool
 	}{
 		{
+			name: "wildcard fee execptions",
+			tx: &tx.Tx{
+				Body: &tx.TxBody{
+					Messages: []*codectypes.Any{
+						codectypes.UnsafePackAny(&types.MsgUpdateParams{}),
+					},
+				},
+			},
+			txFeeExceptions: []string{"*"},
+			expectedRes:     true,
+		},
+		{
 			name: "empty fee execptions",
 			tx: &tx.Tx{
 				Body: &tx.TxBody{

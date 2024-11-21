@@ -27,8 +27,10 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 type Params struct {
 	// mint photon or not
 	MintDisabled bool `protobuf:"varint,1,opt,name=mint_disabled,json=mintDisabled,proto3" json:"mint_disabled,omitempty"`
-	// tx_fee_exceptions holds the msg type urls that are allowed to use a
-	// different tx fee than photon.
+	// tx_fee_exceptions holds the msg type urls that are allowed to use some
+	// different tx fee coins than photon.
+	// A wildcard "*" can be used to indicate that all transactions are fee
+	// excepted.
 	TxFeeExceptions []string `protobuf:"bytes,2,rep,name=tx_fee_exceptions,json=txFeeExceptions,proto3" json:"tx_fee_exceptions,omitempty"`
 }
 
