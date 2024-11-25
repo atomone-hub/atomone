@@ -20,9 +20,8 @@ func CreateUpgradeHandler(
 ) upgradetypes.UpgradeHandler {
 	return func(ctx sdk.Context, plan upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
 		ctx.Logger().Info("Starting module migrations...")
-		// Admittedly there's no module migration because v2 doesn't upgrade the
-		// SDK nor the internal gov module, but we still running it for demo
-		// purpose.
+		// RunMigrations will detect the add of the photon module, will initiate
+		// its genesis and will fill the versionMap with its consensus version.
 		vm, err := mm.RunMigrations(ctx, configurator, vm)
 		if err != nil {
 			return vm, err
