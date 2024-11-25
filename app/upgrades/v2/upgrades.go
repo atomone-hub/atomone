@@ -20,8 +20,9 @@ func CreateUpgradeHandler(
 ) upgradetypes.UpgradeHandler {
 	return func(ctx sdk.Context, plan upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
 		ctx.Logger().Info("Starting module migrations...")
-		// Admitedly there's no module migration because v2 doesn't upgrade the
-		// SDK, but still running it for demo purpose.
+		// Admittedly there's no module migration because v2 doesn't upgrade the
+		// SDK nor the internal gov module, but we still running it for demo
+		// purpose.
 		vm, err := mm.RunMigrations(ctx, configurator, vm)
 		if err != nil {
 			return vm, err
