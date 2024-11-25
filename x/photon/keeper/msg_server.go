@@ -45,7 +45,7 @@ func (k msgServer) MintPhoton(goCtx context.Context, msg *types.MsgMintPhoton) (
 		uphotonToMint   = bondDenomToBurn.Amount.ToLegacyDec().Mul(conversionRate)
 	)
 	// If no photon to mint, do not burn bondDenomToBurn, returns an error
-	if uphotonToMint.IsZero() { // FIXME should be checked against uphotonToMint.RoundInt() bc else coinsToMint can be empty
+	if uphotonToMint.IsZero() {
 		return nil, types.ErrNoMintablePhotons
 	}
 	// If photonToMint + photonSupply > photonMaxSupply, returns an error
