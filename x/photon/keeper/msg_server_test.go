@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"math"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -64,7 +65,7 @@ func TestMsgServerMintPhoton(t *testing.T) {
 					Return(sdk.NewInt64Coin(appparams.BondDenom, atoneSupply))
 				m.BankKeeper.EXPECT().GetSupply(ctx, types.Denom).Return(sdk.NewInt64Coin(types.Denom, types.MaxSupply))
 			},
-			expectedErr: "no more photon can be minted",
+			expectedErr: "no mintable photon after rounding, try higher burn",
 		},
 		{
 			name:   "fail: photon_supply+minted>max",
@@ -80,6 +81,21 @@ func TestMsgServerMintPhoton(t *testing.T) {
 				m.BankKeeper.EXPECT().GetSupply(ctx, types.Denom).Return(sdk.NewInt64Coin(types.Denom, types.MaxSupply-1_000_000))
 			},
 			expectedErr: "not enough photon can be minted",
+		},
+		{
+			name:   "fail: atone_supply >> photon_supply",
+			params: types.Params{MintDisabled: false},
+			msg: &types.MsgMintPhoton{
+				ToAddress: toAddress.String(),
+				Amount:    sdk.NewInt64Coin(appparams.BondDenom, 1),
+			},
+			setup: func(ctx sdk.Context, m testutil.Mocks) {
+				m.StakingKeeper.EXPECT().BondDenom(ctx).Return(appparams.BondDenom)
+				m.BankKeeper.EXPECT().GetSupply(ctx, appparams.BondDenom).
+					Return(sdk.NewInt64Coin(appparams.BondDenom, math.MaxInt))
+				m.BankKeeper.EXPECT().GetSupply(ctx, types.Denom).Return(sdk.NewInt64Coin(types.Denom, 0))
+			},
+			expectedErr: "no mintable photon after rounding, try higher burn",
 		},
 		{
 			name:   "ok: photon_supply=0",
