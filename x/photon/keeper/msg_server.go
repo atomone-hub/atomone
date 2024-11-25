@@ -42,14 +42,14 @@ func (k msgServer) MintPhoton(goCtx context.Context, msg *types.MsgMintPhoton) (
 		uphotonSupply   = k.bankKeeper.GetSupply(ctx, types.Denom).Amount.ToLegacyDec()
 		conversionRate  = k.conversionRate(ctx, bondDenomSupply, uphotonSupply)
 		bondDenomToBurn = msg.Amount
-		uphotonToMint   = bondDenomToBurn.Amount.ToLegacyDec().Mul(conversionRate)
+		uphotonToMint   = bondDenomToBurn.Amount.ToLegacyDec().Mul(conversionRate).RoundInt()
 	)
 	// If no photon to mint, do not burn bondDenomToBurn, returns an error
 	if uphotonToMint.IsZero() {
-		return nil, types.ErrNoMintablePhotons
+		return nil, types.ErrZeroMintPhotons
 	}
 	// If photonToMint + photonSupply > photonMaxSupply, returns an error
-	if uphotonSupply.Add(uphotonToMint).GT(sdk.NewDec(types.MaxSupply)) {
+	if uphotonSupply.Add(uphotonToMint.ToLegacyDec()).GT(sdk.NewDec(types.MaxSupply)) {
 		return nil, types.ErrNotEnoughPhotons
 	}
 
@@ -60,7 +60,7 @@ func (k msgServer) MintPhoton(goCtx context.Context, msg *types.MsgMintPhoton) (
 	// 4) move PHOTONs from this module address to msg signer address
 	var (
 		coinsToBurn = sdk.NewCoins(bondDenomToBurn)
-		coinsToMint = sdk.NewCoins(sdk.NewCoin(types.Denom, uphotonToMint.RoundInt()))
+		coinsToMint = sdk.NewCoins(sdk.NewCoin(types.Denom, uphotonToMint))
 	)
 	// 1) Send atone to photon module for burn
 	to, err := sdk.AccAddressFromBech32(msg.ToAddress)
