@@ -9,7 +9,7 @@ from the community.
 If you've identified a vulnerability, please report it through one of the
 following venues:
 * Submit an advisory through GitHub: https://github.com/atomone-hub/atomone/security/advisories/new
-* Email security [at-symbol] tedermint [dot] com. If you are concerned about
+* Email security [at-symbol] tendermint [dot] com. If you are concerned about
   confidentiality e.g. because of a high-severity issue, you may email us for
   PGP or Signal contact details.
 * We provide bug bounty rewards through our program at
