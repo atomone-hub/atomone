@@ -73,13 +73,6 @@ process. This file is updated every block as your validator participates in
 consensus rounds. It is a critical file needed to prevent double-signing, in
 case the upgrade fails and the previous chain needs to be restarted.
 
-### Testing
-
-XXX UPDATE?
-
-For those validator and full node operators that are interested in ensuring
-preparedness for the impending upgrade, you can run a [v15 Local Testnet](https://github.com/cosmos/testnets/tree/master/local) or join in our [Cosmos Hub Public Testnet](https://github.com/cosmos/testnets/tree/master/public).
-
 ### Current runtime
 
 The AtomOne mainnet network, `atomone-1`, is currently running [AtomOne
@@ -203,11 +196,9 @@ export DAEMON_RESTART_AFTER_UPGRADE=true
 cosmovisor run start --x-crisis-skip-assert-invariants --home $DAEMON_HOME
 ```
 
-XXX NOTE: keep that sentence ??
-
-Skipping the invariant checks is strongly encouraged since it decreases the
-upgrade time significantly and since there are some other improvements coming
-to the crisis module in the next release of the Cosmos SDK.
+Skipping the invariant checks can be used to decreases the upgrade time
+significantly, but it is done at the expense of verifying state validity and
+must be done cautiously.
 
 #### Auto-Downloading the AtomOne binary
 
