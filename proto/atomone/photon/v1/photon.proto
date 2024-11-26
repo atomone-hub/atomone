@@ -11,7 +11,6 @@ message Params {
   bool mint_disabled = 1;
   // tx_fee_exceptions holds the msg type urls that are allowed to use some
   // different tx fee coins than photon.
-	// A wildcard "*" can be used to indicate that all transactions are fee
-	// excepted.
+  // A wildcard "*" can be used to allow all transactions to use any fee denom.
   repeated string tx_fee_exceptions = 2;
 }

@@ -39,7 +39,7 @@ func TestValidateFeeDecorator(t *testing.T) {
 			simulateMode: false,
 		},
 		{
-			name: "ok: excepted tx MsgMintPhoton accepts any fee denom",
+			name: "ok: tx MsgMintPhoton accepts any fee denom bc declared in txFeeExceptions",
 			tx: &tx.Tx{
 				AuthInfo: &tx.AuthInfo{
 					Fee: &tx.Fee{
@@ -197,7 +197,7 @@ func TestValidateFeeDecorator(t *testing.T) {
 	}
 }
 
-func TestIsTxFeeExcepted(t *testing.T) {
+func TestAllowsAnyTxFee(t *testing.T) {
 	tests := []struct {
 		name            string
 		tx              sdk.Tx
@@ -285,7 +285,7 @@ func TestIsTxFeeExcepted(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			res := isTxFeeExcepted(tt.tx, tt.txFeeExceptions)
+			res := allowsAnyTxFee(tt.tx, tt.txFeeExceptions)
 
 			assert.Equal(t, tt.expectedRes, res)
 		})

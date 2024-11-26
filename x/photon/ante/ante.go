@@ -31,8 +31,8 @@ func (vfd ValidateFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate 
 		// simulated transactions might have no fees.
 		return next(ctx, tx, simulate)
 	}
-	if isTxFeeExcepted(tx, vfd.k.GetParams(ctx).TxFeeExceptions) {
-		// Skip if tx is excepted (any fee coins are allowed).
+	if allowsAnyTxFee(tx, vfd.k.GetParams(ctx).TxFeeExceptions) {
+		// Skip if tx is declared in TxFeeExceptions (any fee coins are allowed).
 		return next(ctx, tx, simulate)
 	}
 
@@ -56,22 +56,22 @@ func (vfd ValidateFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate 
 	return next(ctx, tx, simulate)
 }
 
-// isTxFeeExcepted returns true if all tx messages type URL are presents in
+// allowsAnyTxFee returns true if all tx messages type URL are presents in
 // txFeeExceptions, or if it starts with a wildcard "*".
-func isTxFeeExcepted(tx sdk.Tx, txFeeExceptions []string) bool {
+func allowsAnyTxFee(tx sdk.Tx, txFeeExceptions []string) bool {
 	if len(txFeeExceptions) > 0 && txFeeExceptions[0] == "*" {
-		// wildcard detected, all tx are excepted.
+		// wildcard detected, all tx fees are allowed.
 		return true
 	}
-	var exceptedMsgCount int
+	var anyTxFeeMsgCount int
 	for _, msg := range tx.GetMsgs() {
 		msgTypeURL := sdk.MsgTypeURL(msg)
 		for _, exception := range txFeeExceptions {
 			if exception == msgTypeURL {
-				exceptedMsgCount++
+				anyTxFeeMsgCount++
 				break
 			}
 		}
 	}
-	return exceptedMsgCount == len(tx.GetMsgs())
+	return anyTxFeeMsgCount == len(tx.GetMsgs())
 }
