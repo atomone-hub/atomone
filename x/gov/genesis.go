@@ -77,6 +77,44 @@ func InitGenesis(ctx sdk.Context, ak types.AccountKeeper, bk types.BankKeeper, k
 	if !balance.IsEqual(totalDeposits) {
 		panic(fmt.Sprintf("expected module account was %s but we got %s", balance.String(), totalDeposits.String()))
 	}
+
+	// set governors
+	for _, governor := range data.Governors {
+		// check that base account exists
+		accAddr := sdk.AccAddress(governor.GetAddress())
+		acc := ak.GetAccount(ctx, accAddr)
+		if acc == nil {
+			panic(fmt.Sprintf("account %s does not exist", accAddr.String()))
+		}
+
+		k.SetGovernor(ctx, *governor)
+		if governor.IsActive() {
+			k.DelegateToGovernor(ctx, accAddr, governor.GetAddress())
+		}
+	}
+	// set governance delegations
+	for _, delegation := range data.GovernanceDelegations {
+		delAddr := sdk.MustAccAddressFromBech32(delegation.DelegatorAddress)
+		govAddr := types.MustGovernorAddressFromBech32(delegation.GovernorAddress)
+		// check delegator exists
+		acc := ak.GetAccount(ctx, delAddr)
+		if acc == nil {
+			panic(fmt.Sprintf("account %s does not exist", delAddr.String()))
+		}
+		// check governor exists
+		_, found := k.GetGovernor(ctx, govAddr)
+		if !found {
+			panic(fmt.Sprintf("governor %s does not exist", govAddr.String()))
+		}
+
+		// if account is active governor and delegation is not to self, error
+		delGovAddr := types.GovernorAddress(delAddr)
+		if _, found = k.GetGovernor(ctx, delGovAddr); found && !delGovAddr.Equals(govAddr) {
+			panic(fmt.Sprintf("account %s is an active governor and cannot delegate", delAddr.String()))
+		}
+
+		k.DelegateToGovernor(ctx, delAddr, govAddr)
+	}
 }
 
 // ExportGenesis - output genesis parameters
@@ -85,6 +123,7 @@ func ExportGenesis(ctx sdk.Context, k *keeper.Keeper) *v1.GenesisState {
 	proposals := k.GetProposals(ctx)
 	params := k.GetParams(ctx)
 	constitution := k.GetConstitution(ctx)
+	governors := k.GetAllGovernors(ctx)
 
 	var proposalsDeposits v1.Deposits
 	var proposalsVotes v1.Votes
@@ -96,12 +135,19 @@ func ExportGenesis(ctx sdk.Context, k *keeper.Keeper) *v1.GenesisState {
 		proposalsVotes = append(proposalsVotes, votes...)
 	}
 
+	var governanceDelegations []*v1.GovernanceDelegation
+	for _, g := range governors {
+		delegations := k.GetAllGovernanceDelegationsByGovernor(ctx, g.GetAddress())
+		governanceDelegations = append(governanceDelegations, delegations...)
+	}
 	return &v1.GenesisState{
-		StartingProposalId: startingProposalID,
-		Deposits:           proposalsDeposits,
-		Votes:              proposalsVotes,
-		Proposals:          proposals,
-		Params:             &params,
-		Constitution:       constitution,
+		StartingProposalId:    startingProposalID,
+		Deposits:              proposalsDeposits,
+		Votes:                 proposalsVotes,
+		Proposals:             proposals,
+		Params:                &params,
+		Constitution:          constitution,
+		Governors:             governors,
+		GovernanceDelegations: governanceDelegations,
 	}
 }

@@ -8,15 +8,16 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
+	"github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 )
 
 // Tally iterates over the votes and updates the tally of a proposal based on the voting power of the
 // voters
 func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, burnDeposits bool, tallyResults v1.TallyResult) {
-	// fetch all the bonded validators
 	currValidators := keeper.getBondedValidatorsByAddress(ctx)
-	totalVotingPower, results := keeper.tallyVotes(ctx, proposal, currValidators, true)
+	currGovernors := keeper.getGovernorsByAddress(ctx)
+	totalVotingPower, results := keeper.tallyVotes(ctx, proposal, currValidators, currGovernors, true)
 
 	params := keeper.GetParams(ctx)
 	tallyResults = v1.NewTallyResultFromMap(results)
@@ -59,18 +60,16 @@ func (keeper Keeper) HasReachedQuorum(ctx sdk.Context, proposal v1.Proposal) (qu
 		return false, nil
 	}
 
-	/* DISABLED on AtomOne - no possible increase of computation speed by
-	 iterating over validators since vote inheritance is disabled.
-	 Keeping as comment because this should be adapted with governors loop
-
-	// we check first if voting power of validators alone is enough to pass quorum
-	// and if so, we return true skipping the iteration over all votes
-	// can speed up computation in case quorum is already reached by validator votes alone
+	quorum, _, err := keeper.getQuorumAndThreshold(ctx, proposal)
+	currGovernors := keeper.getGovernorsByAddress(ctx)
+	// we check first if voting power of governors alone is enough to pass quorum
+	// and if so, we return true skipping the iteration over all votes.
+	// Can speed up computation in case quorum is already reached by governor votes alone
 	approxTotalVotingPower := math.LegacyZeroDec()
-	for _, val := range currValidators {
-		_, ok := keeper.GetVote(ctx, proposal.Id, sdk.AccAddress(val.GetOperator()))
+	for _, gov := range currGovernors {
+		_, ok := keeper.GetVote(ctx, proposal.Id, sdk.AccAddress(gov.Address))
 		if ok {
-			approxTotalVotingPower = approxTotalVotingPower.Add(math.LegacyNewDecFromInt(val.GetBondedTokens()))
+			approxTotalVotingPower = approxTotalVotingPower.Add(gov.VotingPower)
 		}
 	}
 	// check and return whether or not the proposal has reached quorum
@@ -78,15 +77,12 @@ func (keeper Keeper) HasReachedQuorum(ctx sdk.Context, proposal v1.Proposal) (qu
 	if approxPercentVoting.GTE(quorum) {
 		return true, nil
 	}
-	*/
 
-	// voting power of validators does not reach quorum, let's tally all votes
 	currValidators := keeper.getBondedValidatorsByAddress(ctx)
-	totalVotingPower, _ := keeper.tallyVotes(ctx, proposal, currValidators, false)
+	totalVotingPower, _ := keeper.tallyVotes(ctx, proposal, currValidators, currGovernors, false)
 
 	// check and return whether or not the proposal has reached quorum
 	percentVoting := totalVotingPower.Quo(math.LegacyNewDecFromInt(totalBonded))
-	quorum, _, err := keeper.getQuorumAndThreshold(ctx, proposal)
 	if err != nil {
 		return false, err
 	}
@@ -104,13 +100,31 @@ func (keeper Keeper) getBondedValidatorsByAddress(ctx sdk.Context) map[string]st
 	return vals
 }
 
+// getGovernorsByAddress fetches all the active param.MaxGovernors top governors by voting power
+// and puts them in map using their operator address as the key.
+func (keeper Keeper) getGovernorsByAddress(ctx sdk.Context) map[string]v1.GovernorGovInfo {
+	govs := make(map[string]v1.GovernorGovInfo)
+	keeper.IterateMaxGovernorsByGovernancePower(ctx, func(index int64, governor v1.GovernorI) (stop bool) {
+		govs[governor.GetAddress().String()] = v1.NewGovernorGovInfo(
+			governor.GetAddress(),
+			keeper.GetAllGovernorValShares(ctx, governor.GetAddress()),
+			v1.WeightedVoteOptions{},
+			governor.GetVotingPower(),
+		)
+		return false
+	})
+	return govs
+}
+
 // tallyVotes returns the total voting power and tally results of the votes
 // on a proposal. If `isFinal` is true, results will be stored in `results`
 // map and votes will be deleted. Otherwise, only the total voting power
 // will be returned and `results` will be nil.
 func (keeper Keeper) tallyVotes(
 	ctx sdk.Context, proposal v1.Proposal,
-	currValidators map[string]stakingtypes.ValidatorI, isFinal bool,
+	currValidators map[string]stakingtypes.ValidatorI,
+	currGovernors map[string]v1.GovernorGovInfo,
+	isFinal bool,
 ) (totalVotingPower math.LegacyDec, results map[v1.VoteOption]math.LegacyDec) {
 	totalVotingPower = math.LegacyZeroDec()
 	if isFinal {
@@ -121,23 +135,48 @@ func (keeper Keeper) tallyVotes(
 	}
 
 	keeper.IterateVotes(ctx, proposal.Id, func(vote v1.Vote) bool {
+		var governor v1.GovernorGovInfo
+
 		voter := sdk.MustAccAddressFromBech32(vote.Voter)
-		// iterate over all delegations from voter, deduct from any delegated-to validators
+
+		// if voter is a governor record it in the map
+		govAddrStr := types.GovernorAddress(voter.Bytes()).String()
+		if gov, ok := currGovernors[govAddrStr]; ok {
+			gov.Vote = vote.Options
+			currGovernors[govAddrStr] = gov
+		}
+
+		gd, hasGovernor := keeper.GetGovernanceDelegation(ctx, voter)
+		if hasGovernor {
+			if gi, ok := currGovernors[gd.GovernorAddress]; ok {
+				governor = gi
+			} else {
+				hasGovernor = false
+			}
+		}
+
+		// iterate over all delegations from voter
 		keeper.sk.IterateDelegations(ctx, voter, func(index int64, delegation stakingtypes.DelegationI) (stop bool) {
 			valAddrStr := delegation.GetValidatorAddr().String()
+			votingPower := math.LegacyZeroDec()
 
 			if val, ok := currValidators[valAddrStr]; ok {
 				// delegation shares * bonded / total shares
-				votingPower := delegation.GetShares().MulInt(val.GetBondedTokens()).Quo(val.GetDelegatorShares())
+				votingPower = votingPower.Add(delegation.GetShares().MulInt(val.GetBondedTokens()).Quo(val.GetDelegatorShares()))
 
-				if isFinal {
-					for _, option := range vote.Options {
-						weight, _ := math.LegacyNewDecFromStr(option.Weight)
-						subPower := votingPower.Mul(weight)
-						results[option.Option] = results[option.Option].Add(subPower)
-					}
+				// remove the delegation shares from the governor
+				if hasGovernor {
+					governor.ValSharesDeductions[valAddrStr] = governor.ValSharesDeductions[valAddrStr].Add(delegation.GetShares())
 				}
-				totalVotingPower = totalVotingPower.Add(votingPower)
+			}
+
+			totalVotingPower = totalVotingPower.Add(votingPower)
+			if isFinal {
+				for _, option := range vote.Options {
+					weight, _ := math.LegacyNewDecFromStr(option.Weight)
+					subPower := votingPower.Mul(weight)
+					results[option.Option] = results[option.Option].Add(subPower)
+				}
 			}
 
 			return false
@@ -168,6 +207,52 @@ func (keeper Keeper) tallyVotes(
 	}
 	*/
 
+	// iterate over the governors again to tally their voting power
+	for _, gov := range currGovernors {
+		if len(gov.Vote) == 0 {
+			continue
+		}
+
+		// Calculate the voting power of governors that have voted.
+		// Iterate over all validators the governor has delegation shares assigned to.
+		// As governor are simply voters that need to have 100% of their bonded tokens
+		// delegated to them and their shares were deducted when iterating over votes
+		// we don't need to handle special cases.
+		votingPower := math.LegacyZeroDec()
+		for valAddrStr, shares := range gov.ValShares {
+			if val, ok := currValidators[valAddrStr]; ok {
+				sharesAfterDeductions := shares.Sub(gov.ValSharesDeductions[valAddrStr])
+				votingPower = votingPower.Add(sharesAfterDeductions.MulInt(val.GetBondedTokens()).Quo(val.GetDelegatorShares()))
+			}
+		}
+		if isFinal {
+			for _, option := range gov.Vote {
+				weight, _ := sdk.NewDecFromStr(option.Weight)
+				subPower := votingPower.Mul(weight)
+				results[option.Option] = results[option.Option].Add(subPower)
+			}
+		}
+		totalVotingPower = totalVotingPower.Add(votingPower)
+
+		/*
+			// Alternative to the for loop above. It assumes a VotingPowerDeductions
+			// field in the GovernorGovInfo struct that is updated when iterating over votes
+			// instead of updating the ValSharesDeductions map.
+			// This also assumes that gov.VotingPower is always accurate, which needs to be fully verified.
+			// However, in such a case, this would be the more efficient way to calculate the voting power.
+
+			votingPower := gov.VotingPower.Sub(gov.VotingPowerDeductions))
+			if isFinal {
+				for _, option := range gov.Vote {
+					weight, _ := sdk.NewDecFromStr(option.Weight)
+					subPower := votingPower.Mul(weight)
+					results[option.Option] = results[option.Option].Add(subPower)
+				}
+			}
+			totalVotingPower = totalVotingPower.Add(votingPower)
+		*/
+
+	}
 	return totalVotingPower, results
 }
 
