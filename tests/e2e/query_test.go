@@ -1,11 +1,13 @@
 package e2e
 
 import (
+	"encoding/hex"
 	"fmt"
 	"io"
 	"net/http"
 	"strings"
 
+	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/tx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -21,7 +23,7 @@ import (
 )
 
 // queryAtomOneTx returns an error if the tx is not found or is failed.
-func queryAtomOneTx(endpoint, txHash string) error {
+func queryAtomOneTx(endpoint, txHash string, msgResp codec.ProtoMarshaler) error {
 	body, err := httpGet(fmt.Sprintf("%s/cosmos/tx/v1beta1/txs/%s", endpoint, txHash))
 	if err != nil {
 		return err
@@ -33,6 +35,20 @@ func queryAtomOneTx(endpoint, txHash string) error {
 	}
 	if resp.TxResponse.Code != 0 {
 		return fmt.Errorf("tx %s is failed with code=%d log='%s'", txHash, resp.TxResponse.Code, resp.TxResponse.RawLog)
+	}
+	if msgResp != nil {
+		// msgResp is provided, try to decode the tx response
+		data, err := hex.DecodeString(resp.TxResponse.Data)
+		if err != nil {
+			return err
+		}
+		var txMsgData sdk.TxMsgData
+		if err := cdc.Unmarshal(data, &txMsgData); err != nil {
+			return err
+		}
+		if err := cdc.Unmarshal(txMsgData.MsgResponses[0].Value, msgResp); err != nil {
+			return err
+		}
 	}
 	return nil
 }

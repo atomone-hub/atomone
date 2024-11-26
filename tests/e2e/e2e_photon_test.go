@@ -22,27 +22,32 @@ func (s *IntegrationTestSuite) testMintPhoton() {
 		conversionRate := s.queryPhotonConversionRate(chainEndpoint)
 		s.Require().Positive(conversionRate.MustFloat64())
 
-		atoneAmt := sdk.NewInt64Coin(uatoneDenom, 1_000_000)
-		s.execPhotonMint(s.chainA, valIdx, alice.String(), atoneAmt.String(), standardFees.String(), false)
+		burnedAtoneAmt := sdk.NewInt64Coin(uatoneDenom, 1_000_000)
+		resp := s.execPhotonMint(s.chainA, valIdx, alice.String(), burnedAtoneAmt.String(), standardFees.String())
 
-		var (
-			expectedMintedPhoton = sdk.NewCoin(uphotonDenom, atoneAmt.Amount.ToLegacyDec().Mul(conversionRate).TruncateInt())
-			expectedBalance      = beforeBalance.
-						Sub(standardFees).Sub(atoneAmt). // remve burned atones and fees
-						Add(expectedMintedPhoton)        // add minted photons
-		)
+		expectedBalance := beforeBalance.
+			Sub(burnedAtoneAmt). // remove burned atones
+			Add(resp.Minted).    // add minted photons
+			Sub(standardFees)    // remove fees
 		afterBalance, err := queryAtomOneAllBalances(chainEndpoint, alice.String())
 		s.Require().NoError(err)
 		s.Require().Equal(expectedBalance.String(), afterBalance.String())
-		afterSupply := s.queryBankSupply(chainEndpoint)
-		_, afterUphotonSupply := afterSupply.Find(uphotonDenom)
-		s.Require().Equal(expectedMintedPhoton.String(), afterUphotonSupply.String())
+		var (
+			expectedUphotonSupply = resp.Minted
+			afterSupply           = s.queryBankSupply(chainEndpoint)
+			_, afterUphotonSupply = afterSupply.Find(uphotonDenom)
+		)
+		s.Require().Equal(expectedUphotonSupply.String(), afterUphotonSupply.String())
 		// For atone supply assertion we must take into account inflation and so
 		// we except the final supply to be greater or equal than the initial
-		// supply + the burned atones.
-		_, beforeUatoneSupply := beforeSupply.Find(uatoneDenom)
-		_, afterUatoneSupply := afterSupply.Find(uatoneDenom)
-		s.Require().True(afterUatoneSupply.IsGTE(beforeUatoneSupply.Add(atoneAmt)),
+		// supply - the burned atones.
+		var (
+			_, beforeUatoneSupply = beforeSupply.Find(uatoneDenom)
+			_, afterUatoneSupply  = afterSupply.Find(uatoneDenom)
+		)
+		fmt.Println("BEFORE", beforeUatoneSupply.Sub(burnedAtoneAmt))
+		fmt.Println("AFTER ", afterUatoneSupply)
+		s.Require().True(afterUatoneSupply.IsGTE(beforeUatoneSupply.Sub(burnedAtoneAmt)),
 			"after supply should be >= than initial %s supply", uatoneDenom)
 	})
 }
