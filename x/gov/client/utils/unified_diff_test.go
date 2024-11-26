@@ -4,9 +4,10 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/stretchr/testify/require"
+
 	"github.com/atomone-hub/atomone/x/gov/client/utils"
 	"github.com/atomone-hub/atomone/x/gov/types"
-	"github.com/stretchr/testify/require"
 )
 
 func TestGenerateUnifiedDiff(t *testing.T) {

@@ -2,6 +2,7 @@ package v1
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 
@@ -101,10 +102,15 @@ func ProposalStatusFromString(str string) (ProposalStatus, error) {
 func (status ProposalStatus) Format(s fmt.State, verb rune) {
 	switch verb {
 	case 's':
-		s.Write([]byte(status.String()))
+		_, err := s.Write([]byte(status.String()))
+		if err != nil {
+			return
+		}
 	default:
-		// TODO: Do this conversion more directly
-		s.Write([]byte(fmt.Sprintf("%v", byte(status))))
+		_, err := s.Write([]byte(strconv.Itoa(int(status))))
+		if err != nil {
+			return
+		}
 	}
 }
 
