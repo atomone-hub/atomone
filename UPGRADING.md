@@ -8,7 +8,7 @@ upgrade successfully for the AtomOne v2 release.
 For more details on the release, please see the [release notes][v2].
 
 **Validators** will have to change their configuration to allow the PHOTON
-denom for the fees, **before** the upgrade, see [Validator config
+denom (`uphoton`) for the fees, **before** the upgrade, see [Validator config
 change](#validator-config-change).
 
 **Relayer Operators** will also need to update their configuration to use the
