@@ -42,16 +42,20 @@ func WeightedOperations(appParams simtypes.AppParams, cdc codec.JSONCodec,
 	return simulation.WeightedOperations{
 		simulation.NewWeightedOperation(
 			weightMsgMintPhoton,
-			SimulateMsgMintPhoton(ak, bk, sk),
+			SimulateMsgMintPhoton(ak, bk, sk, k),
 		),
 	}
 }
 
 func SimulateMsgMintPhoton(
-	ak types.AccountKeeper, bk types.BankKeeper, sk types.StakingKeeper,
+	ak types.AccountKeeper, bk types.BankKeeper, sk types.StakingKeeper, k keeper.Keeper,
 ) simtypes.Operation {
 	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
+		// Check if mint is disabled
+		if k.GetParams(ctx).MintDisabled {
+			return simtypes.NoOpMsg(types.ModuleName, TypeMsgMintPhoton, "mint is disabled"), nil, nil
+		}
 		toAddress, _ := simtypes.RandomAcc(r, accs)
 		acc := ak.GetAccount(ctx, toAddress.Address)
 		spendable := bk.SpendableCoins(ctx, acc.GetAddress())

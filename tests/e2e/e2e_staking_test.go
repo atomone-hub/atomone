@@ -25,8 +25,6 @@ func (s *IntegrationTestSuite) testStaking() {
 
 		delegatorAddress, _ := s.chainA.genesisAccounts[2].keyInfo.GetAddress()
 
-		fees := sdk.NewCoin(uatoneDenom, sdk.NewInt(1))
-
 		existingDelegation := sdk.ZeroDec()
 		res, err := queryDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
 		if err == nil {
@@ -37,7 +35,7 @@ func (s *IntegrationTestSuite) testStaking() {
 		delegation := sdk.NewCoin(uatoneDenom, delegationAmount) // 500 atom
 
 		// Alice delegate uatone to Validator A
-		s.execDelegate(s.chainA, 0, delegation.String(), validatorAddressA, delegatorAddress.String(), atomoneHomePath, fees.String())
+		s.execDelegate(s.chainA, 0, delegation.String(), validatorAddressA, delegatorAddress.String(), atomoneHomePath)
 
 		// Validate delegation successful
 		s.Require().Eventually(
@@ -56,7 +54,7 @@ func (s *IntegrationTestSuite) testStaking() {
 		redelegation := sdk.NewCoin(uatoneDenom, redelegationAmount) // 250 atom
 
 		// Alice re-delegate half of her uatone delegation from Validator A to Validator B
-		s.execRedelegate(s.chainA, 0, redelegation.String(), validatorAddressA, validatorAddressB, delegatorAddress.String(), atomoneHomePath, fees.String())
+		s.execRedelegate(s.chainA, 0, redelegation.String(), validatorAddressA, validatorAddressB, delegatorAddress.String(), atomoneHomePath)
 
 		// Validate re-delegation successful
 		s.Require().Eventually(
@@ -93,7 +91,7 @@ func (s *IntegrationTestSuite) testStaking() {
 		)
 
 		// Alice unbonds all her uatone delegation from Validator A
-		s.execUnbondDelegation(s.chainA, 0, currDelegation.String(), validatorAddressA, delegatorAddress.String(), atomoneHomePath, fees.String())
+		s.execUnbondDelegation(s.chainA, 0, currDelegation.String(), validatorAddressA, delegatorAddress.String(), atomoneHomePath)
 
 		var ubdDelegationEntry types.UnbondingDelegationEntry
 
@@ -121,7 +119,6 @@ func (s *IntegrationTestSuite) testStaking() {
 			strconv.Itoa(int(ubdDelegationEntry.CreationHeight)),
 			delegatorAddress.String(),
 			atomoneHomePath,
-			fees.String(),
 		)
 
 		// validate that unbonding delegation was successfully canceled
