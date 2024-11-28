@@ -7,6 +7,14 @@ upgrade successfully for the AtomOne v2 release.
 
 For more details on the release, please see the [release notes][v2].
 
+**Validators** will have to change their configuration to allow the PHOTON
+denom for the fees, **before** the upgrade, see [Validator config
+change](#validator-config-change).
+
+**Relayer Operators** will also need to update their configuration to use the
+PHOTON denom for the fees, but this time **after** the upgrade, see [Relayer
+config change](#relayer-config-change) section.
+
 ## Release Binary
 
 Please use the correct release binary: `v2.0.0`.
@@ -25,7 +33,8 @@ Please use the correct release binary: `v2.0.0`.
     - [Current runtime](#current-runtime)
     - [Target runtime](#target-runtime)
   - [Upgrade steps](#upgrade-steps)
-    - [`minimum-gas-prices` change](#minimum-gas-prices-change)
+    - [Validator config change](#validator-config-change)
+    - [Relayer config change](#relayer-config-change)
     - [Method I: Manual Upgrade](#method-i-manual-upgrade)
     - [Method II: Upgrade using Cosmovisor](#method-ii-upgrade-using-cosmovisor)
       - [Manually preparing the binary](#manually-preparing-the-binary)
@@ -100,7 +109,7 @@ There are 2 major ways to upgrade a node:
 If you prefer to use Cosmovisor to upgrade, some preparation work is needed
 before upgrade.
 
-### `minimum-gas-prices` change
+### Validator config change
 
 **AtomOne v2.0.0** introduces `photon` as the only fee token, so it requires a
 modification of the validator configuration, namely the `minimum-gas-prices`
@@ -116,6 +125,33 @@ Before upgrading, the setting should be changed to:
 ```toml
 minimum-gas-prices = "0.001uatone,0.001uphoton"
 ```
+
+### Relayer config change
+
+Similarly to the validator config change, any running relayers would have to
+change the gas price denom for the AtomOne chain, from `uatone` to `uphoton`.
+
+For Hermes relayers, this setting is located in the `~/.hermes/config.toml`
+file.
+
+For example, considerng the existing setting:
+```toml
+[[ chain ]]
+id = 'atomone-1'
+(...)
+gas_price = { price = 0.001, denom = 'uatone' }
+```
+Once the chain is upgraded, the setting should be changed to:
+```toml
+[[ chain ]]
+id = 'atomone-1'
+(...)
+gas_price = { price = 0.001, denom = 'uphoton' }
+```
+
+Note that unlike the validator config change which still accepts `uatone` for
+fees, this change should be done **after** the upgrade because it is restricted
+to `uphoton` which has no supply before the upgrade.
 
 ### Method I: Manual Upgrade
 
