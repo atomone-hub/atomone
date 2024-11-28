@@ -126,6 +126,9 @@ Before upgrading, the setting should be changed to:
 minimum-gas-prices = "0.001uatone,0.001uphoton"
 ```
 
+For validators that have `authz` transactions submitted periodically, the tx
+fee denom would need to be updated as well.
+
 ### Relayer config change
 
 Similarly to the validator config change, any running relayers would have to
