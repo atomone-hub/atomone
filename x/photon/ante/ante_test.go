@@ -19,8 +19,6 @@ func TestValidateFeeDecorator(t *testing.T) {
 	tests := []struct {
 		name          string
 		tx            sdk.Tx
-		isGenTx       bool
-		simulateMode  bool
 		expectedError string
 	}{
 		{
@@ -35,8 +33,6 @@ func TestValidateFeeDecorator(t *testing.T) {
 					},
 				},
 			},
-			isGenTx:      false,
-			simulateMode: false,
 		},
 		{
 			name: "ok: tx MsgMintPhoton accepts any fee denom bc declared in txFeeExceptions",
@@ -55,8 +51,6 @@ func TestValidateFeeDecorator(t *testing.T) {
 					},
 				},
 			},
-			isGenTx:      false,
-			simulateMode: false,
 		},
 		{
 			name: "ok: MsgUpdateParams fee uphoton",
@@ -72,8 +66,6 @@ func TestValidateFeeDecorator(t *testing.T) {
 					},
 				},
 			},
-			isGenTx:      false,
-			simulateMode: false,
 		},
 		{
 			name: "fail: MsgUpdateParams fee uatone",
@@ -89,8 +81,6 @@ func TestValidateFeeDecorator(t *testing.T) {
 					},
 				},
 			},
-			isGenTx:       false,
-			simulateMode:  false,
 			expectedError: "fee denom uatone not allowed: invalid fee token",
 		},
 		{
@@ -107,8 +97,6 @@ func TestValidateFeeDecorator(t *testing.T) {
 					},
 				},
 			},
-			isGenTx:       false,
-			simulateMode:  false,
 			expectedError: "fee denom xxx not allowed: invalid fee token",
 		},
 		{
@@ -128,53 +116,12 @@ func TestValidateFeeDecorator(t *testing.T) {
 					},
 				},
 			},
-			isGenTx:       false,
-			simulateMode:  false,
 			expectedError: "too many fee coins, only accepts fees in one denom",
-		},
-		{
-			name: "ok: MsgUpdateParams fee xxx with simulate",
-			tx: &tx.Tx{
-				AuthInfo: &tx.AuthInfo{
-					Fee: &tx.Fee{
-						Amount: sdk.NewCoins(sdk.NewInt64Coin("xxx", 1)),
-					},
-				},
-				Body: &tx.TxBody{
-					Messages: []*codectypes.Any{
-						codectypes.UnsafePackAny(&types.MsgUpdateParams{}),
-					},
-				},
-			},
-			isGenTx:      false,
-			simulateMode: true,
-		},
-		{
-			name: "ok: MsgUpdateParams fee xxx with gentx",
-			tx: &tx.Tx{
-				AuthInfo: &tx.AuthInfo{
-					Fee: &tx.Fee{
-						Amount: sdk.NewCoins(sdk.NewInt64Coin("xxx", 1)),
-					},
-				},
-				Body: &tx.TxBody{
-					Messages: []*codectypes.Any{
-						codectypes.UnsafePackAny(&types.MsgUpdateParams{}),
-					},
-				},
-			},
-			isGenTx:      true,
-			simulateMode: false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			k, _, ctx := testutil.SetupPhotonKeeper(t)
-			if !tt.isGenTx {
-				// default block height is 0, if the tx is not a genTx, then it should
-				// be higher than 0.
-				ctx = ctx.WithBlockHeight(1)
-			}
 			k.SetParams(ctx, types.DefaultParams())
 			var (
 				nextInvoked bool
@@ -185,7 +132,7 @@ func TestValidateFeeDecorator(t *testing.T) {
 				vfd = NewValidateFeeDecorator(k)
 			)
 
-			_, err := vfd.AnteHandle(ctx, tt.tx, tt.simulateMode, next)
+			_, err := vfd.AnteHandle(ctx, tt.tx, false, next)
 
 			if tt.expectedError != "" {
 				require.EqualError(t, err, tt.expectedError)

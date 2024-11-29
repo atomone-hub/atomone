@@ -20,22 +20,10 @@ func NewValidateFeeDecorator(k *keeper.Keeper) ValidateFeeDecorator {
 
 // AnteHandle implements the sdk.AnteDecorator interface.
 // It returns an error if the tx fee denom is not photon, with some exceptions:
-//   - tx is a gentx
-//   - tx mode is simulate
+//   - tx has no fees or 0 fees.
 //   - tx messages' type URLs match the `TxFeeExceptions` field of the
 //     [types.Params].
-//   - tx has no fees or 0 fees.
 func (vfd ValidateFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (sdk.Context, error) {
-	if ctx.BlockHeight() == 0 || simulate {
-		// Skip if this is genesis height or simulate mode, because genesis and
-		// simulated transactions might have no fees.
-		return next(ctx, tx, simulate)
-	}
-	if allowsAnyTxFee(tx, vfd.k.GetParams(ctx).TxFeeExceptions) {
-		// Skip if tx is declared in TxFeeExceptions (any fee coins are allowed).
-		return next(ctx, tx, simulate)
-	}
-
 	feeTx, ok := tx.(sdk.FeeTx)
 	if !ok {
 		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "Tx must be a FeeTx") //nolint:staticcheck
@@ -45,6 +33,12 @@ func (vfd ValidateFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate 
 		// Skip if no fees
 		return next(ctx, tx, simulate)
 	}
+
+	if allowsAnyTxFee(tx, vfd.k.GetParams(ctx).TxFeeExceptions) {
+		// Skip if tx is declared in TxFeeExceptions (any fee coins are allowed).
+		return next(ctx, tx, simulate)
+	}
+
 	if len(feeCoins) > 1 {
 		return ctx, types.ErrTooManyFeeCoins
 	}
