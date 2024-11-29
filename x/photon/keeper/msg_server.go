@@ -49,10 +49,6 @@ func (k msgServer) MintPhoton(goCtx context.Context, msg *types.MsgMintPhoton) (
 	if uphotonToMint.IsZero() {
 		return nil, types.ErrZeroMintPhotons
 	}
-	// If photonToMint + photonSupply > photonMaxSupply, returns an error
-	if uphotonSupply.Add(uphotonToMint.ToLegacyDec()).GT(sdk.NewDec(types.MaxSupply)) {
-		return nil, types.ErrNotEnoughPhotons
-	}
 
 	// Burn/Mint phase:
 	// 1) move ATONEs from msg signer address to this module address

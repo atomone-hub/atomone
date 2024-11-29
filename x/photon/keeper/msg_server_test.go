@@ -68,21 +68,6 @@ func TestMsgServerMintPhoton(t *testing.T) {
 			expectedErr: "no mintable photon after rounding, try higher burn",
 		},
 		{
-			name:   "fail: photon_supply+minted>max",
-			params: types.Params{MintDisabled: false},
-			msg: &types.MsgMintPhoton{
-				ToAddress: toAddress.String(),
-				Amount:    sdk.NewInt64Coin(appparams.BondDenom, 1_000_000_000_000_000),
-			},
-			setup: func(ctx sdk.Context, m testutil.Mocks) {
-				m.StakingKeeper.EXPECT().BondDenom(ctx).Return(appparams.BondDenom)
-				m.BankKeeper.EXPECT().GetSupply(ctx, appparams.BondDenom).
-					Return(sdk.NewInt64Coin(appparams.BondDenom, atoneSupply))
-				m.BankKeeper.EXPECT().GetSupply(ctx, types.Denom).Return(sdk.NewInt64Coin(types.Denom, types.MaxSupply-1_000_000))
-			},
-			expectedErr: "not enough photon can be minted",
-		},
-		{
 			name:   "fail: atone_supply >> photon_supply",
 			params: types.Params{MintDisabled: false},
 			msg: &types.MsgMintPhoton{
