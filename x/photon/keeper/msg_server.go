@@ -45,6 +45,7 @@ func (k msgServer) MintPhoton(goCtx context.Context, msg *types.MsgMintPhoton) (
 		uphotonToMint   = bondDenomToBurn.Amount.ToLegacyDec().Mul(conversionRate).RoundInt()
 	)
 	// If no photon to mint, do not burn bondDenomToBurn, returns an error
+	// this could happen due to rounding
 	if uphotonToMint.IsZero() {
 		return nil, types.ErrZeroMintPhotons
 	}
