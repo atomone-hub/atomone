@@ -111,7 +111,7 @@ appropriate `go` version.
 
 ### Target runtime
 
-The AtomOne mainnet network, `atomone-1`, will run **[AtomOne v2.0.0][v2].
+The AtomOne mainnet network, `atomone-1`, will run **[AtomOne v2.0.0][v2]**.
 Operators _**MUST**_ use this version post-upgrade to remain connected to the
 network. The new version requires `go v1.21` to build successfully.
 
