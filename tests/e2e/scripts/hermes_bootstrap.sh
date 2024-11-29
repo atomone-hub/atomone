@@ -53,7 +53,7 @@ account_prefix = 'atone'
 key_name = 'rly01-gaia-a'
 store_prefix = 'ibc'
 max_gas = 6000000
-gas_price = { price = 0.00001, denom = 'uatone' }
+gas_price = { price = 0.00001, denom = 'uphoton' }
 gas_multiplier = 1.2
 clock_drift = '1m' # to accomdate docker containers
 trusting_period = '14days'
@@ -69,7 +69,7 @@ account_prefix = 'atone'
 key_name = 'rly01-gaia-b'
 store_prefix = 'ibc'
 max_gas =  6000000
-gas_price = { price = 0.00001, denom = 'uatone' }
+gas_price = { price = 0.00001, denom = 'uphoton' }
 gas_multiplier = 1.2
 clock_drift = '1m' # to accomdate docker containers
 trusting_period = '14days'
@@ -120,7 +120,7 @@ account_prefix = 'atone'
 key_name = 'rly01-gaia-a'
 store_prefix = 'ibc'
 max_gas = 6000000
-gas_price = { price = 0, denom = 'uatone' }
+gas_price = { price = 0, denom = 'uphoton' }
 gas_multiplier = 1.2
 clock_drift = '1m' # to accommodate docker containers
 trusting_period = '14days'
@@ -136,7 +136,7 @@ account_prefix = 'atone'
 key_name = 'rly01-gaia-b'
 store_prefix = 'ibc'
 max_gas =  6000000
-gas_price = { price = 0, denom = 'uatone' }
+gas_price = { price = 0, denom = 'uphoton' }
 gas_multiplier = 1.2
 clock_drift = '1m' # to accommodate docker containers
 trusting_period = '14days'

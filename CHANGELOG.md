@@ -14,6 +14,14 @@
 
 ### STATE BREAKING
 
+## v2.0.0
+
+*Release date*
+
+### FEATURES
+
+- Add the photon module and use photon as the only fee denom [#57](https://github.com/atomone-hub/atomone/pull/57)
+
 ## v1.0.0
 
 *Sep 26th, 2024*

@@ -49,7 +49,6 @@ func (s *IntegrationTestSuite) testFeeGrant() {
 			bob.String(),
 			Address(),
 			tokenAmount.String(),
-			standardFees.String(),
 			false,
 			withKeyValue(flagFeeGranter, alice.String()),
 		)
@@ -67,7 +66,6 @@ func (s *IntegrationTestSuite) testFeeGrant() {
 			bob.String(),
 			Address(),
 			tokenAmount.String(),
-			standardFees.String(),
 			true,
 			withKeyValue(flagFeeGranter, alice.String()),
 		)
@@ -97,7 +95,6 @@ func (s *IntegrationTestSuite) testFeeGrant() {
 			charlie.String(),
 			Address(),
 			tokenAmount.String(),
-			standardFees.String(),
 			true,
 			withKeyValue(flagFeeGranter, alice.String()),
 		)
