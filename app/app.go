@@ -51,6 +51,7 @@ import (
 	"github.com/atomone-hub/atomone/app/keepers"
 	"github.com/atomone-hub/atomone/app/params"
 	"github.com/atomone-hub/atomone/app/upgrades"
+	v2 "github.com/atomone-hub/atomone/app/upgrades/v2"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 )
 
@@ -58,7 +59,7 @@ var (
 	// DefaultNodeHome default home directories for the application daemon
 	DefaultNodeHome string
 
-	Upgrades = []upgrades.Upgrade{}
+	Upgrades = []upgrades.Upgrade{v2.Upgrade}
 )
 
 var (
@@ -221,6 +222,7 @@ func NewAtomOneApp(
 			Codec:         appCodec,
 			IBCkeeper:     app.IBCKeeper,
 			StakingKeeper: app.StakingKeeper,
+			PhotonKeeper:  app.PhotonKeeper,
 			// If TxFeeChecker is nil the default ante TxFeeChecker is used
 			TxFeeChecker: nil,
 		},

@@ -3,11 +3,14 @@
 package devdeps
 
 import (
-	// required for formatting, linting, pls.
+	// formatting
 	_ "mvdan.cc/gofumpt"
 
 	// linter
 	_ "github.com/golangci/golangci-lint/cmd/golangci-lint"
+
+	// mocks
+	_ "github.com/golang/mock/mockgen"
 
 	// for releases
 	_ "github.com/goreleaser/goreleaser"

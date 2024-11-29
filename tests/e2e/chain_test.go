@@ -27,6 +27,7 @@ import (
 	atomoneparams "github.com/atomone-hub/atomone/app/params"
 	govv1types "github.com/atomone-hub/atomone/x/gov/types/v1"
 	govv1beta1types "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
+	photontypes "github.com/atomone-hub/atomone/x/photon/types"
 )
 
 const (
@@ -61,6 +62,7 @@ func init() {
 	upgradetypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 	distribtypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 	ibctransfertypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
+	photontypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 
 	cdc = encodingConfig.Marshaler
 	txConfig = encodingConfig.TxConfig

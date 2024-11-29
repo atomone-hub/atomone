@@ -1,11 +1,13 @@
 package e2e
 
 import (
+	"encoding/hex"
 	"fmt"
 	"io"
 	"net/http"
 	"strings"
 
+	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/tx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -17,10 +19,11 @@ import (
 
 	govtypesv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	govtypesv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
+	photontypes "github.com/atomone-hub/atomone/x/photon/types"
 )
 
 // queryAtomOneTx returns an error if the tx is not found or is failed.
-func queryAtomOneTx(endpoint, txHash string) error {
+func queryAtomOneTx(endpoint, txHash string, msgResp codec.ProtoMarshaler) error {
 	body, err := httpGet(fmt.Sprintf("%s/cosmos/tx/v1beta1/txs/%s", endpoint, txHash))
 	if err != nil {
 		return err
@@ -32,6 +35,20 @@ func queryAtomOneTx(endpoint, txHash string) error {
 	}
 	if resp.TxResponse.Code != 0 {
 		return fmt.Errorf("tx %s is failed with code=%d log='%s'", txHash, resp.TxResponse.Code, resp.TxResponse.RawLog)
+	}
+	if msgResp != nil {
+		// msgResp is provided, try to decode the tx response
+		data, err := hex.DecodeString(resp.TxResponse.Data)
+		if err != nil {
+			return err
+		}
+		var txMsgData sdk.TxMsgData
+		if err := cdc.Unmarshal(data, &txMsgData); err != nil {
+			return err
+		}
+		if err := cdc.Unmarshal(txMsgData.MsgResponses[0].Value, msgResp); err != nil {
+			return err
+		}
 	}
 	return nil
 }
@@ -63,6 +80,15 @@ func queryAtomOneAllBalances(endpoint, addr string) (sdk.Coins, error) {
 	}
 
 	return balancesResp.Balances, nil
+}
+
+func (s *IntegrationTestSuite) queryBankSupply(endpoint string) sdk.Coins {
+	body, err := httpGet(fmt.Sprintf("%s/cosmos/bank/v1beta1/supply", endpoint))
+	s.Require().NoError(err)
+	var resp banktypes.QueryTotalSupplyResponse
+	err = cdc.UnmarshalJSON(body, &resp)
+	s.Require().NoError(err)
+	return resp.Supply
 }
 
 func queryStakingParams(endpoint string) (stakingtypes.QueryParamsResponse, error) { //nolint:unused
@@ -274,6 +300,24 @@ func (s *IntegrationTestSuite) queryConstitution(endpoint string) govtypesv1.Que
 	var res govtypesv1.QueryConstitutionResponse
 	body, err := httpGet(fmt.Sprintf("%s/atomone/gov/v1/constitution", endpoint))
 	s.Require().NoError(err)
+	err = cdc.UnmarshalJSON(body, &res)
+	s.Require().NoError(err)
+	return res
+}
+
+func (s *IntegrationTestSuite) queryPhotonConversionRate(endpoint string) sdk.Dec {
+	body, err := httpGet(fmt.Sprintf("%s/atomone/photon/v1/conversion_rate", endpoint))
+	s.Require().NoError(err)
+	var resp photontypes.QueryConversionRateResponse
+	err = cdc.UnmarshalJSON(body, &resp)
+	s.Require().NoError(err)
+	return sdk.MustNewDecFromStr(resp.ConversionRate)
+}
+
+func (s *IntegrationTestSuite) queryPhotonParams(endpoint string) photontypes.QueryParamsResponse {
+	body, err := httpGet(fmt.Sprintf("%s/atomone/photon/v1/params", endpoint))
+	s.Require().NoError(err)
+	var res photontypes.QueryParamsResponse
 	err = cdc.UnmarshalJSON(body, &res)
 	s.Require().NoError(err)
 	return res
