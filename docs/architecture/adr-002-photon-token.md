@@ -85,6 +85,10 @@ This is not possible if there are ATONEs staked, which is a requirement to be
 able to produce blocks. This also means in practice that this message is
 expected to never be able to fail because of insufficient mintable PHOTONs.
 
+There is however still a need to check that after calculations the amount of 
+photons to mint is non-zero, which due to rounding is a possibility when 
+burning very small fractions of the staking token (ATONE) supply.
+
 The total PHOTON supply will be a constant hard-coded within the `x/photon`
 module.
 
