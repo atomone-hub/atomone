@@ -45,6 +45,9 @@ var (
 	ProposalIDKey                 = []byte{0x03}
 	VotingPeriodProposalKeyPrefix = []byte{0x04}
 	QuorumCheckQueuePrefix        = []byte{0x05}
+	ActiveProposalsNumberKey      = []byte{0x06}
+	LastMinDepositKey             = []byte{0x07}
+	LastMinDepositTimeKey         = []byte{0x08}
 
 	DepositsKeyPrefix = []byte{0x10}
 
@@ -187,4 +190,16 @@ func splitKeyWithAddress(key []byte) (proposalID uint64, addr sdk.AccAddress) {
 	kv.AssertKeyAtLeastLength(key, 11)
 	addr = sdk.AccAddress(key[10:])
 	return
+}
+
+// GetActiveProposalsNumberBytes returns the byte representation of the activeProposalsNumber
+func GetActiveProposalsNumberBytes(activeProposalsNumber uint64) (activeProposalsNumberBz []byte) {
+	activeProposalsNumberBz = make([]byte, 8)
+	binary.BigEndian.PutUint64(activeProposalsNumberBz, activeProposalsNumber)
+	return
+}
+
+// GetActiveProposalsNumberFromBytes returns activeProposalsNumber in uint64 format from a byte array
+func GetActiveProposalsNumberFromBytes(bz []byte) (activeProposalsNumber uint64) {
+	return binary.BigEndian.Uint64(bz)
 }
