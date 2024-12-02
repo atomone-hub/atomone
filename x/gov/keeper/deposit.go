@@ -250,3 +250,41 @@ func (keeper Keeper) validateInitialDeposit(ctx sdk.Context, initialDeposit sdk.
 	}
 	return nil
 }
+
+// GetCurrentMinDeposit returns the (dynamic) minimum deposit currently required for a proposal
+func (keeper Keeper) GetCurrentMinDeposit(ctx sdk.Context) (sdk.Coins, error) {
+	params := keeper.GetParams(ctx)
+	paramMinDeposit := params.MinDeposit
+	tick := params.MinDepositUpdatePeriod
+	targetActiveProposals := params.TargetActiveProposals
+	k := params.TargetPropsDistanceSensitivity
+	a := sdk.ZeroDec()
+	b := sdk.ZeroInt()
+
+	numActiveProposals := keeper.GetNumActiveProposals(ctx)
+
+	if numActiveProposals > targetActiveProposals {
+		a = params.DepositIncreaseRatio
+	} else {
+		a = params.DepositDecreaseRatio
+		b = sdk.OneInt()
+	}
+
+	c1, err := numActiveProposals.Sub(targetActiveProposals).Sub(b).Abs().ToLegacyDec().ApproxRoot(k)
+	if err != nil {
+		return sdk.Coins{}, err
+	}
+	c := a.Mul(c1)
+
+	lastMinDeposit, lastMinDepositTime := keeper.GetLastMinDeposit(ctx)
+
+	// get number of ticks passed since last update
+	ticksPassed := ctx.BlockTime().Sub(lastMinDepositTime).Nanoseconds() / tick.Nanoseconds()
+
+	currMinDeposit := lastMinDeposit.Mul(sdk.OneDec().Add(c.Power(ticksPassed)))
+	if currMinDeposit < paramMinDeposit {
+		currMinDeposit = paramMinDeposit
+	}
+
+	return currMinDeposit
+}
