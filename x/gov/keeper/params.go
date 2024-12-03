@@ -9,6 +9,10 @@ import (
 
 // SetParams sets the gov module's parameters.
 func (k Keeper) SetParams(ctx sdk.Context, params v1.Params) error {
+	// before params change, trigger an update of the last min deposit
+	minDeposit := k.GetMinDeposit(ctx)
+	k.SetLastMinDeposit(ctx, minDeposit)
+
 	store := ctx.KVStore(k.storeKey)
 	bz, err := k.cdc.Marshal(&params)
 	if err != nil {
