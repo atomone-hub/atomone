@@ -8,6 +8,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/atomone-hub/atomone/x/gov/types"
+	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 )
 
 // GetActiveProposalsNumber gets the number of active proposals
@@ -30,76 +31,75 @@ func (keeper Keeper) SetActiveProposalsNumber(ctx sdk.Context, activeProposalsNu
 
 // IncrementActiveProposalsNumber increments the number of active proposals by one
 func (keeper Keeper) IncrementActiveProposalsNumber(ctx sdk.Context) {
-	activeProposalsNumber := keeper.GetActiveProposalsNumber(ctx)
-	keeper.SetActiveProposalsNumber(ctx, activeProposalsNumber+1)
+	activeProposalsNumber := keeper.GetActiveProposalsNumber(ctx) + 1
+	keeper.SetActiveProposalsNumber(ctx, activeProposalsNumber)
+
+	currMinDeposit := keeper.GetMinDeposit(ctx)
+	keeper.SetLastMinDeposit(ctx, currMinDeposit)
 }
 
 // DecrementActiveProposalsNumber decrements the number of active proposals by one
 func (keeper Keeper) DecrementActiveProposalsNumber(ctx sdk.Context) {
-	activeProposalsNumber := keeper.GetActiveProposalsNumber(ctx)
-	keeper.SetActiveProposalsNumber(ctx, activeProposalsNumber-1)
+	currentActiveProposalsNumber := keeper.GetActiveProposalsNumber(ctx)
+	if currentActiveProposalsNumber > 0 {
+		activeProposalsNumber := currentActiveProposalsNumber - 1
+		keeper.SetActiveProposalsNumber(ctx, activeProposalsNumber)
+	} else {
+		panic("number of active proposals should never be negative")
+	}
+
+	currMinDeposit := keeper.GetMinDeposit(ctx)
+	keeper.SetLastMinDeposit(ctx, currMinDeposit)
 }
 
-// SetLastMinDeposit updates the last min deposit and last min deposit time
-// used to record these values the last time the number of active proposals changed
-func (keeper Keeper) SetLastMinDeposit(ctx sdk.Context, minDeposit sdk.Coin) {
+// SetLastMinDeposit updates the last min deposit and last min deposit time.
+// Used to record these values the last time the number of active proposals changed
+func (keeper Keeper) SetLastMinDeposit(ctx sdk.Context, minDeposit sdk.Coins) {
 	store := ctx.KVStore(keeper.storeKey)
-	bz, err := keeper.cdc.Marshal(&minDeposit)
-	if err != nil {
-		panic(err)
-	}
-	store.Set(types.LastMinDepositKey, bz)
-
 	blockTime := ctx.BlockTime()
-	bz = sdk.FormatTimeBytes(blockTime)
-	store.Set(types.LastMinDepositTimeKey, bz)
+	lastMinDeposit := v1.LastMinDeposit{
+		Value: minDeposit,
+		Time:  &blockTime,
+	}
+	bz := keeper.cdc.MustMarshal(&lastMinDeposit)
+	store.Set(types.LastMinDepositKey, bz)
 }
 
 // GetLastMinDeposit returns the last min deposit and the time it was set
-func (keeper Keeper) GetLastMinDeposit(ctx sdk.Context) (lastMinDeposit sdk.Coin, lastMinDepositTime time.Time) {
+func (keeper Keeper) GetLastMinDeposit(ctx sdk.Context) (sdk.Coins, time.Time) {
 	store := ctx.KVStore(keeper.storeKey)
 	bz := store.Get(types.LastMinDepositKey)
 	if bz == nil {
-		return sdk.Coin{}, time.Time{}
+		return sdk.Coins{}, time.Time{}
 	}
-	err := keeper.cdc.Unmarshal(bz, &lastMinDeposit)
-	if err != nil {
-		panic(err)
-	}
-
-	bz = store.Get(types.LastMinDepositTimeKey)
-	if bz == nil {
-		return sdk.Coin{}, time.Time{}
-	}
-	lastMinDepositTime, err = sdk.ParseTimeBytes(bz)
-	if err != nil {
-		panic(err)
-	}
-	return lastMinDeposit, lastMinDepositTime
+	var lastMinDeposit v1.LastMinDeposit
+	keeper.cdc.MustUnmarshal(bz, &lastMinDeposit)
+	return lastMinDeposit.Value, *lastMinDeposit.Time
 }
 
-// GetCurrentMinDeposit returns the (dynamic) minimum deposit currently required for a proposal
-func (keeper Keeper) GetCurrentMinDeposit(ctx sdk.Context) (sdk.Coin, error) {
+// GetMinDeposit returns the (dynamic) minimum deposit currently required for a proposal
+func (keeper Keeper) GetMinDeposit(ctx sdk.Context) sdk.Coins {
 	params := keeper.GetParams(ctx)
-	paramMinDeposit := params.MinDeposit[0]
+	minDepositFloor := sdk.Coins(params.MinDepositFloor)
 	tick := params.MinDepositUpdatePeriod
 	targetActiveProposals := math.NewIntFromUint64(params.TargetActiveProposals)
-	k := params.TargetPropsDistanceSensitivity
-	a := math.LegacyZeroDec()
+	k := params.MinDepositSensitivityTargetDistance
 	b := math.ZeroInt()
+	var a sdk.Dec
 
 	numActiveProposals := math.NewIntFromUint64(keeper.GetActiveProposalsNumber(ctx))
 
 	if numActiveProposals.GT(targetActiveProposals) {
-		a = params.DepositIncreaseRatio
+		a = sdk.MustNewDecFromStr(params.MinDepositIncreaseRatio)
 	} else {
-		a = params.DepositDecreaseRatio
+		a = sdk.MustNewDecFromStr(params.MinDepositDecreaseRatio)
 		b = math.OneInt()
 	}
 
-	c1, err := numActiveProposals.Sub(targetActiveProposals).Sub(b).Abs().ToLegacyDec().ApproxRoot(k)
+	c1, err := numActiveProposals.Sub(targetActiveProposals).Sub(b).ToLegacyDec().ApproxRoot(k)
 	if err != nil {
-		return sdk.Coin{}, err
+		// in case of error bypass the sensitivity i.e. assume k = 1
+		c1 = numActiveProposals.Sub(targetActiveProposals).Sub(b).ToLegacyDec()
 	}
 	c := a.Mul(c1)
 
@@ -108,11 +108,31 @@ func (keeper Keeper) GetCurrentMinDeposit(ctx sdk.Context) (sdk.Coin, error) {
 	// get number of ticks passed since last update
 	ticksPassed := ctx.BlockTime().Sub(lastMinDepositTime).Nanoseconds() / tick.Nanoseconds()
 
-	currMinDepositAmt := lastMinDeposit.Amount.ToLegacyDec().Mul(math.LegacyOneDec().Add(c.Power(ticksPassed))).TruncateInt()
-	currMinDeposit := sdk.NewCoin(paramMinDeposit.Denom, currMinDepositAmt)
-	if currMinDepositAmt.LT(paramMinDeposit.Amount) {
-		currMinDeposit.Amount = paramMinDeposit.Amount
+	minDeposit := sdk.Coins{}
+	minDepositFloorDenomsSeen := make(map[string]bool)
+	for _, lastMinDepositCoin := range lastMinDeposit {
+		minDepositFloorCoinAmt := minDepositFloor.AmountOf(lastMinDepositCoin.Denom)
+		if minDepositFloorCoinAmt.IsZero() {
+			// minDepositFloor was changed and this coin was removed,
+			// reflect this also in the current min deposit, i.e. remove
+			// this coin
+			continue
+		}
+		minDepositFloorDenomsSeen[lastMinDepositCoin.Denom] = true
+		minDepositCoinAmt := lastMinDepositCoin.Amount.ToLegacyDec().Mul(math.LegacyOneDec().Add(c.Power(uint64(ticksPassed)))).TruncateInt()
+		if minDepositCoinAmt.LT(minDepositFloorCoinAmt) {
+			minDeposit = append(minDeposit, sdk.NewCoin(lastMinDepositCoin.Denom, minDepositFloorCoinAmt))
+		} else {
+			minDeposit = append(minDeposit, sdk.NewCoin(lastMinDepositCoin.Denom, minDepositCoinAmt))
+		}
 	}
 
-	return currMinDeposit, nil
+	// make sure any new denoms in minDepositFloor are added to minDeposit
+	for _, minDepositFloorCoin := range minDepositFloor {
+		if _, seen := minDepositFloorDenomsSeen[minDepositFloorCoin.Denom]; !seen {
+			minDeposit = append(minDeposit, minDepositFloorCoin)
+		}
+	}
+
+	return minDeposit
 }

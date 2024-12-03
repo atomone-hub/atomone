@@ -190,6 +190,7 @@ func EndBlocker(ctx sdk.Context, keeper *keeper.Keeper) {
 
 		keeper.SetProposal(ctx, proposal)
 		keeper.RemoveFromActiveProposalQueue(ctx, proposal.Id, *proposal.VotingEndTime)
+		keeper.DecrementActiveProposalsNumber(ctx)
 
 		// when proposal become active
 		keeper.Hooks().AfterProposalVotingPeriodEnded(ctx, proposal.Id)

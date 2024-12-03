@@ -47,7 +47,6 @@ var (
 	QuorumCheckQueuePrefix        = []byte{0x05}
 	ActiveProposalsNumberKey      = []byte{0x06}
 	LastMinDepositKey             = []byte{0x07}
-	LastMinDepositTimeKey         = []byte{0x08}
 
 	DepositsKeyPrefix = []byte{0x10}
 
@@ -112,6 +111,18 @@ func QuorumCheckByTimeKey(endTime time.Time) []byte {
 // QuorumCheckQueueKey returns the key for a proposalID in the quorumCheckQueue
 func QuorumCheckQueueKey(proposalID uint64, endTime time.Time) []byte {
 	return append(QuorumCheckByTimeKey(endTime), GetProposalIDBytes(proposalID)...)
+}
+
+// GetActiveProposalsNumberBytes returns the byte representation of the activeProposalsNumber
+func GetActiveProposalsNumberBytes(activeProposalsNumber uint64) (activeProposalsNumberBz []byte) {
+	activeProposalsNumberBz = make([]byte, 8)
+	binary.BigEndian.PutUint64(activeProposalsNumberBz, activeProposalsNumber)
+	return
+}
+
+// GetActiveProposalsNumberFromBytes returns activeProposalsNumber in uint64 format from a byte array
+func GetActiveProposalsNumberFromBytes(bz []byte) (activeProposalsNumber uint64) {
+	return binary.BigEndian.Uint64(bz)
 }
 
 // DepositsKey gets the first part of the deposits key based on the proposalID
@@ -190,16 +201,4 @@ func splitKeyWithAddress(key []byte) (proposalID uint64, addr sdk.AccAddress) {
 	kv.AssertKeyAtLeastLength(key, 11)
 	addr = sdk.AccAddress(key[10:])
 	return
-}
-
-// GetActiveProposalsNumberBytes returns the byte representation of the activeProposalsNumber
-func GetActiveProposalsNumberBytes(activeProposalsNumber uint64) (activeProposalsNumberBz []byte) {
-	activeProposalsNumberBz = make([]byte, 8)
-	binary.BigEndian.PutUint64(activeProposalsNumberBz, activeProposalsNumber)
-	return
-}
-
-// GetActiveProposalsNumberFromBytes returns activeProposalsNumber in uint64 format from a byte array
-func GetActiveProposalsNumberFromBytes(bz []byte) (activeProposalsNumber uint64) {
-	return binary.BigEndian.Uint64(bz)
 }
