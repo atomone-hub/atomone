@@ -167,6 +167,7 @@ func (q Keeper) Params(c context.Context, req *v1.QueryParamsRequest) (*v1.Query
 
 	ctx := sdk.UnwrapSDKContext(c)
 	params := q.GetParams(ctx)
+	params.MinDeposit = q.GetMinDeposit(ctx)
 
 	response := &v1.QueryParamsResponse{}
 

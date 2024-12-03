@@ -176,6 +176,7 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 	appState[minttypes.ModuleName] = mintGenStateBz
 
 	// Refactor to separate method
+	// amnt := sdk.NewInt(10000)
 	quorum, _ := sdk.NewDecFromStr("0.000000000000000001")
 	threshold, _ := sdk.NewDecFromStr("0.000000000000000001")
 	lawQuorum, _ := sdk.NewDecFromStr("0.000000000000000001")
@@ -188,7 +189,8 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 
 	govGenState := govv1.NewGenesisState(1,
 		govv1.NewParams(
-			sdk.NewCoins(depositAmount), maxDepositPeriod,
+			// sdk.NewCoins(sdk.NewCoin(denom, amnt)),
+			maxDepositPeriod,
 			votingPeriod,
 			quorum.String(), threshold.String(),
 			amendmentsQuorum.String(), amendmentsThreshold.String(), lawQuorum.String(), lawThreshold.String(),
