@@ -861,7 +861,8 @@ func (m *TallyParams) GetLawThreshold() string {
 type Params struct {
 	// Minimum deposit for a proposal to enter voting period.
 	// Deprecated: a dynamic system now determines the minimum deposit,
-	// min_deposit_floor
+	// see the other params starting with  min_deposit_* and
+	// target_active_proposals. Setting this value has no effect.
 	MinDeposit []types.Coin `protobuf:"bytes,1,rep,name=min_deposit,json=minDeposit,proto3" json:"min_deposit"` // Deprecated: Do not use.
 	// Maximum period for Atom holders to deposit on a proposal. Initial value: 2
 	// months.
