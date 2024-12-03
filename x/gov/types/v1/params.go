@@ -61,13 +61,14 @@ func NewVotingParams(votingPeriod *time.Duration) VotingParams {
 
 // NewParams creates a new Params instance with given values.
 func NewParams(
-	minDeposit sdk.Coins, maxDepositPeriod, votingPeriod time.Duration,
+	// minDeposit sdk.Coins, // deprecated
+	maxDepositPeriod, votingPeriod time.Duration,
 	quorum, threshold, constitutionAmendmentQuorum, constitutionAmendmentThreshold, lawQuorum, lawThreshold, minInitialDepositRatio string,
 	burnProposalDeposit, burnVoteQuorum bool, minDepositRatio string,
 	quorumTimeout, maxVotingPeriodExtension time.Duration, quorumCheckCount uint64,
 ) Params {
 	return Params{
-		MinDeposit:                     minDeposit,
+		// MinDeposit:                     minDeposit, // deprecated
 		MaxDepositPeriod:               &maxDepositPeriod,
 		VotingPeriod:                   &votingPeriod,
 		Quorum:                         quorum,
@@ -89,7 +90,7 @@ func NewParams(
 // DefaultParams returns the default governance params
 func DefaultParams() Params {
 	return NewParams(
-		sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, DefaultMinDepositTokens)),
+		// sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, DefaultMinDepositTokens)),
 		DefaultDepositPeriod,
 		DefaultVotingPeriod,
 		DefaultQuorum.String(),
@@ -110,9 +111,9 @@ func DefaultParams() Params {
 
 // ValidateBasic performs basic validation on governance parameters.
 func (p Params) ValidateBasic() error {
-	if minDeposit := sdk.Coins(p.MinDeposit); minDeposit.Empty() || !minDeposit.IsValid() {
-		return fmt.Errorf("invalid minimum deposit: %s", minDeposit)
-	}
+	// if minDeposit := sdk.Coins(p.MinDeposit); minDeposit.Empty() || !minDeposit.IsValid() {
+	// 	return fmt.Errorf("invalid minimum deposit: %s", minDeposit)
+	// }
 
 	if p.MaxDepositPeriod == nil {
 		return fmt.Errorf("maximum deposit period must not be nil: %d", p.MaxDepositPeriod)

@@ -443,7 +443,7 @@ func randomDeposit(
 	}
 
 	params := k.GetParams(ctx)
-	minDeposit := params.MinDeposit
+	minDeposit := k.GetMinDeposit(ctx)
 	denomIndex := r.Intn(len(minDeposit))
 	denom := minDeposit[denomIndex].Denom
 

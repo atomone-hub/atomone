@@ -483,7 +483,7 @@ func TestEndBlockerQuorumCheck(t *testing.T) {
 			require.NoError(t, err)
 			require.NotNil(t, res)
 			// Activate proposal
-			newDepositMsg := v1.NewMsgDeposit(addrs[1], res.ProposalId, params.MinDeposit)
+			newDepositMsg := v1.NewMsgDeposit(addrs[1], res.ProposalId, suite.GovKeeper.GetMinDeposit(ctx))
 			res1, err := govMsgSvr.Deposit(ctx, newDepositMsg)
 			require.NoError(t, err)
 			require.NotNil(t, res1)
