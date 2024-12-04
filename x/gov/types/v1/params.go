@@ -31,9 +31,15 @@ var (
 	DefaultBurnVoteQuorom                 = false                    // set to false to  replicate behavior of when this change was made (0.47)
 	DefaultMinDepositRatio                = sdk.NewDecWithPrec(1, 2) // NOTE: backport from v50
 
-	DefaultQuorumTimeout            time.Duration = DefaultVotingPeriod - (time.Hour * 24 * 1) // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
-	DefaultMaxVotingPeriodExtension time.Duration = DefaultVotingPeriod - DefaultQuorumTimeout // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
-	DefaultQuorumCheckCount         uint64        = 0                                          // disabled by default (0 means no check)
+	DefaultQuorumTimeout                       time.Duration = DefaultVotingPeriod - (time.Hour * 24 * 1) // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
+	DefaultMaxVotingPeriodExtension            time.Duration = DefaultVotingPeriod - DefaultQuorumTimeout // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
+	DefaultQuorumCheckCount                    uint64        = 0                                          // disabled by default (0 means no check)
+	DefaultMinDepositFloor                     sdk.Coins     = sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, DefaultMinDepositTokens))
+	DefaultMinDepositUpdatePeriod              time.Duration = time.Hour * 24 * 7
+	DefaultMinDepositSensitivityTargetDistance uint64        = 2
+	DefaultMinDepositIncreaseRatio                           = sdk.NewDecWithPrec(5, 2)
+	DefaultMinDepositDecreaseRatio                           = sdk.NewDecWithPrec(25, 3)
+	DefaultTargetActiveProposals               uint64        = 2
 )
 
 // Deprecated: NewDepositParams creates a new DepositParams object
@@ -66,24 +72,32 @@ func NewParams(
 	quorum, threshold, constitutionAmendmentQuorum, constitutionAmendmentThreshold, lawQuorum, lawThreshold, minInitialDepositRatio string,
 	burnProposalDeposit, burnVoteQuorum bool, minDepositRatio string,
 	quorumTimeout, maxVotingPeriodExtension time.Duration, quorumCheckCount uint64,
+	minDepositFloor sdk.Coins, minDepositUpdatePeriod time.Duration, minDepositSensitivityTargetDistance uint64,
+	minDepositIncreaseRatio, minDepositDecreaseRatio string, targetActiveProposals uint64,
 ) Params {
 	return Params{
 		// MinDeposit:                     minDeposit, // Deprecated in favor of dynamic min deposit
-		MaxDepositPeriod:               &maxDepositPeriod,
-		VotingPeriod:                   &votingPeriod,
-		Quorum:                         quorum,
-		Threshold:                      threshold,
-		ConstitutionAmendmentQuorum:    constitutionAmendmentQuorum,
-		ConstitutionAmendmentThreshold: constitutionAmendmentThreshold,
-		LawQuorum:                      lawQuorum,
-		LawThreshold:                   lawThreshold,
-		MinInitialDepositRatio:         minInitialDepositRatio,
-		BurnProposalDepositPrevote:     burnProposalDeposit,
-		BurnVoteQuorum:                 burnVoteQuorum,
-		MinDepositRatio:                minDepositRatio,
-		QuorumTimeout:                  &quorumTimeout,
-		MaxVotingPeriodExtension:       &maxVotingPeriodExtension,
-		QuorumCheckCount:               quorumCheckCount,
+		MaxDepositPeriod:                    &maxDepositPeriod,
+		VotingPeriod:                        &votingPeriod,
+		Quorum:                              quorum,
+		Threshold:                           threshold,
+		ConstitutionAmendmentQuorum:         constitutionAmendmentQuorum,
+		ConstitutionAmendmentThreshold:      constitutionAmendmentThreshold,
+		LawQuorum:                           lawQuorum,
+		LawThreshold:                        lawThreshold,
+		MinInitialDepositRatio:              minInitialDepositRatio,
+		BurnProposalDepositPrevote:          burnProposalDeposit,
+		BurnVoteQuorum:                      burnVoteQuorum,
+		MinDepositRatio:                     minDepositRatio,
+		QuorumTimeout:                       &quorumTimeout,
+		MaxVotingPeriodExtension:            &maxVotingPeriodExtension,
+		QuorumCheckCount:                    quorumCheckCount,
+		MinDepositFloor:                     minDepositFloor,
+		MinDepositUpdatePeriod:              &minDepositUpdatePeriod,
+		MinDepositSensitivityTargetDistance: minDepositSensitivityTargetDistance,
+		MinDepositIncreaseRatio:             minDepositIncreaseRatio,
+		MinDepositDecreaseRatio:             minDepositDecreaseRatio,
+		TargetActiveProposals:               targetActiveProposals,
 	}
 }
 
@@ -106,6 +120,12 @@ func DefaultParams() Params {
 		DefaultQuorumTimeout,
 		DefaultMaxVotingPeriodExtension,
 		DefaultQuorumCheckCount,
+		DefaultMinDepositFloor,
+		DefaultMinDepositUpdatePeriod,
+		DefaultMinDepositSensitivityTargetDistance,
+		DefaultMinDepositIncreaseRatio.String(),
+		DefaultMinDepositDecreaseRatio.String(),
+		DefaultTargetActiveProposals,
 	)
 }
 
