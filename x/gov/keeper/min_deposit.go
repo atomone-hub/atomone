@@ -87,6 +87,9 @@ func (keeper Keeper) GetMinDeposit(ctx sdk.Context) sdk.Coins {
 	var a sdk.Dec
 
 	numActiveProposals := math.NewIntFromUint64(keeper.GetActiveProposalsNumber(ctx))
+	lastMinDeposit, lastMinDepositTime := keeper.GetLastMinDeposit(ctx)
+	// get number of ticks passed since last update
+	ticksPassed := ctx.BlockTime().Sub(lastMinDepositTime).Nanoseconds() / tick.Nanoseconds()
 
 	if numActiveProposals.GT(targetActiveProposals) {
 		a = sdk.MustNewDecFromStr(params.MinDepositIncreaseRatio)
@@ -94,17 +97,17 @@ func (keeper Keeper) GetMinDeposit(ctx sdk.Context) sdk.Coins {
 		a = sdk.MustNewDecFromStr(params.MinDepositDecreaseRatio)
 	}
 
-	c1, err := numActiveProposals.Sub(targetActiveProposals).ToLegacyDec().ApproxRoot(k)
-	if err != nil {
-		// in case of error bypass the sensitivity, i.e. assume k = 1
-		c1 = numActiveProposals.Sub(targetActiveProposals).ToLegacyDec()
+	distance := numActiveProposals.Sub(targetActiveProposals)
+	percChange := math.LegacyOneDec()
+	if !distance.IsZero() {
+		b, err := distance.ToLegacyDec().ApproxRoot(k)
+		if err != nil {
+			// in case of error bypass the sensitivity, i.e. assume k = 1
+			b = numActiveProposals.Sub(targetActiveProposals).ToLegacyDec()
+		}
+		c := a.Mul(b)
+		percChange = percChange.Add(c.Power(uint64(ticksPassed)))
 	}
-	c := a.Mul(c1)
-
-	lastMinDeposit, lastMinDepositTime := keeper.GetLastMinDeposit(ctx)
-
-	// get number of ticks passed since last update
-	ticksPassed := ctx.BlockTime().Sub(lastMinDepositTime).Nanoseconds() / tick.Nanoseconds()
 
 	minDeposit := sdk.Coins{}
 	minDepositFloorDenomsSeen := make(map[string]bool)
@@ -117,7 +120,7 @@ func (keeper Keeper) GetMinDeposit(ctx sdk.Context) sdk.Coins {
 			continue
 		}
 		minDepositFloorDenomsSeen[lastMinDepositCoin.Denom] = true
-		minDepositCoinAmt := lastMinDepositCoin.Amount.ToLegacyDec().Mul(math.LegacyOneDec().Add(c.Power(uint64(ticksPassed)))).TruncateInt()
+		minDepositCoinAmt := lastMinDepositCoin.Amount.ToLegacyDec().Mul(percChange).TruncateInt()
 		if minDepositCoinAmt.LT(minDepositFloorCoinAmt) {
 			minDeposit = append(minDeposit, sdk.NewCoin(lastMinDepositCoin.Denom, minDepositFloorCoinAmt))
 		} else {
@@ -128,7 +131,7 @@ func (keeper Keeper) GetMinDeposit(ctx sdk.Context) sdk.Coins {
 	// make sure any new denoms in minDepositFloor are added to minDeposit
 	for _, minDepositFloorCoin := range minDepositFloor {
 		if _, seen := minDepositFloorDenomsSeen[minDepositFloorCoin.Denom]; !seen {
-			minDepositCoinAmt := minDepositFloorCoin.Amount.ToLegacyDec().Mul(math.LegacyOneDec().Add(c.Power(uint64(ticksPassed)))).TruncateInt()
+			minDepositCoinAmt := minDepositFloorCoin.Amount.ToLegacyDec().Mul(percChange).TruncateInt()
 			if minDepositCoinAmt.LT(minDepositFloorCoin.Amount) {
 				minDeposit = append(minDeposit, minDepositFloorCoin)
 			} else {
