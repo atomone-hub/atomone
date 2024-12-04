@@ -35,7 +35,7 @@ func (keeper Keeper) IncrementActiveProposalsNumber(ctx sdk.Context) {
 	keeper.SetActiveProposalsNumber(ctx, activeProposalsNumber)
 
 	currMinDeposit := keeper.GetMinDeposit(ctx)
-	keeper.SetLastMinDeposit(ctx, currMinDeposit)
+	keeper.SetLastMinDeposit(ctx, currMinDeposit, ctx.BlockTime())
 }
 
 // DecrementActiveProposalsNumber decrements the number of active proposals by one
@@ -49,17 +49,16 @@ func (keeper Keeper) DecrementActiveProposalsNumber(ctx sdk.Context) {
 	}
 
 	currMinDeposit := keeper.GetMinDeposit(ctx)
-	keeper.SetLastMinDeposit(ctx, currMinDeposit)
+	keeper.SetLastMinDeposit(ctx, currMinDeposit, ctx.BlockTime())
 }
 
 // SetLastMinDeposit updates the last min deposit and last min deposit time.
 // Used to record these values the last time the number of active proposals changed
-func (keeper Keeper) SetLastMinDeposit(ctx sdk.Context, minDeposit sdk.Coins) {
+func (keeper Keeper) SetLastMinDeposit(ctx sdk.Context, minDeposit sdk.Coins, timeStamp time.Time) {
 	store := ctx.KVStore(keeper.storeKey)
-	blockTime := ctx.BlockTime()
 	lastMinDeposit := v1.LastMinDeposit{
 		Value: minDeposit,
-		Time:  &blockTime,
+		Time:  &timeStamp,
 	}
 	bz := keeper.cdc.MustMarshal(&lastMinDeposit)
 	store.Set(types.LastMinDepositKey, bz)

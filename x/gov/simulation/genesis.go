@@ -132,7 +132,7 @@ func RandomizedGenState(simState *module.SimulationState) {
 	startingProposalID := uint64(simState.Rand.Intn(100))
 
 	// var minDeposit sdk.Coins
-	//simState.AppParams.GetOrGenerate(
+	// simState.AppParams.GetOrGenerate(
 	//	simState.Cdc, DepositParamsMinDeposit, &minDeposit, simState.Rand,
 	//	func(r *rand.Rand) { minDeposit = GenDepositParamsMinDeposit(r) },
 	//)
