@@ -72,14 +72,14 @@ func NewVotingParams(votingPeriod *time.Duration) VotingParams {
 
 // NewParams creates a new Params instance with given values.
 func NewParams(
-	// minDeposit sdk.Coins, // deprecated
+	// minDeposit sdk.Coins, // Deprecated in favor of dynamic min deposit
 	maxDepositPeriod, votingPeriod time.Duration,
 	quorum, threshold, constitutionAmendmentQuorum, constitutionAmendmentThreshold, lawQuorum, lawThreshold, minInitialDepositRatio string,
 	burnProposalDeposit, burnVoteQuorum bool, minDepositRatio string,
 	quorumTimeout, maxVotingPeriodExtension time.Duration, quorumCheckCount uint64,
 ) Params {
 	return Params{
-		// MinDeposit:                     minDeposit, // deprecated
+		// MinDeposit:                     minDeposit, // Deprecated in favor of dynamic min deposit
 		MaxDepositPeriod:               &maxDepositPeriod,
 		VotingPeriod:                   &votingPeriod,
 		Quorum:                         quorum,
