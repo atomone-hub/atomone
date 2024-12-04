@@ -226,6 +226,17 @@ func (p Params) ValidateBasic() error {
 		return fmt.Errorf("mininum initial deposit ratio of proposal is too large: %s", minInitialDepositRatio)
 	}
 
+	minDepositRatio, err := math.LegacyNewDecFromStr(p.MinDepositRatio)
+	if err != nil {
+		return fmt.Errorf("invalid mininum deposit ratio of proposal: %w", err)
+	}
+	if minDepositRatio.IsNegative() {
+		return fmt.Errorf("mininum deposit ratio of proposal must be positive: %s", minDepositRatio)
+	}
+	if minDepositRatio.GT(math.LegacyOneDec()) {
+		return fmt.Errorf("mininum deposit ratio of proposal is too large: %s", minDepositRatio)
+	}
+
 	if p.QuorumCheckCount > 0 {
 		// If quorum check is enabled, validate quorum check params
 		if p.QuorumTimeout == nil {
@@ -244,6 +255,48 @@ func (p Params) ValidateBasic() error {
 		if p.MaxVotingPeriodExtension.Nanoseconds() < p.VotingPeriod.Nanoseconds()-p.QuorumTimeout.Nanoseconds() {
 			return fmt.Errorf("max voting period extension %s must be greater than or equal to the difference between the voting period %s and the quorum timeout %s", p.MaxVotingPeriodExtension, p.VotingPeriod, p.QuorumTimeout)
 		}
+	}
+
+	if minDepositFloor := sdk.Coins(p.MinDepositFloor); minDepositFloor.Empty() || !minDepositFloor.IsValid() {
+		return fmt.Errorf("invalid minimum deposit floor: %s", minDepositFloor)
+	}
+
+	if p.MinDepositUpdatePeriod == nil {
+		return fmt.Errorf("minimum deposit update period must not be nil: %d", p.MinDepositUpdatePeriod)
+	}
+
+	if p.MinDepositUpdatePeriod.Seconds() <= 0 {
+		return fmt.Errorf("minimum deposit update period must be positive: %d", p.MinDepositUpdatePeriod)
+	}
+
+	if p.MinDepositUpdatePeriod.Seconds() > p.VotingPeriod.Seconds() {
+		return fmt.Errorf("minimum deposit update period must be less than or equal to the voting period: %d", p.MinDepositUpdatePeriod)
+	}
+
+	if p.MinDepositSensitivityTargetDistance == 0 {
+		return fmt.Errorf("minimum deposit sensitivity target distance must be positive: %d", p.MinDepositSensitivityTargetDistance)
+	}
+
+	minDepositIncreaseRation, err := sdk.NewDecFromStr(p.MinDepositIncreaseRatio)
+	if err != nil {
+		return fmt.Errorf("invalid minimum deposit increase ratio: %w", err)
+	}
+	if minDepositIncreaseRation.IsNegative() {
+		return fmt.Errorf("minimum deposit increase ratio must be positive: %s", minDepositIncreaseRation)
+	}
+	if minDepositIncreaseRation.GT(math.LegacyOneDec()) {
+		return fmt.Errorf("minimum deposit increase ratio too large: %s", minDepositIncreaseRation)
+	}
+
+	minDepositDecreaseRatio, err := sdk.NewDecFromStr(p.MinDepositDecreaseRatio)
+	if err != nil {
+		return fmt.Errorf("invalid minimum deposit decrease ratio: %w", err)
+	}
+	if minDepositDecreaseRatio.IsNegative() {
+		return fmt.Errorf("minimum deposit decrease ratio must be positive: %s", minDepositDecreaseRatio)
+	}
+	if minDepositDecreaseRatio.GT(math.LegacyOneDec()) {
+		return fmt.Errorf("minimum deposit decrease ratio too large: %s", minDepositDecreaseRatio)
 	}
 
 	return nil
