@@ -1,6 +1,6 @@
 module github.com/atomone-hub/atomone
 
-go 1.21.13
+go 1.22.10
 
 require (
 	cosmossdk.io/api v0.3.1
