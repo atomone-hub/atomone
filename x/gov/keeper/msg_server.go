@@ -182,6 +182,15 @@ func (k msgServer) UpdateParams(goCtx context.Context, msg *v1.MsgUpdateParams) 
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	// before params change, trigger an update of the last min deposit
+	minDeposit := k.GetMinDeposit(ctx)
+	k.SetLastMinDeposit(ctx, minDeposit, ctx.BlockTime())
+	// params.MinDeposit is deprecated and therefore should not be set.
+	// Override any set value with the current min deposit, although
+	// since the value of this param is ignored it will have no effect.
+	msg.Params.MinDeposit = minDeposit
+
 	if err := k.SetParams(ctx, msg.Params); err != nil {
 		return nil, err
 	}
