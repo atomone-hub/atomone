@@ -11,9 +11,10 @@ import (
 
 // Default period for deposits & voting and min voting period
 const (
-	DefaultVotingPeriod  time.Duration = time.Hour * 24 * 21 // 21 days
-	MinVotingPeriod      time.Duration = time.Hour * 24 * 21 // 21 days
-	DefaultDepositPeriod time.Duration = time.Hour * 24 * 14 // 14 days
+	DefaultVotingPeriod               time.Duration = time.Hour * 24 * 21 // 21 days
+	MinVotingPeriod                   time.Duration = time.Hour * 24 * 21 // 21 days
+	DefaultDepositPeriod              time.Duration = time.Hour * 24 * 14 // 14 days
+	DefaultGovernorStatusChangePeriod time.Duration = time.Hour * 24 * 28 // 28 days
 )
 
 // Default governance params
@@ -31,9 +32,11 @@ var (
 	DefaultBurnVoteQuorom                 = false                    // set to false to  replicate behavior of when this change was made (0.47)
 	DefaultMinDepositRatio                = sdk.NewDecWithPrec(1, 2) // NOTE: backport from v50
 
-	DefaultQuorumTimeout            time.Duration = DefaultVotingPeriod - (time.Hour * 24 * 1) // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
-	DefaultMaxVotingPeriodExtension time.Duration = DefaultVotingPeriod - DefaultQuorumTimeout // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
-	DefaultQuorumCheckCount         uint64        = 0                                          // disabled by default (0 means no check)
+	DefaultQuorumTimeout             time.Duration = DefaultVotingPeriod - (time.Hour * 24 * 1) // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
+	DefaultMaxVotingPeriodExtension  time.Duration = DefaultVotingPeriod - DefaultQuorumTimeout // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
+	DefaultQuorumCheckCount          uint64        = 0                                          // disabled by default (0 means no check)
+	DefaultMaxGovernors              uint64        = 100
+	DefaultMinGovernorSelfDelegation               = sdk.NewInt(1000_000000)
 )
 
 // Deprecated: NewDepositParams creates a new DepositParams object
@@ -65,6 +68,7 @@ func NewParams(
 	quorum, threshold, constitutionAmendmentQuorum, constitutionAmendmentThreshold, lawQuorum, lawThreshold, minInitialDepositRatio string,
 	burnProposalDeposit, burnVoteQuorum bool, minDepositRatio string,
 	quorumTimeout, maxVotingPeriodExtension time.Duration, quorumCheckCount uint64,
+	maxGovernors uint64, governorStatusChangePeriod time.Duration, minGovernorSelfDelegation string,
 ) Params {
 	return Params{
 		MinDeposit:                     minDeposit,
@@ -83,6 +87,9 @@ func NewParams(
 		QuorumTimeout:                  &quorumTimeout,
 		MaxVotingPeriodExtension:       &maxVotingPeriodExtension,
 		QuorumCheckCount:               quorumCheckCount,
+		MaxGovernors:                   maxGovernors,
+		GovernorStatusChangePeriod:     &governorStatusChangePeriod,
+		MinGovernorSelfDelegation:      minGovernorSelfDelegation,
 	}
 }
 
@@ -105,6 +112,9 @@ func DefaultParams() Params {
 		DefaultQuorumTimeout,
 		DefaultMaxVotingPeriodExtension,
 		DefaultQuorumCheckCount,
+		DefaultMaxGovernors,
+		DefaultGovernorStatusChangePeriod,
+		DefaultMinGovernorSelfDelegation.String(),
 	)
 }
 
@@ -243,6 +253,22 @@ func (p Params) ValidateBasic() error {
 		if p.MaxVotingPeriodExtension.Nanoseconds() < p.VotingPeriod.Nanoseconds()-p.QuorumTimeout.Nanoseconds() {
 			return fmt.Errorf("max voting period extension %s must be greater than or equal to the difference between the voting period %s and the quorum timeout %s", p.MaxVotingPeriodExtension, p.VotingPeriod, p.QuorumTimeout)
 		}
+	}
+
+	if p.GovernorStatusChangePeriod == nil {
+		return fmt.Errorf("governor status change period must not be nil: %d", p.GovernorStatusChangePeriod)
+	}
+
+	if p.GovernorStatusChangePeriod.Seconds() <= 0 {
+		return fmt.Errorf("governor status change period must be positive: %d", p.GovernorStatusChangePeriod)
+	}
+
+	minGovernorSelfDelegation, ok := math.NewIntFromString(p.MinGovernorSelfDelegation)
+	if !ok {
+		return fmt.Errorf("invalid minimum governor self delegation: %s", p.MinGovernorSelfDelegation)
+	}
+	if minGovernorSelfDelegation.IsNegative() {
+		return fmt.Errorf("minimum governor self delegation must be positive: %s", minGovernorSelfDelegation)
 	}
 
 	return nil

@@ -30,6 +30,8 @@ const (
 	TallyParamsConstitutionAmendmentThreshold = "tally_params_constitution_amendment_threshold"
 	TallyParamsLawQuorum                      = "tally_params_law_quorum"
 	TallyParamsLawThreshold                   = "tally_params_law_threshold"
+	GovernorStatusChangePeriod                = "governor_status_change_period"
+	MinGovernorSelfDelegation                 = "min_governor_self_delegation"
 
 	// NOTE: backport from v50
 	MinDepositRatio          = "min_deposit_ratio"
@@ -99,6 +101,11 @@ func GenMaxVotingPeriodExtension(r *rand.Rand, votingPeriod, quorumTimout time.D
 // GenQuorumCheckCount returns a randomized QuorumCheckCount between 0 and 30
 func GenQuorumCheckCount(r *rand.Rand) uint64 {
 	return uint64(simulation.RandIntBetween(r, 0, 30))
+}
+
+// GenMinGovernorSelfDelegation returns a randomized MinGovernorSelfDelegation
+func GenMinGovernorSelfDelegation(r *rand.Rand) math.Int {
+	return math.NewInt(int64(simulation.RandIntBetween(r, 1000, 10000000)))
 }
 
 // RandomizedGenState generates a random GenesisState for gov
@@ -179,9 +186,23 @@ func RandomizedGenState(simState *module.SimulationState) {
 	var quorumCheckCount uint64
 	simState.AppParams.GetOrGenerate(simState.Cdc, QuorumCheckCount, &quorumCheckCount, simState.Rand, func(r *rand.Rand) { quorumCheckCount = GenQuorumCheckCount(r) })
 
+	maxGovernors := uint64(simState.Rand.Intn(100))
+
+	var governorStatusChangePeriod time.Duration
+	simState.AppParams.GetOrGenerate(
+		simState.Cdc, GovernorStatusChangePeriod, &governorStatusChangePeriod, simState.Rand,
+		func(r *rand.Rand) { governorStatusChangePeriod = GenDepositParamsDepositPeriod(r) },
+	)
+
+	var minGovernorSelfDelegation math.Int
+	simState.AppParams.GetOrGenerate(
+		simState.Cdc, MinGovernorSelfDelegation, &minGovernorSelfDelegation, simState.Rand,
+		func(r *rand.Rand) { minGovernorSelfDelegation = GenMinGovernorSelfDelegation(r) },
+	)
+
 	govGenesis := v1.NewGenesisState(
 		startingProposalID,
-		v1.NewParams(minDeposit, depositPeriod, votingPeriod, quorum.String(), threshold.String(), amendmentsQuorum.String(), amendmentsThreshold.String(), lawQuorum.String(), lawThreshold.String(), minInitialDepositRatio.String(), simState.Rand.Intn(2) == 0, simState.Rand.Intn(2) == 0, minDepositRatio.String(), quorumTimout, maxVotingPeriodExtension, quorumCheckCount),
+		v1.NewParams(minDeposit, depositPeriod, votingPeriod, quorum.String(), threshold.String(), amendmentsQuorum.String(), amendmentsThreshold.String(), lawQuorum.String(), lawThreshold.String(), minInitialDepositRatio.String(), simState.Rand.Intn(2) == 0, simState.Rand.Intn(2) == 0, minDepositRatio.String(), quorumTimout, maxVotingPeriodExtension, quorumCheckCount, maxGovernors, governorStatusChangePeriod, minGovernorSelfDelegation.String()),
 	)
 
 	bz, err := json.MarshalIndent(&govGenesis, "", " ")

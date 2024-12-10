@@ -55,6 +55,14 @@ var (
 
 	// KeyConstitution is the key string used to store the chain's constitution
 	KeyConstitution = []byte{0x40}
+
+	// GovernorKeyPrefix is the prefix for governor key
+	GovernorKeyPrefix                        = []byte{0x50}
+	GovernorsByPowerKeyPrefix                = []byte{0x51}
+	GovernanceDelegationKeyPrefix            = []byte{0x52}
+	ValidatorSharesByGovernorKeyPrefix       = []byte{0x53}
+	GovernanceDelegationsByGovernorKeyPrefix = []byte{0x54}
+	ValidatorSharesByValidatorKeyPrefix      = []byte{0x55}
 )
 
 var lenTime = len(sdk.FormatTimeBytes(time.Now()))
@@ -129,6 +137,41 @@ func VotesKey(proposalID uint64) []byte {
 // VoteKey key of a specific vote from the store
 func VoteKey(proposalID uint64, voterAddr sdk.AccAddress) []byte {
 	return append(VotesKey(proposalID), address.MustLengthPrefix(voterAddr.Bytes())...)
+}
+
+// GovernorKey gets the first part of the governor key based on the governor address
+func GovernorKey(governorAddr GovernorAddress) []byte {
+	return append(GovernorKeyPrefix, address.MustLengthPrefix(governorAddr.Bytes())...)
+}
+
+// GovernorsByPowerKey gets the first part of the governors by power key based on the power and governor address
+func GovernorsByPowerKey(governorAddr GovernorAddress, power sdk.Dec) []byte {
+	powerBytes := make([]byte, 8)
+	binary.BigEndian.PutUint64(powerBytes, uint64(power.TruncateInt64()))
+	return append(GovernorsByPowerKeyPrefix, append(powerBytes, address.MustLengthPrefix(governorAddr.Bytes())...)...)
+}
+
+// GovernanceDelegationKey gets the first part of the governance delegation key based on the delegator address
+func GovernanceDelegationKey(delegatorAddr sdk.AccAddress) []byte {
+	return append(GovernanceDelegationKeyPrefix, address.MustLengthPrefix(delegatorAddr.Bytes())...)
+}
+
+// GovernanceDelegationsByGovernorKey gets the first part of the key for governance delegations indexed by governor
+// based on the delegator address and delegator address
+func GovernanceDelegationsByGovernorKey(governorAddr GovernorAddress, delegatorAddr sdk.AccAddress) []byte {
+	return append(GovernanceDelegationsByGovernorKeyPrefix, append(address.MustLengthPrefix(governorAddr.Bytes()), address.MustLengthPrefix(delegatorAddr.Bytes())...)...)
+}
+
+// ValidatorSharesByGovernorKey gets the first part of the validator shares key based
+// on the governor address and validator address
+func ValidatorSharesByGovernorKey(governorAddr GovernorAddress, validatorAddr sdk.ValAddress) []byte {
+	return append(ValidatorSharesByGovernorKeyPrefix, append(address.MustLengthPrefix(governorAddr.Bytes()), address.MustLengthPrefix(validatorAddr.Bytes())...)...)
+}
+
+// ValidatorSharesByValidatorKey gets the first part of the key for validator shares indexed by validator based on
+// on the validator address and governor address
+func ValidatorSharesByValidatorKey(validatorAddr sdk.ValAddress, governorAddr GovernorAddress) []byte {
+	return append(ValidatorSharesByValidatorKeyPrefix, append(address.MustLengthPrefix(validatorAddr.Bytes()), address.MustLengthPrefix(governorAddr.Bytes())...)...)
 }
 
 // Split keys function; used for iterators
