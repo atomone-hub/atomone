@@ -1,6 +1,6 @@
 module github.com/atomone-hub/atomone/contrib/devdeps
 
-go 1.21
+go 1.22
 
 require (
 	github.com/golangci/golangci-lint v1.56.0
