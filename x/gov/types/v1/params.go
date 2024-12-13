@@ -12,13 +12,24 @@ import (
 // Default period for deposits & voting and min voting period
 const (
 	DefaultVotingPeriod  time.Duration = time.Hour * 24 * 21 // 21 days
-	MinVotingPeriod      time.Duration = time.Hour * 24 * 21 // 21 days
 	DefaultDepositPeriod time.Duration = time.Hour * 24 * 14 // 14 days
 )
 
+// While set in stone by the constitution at 21 days, the MinVotingPeriod can
+// be overridden with ldflags for devnet/testnet environments (hence the use of
+// the string type).
+var MinVotingPeriod = "504h" // 21 days
+
+func init() {
+	// Ensure MinVotingPeriod can be parsed
+	if _, err := time.ParseDuration(MinVotingPeriod); err != nil {
+		panic(fmt.Sprintf("wrong value for MinVotingPeriod '%s': %v", MinVotingPeriod, err))
+	}
+}
+
 // Default governance params
 var (
-	minVotingPeriod                       = MinVotingPeriod
+	minVotingPeriod, _                    = time.ParseDuration(MinVotingPeriod)
 	DefaultMinDepositTokens               = sdk.NewInt(10000000)
 	DefaultQuorum                         = sdk.NewDecWithPrec(25, 2)
 	DefaultThreshold                      = sdk.NewDecWithPrec(667, 3)

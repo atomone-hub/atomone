@@ -1103,7 +1103,7 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 				}
 			},
 			expErr:    true,
-			expErrMsg: fmt.Sprintf("voting period must be at least %s: 0s", v1.MinVotingPeriod.String()),
+			expErrMsg: fmt.Sprintf("voting period must be at least %s: 0s", v1.MinVotingPeriod),
 		},
 		{
 			name: "invalid quorum timeout",
