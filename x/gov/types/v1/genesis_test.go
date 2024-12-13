@@ -43,7 +43,7 @@ func TestValidateGenesis(t *testing.T) {
 			name: "invalid min deposit",
 			genesisState: func() *v1.GenesisState {
 				params1 := params
-				params1.MinDeposit = sdk.Coins{{
+				params1.MinDepositFloor = sdk.Coins{{
 					Denom:  sdk.DefaultBondDenom,
 					Amount: sdk.NewInt(-100),
 				}}
