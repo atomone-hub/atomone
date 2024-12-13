@@ -47,16 +47,6 @@ var (
 	_ module.AppModuleSimulation = AppModule{}
 )
 
-// Module init related flags
-const (
-	FlagSkipCheckMinVotingPeriod = "x-gov-skip-check-min-voting-period"
-)
-
-// AddModuleInitFlags implements servertypes.ModuleInitFlags interface.
-func AddModuleInitFlags(startCmd *cobra.Command) {
-	v1.SkipCheckMinVotingPeriod = startCmd.Flags().Bool(FlagSkipCheckMinVotingPeriod, false, "Skip x/gov check on min voting period")
-}
-
 // AppModuleBasic defines the basic application module used by the gov module.
 type AppModuleBasic struct {
 	cdc                    codec.Codec
