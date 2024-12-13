@@ -792,6 +792,7 @@ func (suite *KeeperTestSuite) TestLegacyMsgDeposit() {
 
 func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 	authority := suite.govKeeper.GetAuthority()
+	minVotingPeriod, _ := time.ParseDuration(v1.MinVotingPeriod)
 	params := v1.DefaultParams()
 	testCases := []struct {
 		name      string
@@ -1103,7 +1104,7 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 				}
 			},
 			expErr:    true,
-			expErrMsg: fmt.Sprintf("voting period must be at least %s: 0s", v1.MinVotingPeriod.String()),
+			expErrMsg: fmt.Sprintf("voting period must be at least %s: 0s", minVotingPeriod),
 		},
 		{
 			name: "invalid quorum timeout",
