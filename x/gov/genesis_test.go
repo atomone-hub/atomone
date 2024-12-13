@@ -26,6 +26,11 @@ func TestImportExportQueues_ErrorUnconsistentState(t *testing.T) {
 	suite := createTestSuite(t)
 	app := suite.App
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	expectedGenState := v1.DefaultGenesisState()
+	expectedGenState.LastMinDeposit = &v1.LastMinDeposit{
+		Value: sdk.NewCoins(expectedGenState.Params.MinDepositFloor...),
+		Time:  &time.Time{},
+	}
 	require.Panics(t, func() {
 		gov.InitGenesis(ctx, suite.AccountKeeper, suite.BankKeeper, suite.GovKeeper, &v1.GenesisState{
 			Deposits: v1.Deposits{
@@ -44,7 +49,7 @@ func TestImportExportQueues_ErrorUnconsistentState(t *testing.T) {
 	})
 	gov.InitGenesis(ctx, suite.AccountKeeper, suite.BankKeeper, suite.GovKeeper, v1.DefaultGenesisState())
 	genState := gov.ExportGenesis(ctx, suite.GovKeeper)
-	require.Equal(t, genState, v1.DefaultGenesisState())
+	require.Equal(t, genState, expectedGenState)
 }
 
 func TestInitGenesis(t *testing.T) {
