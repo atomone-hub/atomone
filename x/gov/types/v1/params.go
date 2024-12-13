@@ -15,7 +15,7 @@ const (
 	DefaultDepositPeriod time.Duration = time.Hour * 24 * 14 // 14 days
 )
 
-// While set in stone by the constitution at 21 days, the MinVotingPeriod can
+// MinVotingPeriod is set in stone by the constitution at 21 days, but it can
 // be overridden with ldflags for devnet/testnet environments (hence the use of
 // the string type).
 var MinVotingPeriod = "504h" // 21 days
