@@ -42,6 +42,7 @@ import (
 
 	atomone "github.com/atomone-hub/atomone/app"
 	"github.com/atomone-hub/atomone/app/params"
+	"github.com/atomone-hub/atomone/x/gov"
 )
 
 // NewRootCmd creates a new root command for simd. It is called once in the
@@ -155,6 +156,7 @@ func initRootCmd(rootCmd *cobra.Command, encodingConfig params.EncodingConfig) {
 
 func addModuleInitFlags(startCmd *cobra.Command) {
 	crisis.AddModuleInitFlags(startCmd)
+	gov.AddModuleInitFlags(startCmd)
 }
 
 // genesisCommand builds genesis-related `simd genesis` command. Users may provide application specific commands as a parameter

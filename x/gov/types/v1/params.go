@@ -34,6 +34,8 @@ var (
 	DefaultQuorumTimeout            time.Duration = DefaultVotingPeriod - (time.Hour * 24 * 1) // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
 	DefaultMaxVotingPeriodExtension time.Duration = DefaultVotingPeriod - DefaultQuorumTimeout // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
 	DefaultQuorumCheckCount         uint64        = 0                                          // disabled by default (0 means no check)
+
+	SkipCheckMinVotingPeriod *bool
 )
 
 // Deprecated: NewDepositParams creates a new DepositParams object
@@ -210,7 +212,7 @@ func (p Params) ValidateBasic() error {
 		return fmt.Errorf("voting period must not be nil")
 	}
 
-	if p.VotingPeriod.Seconds() < minVotingPeriod.Seconds() {
+	if !*SkipCheckMinVotingPeriod && p.VotingPeriod.Seconds() < minVotingPeriod.Seconds() {
 		return fmt.Errorf("voting period must be at least %s: %s", minVotingPeriod.String(), p.VotingPeriod.String())
 	}
 
