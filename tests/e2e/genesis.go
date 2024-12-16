@@ -166,7 +166,7 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 	appState[stakingtypes.ModuleName] = stakingGenStateBz
 
 	// Refactor to separate method
-	// amnt := sdk.NewInt(10000)
+	amnt := sdk.NewInt(10000)
 	quorum, _ := sdk.NewDecFromStr("0.000000000000000001")
 	threshold, _ := sdk.NewDecFromStr("0.000000000000000001")
 	lawQuorum, _ := sdk.NewDecFromStr("0.000000000000000001")
@@ -187,6 +187,10 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 			sdk.ZeroDec().String(),
 			false, false, govv1.DefaultMinDepositRatio.String(),
 			govv1.DefaultQuorumTimeout, govv1.DefaultMaxVotingPeriodExtension, govv1.DefaultQuorumCheckCount,
+			sdk.NewCoins(sdk.NewCoin(denom, amnt)), govv1.DefaultMinDepositUpdatePeriod,
+			govv1.DefaultMinDepositSensitivityTargetDistance,
+			govv1.DefaultMinDepositIncreaseRatio.String(), govv1.DefaultMinDepositDecreaseRatio.String(),
+			govv1.DefaultTargetActiveProposals,
 		),
 	)
 	govGenState.Constitution = "This is a test constitution"

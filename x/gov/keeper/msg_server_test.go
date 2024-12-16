@@ -1286,6 +1286,8 @@ func (suite *KeeperTestSuite) TestSubmitProposal_InitialDeposit() {
 			params.MinDepositFloor = tc.minDeposit
 			params.MinInitialDepositRatio = tc.minInitialDepositRatio.String()
 			govKeeper.SetParams(ctx, params)
+			// manually set last min deposit to test-case min deposit value and current block time
+			// so dynamic deposit system does not interfere with the test by increasing/decreasing the min deposit
 			govKeeper.SetLastMinDeposit(ctx, tc.minDeposit, ctx.BlockTime())
 
 			msg, err := v1.NewMsgSubmitProposal(TestProposal, tc.initialDeposit, address.String(), "test", "Proposal", "description of proposal")
