@@ -87,7 +87,7 @@ func NewParams(
 	minDepositIncreaseRatio, minDepositDecreaseRatio string, targetActiveProposals uint64,
 ) Params {
 	return Params{
-		// MinDeposit:                     minDeposit, // Deprecated in favor of dynamic min deposit
+		// MinDeposit:                          minDeposit, // Deprecated in favor of dynamic min deposit
 		MaxDepositPeriod:                    &maxDepositPeriod,
 		VotingPeriod:                        &votingPeriod,
 		Quorum:                              quorum,
@@ -145,6 +145,13 @@ func (p Params) ValidateBasic() error {
 	// if minDeposit := sdk.Coins(p.MinDeposit); minDeposit.Empty() || !minDeposit.IsValid() {
 	// 	return fmt.Errorf("invalid minimum deposit: %s", minDeposit)
 	// }
+
+	// if mindeposit is set, return error as it is deprecated
+	// Q: is returning an error the best way to handle this? or perhaps just log a warning?
+	//    after all this value is not used anymore in the codebase
+	if p.MinDeposit != nil {
+		return fmt.Errorf("manually setting min deposit is deprecated in favor of a dynamic min deposit")
+	}
 
 	if p.MaxDepositPeriod == nil {
 		return fmt.Errorf("maximum deposit period must not be nil: %d", p.MaxDepositPeriod)
