@@ -102,7 +102,7 @@ func (keeper Keeper) GetMinDeposit(ctx sdk.Context) sdk.Coins {
 		b, err := distance.ToLegacyDec().ApproxRoot(k)
 		if err != nil {
 			// in case of error bypass the sensitivity, i.e. assume k = 1
-			b = numActiveProposals.Sub(targetActiveProposals).ToLegacyDec()
+			b = distance.ToLegacyDec()
 		}
 		c := a.Mul(b)
 		percChange = percChange.Add(c)
