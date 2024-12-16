@@ -105,16 +105,10 @@ func (keeper Keeper) GetMinDeposit(ctx sdk.Context) sdk.Coins {
 			b = numActiveProposals.Sub(targetActiveProposals).ToLegacyDec()
 		}
 		c := a.Mul(b)
-		if ticksPassed != 0 {
-			cPow := c.Power(uint64(ticksPassed))
-			if c.IsNegative() && !cPow.IsNegative() {
-				// ensure that the percentage change is negative if c is negative
-				cPow = cPow.Neg()
-			}
-			percChange = percChange.Add(cPow)
-		} else {
-			percChange = percChange.Add(c)
-		}
+		percChange = percChange.Add(c)
+	}
+	if ticksPassed != 0 {
+		percChange = percChange.Power(uint64(ticksPassed))
 	}
 
 	minDeposit := sdk.Coins{}
