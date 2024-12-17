@@ -23,7 +23,7 @@ The proposed mechanism can be vaguely compared to the auto-adjusting inflation r
 
 ## **Context[](https://docs.cosmos.network/main/architecture/adr-template#context)**
 
-At the time of writing, the `x/gov` module on AtomOne uses a `MinDeposit` ****parameter set to 512 ATONEs, while the `MinInitialDepositRatio` is equal to 10% of the `MinDeposit`, which makes the `MinInitialDeposit` to be 51.2 ATONEs.
+At the time of writing, the `x/gov` module on AtomOne uses a `MinDeposit` parameter set to 512 ATONEs, while the `MinInitialDepositRatio` is equal to 10% of the `MinDeposit`, which makes the `MinInitialDeposit` to be 51.2 ATONEs.
 
 ### Spam proposals
 
