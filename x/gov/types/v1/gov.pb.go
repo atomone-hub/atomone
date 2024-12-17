@@ -916,7 +916,7 @@ type Params struct {
 	// exceeds the target by 1.
 	MinDepositIncreaseRatio string `protobuf:"bytes,26,opt,name=min_deposit_increase_ratio,json=minDepositIncreaseRatio,proto3" json:"min_deposit_increase_ratio,omitempty"`
 	// The ratio of decrease for the minimum deposit when the number of active proposals
-	// is equal to the target.
+	// is 1 less than the target.
 	MinDepositDecreaseRatio string `protobuf:"bytes,27,opt,name=min_deposit_decrease_ratio,json=minDepositDecreaseRatio,proto3" json:"min_deposit_decrease_ratio,omitempty"`
 	// A positive integer representing the sensitivity of the dynamic minimum deposit
 	// increase/decrease to the distance from the target number of active proposals.
