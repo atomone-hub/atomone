@@ -35,8 +35,7 @@ Some mitigations have been designed, like the [initial deposit requirement for 
 
 Having too many active proposals at a time can be confusing, and dealing with them labor-intensive. The lower the number, the more attention stakers can pay to proposals without getting overwhelmed. This allows the chain governance to remain focused at all times, which will also increases its robustness.
 
-## **Alternatives
-[](https://docs.cosmos.network/main/architecture/adr-template#alternatives)**
+## **Alternatives[](https://docs.cosmos.network/main/architecture/adr-template#alternatives)**
 
 - Spam should also be filtered at the front-end level. This is already done by platforms like Mintscan or Keplr and a [set of filtering rules](https://docs.google.com/document/d/11FknyQr-hMsnfMkRfBUGHsLR18ZwttXZtPa7ZEQBXWg/edit) was already suggested.
 - Query filtering: this is an other alternative suggested [in the same document](https://docs.google.com/document/d/11FknyQr-hMsnfMkRfBUGHsLR18ZwttXZtPa7ZEQBXWg/edit) as vote-based filtering rules are provided. The idea is to update the list of proposal endpoints, allowing the ability to toggle a filtering option on and off.
