@@ -47,7 +47,7 @@ func (s *IntegrationTestSuite) testBankTokenTransfer() {
 		)
 
 		// alice sends tokens to bob
-		s.execBankSend(s.chainA, valIdx, alice.String(), bob.String(), tokenAmount.String(), standardFees.String(), false)
+		s.execBankSend(s.chainA, valIdx, alice.String(), bob.String(), tokenAmount.String(), false)
 
 		// check that the transfer was successful
 		s.Require().Eventually(
@@ -58,7 +58,7 @@ func (s *IntegrationTestSuite) testBankTokenTransfer() {
 				afterBobUAtoneBalance, err = getSpecificBalance(chainEndpoint, bob.String(), uatoneDenom)
 				s.Require().NoError(err)
 
-				decremented := beforeAliceUAtoneBalance.Sub(tokenAmount).Sub(standardFees).IsEqual(afterAliceUAtoneBalance)
+				decremented := beforeAliceUAtoneBalance.Sub(tokenAmount).IsEqual(afterAliceUAtoneBalance)
 				incremented := beforeBobUAtoneBalance.Add(tokenAmount).IsEqual(afterBobUAtoneBalance)
 
 				return decremented && incremented
@@ -71,7 +71,8 @@ func (s *IntegrationTestSuite) testBankTokenTransfer() {
 		beforeAliceUAtoneBalance, beforeBobUAtoneBalance = afterAliceUAtoneBalance, afterBobUAtoneBalance
 
 		// alice sends tokens to bob and charlie, at once
-		s.execBankMultiSend(s.chainA, valIdx, alice.String(), []string{bob.String(), charlie.String()}, tokenAmount.String(), standardFees.String(), false)
+		s.execBankMultiSend(s.chainA, valIdx, alice.String(),
+			[]string{bob.String(), charlie.String()}, tokenAmount.String(), false)
 
 		s.Require().Eventually(
 			func() bool {
@@ -85,7 +86,7 @@ func (s *IntegrationTestSuite) testBankTokenTransfer() {
 				s.Require().NoError(err)
 
 				// assert alice's account gets decremented the amount of tokens twice
-				decremented := beforeAliceUAtoneBalance.Sub(tokenAmount).Sub(tokenAmount).Sub(standardFees).IsEqual(afterAliceUAtoneBalance)
+				decremented := beforeAliceUAtoneBalance.Sub(tokenAmount).Sub(tokenAmount).IsEqual(afterAliceUAtoneBalance)
 				incremented := beforeBobUAtoneBalance.Add(tokenAmount).IsEqual(afterBobUAtoneBalance) &&
 					beforeCharlieUAtoneBalance.Add(tokenAmount).IsEqual(afterCharlieUAtoneBalance)
 
@@ -94,5 +95,19 @@ func (s *IntegrationTestSuite) testBankTokenTransfer() {
 			10*time.Second,
 			time.Second,
 		)
+	})
+
+	s.Run("send tokens with atone fees", func() {
+		var (
+			valIdx = 0
+			c      = s.chainA
+		)
+		alice, _ := c.genesisAccounts[1].keyInfo.GetAddress()
+		bob, _ := c.genesisAccounts[2].keyInfo.GetAddress()
+
+		// alice sends tokens to bob should fail because doesn't use photons for the fees.
+		atoneFees := sdk.NewCoin(uatoneDenom, standardFees.Amount)
+		s.execBankSend(s.chainA, valIdx, alice.String(), bob.String(),
+			tokenAmount.String(), true, withKeyValue(flagFees, atoneFees))
 	})
 }
