@@ -219,6 +219,33 @@ message TallyParams {
   string law_threshold = 6 [(cosmos_proto.scalar) = "cosmos.Dec"];
 }
 
+message MinDepositThrottler {
+  // Floor value for the minimum deposit required for a proposal to enter the voting period.
+  repeated cosmos.base.v1beta1.Coin floor_value = 1
+  [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+
+  // Duration that dictates after how long the dynamic minimum deposit should be recalculated
+  // for time-based updates.
+  google.protobuf.Duration update_period = 2 [(gogoproto.stdduration) = true];
+
+  // The number of active proposals the dynamic minimum deposit should target.
+  uint64 target_active_proposals = 3;
+
+  // The ratio of increase for the minimum deposit when the number of active proposals
+  // exceeds the target by 1.
+  string increase_ratio = 4 [(cosmos_proto.scalar) = "cosmos.Dec"];
+
+  // The ratio of decrease for the minimum deposit when the number of active proposals
+  // is 1 less than the target.
+  string decrease_ratio = 5 [(cosmos_proto.scalar) = "cosmos.Dec"];
+
+  // A positive integer representing the sensitivity of the dynamic minimum deposit 
+  // increase/decrease to the distance from the target number of active proposals.
+  // The higher the number, the lower the sensitivity. A value of 1 represents the
+  // highest sensitivity.
+  uint64 sensitivity_target_distance = 6;
+}
+
 // Params defines the parameters for the x/gov module.
 //
 // Since: cosmos-sdk 0.47
@@ -287,28 +314,5 @@ message Params {
   // has elapsed. Used to compute the amount of time in between quorum checks.
   uint64 quorum_check_count = 22;
 
-  // Floor value for the minimum deposit required for a proposal to enter the voting period.
-  repeated cosmos.base.v1beta1.Coin min_deposit_floor = 23
-  [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
-
-  // Duration that dictates after how long the dynamic minimum deposit should be recalculated
-  // for time-based updates.
-  google.protobuf.Duration min_deposit_update_period = 24 [(gogoproto.stdduration) = true];
-
-  // The number of active proposals the dynamic minimum deposit should target.
-  uint64 target_active_proposals = 25;
-
-  // The ratio of increase for the minimum deposit when the number of active proposals
-  // exceeds the target by 1.
-  string min_deposit_increase_ratio = 26 [(cosmos_proto.scalar) = "cosmos.Dec"];
-
-  // The ratio of decrease for the minimum deposit when the number of active proposals
-  // is 1 less than the target.
-  string min_deposit_decrease_ratio = 27 [(cosmos_proto.scalar) = "cosmos.Dec"];
-
-  // A positive integer representing the sensitivity of the dynamic minimum deposit 
-  // increase/decrease to the distance from the target number of active proposals.
-  // The higher the number, the lower the sensitivity. A value of 1 represents the
-  // highest sensitivity.
-  uint64 min_deposit_sensitivity_target_distance = 28;
+  MinDepositThrottler min_deposit_throttler = 23;
 }

@@ -799,7 +799,7 @@ func (suite *KeeperTestSuite) TestGRPCQueryParams() {
 	queryClient := suite.queryClient
 
 	params := v1.DefaultParams()
-	params.MinDeposit = params.MinDepositFloor
+	params.MinDeposit = params.MinDepositThrottler.FloorValue
 
 	var (
 		req    *v1.QueryParamsRequest

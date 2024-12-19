@@ -198,7 +198,7 @@ func TestValidateInitialDeposit(t *testing.T) {
 			govKeeper, _, _, ctx := setupGovKeeper(t)
 
 			params := v1.DefaultParams()
-			params.MinDepositFloor = tc.minDeposit
+			params.MinDepositThrottler.FloorValue = tc.minDeposit
 			params.MinInitialDepositRatio = sdk.NewDec(tc.minInitialDepositPercent).Quo(sdk.NewDec(100)).String()
 
 			govKeeper.SetParams(ctx, params)
@@ -273,7 +273,7 @@ func TestDepositAmount(t *testing.T) {
 
 			params := v1.DefaultParams()
 			params.MinDepositRatio = tc.minDepositRatio
-			params.MinDepositFloor = sdk.NewCoins(govKeeper.GetMinDeposit(ctx)...).Add(sdk.NewCoin("zcoin", sdk.NewInt(10000))) // coins must be sorted by denom
+			params.MinDepositThrottler.FloorValue = sdk.NewCoins(govKeeper.GetMinDeposit(ctx)...).Add(sdk.NewCoin("zcoin", sdk.NewInt(10000))) // coins must be sorted by denom
 			err := govKeeper.SetParams(ctx, params)
 			require.NoError(t, err)
 
