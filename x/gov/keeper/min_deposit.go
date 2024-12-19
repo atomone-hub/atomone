@@ -79,10 +79,10 @@ func (keeper Keeper) GetLastMinDeposit(ctx sdk.Context) (sdk.Coins, time.Time) {
 // GetMinDeposit returns the (dynamic) minimum deposit currently required for a proposal
 func (keeper Keeper) GetMinDeposit(ctx sdk.Context) sdk.Coins {
 	params := keeper.GetParams(ctx)
-	minDepositFloor := sdk.Coins(params.MinDepositFloor)
-	tick := params.MinDepositUpdatePeriod
-	targetActiveProposals := math.NewIntFromUint64(params.TargetActiveProposals)
-	k := params.MinDepositSensitivityTargetDistance
+	minDepositFloor := sdk.Coins(params.MinDepositThrottler.FloorValue)
+	tick := params.MinDepositThrottler.UpdatePeriod
+	targetActiveProposals := math.NewIntFromUint64(params.MinDepositThrottler.TargetActiveProposals)
+	k := params.MinDepositThrottler.SensitivityTargetDistance
 	var a sdk.Dec
 
 	numActiveProposals := math.NewIntFromUint64(keeper.GetActiveProposalsNumber(ctx))
@@ -91,9 +91,9 @@ func (keeper Keeper) GetMinDeposit(ctx sdk.Context) sdk.Coins {
 	ticksPassed := ctx.BlockTime().Sub(lastMinDepositTime).Nanoseconds() / tick.Nanoseconds()
 
 	if numActiveProposals.GT(targetActiveProposals) {
-		a = sdk.MustNewDecFromStr(params.MinDepositIncreaseRatio)
+		a = sdk.MustNewDecFromStr(params.MinDepositThrottler.IncreaseRatio)
 	} else {
-		a = sdk.MustNewDecFromStr(params.MinDepositDecreaseRatio)
+		a = sdk.MustNewDecFromStr(params.MinDepositThrottler.DecreaseRatio)
 	}
 
 	distance := numActiveProposals.Sub(targetActiveProposals)

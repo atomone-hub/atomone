@@ -87,28 +87,30 @@ func NewParams(
 	minDepositIncreaseRatio, minDepositDecreaseRatio string, targetActiveProposals uint64,
 ) Params {
 	return Params{
-		// MinDeposit:                          minDeposit, // Deprecated in favor of dynamic min deposit
-		MaxDepositPeriod:                    &maxDepositPeriod,
-		VotingPeriod:                        &votingPeriod,
-		Quorum:                              quorum,
-		Threshold:                           threshold,
-		ConstitutionAmendmentQuorum:         constitutionAmendmentQuorum,
-		ConstitutionAmendmentThreshold:      constitutionAmendmentThreshold,
-		LawQuorum:                           lawQuorum,
-		LawThreshold:                        lawThreshold,
-		MinInitialDepositRatio:              minInitialDepositRatio,
-		BurnProposalDepositPrevote:          burnProposalDeposit,
-		BurnVoteQuorum:                      burnVoteQuorum,
-		MinDepositRatio:                     minDepositRatio,
-		QuorumTimeout:                       &quorumTimeout,
-		MaxVotingPeriodExtension:            &maxVotingPeriodExtension,
-		QuorumCheckCount:                    quorumCheckCount,
-		MinDepositFloor:                     minDepositFloor,
-		MinDepositUpdatePeriod:              &minDepositUpdatePeriod,
-		MinDepositSensitivityTargetDistance: minDepositSensitivityTargetDistance,
-		MinDepositIncreaseRatio:             minDepositIncreaseRatio,
-		MinDepositDecreaseRatio:             minDepositDecreaseRatio,
-		TargetActiveProposals:               targetActiveProposals,
+		// MinDeposit:                     minDeposit, // Deprecated in favor of dynamic min deposit
+		MaxDepositPeriod:               &maxDepositPeriod,
+		VotingPeriod:                   &votingPeriod,
+		Quorum:                         quorum,
+		Threshold:                      threshold,
+		ConstitutionAmendmentQuorum:    constitutionAmendmentQuorum,
+		ConstitutionAmendmentThreshold: constitutionAmendmentThreshold,
+		LawQuorum:                      lawQuorum,
+		LawThreshold:                   lawThreshold,
+		MinInitialDepositRatio:         minInitialDepositRatio,
+		BurnProposalDepositPrevote:     burnProposalDeposit,
+		BurnVoteQuorum:                 burnVoteQuorum,
+		MinDepositRatio:                minDepositRatio,
+		QuorumTimeout:                  &quorumTimeout,
+		MaxVotingPeriodExtension:       &maxVotingPeriodExtension,
+		QuorumCheckCount:               quorumCheckCount,
+		MinDepositThrottler: &MinDepositThrottler{
+			FloorValue:                minDepositFloor,
+			UpdatePeriod:              &minDepositUpdatePeriod,
+			SensitivityTargetDistance: minDepositSensitivityTargetDistance,
+			IncreaseRatio:             minDepositIncreaseRatio,
+			DecreaseRatio:             minDepositDecreaseRatio,
+			TargetActiveProposals:     targetActiveProposals,
+		},
 	}
 }
 
@@ -295,27 +297,27 @@ func (p Params) ValidateBasic() error {
 		}
 	}
 
-	if minDepositFloor := sdk.Coins(p.MinDepositFloor); minDepositFloor.Empty() || !minDepositFloor.IsValid() {
+	if minDepositFloor := sdk.Coins(p.MinDepositThrottler.FloorValue); minDepositFloor.Empty() || !minDepositFloor.IsValid() {
 		return fmt.Errorf("invalid minimum deposit floor: %s", minDepositFloor)
 	}
 
-	if p.MinDepositUpdatePeriod == nil {
-		return fmt.Errorf("minimum deposit update period must not be nil: %d", p.MinDepositUpdatePeriod)
+	if p.MinDepositThrottler.UpdatePeriod == nil {
+		return fmt.Errorf("minimum deposit update period must not be nil: %d", p.MinDepositThrottler.UpdatePeriod)
 	}
 
-	if p.MinDepositUpdatePeriod.Seconds() <= 0 {
-		return fmt.Errorf("minimum deposit update period must be positive: %d", p.MinDepositUpdatePeriod)
+	if p.MinDepositThrottler.UpdatePeriod.Seconds() <= 0 {
+		return fmt.Errorf("minimum deposit update period must be positive: %d", p.MinDepositThrottler.UpdatePeriod)
 	}
 
-	if p.MinDepositUpdatePeriod.Seconds() > p.VotingPeriod.Seconds() {
-		return fmt.Errorf("minimum deposit update period must be less than or equal to the voting period: %d", p.MinDepositUpdatePeriod)
+	if p.MinDepositThrottler.UpdatePeriod.Seconds() > p.VotingPeriod.Seconds() {
+		return fmt.Errorf("minimum deposit update period must be less than or equal to the voting period: %d", p.MinDepositThrottler.UpdatePeriod)
 	}
 
-	if p.MinDepositSensitivityTargetDistance == 0 {
-		return fmt.Errorf("minimum deposit sensitivity target distance must be positive: %d", p.MinDepositSensitivityTargetDistance)
+	if p.MinDepositThrottler.SensitivityTargetDistance == 0 {
+		return fmt.Errorf("minimum deposit sensitivity target distance must be positive: %d", p.MinDepositThrottler.SensitivityTargetDistance)
 	}
 
-	minDepositIncreaseRation, err := sdk.NewDecFromStr(p.MinDepositIncreaseRatio)
+	minDepositIncreaseRation, err := sdk.NewDecFromStr(p.MinDepositThrottler.IncreaseRatio)
 	if err != nil {
 		return fmt.Errorf("invalid minimum deposit increase ratio: %w", err)
 	}
@@ -326,7 +328,7 @@ func (p Params) ValidateBasic() error {
 		return fmt.Errorf("minimum deposit increase ratio too large: %s", minDepositIncreaseRation)
 	}
 
-	minDepositDecreaseRatio, err := sdk.NewDecFromStr(p.MinDepositDecreaseRatio)
+	minDepositDecreaseRatio, err := sdk.NewDecFromStr(p.MinDepositThrottler.DecreaseRatio)
 	if err != nil {
 		return fmt.Errorf("invalid minimum deposit decrease ratio: %w", err)
 	}
