@@ -112,14 +112,14 @@ $D_t = \max( D_{\min}, D_{t_1} \times \gamma^\tau)$, where again $\tau = \lfloor
 
 ### Implementation
 
-The following parameters are added to the `x/gov` module params:
+The following parameters are added to the `x/gov` module params, inside a dedicated `min_deposit_throttler` struct:
 
-- `min_deposit_floor`: floor value for the minimum deposit required for a proposal to enter the voting period
-- `min_deposit_update_period`: duration that dictates after how long the dynamic minimum deposit should be recalculated for time-based updates.
+- `floor_value`: floor value for the minimum deposit required for a proposal to enter the voting period
+- `update_period`: duration that dictates after how long the dynamic minimum deposit should be recalculated for time-based updates.
 - `target_active_proposals`:  the number of active proposals the dynamic minimum deposit should target.
-- `min_deposit_increase_ratio`: the ratio of increase for the minimum deposit when the number of active proposals exceeds the target by 1.
-- `min_deposit_decrease_ratio`: the ratio of increase for the minimum deposit when the number of active proposals is 1 less than the target.
-- `min_deposit_sensitivity_target_distance`: A positive integer representing the sensitivity of the dynamic minimum deposit increase/decrease to the distance from the target number of active proposals. The higher the number, the lower the sensitivity. A value of 1 represents the highest sensitivity.
+- `increase_ratio`: the ratio of increase for the minimum deposit when the number of active proposals exceeds the target by 1.
+- `decrease_ratio`: the ratio of increase for the minimum deposit when the number of active proposals is 1 less than the target.
+- `sensitivity_target_distance`: A positive integer representing the sensitivity of the dynamic minimum deposit increase/decrease to the distance from the target number of active proposals. The higher the number, the lower the sensitivity. A value of 1 represents the highest sensitivity.
 
 Proposals activation or deactivation - i.e. when a proposal is added or removed from the `keeper.ActiveProposalsQueue` - triggers a `MinDeposit` update which is also saved in state via setting the `LastMinDeposit`. Both the computed value and the time at which this was done (the `ctx.BlockTime()`) are stored. Whenever the `MinDeposit` is queried or requested the value is then calculated lazily using the value and timestamp of `LastMinDeposit` and computing the *ticks* passed since `LastMinDeposit.Time`, using the formula detailed above.
 
@@ -129,7 +129,7 @@ Because the `MinDeposit` is no longer a fixed parameter, a new query endpoint is
 
 ### Replicating the same system for `MinInitialDeposit`
 
-The same system described for `MinDeposit` could also be replicated for `MinInitialDeposit`. The only difference with the above formulation is that $n_t$ in this case is the number of proposals in deposit period, and updates of `MinInitialDeposit` would be triggered upon proposals entering or exiting the deposit period (the `keeper.InactiveProposalsQueue` in `x/gov`) and with time. Parameters would be an exact replica - just starting with `min_initial_deposit_*` instead - and the implementation would equally be very similar.
+The same system described for `MinDeposit` could also be replicated for `MinInitialDeposit`. The only difference with the above formulation is that $n_t$ in this case is the number of proposals in deposit period, and updates of `MinInitialDeposit` would be triggered upon proposals entering or exiting the deposit period (the `keeper.InactiveProposalsQueue` in `x/gov`) and with time. Parameters would be an exact replica - a copy of the decicated struct just starting with `min_initial_deposit_*` instead - and the implementation would equally be very similar.
 
 The two systems should be independent of each other and have no relation. The value of `MinInitialDeposit` should be allowed to even grow higher than `MinDeposit` in response to sudden spikes in inactive proposals. The dynamic system for `MinInitialDeposit` would have to be fine-tuned differently with respect to the one for `MinDeposit` to respond more rapidly to changes but also be able to decade quicker.
 
