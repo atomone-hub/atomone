@@ -1283,7 +1283,7 @@ func (suite *KeeperTestSuite) TestSubmitProposal_InitialDeposit() {
 			address := simtestutil.AddTestAddrs(suite.bankKeeper, suite.stakingKeeper, ctx, 1, tc.accountBalance[0].Amount)[0]
 
 			params := v1.DefaultParams()
-			params.MinDepositFloor = tc.minDeposit
+			params.MinDepositThrottler.FloorValue = tc.minDeposit
 			params.MinInitialDepositRatio = tc.minInitialDepositRatio.String()
 			govKeeper.SetParams(ctx, params)
 			// manually set last min deposit to test-case min deposit value and current block time

@@ -28,7 +28,7 @@ func TestImportExportQueues_ErrorUnconsistentState(t *testing.T) {
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 	expectedGenState := v1.DefaultGenesisState()
 	expectedGenState.LastMinDeposit = &v1.LastMinDeposit{
-		Value: sdk.NewCoins(expectedGenState.Params.MinDepositFloor...),
+		Value: sdk.NewCoins(expectedGenState.Params.MinDepositThrottler.FloorValue...),
 		Time:  &time.Time{},
 	}
 	require.Panics(t, func() {
@@ -56,13 +56,17 @@ func TestInitGenesis(t *testing.T) {
 	var (
 		testAddrs = simtestutil.CreateRandomAccounts(2)
 		params    = &v1.Params{
-			MinDeposit: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdkmath.NewInt(42))),
+			MinDepositThrottler: &v1.MinDepositThrottler{
+				FloorValue: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdkmath.NewInt(42))),
+			},
 		}
 		quorumTimeout                = time.Hour * 20
 		paramsWithQuorumCheckEnabled = &v1.Params{
-			MinDeposit:       sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdkmath.NewInt(42))),
 			QuorumCheckCount: 10,
 			QuorumTimeout:    &quorumTimeout,
+			MinDepositThrottler: &v1.MinDepositThrottler{
+				FloorValue: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdkmath.NewInt(42))),
+			},
 		}
 
 		depositAmount = sdk.Coins{
