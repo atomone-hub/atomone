@@ -957,8 +957,10 @@ func (m *MinDepositThrottler) GetSensitivityTargetDistance() uint64 {
 type Params struct {
 	// Minimum deposit for a proposal to enter voting period.
 	// Deprecated: a dynamic system now determines the minimum deposit,
-	// see the other params starting with  min_deposit_* and
-	// target_active_proposals. Setting this value has no effect.
+	// see the other params inside the min_deposit_throttler field.
+	// While setting this value returns an error, when queried it is set to the
+	// value of the current minimum deposit value as determined by the dynamic
+	// system for backward compatibility.
 	MinDeposit []types.Coin `protobuf:"bytes,1,rep,name=min_deposit,json=minDeposit,proto3" json:"min_deposit"` // Deprecated: Do not use.
 	// Maximum period for Atom holders to deposit on a proposal. Initial value: 2
 	// months.
