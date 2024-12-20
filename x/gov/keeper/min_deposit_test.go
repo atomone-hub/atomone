@@ -51,10 +51,22 @@ func TestGetMinDeposit(t *testing.T) {
 			expectedMinDeposit: minDepositFloor.String(),
 		},
 		{
-			name: "n=N+1 lastMinDeposit=minDepositFloor ticksPassed=0 : expectedMinDepositr>minDepositFloor",
+			name: "n=N+1 lastMinDeposit=minDepositFloor ticksPassed=0 : expectedMinDeposit>minDepositFloor",
 			setup: func(ctx sdk.Context, k *keeper.Keeper) {
 				k.SetActiveProposalsNumber(ctx, N+1)
 				k.SetLastMinDeposit(ctx, minDepositFloor, minDepositTimeFromTicks(0))
+			},
+			expectedMinDeposit: "10500000stake",
+		},
+		{
+			name: "n=N+1 lastMinDeposit=otherCoins ticksPassed=0 : expectedMinDeposit>minDepositFloor",
+			setup: func(ctx sdk.Context, k *keeper.Keeper) {
+				k.SetActiveProposalsNumber(ctx, N+1)
+				k.SetLastMinDeposit(ctx, sdk.NewCoins(
+					sdk.NewInt64Coin("xxx", 1_000_000_000),
+				),
+					minDepositTimeFromTicks(0),
+				)
 			},
 			expectedMinDeposit: "10500000stake",
 		},
