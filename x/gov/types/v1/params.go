@@ -140,7 +140,7 @@ func (p Params) ValidateBasic() error {
 	// if mindeposit is set, return error as it is deprecated
 	// Q: is returning an error the best way to handle this? or perhaps just log a warning?
 	//    after all this value is not used anymore in the codebase
-	if p.MinDeposit != nil {
+	if len(p.MinDeposit) > 0 {
 		return fmt.Errorf("manually setting min deposit is deprecated in favor of a dynamic min deposit")
 	}
 
