@@ -1119,7 +1119,7 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 				}
 			},
 			expErr:    true,
-			expErrMsg: "quorum timeout must not be nil: 0",
+			expErrMsg: "quorum timeout must not be nil",
 		},
 		{
 			name: "negative quorum timeout",
@@ -1168,7 +1168,7 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 				}
 			},
 			expErr:    true,
-			expErrMsg: "max voting period extension must not be nil: 0",
+			expErrMsg: "max voting period extension must not be nil",
 		},
 		{
 			name: "voting period extension below voting period - quorum timeout",
