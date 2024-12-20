@@ -12,6 +12,23 @@ import (
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 )
 
+func TestActiveProposalNumber(t *testing.T) {
+	assert := assert.New(t)
+	k, _, _, ctx := setupGovKeeper(t)
+
+	assert.EqualValues(0, k.GetActiveProposalsNumber(ctx))
+
+	k.IncrementActiveProposalsNumber(ctx)
+	k.IncrementActiveProposalsNumber(ctx)
+	assert.EqualValues(2, k.GetActiveProposalsNumber(ctx))
+
+	k.DecrementActiveProposalsNumber(ctx)
+	assert.EqualValues(1, k.GetActiveProposalsNumber(ctx))
+
+	k.SetActiveProposalsNumber(ctx, 42)
+	assert.EqualValues(42, k.GetActiveProposalsNumber(ctx))
+}
+
 func TestGetMinDeposit(t *testing.T) {
 	var (
 		minDepositFloor   = v1.DefaultMinDepositFloor
