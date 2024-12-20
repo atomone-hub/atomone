@@ -167,6 +167,7 @@ func (q Keeper) Params(c context.Context, req *v1.QueryParamsRequest) (*v1.Query
 
 	ctx := sdk.UnwrapSDKContext(c)
 	params := q.GetParams(ctx)
+	params.MinDeposit = q.GetMinDeposit(ctx)
 
 	response := &v1.QueryParamsResponse{}
 
@@ -288,6 +289,14 @@ func (q Keeper) TallyResult(c context.Context, req *v1.QueryTallyResultRequest) 
 	}
 
 	return &v1.QueryTallyResultResponse{Tally: &tallyResult}, nil
+}
+
+// MinDeposit returns the minimum deposit currently required for a proposal to enter voting period
+func (q Keeper) MinDeposit(c context.Context, req *v1.QueryMinDepositRequest) (*v1.QueryMinDepositResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+	minDeposit := q.GetMinDeposit(ctx)
+
+	return &v1.QueryMinDepositResponse{MinDeposit: minDeposit}, nil
 }
 
 var _ v1beta1.QueryServer = legacyQueryServer{}

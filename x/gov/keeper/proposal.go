@@ -293,6 +293,7 @@ func (keeper Keeper) ActivateVotingPeriod(ctx sdk.Context, proposal v1.Proposal)
 			v1.NewQuorumCheckQueueEntry(quorumTimeoutTime, params.QuorumCheckCount),
 		)
 	}
+	keeper.IncrementActiveProposalsNumber(ctx)
 }
 
 // MarshalProposal marshals the proposal and returns binary encoded bytes.

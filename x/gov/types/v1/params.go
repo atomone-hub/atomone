@@ -42,9 +42,15 @@ var (
 	DefaultBurnVoteQuorom                 = false                    // set to false to  replicate behavior of when this change was made (0.47)
 	DefaultMinDepositRatio                = sdk.NewDecWithPrec(1, 2) // NOTE: backport from v50
 
-	DefaultQuorumTimeout            time.Duration = DefaultVotingPeriod - (time.Hour * 24 * 1) // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
-	DefaultMaxVotingPeriodExtension time.Duration = DefaultVotingPeriod - DefaultQuorumTimeout // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
-	DefaultQuorumCheckCount         uint64        = 0                                          // disabled by default (0 means no check)
+	DefaultQuorumTimeout                       time.Duration = DefaultVotingPeriod - (time.Hour * 24 * 1) // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
+	DefaultMaxVotingPeriodExtension            time.Duration = DefaultVotingPeriod - DefaultQuorumTimeout // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
+	DefaultQuorumCheckCount                    uint64        = 0                                          // disabled by default (0 means no check)
+	DefaultMinDepositFloor                     sdk.Coins     = sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, DefaultMinDepositTokens))
+	DefaultMinDepositUpdatePeriod              time.Duration = time.Hour * 24 * 7
+	DefaultMinDepositSensitivityTargetDistance uint64        = 2
+	DefaultMinDepositIncreaseRatio                           = sdk.NewDecWithPrec(5, 2)
+	DefaultMinDepositDecreaseRatio                           = sdk.NewDecWithPrec(25, 3)
+	DefaultTargetActiveProposals               uint64        = 2
 )
 
 // Deprecated: NewDepositParams creates a new DepositParams object
@@ -72,13 +78,16 @@ func NewVotingParams(votingPeriod *time.Duration) VotingParams {
 
 // NewParams creates a new Params instance with given values.
 func NewParams(
-	minDeposit sdk.Coins, maxDepositPeriod, votingPeriod time.Duration,
+	// minDeposit sdk.Coins, // Deprecated in favor of dynamic min deposit
+	maxDepositPeriod, votingPeriod time.Duration,
 	quorum, threshold, constitutionAmendmentQuorum, constitutionAmendmentThreshold, lawQuorum, lawThreshold, minInitialDepositRatio string,
 	burnProposalDeposit, burnVoteQuorum bool, minDepositRatio string,
 	quorumTimeout, maxVotingPeriodExtension time.Duration, quorumCheckCount uint64,
+	minDepositFloor sdk.Coins, minDepositUpdatePeriod time.Duration, minDepositSensitivityTargetDistance uint64,
+	minDepositIncreaseRatio, minDepositDecreaseRatio string, targetActiveProposals uint64,
 ) Params {
 	return Params{
-		MinDeposit:                     minDeposit,
+		// MinDeposit:                     minDeposit, // Deprecated in favor of dynamic min deposit
 		MaxDepositPeriod:               &maxDepositPeriod,
 		VotingPeriod:                   &votingPeriod,
 		Quorum:                         quorum,
@@ -94,13 +103,21 @@ func NewParams(
 		QuorumTimeout:                  &quorumTimeout,
 		MaxVotingPeriodExtension:       &maxVotingPeriodExtension,
 		QuorumCheckCount:               quorumCheckCount,
+		MinDepositThrottler: &MinDepositThrottler{
+			FloorValue:                minDepositFloor,
+			UpdatePeriod:              &minDepositUpdatePeriod,
+			SensitivityTargetDistance: minDepositSensitivityTargetDistance,
+			IncreaseRatio:             minDepositIncreaseRatio,
+			DecreaseRatio:             minDepositDecreaseRatio,
+			TargetActiveProposals:     targetActiveProposals,
+		},
 	}
 }
 
 // DefaultParams returns the default governance params
 func DefaultParams() Params {
 	return NewParams(
-		sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, DefaultMinDepositTokens)),
+		// sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, DefaultMinDepositTokens)),
 		DefaultDepositPeriod,
 		DefaultVotingPeriod,
 		DefaultQuorum.String(),
@@ -116,13 +133,26 @@ func DefaultParams() Params {
 		DefaultQuorumTimeout,
 		DefaultMaxVotingPeriodExtension,
 		DefaultQuorumCheckCount,
+		DefaultMinDepositFloor,
+		DefaultMinDepositUpdatePeriod,
+		DefaultMinDepositSensitivityTargetDistance,
+		DefaultMinDepositIncreaseRatio.String(),
+		DefaultMinDepositDecreaseRatio.String(),
+		DefaultTargetActiveProposals,
 	)
 }
 
 // ValidateBasic performs basic validation on governance parameters.
 func (p Params) ValidateBasic() error {
-	if minDeposit := sdk.Coins(p.MinDeposit); minDeposit.Empty() || !minDeposit.IsValid() {
-		return fmt.Errorf("invalid minimum deposit: %s", minDeposit)
+	// if minDeposit := sdk.Coins(p.MinDeposit); minDeposit.Empty() || !minDeposit.IsValid() {
+	// 	return fmt.Errorf("invalid minimum deposit: %s", minDeposit)
+	// }
+
+	// if mindeposit is set, return error as it is deprecated
+	// Q: is returning an error the best way to handle this? or perhaps just log a warning?
+	//    after all this value is not used anymore in the codebase
+	if len(p.MinDeposit) > 0 {
+		return fmt.Errorf("manually setting min deposit is deprecated in favor of a dynamic min deposit")
 	}
 
 	if p.MaxDepositPeriod == nil {
@@ -236,10 +266,21 @@ func (p Params) ValidateBasic() error {
 		return fmt.Errorf("mininum initial deposit ratio of proposal is too large: %s", minInitialDepositRatio)
 	}
 
+	minDepositRatio, err := math.LegacyNewDecFromStr(p.MinDepositRatio)
+	if err != nil {
+		return fmt.Errorf("invalid mininum deposit ratio of proposal: %w", err)
+	}
+	if minDepositRatio.IsNegative() {
+		return fmt.Errorf("mininum deposit ratio of proposal must be positive: %s", minDepositRatio)
+	}
+	if minDepositRatio.GT(math.LegacyOneDec()) {
+		return fmt.Errorf("mininum deposit ratio of proposal is too large: %s", minDepositRatio)
+	}
+
 	if p.QuorumCheckCount > 0 {
 		// If quorum check is enabled, validate quorum check params
 		if p.QuorumTimeout == nil {
-			return fmt.Errorf("quorum timeout must not be nil: %d", p.QuorumTimeout)
+			return fmt.Errorf("quorum timeout must not be nil")
 		}
 		if p.QuorumTimeout.Seconds() < 0 {
 			return fmt.Errorf("quorum timeout must be 0 or greater: %s", p.QuorumTimeout)
@@ -249,11 +290,57 @@ func (p Params) ValidateBasic() error {
 		}
 
 		if p.MaxVotingPeriodExtension == nil {
-			return fmt.Errorf("max voting period extension must not be nil: %d", p.MaxVotingPeriodExtension)
+			return fmt.Errorf("max voting period extension must not be nil")
 		}
 		if p.MaxVotingPeriodExtension.Nanoseconds() < p.VotingPeriod.Nanoseconds()-p.QuorumTimeout.Nanoseconds() {
 			return fmt.Errorf("max voting period extension %s must be greater than or equal to the difference between the voting period %s and the quorum timeout %s", p.MaxVotingPeriodExtension, p.VotingPeriod, p.QuorumTimeout)
 		}
+	}
+
+	if p.MinDepositThrottler == nil {
+		return fmt.Errorf("min deposit throttler must not be nil")
+	}
+
+	if minDepositFloor := sdk.Coins(p.MinDepositThrottler.FloorValue); minDepositFloor.Empty() || !minDepositFloor.IsValid() {
+		return fmt.Errorf("invalid minimum deposit floor: %s", minDepositFloor)
+	}
+
+	if p.MinDepositThrottler.UpdatePeriod == nil {
+		return fmt.Errorf("minimum deposit update period must not be nil")
+	}
+
+	if p.MinDepositThrottler.UpdatePeriod.Seconds() <= 0 {
+		return fmt.Errorf("minimum deposit update period must be positive: %s", p.MinDepositThrottler.UpdatePeriod)
+	}
+
+	if p.MinDepositThrottler.UpdatePeriod.Seconds() > p.VotingPeriod.Seconds() {
+		return fmt.Errorf("minimum deposit update period must be less than or equal to the voting period: %s", p.MinDepositThrottler.UpdatePeriod)
+	}
+
+	if p.MinDepositThrottler.SensitivityTargetDistance == 0 {
+		return fmt.Errorf("minimum deposit sensitivity target distance must be positive: %d", p.MinDepositThrottler.SensitivityTargetDistance)
+	}
+
+	minDepositIncreaseRatio, err := sdk.NewDecFromStr(p.MinDepositThrottler.IncreaseRatio)
+	if err != nil {
+		return fmt.Errorf("invalid minimum deposit increase ratio: %w", err)
+	}
+	if !minDepositIncreaseRatio.IsPositive() {
+		return fmt.Errorf("minimum deposit increase ratio must be positive: %s", minDepositIncreaseRatio)
+	}
+	if minDepositIncreaseRatio.GTE(math.LegacyOneDec()) {
+		return fmt.Errorf("minimum deposit increase ratio too large: %s", minDepositIncreaseRatio)
+	}
+
+	minDepositDecreaseRatio, err := sdk.NewDecFromStr(p.MinDepositThrottler.DecreaseRatio)
+	if err != nil {
+		return fmt.Errorf("invalid minimum deposit decrease ratio: %w", err)
+	}
+	if !minDepositDecreaseRatio.IsPositive() {
+		return fmt.Errorf("minimum deposit decrease ratio must be positive: %s", minDepositDecreaseRatio)
+	}
+	if minDepositDecreaseRatio.GTE(math.LegacyOneDec()) {
+		return fmt.Errorf("minimum deposit decrease ratio too large: %s", minDepositDecreaseRatio)
 	}
 
 	return nil

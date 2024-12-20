@@ -179,13 +179,18 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 
 	govGenState := govv1.NewGenesisState(1,
 		govv1.NewParams(
-			sdk.NewCoins(sdk.NewCoin(denom, amnt)), maxDepositPeriod,
+			// sdk.NewCoins(sdk.NewCoin(denom, amnt)),
+			maxDepositPeriod,
 			votingPeriod,
 			quorum.String(), threshold.String(),
 			amendmentsQuorum.String(), amendmentsThreshold.String(), lawQuorum.String(), lawThreshold.String(),
 			sdk.ZeroDec().String(),
 			false, false, govv1.DefaultMinDepositRatio.String(),
 			govv1.DefaultQuorumTimeout, govv1.DefaultMaxVotingPeriodExtension, govv1.DefaultQuorumCheckCount,
+			sdk.NewCoins(sdk.NewCoin(denom, amnt)), govv1.DefaultMinDepositUpdatePeriod,
+			govv1.DefaultMinDepositSensitivityTargetDistance,
+			govv1.DefaultMinDepositIncreaseRatio.String(), govv1.DefaultMinDepositDecreaseRatio.String(),
+			govv1.DefaultTargetActiveProposals,
 		),
 	)
 	govGenState.Constitution = "This is a test constitution"
