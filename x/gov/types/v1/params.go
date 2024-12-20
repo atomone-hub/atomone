@@ -280,7 +280,7 @@ func (p Params) ValidateBasic() error {
 	if p.QuorumCheckCount > 0 {
 		// If quorum check is enabled, validate quorum check params
 		if p.QuorumTimeout == nil {
-			return fmt.Errorf("quorum timeout must not be nil: %d", p.QuorumTimeout)
+			return fmt.Errorf("quorum timeout must not be nil")
 		}
 		if p.QuorumTimeout.Seconds() < 0 {
 			return fmt.Errorf("quorum timeout must be 0 or greater: %s", p.QuorumTimeout)
@@ -290,11 +290,15 @@ func (p Params) ValidateBasic() error {
 		}
 
 		if p.MaxVotingPeriodExtension == nil {
-			return fmt.Errorf("max voting period extension must not be nil: %d", p.MaxVotingPeriodExtension)
+			return fmt.Errorf("max voting period extension must not be nil")
 		}
 		if p.MaxVotingPeriodExtension.Nanoseconds() < p.VotingPeriod.Nanoseconds()-p.QuorumTimeout.Nanoseconds() {
 			return fmt.Errorf("max voting period extension %s must be greater than or equal to the difference between the voting period %s and the quorum timeout %s", p.MaxVotingPeriodExtension, p.VotingPeriod, p.QuorumTimeout)
 		}
+	}
+
+	if p.MinDepositThrottler == nil {
+		return fmt.Errorf("min deposit throttler must not be nil")
 	}
 
 	if minDepositFloor := sdk.Coins(p.MinDepositThrottler.FloorValue); minDepositFloor.Empty() || !minDepositFloor.IsValid() {
@@ -302,40 +306,40 @@ func (p Params) ValidateBasic() error {
 	}
 
 	if p.MinDepositThrottler.UpdatePeriod == nil {
-		return fmt.Errorf("minimum deposit update period must not be nil: %d", p.MinDepositThrottler.UpdatePeriod)
+		return fmt.Errorf("minimum deposit update period must not be nil")
 	}
 
 	if p.MinDepositThrottler.UpdatePeriod.Seconds() <= 0 {
-		return fmt.Errorf("minimum deposit update period must be positive: %d", p.MinDepositThrottler.UpdatePeriod)
+		return fmt.Errorf("minimum deposit update period must be positive: %s", p.MinDepositThrottler.UpdatePeriod)
 	}
 
 	if p.MinDepositThrottler.UpdatePeriod.Seconds() > p.VotingPeriod.Seconds() {
-		return fmt.Errorf("minimum deposit update period must be less than or equal to the voting period: %d", p.MinDepositThrottler.UpdatePeriod)
+		return fmt.Errorf("minimum deposit update period must be less than or equal to the voting period: %s", p.MinDepositThrottler.UpdatePeriod)
 	}
 
 	if p.MinDepositThrottler.SensitivityTargetDistance == 0 {
 		return fmt.Errorf("minimum deposit sensitivity target distance must be positive: %d", p.MinDepositThrottler.SensitivityTargetDistance)
 	}
 
-	minDepositIncreaseRation, err := sdk.NewDecFromStr(p.MinDepositThrottler.IncreaseRatio)
+	minDepositIncreaseRatio, err := sdk.NewDecFromStr(p.MinDepositThrottler.IncreaseRatio)
 	if err != nil {
 		return fmt.Errorf("invalid minimum deposit increase ratio: %w", err)
 	}
-	if minDepositIncreaseRation.IsNegative() {
-		return fmt.Errorf("minimum deposit increase ratio must be positive: %s", minDepositIncreaseRation)
+	if !minDepositIncreaseRatio.IsPositive() {
+		return fmt.Errorf("minimum deposit increase ratio must be positive: %s", minDepositIncreaseRatio)
 	}
-	if minDepositIncreaseRation.GT(math.LegacyOneDec()) {
-		return fmt.Errorf("minimum deposit increase ratio too large: %s", minDepositIncreaseRation)
+	if minDepositIncreaseRatio.GTE(math.LegacyOneDec()) {
+		return fmt.Errorf("minimum deposit increase ratio too large: %s", minDepositIncreaseRatio)
 	}
 
 	minDepositDecreaseRatio, err := sdk.NewDecFromStr(p.MinDepositThrottler.DecreaseRatio)
 	if err != nil {
 		return fmt.Errorf("invalid minimum deposit decrease ratio: %w", err)
 	}
-	if minDepositDecreaseRatio.IsNegative() {
+	if !minDepositDecreaseRatio.IsPositive() {
 		return fmt.Errorf("minimum deposit decrease ratio must be positive: %s", minDepositDecreaseRatio)
 	}
-	if minDepositDecreaseRatio.GT(math.LegacyOneDec()) {
+	if minDepositDecreaseRatio.GTE(math.LegacyOneDec()) {
 		return fmt.Errorf("minimum deposit decrease ratio too large: %s", minDepositDecreaseRatio)
 	}
 
