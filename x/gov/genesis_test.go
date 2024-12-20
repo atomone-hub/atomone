@@ -99,6 +99,7 @@ func TestInitGenesis(t *testing.T) {
 				Options:    v1.NewNonSplitVoteOption(v1.OptionNo),
 			},
 		}
+		utcTime         = time.Now().UTC()
 		depositEndTime  = time.Now().Add(time.Hour * 8)
 		votingStartTime = time.Now()
 		votingEndTime   = time.Now().Add(time.Hour * 24)
@@ -171,6 +172,25 @@ func TestInitGenesis(t *testing.T) {
 				t.Helper()
 				p := s.GovKeeper.GetParams(ctx)
 				assert.Equal(t, *params, p)
+				lmdCoins, lmdTime := s.GovKeeper.GetLastMinDeposit(ctx)
+				assert.EqualValues(t, p.MinDepositThrottler.FloorValue, lmdCoins)
+				assert.Equal(t, ctx.BlockTime(), lmdTime)
+			},
+		},
+		{
+			name: "ok: genesis with last min deposit",
+			genesis: v1.GenesisState{
+				Params: params,
+				LastMinDeposit: &v1.LastMinDeposit{
+					Value: sdk.NewCoins(sdk.NewInt64Coin("xxx", 1)),
+					Time:  &utcTime,
+				},
+			},
+			assert: func(t *testing.T, ctx sdk.Context, s suite) {
+				t.Helper()
+				lmdCoins, lmdTime := s.GovKeeper.GetLastMinDeposit(ctx)
+				assert.EqualValues(t, sdk.NewCoins(sdk.NewInt64Coin("xxx", 1)), lmdCoins)
+				assert.Equal(t, utcTime, lmdTime)
 			},
 		},
 		{
