@@ -276,6 +276,7 @@ func TestTickPassedVotingPeriod(t *testing.T) {
 	activeQueue = suite.GovKeeper.ActiveProposalQueueIterator(ctx, ctx.BlockHeader().Time)
 	require.True(t, activeQueue.Valid())
 
+	require.EqualValues(t, 1, suite.GovKeeper.GetActiveProposalsNumber(ctx))
 	activeProposalID := types.GetProposalIDFromBytes(activeQueue.Value())
 	proposal, ok := suite.GovKeeper.GetProposal(ctx, activeProposalID)
 	require.True(t, ok)
@@ -285,6 +286,7 @@ func TestTickPassedVotingPeriod(t *testing.T) {
 
 	gov.EndBlocker(ctx, suite.GovKeeper)
 
+	require.EqualValues(t, 0, suite.GovKeeper.GetActiveProposalsNumber(ctx))
 	activeQueue = suite.GovKeeper.ActiveProposalQueueIterator(ctx, ctx.BlockHeader().Time)
 	require.False(t, activeQueue.Valid())
 	activeQueue.Close()
@@ -379,10 +381,12 @@ func TestEndBlockerProposalHandlerFailed(t *testing.T) {
 	newHeader := ctx.BlockHeader()
 	newHeader.Time = ctx.BlockHeader().Time.Add(*suite.GovKeeper.GetParams(ctx).MaxDepositPeriod).Add(*suite.GovKeeper.GetParams(ctx).VotingPeriod)
 	ctx = ctx.WithBlockHeader(newHeader)
+	require.EqualValues(t, 1, suite.GovKeeper.GetActiveProposalsNumber(ctx))
 
 	// validate that the proposal fails/has been rejected
 	gov.EndBlocker(ctx, suite.GovKeeper)
 
+	require.EqualValues(t, 0, suite.GovKeeper.GetActiveProposalsNumber(ctx))
 	proposal, ok := suite.GovKeeper.GetProposal(ctx, proposal.Id)
 	require.True(t, ok)
 	require.Equal(t, v1.StatusFailed, proposal.Status)
