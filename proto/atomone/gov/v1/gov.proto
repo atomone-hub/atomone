@@ -246,6 +246,33 @@ message MinDepositThrottler {
   uint64 sensitivity_target_distance = 6;
 }
 
+message MinInitialDepositThrottler {
+  // Floor value for the minimum initial deposit required for a proposal to enter the deposit period.
+  repeated cosmos.base.v1beta1.Coin floor_value = 1
+  [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+
+  // Duration that dictates after how long the dynamic minimum deposit should be recalculated
+  // for time-based updates.
+  google.protobuf.Duration update_period = 2 [(gogoproto.stdduration) = true];
+
+  // The number of proposals in deposit period the dynamic minimum initial deposit should target.
+  uint64 target_proposals = 3;
+
+  // The ratio of increase for the minimum initial deposit when the number of proposals
+  // in deposit period exceeds the target by 1.
+  string increase_ratio = 4 [(cosmos_proto.scalar) = "cosmos.Dec"];
+
+  // The ratio of decrease for the minimum initial deposit when the number of proposals
+  // in deposit period is 1 less than the target.
+  string decrease_ratio = 5 [(cosmos_proto.scalar) = "cosmos.Dec"];
+
+  // A positive integer representing the sensitivity of the dynamic minimum initial 
+  // deposit increase/decrease to the distance from the target number of proposals
+  // in deposit period. The higher the number, the lower the sensitivity. A value 
+  // of 1 represents the highest sensitivity.
+  uint64 sensitivity_target_distance = 6;
+}
+
 // Params defines the parameters for the x/gov module.
 //
 // Since: cosmos-sdk 0.47
@@ -275,7 +302,7 @@ message Params {
   string threshold = 5 [(cosmos_proto.scalar) = "cosmos.Dec"];
 
   //  The ratio representing the proportion of the deposit value that must be paid at proposal submission.
-  string min_initial_deposit_ratio = 7 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  string min_initial_deposit_ratio = 7 [(cosmos_proto.scalar) = "cosmos.Dec", deprecated = true ];
 
   // burn deposits if a proposal does not meet quorum
   bool burn_vote_quorum = 13;
@@ -317,4 +344,6 @@ message Params {
   uint64 quorum_check_count = 22;
 
   MinDepositThrottler min_deposit_throttler = 23;
+
+  MinInitialDepositThrottler min_initial_deposit_throttler = 24;
 }
