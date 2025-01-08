@@ -167,6 +167,7 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 
 	// Refactor to separate method
 	amnt := sdk.NewInt(10000)
+	initialDepositAmnt := sdk.NewInt(100)
 	quorum, _ := sdk.NewDecFromStr("0.000000000000000001")
 	threshold, _ := sdk.NewDecFromStr("0.000000000000000001")
 	lawQuorum, _ := sdk.NewDecFromStr("0.000000000000000001")
@@ -184,13 +185,15 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 			votingPeriod,
 			quorum.String(), threshold.String(),
 			amendmentsQuorum.String(), amendmentsThreshold.String(), lawQuorum.String(), lawThreshold.String(),
-			sdk.ZeroDec().String(),
+			// sdk.ZeroDec().String(),
 			false, false, govv1.DefaultMinDepositRatio.String(),
 			govv1.DefaultQuorumTimeout, govv1.DefaultMaxVotingPeriodExtension, govv1.DefaultQuorumCheckCount,
 			sdk.NewCoins(sdk.NewCoin(denom, amnt)), govv1.DefaultMinDepositUpdatePeriod,
 			govv1.DefaultMinDepositSensitivityTargetDistance,
 			govv1.DefaultMinDepositIncreaseRatio.String(), govv1.DefaultMinDepositDecreaseRatio.String(),
-			govv1.DefaultTargetActiveProposals,
+			govv1.DefaultTargetActiveProposals, sdk.NewCoins(sdk.NewCoin(denom, initialDepositAmnt)), govv1.DefaultMinInitialDepositUpdatePeriod,
+			govv1.DefaultMinInitialDepositSensitivityTargetDistance, govv1.DefaultMinInitialDepositIncreaseRatio.String(),
+			govv1.DefaultMinInitialDepositDecreaseRatio.String(), govv1.DefaultTargetProposalsInDepositPeriod,
 		),
 	)
 	govGenState.Constitution = "This is a test constitution"
