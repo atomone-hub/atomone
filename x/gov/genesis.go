@@ -83,6 +83,12 @@ func InitGenesis(ctx sdk.Context, ak types.AccountKeeper, bk types.BankKeeper, k
 	} else {
 		k.SetLastMinDeposit(ctx, data.Params.MinDepositThrottler.FloorValue, ctx.BlockTime())
 	}
+
+	if data.LastMinInitialDeposit != nil {
+		k.SetLastMinInitialDeposit(ctx, data.LastMinInitialDeposit.Value, *data.LastMinInitialDeposit.Time)
+	} else {
+		k.SetLastMinInitialDeposit(ctx, data.Params.MinInitialDepositThrottler.FloorValue, ctx.BlockTime())
+	}
 }
 
 // ExportGenesis - output genesis parameters
@@ -108,13 +114,19 @@ func ExportGenesis(ctx sdk.Context, k *keeper.Keeper) *v1.GenesisState {
 		Time:  &blockTime,
 	}
 
+	lastMinInitialDeposit := v1.LastMinDeposit{
+		Value: k.GetMinInitialDeposit(ctx),
+		Time:  &blockTime,
+	}
+
 	return &v1.GenesisState{
-		StartingProposalId: startingProposalID,
-		Deposits:           proposalsDeposits,
-		Votes:              proposalsVotes,
-		Proposals:          proposals,
-		Params:             &params,
-		Constitution:       constitution,
-		LastMinDeposit:     &lastMinDeposit,
+		StartingProposalId:    startingProposalID,
+		Deposits:              proposalsDeposits,
+		Votes:                 proposalsVotes,
+		Proposals:             proposals,
+		Params:                &params,
+		Constitution:          constitution,
+		LastMinDeposit:        &lastMinDeposit,
+		LastMinInitialDeposit: &lastMinInitialDeposit,
 	}
 }

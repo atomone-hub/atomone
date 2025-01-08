@@ -1284,7 +1284,12 @@ func (suite *KeeperTestSuite) TestSubmitProposal_InitialDeposit() {
 
 			params := v1.DefaultParams()
 			params.MinDepositThrottler.FloorValue = tc.minDeposit
-			params.MinInitialDepositRatio = tc.minInitialDepositRatio.String()
+			// params.MinInitialDepositRatio = tc.minInitialDepositRatio.String()
+			minInitialDepositFloor := sdk.NewCoins()
+			for _, coin := range tc.minDeposit {
+				minInitialDepositFloor = minInitialDepositFloor.Add(sdk.NewCoin(coin.Denom, tc.minInitialDepositRatio.MulInt(coin.Amount).TruncateInt()))
+			}
+			params.MinInitialDepositThrottler.FloorValue = minInitialDepositFloor
 			govKeeper.SetParams(ctx, params)
 			// manually set last min deposit to test-case min deposit value and current block time
 			// so dynamic deposit system does not interfere with the test by increasing/decreasing the min deposit
