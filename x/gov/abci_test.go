@@ -71,11 +71,15 @@ func TestTickExpiredDepositPeriod(t *testing.T) {
 	newHeader.Time = ctx.BlockHeader().Time.Add(*suite.GovKeeper.GetParams(ctx).MaxDepositPeriod)
 	ctx = ctx.WithBlockHeader(newHeader)
 
+	require.EqualValues(t, 1, suite.GovKeeper.GetInactiveProposalsNumber(ctx))
+
 	inactiveQueue = suite.GovKeeper.InactiveProposalQueueIterator(ctx, ctx.BlockHeader().Time)
 	require.True(t, inactiveQueue.Valid())
 	inactiveQueue.Close()
 
 	gov.EndBlocker(ctx, suite.GovKeeper)
+
+	require.EqualValues(t, 0, suite.GovKeeper.GetInactiveProposalsNumber(ctx))
 
 	inactiveQueue = suite.GovKeeper.InactiveProposalQueueIterator(ctx, ctx.BlockHeader().Time)
 	require.False(t, inactiveQueue.Valid())
@@ -123,6 +127,8 @@ func TestTickMultipleExpiredDepositPeriod(t *testing.T) {
 	require.False(t, inactiveQueue.Valid())
 	inactiveQueue.Close()
 
+	require.EqualValues(t, 1, suite.GovKeeper.GetInactiveProposalsNumber(ctx))
+
 	newProposalMsg2, err := v1.NewMsgSubmitProposal(
 		[]sdk.Msg{mkTestLegacyContent(t)},
 		sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 100000)},
@@ -145,6 +151,8 @@ func TestTickMultipleExpiredDepositPeriod(t *testing.T) {
 	require.True(t, inactiveQueue.Valid())
 	inactiveQueue.Close()
 
+	require.EqualValues(t, 2, suite.GovKeeper.GetInactiveProposalsNumber(ctx))
+
 	gov.EndBlocker(ctx, suite.GovKeeper)
 
 	inactiveQueue = suite.GovKeeper.InactiveProposalQueueIterator(ctx, ctx.BlockHeader().Time)
@@ -159,7 +167,11 @@ func TestTickMultipleExpiredDepositPeriod(t *testing.T) {
 	require.True(t, inactiveQueue.Valid())
 	inactiveQueue.Close()
 
+	require.EqualValues(t, 1, suite.GovKeeper.GetInactiveProposalsNumber(ctx))
+
 	gov.EndBlocker(ctx, suite.GovKeeper)
+
+	require.EqualValues(t, 0, suite.GovKeeper.GetInactiveProposalsNumber(ctx))
 
 	inactiveQueue = suite.GovKeeper.InactiveProposalQueueIterator(ctx, ctx.BlockHeader().Time)
 	require.False(t, inactiveQueue.Valid())
@@ -212,6 +224,8 @@ func TestTickPassedDepositPeriod(t *testing.T) {
 	require.False(t, inactiveQueue.Valid())
 	inactiveQueue.Close()
 
+	require.EqualValues(t, 1, suite.GovKeeper.GetInactiveProposalsNumber(ctx))
+
 	newDepositMsg := v1.NewMsgDeposit(addrs[1], proposalID, sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 100000)})
 
 	res1, err := govMsgSvr.Deposit(sdk.WrapSDKContext(ctx), newDepositMsg)
@@ -221,6 +235,9 @@ func TestTickPassedDepositPeriod(t *testing.T) {
 	activeQueue = suite.GovKeeper.ActiveProposalQueueIterator(ctx, ctx.BlockHeader().Time)
 	require.False(t, activeQueue.Valid())
 	activeQueue.Close()
+
+	require.EqualValues(t, 1, suite.GovKeeper.GetInactiveProposalsNumber(ctx))
+	require.EqualValues(t, 0, suite.GovKeeper.GetActiveProposalsNumber(ctx))
 }
 
 func TestTickPassedVotingPeriod(t *testing.T) {

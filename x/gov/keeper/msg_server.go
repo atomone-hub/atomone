@@ -62,6 +62,8 @@ func (k msgServer) SubmitProposal(goCtx context.Context, msg *v1.MsgSubmitPropos
 		"submit proposal",
 	)
 
+	// skip min deposit ratio check since for proposal submissions the initial deposit is the threshold
+	// to check against.
 	votingStarted, err := k.Keeper.AddDeposit(ctx, proposal.Id, proposer, msg.GetInitialDeposit(), true)
 	if err != nil {
 		return nil, err
