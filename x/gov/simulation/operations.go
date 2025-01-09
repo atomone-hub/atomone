@@ -471,9 +471,12 @@ func randomDeposit(
 		minAmount = k.GetMinInitialDeposit(ctx)[denomIndex].Amount
 	}
 
-	amount, err := simtypes.RandPositiveInt(r, minDepositAmount.Sub(minAmount))
-	if err != nil {
-		return nil, false, err
+	amount := sdk.ZeroInt()
+	if minDepositAmount.Sub(minAmount).GTE(sdk.OneInt()) {
+		amount, err = simtypes.RandPositiveInt(r, minDepositAmount.Sub(minAmount))
+		if err != nil {
+			return nil, false, err
+		}
 	}
 	amount = amount.Add(minAmount)
 
