@@ -65,3 +65,48 @@ func TestMsgMintPhoton_ValidateBasic(t *testing.T) {
 		})
 	}
 }
+
+func TestMsgMintPhoton_GetSignBytes(t *testing.T) {
+	msg := MsgMintPhoton{
+		ToAddress: "my_addr",
+		Amount:    sdk.NewInt64Coin("uatone", 1),
+	}
+
+	bz := msg.GetSignBytes()
+
+	expectedSignedBytes := `{
+		"type": "atomone/photon/v1/MsgMintPhoton",
+		"value": {
+			"amount": {
+				"amount":"1",
+				"denom": "uatone"
+			},
+			"to_address": "my_addr"
+		}
+	}`
+	require.JSONEq(t, expectedSignedBytes, string(bz))
+}
+
+func TestMsgUpdateParams_GetSignBytes(t *testing.T) {
+	msg := MsgUpdateParams{
+		Authority: "authority",
+		Params: Params{
+			MintDisabled:    true,
+			TxFeeExceptions: []string{"tx1", "tx2"},
+		},
+	}
+
+	bz := msg.GetSignBytes()
+
+	expectedSignedBytes := `{
+		"type": "atomone/x/photon/v1/MsgUpdateParams",
+		"value": {
+			"authority":"authority",
+			"params": {
+				"mint_disabled":true,
+				"tx_fee_exceptions": ["tx1","tx2"]
+			}
+		}
+	}`
+	require.JSONEq(t, expectedSignedBytes, string(bz))
+}
