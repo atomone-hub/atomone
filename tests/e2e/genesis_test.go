@@ -176,8 +176,6 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 	appState[minttypes.ModuleName] = mintGenStateBz
 
 	// Refactor to separate method
-	amnt := sdk.NewInt(10000)
-	initialDepositAmnt := sdk.NewInt(100)
 	quorum, _ := sdk.NewDecFromStr("0.000000000000000001")
 	threshold, _ := sdk.NewDecFromStr("0.000000000000000001")
 	lawQuorum, _ := sdk.NewDecFromStr("0.000000000000000001")
@@ -190,7 +188,7 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 
 	govGenState := govv1.NewGenesisState(1,
 		govv1.NewParams(
-			// sdk.NewCoins(sdk.NewCoin(denom, amnt)),
+			// sdk.NewCoins(sdk.NewCoin(denom, depositAmount.Amount)),
 			maxDepositPeriod,
 			votingPeriod,
 			quorum.String(), threshold.String(),
@@ -198,10 +196,10 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 			// sdk.ZeroDec().String(),
 			false, false, govv1.DefaultMinDepositRatio.String(),
 			govv1.DefaultQuorumTimeout, govv1.DefaultMaxVotingPeriodExtension, govv1.DefaultQuorumCheckCount,
-			sdk.NewCoins(sdk.NewCoin(denom, amnt)), govv1.DefaultMinDepositUpdatePeriod,
+			sdk.NewCoins(sdk.NewCoin(denom, depositAmount.Amount)), govv1.DefaultMinDepositUpdatePeriod,
 			govv1.DefaultMinDepositSensitivityTargetDistance,
 			govv1.DefaultMinDepositIncreaseRatio.String(), govv1.DefaultMinDepositDecreaseRatio.String(),
-			govv1.DefaultTargetActiveProposals, sdk.NewCoins(sdk.NewCoin(denom, initialDepositAmnt)), govv1.DefaultMinInitialDepositUpdatePeriod,
+			govv1.DefaultTargetActiveProposals, sdk.NewCoins(sdk.NewCoin(denom, initialDepositAmount.Amount)), govv1.DefaultMinInitialDepositUpdatePeriod,
 			govv1.DefaultMinInitialDepositSensitivityTargetDistance, govv1.DefaultMinInitialDepositIncreaseRatio.String(),
 			govv1.DefaultMinInitialDepositDecreaseRatio.String(), govv1.DefaultTargetProposalsInDepositPeriod,
 		),
