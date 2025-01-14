@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"strconv"
 	"strings"
 	"time"
 
@@ -13,7 +12,7 @@ import (
 )
 
 //nolint:unparam
-func (s *IntegrationTestSuite) sendIBC(c *chain, valIdx int, sender, recipient, token, fees, note string) {
+func (s *IntegrationTestSuite) sendIBC(c *chain, valIdx int, sender, recipient, token, note string) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
@@ -27,7 +26,7 @@ func (s *IntegrationTestSuite) sendIBC(c *chain, valIdx int, sender, recipient, 
 		recipient,
 		token,
 		fmt.Sprintf("--from=%s", sender),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, fees),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, standardFees.String()),
 		fmt.Sprintf("--%s=%s", flags.FlagChainID, c.id),
 		// fmt.Sprintf("--%s=%s", flags.FlagNote, note),
 		fmt.Sprintf("--memo=%s", note),
@@ -37,7 +36,7 @@ func (s *IntegrationTestSuite) sendIBC(c *chain, valIdx int, sender, recipient, 
 		"-y",
 	}
 	s.T().Logf("sending %s from %s (%s) to %s (%s) with memo %s", token, s.chainA.id, sender, s.chainB.id, recipient, note)
-	s.executeAtomoneTxCommand(ctx, c, ibcCmd, valIdx, s.defaultExecValidation(c, valIdx))
+	s.executeAtomoneTxCommand(ctx, c, ibcCmd, valIdx, s.defaultExecValidation(c, valIdx, nil))
 	s.T().Log("successfully sent IBC tokens")
 }
 
@@ -228,8 +227,7 @@ func (s *IntegrationTestSuite) testIBCTokenTransfer() {
 			}
 		}
 
-		tokenAmt := 3300000000
-		s.sendIBC(s.chainA, 0, sender, recipient, strconv.Itoa(tokenAmt)+uatoneDenom, standardFees.String(), "")
+		s.sendIBC(s.chainA, 0, sender, recipient, tokenAmount.String(), "")
 
 		pass := s.hermesClearPacket(hermesConfigWithGasPrices, s.chainA.id, transferChannel)
 		s.Require().True(pass)
@@ -246,7 +244,7 @@ func (s *IntegrationTestSuite) testIBCTokenTransfer() {
 		for _, c := range balances {
 			if strings.Contains(c.Denom, "ibc/") {
 				ibcStakeDenom = c.Denom
-				s.Require().Equal((int64(tokenAmt) + beforeBalance), c.Amount.Int64())
+				s.Require().Equal(tokenAmount.Amount.Int64()+beforeBalance, c.Amount.Int64())
 				break
 			}
 		}

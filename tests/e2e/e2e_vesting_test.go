@@ -31,12 +31,14 @@ type (
 )
 
 var (
-	genesisVestingKeys      = []string{continuousVestingKey, delayedVestingKey, lockedVestingKey, periodicVestingKey}
-	vestingAmountVested     = sdk.NewCoin(uatoneDenom, sdk.NewInt(99900000000))
-	vestingAmount           = sdk.NewCoin(uatoneDenom, sdk.NewInt(350000))
-	vestingBalance          = sdk.NewCoins(vestingAmountVested).Add(vestingAmount)
+	genesisVestingKeys  = []string{continuousVestingKey, delayedVestingKey, lockedVestingKey, periodicVestingKey}
+	vestingAmountVested = sdk.NewCoin(uatoneDenom, sdk.NewInt(99900000000))
+	vestingAmount       = sdk.NewCoins(
+		sdk.NewInt64Coin(uatoneDenom, 350_000),
+		sdk.NewInt64Coin(uphotonDenom, 10_000_000_000),
+	)
+	vestingBalance          = sdk.NewCoins(vestingAmountVested).Add(vestingAmount...)
 	vestingDelegationAmount = sdk.NewCoin(uatoneDenom, sdk.NewInt(500000000))
-	vestingDelegationFees   = sdk.NewCoin(uatoneDenom, sdk.NewInt(1))
 )
 
 func (s *IntegrationTestSuite) testDelayedVestingAccount(api string) {
@@ -60,7 +62,7 @@ func (s *IntegrationTestSuite) testDelayedVestingAccount(api string) {
 
 		// Delegate coins should succeed
 		s.execDelegate(chain, valIdx, vestingDelegationAmount.String(), valOpAddr,
-			vestingDelayedAcc.String(), atomoneHomePath, vestingDelegationFees.String())
+			vestingDelayedAcc.String(), atomoneHomePath)
 
 		// Validate delegation successful
 		s.Require().Eventually(
@@ -85,8 +87,7 @@ func (s *IntegrationTestSuite) testDelayedVestingAccount(api string) {
 				valIdx,
 				vestingDelayedAcc.String(),
 				Address(),
-				balance.Sub(standardFees).String(),
-				standardFees.String(),
+				balance.String(),
 				true,
 			)
 			waitTime = acc.EndTime - time.Now().Unix() + vestingTxDelay
@@ -101,8 +102,7 @@ func (s *IntegrationTestSuite) testDelayedVestingAccount(api string) {
 			valIdx,
 			vestingDelayedAcc.String(),
 			Address(),
-			balance.Sub(standardFees).String(),
-			standardFees.String(),
+			balance.String(),
 			false,
 		)
 	})
@@ -129,7 +129,7 @@ func (s *IntegrationTestSuite) testContinuousVestingAccount(api string) {
 
 		// Delegate coins should succeed
 		s.execDelegate(chain, valIdx, vestingDelegationAmount.String(),
-			valOpAddr, continuousVestingAcc.String(), atomoneHomePath, vestingDelegationFees.String())
+			valOpAddr, continuousVestingAcc.String(), atomoneHomePath)
 
 		// Validate delegation successful
 		s.Require().Eventually(
@@ -154,8 +154,7 @@ func (s *IntegrationTestSuite) testContinuousVestingAccount(api string) {
 				valIdx,
 				continuousVestingAcc.String(),
 				Address(),
-				balance.Sub(standardFees).String(),
-				standardFees.String(),
+				balance.String(),
 				true,
 			)
 			waitStartTime = acc.StartTime - time.Now().Unix() + vestingTxDelay
@@ -172,8 +171,7 @@ func (s *IntegrationTestSuite) testContinuousVestingAccount(api string) {
 				valIdx,
 				continuousVestingAcc.String(),
 				Address(),
-				balance.Sub(standardFees).String(),
-				standardFees.String(),
+				balance.String(),
 				true,
 			)
 			waitEndTime = acc.EndTime - time.Now().Unix() + vestingTxDelay
@@ -188,8 +186,7 @@ func (s *IntegrationTestSuite) testContinuousVestingAccount(api string) {
 			valIdx,
 			continuousVestingAcc.String(),
 			Address(),
-			balance.Sub(standardFees).String(),
-			standardFees.String(),
+			balance.String(),
 			false,
 		)
 	})
@@ -239,8 +236,7 @@ func (s *IntegrationTestSuite) testPeriodicVestingAccount(api string) { //nolint
 				valIdx,
 				periodicVestingAddr,
 				Address(),
-				balance.Sub(standardFees).String(),
-				standardFees.String(),
+				balance.String(),
 				true,
 			)
 			waitStartTime = acc.StartTime - time.Now().Unix() + vestingTxDelay
@@ -258,8 +254,7 @@ func (s *IntegrationTestSuite) testPeriodicVestingAccount(api string) { //nolint
 				valIdx,
 				periodicVestingAddr,
 				Address(),
-				balance.Sub(standardFees).String(),
-				standardFees.String(),
+				balance.String(),
 				true,
 			)
 			waitFirstPeriod = firstPeriod - time.Now().Unix() + vestingTxDelay
@@ -268,7 +263,7 @@ func (s *IntegrationTestSuite) testPeriodicVestingAccount(api string) { //nolint
 
 		// Delegate coins should succeed
 		s.execDelegate(chain, valIdx, vestingDelegationAmount.String(), valOpAddr,
-			periodicVestingAddr, atomoneHomePath, vestingDelegationFees.String())
+			periodicVestingAddr, atomoneHomePath)
 
 		// Validate delegation successful
 		s.Require().Eventually(
@@ -291,8 +286,7 @@ func (s *IntegrationTestSuite) testPeriodicVestingAccount(api string) { //nolint
 			valIdx,
 			periodicVestingAddr,
 			Address(),
-			balance.Sub(standardFees).String(),
-			standardFees.String(),
+			balance.String(),
 			false,
 		)
 
@@ -309,8 +303,7 @@ func (s *IntegrationTestSuite) testPeriodicVestingAccount(api string) { //nolint
 				valIdx,
 				periodicVestingAddr,
 				Address(),
-				balance.Sub(standardFees).String(),
-				standardFees.String(),
+				balance.String(),
 				false,
 			)
 		}
