@@ -83,8 +83,8 @@ func validateVotingParams(i interface{}) error {
 		return errors.New("voting period must not be nil")
 	}
 
-	if v.VotingPeriod.Seconds() < MinVotingPeriod.Seconds() {
-		return fmt.Errorf("voting period must be at least %s: %s", MinVotingPeriod.String(), v.VotingPeriod.String())
+	if v.VotingPeriod.Seconds() < minVotingPeriod.Seconds() {
+		return fmt.Errorf("voting period must be at least %s: %s", minVotingPeriod.String(), v.VotingPeriod.String())
 	}
 
 	return nil

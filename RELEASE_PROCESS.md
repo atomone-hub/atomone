@@ -41,9 +41,7 @@ An exception are PRs open via the Github mergify integration (i.e., backported P
   * **PRs targeting directly a release branch can be merged _only_ when exceptional circumstances arise**.
 * In the release branch 
   * Create a new version section in the `CHANGELOG.md` (follow the procedure described [below](#changelog))
-  * Create release notes, in `RELEASE_NOTES.md`, highlighting the new features and changes in the version. 
-    This is needed so the bot knows which entries to add to the release page on GitHub.
-   * Additionally verify that the `UPGRADING.md` file is up to date and contains all the necessary information for upgrading to the new version.
+  * Additionally verify that the `UPGRADING.md` file is up to date and contains all the necessary information for upgrading to the new version.
 * We freeze the release branch from receiving any new features and focus on releasing a release candidate.
   * Finish audits and reviews.
   * Add more tests.
@@ -60,8 +58,8 @@ An exception are PRs open via the Github mergify integration (i.e., backported P
 
 ### Release Notes
 
-Release notes will be created using the `RELEASE_NOTES.md` from the release branch. 
-Once the automated releases process is completed, please add any missing information the release notes using Github UI.
+Release notes should be appended to the `CHANGELOG.md` file from the release
+branch. 
 
 With every release, the `goreleaser` tool will create a file with all the build artifact checksums and upload it alongside the artifacts.
 The file is called `SHA256SUMS-{{.version}}.txt` and contains the following:
@@ -73,6 +71,9 @@ The file is called `SHA256SUMS-{{.version}}.txt` and contains the following:
 bcbca82da2cb2387ad6d24c1f6401b229a9b4752156573327250d37e5cc9bb1c  atomoned_0.0.4_windows_amd64.exe
 f39552cbfcfb2b06f1bd66fd324af54ac9ee06625cfa652b71eba1869efe8670  atomoned_0.0.4_linux_amd64
 ```
+
+For security reason the content of this file is also duplicated in the
+`RELEASES.md` file.
 
 ### Tagging Procedure
 
@@ -111,10 +112,14 @@ make create-release TAG=v11.0.0
 Before tagging a new version, please test the building releasing artifacts by running:
 
 ```bash
-TM_VERSION=$(go list -m github.com/tendermint/tendermint | sed 's:.* ::') goreleaser release --snapshot --clean --debug
+# TODO run with appropriate go version
+TM_VERSION=$(make print_tm_version) goreleaser release --snapshot --clean --debug
 ```
 
 #### Installing goreleaser
+
+<!-- TODO: fix version of goreleaser to avoid using different version that
+might break build reproducibility -->
 Check the instructions for installing goreleaser locally for your platform
 * https://goreleaser.com/install/
 

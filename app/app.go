@@ -12,7 +12,7 @@ import (
 	"github.com/spf13/cast"
 
 	// unnamed import of statik for swagger UI support
-	_ "github.com/cosmos/cosmos-sdk/client/docs/statik"
+	_ "github.com/atomone-hub/atomone/client/docs/statik"
 
 	dbm "github.com/cometbft/cometbft-db"
 	abci "github.com/cometbft/cometbft/abci/types"
@@ -51,6 +51,7 @@ import (
 	"github.com/atomone-hub/atomone/app/keepers"
 	"github.com/atomone-hub/atomone/app/params"
 	"github.com/atomone-hub/atomone/app/upgrades"
+	v2 "github.com/atomone-hub/atomone/app/upgrades/v2"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 )
 
@@ -58,7 +59,7 @@ var (
 	// DefaultNodeHome default home directories for the application daemon
 	DefaultNodeHome string
 
-	Upgrades = []upgrades.Upgrade{}
+	Upgrades = []upgrades.Upgrade{v2.Upgrade}
 )
 
 var (
@@ -221,6 +222,7 @@ func NewAtomOneApp(
 			Codec:         appCodec,
 			IBCkeeper:     app.IBCKeeper,
 			StakingKeeper: app.StakingKeeper,
+			PhotonKeeper:  app.PhotonKeeper,
 			// If TxFeeChecker is nil the default ante TxFeeChecker is used
 			TxFeeChecker: nil,
 		},
@@ -337,9 +339,7 @@ func (app *AtomOneApp) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.AP
 	nodeservice.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
 
 	// register swagger API from root so that other applications can override easily
-	if err := server.RegisterSwaggerAPI(apiSvr.ClientCtx, apiSvr.Router, apiConfig.Swagger); err != nil {
-		panic(err)
-	}
+	RegisterSwaggerAPI(apiSvr.Router)
 }
 
 // RegisterTxService allows query minimum-gas-prices in app.toml
@@ -397,7 +397,10 @@ func (app *AtomOneApp) setupUpgradeHandlers() {
 
 // RegisterSwaggerAPI registers swagger route with API Server
 func RegisterSwaggerAPI(rtr *mux.Router) {
-	statikFS, err := fs.New()
+	// NOTE(tb) the swagger fs has been registered under the `atomone` namespace
+	// (see `update-swagger-docs` in Makefile) to avoid conflicts with the legacy
+	// swagger fs registered in the default namespace.
+	statikFS, err := fs.NewWithNamespace("atomone")
 	if err != nil {
 		panic(err)
 	}

@@ -48,6 +48,8 @@ import (
 	"github.com/atomone-hub/atomone/x/gov"
 	govclient "github.com/atomone-hub/atomone/x/gov/client"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
+	"github.com/atomone-hub/atomone/x/photon"
+	photontypes "github.com/atomone-hub/atomone/x/photon/types"
 )
 
 var maccPerms = map[string][]string{
@@ -58,8 +60,8 @@ var maccPerms = map[string][]string{
 	stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
 	stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
 	govtypes.ModuleName:            {authtypes.Burner},
-	// liquiditytypes.ModuleName:         {authtypes.Minter, authtypes.Burner},
-	ibctransfertypes.ModuleName: {authtypes.Minter, authtypes.Burner},
+	ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
+	photontypes.ModuleName:         {authtypes.Minter, authtypes.Burner},
 }
 
 // ModuleBasics defines the module BasicManager is in charge of setting up basic,
@@ -85,6 +87,7 @@ var ModuleBasics = module.NewBasicManager(
 	sdkparams.AppModuleBasic{},
 	crisis.AppModuleBasic{},
 	slashing.AppModuleBasic{},
+	photon.AppModuleBasic{},
 	feegrantmodule.AppModuleBasic{},
 	authzmodule.AppModuleBasic{},
 	ibc.AppModuleBasic{},
@@ -121,6 +124,7 @@ func appModules(
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(slashingtypes.ModuleName)),
 		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(distrtypes.ModuleName)),
 		staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
+		photon.NewAppModule(appCodec, *app.PhotonKeeper, app.BankKeeper, app.AccountKeeper, app.StakingKeeper),
 		upgrade.NewAppModule(app.UpgradeKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		feegrantmodule.NewAppModule(appCodec, app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper, app.interfaceRegistry),
@@ -150,6 +154,7 @@ func simulationModules(
 		gov.NewAppModule(appCodec, app.GovKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(govtypes.ModuleName)),
 		mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper, nil, app.GetSubspace(minttypes.ModuleName)),
 		staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
+		photon.NewAppModule(appCodec, *app.PhotonKeeper, app.BankKeeper, app.AccountKeeper, app.StakingKeeper),
 		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(distrtypes.ModuleName)),
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(slashingtypes.ModuleName)),
 		sdkparams.NewAppModule(app.ParamsKeeper),
@@ -185,6 +190,7 @@ func orderBeginBlockers() []string {
 		stakingtypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
+		photontypes.ModuleName,
 		govtypes.ModuleName,
 		crisistypes.ModuleName,
 		ibcexported.ModuleName,
@@ -218,6 +224,7 @@ func orderEndBlockers() []string {
 		capabilitytypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
+		photontypes.ModuleName,
 		distrtypes.ModuleName,
 		slashingtypes.ModuleName,
 		minttypes.ModuleName,
@@ -248,6 +255,7 @@ func orderInitBlockers() []string {
 		distrtypes.ModuleName,
 		govtypes.ModuleName,
 		stakingtypes.ModuleName,
+		photontypes.ModuleName,
 		slashingtypes.ModuleName,
 		minttypes.ModuleName,
 		crisistypes.ModuleName,

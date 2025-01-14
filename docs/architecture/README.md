@@ -36,7 +36,12 @@ If recorded decisions turn out to be lacking, convene a discussion, record the n
 
 ## Creating new ADR
 
-Read about the [PROCESS](./PROCESS.md).
+To create an ADR, copy the [template](adr-template.md) into
+a new file starting with `ADR-XXX` where XXX is the number following the last
+ADR number in the directory.
+
+If you would like to see examples of how these are written, please refer to the
+current [ADRs](https://github.com/atomone-hub/atomone/tree/main/docs/architecture).
 
 ### Use RFC 2119 Keywords
 

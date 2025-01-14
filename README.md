@@ -6,7 +6,7 @@ AtomOne is built using the [Cosmos SDK](https://github.com/cosmos/cosmos-sdk) as
 The following modifications have been made to the Cosmos Hub software to create AtomOne:
 
 1. Removed x/globalfee module and revert to older and simpler fee decorator
-2. Removed IBC and related modules (e.g. ICA, Packet Forwarding Middleware, etc.)
+2. Removed Packet Forwarding Middleware
 3. Removed Interchain Security module
 4. Reverted to standard Cosmos SDK v0.47.10 without the Liquid Staking Module (LSM)
 5. Changed Bech32 prefixes to `atone` (see `cmd/atomoned/cmd/config.go`)
@@ -25,9 +25,20 @@ Github Release section.
 
 ## Ledger support
 
-Run `make build-ledger` to have ledger support in `./build/atomoned` binary.
+Run `make build/install LEDGER_ENABLED=true` to have ledger support in
+`atomoned` binary.
+
 Note that this will disable reproducible builds, as it introduces OS
 dependencies.
+
+## Genesis file
+
+The proposed genesis files for atomone can be found in the [genesis repo](https://github.com/atomone-hub/genesis).
+
+## Public RPC and fullnode endpoints
+
+The public RPC and fullnode endpoints directory can be found in the [atom.one](https://atom.one)
+website.
 
 ## Acknowledgements
 

@@ -21,7 +21,6 @@ func (s *IntegrationTestSuite) testDistribution() {
 		delegatorAddress, _ := s.chainA.genesisAccounts[2].keyInfo.GetAddress()
 
 		newWithdrawalAddress, _ := s.chainA.genesisAccounts[3].keyInfo.GetAddress()
-		fees := sdk.NewCoin(uatoneDenom, sdk.NewInt(1000))
 
 		beforeBalance, err := getSpecificBalance(chainEndpoint, newWithdrawalAddress.String(), uatoneDenom)
 		s.Require().NoError(err)
@@ -29,7 +28,7 @@ func (s *IntegrationTestSuite) testDistribution() {
 			beforeBalance = sdk.NewCoin(uatoneDenom, sdk.NewInt(0))
 		}
 
-		s.execSetWithdrawAddress(s.chainA, 0, fees.String(), delegatorAddress.String(), newWithdrawalAddress.String(), atomoneHomePath)
+		s.execSetWithdrawAddress(s.chainA, 0, delegatorAddress.String(), newWithdrawalAddress.String(), atomoneHomePath)
 
 		// Verify
 		s.Require().Eventually(
@@ -76,17 +75,15 @@ func (s *IntegrationTestSuite) fundCommunityPool() {
 		beforeDistUatoneBalance = sdk.NewInt64Coin(uatoneDenom, 0)
 	}
 
-	s.execDistributionFundCommunityPool(s.chainA, 0, sender.String(), tokenAmount.String(), standardFees.String())
-
-	// there are still tokens being added to the community pool through block production rewards but they should be less than 500 tokens
-	marginOfErrorForBlockReward := sdk.NewInt64Coin(uatoneDenom, 500)
+	s.execDistributionFundCommunityPool(s.chainA, 0, sender.String(), tokenAmount.String())
 
 	s.Require().Eventually(
 		func() bool {
-			afterDistPhotonBalance, err := getSpecificBalance(chainAAPIEndpoint, distModuleAddress, tokenAmount.Denom)
-			s.Require().NoErrorf(err, "Error getting balance: %s", afterDistPhotonBalance)
+			afterDistUatoneBalance, err := getSpecificBalance(chainAAPIEndpoint, distModuleAddress, tokenAmount.Denom)
+			s.Require().NoErrorf(err, "Error getting balance: %s", afterDistUatoneBalance)
 
-			return beforeDistUatoneBalance.Add(tokenAmount.Add(standardFees)).Sub(afterDistPhotonBalance).IsLT(marginOfErrorForBlockReward)
+			// check if the balance is increased by the tokenAmount
+			return beforeDistUatoneBalance.Add(tokenAmount).IsLT(afterDistUatoneBalance)
 		},
 		15*time.Second,
 		time.Second,
