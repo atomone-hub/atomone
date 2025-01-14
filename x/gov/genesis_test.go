@@ -31,6 +31,10 @@ func TestImportExportQueues_ErrorUnconsistentState(t *testing.T) {
 		Value: sdk.NewCoins(expectedGenState.Params.MinDepositThrottler.FloorValue...),
 		Time:  &time.Time{},
 	}
+	expectedGenState.LastMinInitialDeposit = &v1.LastMinDeposit{
+		Value: expectedGenState.Params.MinInitialDepositThrottler.FloorValue,
+		Time:  &time.Time{},
+	}
 	require.Panics(t, func() {
 		gov.InitGenesis(ctx, suite.AccountKeeper, suite.BankKeeper, suite.GovKeeper, &v1.GenesisState{
 			Deposits: v1.Deposits{
@@ -59,12 +63,18 @@ func TestInitGenesis(t *testing.T) {
 			MinDepositThrottler: &v1.MinDepositThrottler{
 				FloorValue: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdkmath.NewInt(42))),
 			},
+			MinInitialDepositThrottler: &v1.MinInitialDepositThrottler{
+				FloorValue: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdkmath.NewInt(42))),
+			},
 		}
 		quorumTimeout                = time.Hour * 20
 		paramsWithQuorumCheckEnabled = &v1.Params{
 			QuorumCheckCount: 10,
 			QuorumTimeout:    &quorumTimeout,
 			MinDepositThrottler: &v1.MinDepositThrottler{
+				FloorValue: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdkmath.NewInt(42))),
+			},
+			MinInitialDepositThrottler: &v1.MinInitialDepositThrottler{
 				FloorValue: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdkmath.NewInt(42))),
 			},
 		}
@@ -175,6 +185,9 @@ func TestInitGenesis(t *testing.T) {
 				lmdCoins, lmdTime := s.GovKeeper.GetLastMinDeposit(ctx)
 				assert.EqualValues(t, p.MinDepositThrottler.FloorValue, lmdCoins)
 				assert.Equal(t, ctx.BlockTime(), lmdTime)
+				lmidCoins, lmidTime := s.GovKeeper.GetLastMinInitialDeposit(ctx)
+				assert.EqualValues(t, p.MinInitialDepositThrottler.FloorValue, lmidCoins)
+				assert.Equal(t, ctx.BlockTime(), lmidTime)
 			},
 		},
 		{
@@ -191,6 +204,22 @@ func TestInitGenesis(t *testing.T) {
 				lmdCoins, lmdTime := s.GovKeeper.GetLastMinDeposit(ctx)
 				assert.EqualValues(t, sdk.NewCoins(sdk.NewInt64Coin("xxx", 1)), lmdCoins)
 				assert.Equal(t, utcTime, lmdTime)
+			},
+		},
+		{
+			name: "ok: genesis with last min initial deposit",
+			genesis: v1.GenesisState{
+				Params: params,
+				LastMinInitialDeposit: &v1.LastMinDeposit{
+					Value: sdk.NewCoins(sdk.NewInt64Coin("xxx", 1)),
+					Time:  &utcTime,
+				},
+			},
+			assert: func(t *testing.T, ctx sdk.Context, s suite) {
+				t.Helper()
+				lmidCoins, lmidTime := s.GovKeeper.GetLastMinInitialDeposit(ctx)
+				assert.EqualValues(t, sdk.NewCoins(sdk.NewInt64Coin("xxx", 1)), lmidCoins)
+				assert.Equal(t, utcTime, lmidTime)
 			},
 		},
 		{

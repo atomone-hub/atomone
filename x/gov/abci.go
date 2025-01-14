@@ -39,6 +39,8 @@ func EndBlocker(ctx sdk.Context, keeper *keeper.Keeper) {
 			keeper.DeleteAndBurnDeposits(ctx, proposal.Id) // burn the deposit if proposal got removed without getting 100% of the proposal
 		}
 
+		keeper.DecrementInactiveProposalsNumber(ctx)
+
 		// called when proposal become inactive
 		keeper.Hooks().AfterProposalFailedMinDeposit(ctx, proposal.Id)
 

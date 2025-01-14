@@ -463,17 +463,20 @@ func randomDeposit(
 
 	minAmount := sdk.ZeroInt()
 	if useMinAmount {
-		minDepositPercent, err := sdk.NewDecFromStr(params.MinInitialDepositRatio)
+		// 	minDepositPercent, err := sdk.NewDecFromStr(params.MinInitialDepositRatio)
+		// 	if err != nil {
+		// 		return nil, false, err
+		// 	}
+		// 	minAmount = sdk.NewDecFromInt(minDepositAmount).Mul(minDepositPercent).TruncateInt()
+		minAmount = k.GetMinInitialDeposit(ctx)[denomIndex].Amount
+	}
+
+	amount := sdk.ZeroInt()
+	if minDepositAmount.Sub(minAmount).GTE(sdk.OneInt()) {
+		amount, err = simtypes.RandPositiveInt(r, minDepositAmount.Sub(minAmount))
 		if err != nil {
 			return nil, false, err
 		}
-
-		minAmount = sdk.NewDecFromInt(minDepositAmount).Mul(minDepositPercent).TruncateInt()
-	}
-
-	amount, err := simtypes.RandPositiveInt(r, minDepositAmount.Sub(minAmount))
-	if err != nil {
-		return nil, false, err
 	}
 	amount = amount.Add(minAmount)
 

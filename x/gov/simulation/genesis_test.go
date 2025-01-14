@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"math/rand"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/require"
 
@@ -45,33 +46,53 @@ func TestRandomizedGenState(t *testing.T) {
 	simState.Cdc.MustUnmarshalJSON(simState.GenState[types.ModuleName], &govGenesis)
 
 	const (
-		tallyQuorum          = "0.311000000000000000"
-		tallyThreshold       = "0.562000000000000000"
-		amendmentQuorum      = "0.534000000000000000"
-		amendmentThreshold   = "0.833000000000000000"
-		lawQuorum            = "0.404000000000000000"
-		lawThreshold         = "0.566000000000000000"
-		minInitialDepositDec = "0.060000000000000000"
+		tallyQuorum        = "0.294000000000000000"
+		tallyThreshold     = "0.611000000000000000"
+		amendmentQuorum    = "0.568000000000000000"
+		amendmentThreshold = "0.933000000000000000"
+		lawQuorum          = "0.540000000000000000"
+		lawThreshold       = "0.931000000000000000"
+	)
+
+	var (
+		minDepositUpdatePeriod        = time.Duration(67011000000000)
+		minInitialDepositUpdatePeriod = time.Duration(66992000000000)
 	)
 
 	require.Equal(t, []sdk.Coin{}, govGenesis.Params.MinDeposit)
 	require.Equal(t, "52h44m19s", govGenesis.Params.MaxDepositPeriod.String())
-	require.Equal(t, float64(148296), govGenesis.Params.VotingPeriod.Seconds())
+	require.Equal(t, float64(278770), govGenesis.Params.VotingPeriod.Seconds())
 	require.Equal(t, tallyQuorum, govGenesis.Params.Quorum)
 	require.Equal(t, tallyThreshold, govGenesis.Params.Threshold)
 	require.Equal(t, amendmentQuorum, govGenesis.Params.ConstitutionAmendmentQuorum)
 	require.Equal(t, amendmentThreshold, govGenesis.Params.ConstitutionAmendmentThreshold)
 	require.Equal(t, lawQuorum, govGenesis.Params.LawQuorum)
 	require.Equal(t, lawThreshold, govGenesis.Params.LawThreshold)
-	require.Equal(t, minInitialDepositDec, govGenesis.Params.MinInitialDepositRatio)
-	require.Equal(t, "18h44m26s", govGenesis.Params.QuorumTimeout.String())
-	require.Equal(t, "60h55m33s", govGenesis.Params.MaxVotingPeriodExtension.String())
-	require.Equal(t, uint64(26), govGenesis.Params.QuorumCheckCount)
+	require.Equal(t, "", govGenesis.Params.MinInitialDepositRatio)
+	require.Equal(t, "26h19m52s", govGenesis.Params.QuorumTimeout.String())
+	require.Equal(t, "120h29m51s", govGenesis.Params.MaxVotingPeriodExtension.String())
+	require.Equal(t, uint64(17), govGenesis.Params.QuorumCheckCount)
 	require.Equal(t, uint64(0x28), govGenesis.StartingProposalId)
 	require.Equal(t, []*v1.Deposit{}, govGenesis.Deposits)
 	require.Equal(t, []*v1.Vote{}, govGenesis.Votes)
 	require.Equal(t, []*v1.Proposal{}, govGenesis.Proposals)
 	require.Equal(t, "", govGenesis.Constitution)
+	require.Equal(t, v1.MinDepositThrottler{
+		FloorValue:                sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(915))),
+		UpdatePeriod:              &minDepositUpdatePeriod,
+		TargetActiveProposals:     10,
+		SensitivityTargetDistance: 1,
+		IncreaseRatio:             "0.128000000000000000",
+		DecreaseRatio:             "0.018000000000000000",
+	}, *govGenesis.Params.MinDepositThrottler)
+	require.Equal(t, v1.MinInitialDepositThrottler{
+		FloorValue:                sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(805))),
+		UpdatePeriod:              &minInitialDepositUpdatePeriod,
+		TargetProposals:           23,
+		SensitivityTargetDistance: 2,
+		IncreaseRatio:             "0.090000000000000000",
+		DecreaseRatio:             "0.030000000000000000",
+	}, *govGenesis.Params.MinInitialDepositThrottler)
 }
 
 // TestRandomizedGenState tests abnormal scenarios of applying RandomizedGenState.
