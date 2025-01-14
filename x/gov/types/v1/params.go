@@ -12,7 +12,6 @@ import (
 // Default period for deposits & voting and min voting period
 const (
 	DefaultVotingPeriod               time.Duration = time.Hour * 24 * 21 // 21 days
-	MinVotingPeriod                   time.Duration = time.Hour * 24 * 21 // 21 days
 	DefaultDepositPeriod              time.Duration = time.Hour * 24 * 14 // 14 days
 	DefaultGovernorStatusChangePeriod time.Duration = time.Hour * 24 * 28 // 28 days
 )
