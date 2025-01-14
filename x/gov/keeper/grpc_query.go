@@ -299,6 +299,14 @@ func (q Keeper) MinDeposit(c context.Context, req *v1.QueryMinDepositRequest) (*
 	return &v1.QueryMinDepositResponse{MinDeposit: minDeposit}, nil
 }
 
+// MinInitialDeposit returns the minimum deposit required for a proposal to be submitted
+func (q Keeper) MinInitialDeposit(c context.Context, req *v1.QueryMinInitialDepositRequest) (*v1.QueryMinInitialDepositResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+	minInitialDeposit := q.GetMinInitialDeposit(ctx)
+
+	return &v1.QueryMinInitialDepositResponse{MinInitialDeposit: minInitialDeposit}, nil
+}
+
 var _ v1beta1.QueryServer = legacyQueryServer{}
 
 type legacyQueryServer struct {

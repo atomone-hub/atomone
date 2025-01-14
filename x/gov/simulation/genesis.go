@@ -20,22 +20,28 @@ import (
 
 // Simulation parameter constants
 const (
-	DepositParamsMinDeposit                          = "deposit_params_min_deposit"
-	DepositParamsDepositPeriod                       = "deposit_params_deposit_period"
-	DepositMinInitialRatio                           = "deposit_params_min_initial_ratio"
-	VotingParamsVotingPeriod                         = "voting_params_voting_period"
-	TallyParamsQuorum                                = "tally_params_quorum"
-	TallyParamsThreshold                             = "tally_params_threshold"
-	TallyParamsConstitutionAmendmentQuorum           = "tally_params_constitution_amendment_quorum"
-	TallyParamsConstitutionAmendmentThreshold        = "tally_params_constitution_amendment_threshold"
-	TallyParamsLawQuorum                             = "tally_params_law_quorum"
-	TallyParamsLawThreshold                          = "tally_params_law_threshold"
-	DepositParamsMinDepositFloor                     = "deposit_params_min_deposit_floor"
-	DepositParamsMinDepositUpdatePeriod              = "deposit_params_min_deposit_update_period"
-	DepositParamsMinDepositSensitivityTargetDistance = "deposit_params_min_deposit_sensitivity_target_distance"
-	DepositParamsMinDepositIncreaseRatio             = "deposit_params_min_deposit_increase_ratio"
-	DepositParamsMinDepositDecreaseRatio             = "deposit_params_min_deposit_decrease_ratio"
-	TallyParamsTargetActiveProposals                 = "tally_params_target_active_proposals"
+	DepositParamsMinDeposit    = "deposit_params_min_deposit"
+	DepositParamsDepositPeriod = "deposit_params_deposit_period"
+	// DepositMinInitialRatio                                  = "deposit_params_min_initial_ratio"
+	VotingParamsVotingPeriod                                = "voting_params_voting_period"
+	TallyParamsQuorum                                       = "tally_params_quorum"
+	TallyParamsThreshold                                    = "tally_params_threshold"
+	TallyParamsConstitutionAmendmentQuorum                  = "tally_params_constitution_amendment_quorum"
+	TallyParamsConstitutionAmendmentThreshold               = "tally_params_constitution_amendment_threshold"
+	TallyParamsLawQuorum                                    = "tally_params_law_quorum"
+	TallyParamsLawThreshold                                 = "tally_params_law_threshold"
+	DepositParamsMinDepositFloor                            = "deposit_params_min_deposit_floor"
+	DepositParamsMinDepositUpdatePeriod                     = "deposit_params_min_deposit_update_period"
+	DepositParamsMinDepositSensitivityTargetDistance        = "deposit_params_min_deposit_sensitivity_target_distance"
+	DepositParamsMinDepositIncreaseRatio                    = "deposit_params_min_deposit_increase_ratio"
+	DepositParamsMinDepositDecreaseRatio                    = "deposit_params_min_deposit_decrease_ratio"
+	DepositParamsTargetActiveProposals                      = "deposit_params_target_active_proposals"
+	DepositParamsMinInitialDepositFloor                     = "deposit_params_min_initial_deposit_floor"
+	DepositParamsMinInitialDepositUpdatePeriod              = "deposit_params_min_initial_deposit_update_period"
+	DepositParamsMinInitialDepositSensitivityTargetDistance = "deposit_params_min_initial_deposit_sensitivity_target_distance"
+	DepositParamsMinInitialDepositIncreaseRatio             = "deposit_params_min_initial_deposit_increase_ratio"
+	DepositParamsMinInitialDepositDecreaseRatio             = "deposit_params_min_initial_deposit_decrease_ratio"
+	DepositParamsMinInitialDepositTargetProposals           = "deposit_params_min_initial_deposit_target_proposals"
 
 	// NOTE: backport from v50
 	MinDepositRatio          = "min_deposit_ratio"
@@ -118,12 +124,31 @@ func GenDepositParamsMinDepositSensitivityTargetDistance(r *rand.Rand) uint64 {
 }
 
 // GenDepositParamsMinDepositChangeRatio returns randomized DepositParamsMinDepositChangeRatio
-func GenDepositParamsMinDepositChangeRatio(r *rand.Rand) sdk.Dec {
-	return sdk.NewDecWithPrec(int64(simulation.RandIntBetween(r, 0, 100)), 2).Quo(sdk.NewDec(100))
+func GenDepositParamsMinDepositChangeRatio(r *rand.Rand, max, prec int) sdk.Dec {
+	return sdk.NewDecWithPrec(int64(simulation.RandIntBetween(r, 0, max)), int64(prec))
 }
 
-// GenTallyParamsTargetActiveProposals returns randomized TallyParamsTargetActiveProposals
-func GenTallyParamsTargetActiveProposals(r *rand.Rand) uint64 {
+// GenDepositParamsTargetActiveProposals returns randomized DepositParamsTargetActiveProposals
+func GenDepositParamsTargetActiveProposals(r *rand.Rand) uint64 {
+	return uint64(simulation.RandIntBetween(r, 1, 100))
+}
+
+// GenDepositParamsMinInitialDepositUpdatePeriod returns randomized DepositParamsMinInitialDepositUpdatePeriod
+func GenDepositParamsMinInitialDepositUpdatePeriod(r *rand.Rand, depositPeriod time.Duration) time.Duration {
+	return time.Duration(simulation.RandIntBetween(r, 1, int(depositPeriod.Seconds()))) * time.Second
+}
+
+// GenDepositParamsMinInitialDepositSensitivityTargetDistance returns randomized DepositParamsMinInitialDepositSensitivityTargetDistance
+func GenDepositParamsMinInitialDepositSensitivityTargetDistance(r *rand.Rand) uint64 {
+	return uint64(simulation.RandIntBetween(r, 1, 10))
+}
+
+// GenDepositParamsMinInitialDepositChangeRatio returns randomized DepositParamsMinInitialDepositChangeRatio
+func GenDepositParamsMinInitialDepositChangeRatio(r *rand.Rand, max, prec int) sdk.Dec {
+	return sdk.NewDecWithPrec(int64(simulation.RandIntBetween(r, 0, max)), int64(prec))
+}
+
+func GenDepositParamsMinInitialDepositTargetProposals(r *rand.Rand) uint64 {
 	return uint64(simulation.RandIntBetween(r, 1, 100))
 }
 
@@ -143,11 +168,11 @@ func RandomizedGenState(simState *module.SimulationState) {
 		func(r *rand.Rand) { depositPeriod = GenDepositParamsDepositPeriod(r) },
 	)
 
-	var minInitialDepositRatio sdk.Dec
-	simState.AppParams.GetOrGenerate(
-		simState.Cdc, DepositMinInitialRatio, &minInitialDepositRatio, simState.Rand,
-		func(r *rand.Rand) { minInitialDepositRatio = GenDepositMinInitialDepositRatio(r) },
-	)
+	// var minInitialDepositRatio sdk.Dec
+	// simState.AppParams.GetOrGenerate(
+	// 	simState.Cdc, DepositMinInitialRatio, &minInitialDepositRatio, simState.Rand,
+	// 	func(r *rand.Rand) { minInitialDepositRatio = GenDepositMinInitialDepositRatio(r) },
+	// )
 
 	var votingPeriod time.Duration
 	simState.AppParams.GetOrGenerate(
@@ -228,24 +253,87 @@ func RandomizedGenState(simState *module.SimulationState) {
 	var minDepositIncreaseRatio sdk.Dec
 	simState.AppParams.GetOrGenerate(
 		simState.Cdc, DepositParamsMinDepositIncreaseRatio, &minDepositIncreaseRatio, simState.Rand,
-		func(r *rand.Rand) { minDepositIncreaseRatio = GenDepositParamsMinDepositChangeRatio(r) },
+		func(r *rand.Rand) { minDepositIncreaseRatio = GenDepositParamsMinDepositChangeRatio(r, 300, 3) },
 	)
 
 	var minDepositDecreaseRatio sdk.Dec
 	simState.AppParams.GetOrGenerate(
 		simState.Cdc, DepositParamsMinDepositDecreaseRatio, &minDepositDecreaseRatio, simState.Rand,
-		func(r *rand.Rand) { minDepositDecreaseRatio = GenDepositParamsMinDepositChangeRatio(r) },
+		func(r *rand.Rand) {
+			minDepositDecreaseRatio = GenDepositParamsMinDepositChangeRatio(r,
+				int(minDepositIncreaseRatio.MulInt64(1000).QuoInt64(2).TruncateInt64()), 3)
+		},
 	)
 
 	var targetActiveProposals uint64
 	simState.AppParams.GetOrGenerate(
-		simState.Cdc, TallyParamsTargetActiveProposals, &targetActiveProposals, simState.Rand,
-		func(r *rand.Rand) { targetActiveProposals = GenTallyParamsTargetActiveProposals(r) },
+		simState.Cdc, DepositParamsTargetActiveProposals, &targetActiveProposals, simState.Rand,
+		func(r *rand.Rand) { targetActiveProposals = GenDepositParamsTargetActiveProposals(r) },
+	)
+
+	var minInitialDepositFloor sdk.Coins
+	simState.AppParams.GetOrGenerate(
+		simState.Cdc, DepositParamsMinInitialDepositFloor, &minInitialDepositFloor, simState.Rand,
+		func(r *rand.Rand) {
+			ratio := GenDepositMinInitialDepositRatio(r)
+			minInitialDepositFloor = sdk.NewCoins()
+			for _, coin := range minDepositFloor {
+				minInitialDepositFloor = append(minInitialDepositFloor, sdk.NewCoin(coin.Denom, ratio.MulInt(coin.Amount).TruncateInt()))
+			}
+		},
+	)
+
+	var minInitialDepositUpdatePeriod time.Duration
+	simState.AppParams.GetOrGenerate(
+		simState.Cdc, DepositParamsMinInitialDepositUpdatePeriod, &minInitialDepositUpdatePeriod, simState.Rand,
+		func(r *rand.Rand) {
+			minInitialDepositUpdatePeriod = GenDepositParamsMinInitialDepositUpdatePeriod(r, depositPeriod)
+		},
+	)
+
+	var minInitialDepositSensitivityTargetDistance uint64
+	simState.AppParams.GetOrGenerate(
+		simState.Cdc, DepositParamsMinInitialDepositSensitivityTargetDistance, &minInitialDepositSensitivityTargetDistance, simState.Rand,
+		func(r *rand.Rand) {
+			minInitialDepositSensitivityTargetDistance = GenDepositParamsMinInitialDepositSensitivityTargetDistance(r)
+		},
+	)
+
+	var minInitialDepositIncreaseRatio sdk.Dec
+	simState.AppParams.GetOrGenerate(
+		simState.Cdc, DepositParamsMinInitialDepositIncreaseRatio, &minInitialDepositIncreaseRatio, simState.Rand,
+		func(r *rand.Rand) {
+			minInitialDepositIncreaseRatio = GenDepositParamsMinInitialDepositChangeRatio(r, 300, 3)
+		},
+	)
+
+	var minInitialDepositDecreaseRatio sdk.Dec
+	simState.AppParams.GetOrGenerate(
+		simState.Cdc, DepositParamsMinInitialDepositDecreaseRatio, &minInitialDepositDecreaseRatio, simState.Rand,
+		func(r *rand.Rand) {
+			minInitialDepositDecreaseRatio = GenDepositParamsMinInitialDepositChangeRatio(r,
+				int(minInitialDepositIncreaseRatio.MulInt64(1000).QuoInt64(2).TruncateInt64()), 3)
+		},
+	)
+
+	var minInitialDepositTargetProposals uint64
+	simState.AppParams.GetOrGenerate(
+		simState.Cdc, DepositParamsMinInitialDepositTargetProposals, &minInitialDepositTargetProposals, simState.Rand,
+		func(r *rand.Rand) {
+			minInitialDepositTargetProposals = GenDepositParamsMinInitialDepositTargetProposals(r)
+		},
 	)
 
 	govGenesis := v1.NewGenesisState(
 		startingProposalID,
-		v1.NewParams(depositPeriod, votingPeriod, quorum.String(), threshold.String(), amendmentsQuorum.String(), amendmentsThreshold.String(), lawQuorum.String(), lawThreshold.String(), minInitialDepositRatio.String(), simState.Rand.Intn(2) == 0, simState.Rand.Intn(2) == 0, minDepositRatio.String(), quorumTimout, maxVotingPeriodExtension, quorumCheckCount, minDepositFloor, minDepositUpdatePeriod, minDepositSensitivityTargetDistance, minDepositIncreaseRatio.String(), minDepositDecreaseRatio.String(), targetActiveProposals),
+		v1.NewParams(depositPeriod, votingPeriod, quorum.String(), threshold.String(), amendmentsQuorum.String(),
+			amendmentsThreshold.String(), lawQuorum.String(), lawThreshold.String(), // minInitialDepositRatio.String(),
+			simState.Rand.Intn(2) == 0, simState.Rand.Intn(2) == 0, minDepositRatio.String(), quorumTimout,
+			maxVotingPeriodExtension, quorumCheckCount, minDepositFloor, minDepositUpdatePeriod,
+			minDepositSensitivityTargetDistance, minDepositIncreaseRatio.String(), minDepositDecreaseRatio.String(),
+			targetActiveProposals, minInitialDepositFloor, minInitialDepositUpdatePeriod,
+			minInitialDepositSensitivityTargetDistance, minInitialDepositIncreaseRatio.String(),
+			minInitialDepositDecreaseRatio.String(), minInitialDepositTargetProposals),
 	)
 
 	bz, err := json.MarshalIndent(&govGenesis, "", " ")

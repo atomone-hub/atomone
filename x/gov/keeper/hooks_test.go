@@ -79,7 +79,7 @@ func TestHooks(t *testing.T) {
 	p2, err := govKeeper.SubmitProposal(ctx, tp, "", "test", "summary", sdk.AccAddress("cosmos1ghekyjucln7y67ntx7cf27m9dpuxxemn4c8g4r"))
 	require.NoError(t, err)
 
-	activated, err := govKeeper.AddDeposit(ctx, p2.Id, addrs[0], minDeposit)
+	activated, err := govKeeper.AddDeposit(ctx, p2.Id, addrs[0], minDeposit, false)
 	require.True(t, activated)
 	require.NoError(t, err)
 	require.True(t, govHooksReceiver.AfterProposalDepositValid)

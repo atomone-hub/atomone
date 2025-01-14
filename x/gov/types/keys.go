@@ -47,6 +47,8 @@ var (
 	QuorumCheckQueuePrefix        = []byte{0x05}
 	ActiveProposalsNumberKey      = []byte{0x06}
 	LastMinDepositKey             = []byte{0x07}
+	InactiveProposalsNumberKey    = []byte{0x08}
+	LastMinInitialDepositKey      = []byte{0x09}
 
 	DepositsKeyPrefix = []byte{0x10}
 
@@ -122,6 +124,18 @@ func GetActiveProposalsNumberBytes(activeProposalsNumber uint64) (activeProposal
 
 // GetActiveProposalsNumberFromBytes returns activeProposalsNumber in uint64 format from a byte array
 func GetActiveProposalsNumberFromBytes(bz []byte) (activeProposalsNumber uint64) {
+	return binary.BigEndian.Uint64(bz)
+}
+
+// GetInactiveProposalsNumberBytes returns the byte representation of the inactiveProposalsNumber
+func GetInactiveProposalsNumberBytes(inactiveProposalsNumber uint64) (inactiveProposalsNumberBz []byte) {
+	inactiveProposalsNumberBz = make([]byte, 8)
+	binary.BigEndian.PutUint64(inactiveProposalsNumberBz, inactiveProposalsNumber)
+	return
+}
+
+// GetInactiveProposalsNumberFromBytes returns inactiveProposalsNumber in uint64 format from a byte array
+func GetInactiveProposalsNumberFromBytes(bz []byte) (inactiveProposalsNumber uint64) {
 	return binary.BigEndian.Uint64(bz)
 }
 

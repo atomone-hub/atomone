@@ -41,6 +41,7 @@ func GetQueryCmd() *cobra.Command {
 		GetCmdQueryTally(),
 		GetCmdConstitution(),
 		GetCmdQueryMinDeposit(),
+		GetCmdQueryMinInitialDeposit(),
 	)
 
 	return govQueryCmd
@@ -701,6 +702,38 @@ $ %s query gov min-deposit
 			queryClient := v1.NewQueryClient(clientCtx)
 
 			resp, err := queryClient.MinDeposit(cmd.Context(), &v1.QueryMinDepositRequest{})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(resp)
+		},
+	}
+}
+
+// GetCmdQueryMinInitialDeposit implements the query min initial deposit command.
+func GetCmdQueryMinInitialDeposit() *cobra.Command {
+	return &cobra.Command{
+		Use:   "min-initial-deposit",
+		Args:  cobra.ExactArgs(0),
+		Short: "Query the minimum initial deposit needed for a proposal to enter deposit period",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query the minimum initial deposit needed for a proposal to enter deposit period.
+
+Example:
+$ %s query gov min-initial-deposit
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := v1.NewQueryClient(clientCtx)
+
+			resp, err := queryClient.MinInitialDeposit(cmd.Context(), &v1.QueryMinInitialDepositRequest{})
 			if err != nil {
 				return err
 			}

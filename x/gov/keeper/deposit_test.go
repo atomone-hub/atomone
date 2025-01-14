@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"testing"
 
+	"cosmossdk.io/math"
 	"github.com/stretchr/testify/require"
 
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
@@ -43,7 +44,7 @@ func TestDeposits(t *testing.T) {
 	require.Nil(t, proposal.VotingStartTime)
 
 	// Check first deposit
-	votingStarted, err := govKeeper.AddDeposit(ctx, proposalID, TestAddrs[0], fourStake)
+	votingStarted, err := govKeeper.AddDeposit(ctx, proposalID, TestAddrs[0], fourStake, false)
 	require.NoError(t, err)
 	require.False(t, votingStarted)
 	deposit, found = govKeeper.GetDeposit(ctx, proposalID, TestAddrs[0])
@@ -56,7 +57,7 @@ func TestDeposits(t *testing.T) {
 	require.Equal(t, addr0Initial.Sub(fourStake...), bankKeeper.GetAllBalances(ctx, TestAddrs[0]))
 
 	// Check a second deposit from same address
-	votingStarted, err = govKeeper.AddDeposit(ctx, proposalID, TestAddrs[0], fiveStake)
+	votingStarted, err = govKeeper.AddDeposit(ctx, proposalID, TestAddrs[0], fiveStake, false)
 	require.NoError(t, err)
 	require.False(t, votingStarted)
 	deposit, found = govKeeper.GetDeposit(ctx, proposalID, TestAddrs[0])
@@ -69,7 +70,7 @@ func TestDeposits(t *testing.T) {
 	require.Equal(t, addr0Initial.Sub(fourStake...).Sub(fiveStake...), bankKeeper.GetAllBalances(ctx, TestAddrs[0]))
 
 	// Check third deposit from a new address
-	votingStarted, err = govKeeper.AddDeposit(ctx, proposalID, TestAddrs[1], fourStake)
+	votingStarted, err = govKeeper.AddDeposit(ctx, proposalID, TestAddrs[1], fourStake, false)
 	require.NoError(t, err)
 	require.True(t, votingStarted)
 	deposit, found = govKeeper.GetDeposit(ctx, proposalID, TestAddrs[1])
@@ -110,7 +111,7 @@ func TestDeposits(t *testing.T) {
 	proposal, err = govKeeper.SubmitProposal(ctx, tp, "", "title", "description", TestAddrs[0])
 	require.NoError(t, err)
 	proposalID = proposal.Id
-	_, err = govKeeper.AddDeposit(ctx, proposalID, TestAddrs[0], fourStake)
+	_, err = govKeeper.AddDeposit(ctx, proposalID, TestAddrs[0], fourStake, false)
 	require.NoError(t, err)
 	govKeeper.DeleteAndBurnDeposits(ctx, proposalID)
 	deposits = govKeeper.GetDeposits(ctx, proposalID)
@@ -199,7 +200,12 @@ func TestValidateInitialDeposit(t *testing.T) {
 
 			params := v1.DefaultParams()
 			params.MinDepositThrottler.FloorValue = tc.minDeposit
-			params.MinInitialDepositRatio = sdk.NewDec(tc.minInitialDepositPercent).Quo(sdk.NewDec(100)).String()
+			// params.MinInitialDepositRatio = sdk.NewDec(tc.minInitialDepositPercent).Quo(sdk.NewDec(100)).String()
+			minInitialDepositFloor := sdk.NewCoins()
+			for _, coin := range tc.minDeposit {
+				minInitialDepositFloor = minInitialDepositFloor.Add(sdk.NewCoin(coin.Denom, sdk.NewDec(tc.minInitialDepositPercent).Quo(math.LegacyDec(sdk.NewDec(100))).MulInt(coin.Amount).TruncateInt()))
+			}
+			params.MinInitialDepositThrottler.FloorValue = minInitialDepositFloor
 
 			govKeeper.SetParams(ctx, params)
 
@@ -282,7 +288,7 @@ func TestDepositAmount(t *testing.T) {
 			require.NoError(t, err)
 			proposalID := proposal.Id
 
-			_, err = govKeeper.AddDeposit(ctx, proposalID, testAddrs[0], tc.deposit)
+			_, err = govKeeper.AddDeposit(ctx, proposalID, testAddrs[0], tc.deposit, false)
 			if tc.err != "" {
 				require.Error(t, err)
 				require.Equal(t, tc.err, err.Error())

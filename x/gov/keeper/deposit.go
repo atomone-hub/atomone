@@ -110,7 +110,7 @@ func (keeper Keeper) IterateDeposits(ctx sdk.Context, proposalID uint64, cb func
 
 // AddDeposit adds or updates a deposit of a specific depositor on a specific proposal.
 // Activates voting period when appropriate and returns true in that case, else returns false.
-func (keeper Keeper) AddDeposit(ctx sdk.Context, proposalID uint64, depositorAddr sdk.AccAddress, depositAmount sdk.Coins) (bool, error) {
+func (keeper Keeper) AddDeposit(ctx sdk.Context, proposalID uint64, depositorAddr sdk.AccAddress, depositAmount sdk.Coins, skipMinDepositRatioCheck bool) (bool, error) {
 	// Checks to see if proposal exists
 	proposal, ok := keeper.GetProposal(ctx, proposalID)
 	if !ok {
@@ -122,7 +122,6 @@ func (keeper Keeper) AddDeposit(ctx sdk.Context, proposalID uint64, depositorAdd
 		return false, sdkerrors.Wrapf(types.ErrInactiveProposal, "%d", proposalID)
 	}
 
-	skipMinDepositRatioCheck := false
 	minDeposit := keeper.GetMinDeposit(ctx)
 	// Check if deposit has already sufficient total funds to transition the proposal into the voting period
 	// perhaps because the min deposit was lowered in the meantime. If so, the minDepositRatio check is skipped,
@@ -238,23 +237,25 @@ func (keeper Keeper) RefundAndDeleteDeposits(ctx sdk.Context, proposalID uint64)
 // the deposit parameters. Returns nil on success, error otherwise.
 func (keeper Keeper) validateInitialDeposit(ctx sdk.Context, initialDeposit sdk.Coins) error {
 	if !initialDeposit.IsValid() || initialDeposit.IsAnyNegative() {
-		return sdkerrors.Wrapf(sdkerrors1.ErrInvalidCoins, initialDeposit.String())
+		return sdkerrors.Wrapf(sdkerrors1.ErrInvalidCoins, "%s", initialDeposit.String())
 	}
 
-	params := keeper.GetParams(ctx)
-	minInitialDepositRatio, err := sdk.NewDecFromStr(params.MinInitialDepositRatio)
-	if err != nil {
-		return err
-	}
-	if minInitialDepositRatio.IsZero() {
-		return nil
-	}
-	minDepositCoins := keeper.GetMinDeposit(ctx)
-	for i := range minDepositCoins {
-		minDepositCoins[i].Amount = sdk.NewDecFromInt(minDepositCoins[i].Amount).Mul(minInitialDepositRatio).RoundInt()
-	}
-	if !initialDeposit.IsAllGTE(minDepositCoins) {
-		return sdkerrors.Wrapf(types.ErrMinDepositTooSmall, "was (%s), need (%s)", initialDeposit, minDepositCoins)
+	// params := keeper.GetParams(ctx)
+	// minInitialDepositRatio, err := sdk.NewDecFromStr(params.MinInitialDepositRatio)
+	// if err != nil {
+	// 	return err
+	// }
+	// if minInitialDepositRatio.IsZero() {
+	// 	return nil
+	// }
+	// minDepositCoins := keeper.GetMinDeposit(ctx)
+	// for i := range minDepositCoins {
+	// 	minDepositCoins[i].Amount = sdk.NewDecFromInt(minDepositCoins[i].Amount).Mul(minInitialDepositRatio).RoundInt()
+	// }
+
+	minInitialDepositCoins := keeper.GetMinInitialDeposit(ctx)
+	if !initialDeposit.IsAllGTE(minInitialDepositCoins) {
+		return sdkerrors.Wrapf(types.ErrMinDepositTooSmall, "was (%s), need (%s)", initialDeposit, minInitialDepositCoins)
 	}
 	return nil
 }
