@@ -65,6 +65,7 @@ const (
 	proposalMaxTotalBypassFilename        = "proposal_max_total_bypass.json"
 	proposalCommunitySpendFilename        = "proposal_community_spend.json"
 	proposalParamChangeFilename           = "param_change.json"
+	proposalTextFilename                  = "text.json"
 	proposalConstitutionAmendmentFilename = "constitution_amendment.json"
 	newConstitutionFilename               = "new_constitution.md"
 

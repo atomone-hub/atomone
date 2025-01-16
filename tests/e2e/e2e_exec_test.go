@@ -469,10 +469,16 @@ func (s *IntegrationTestSuite) runGovExec(c *chain, valIdx int, submitterAddr, g
 // 	})
 // }
 
-func (s *IntegrationTestSuite) execDelegate(c *chain, valIdx int, amount, valOperAddress, delegatorAddr, home string) { //nolint:unparam
+func (s *IntegrationTestSuite) execDelegate(c *chain, valIdx int, amount sdk.Coin, valOperAddress, delegatorAddr string) { //nolint:unparam
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
+
+	existingDelegation := sdk.ZeroDec()
+	res, err := s.queryDelegation(valOperAddress, delegatorAddr)
+	if err == nil {
+		existingDelegation = res.GetDelegationResponse().GetDelegation().GetShares()
+	}
 
 	s.T().Logf("Executing atomoned tx staking delegate %s", c.id)
 
@@ -482,17 +488,29 @@ func (s *IntegrationTestSuite) execDelegate(c *chain, valIdx int, amount, valOpe
 		stakingtypes.ModuleName,
 		"delegate",
 		valOperAddress,
-		amount,
+		amount.String(),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, delegatorAddr),
 		fmt.Sprintf("--%s=%s", flags.FlagChainID, c.id),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, standardFees.String()),
 		"--keyring-backend=test",
-		fmt.Sprintf("--%s=%s", flags.FlagHome, home),
 		"--output=json",
 		"-y",
 	}
 
 	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx, nil))
+
+	// Validate delegation successful
+	s.Require().Eventually(
+		func() bool {
+			res, err := s.queryDelegation(valOperAddress, delegatorAddr)
+			s.Require().NoError(err)
+			amt := res.GetDelegationResponse().GetDelegation().GetShares()
+
+			return amt.Equal(existingDelegation.Add(sdk.NewDecFromInt(amount.Amount)))
+		},
+		20*time.Second,
+		time.Second,
+	)
 	s.T().Logf("%s successfully delegated %s to %s", delegatorAddr, amount, valOperAddress)
 }
 
