@@ -64,7 +64,7 @@ service Query {
 
   // Governor queries governor information based on governor address.
   rpc Governor(QueryGovernorRequest) returns (QueryGovernorResponse) {
-    option (google.api.http).get = "/atomone/gov/v1/governor/{governor_address}";
+    option (google.api.http).get = "/atomone/gov/v1/governors/{governor_address}";
   }
 
   // Governors queries all governors.

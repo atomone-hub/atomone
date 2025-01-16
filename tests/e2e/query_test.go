@@ -178,7 +178,7 @@ func queryGovProposal(endpoint string, proposalID int) (govtypesv1.QueryProposal
 func queryGovGovernor(endpoint string, govAddr string) (govtypesv1.QueryGovernorResponse, error) {
 	var resp govtypesv1.QueryGovernorResponse
 
-	path := fmt.Sprintf("%s/atomone/gov/v1/governor/%s", endpoint, govAddr)
+	path := fmt.Sprintf("%s/atomone/gov/v1/governors/%s", endpoint, govAddr)
 
 	body, err := httpGet(path)
 	if err != nil {
