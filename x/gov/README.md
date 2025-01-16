@@ -335,7 +335,7 @@ Due to the new dynamic depositfeature, the prior `MinDeposit` parameter is
 deprecated and replaced by the dynamic mechanism defined via the
 `MinDepositThrottler` struct. The same applies to `MinInitialDepositRatio`,
 which is deprecated and replaced by a dynamic `MinInitialDeposit`
-controlled via the  `MinInitialDepositThrottler` struct.
+controlled via the `MinInitialDepositThrottler` struct.
 
 #### DepositParams
 
