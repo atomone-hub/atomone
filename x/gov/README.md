@@ -334,7 +334,7 @@ parameter set has to be created and the previous one rendered inactive.
 Due to the new dynamic depositfeature, the prior `MinDeposit` parameter is
 deprecated and replaced by the dynamic mechanism defined via the
 `MinDepositThrottler` struct. The same applies to `MinInitialDepositRatio`,
-which is deprecated and replaced by a dynamic `MinDepositThrottler`
+which is deprecated and replaced by a dynamic `MinInitialDeposit`
 controlled via the  `MinInitialDepositThrottler` struct.
 
 #### DepositParams
@@ -663,7 +663,7 @@ https://github.com/atomone-hub/atomone/blob/fb05dcaba40c7a1531a6806487fcd47a3e4a
 
 Proposals can be submitted by any account via a `MsgSubmitProposal` transaction.
 
-If the total deposit in the message is below** the required dynamic `MinInitialDeposit`
+If the total deposit in the message is below the required dynamic `MinInitialDeposit`
 at the time of submission, the transaction will fail. Otherwise, a new proposal
 is created, the deposit is moved under governance escrow, and the proposal enters
 the deposit period.  
