@@ -17,12 +17,15 @@ on proposals on a 1 token 1 vote basis. Next is a list of features the module
 currently supports:
 
 * **Proposal submission:** Users can submit proposals with a deposit. Once the
-minimum deposit is reached, the proposal enters voting period. The minimum deposit
-can be reached by collecting deposits from different users (including proposer) within deposit period.
-* **Vote:** Participants can vote on proposals that reached `MinDeposit` and entered voting period.
+  minimum deposit is reached, the proposal enters the voting period. The deposit
+  system is dynamic and can adjust automatically to discourage excessive
+  spam or an excessive number of simultaneous active proposals.
+* **Vote:** Participants can vote on proposals that reached the dynamic minimum
+  deposit and entered the voting period.
 * **Claiming deposit:** Users that deposited on proposals can recover their
-deposits if the proposal was accepted or rejected. If the proposal never entered voting period
-(minimum deposit not reached within deposit period), the deposit is burned.
+  deposits if the proposal was accepted or rejected. If the proposal never entered
+  the voting period (the dynamic minimum deposit was never reached within the
+  deposit period), the deposit is burned.
 
 This module is in use in [AtomOne](https://github.com/atomone-hub/atomone)).
 Features that may be added in the future are described in [Future Improvements](#future-improvements).
@@ -73,12 +76,11 @@ staking token of the chain.
 
 The governance process is divided in a few steps that are outlined below:
 
-* **Proposal submission:** Proposal is submitted to the blockchain with a
-  deposit.
-* **Vote:** Once deposit reaches a certain value (`MinDeposit`), proposal is
-  confirmed and vote opens. Bonded Atone holders can then send `MsgVote`
+* **Proposal submission:** Proposal is submitted to the blockchain with a deposit.
+* **Vote:** Once the deposit reaches the (dynamically set) `MinDeposit`, the proposal
+  is confirmed and voting opens. Bonded Atone holders can then send `MsgVote`
   transactions to vote on the proposal.
-* **Execution** After a period of time, the votes are tallied and depending
+* **Execution:** After a period of time, the votes are tallied and depending
   on the result, the messages in the proposal will be executed.
 
 ### Proposal submission
@@ -90,33 +92,67 @@ Once a proposal is submitted, it is identified by its unique `proposalID`.
 
 #### Proposal Messages
 
-A proposal includes an array of `sdk.Msg`s which are executed automatically if the
-proposal passes. The messages are executed by the governance `ModuleAccount` itself. Modules
-such as `x/upgrade`, that want to allow certain messages to be executed by governance
-only should add a whitelist within the respective msg server, granting the governance
-module the right to execute the message once a quorum has been reached. The governance
-module uses the `MsgServiceRouter` to check that these messages are correctly constructed
-and have a respective path to execute on but do not perform a full validity check.
+A proposal includes an array of `sdk.Msgs` which are executed automatically if the
+proposal passes. The messages are executed by the governance `ModuleAccount` itself.
+Modules such as `x/upgrade`, that want to allow certain messages to be executed by
+governance only should add a whitelist within the respective msg server, granting
+the governance module the right to execute the message once a quorum has been
+reached. The governance module uses the `MsgServiceRouter` to check that these
+messages are correctly constructed and have a respective path to execute on but
+do not perform a full validity check.
 
 ### Deposit
 
-To prevent spam, proposals must be submitted with a deposit in the coins defined by
-the `MinDeposit` param multiplied by the `MinInitialDepositRatio` param.
+To prevent spam, proposals must be submitted with an initial deposit in the
+coins defined by the dynamic `MinInitialDeposit`. After the proposal is submitted,
+the deposit from any token holder can increase until it meets or exceeds the current
+dynamic `MinDeposit`. Once that threshold is reached (within the deposit period),
+the proposal moves into the voting period.
 
-When a proposal is submitted, it has to be accompanied with a deposit that must be
-greater than the `MinDeposit` multiplied by the `MinInitialDepositRatio` param,
-but can be inferior to `MinDeposit` (since `MinDepositRatio` is a percentage).
-The submitter doesn't need to pay for the entire deposit on their own. The newly
-created proposal is stored in an *inactive proposal queue* and stays there until
-its deposit passes the `MinDeposit`. Other token holders can increase the proposal's
-deposit by sending a `Deposit` transaction. Deposits from token holders must always be
-greater than `MinDeposit` multiplied by the `MinDepositRatio` param, or they will be
-rejected. If a proposal doesn't pass the `MinDeposit` before the deposit end time
-(the time when deposits are no longer accepted), the proposal will be destroyed: the
-proposal will be removed from state and the deposit will be burned (see x/gov
-`EndBlocker`). When a proposal deposit passes the `MinDeposit` threshold
-(even during the proposal submission) before the deposit end time, the proposal will
-be moved into the *active proposal queue* and the voting period will begin.
+#### Dynamic MinInitialDeposit and MinDeposit
+
+In previous versions, `MinDeposit` was a fixed parameter and a fraction of it (called
+`MinInitialDepositRatio`) was required at proposal submission.  
+Now, these parameters are determined by a dynamic system that can raise or
+lower each threshold depending on the number of concurrent proposals in that state:
+
+- `MinInitialDeposit`: The minimum deposit required to create (submit) a proposal.
+  This threshold scales dynamically based on the number of proposals in the deposit
+  period. A floor value is set so that it cannot go below a certain amount, but it
+  can increase indefintely beyond that floor if many proposals enter deposit status
+  at once.
+
+- `MinDeposit`: The total deposit required for a proposal to enter the voting period.
+  This threshold also adapts to the current number of active (voting) proposals.
+  If the system detects too many simultaneous active proposals, the minimum deposit
+  can increase significantly, discouraging spam and helping the chain governance
+  remain more focused.
+
+Both dynamic deposit mechanisms have their own sets of parameters (see [Parameters](#parameters)),
+can be queried via dedicated endpoints, and are individually updated as proposals
+enter or exit the deposit or voting stages. They also continue adjusting as time
+passes, ensuring that the system remains responsive to the current state of the chain.
+
+Threshold updates are triggered both by activation or deactivation of proposals (
+meaning when they enter/exit either the deposit or the voting periods) and by the
+passage of time. More details on the mechanism and the update formulae available
+in [ADR-003](../../docs/architecture/adr-003-governance-proposal-deposit-auto-throttler.md).
+
+#### Deposit process
+
+When a proposal is submitted, it must be accompanied by a deposit that is at least
+the current `MinInitialDeposit` value. If the submitted deposit is valid, the
+newly created proposal is placed in an *inactive proposal queue* (a.k.a. deposit
+period queue). If the total deposit on the proposal is raised (through
+`MsgDeposit`) to meet or exceed the current (dynamic) `MinDeposit` within
+the deposit period, the proposal is immediately moved to the *active proposal
+queue* and enters the voting period.  
+
+If, by the end of the deposit period, the total deposit is still below the required
+MinDeposit value, the proposal is removed from state and the entire deposit is
+burned. However, at the end of the deposit period if for any reason the `MinDeposit`
+was lowered and the proposal now meets the new threshold, the proposal is promoted
+to voting period instead of being removed.
 
 The deposit is kept in escrow and held by the governance `ModuleAccount` until the
 proposal is finalized (passed or rejected).
@@ -125,6 +161,8 @@ proposal is finalized (passed or rejected).
 
 When a proposal is finalized, the coins from the deposit are refunded
 regardless of wether the proposal is approved or rejected.
+If the proposal never moved to the voting period, the deposit
+is instead burned.
 All refunded or burned deposits are removed from the state. Events are issued
 when burning or refunding a deposit.
 
@@ -132,20 +170,19 @@ when burning or refunding a deposit.
 
 #### Participants
 
-*Participants* are users that have the right to vote on proposals. On the
-AtomOne, participants are bonded Atone holders. Unbonded Atone holders and
-other users do not get the right to participate in governance. However, they
-can submit and deposit on proposals.
+*Participants* are users that have the right to vote on proposals. On AtomOne,
+participants are bonded Atone holders. Unbonded Atone holders and other users
+do not get the right to participate in governance. However, they can still submit
+and deposit on proposals.
 
 Note that when *participants* have bonded and unbonded Atones, their voting
 power is calculated from their bonded Atone holdings only.
 
 #### Voting period
 
-Once a proposal reaches `MinDeposit`, it immediately enters `Voting period`. We
-define `Voting period` as the interval between the moment the vote opens and
-the moment the vote closes. `Voting period` should always be shorter than
-`Unbonding period` to prevent double voting. The initial value of
+Once a proposal reaches the dynamic `MinDeposit`, it immediately enters
+`Voting period`. We define `Voting period` as the interval between the moment
+the vote opens and the moment the vote closes. The initial value of
 `Voting period` is 3 weeks, which is also set as a hard lower bound.
 
 #### Option set
@@ -294,7 +331,16 @@ be one active parameter set at any given time. If governance wants to change a
 parameter set, either to modify a value or add/remove a parameter field, a new
 parameter set has to be created and the previous one rendered inactive.
 
+Due to the new dynamic depositfeature, the prior `MinDeposit` parameter is
+deprecated and replaced by the dynamic mechanism defined via the
+`MinDepositThrottler` struct. The same applies to `MinInitialDepositRatio`,
+which is deprecated and replaced by a dynamic `MinInitialDeposit`
+controlled via the  `MinInitialDepositThrottler` struct.
+
 #### DepositParams
+
+*(`MinDeposit` inside the `DepositParams` is no longer used in code. Instead, see
+[Params.min_deposit_throttler](#parameters).)*
 
 ```protobuf reference
 https://github.com/atomone-hub/atomone/blob/b9631ed2e3b781cd82a14316f6086802d8cb4dcf/proto/atomone/gov/v1/gov.proto#L167-L181
@@ -597,11 +643,30 @@ The `constitution` string will be updated by applying the patch defined in the `
 An error will be returned if the `amendment` string is malformed, so constitution amendment proposals
 need to be crafted with care.
 
+### Last Min Deposit and Last Min Initial Deposit
+
+The `LastMinDeposit` and `LastMinInitialDeposit` are used to store the last values
+of the dynamic `MinDeposit` and `MinInitialDeposit` respectively upon proposals
+activation or deactivation. These values are used to determine the current values
+for the dynamic `MinDeposit` and `MinInitialDeposit` accounting also for the
+passage of time as detailed in [ADR-003](../../docs/architecture/adr-003-governance-proposal-deposit-auto-throttler.md)
+
+**Store:**
+
+```protobuf reference
+https://github.com/atomone-hub/atomone/blob/fb05dcaba40c7a1531a6806487fcd47a3e4aaef4/proto/atomone/gov/v1/gov.proto#L51-L60
+```
+
 ## Messages
 
 ### Proposal Submission
 
 Proposals can be submitted by any account via a `MsgSubmitProposal` transaction.
+
+If the total deposit in the message is below the required dynamic `MinInitialDeposit`
+at the time of submission, the transaction will fail. Otherwise, a new proposal
+is created, the deposit is moved under governance escrow, and the proposal enters
+the deposit period.  
 
 ```protobuf reference
 https://github.com/atomone-hub/atomone/blob/b9631ed2e3b781cd82a14316f6086802d8cb4dcf/proto/atomone/gov/v1/tx.proto#L53-L82
@@ -619,7 +684,7 @@ must not be larger than the `maxMetadataLen` config passed into the gov keeper.
 * Initialise `Proposal`'s attributes
 * Decrease balance of sender by `InitialDeposit`
 * If `MinDeposit` is reached:
-    * Push `proposalID` in `ProposalProcessingQueue`
+  * Push `proposalID` in `ProposalProcessingQueue`
 * Transfer `InitialDeposit` from the `Proposer` to the governance `ModuleAccount`
 
 A `MsgSubmitProposal` transaction can be handled according to the following
@@ -671,20 +736,18 @@ upon receiving txGovSubmitProposal from sender do
 
 Once a proposal is submitted, if
 `Proposal.TotalDeposit < ActiveParam.MinDeposit`, Atone holders can send
-`MsgDeposit` transactions to increase the proposal's deposit.
-
-A proposal can only be sumbitted if the proposer deposits at least
-`ActiveParam.MinDeposit` * `ActiveParam.MinInitialDepositRatio`, where
-`ActiveParam.MinInitialDepositRatio` must be a valid percentage between 0 and 1.
+`MsgDeposit` transactions to increase the proposal's deposit until the
+proposal’s total deposit meets the dynamic `MinDeposit`.
+If it surpasses the dynamic threshold within the deposit period, the
+proposal is moved into the voting period immediately. Otherwise, the deposit
+period eventually ends, and if the threshold is never met, the proposal is removed
+from state and all deposits are burned. If however by the time the deposit
+period ends the `MinDeposit` has been lowered and the proposal now meets the
+new threshold, the proposal is activated instead of being removed.
 
 Any deposit from Atone holders (including the proposer) need to be of at least
 `ActiveParam.MinDeposit` * `ActiveParam.MinDepositRatio`, where
 `ActiveParam.MinDepositRatio` must be a valid percentage between 0 and 1.
-
-Generally it is expected that
-`ActiveParam.MinDepositRatio` <= `ActiveParam.MinInitialDepositRatio`
-
-
 
 ```protobuf reference
 https://github.com/atomone-hub/atomone/blob/b9631ed2e3b781cd82a14316f6086802d8cb4dcf/proto/atomone/gov/v1/tx.proto#L150-L165
@@ -696,7 +759,7 @@ https://github.com/atomone-hub/atomone/blob/b9631ed2e3b781cd82a14316f6086802d8cb
 * Add `deposit` of sender in `proposal.Deposits`
 * Increase `proposal.TotalDeposit` by sender's `deposit`
 * If `MinDeposit` is reached:
-    * Push `proposalID` in `ProposalProcessingQueueEnd`
+  * Push `proposalID` in `ProposalProcessingQueueEnd`
 * Transfer `Deposit` from the `proposer` to the governance `ModuleAccount`
 
 A `MsgDeposit` transaction has to go through a number of checks to be valid.
@@ -861,31 +924,70 @@ The governance module emits the following events:
 
 ## Parameters
 
-The governance module contains the following parameters:
+Below is an updated parameter set with new fields related to **dynamic deposit**.
+Some older fields have been deprecated but remain in `gov.proto` for backward compatibility:
 
-| Key                              | Type             | Example                                 |
-|----------------------------------|------------------|-----------------------------------------|
-| min_deposit                      | array (coins)    | [{"denom":"uatone","amount":"10000000"}] |
-| max_deposit_period               | string (time ns) | "172800000000000" (17280s)              |
-| voting_period                    | string (time ns) | "172800000000000" (17280s)              |
-| quorum                           | string (dec)     | "0.334000000000000000"                  |
-| threshold                        | string (dec)     | "0.500000000000000000"                  |
-| burn_proposal_deposit_prevote    | bool             | false                                   |
-| burn_vote_quorum                 | bool             | false                                   |
-| min_initial_deposit_ratio        | string (dec)     | "0.100000000000000000"                  |
-| min_deposit_ratio                | string (dec)     | "0.010000000000000000"                  |
-| constitution_amendment_quorum    | string (dec)     | "0.334000000000000000"                  |
-| constitution_amendment_threshold | string (dec)     | "0.900000000000000000"                  |
-| law_quorum                       | string (dec)     | "0.334000000000000000"                  |
-| law_threshold                    | string (dec)     | "0.900000000000000000"                  |
-| quorum_timeout                   | string (time ns) | "172800000000000" (17280s)              |
-| max_voting_period_extension      | string (time ns) | "172800000000000" (17280s)              |
-| quorum_check_count               | uint64           | 2                                       |
+| Key                              | Type                                      | Example                                 |
+|----------------------------------|-------------------------------------------|-----------------------------------------|
+| ~~min_deposit~~                  | ~~array (coins)~~ **(deprecated)**        | ~~[{"denom":"uatone","amount":"10000000"}]~~ |
+| max_deposit_period               | string (time ns)                          | "172800000000000" (17280s)              |
+| voting_period                    | string (time ns)                          | "172800000000000" (17280s)              |
+| quorum                           | string (dec)                              | "0.334000000000000000"                  |
+| threshold                        | string (dec)                              | "0.500000000000000000"                  |
+| burn_proposal_deposit_prevote    | bool                                      | false                                   |
+| burn_vote_quorum                 | bool                                      | false                                   |
+| ~~min_initial_deposit_ratio~~    | ~~string (dec)~~ **(deprecated)**         | ~~"0.100000000000000000"~~              |
+| min_deposit_ratio                | string (dec)                              | "0.010000000000000000"                  |
+| constitution_amendment_quorum    | string (dec)                              | "0.334000000000000000"                  |
+| constitution_amendment_threshold | string (dec)                              | "0.900000000000000000"                  |
+| law_quorum                       | string (dec)                              | "0.334000000000000000"                  |
+| law_threshold                    | string (dec)                              | "0.900000000000000000"                  |
+| quorum_timeout                   | string (time ns)                          | "172800000000000" (17280s)              |
+| max_voting_period_extension      | string (time ns)                          | "172800000000000" (17280s)              |
+| quorum_check_count               | uint64                                    | 2                                       |
+| min_deposit_throttler            | object (MinDepositThrottler)             | _See below_                             |
+| min_initial_deposit_throttler    | object (MinInitialDepositThrottler)       | _See below_                             |
 
+### MinDepositThrottler (dynamic MinDeposit)
 
-**NOTE**: The governance module contains parameters that are objects unlike other
-modules. If only a subset of parameters are desired to be changed, only they need
-to be included and not the entire parameter object structure.
+The `min_deposit_throttler` field in `Params` controls how `MinDeposit` is computed dynamically:
+
+- `floor_value`: The floor (lowest possible) deposit requirement.
+- `update_period`: After how long the system should recalculate (time-based updates).
+- `target_active_proposals`: The number of active proposals the dynamic deposit
+  tries to target.
+- `increase_ratio` / `decrease_ratio`: How fast the min deposit goes up/down
+  relative to exceeding or being under that target.
+- `sensitivity_target_distance`: A positive integer indicating how sensitive
+  the multiplier is to how far away we are from the target number of active proposals.
+
+### MinInitialDepositThrottler (dynamic MinInitialDeposit)
+
+Similarly, the `min_initial_deposit_throttler` sub-structure defines the dynamic
+`MinInitialDeposit`:
+
+- `floor_value`: The floor (lowest possible) initial deposit requirement.
+- `update_period`: After how long the system should recalculate (time-based
+  updates).  
+- `target_proposals`: The target number of proposals in the deposit period.  
+- `increase_ratio` / `decrease_ratio`: Rate of upward/downward adjustments when
+  the number of deposit-period proposals deviates from the target.  
+- `sensitivity_target_distance`: Like above, how sharply the required deposit
+  reacts to that deviation.
+
+:::note
+Both dynamic thresholds are maintained internally and automatically updated
+whenever proposals enter/exit their respective states (deposit or voting)
+and with the passage of time.
+At any time, one can do:
+
+```bash
+atomoned query gov min-deposit
+atomoned query gov min-initial-deposit
+```
+
+to see the current required deposit thresholds.
+:::
 
 ## Client
 
@@ -951,6 +1053,55 @@ deposits:
 pagination:
   next_key: null
   total: "0"
+```
+
+
+##### min deposit
+
+The `min-deposit` command allows users to query the
+dynamic minimum deposit required for a proposal
+to enter voting period.
+
+```bash
+atomoned query gov min-deposit [flags]
+```
+
+Example:
+
+```bash
+atomoned query gov min-deposit
+```
+
+Example Output:
+
+```bash
+min_deposit:
+- amount: "10000000"
+  denom: atone
+```
+
+##### min initial deposit
+
+The `min-initial-deposit` command allows users to query the
+dynamic minimum initial deposit required for a proposal to
+be submitted.
+
+```bash
+atomoned query gov min-initial-deposit [flags]
+```
+
+Example:
+
+```bash
+atomoned query gov min-initial-deposit
+```
+
+Example Output:
+
+```bash
+min_initial_deposit:
+- amount: "10000000"
+  denom: atone
 ```
 
 ##### param
@@ -2028,13 +2179,13 @@ The `proposals` endpoint allows users to query a given proposal.
 Using legacy v1beta1:
 
 ```bash
-/cosmos/gov/v1beta1/proposals/{proposal_id}
+/atomone/gov/v1beta1/proposals/{proposal_id}
 ```
 
 Example:
 
 ```bash
-curl localhost:1317/cosmos/gov/v1beta1/proposals/1
+curl localhost:1317/atomone/gov/v1beta1/proposals/1
 ```
 
 Example Output:
@@ -2067,13 +2218,13 @@ Example Output:
 Using v1:
 
 ```bash
-/cosmos/gov/v1/proposals/{proposal_id}
+/atomone/gov/v1/proposals/{proposal_id}
 ```
 
 Example:
 
 ```bash
-curl localhost:1317/cosmos/gov/v1/proposals/1
+curl localhost:1317/atomone/gov/v1/proposals/1
 ```
 
 Example Output:
@@ -2125,13 +2276,13 @@ The `proposals` endpoint also allows users to query all proposals with optional 
 Using legacy v1beta1:
 
 ```bash
-/cosmos/gov/v1beta1/proposals
+/atomone/gov/v1beta1/proposals
 ```
 
 Example:
 
 ```bash
-curl localhost:1317/cosmos/gov/v1beta1/proposals
+curl localhost:1317/atomone/gov/v1beta1/proposals
 ```
 
 Example Output:
@@ -2190,13 +2341,13 @@ Example Output:
 Using v1:
 
 ```bash
-/cosmos/gov/v1/proposals
+/atomone/gov/v1/proposals
 ```
 
 Example:
 
 ```bash
-curl localhost:1317/cosmos/gov/v1/proposals
+curl localhost:1317/atomone/gov/v1/proposals
 ```
 
 Example Output:
@@ -2289,13 +2440,13 @@ The `votes` endpoint allows users to query a vote for a given proposal.
 Using legacy v1beta1:
 
 ```bash
-/cosmos/gov/v1beta1/proposals/{proposal_id}/votes/{voter}
+/atomone/gov/v1beta1/proposals/{proposal_id}/votes/{voter}
 ```
 
 Example:
 
 ```bash
-curl localhost:1317/cosmos/gov/v1beta1/proposals/1/votes/atone1..
+curl localhost:1317/atomone/gov/v1beta1/proposals/1/votes/atone1..
 ```
 
 Example Output:
@@ -2319,13 +2470,13 @@ Example Output:
 Using v1:
 
 ```bash
-/cosmos/gov/v1/proposals/{proposal_id}/votes/{voter}
+/atomone/gov/v1/proposals/{proposal_id}/votes/{voter}
 ```
 
 Example:
 
 ```bash
-curl localhost:1317/cosmos/gov/v1/proposals/1/votes/atone1..
+curl localhost:1317/atomone/gov/v1/proposals/1/votes/atone1..
 ```
 
 Example Output:
@@ -2353,13 +2504,13 @@ The `votes` endpoint allows users to query all votes for a given proposal.
 Using legacy v1beta1:
 
 ```bash
-/cosmos/gov/v1beta1/proposals/{proposal_id}/votes
+/atomone/gov/v1beta1/proposals/{proposal_id}/votes
 ```
 
 Example:
 
 ```bash
-curl localhost:1317/cosmos/gov/v1beta1/proposals/1/votes
+curl localhost:1317/atomone/gov/v1beta1/proposals/1/votes
 ```
 
 Example Output:
@@ -2389,13 +2540,13 @@ Example Output:
 Using v1:
 
 ```bash
-/cosmos/gov/v1/proposals/{proposal_id}/votes
+/atomone/gov/v1/proposals/{proposal_id}/votes
 ```
 
 Example:
 
 ```bash
-curl localhost:1317/cosmos/gov/v1/proposals/1/votes
+curl localhost:1317/atomone/gov/v1/proposals/1/votes
 ```
 
 Example Output:
@@ -2431,13 +2582,13 @@ The `params` endpoint allows users to query all parameters for the `gov` module.
 Using legacy v1beta1:
 
 ```bash
-/cosmos/gov/v1beta1/params/{params_type}
+/atomone/gov/v1beta1/params/{params_type}
 ```
 
 Example:
 
 ```bash
-curl localhost:1317/cosmos/gov/v1beta1/params/voting
+curl localhost:1317/atomone/gov/v1beta1/params/voting
 ```
 
 Example Output:
@@ -2462,13 +2613,13 @@ Example Output:
 Using v1:
 
 ```bash
-/cosmos/gov/v1/params/{params_type}
+/atomone/gov/v1/params/{params_type}
 ```
 
 Example:
 
 ```bash
-curl localhost:1317/cosmos/gov/v1/params/voting
+curl localhost:1317/atomone/gov/v1/params/voting
 ```
 
 Example Output:
@@ -2490,6 +2641,66 @@ Example Output:
 }
 ```
 
+#### min deposit
+
+The `min_deposit` endpoint allows users to query the minimum deposit for a given proposal
+to enter the voting period.
+
+Using v1:
+
+```bash
+/atomone/gov/v1/mindeposit
+```
+
+Example:
+
+```bash
+curl localhost:1317/atomone/gov/v1/mindeposit
+```
+
+Example Output:
+
+```bash
+{
+  "min_deposit": [
+    {
+      "denom": "atone",
+      "amount": "10000000"
+    }
+  ]
+}
+```
+
+#### min initial deposit
+
+The `min_initial_deposit` endpoint allows users to query the minimum deposit for
+a given proposal to enter the voting period.
+
+Using v1:
+
+```bash
+/atomone/gov/v1/mininitialdeposit
+```
+
+Example:
+
+```bash
+curl localhost:1317/atomone/gov/v1/mininitialdeposit
+```
+
+Example Output:
+
+```bash
+{
+  "min_initial_deposit": [
+    {
+      "denom": "atone",
+      "amount": "10000000"
+    }
+  ]
+}
+```
+
 #### deposits
 
 The `deposits` endpoint allows users to query a deposit for a given proposal from a given depositor.
@@ -2497,13 +2708,13 @@ The `deposits` endpoint allows users to query a deposit for a given proposal fro
 Using legacy v1beta1:
 
 ```bash
-/cosmos/gov/v1beta1/proposals/{proposal_id}/deposits/{depositor}
+/atomone/gov/v1beta1/proposals/{proposal_id}/deposits/{depositor}
 ```
 
 Example:
 
 ```bash
-curl localhost:1317/cosmos/gov/v1beta1/proposals/1/deposits/atone1..
+curl localhost:1317/atomone/gov/v1beta1/proposals/1/deposits/atone1..
 ```
 
 Example Output:
@@ -2526,13 +2737,13 @@ Example Output:
 Using v1:
 
 ```bash
-/cosmos/gov/v1/proposals/{proposal_id}/deposits/{depositor}
+/atomone/gov/v1/proposals/{proposal_id}/deposits/{depositor}
 ```
 
 Example:
 
 ```bash
-curl localhost:1317/cosmos/gov/v1/proposals/1/deposits/atone1..
+curl localhost:1317/atomone/gov/v1/proposals/1/deposits/atone1..
 ```
 
 Example Output:
@@ -2559,13 +2770,13 @@ The `deposits` endpoint allows users to query all deposits for a given proposal.
 Using legacy v1beta1:
 
 ```bash
-/cosmos/gov/v1beta1/proposals/{proposal_id}/deposits
+/atomone/gov/v1beta1/proposals/{proposal_id}/deposits
 ```
 
 Example:
 
 ```bash
-curl localhost:1317/cosmos/gov/v1beta1/proposals/1/deposits
+curl localhost:1317/atomone/gov/v1beta1/proposals/1/deposits
 ```
 
 Example Output:
@@ -2594,13 +2805,13 @@ Example Output:
 Using v1:
 
 ```bash
-/cosmos/gov/v1/proposals/{proposal_id}/deposits
+/atomone/gov/v1/proposals/{proposal_id}/deposits
 ```
 
 Example:
 
 ```bash
-curl localhost:1317/cosmos/gov/v1/proposals/1/deposits
+curl localhost:1317/atomone/gov/v1/proposals/1/deposits
 ```
 
 Example Output:
@@ -2633,13 +2844,13 @@ The `tally` endpoint allows users to query the tally of a given proposal.
 Using legacy v1beta1:
 
 ```bash
-/cosmos/gov/v1beta1/proposals/{proposal_id}/tally
+/atomone/gov/v1beta1/proposals/{proposal_id}/tally
 ```
 
 Example:
 
 ```bash
-curl localhost:1317/cosmos/gov/v1beta1/proposals/1/tally
+curl localhost:1317/atomone/gov/v1beta1/proposals/1/tally
 ```
 
 Example Output:
@@ -2657,13 +2868,13 @@ Example Output:
 Using v1:
 
 ```bash
-/cosmos/gov/v1/proposals/{proposal_id}/tally
+/atomone/gov/v1/proposals/{proposal_id}/tally
 ```
 
 Example:
 
 ```bash
-curl localhost:1317/cosmos/gov/v1/proposals/1/tally
+curl localhost:1317/atomone/gov/v1/proposals/1/tally
 ```
 
 Example Output:
@@ -2681,7 +2892,16 @@ Example Output:
 
 ## Metadata
 
-The gov module has two locations for metadata where users can provide further context about the on-chain actions they are taking. By default all metadata fields have a 255 character length field where metadata can be stored in json format, either on-chain or off-chain depending on the amount of data required. Here we provide a recommendation for the json structure and where the data should be stored. There are two important factors in making these recommendations. First, that the gov and group modules are consistent with one another, note the number of proposals made by all groups may be quite large. Second, that client applications such as block explorers and governance interfaces have confidence in the consistency of metadata structure accross chains.
+The gov module has two locations for metadata where users can provide further
+context about the on-chain actions they are taking. By default all metadata
+fields have a 255 character length field where metadata can be stored in json
+format, either on-chain or off-chain depending on the amount of data required.
+Here we provide a recommendation for the json structure and where the data
+should be stored. There are two important factors in making these recommendations.
+First, that the gov and group modules are consistent with one another, note the
+number of proposals made by all groups may be quite large. Second, that client
+applications such as block explorers and governance interfaces have confidence
+in the consistency of metadata structure accross chains.
 
 ### Proposal
 
@@ -2699,8 +2919,10 @@ Location: off-chain as json object stored on IPFS (mirrors [group proposal](../g
 ```
 
 :::note
-The `authors` field is an array of strings, this is to allow for multiple authors to be listed in the metadata.
-In v0.46, the `authors` field is a comma-separated string. Frontends are encouraged to support both formats for backwards compatibility.
+The `authors` field is an array of strings, this is to allow for multiple authors
+to be listed in the metadata.
+In v0.46, the `authors` field is a comma-separated string. Frontends are encouraged
+to support both formats for backwards compatibility.
 :::
 
 ### Vote
