@@ -738,10 +738,7 @@ Once a proposal is submitted, if
 `Proposal.TotalDeposit < ActiveParam.MinDeposit`, Atone holders can send
 `MsgDeposit` transactions to increase the proposal's deposit until the
 proposal’s total deposit meets the dynamic `MinDeposit`.
-
-If `proposal.TotalDeposit < ActiveParam.MinDeposit`, Atone holders
-(including the proposer) can send `MsgDeposit` transactions to increase the
-deposit. If it surpasses the dynamic threshold within the deposit period, the
+If it surpasses the dynamic threshold within the deposit period, the
 proposal is moved into the voting period immediately. Otherwise, the deposit
 period eventually ends, and if the threshold is never met, the proposal is removed
 from state and all deposits are burned. If however by the time the deposit
