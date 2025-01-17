@@ -8,7 +8,7 @@
 
 ## Status
 
-DRAFT
+Implemented (https://github.com/atomone-hub/atomone/pull/57)
 
 ## Abstract
 
