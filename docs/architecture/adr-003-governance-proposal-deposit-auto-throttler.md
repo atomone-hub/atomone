@@ -9,7 +9,7 @@
 
 ## **Status[](https://docs.cosmos.network/main/architecture/adr-template#status)**
 
-DRAFT
+Implemented (https://github.com/atomone-hub/atomone/pull/69)
 
 ## **Abstract[](https://docs.cosmos.network/main/architecture/adr-template#abstract)**
 
