@@ -101,7 +101,7 @@ func (k Keeper) ValidateGovernorMinSelfDelegation(ctx sdk.Context, governor v1.G
 	bondedTokens := k.getGovernorBondedTokens(ctx, governor.GetAddress())
 	delAddr := sdk.AccAddress(governor.GetAddress())
 
-	if del, found := k.GetGovernanceDelegation(ctx, delAddr); !found || !governor.GetAddress().Equals(types.MustGovernorAddressFromBech32(del.GovernorAddress)) {
+	if del, found := k.GetGovernanceDelegation(ctx, delAddr); !found || governor.GovernorAddress != del.GovernorAddress {
 		panic("active governor without governance self-delegation")
 	}
 

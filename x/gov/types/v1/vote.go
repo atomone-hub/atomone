@@ -76,6 +76,19 @@ func (w *WeightedVoteOption) IsValid() bool {
 	return ValidVoteOption(w.Option)
 }
 
+var oneDecStr = math.LegacyOneDec().String()
+
+func (v WeightedVoteOption) Power(totalPower math.LegacyDec) math.LegacyDec {
+	// v.Weight is very often equal to 1, because most voters do not
+	// use weighted votes. By using this stat, we can save on calls to
+	// the costly `math.LegacyNewDecFromStr` function.
+	if v.Weight == oneDecStr {
+		return totalPower
+	}
+	weight, _ := math.LegacyNewDecFromStr(v.Weight)
+	return totalPower.Mul(weight)
+}
+
 // NewNonSplitVoteOption creates a single option vote with weight 1
 func NewNonSplitVoteOption(option VoteOption) WeightedVoteOptions {
 	return WeightedVoteOptions{{option, math.LegacyNewDec(1).String()}}

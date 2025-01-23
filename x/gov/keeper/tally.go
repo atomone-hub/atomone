@@ -113,12 +113,10 @@ func (keeper Keeper) tallyVotes(
 				governor = gi
 			} else {
 				govAddr := types.MustGovernorAddressFromBech32(gd.GovernorAddress)
-				gov, _ := keeper.GetGovernor(ctx, govAddr)
 				governor = v1.NewGovernorGovInfo(
 					govAddr,
-					keeper.GetAllGovernorValShares(ctx, types.MustGovernorAddressFromBech32(gd.GovernorAddress)),
+					keeper.GetAllGovernorValShares(ctx, govAddr),
 					v1.WeightedVoteOptions{},
-					gov.IsActive(),
 				)
 			}
 			if gd.GovernorAddress == types.GovernorAddress(voter).String() {
@@ -131,7 +129,7 @@ func (keeper Keeper) tallyVotes(
 
 		// iterate over all delegations from voter
 		keeper.sk.IterateDelegations(ctx, voter, func(index int64, delegation stakingtypes.DelegationI) (stop bool) {
-			valAddrStr := delegation.GetValidatorAddr().String()
+			valAddrStr := delegation.(stakingtypes.Delegation).ValidatorAddress
 			votingPower := math.LegacyZeroDec()
 
 			if val, ok := currValidators[valAddrStr]; ok {
@@ -147,8 +145,7 @@ func (keeper Keeper) tallyVotes(
 			totalVotingPower = totalVotingPower.Add(votingPower)
 			if isFinal {
 				for _, option := range vote.Options {
-					weight, _ := math.LegacyNewDecFromStr(option.Weight)
-					subPower := votingPower.Mul(weight)
+					subPower := option.Power(votingPower)
 					results[option.Option] = results[option.Option].Add(subPower)
 				}
 			}
@@ -174,8 +171,7 @@ func (keeper Keeper) tallyVotes(
 
 		if isFinal {
 			for _, option := range gov.Vote {
-				weight, _ := sdk.NewDecFromStr(option.Weight)
-				subPower := votingPower.Mul(weight)
+				subPower := option.Power(votingPower)
 				results[option.Option] = results[option.Option].Add(subPower)
 			}
 		}
