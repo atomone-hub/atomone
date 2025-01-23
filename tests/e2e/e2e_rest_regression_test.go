@@ -37,7 +37,7 @@ const (
 	authParamsModuleQueryPath           = "/cosmos/auth/v1beta1/params"
 	distributionCommPoolModuleQueryPath = "/cosmos/distribution/v1beta1/community_pool"
 	evidenceModuleQueryPath             = "/cosmos/evidence/v1beta1/evidence"
-	govPropsModuleQueryPath             = "/atomone/gov/v1beta1/proposals"
+	govPropsModuleQueryPath             = "/atomone/gov/v1/proposals"
 	mintParamsModuleQueryPath           = "/cosmos/mint/v1beta1/params"
 	slashingParamsModuleQueryPath       = "/cosmos/slashing/v1beta1/params"
 	stakingParamsModuleQueryPath        = "/cosmos/staking/v1beta1/params"
