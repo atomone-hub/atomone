@@ -129,7 +129,7 @@ func EndBlocker(ctx sdk.Context, keeper *keeper.Keeper) {
 	keeper.IterateActiveProposalsQueue(ctx, ctx.BlockHeader().Time, func(proposal v1.Proposal) bool {
 		var tagValue, logMsg string
 
-		passes, burnDeposits, tallyResults := keeper.Tally(ctx, proposal)
+		passes, burnDeposits, participation, tallyResults := keeper.Tally(ctx, proposal)
 
 		if burnDeposits {
 			keeper.DeleteAndBurnDeposits(ctx, proposal.Id)
@@ -190,6 +190,7 @@ func EndBlocker(ctx sdk.Context, keeper *keeper.Keeper) {
 
 		keeper.SetProposal(ctx, proposal)
 		keeper.RemoveFromActiveProposalQueue(ctx, proposal.Id, *proposal.VotingEndTime)
+		keeper.UpdateParticipationEMA(ctx, participation)
 
 		// when proposal become active
 		keeper.Hooks().AfterProposalVotingPeriodEnded(ctx, proposal.Id)

@@ -460,7 +460,7 @@ func TestTally(t *testing.T) {
 				tt.setup(s)
 			}
 
-			pass, burn, tally := govKeeper.Tally(ctx, proposal)
+			pass, burn, _, tally := govKeeper.Tally(ctx, proposal)
 
 			assert.Equal(t, tt.expectedPass, pass, "wrong pass")
 			assert.Equal(t, tt.expectedBurn, burn, "wrong burn")
