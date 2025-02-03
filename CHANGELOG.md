@@ -14,6 +14,20 @@
 
 ### STATE BREAKING
 
+## v1.0.1
+
+*Feb 3th, 2025*
+
+### DEPENDENCIES
+
+- Upgrade CometBFT to v0.37.15 to fix securities issues (ASA-2025-001, ASA-2025-002) [#77](https://github.com/atomone-hub/atomone/pull/77)
+
+### IMPROVEMENTS
+
+- (x/gov): override MinVotingPeriod with ldflags [#63](https://github.com/atomone-hub/atomone/pull/63)
+
+### STATE BREAKING
+
 ## v1.0.0
 
 *Sep 26th, 2024*
