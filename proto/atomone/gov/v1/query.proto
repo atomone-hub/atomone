@@ -61,6 +61,11 @@ service Query {
     option (google.api.http).get =
         "/atomone/gov/v1/proposals/{proposal_id}/tally";
   }
+
+  // Quorum queries the dynamically set quorum.
+  rpc Quorum(QueryQuorumRequest) returns (QueryQuorumResponse) {
+    option (google.api.http).get = "/atomone/gov/v1/params/quorum";
+  }
 }
 
 // QueryConstitutionRequest is the request type for the Query/Constitution RPC method
@@ -208,4 +213,13 @@ message QueryTallyResultRequest {
 message QueryTallyResultResponse {
   // tally defines the requested tally.
   TallyResult tally = 1;
+}
+
+// QueryQuorumRequest is the request type for the Query/Quorum RPC method.
+message QueryQuorumRequest {}
+
+// QueryQuorumResponse is the response type for the Query/Quorum RPC method.
+message QueryQuorumResponse {
+  // quorum defines the requested quorum.
+  string quorum = 1 [(cosmos_proto.scalar) = "cosmos.Dec"];
 }
