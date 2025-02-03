@@ -14,13 +14,30 @@
 
 ### STATE BREAKING
 
+### IMPROVEMENTS
+
 ## v2.0.0
 
 *Release date*
 
+### BUG FIXES
+
+- Fix swagger generation [#38](https://github.com/atomone-hub/atomone/pull/38)
+- Fix vuln GO-2024-3279 [#60](https://github.com/atomone-hub/atomone/pull/60)
+- Fix vuln GO-2024-3112 and GO-2024-2951 [#62](https://github.com/atomone-hub/atomone/pull/62)
+- Fix vuln GHSA-8wcc-m6j2-qxvm [#67](https://github.com/atomone-hub/atomone/pull/67)
+
 ### FEATURES
 
 - Add the photon module and use photon as the only fee denom [#57](https://github.com/atomone-hub/atomone/pull/57)
+
+### DEPENDENCIES
+
+- Upgrade CometBFT to v0.37.15 to fix securities issues (ASA-2025-001, ASA-2025-002) [#78](https://github.com/atomone-hub/atomone/pull/78)
+
+### IMPROVEMENTS
+
+- (x/gov): override MinVotingPeriod with ldflags [#63](https://github.com/atomone-hub/atomone/pull/63)
 
 ## v1.0.0
 
