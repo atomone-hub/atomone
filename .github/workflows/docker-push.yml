@@ -15,31 +15,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-        # Seems required for cache
-      - uses: actions/setup-go@v5
-
-      - name: Login to Docker registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Go Build Cache for Docker
-        uses: actions/cache@v3
+      - name: Login to Docker registry
+        uses: docker/login-action@v3
         with:
-          path: go-build-cache
-          key: ${{ runner.os }}-go-build-cache-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-build-cache-
-
-      - name: inject go-build-cache into docker
-        uses: reproducible-containers/buildkit-cache-dance@v3.1.0
-        with:
-          cache-source: go-build-cache
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Docker meta
         id: meta
@@ -50,11 +37,31 @@ jobs:
             type=raw,value=latest
             type=semver,pattern={{version}}
 
+      - name: Go Build Cache for Docker
+        id: cache
+        uses: actions/cache@v4.2.0
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-build-cache-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-build-cache-
+
+      - name: inject go-build-cache into docker
+        uses: reproducible-containers/buildkit-cache-dance@v3.1.0
+        with:
+          cache-map: |
+            {
+              "go-pkg-mod": "/go/pkg/mod",
+              "go-build-cache": "/root/.cache/go-build"
+            }
+          skip-extraction: ${{ steps.cache.outputs.cache-hit }}
+
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
           platforms: linux/amd64,linux/arm64
-          pull: true
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
