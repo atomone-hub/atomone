@@ -9,7 +9,10 @@ RUN go mod download
 COPY . .
 ENV PACKAGES="curl make git libc-dev bash gcc linux-headers eudev-dev python3"
 RUN apk add --no-cache $PACKAGES
-RUN CGO_ENABLED=0 make install
+
+RUN --mount=type=cache,target=/root/.cache/go-build \
+    --mount=type=cache,target=/go/pkg/mod \
+    CGO_ENABLED=0 make install
 
 # Add to a distroless container
 FROM alpine:$IMG_TAG
