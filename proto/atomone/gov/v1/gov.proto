@@ -346,4 +346,7 @@ message Params {
   MinDepositThrottler min_deposit_throttler = 23;
 
   MinInitialDepositThrottler min_initial_deposit_throttler = 24;
+
+  // Minimum proportion of No Votes for a proposal deposit to be burnt.
+  string burn_deposit_no_threshold = 25 [(cosmos_proto.scalar) = "cosmos.Dec"];
 }

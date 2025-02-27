@@ -57,6 +57,7 @@ var (
 	DefaultMinInitialDepositIncreaseRatio                           = sdk.NewDecWithPrec(1, 2)
 	DefaultMinInitialDepositDecreaseRatio                           = sdk.NewDecWithPrec(5, 3)
 	DefaultTargetProposalsInDepositPeriod             uint64        = 5
+	DefaultBurnDepositNoThreshold                                   = sdk.NewDecWithPrec(70, 2)
 )
 
 // Deprecated: NewDepositParams creates a new DepositParams object
@@ -94,6 +95,7 @@ func NewParams(
 	minDepositIncreaseRatio, minDepositDecreaseRatio string, targetActiveProposals uint64,
 	minInitialDepositFloor sdk.Coins, minInitialDepositUpdatePeriod time.Duration, minInitialDepositSensitivityTargetDistance uint64,
 	minInitialDepositIncreaseRatio, minInitialDepositDecreaseRatio string, targetProposalsInDepositPeriod uint64,
+	burnDepositNoThreshold string,
 ) Params {
 	return Params{
 		// MinDeposit:                     minDeposit, // Deprecated in favor of dynamic min deposit
@@ -128,6 +130,7 @@ func NewParams(
 			DecreaseRatio:             minInitialDepositDecreaseRatio,
 			TargetProposals:           targetProposalsInDepositPeriod,
 		},
+		BurnDepositNoThreshold: burnDepositNoThreshold,
 	}
 }
 
@@ -162,6 +165,7 @@ func DefaultParams() Params {
 		DefaultMinInitialDepositIncreaseRatio.String(),
 		DefaultMinInitialDepositDecreaseRatio.String(),
 		DefaultTargetProposalsInDepositPeriod,
+		DefaultBurnDepositNoThreshold.String(),
 	)
 }
 
@@ -417,6 +421,17 @@ func (p Params) ValidateBasic() error {
 
 	if minInitialDepositDecreaseRatio.GTE(math.LegacyOneDec()) {
 		return fmt.Errorf("minimum initial deposit decrease ratio too large: %s", minInitialDepositDecreaseRatio)
+	}
+
+	burnDepositNoThreshold, err := sdk.NewDecFromStr(p.BurnDepositNoThreshold)
+	if err != nil {
+		return fmt.Errorf("invalid burnDepositNoThreshold string: %w", err)
+	}
+	if !burnDepositNoThreshold.IsPositive() {
+		return fmt.Errorf("burnDepositNoThreshold must be positive: %s", burnDepositNoThreshold)
+	}
+	if burnDepositNoThreshold.GT(math.LegacyOneDec()) {
+		return fmt.Errorf("burnDepositNoThreshold too large: %s", burnDepositNoThreshold)
 	}
 
 	return nil

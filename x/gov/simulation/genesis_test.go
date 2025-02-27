@@ -46,12 +46,13 @@ func TestRandomizedGenState(t *testing.T) {
 	simState.Cdc.MustUnmarshalJSON(simState.GenState[types.ModuleName], &govGenesis)
 
 	const (
-		tallyQuorum        = "0.294000000000000000"
-		tallyThreshold     = "0.611000000000000000"
-		amendmentQuorum    = "0.568000000000000000"
-		amendmentThreshold = "0.933000000000000000"
-		lawQuorum          = "0.540000000000000000"
-		lawThreshold       = "0.931000000000000000"
+		tallyQuorum            = "0.362000000000000000"
+		tallyThreshold         = "0.639000000000000000"
+		amendmentQuorum        = "0.579000000000000000"
+		amendmentThreshold     = "0.895000000000000000"
+		lawQuorum              = "0.552000000000000000"
+		lawThreshold           = "0.816000000000000000"
+		burnDepositNoThreshold = "0.716000000000000000"
 	)
 
 	var (
@@ -72,6 +73,7 @@ func TestRandomizedGenState(t *testing.T) {
 	require.Equal(t, "26h19m52s", govGenesis.Params.QuorumTimeout.String())
 	require.Equal(t, "120h29m51s", govGenesis.Params.MaxVotingPeriodExtension.String())
 	require.Equal(t, uint64(17), govGenesis.Params.QuorumCheckCount)
+	require.Equal(t, burnDepositNoThreshold, govGenesis.Params.BurnDepositNoThreshold)
 	require.Equal(t, uint64(0x28), govGenesis.StartingProposalId)
 	require.Equal(t, []*v1.Deposit{}, govGenesis.Deposits)
 	require.Equal(t, []*v1.Vote{}, govGenesis.Votes)
