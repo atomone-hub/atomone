@@ -71,6 +71,8 @@ func EndBlocker(ctx sdk.Context, keeper *keeper.Keeper) {
 			// check if proposal passed quorum
 			quorum, err := keeper.HasReachedQuorum(ctx, proposal)
 			if err != nil {
+				logger.Error("failed to check proposal quorum", "proposal", proposal.Id,
+					"title", proposal.Title, "err", err)
 				return false
 			}
 			logMsg := "proposal did not pass quorum after timeout, but was removed from quorum check queue"
@@ -139,7 +141,12 @@ func EndBlocker(ctx sdk.Context, keeper *keeper.Keeper) {
 	keeper.IterateActiveProposalsQueue(ctx, ctx.BlockHeader().Time, func(proposal v1.Proposal) bool {
 		var tagValue, logMsg string
 
-		passes, burnDeposits, tallyResults := keeper.Tally(ctx, proposal)
+		passes, burnDeposits, tallyResults, err := keeper.Tally(ctx, proposal)
+		if err != nil {
+			logger.Error("failed to tally proposal", "proposal", proposal.Id,
+				"title", proposal.Title, "err", err)
+			return false
+		}
 
 		if burnDeposits {
 			keeper.DeleteAndBurnDeposits(ctx, proposal.Id)

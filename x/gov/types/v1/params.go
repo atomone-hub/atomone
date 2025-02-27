@@ -57,7 +57,7 @@ var (
 	DefaultMinInitialDepositIncreaseRatio                           = sdk.NewDecWithPrec(1, 2)
 	DefaultMinInitialDepositDecreaseRatio                           = sdk.NewDecWithPrec(5, 3)
 	DefaultTargetProposalsInDepositPeriod             uint64        = 5
-	DefaultBurnDepositNoThreshold                                   = sdk.NewDecWithPrec(70, 2)
+	DefaultBurnDepositNoThreshold                                   = sdk.NewDecWithPrec(80, 2)
 )
 
 // Deprecated: NewDepositParams creates a new DepositParams object

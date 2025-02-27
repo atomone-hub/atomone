@@ -13,7 +13,7 @@ import (
 
 // Tally iterates over the votes and updates the tally of a proposal based on the voting power of the
 // voters
-func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, burnDeposits bool, tallyResults v1.TallyResult) {
+func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, burnDeposits bool, tallyResults v1.TallyResult, err error) {
 	// fetch all the bonded validators
 	currValidators := keeper.getBondedValidatorsByAddress(ctx)
 	totalVotingPower, results := keeper.tallyVotes(ctx, proposal, currValidators, true)
@@ -24,30 +24,47 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 	// If there is no staked coins, the proposal fails
 	totalBonded := keeper.sk.TotalBondedTokens(ctx)
 	if totalBonded.IsZero() {
-		return false, false, tallyResults
+		return false, false, tallyResults, nil
 	}
 
 	// If there is not enough quorum of votes, the proposal fails
 	percentVoting := totalVotingPower.Quo(math.LegacyNewDecFromInt(totalBonded))
 	quorum, threshold, err := keeper.getQuorumAndThreshold(ctx, proposal)
 	if err != nil {
-		return false, false, tallyResults
+		return false, false, tallyResults, err
 	}
 	if percentVoting.LT(quorum) {
-		return false, params.BurnVoteQuorum, tallyResults
+		return false, params.BurnVoteQuorum, tallyResults, nil
 	}
+
+	// Compute non-abstaining voting power, aka active voting power
+	activeVotingPower := totalVotingPower.Sub(results[v1.OptionAbstain])
 
 	// If no one votes (everyone abstains), proposal fails
-	if totalVotingPower.Sub(results[v1.OptionAbstain]).Equal(math.LegacyZeroDec()) {
-		return false, false, tallyResults
+	if activeVotingPower.IsZero() {
+		return false, false, tallyResults, nil
 	}
 
-	if results[v1.OptionYes].Quo(totalVotingPower.Sub(results[v1.OptionAbstain])).GT(threshold) {
-		return true, false, tallyResults
+	// If more than `threshold` of non-abstaining voters vote Yes, proposal passes.
+	yesPercent := results[v1.OptionYes].Quo(activeVotingPower)
+	if yesPercent.GT(threshold) {
+		return true, false, tallyResults, nil
 	}
 
-	// If more than 1/2 of non-abstaining voters vote No, proposal fails
-	return false, false, tallyResults
+	// If more than `burnDepositNoThreshold` of non-abstaining voters vote No,
+	// proposal is rejected and deposit is burned.
+	burnDepositNoThreshold, err := sdk.NewDecFromStr(params.BurnDepositNoThreshold)
+	if err != nil {
+		return false, true, tallyResults, err
+	}
+	noPercent := results[v1.OptionNo].Quo(activeVotingPower)
+	if noPercent.GT(burnDepositNoThreshold) {
+		return false, true, tallyResults, nil
+	}
+
+	// If less than `burnDepositNoThreshold` of non-abstaining voters vote No,
+	// proposal is rejected but deposit is not burned.
+	return false, false, tallyResults, nil
 }
 
 // HasReachedQuorum returns whether or not a proposal has reached quorum
