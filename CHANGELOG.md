@@ -14,6 +14,14 @@
 
 ### STATE BREAKING
 
+## v1.1.0
+
+*Feb 27th, 2025*
+
+### STATE BREAKING
+
+- Upgrade ibc-go to v7.9.0 to fix ASA-2025-004 [#83](https://github.com/atomone-hub/atomone/pull/83)
+
 ## v1.0.1
 
 *Feb 3th, 2025*
@@ -25,8 +33,6 @@
 ### IMPROVEMENTS
 
 - (x/gov): override MinVotingPeriod with ldflags [#63](https://github.com/atomone-hub/atomone/pull/63)
-
-### STATE BREAKING
 
 ## v1.0.0
 
