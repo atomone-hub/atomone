@@ -144,7 +144,7 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
 		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "CommunityPoolSpend", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
 
-		// Check that sender is not refunded with the proposal deposit
+		// Check that sender is refunded with the proposal deposit
 		s.Require().Eventually(
 			func() bool {
 				afterSenderBalance, err := getSpecificBalance(chainAAPIEndpoint, sender, uatoneDenom)
