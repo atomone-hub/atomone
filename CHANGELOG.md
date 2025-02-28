@@ -20,7 +20,7 @@
 
 ### DEPENDENCIES
 
-- Upgrade ibc-go to v7.9.2 to fix ASA-2025-004 [#86](https://github.com/atomone-hub/atomone/pull/86)
+- Upgrade ibc-go to v7.9.2 to fix ASA-2025-004 [#86](https://github.com/atomone-hub/atomone/pull/86) since v7.9.0 has been discontinued
 
 ## v1.1.0
 
