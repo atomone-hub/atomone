@@ -121,9 +121,7 @@ as the PHOTON balances and supply are handled by the `x/bank` module.
 
 ### Migration
 
-The PHOTON denom metadata has to be added to the `x/bank` module state (XXX while
-admittedly this record does not look very usefull, it is only used in
-queries...)
+The PHOTON denom metadata has to be added to the `x/bank` module state.
 
 ```json
 {
