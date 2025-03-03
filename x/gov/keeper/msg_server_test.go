@@ -925,6 +925,20 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 			expErrMsg: "quorum too large",
 		},
 		{
+			name: "empty threshold",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.Threshold = ""
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "invalid threshold string: decimal string cannot be empty",
+		},
+		{
 			name: "invalid threshold",
 			input: func() *v1.MsgUpdateParams {
 				params1 := params
@@ -993,6 +1007,20 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 			},
 			expErr:    true,
 			expErrMsg: "constitution amendment quorum too large",
+		},
+		{
+			name: "empty constitution amendment threshold",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.ConstitutionAmendmentThreshold = ""
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "invalid constitution amendment threshold string: decimal string cannot be empty",
 		},
 		{
 			name: "negative constitution amendment threshold",
@@ -1204,6 +1232,62 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 					Params:    params1,
 				}
 			},
+		},
+		{
+			name: "empty burnDepositNoThreshold",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.BurnDepositNoThreshold = ""
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "invalid burnDepositNoThreshold string: decimal string cannot be empty",
+		},
+		{
+			name: "invalid burnDepositNoThreshold",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.BurnDepositNoThreshold = "abc"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "invalid burnDepositNoThreshold string",
+		},
+		{
+			name: "negative burnDepositNoThreshold",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.BurnDepositNoThreshold = "-0.1"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "burnDepositNoThreshold must be positive",
+		},
+		{
+			name: "burnDepositNoThreshold > 1",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.BurnDepositNoThreshold = "2"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "burnDepositNoThreshold too large",
 		},
 	}
 

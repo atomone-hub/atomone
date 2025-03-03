@@ -41,18 +41,18 @@ staking token of the chain.
     * [Proposal submission](#proposal-submission)
     * [Deposit](#deposit)
     * [Vote](#vote)
-    * [Software Upgrade](#software-upgrade)
+    * [Quorum](#quorum)
 * [State](#state)
     * [Proposals](#proposals)
     * [Parameters and base types](#parameters-and-base-types)
     * [Deposit](#deposit-1)
-    * [ValidatorGovInfo](#validatorgovinfo)
-    * [Stores](#stores)
+* [Stores](#stores)
     * [Proposal Processing Queue](#proposal-processing-queue)
     * [Legacy Proposal](#legacy-proposal)
     * [Quorum Checks and Voting Period Extension](#quorum-checks-and-voting-period-extension)
     * [Constitution](#constitution)
     * [Law and Constitution Amendment Proposals](#law-and-constitution-amendment-proposals)
+    * [Last Min Deposit and Last Min Initial Deposit](#last-min-deposit-and-last-min-initial-deposit)
 * [Messages](#messages)
     * [Proposal Submission](#proposal-submission-1)
     * [Deposit](#deposit-2)
@@ -61,6 +61,8 @@ staking token of the chain.
     * [EndBlocker](#endblocker)
     * [Handlers](#handlers)
 * [Parameters](#parameters)
+    * [MinDepositThrottler (dynamic MinDeposit)](#mindepositthrottler-dynamic-mindeposit)
+    * [MinInitialDepositThrottler (dynamic MinInitialDeposit)](#mininitialdepositthrottler-dynamic-mininitialdeposit)
 * [Client](#client)
     * [CLI](#cli)
     * [gRPC](#grpc)
@@ -199,6 +201,11 @@ The initial option set includes the following options:
 `Abstain` option allows voters to signal that they do not intend to vote in
 favor or against the proposal but accept the result of the vote.
 
+At the end of the voting period, if the percentage of `No` votes (excluding
+`Abstain` votes) is greater than a specific threshold (see [Burnable
+Params](#burnable-params) section), then the proposal is considered as SPAM and
+its deposit is burnt.
+
 #### Weighted Votes
 
 [ADR-037](https://github.com/cosmos/cosmos-sdk/blob/main/docs/architecture/adr-037-gov-split-vote.md)
@@ -270,6 +277,9 @@ have to sign governance transactions with the sensitive CometBFT PrivKey.
 There are three parameters that define if the deposit of a proposal should
 be burned or returned to the depositors.
 
+* `BurnDepositNoThreshold` burns the proposal deposit at the end of the voting
+  period if the percentage of `No` votes (excluding `Abstain` votes)  exceeds
+  the threshold.
 * `BurnVoteQuorum` burns the proposal deposit if the proposal deposit if the vote does not reach quorum.
 * `BurnProposalDepositPrevote` burns the proposal deposit if it does not enter the voting phase.
 
