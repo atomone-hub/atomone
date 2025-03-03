@@ -22,6 +22,14 @@ func EndBlocker(ctx sdk.Context, keeper *keeper.Keeper) {
 	// delete dead proposals from store and returns theirs deposits.
 	// A proposal is dead when it's inactive and didn't get enough deposit on time to get into voting phase.
 	keeper.IterateInactiveProposalsQueue(ctx, ctx.BlockHeader().Time, func(proposal v1.Proposal) bool {
+		// before deleting, check one last time if the proposal has enough deposits to get into voting phase,
+		// maybe because min deposit decreased in the meantime.
+		minDeposit := keeper.GetMinDeposit(ctx)
+		if proposal.Status == v1.StatusDepositPeriod && sdk.NewCoins(proposal.TotalDeposit...).IsAllGTE(minDeposit) {
+			keeper.ActivateVotingPeriod(ctx, proposal)
+			return false
+		}
+
 		keeper.DeleteProposal(ctx, proposal.Id)
 
 		params := keeper.GetParams(ctx)
@@ -30,6 +38,8 @@ func EndBlocker(ctx sdk.Context, keeper *keeper.Keeper) {
 		} else {
 			keeper.DeleteAndBurnDeposits(ctx, proposal.Id) // burn the deposit if proposal got removed without getting 100% of the proposal
 		}
+
+		keeper.DecrementInactiveProposalsNumber(ctx)
 
 		// called when proposal become inactive
 		keeper.Hooks().AfterProposalFailedMinDeposit(ctx, proposal.Id)
@@ -45,7 +55,7 @@ func EndBlocker(ctx sdk.Context, keeper *keeper.Keeper) {
 		logger.Info(
 			"proposal did not meet minimum deposit; deleted",
 			"proposal", proposal.Id,
-			"min_deposit", sdk.NewCoins(params.MinDeposit...).String(),
+			"min_deposit", sdk.NewCoins(minDeposit...).String(),
 			"total_deposit", sdk.NewCoins(proposal.TotalDeposit...).String(),
 		)
 
@@ -190,6 +200,7 @@ func EndBlocker(ctx sdk.Context, keeper *keeper.Keeper) {
 
 		keeper.SetProposal(ctx, proposal)
 		keeper.RemoveFromActiveProposalQueue(ctx, proposal.Id, *proposal.VotingEndTime)
+		keeper.DecrementActiveProposalsNumber(ctx)
 
 		// when proposal become active
 		keeper.Hooks().AfterProposalVotingPeriodEnded(ctx, proposal.Id)

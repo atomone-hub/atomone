@@ -22,7 +22,7 @@ jobs:
       - uses: actions/setup-go@v5
       - name: Install runsim
         run: go install github.com/cosmos/tools/cmd/runsim@v1.0.0
-      - uses: actions/cache@v4.0.0
+      - uses: actions/cache@v4
         with:
           path: ~/go/bin
           key: ${{ runner.os }}-go-runsim-binary
@@ -41,7 +41,7 @@ jobs:
             **/**.go
             go.mod
             go.sum
-      - uses: actions/cache@v4.0.0
+      - uses: actions/cache@v4
         with:
           path: ~/go/bin
           key: ${{ runner.os }}-go-runsim-binary
@@ -65,7 +65,7 @@ jobs:
             **/**.go
             go.mod
             go.sum
-      - uses: actions/cache@v4.0.0
+      - uses: actions/cache@v4
         with:
           path: ~/go/bin
           key: ${{ runner.os }}-go-runsim-binary
@@ -81,7 +81,7 @@ jobs:
         - uses: actions/setup-go@v5
         - name: Install runsim
           run: go install github.com/cosmos/tools/cmd/runsim@v1.0.0
-        - uses: actions/cache@v4.0.0
+        - uses: actions/cache@v4
           with:
             path: ~/go/bin
             key: ${{ runner.os }}-go-runsim-binary
@@ -92,7 +92,7 @@ jobs:
     steps:
       - name: install runsim
         run: go install github.com/cosmos/tools/cmd/runsim@v1.0.0
-      - uses: actions/cache@v4.0.0
+      - uses: actions/cache@v4
         with:
           path: ~/go/bin
           key: ${{ runner.os }}-go-runsim-binary
@@ -105,7 +105,7 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
-      - uses: actions/cache@v4.0.0
+      - uses: actions/cache@v4
         with:
           path: ~/go/bin
           key: ${{ runner.os }}-go-runsim-binary
