@@ -46,13 +46,13 @@ func TestRandomizedGenState(t *testing.T) {
 	simState.Cdc.MustUnmarshalJSON(simState.GenState[types.ModuleName], &govGenesis)
 
 	const (
-		tallyQuorum            = "0.362000000000000000"
-		tallyThreshold         = "0.639000000000000000"
-		amendmentQuorum        = "0.579000000000000000"
-		amendmentThreshold     = "0.895000000000000000"
-		lawQuorum              = "0.552000000000000000"
-		lawThreshold           = "0.816000000000000000"
-		burnDepositNoThreshold = "0.716000000000000000"
+		tallyQuorum            = "0.294000000000000000"
+		tallyThreshold         = "0.611000000000000000"
+		amendmentQuorum        = "0.568000000000000000"
+		amendmentThreshold     = "0.933000000000000000"
+		lawQuorum              = "0.540000000000000000"
+		lawThreshold           = "0.931000000000000000"
+		burnDepositNoThreshold = "0.758000000000000000"
 	)
 
 	var (

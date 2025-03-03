@@ -55,7 +55,7 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 	// proposal is rejected and deposit is burned.
 	burnDepositNoThreshold, err := sdk.NewDecFromStr(params.BurnDepositNoThreshold)
 	if err != nil {
-		return false, true, tallyResults, err
+		return false, false, tallyResults, err
 	}
 	noPercent := results[v1.OptionNo].Quo(activeVotingPower)
 	if noPercent.GT(burnDepositNoThreshold) {
