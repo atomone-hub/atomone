@@ -11,6 +11,7 @@ import (
 var ParamsKey = []byte{0x30}
 
 // Addition of the dynamic-deposit parameters.
+// Addition of the burnDepositNoThreshold parameter.
 func MigrateStore(ctx sdk.Context, storeKey storetypes.StoreKey, cdc codec.BinaryCodec) error {
 	store := ctx.KVStore(storeKey)
 	paramsBz := store.Get(ParamsKey)
@@ -21,6 +22,7 @@ func MigrateStore(ctx sdk.Context, storeKey storetypes.StoreKey, cdc codec.Binar
 	defaultParams := govv1.DefaultParams()
 	params.MinDepositThrottler = defaultParams.MinDepositThrottler
 	params.MinInitialDepositThrottler = defaultParams.MinInitialDepositThrottler
+	params.BurnDepositNoThreshold = defaultParams.BurnDepositNoThreshold
 
 	bz, err := cdc.Marshal(&params)
 	if err != nil {
