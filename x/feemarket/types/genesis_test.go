@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/skip-mev/feemarket/x/feemarket/types"
+	"github.com/atomone-hub/atomone/x/feemarket/types"
 )
 
 func TestGenesis(t *testing.T) {

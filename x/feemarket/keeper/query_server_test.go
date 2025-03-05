@@ -3,7 +3,7 @@ package keeper_test
 import (
 	"cosmossdk.io/math"
 
-	"github.com/skip-mev/feemarket/x/feemarket/types"
+	"github.com/atomone-hub/atomone/x/feemarket/types"
 )
 
 func (s *KeeperTestSuite) TestParamsRequest() {

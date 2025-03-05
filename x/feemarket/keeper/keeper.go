@@ -9,7 +9,7 @@ import (
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/skip-mev/feemarket/x/feemarket/types"
+	"github.com/atomone-hub/atomone/x/feemarket/types"
 )
 
 // Keeper is the x/feemarket keeper.

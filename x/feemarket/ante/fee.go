@@ -10,7 +10,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	feemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
+	feemarkettypes "github.com/atomone-hub/atomone/x/feemarket/types"
 )
 
 type feeMarketCheckDecorator struct {

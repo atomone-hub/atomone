@@ -7,7 +7,7 @@ import (
 	"cosmossdk.io/math"
 	"github.com/stretchr/testify/require"
 
-	"github.com/skip-mev/feemarket/x/feemarket/types"
+	"github.com/atomone-hub/atomone/x/feemarket/types"
 )
 
 var OneHundred = math.LegacyMustNewDecFromStr("100")

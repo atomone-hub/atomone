@@ -20,10 +20,10 @@ import (
 
 	"github.com/spf13/cobra"
 
-	modulev1 "github.com/skip-mev/feemarket/api/feemarket/feemarket/module/v1"
-	"github.com/skip-mev/feemarket/x/feemarket/client/cli"
-	"github.com/skip-mev/feemarket/x/feemarket/keeper"
-	"github.com/skip-mev/feemarket/x/feemarket/types"
+	modulev1 "github.com/atomone-hub/atomone/api/feemarket/feemarket/module/v1"
+	"github.com/atomone-hub/atomone/x/feemarket/client/cli"
+	"github.com/atomone-hub/atomone/x/feemarket/keeper"
+	"github.com/atomone-hub/atomone/x/feemarket/types"
 )
 
 // ConsensusVersion is the x/feemarket module's consensus version identifier.

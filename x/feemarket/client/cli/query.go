@@ -7,7 +7,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
 
-	"github.com/skip-mev/feemarket/x/feemarket/types"
+	"github.com/atomone-hub/atomone/x/feemarket/types"
 )
 
 // GetQueryCmd returns the parent command for all x/feemarket cli query commands.

@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	feemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
+	feemarkettypes "github.com/atomone-hub/atomone/x/feemarket/types"
 )
 
 // AccountKeeper defines the contract needed for AccountKeeper related APIs.

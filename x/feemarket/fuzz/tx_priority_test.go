@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"pgregory.net/rapid"
 
-	"github.com/skip-mev/feemarket/x/feemarket/ante"
+	"github.com/atomone-hub/atomone/x/feemarket/ante"
 )
 
 type input struct {

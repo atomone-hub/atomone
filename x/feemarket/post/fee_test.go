@@ -13,9 +13,9 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/stretchr/testify/mock"
 
-	antesuite "github.com/skip-mev/feemarket/x/feemarket/ante/suite"
-	"github.com/skip-mev/feemarket/x/feemarket/post"
-	"github.com/skip-mev/feemarket/x/feemarket/types"
+	antesuite "github.com/atomone-hub/atomone/x/feemarket/ante/suite"
+	"github.com/atomone-hub/atomone/x/feemarket/post"
+	"github.com/atomone-hub/atomone/x/feemarket/types"
 )
 
 func TestDeductCoins(t *testing.T) {

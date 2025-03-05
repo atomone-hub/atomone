@@ -10,8 +10,8 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	"github.com/skip-mev/feemarket/x/feemarket/ante"
-	feemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
+	"github.com/atomone-hub/atomone/x/feemarket/ante"
+	feemarkettypes "github.com/atomone-hub/atomone/x/feemarket/types"
 )
 
 // FeeMarketDeductDecorator deducts fees from the fee payer based off of the current state of the feemarket.

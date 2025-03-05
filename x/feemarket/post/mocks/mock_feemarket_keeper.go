@@ -5,7 +5,7 @@ package mocks
 import (
 	mock "github.com/stretchr/testify/mock"
 
-	feemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
+	feemarkettypes "github.com/atomone-hub/atomone/x/feemarket/types"
 
 	types "github.com/cosmos/cosmos-sdk/types"
 )

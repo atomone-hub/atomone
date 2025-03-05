@@ -20,12 +20,12 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
-	testkeeper "github.com/skip-mev/feemarket/testutils/keeper"
-	feemarketante "github.com/skip-mev/feemarket/x/feemarket/ante"
-	"github.com/skip-mev/feemarket/x/feemarket/ante/mocks"
-	feemarketkeeper "github.com/skip-mev/feemarket/x/feemarket/keeper"
-	feemarketpost "github.com/skip-mev/feemarket/x/feemarket/post"
-	feemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
+	testkeeper "github.com/atomone-hub/atomone/testutils/keeper"
+	feemarketante "github.com/atomone-hub/atomone/x/feemarket/ante"
+	"github.com/atomone-hub/atomone/x/feemarket/ante/mocks"
+	feemarketkeeper "github.com/atomone-hub/atomone/x/feemarket/keeper"
+	feemarketpost "github.com/atomone-hub/atomone/x/feemarket/post"
+	feemarkettypes "github.com/atomone-hub/atomone/x/feemarket/types"
 )
 
 type TestSuite struct {

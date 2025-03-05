@@ -16,11 +16,11 @@ import (
 	"github.com/skip-mev/chaintestutil/encoding"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/skip-mev/feemarket/tests/app"
-	testkeeper "github.com/skip-mev/feemarket/testutils/keeper"
-	"github.com/skip-mev/feemarket/x/feemarket/keeper"
-	"github.com/skip-mev/feemarket/x/feemarket/types"
-	"github.com/skip-mev/feemarket/x/feemarket/types/mocks"
+	"github.com/atomone-hub/atomone/tests/app"
+	testkeeper "github.com/atomone-hub/atomone/testutils/keeper"
+	"github.com/atomone-hub/atomone/x/feemarket/keeper"
+	"github.com/atomone-hub/atomone/x/feemarket/types"
+	"github.com/atomone-hub/atomone/x/feemarket/types/mocks"
 )
 
 type KeeperTestSuite struct {
