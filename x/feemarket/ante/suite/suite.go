@@ -20,11 +20,10 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
-	testkeeper "github.com/atomone-hub/atomone/testutils/keeper"
 	feemarketante "github.com/atomone-hub/atomone/x/feemarket/ante"
 	"github.com/atomone-hub/atomone/x/feemarket/ante/mocks"
 	feemarketkeeper "github.com/atomone-hub/atomone/x/feemarket/keeper"
-	feemarketpost "github.com/atomone-hub/atomone/x/feemarket/post"
+	testkeeper "github.com/atomone-hub/atomone/x/feemarket/testutils/keeper"
 	feemarkettypes "github.com/atomone-hub/atomone/x/feemarket/types"
 )
 
@@ -33,7 +32,6 @@ type TestSuite struct {
 
 	Ctx         sdk.Context
 	AnteHandler sdk.AnteHandler
-	PostHandler sdk.PostHandler
 	ClientCtx   client.Context
 	TxBuilder   client.TxBuilder
 
@@ -125,17 +123,6 @@ func (s *TestSuite) SetupHandlers(mock bool) {
 	}
 
 	s.AnteHandler = sdk.ChainAnteDecorators(anteDecorators...)
-
-	// create basic postHandler with the feemarket decorator
-	postDecorators := []sdk.PostDecorator{
-		feemarketpost.NewFeeMarketDeductDecorator(
-			s.AccountKeeper,
-			bankKeeper,
-			s.FeeMarketKeeper,
-		),
-	}
-
-	s.PostHandler = sdk.ChainPostDecorators(postDecorators...)
 }
 
 // TestCase represents a test case used in test tables.
@@ -144,7 +131,6 @@ type TestCase struct {
 	Malleate          func(*TestSuite) TestCaseArgs
 	StateUpdate       func(*TestSuite)
 	RunAnte           bool
-	RunPost           bool
 	Simulate          bool
 	ExpPass           bool
 	ExpErr            error
@@ -186,7 +172,6 @@ func (s *TestSuite) RunTestCase(t *testing.T, tc TestCase, args TestCaseArgs) {
 	var (
 		newCtx  sdk.Context
 		anteErr error
-		postErr error
 	)
 
 	if tc.RunAnte {
@@ -198,21 +183,12 @@ func (s *TestSuite) RunTestCase(t *testing.T, tc TestCase, args TestCaseArgs) {
 		tc.StateUpdate(s)
 	}
 
-	if tc.RunPost && anteErr == nil {
-		newCtx, postErr = s.PostHandler(s.Ctx, tx, tc.Simulate, true)
-	}
-
 	if tc.ExpPass {
 		require.NoError(t, txErr)
 		require.NoError(t, anteErr)
-		require.NoError(t, postErr)
 		require.NotNil(t, newCtx)
 
 		s.Ctx = newCtx
-		if tc.RunPost {
-			consumedGas := newCtx.GasMeter().GasConsumed()
-			require.Equal(t, tc.ExpectConsumedGas, consumedGas)
-		}
 
 	} else {
 		switch {
@@ -222,13 +198,7 @@ func (s *TestSuite) RunTestCase(t *testing.T, tc TestCase, args TestCaseArgs) {
 
 		case anteErr != nil:
 			require.Error(t, anteErr)
-			require.NoError(t, postErr)
 			require.ErrorIs(t, anteErr, tc.ExpErr)
-
-		case postErr != nil:
-			require.NoError(t, anteErr)
-			require.Error(t, postErr)
-			require.ErrorIs(t, postErr, tc.ExpErr)
 
 		default:
 			t.Fatal("expected one of txErr, handleErr to be an error")

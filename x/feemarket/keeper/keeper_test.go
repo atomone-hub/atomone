@@ -16,9 +16,9 @@ import (
 	"github.com/skip-mev/chaintestutil/encoding"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/atomone-hub/atomone/tests/app"
-	testkeeper "github.com/atomone-hub/atomone/testutils/keeper"
+	atomone "github.com/atomone-hub/atomone/app"
 	"github.com/atomone-hub/atomone/x/feemarket/keeper"
+	testkeeper "github.com/atomone-hub/atomone/x/feemarket/testutils/keeper"
 	"github.com/atomone-hub/atomone/x/feemarket/types"
 	"github.com/atomone-hub/atomone/x/feemarket/types/mocks"
 )
@@ -44,7 +44,7 @@ func TestKeeperTestSuite(t *testing.T) {
 }
 
 func (s *KeeperTestSuite) SetupTest() {
-	s.encCfg = encoding.MakeTestEncodingConfig(app.ModuleBasics.RegisterInterfaces)
+	s.encCfg = encoding.MakeTestEncodingConfig(atomone.ModuleBasics.RegisterInterfaces)
 	s.authorityAccount = authtypes.NewModuleAddress(govtypes.ModuleName)
 	s.accountKeeper = mocks.NewAccountKeeper(s.T())
 	ctx, tk, tm := testkeeper.NewTestSetup(s.T())

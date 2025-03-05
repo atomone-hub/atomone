@@ -20,7 +20,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	modulev1 "github.com/atomone-hub/atomone/api/feemarket/feemarket/module/v1"
+	modulev1 "github.com/atomone-hub/atomone/api/atomone/feemarket/module/v1"
 	"github.com/atomone-hub/atomone/x/feemarket/client/cli"
 	"github.com/atomone-hub/atomone/x/feemarket/keeper"
 	"github.com/atomone-hub/atomone/x/feemarket/types"
