@@ -22,10 +22,4 @@ var (
 
 	// KeyEnabledHeight is the store key for the feemarket module's enabled height.
 	KeyEnabledHeight = []byte{prefixEnableHeight}
-
-	EventTypeFeePay      = "fee_pay"
-	EventTypeTipPay      = "tip_pay"
-	AttributeKeyTip      = "tip"
-	AttributeKeyTipPayer = "tip_payer"
-	AttributeKeyTipPayee = "tip_payee"
 )

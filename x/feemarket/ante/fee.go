@@ -209,7 +209,21 @@ func (dfd feeMarketCheckDecorator) DeductFees(ctx sdk.Context, sdkTx sdk.Tx, pro
 		return sdkerrors.ErrUnknownAddress.Wrapf("fee payer address: %s does not exist", deductFeesFrom)
 	}
 
-	return dfd.bankKeeper.SendCoinsFromAccountToModule(ctx, deductFeesFromAcc.GetAddress(), authtypes.FeeCollectorName, sdk.NewCoins(providedFee))
+	err := dfd.bankKeeper.SendCoinsFromAccountToModule(ctx, deductFeesFromAcc.GetAddress(), authtypes.FeeCollectorName, sdk.NewCoins(providedFee))
+	if err != nil {
+		return err
+	}
+
+	events := sdk.Events{
+		sdk.NewEvent(
+			sdk.EventTypeTx,
+			sdk.NewAttribute(sdk.AttributeKeyFee, providedFee.String()),
+			sdk.NewAttribute(sdk.AttributeKeyFeePayer, deductFeesFrom.String()),
+		),
+	}
+	ctx.EventManager().EmitEvents(events)
+
+	return nil
 }
 
 // CheckTxFee implements the logic for the fee market to check if a Tx has provided sufficient
