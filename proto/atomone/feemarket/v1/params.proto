@@ -85,8 +85,4 @@ message Params {
   // Enabled is a boolean that determines whether the EIP1559 fee market is
   // enabled.
   bool enabled = 11;
-
-  // DistributeFees is a boolean that determines whether the fees are burned or
-  // distributed to all stakers.
-  bool distribute_fees = 12;
 }

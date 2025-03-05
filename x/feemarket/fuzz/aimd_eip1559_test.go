@@ -156,15 +156,12 @@ func CreateRandomAIMDParams(t *rapid.T) types.Params {
 	targetBlockUtilization := rapid.Uint64Range(1, 30_000_000).Draw(t, "target_block_utilization")
 	maxBlockUtilization := rapid.Uint64Range(targetBlockUtilization, targetBlockUtilization*5).Draw(t, "max_block_utilization")
 
-	distributeFees := rapid.Bool().Draw(t, "distribute_fees")
-
 	params := types.DefaultAIMDParams()
 	params.Alpha = alpha
 	params.Beta = beta
 	params.Gamma = gamma
 	params.Delta = delta
 	params.MaxBlockUtilization = maxBlockUtilization
-	params.DistributeFees = distributeFees
 
 	return params
 }

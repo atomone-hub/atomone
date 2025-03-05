@@ -346,7 +346,6 @@ func NewAppKeeper(
 	appKeepers.FeemarketKeeper = feemarketkeeper.NewKeeper(
 		appCodec,
 		appKeepers.keys[feemarkettypes.StoreKey],
-		appKeepers.AccountKeeper,
 		appKeepers.PhotonKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
