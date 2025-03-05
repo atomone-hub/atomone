@@ -45,6 +45,8 @@ import (
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
 	atomoneappparams "github.com/atomone-hub/atomone/app/params"
+	"github.com/atomone-hub/atomone/x/feemarket"
+	feemarkettypes "github.com/atomone-hub/atomone/x/feemarket/types"
 	"github.com/atomone-hub/atomone/x/gov"
 	govclient "github.com/atomone-hub/atomone/x/gov/client"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
@@ -53,15 +55,17 @@ import (
 )
 
 var maccPerms = map[string][]string{
-	authtypes.FeeCollectorName:     nil,
-	distrtypes.ModuleName:          nil,
-	icatypes.ModuleName:            nil,
-	minttypes.ModuleName:           {authtypes.Minter},
-	stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
-	stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
-	govtypes.ModuleName:            {authtypes.Burner},
-	ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
-	photontypes.ModuleName:         {authtypes.Minter, authtypes.Burner},
+	authtypes.FeeCollectorName:      nil,
+	distrtypes.ModuleName:           nil,
+	icatypes.ModuleName:             nil,
+	minttypes.ModuleName:            {authtypes.Minter},
+	stakingtypes.BondedPoolName:     {authtypes.Burner, authtypes.Staking},
+	stakingtypes.NotBondedPoolName:  {authtypes.Burner, authtypes.Staking},
+	govtypes.ModuleName:             {authtypes.Burner},
+	ibctransfertypes.ModuleName:     {authtypes.Minter, authtypes.Burner},
+	photontypes.ModuleName:          {authtypes.Minter, authtypes.Burner},
+	feemarkettypes.ModuleName:       {authtypes.Burner},
+	feemarkettypes.FeeCollectorName: {authtypes.Burner},
 }
 
 // ModuleBasics defines the module BasicManager is in charge of setting up basic,
@@ -134,6 +138,7 @@ func appModules(
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
 		app.TransferModule,
 		app.ICAModule,
+		feemarket.NewAppModule(appCodec, *app.FeeMarketKeeper),
 	}
 }
 
@@ -184,6 +189,7 @@ func orderBeginBlockers() []string {
 		upgradetypes.ModuleName,
 		capabilitytypes.ModuleName,
 		minttypes.ModuleName,
+		feemarkettypes.ModuleName,
 		distrtypes.ModuleName,
 		slashingtypes.ModuleName,
 		evidencetypes.ModuleName,
@@ -216,6 +222,7 @@ thus, gov.EndBlock must be executed before staking.EndBlock
 func orderEndBlockers() []string {
 	return []string{
 		crisistypes.ModuleName,
+		feemarkettypes.ModuleName,
 		govtypes.ModuleName,
 		stakingtypes.ModuleName,
 		ibcexported.ModuleName,
@@ -270,5 +277,6 @@ func orderInitBlockers() []string {
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
+		feemarkettypes.ModuleName,
 	}
 }
