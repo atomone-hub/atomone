@@ -16,7 +16,6 @@ import (
 type Keeper struct {
 	cdc      codec.BinaryCodec
 	storeKey storetypes.StoreKey
-	ak       types.AccountKeeper
 	resolver types.DenomResolver
 
 	// The address that is capable of executing a MsgParams message.
@@ -28,7 +27,6 @@ type Keeper struct {
 func NewKeeper(
 	cdc codec.BinaryCodec,
 	storeKey storetypes.StoreKey,
-	authKeeper types.AccountKeeper,
 	resolver types.DenomResolver,
 	authority string,
 ) *Keeper {
@@ -39,7 +37,6 @@ func NewKeeper(
 	k := &Keeper{
 		cdc:       cdc,
 		storeKey:  storeKey,
-		ak:        authKeeper,
 		resolver:  resolver,
 		authority: authority,
 	}

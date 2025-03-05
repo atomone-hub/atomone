@@ -133,14 +133,14 @@ func (dfd feeMarketCheckDecorator) anteHandle(ctx sdk.Context, tx sdk.Tx, simula
 	ctx = ctx.WithMinGasPrices(sdk.NewDecCoins(minGasPrice))
 
 	if !simulate {
-		_, _, err := CheckTxFee(ctx, minGasPrice, feeCoin, feeGas, true)
+		err := CheckTxFee(ctx, minGasPrice, feeCoin, feeGas)
 		if err != nil {
 			return ctx, errorsmod.Wrapf(err, "error checking fee")
 		}
 	}
 
-	// escrow the entire amount that the account provided as fee (feeCoin)
-	err = dfd.EscrowFunds(ctx, tx, feeCoin)
+	// deduct the entire amount that the account provided as fee (feeCoin)
+	err = dfd.DeductFees(ctx, tx, feeCoin)
 	if err != nil {
 		return ctx, errorsmod.Wrapf(err, "error escrowing funds")
 	}
@@ -176,9 +176,8 @@ func (dfd feeMarketCheckDecorator) resolveTxPriorityCoins(ctx sdk.Context, fee s
 	return sdk.NewCoin(baseDenom, convertedDec.Amount.TruncateInt()), nil
 }
 
-// EscrowFunds escrows the fully provided fee from the payer account during tx execution.
-// The actual fee is deducted in the post handler along with the tip.
-func (dfd feeMarketCheckDecorator) EscrowFunds(ctx sdk.Context, sdkTx sdk.Tx, providedFee sdk.Coin) error {
+// DeductFees deducts the provided fee from the payer account during tx execution.
+func (dfd feeMarketCheckDecorator) DeductFees(ctx sdk.Context, sdkTx sdk.Tx, providedFee sdk.Coin) error {
 	feeTx, ok := sdkTx.(sdk.FeeTx)
 	if !ok {
 		return errorsmod.Wrap(sdkerrors.ErrTxDecode, "Tx must be a FeeTx")
@@ -210,64 +209,33 @@ func (dfd feeMarketCheckDecorator) EscrowFunds(ctx sdk.Context, sdkTx sdk.Tx, pr
 		return sdkerrors.ErrUnknownAddress.Wrapf("fee payer address: %s does not exist", deductFeesFrom)
 	}
 
-	return escrow(dfd.bankKeeper, ctx, deductFeesFromAcc, sdk.NewCoins(providedFee))
-}
-
-// escrow deducts coins to the escrow.
-func escrow(bankKeeper BankKeeper, ctx sdk.Context, acc authtypes.AccountI, coins sdk.Coins) error {
-	targetModuleAcc := feemarkettypes.FeeCollectorName
-	err := bankKeeper.SendCoinsFromAccountToModule(ctx, acc.GetAddress(), targetModuleAcc, coins)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return dfd.bankKeeper.SendCoinsFromAccountToModule(ctx, deductFeesFromAcc.GetAddress(), authtypes.FeeCollectorName, sdk.NewCoins(providedFee))
 }
 
 // CheckTxFee implements the logic for the fee market to check if a Tx has provided sufficient
 // fees given the current state of the fee market. Returns an error if insufficient fees.
-func CheckTxFee(ctx sdk.Context, gasPrice sdk.DecCoin, feeCoin sdk.Coin, feeGas int64, isAnte bool) (payCoin sdk.Coin, tip sdk.Coin, err error) {
-	payCoin = feeCoin
-
+func CheckTxFee(ctx sdk.Context, gasPrice sdk.DecCoin, feeCoin sdk.Coin, feeGas int64) error {
 	// Ensure that the provided fees meet the minimum
 	if !gasPrice.IsZero() {
 		var (
 			requiredFee sdk.Coin
-			consumedFee sdk.Coin
 		)
 
-		// Determine the required fees by multiplying each required minimum gas
-		// price by the gas, where fee = ceil(minGasPrice * gas).
-		gasConsumed := int64(ctx.GasMeter().GasConsumed())
-		gcDec := sdkmath.LegacyNewDec(gasConsumed)
 		glDec := sdkmath.LegacyNewDec(feeGas)
-
-		consumedFeeAmount := gasPrice.Amount.Mul(gcDec)
 		limitFee := gasPrice.Amount.Mul(glDec)
-
-		consumedFee = sdk.NewCoin(gasPrice.Denom, consumedFeeAmount.Ceil().RoundInt())
 		requiredFee = sdk.NewCoin(gasPrice.Denom, limitFee.Ceil().RoundInt())
 
-		if !payCoin.IsGTE(requiredFee) {
-			return sdk.Coin{}, sdk.Coin{}, sdkerrors.ErrInsufficientFee.Wrapf(
-				"got: %s required: %s, minGasPrice: %s, gas: %d",
-				payCoin,
+		if !feeCoin.IsGTE(requiredFee) {
+			return sdkerrors.ErrInsufficientFee.Wrapf(
+				"got: %s required: %s, minGasPrice: %s",
+				feeCoin,
 				requiredFee,
 				gasPrice,
-				gasConsumed,
 			)
-		}
-
-		if isAnte {
-			tip = payCoin.Sub(requiredFee)
-			payCoin = requiredFee
-		} else {
-			tip = payCoin.Sub(consumedFee)
-			payCoin = consumedFee
 		}
 	}
 
-	return payCoin, tip, nil
+	return nil
 }
 
 const (

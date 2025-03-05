@@ -22,8 +22,6 @@ import (
 // channel keeper.
 type HandlerOptions struct {
 	ante.HandlerOptions
-	AccountKeeper   feemarketante.AccountKeeper
-	BankKeeper      feemarketante.BankKeeper
 	Codec           codec.BinaryCodec
 	IBCkeeper       *ibckeeper.Keeper
 	StakingKeeper   *stakingkeeper.Keeper

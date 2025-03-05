@@ -12,12 +12,7 @@ import (
 //
 //go:generate mockery --name AccountKeeper --filename mock_account_keeper.go
 type AccountKeeper interface {
-	GetParams(ctx sdk.Context) (params authtypes.Params)
 	GetAccount(ctx sdk.Context, addr sdk.AccAddress) authtypes.AccountI
-	SetAccount(ctx sdk.Context, acc authtypes.AccountI)
-	GetModuleAddress(moduleName string) sdk.AccAddress
-	GetModuleAccount(ctx sdk.Context, name string) authtypes.ModuleAccountI
-	NewAccountWithAddress(ctx sdk.Context, addr sdk.AccAddress) authtypes.AccountI
 }
 
 // FeeGrantKeeper defines the expected feegrant keeper.
@@ -34,8 +29,6 @@ type BankKeeper interface {
 	IsSendEnabledCoins(ctx sdk.Context, coins ...sdk.Coin) error
 	SendCoins(ctx sdk.Context, from, to sdk.AccAddress, amt sdk.Coins) error
 	SendCoinsFromAccountToModule(ctx sdk.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
-	SendCoinsFromModuleToModule(ctx sdk.Context, senderModule, recipientModule string, amt sdk.Coins) error
-	SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
 }
 
 // FeeMarketKeeper defines the expected feemarket keeper.
