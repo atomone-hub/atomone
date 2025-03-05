@@ -23,7 +23,7 @@ import (
 	feemarketante "github.com/atomone-hub/atomone/x/feemarket/ante"
 	"github.com/atomone-hub/atomone/x/feemarket/ante/mocks"
 	feemarketkeeper "github.com/atomone-hub/atomone/x/feemarket/keeper"
-	testkeeper "github.com/atomone-hub/atomone/x/feemarket/testutils/keeper"
+	testkeeper "github.com/atomone-hub/atomone/x/feemarket/testutil/keeper"
 	feemarkettypes "github.com/atomone-hub/atomone/x/feemarket/types"
 )
 

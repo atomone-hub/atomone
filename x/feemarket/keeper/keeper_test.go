@@ -18,7 +18,7 @@ import (
 
 	atomone "github.com/atomone-hub/atomone/app"
 	"github.com/atomone-hub/atomone/x/feemarket/keeper"
-	testkeeper "github.com/atomone-hub/atomone/x/feemarket/testutils/keeper"
+	testkeeper "github.com/atomone-hub/atomone/x/feemarket/testutil/keeper"
 	"github.com/atomone-hub/atomone/x/feemarket/types"
 	"github.com/atomone-hub/atomone/x/feemarket/types/mocks"
 )
