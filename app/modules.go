@@ -138,7 +138,7 @@ func appModules(
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
 		app.TransferModule,
 		app.ICAModule,
-		feemarket.NewAppModule(appCodec, *app.FeeMarketKeeper),
+		feemarket.NewAppModule(appCodec, *app.FeemarketKeeper),
 	}
 }
 

@@ -52,6 +52,7 @@ import (
 	"github.com/atomone-hub/atomone/app/params"
 	"github.com/atomone-hub/atomone/app/upgrades"
 	v2 "github.com/atomone-hub/atomone/app/upgrades/v2"
+	atomonepost "github.com/atomone-hub/atomone/post"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 )
 
@@ -224,14 +225,26 @@ func NewAtomOneApp(
 			StakingKeeper: app.StakingKeeper,
 			PhotonKeeper:  app.PhotonKeeper,
 			// If TxFeeChecker is nil the default ante TxFeeChecker is used
-			TxFeeChecker: nil,
+			TxFeeChecker:    nil,
+			FeemarketKeeper: app.FeemarketKeeper,
 		},
 	)
 	if err != nil {
 		panic(fmt.Errorf("failed to create AnteHandler: %s", err))
 	}
 
+	postHandlerOptions := atomonepost.HandlerOptions{
+		AccountKeeper:   app.AccountKeeper,
+		BankKeeper:      app.BankKeeper,
+		FeeMarketKeeper: app.FeemarketKeeper,
+	}
+	postHandler, err := atomonepost.NewPostHandler(postHandlerOptions)
+	if err != nil {
+		panic(err)
+	}
+
 	app.SetAnteHandler(anteHandler)
+	app.SetPostHandler(postHandler)
 	app.SetInitChainer(app.InitChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetEndBlocker(app.EndBlocker)

@@ -95,7 +95,7 @@ type AppKeepers struct {
 	AuthzKeeper           authzkeeper.Keeper
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
 	PhotonKeeper          *photonkeeper.Keeper
-	FeeMarketKeeper       *feemarketkeeper.Keeper
+	FeemarketKeeper       *feemarketkeeper.Keeper
 
 	// Modules
 	ICAModule      ica.AppModule
@@ -343,7 +343,7 @@ func NewAppKeeper(
 		appKeepers.ScopedTransferKeeper,
 	)
 
-	appKeepers.FeeMarketKeeper = feemarketkeeper.NewKeeper(
+	appKeepers.FeemarketKeeper = feemarketkeeper.NewKeeper(
 		appCodec,
 		appKeepers.keys[feemarkettypes.StoreKey],
 		appKeepers.AccountKeeper,
