@@ -63,18 +63,18 @@ func NewAnteHandler(opts HandlerOptions) (sdk.AnteHandler, error) {
 		ante.NewConsumeGasForTxSizeDecorator(opts.AccountKeeper),
 		NewGovVoteDecorator(opts.Codec, opts.StakingKeeper),
 		photonante.NewValidateFeeDecorator(opts.PhotonKeeper),
-		feemarketante.NewFeeMarketCheckDecorator( // fee market check replaces fee deduct decorator
+		feemarketante.NewFeeMarketCheckDecorator(
 			opts.AccountKeeper,
 			opts.BankKeeper,
 			opts.FeegrantKeeper,
 			opts.FeemarketKeeper,
-			ante.NewDeductFeeDecorator(
+			ante.NewDeductFeeDecorator( // legacy fee deduct decorator used as fallback if feemarket is disabled
 				opts.AccountKeeper,
 				opts.BankKeeper,
 				opts.FeegrantKeeper,
 				opts.TxFeeChecker,
 			),
-		), // fees are deducted in the fee market deduct post handler
+		),
 		ante.NewSetPubKeyDecorator(opts.AccountKeeper), // SetPubKeyDecorator must be called before all signature verification decorators
 		ante.NewValidateSigCountDecorator(opts.AccountKeeper),
 		ante.NewSigGasConsumeDecorator(opts.AccountKeeper, sigGasConsumer),
