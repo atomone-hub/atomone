@@ -15,14 +15,14 @@ service Query {
   // Params returns the current feemarket module parameters.
   rpc Params(ParamsRequest) returns (ParamsResponse) {
     option (google.api.http) = {
-      get : "/feemarket/v1/params"
+      get : "/atomone/feemarket/v1/params"
     };
   };
 
   // State returns the current feemarket module state.
   rpc State(StateRequest) returns (StateResponse) {
     option (google.api.http) = {
-      get : "/feemarket/v1/state"
+      get : "/atomone/feemarket/v1/state"
     };
   };
 
@@ -30,7 +30,7 @@ service Query {
   // for specified denom.
   rpc GasPrice(GasPriceRequest) returns (GasPriceResponse) {
     option (google.api.http) = {
-      get : "/feemarket/v1/gas_price/{denom}"
+      get : "/atomone/feemarket/v1/gas_price/{denom}"
     };
   };
 
@@ -38,7 +38,7 @@ service Query {
   // in all available denoms.
   rpc GasPrices(GasPricesRequest) returns (GasPricesResponse) {
     option (google.api.http) = {
-      get : "/feemarket/v1/gas_prices"
+      get : "/atomone/feemarket/v1/gas_prices"
     };
   };
 }
