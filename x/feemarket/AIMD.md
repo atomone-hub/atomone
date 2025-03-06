@@ -140,7 +140,7 @@ base fee to remain the same.
 
 ```golang
 blockConsumption := sumBlockSizesInWindow(1) / (1 * 100) == 0.5
-newLearningRate := max(0.0125, 0.95 + 0.125) == 0.11875
+newLearningRate := max(0.0125, 0.95 * 0.125) == 0.11875
 newBaseFee := 10 * (1 + 0.11875 * (50 - 50) / 50) == 10
 ```
 
