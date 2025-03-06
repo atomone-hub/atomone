@@ -490,9 +490,8 @@ func TestTally(t *testing.T) {
 				tt.setup(s)
 			}
 
-			pass, burn, tally, err := govKeeper.Tally(ctx, proposal)
+			pass, burn, tally := govKeeper.Tally(ctx, proposal)
 
-			require.NoError(t, err)
 			assert.Equal(t, tt.expectedPass, pass, "wrong pass")
 			assert.Equal(t, tt.expectedBurn, burn, "wrong burn")
 			assert.Equal(t, tt.expectedTally, tally)
@@ -603,9 +602,8 @@ func TestHasReachedQuorum(t *testing.T) {
 			suite := newTallyFixture(t, ctx, proposal, valAddrs, delAddrs, govKeeper, mocks)
 			tt.setup(suite)
 
-			quorum, err := govKeeper.HasReachedQuorum(ctx, proposal)
+			quorum := govKeeper.HasReachedQuorum(ctx, proposal)
 
-			require.NoError(t, err)
 			assert.Equal(t, tt.expectedQuorum, quorum)
 			if tt.expectedQuorum {
 				// Assert votes are still here after HasReachedQuorum

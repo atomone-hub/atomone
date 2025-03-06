@@ -285,12 +285,7 @@ func (q Keeper) TallyResult(c context.Context, req *v1.QueryTallyResultRequest) 
 
 	default:
 		// proposal is in voting period
-		var err error
-		_, _, tallyResult, err = q.Tally(ctx, proposal)
-		if err != nil {
-			return nil, err
-		}
-
+		_, _, tallyResult = q.Tally(ctx, proposal)
 	}
 
 	return &v1.QueryTallyResultResponse{Tally: &tallyResult}, nil
