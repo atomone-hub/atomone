@@ -216,7 +216,7 @@ The feemarket module emits the following events:
 
 ## Parameters
 
-The feemarket module stores it's params in state with the prefix of `0x01`,
+The feemarket module stores its params in state with the prefix of `0x01`,
 which can be updated with governance or the address with authority.
 
 * Params: `0x01 | ProtocolBuffer(Params)`
