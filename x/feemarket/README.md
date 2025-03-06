@@ -6,7 +6,7 @@ sidebar_position: 1
 
 ## Abstract
 
-The specifications of this document describe the AtomOne implementation
+This document describes the specifications of the AtomOne implementation
 of the `x/feemarket` module. This module is a fork of the
 [`skip-mev/feemarket`](https://github.com/skip-mev/feemarket) module
 (more specifically, of the [`sdk-47`](https://github.com/skip-mev/feemarket/tree/sdk-47)
