@@ -110,18 +110,17 @@ func (dfd feeMarketCheckDecorator) anteHandle(ctx sdk.Context, tx sdk.Tx, simula
 		return ctx, errorsmod.Wrapf(feemarkettypes.ErrTooManyFeeCoins, "got length %d", len(feeCoins))
 	}
 
-	var feeCoin sdk.Coin
-	if simulate && len(feeCoins) == 0 {
-		// if simulating and user did not provider a fee - create a dummy value for them
-		feeCoin = sdk.NewCoin(params.FeeDenom, sdkmath.OneInt())
-	} else {
-		feeCoin = feeCoins[0]
+	// if simulating - create a dummy zero value for the user
+	payCoin := sdk.NewCoin(params.FeeDenom, sdkmath.ZeroInt())
+	if !simulate {
+		payCoin = feeCoins[0]
 	}
+
 	feeGas := int64(feeTx.GetGas())
 
-	minGasPrice, err := dfd.feemarketKeeper.GetMinGasPrice(ctx, feeCoin.GetDenom())
+	minGasPrice, err := dfd.feemarketKeeper.GetMinGasPrice(ctx, payCoin.GetDenom())
 	if err != nil {
-		return ctx, errorsmod.Wrapf(err, "unable to get min gas price for denom %s", feeCoin.GetDenom())
+		return ctx, errorsmod.Wrapf(err, "unable to get min gas price for denom %s", payCoin.GetDenom())
 	}
 
 	ctx.Logger().Info("fee deduct ante handle",
@@ -133,19 +132,19 @@ func (dfd feeMarketCheckDecorator) anteHandle(ctx sdk.Context, tx sdk.Tx, simula
 	ctx = ctx.WithMinGasPrices(sdk.NewDecCoins(minGasPrice))
 
 	if !simulate {
-		err := CheckTxFee(ctx, minGasPrice, feeCoin, feeGas)
+		err := CheckTxFee(ctx, minGasPrice, payCoin, feeGas)
 		if err != nil {
 			return ctx, errorsmod.Wrapf(err, "error checking fee")
 		}
 	}
 
-	// deduct the entire amount that the account provided as fee (feeCoin)
-	err = dfd.DeductFees(ctx, tx, feeCoin)
+	// deduct the entire amount that the account provided as fee (payCoin)
+	err = dfd.DeductFees(ctx, tx, payCoin)
 	if err != nil {
 		return ctx, errorsmod.Wrapf(err, "error escrowing funds")
 	}
 
-	priorityFee, err := dfd.resolveTxPriorityCoins(ctx, feeCoin, params.FeeDenom)
+	priorityFee, err := dfd.resolveTxPriorityCoins(ctx, payCoin, params.FeeDenom)
 	if err != nil {
 		return ctx, errorsmod.Wrapf(err, "error resolving fee priority")
 	}

@@ -156,7 +156,7 @@ func (s *State) GetAverageUtilization(params Params) math.LegacyDec {
 
 // ValidateBasic performs basic validation on the state.
 func (s *State) ValidateBasic() error {
-	if s.Window == nil || len(s.Window) == 0 {
+	if s.Window == nil {
 		return fmt.Errorf("block utilization window cannot be nil or empty")
 	}
 
