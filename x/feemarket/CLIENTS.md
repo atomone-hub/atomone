@@ -39,7 +39,7 @@ A chain gRPC (below) or CometBFT ABCI RPC connection can be created:
 
 An `x/feemarket` query client can then be created using the created gRPC connection.
 
-This client exposes all [queries](../README.md#query) that the `x/feemarket` module
+This client exposes all [queries](README.md#query) that the `x/feemarket` module
 exposes.
 
 ```go
