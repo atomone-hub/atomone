@@ -67,10 +67,10 @@ Please refer to [AIMD.md](AIMD.md) for a detailed description of the AIMD EIP-15
 Fee deduction is performed in the `anteHandler`. The entire user-set fee is
 deducted from the user's account and sent to the `x/distribution` module account.
 In order for a transaction to be included in a block, the transaction's gas price
-must be greater than the current base fee. However, users can also specify an even
-higher gas price than the base fee to increase the priority of their transaction.
-A naive form of transactions prioritization is implemented so that transactions
-with higher gas prices are included in the block with higher priority.
+must be at least equat to the current gas price. However, users can also specify
+an even higher gas price than the current gas price to increase the priority of
+their transaction. A naive form of transactions prioritization is implemented so
+that transactions with higher gas prices are included in the block with higher priority.
 
 ### Module state updates
 
