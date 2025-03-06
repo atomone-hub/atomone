@@ -122,26 +122,26 @@ As we can see, the base fee decreased by 1.5 and the learning rate increases.
 
 ### Block is Completely Full
 
-In this example, we expect the learning rate to multiplicatively increase and the
-base fee to increase.
+In this example, we expect the learning rate to additively increase and the base
+fee to increase.
 
 ```golang
 blockConsumption := sumBlockSizesInWindow(1) / (1 * 100) == 1
 newLearningRate := min(1.0, 0.025 + 0.125) == 0.15
-newBaseFee := 10 * (1 + 0.95 * 0.125) == 11.875
+newBaseFee := 10 * (1 + 0.15 * ((100 - 50) / 50)) == 11.5
 ```
 
-As we can see, the base fee increased by 1.875 and the learning rate increases.
+As we can see, the base fee increased by 1.5 and the learning rate increases.
 
 ### Block is at Target Utilization
 
-In this example, we expect the learning rate to decrease and the base fee to
-remain the same.
+In this example, we expect the learning rate to multiplicatively decrease and the
+base fee to remain the same.
 
 ```golang
 blockConsumption := sumBlockSizesInWindow(1) / (1 * 100) == 0.5
-newLearningRate := max(0.0125, 0.95 * 0.125) == 0.11875
-newBaseFee := 10 * (1 + 0.11875 * (0 - 50) / 50) == 10
+newLearningRate := max(0.0125, 0.95 + 0.125) == 0.11875
+newBaseFee := 10 * (1 + 0.11875 * (50 - 50) / 50) == 10
 ```
 
 As we can see, the base fee remained the same and the learning rate decreased.
