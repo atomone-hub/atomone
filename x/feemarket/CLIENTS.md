@@ -12,7 +12,7 @@ A summary for the flow to query this information is as follows:
 
 Extensive querying information can be seen in the module [spec](README.md#query).
 
-The specific query for `GasPrices` can be found [here](../README.md#gas-prices).
+The specific query for `GasPrices` can be found [here](README.md#gas-prices).
 
 ## Code Snippet
 
