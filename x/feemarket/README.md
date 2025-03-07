@@ -436,7 +436,7 @@ window:
 The `gas-price` command allows users to query the current gas-price for a given denom.
 
 ```shell
-atomoned query feemarket gas-price [denom ][flags]
+atomoned query feemarket gas-price [denom] [flags]
 ```
 
 Example:
