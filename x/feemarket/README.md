@@ -1,123 +1,602 @@
-# Additive Increase Multiplicative Decrease (AIMD) EIP-1559
+---
+sidebar_position: 1
+---
 
-## Overview
+# `x/feemarket`
 
-> **Definitions:**
->
-> * **`Target Block Size`**: This is the target block gas consumption.
-> * **`Max Block Size`**: This is the maximum block gas consumption.
+## Abstract
 
-This plugin implements the AIMD (Additive Increase Multiplicative Decrease) EIP-1559 fee market as described in this [AIMD EIP-1559](https://arxiv.org/abs/2110.04753) research publication.
+This document describes the specifications of the AtomOne implementation
+of the `x/feemarket` module. This module is a fork of the
+[`skip-mev/feemarket`](https://github.com/skip-mev/feemarket) module
+(more specifically, of the [`sdk-47`](https://github.com/skip-mev/feemarket/tree/sdk-47)
+branch) and includes changes and adaptations to suit the AtomOne project.
 
-The AIMD EIP-1559 fee market is a slight modification to Ethereum's EIP-1559 fee market. Specifically it introduces the notion of a adaptive learning rate which scales the base fee (reserve price to be included in a block) more aggressively when the network is congested and less aggressively when the network is not congested. This is primarily done to address the often cited criticism of EIP-1559 that it's base fee often lags behind the current demand for block space. The learning rate on Ethereum is effectively hard-coded to be 12.5%, which means that between any two blocks the base fee can maximally increase by 12.5% or decrease by 12.5%. Additionally, AIMD EIP-1559 differs from Ethereum's EIP-1559 by considering a configured time window (number of blocks) to consider when calculating and comparing target block utilization and current block utilization.
+## Contents
+
+- [`x/feemarket`](#xfeemarket)
+  - [Abstract](#abstract)
+  - [Contents](#contents)
+  - [Concepts](#concepts)
+    - [Additive Increase Multiplicative Decrease (AIMD) EIP-1559](#additive-increase-multiplicative-decrease-aimd-eip-1559)
+    - [Fee deduction and naive Tx prioritization](#fee-deduction-and-naive-tx-prioritization)
+    - [Module state updates](#module-state-updates)
+  - [State](#state)
+    - [GasPrice](#gasprice)
+    - [LearningRate](#learningrate)
+    - [Window](#window)
+    - [Index](#index)
+  - [Keeper](#keeper)
+  - [Messages](#messages)
+    - [MsgParams](#msgparams)
+  - [Events](#events)
+    - [Tx](#tx)
+  - [Parameters](#parameters)
+    - [Alpha](#alpha)
+    - [Beta](#beta)
+    - [Theta](#theta)
+    - [Delta](#delta)
+    - [MinBaseGasPrice](#minbasegasprice)
+    - [MinLearningRate](#minlearningrate)
+    - [MaxLearningRate](#maxlearningrate)
+    - [MaxBlockUtilization](#maxblockutilization)
+    - [Window](#window-1)
+    - [FeeDenom](#feedenom)
+    - [Enabled](#enabled)
+  - [Client](#client)
+    - [CLI](#cli)
+      - [Query](#query)
+        - [params](#params)
+        - [state](#state-1)
+        - [gas-price](#gas-price)
+        - [gas-prices](#gas-prices)
+  - [gRPC](#grpc)
+    - [Params](#params-1)
+    - [State](#state-2)
+    - [GasPrice](#gasprice-1)
+    - [GasPrices](#gasprices)
+
+## Concepts
+
+### Additive Increase Multiplicative Decrease (AIMD) EIP-1559
+
+Please refer to [AIMD.md](AIMD.md) for a detailed description of the AIMD EIP-1559
+
+### Fee deduction and naive Tx prioritization
+
+Fee deduction is performed in the `anteHandler`. The entire user-set fee is
+deducted from the user's account and sent to the `x/distribution` module account.
+In order for a transaction to be included in a block, the transaction's gas price
+must be at least equat to the current gas price. However, users can also specify
+an even higher gas price than the current gas price to increase the priority of
+their transaction. A naive form of transactions prioritization is implemented so
+that transactions with higher gas prices are included in the block with higher priority.
+
+### Module state updates
+
+The `feemarket` module updates the gas consumed in the current block on a per-tx
+basis relying on the `postHandler`. Updates to the base fee and learning rate
+are instead performed in the `endBlocker`.
+
+## State
+
+The `x/feemarket` module keeps state of the following primary objects:
+
+1. Current base-fee
+2. Current learning rate
+3. Moving window of block utilization
+
+In addition, the `x/feemarket` module keeps the following indexes to manage the
+aforementioned state:
+
+* State: `0x02 |ProtocolBuffer(State)`
+
+### GasPrice
+
+GasPrice is the current gas price. This is denominated in the fee per gas
+unit in the base fee denom.
+
+### LearningRate
+
+LearningRate is the current learning rate.
+
+### Window
+
+Window contains a list of the last blocks' utilization values. This is used
+to calculate the next base fee. This stores the number of units of gas
+consumed per block.
+
+### Index
+
+Index is the index of the current block in the block utilization window.
+
+```protobuf
+// State is utilized to track the current state of the fee market. This includes
+// the current base fee, learning rate, and block utilization within the
+// specified AIMD window.
+message State {
+  // BaseGasPrice is the current base fee. This is denominated in the fee per gas
+  // unit.
+  string base_gas_price = 1 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+
+  // LearningRate is the current learning rate.
+  string learning_rate = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+
+  // Window contains a list of the last blocks' utilization values. This is used
+  // to calculate the next base fee. This stores the number of units of gas
+  // consumed per block.
+  repeated uint64 window = 3;
+
+  // Index is the index of the current block in the block utilization window.
+  uint64 index = 4;
+}
+```
+
+## Keeper
+
+The feemarket module provides a keeper interface for accessing the KVStore.
+
+```go
+type FeeMarketKeeper interface {
+    // Get the current state from the store.
+    GetState(ctx sdk.Context) (types.State, error)
+
+    // Set the state in the store.
+    SetState(ctx sdk.Context, state types.State) error
+
+    // Get the current params from the store.
+    GetParams(ctx sdk.Context) (types.Params, error)
+
+    // Set the params in the store.
+    SetParams(ctx sdk.Context, params types.Params) error
+
+    // Get the minimum gas price for a given denom from the store.
+    GetMinGasPrice(ctx sdk.Context, denom string) (sdk.DecCoin, error) {
+
+    // Get the current minimum gas prices from the store.
+    GetMinGasPrices(ctx sdk.Context) (sdk.DecCoins, error)
+}
+```
+
+## Messages
+
+### MsgParams
+
+The `feemarket` module params can be updated through `MsgParams`, which can be
+done using a governance proposal. The signer will always be the `gov` module
+account address.
+
+```protobuf
+message MsgParams {
+  option (cosmos.msg.v1.signer) = "authority";
+
+  // Params defines the new parameters for the feemarket module.
+  Params params = 1 [ (gogoproto.nullable) = false ];
+  // Authority defines the authority that is updating the feemarket module
+  // parameters.
+  string authority = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
+```
+
+The message handling can fail if:
+
+* signer is not the gov module account address.
+
+## Events
+
+The feemarket module emits the following events:
+
+### Tx
+
+```json
+{
+  "type": "tx",
+  "attributes": [
+    {
+      "key": "fee",
+      "value": "{{sdk.Coins being payed}}",
+      "index": true
+    },
+    {
+      "key": "fee_payer",
+      "value": "{{sdk.AccAddress paying the fees}}",
+      "index": true
+    }
+  ]
+}
+```
 
 ## Parameters
 
-### Ethereum EIP-1559
+The feemarket module stores its params in state with the prefix of `0x01`,
+which can be updated with governance or the address with authority.
 
-Base EIP-1559 currently utilizes the following parameters to compute the base fee:
+* Params: `0x01 | ProtocolBuffer(Params)`
 
-* **`PreviousBaseFee`**: This is the base fee from the previous block. This must be a value that is greater than `0`.
-* **`TargetBlockSize`**: This is the target block size in bytes. This must be a value that is greater than `0`.
-* **`PreviousBlockSize`**: This is the block size from the previous block.
+The feemarket module contains the following parameters:
 
-The calculation for the updated base fee for the next block is as follows:
+### Alpha
 
-```golang
-currentBaseFee := previousBaseFee * (1 + 0.125 * (currentBlockSize - targetBlockSize) / targetBlockSize)
-```
+Alpha is the amount we added to the learning rate
+when it is above or below the target +/- threshold.
 
-### AIMD EIP-1559
+### Beta
 
-AIMD EIP-1559 introduces a few new parameters to the EIP-1559 fee market:
+Beta is the amount we multiplicatively decrease the learning rate
+when it is within the target +/- threshold.
 
-* **`Alpha`**: This is the amount we additively increase the learning rate when the target utilization is less than the current utilization i.e. the block was more full than the target size. This must be a value that is greater than `0.0`.
-* **`Beta`**: This is the amount we multiplicatively decrease the learning rate when the target utilization is greater than the current utilization i.e. the block was less full than the target size. This must be a value that is greater than `0.0`.
-* **`Window`**: This is the number of blocks we look back to compute the current utilization. This must be a value that is greater than `0`. Instead of only utilizing the previous block's utilization, we now consider the utilization of the previous `Window` blocks.
-* **`Gamma`**: This determines whether you are additively increase or multiplicatively decreasing the learning rate based on the target and current block utilization. This must be a value that is between `[0, 1]`. For example, if `Gamma = 0.25`, then we multiplicatively decrease the learning rate if the average ratio of current block size to max block size over some window of blocks is within `(0.25, 0.75)` and additively increase it if outside that range.
-* **`MaxLearningRate`**: This is the maximum learning rate that can be applied to the base fee. This must be a value that is between `[0, 1]`.
-* **`MinLearningRate`**: This is the minimum learning rate that can be applied to the base fee. This must be a value that is between `[0, 1]`.
-* **`Delta`**: This is a trailing constant that is used to smooth the learning rate. In order to further converge the long term net gas usage and net gas goal, we introduce another integral term which tracks how much gas off from 0 gas we’re at. We add a constant c which basically forces the fee to slowly trend in some direction until this has gone to 0.
+### Gamma
 
-The calculation for the updated base fee for the next block is as follows:
+Gamma is the threshold for the learning rate. If the learning rate is
+above or below the target +/- threshold, we additively increase the
+learning rate by Alpha. Otherwise, we multiplicatively decrease the
+learning rate by Beta.
 
-```golang
+### Delta
 
-// sumBlockSizesInWindow returns the sum of the block sizes in the window.
-blockConsumption := sumBlockSizesInWindow(window) / (window * maxBlockSize)
+Delta is the amount we additively increase/decrease the base fee when the
+net block utilization difference in the window is above/below the target
+utilization.
 
-if blockConsumption < gamma || blockConsumption > 1 - gamma {
-    // MAX_LEARNING_RATE is a constant that is configured by the chain developer
-    newLearningRate := min(MaxLearningRate, alpha + currentLearningRate)
-} else {
-    // MIN_LEARNING_RATE is a constant that is configured by the chain developer
-    newLearningRate := max(MinLearningRate, beta * currentLearningRate)
+### MinBaseGasPrice
+
+MinBaseGasPrice determines the initial gas price of the module and the global
+minimum for the network. This is denominated in fee per gas unit in the `FeeDenom`.
+
+### MinLearningRate
+
+MinLearningRate is the lower bound for the learning rate.
+
+### MaxLearningRate
+
+MaxLearningRate is the upper bound for the learning rate.
+
+### MaxBlockUtilization
+
+MaxBlockUtilization is the maximum block utilization. Once this has been surpassed,
+no more transactions will be added to the current block.
+
+### Window
+
+Window defines the window size for calculating an adaptive learning rate
+over a moving window of blocks. The default EIP1559 implementation uses
+a window of size 1.
+
+### FeeDenom
+
+FeeDenom is the denom that will be used for all fee payments.
+
+### Enabled
+
+Enabled is a boolean that determines whether the EIP1559 fee market is
+enabled. This can be used to add the feemarket module and enable it
+through governance at a later time.
+
+```protobuf
+// Params contains the required set of parameters for the EIP1559 fee market
+// plugin implementation.
+message Params {
+  // Alpha is the amount we additively increase the learning rate
+  // when it is above or below the target +/- threshold.
+  //
+  // Must be > 0.
+  string alpha = 1 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+
+  // Beta is the amount we multiplicatively decrease the learning rate
+  // when it is within the target +/- threshold.
+  //
+  // Must be [0, 1].
+  string beta = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+
+  // Gamma is the threshold for the learning rate. If the learning rate is
+  // above or below the target +/- threshold, we additively increase the
+  // learning rate by Alpha. Otherwise, we multiplicatively decrease the
+  // learning rate by Beta.
+  //
+  // Must be [0, 0.5].
+  string gamma = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+
+  // Delta is the amount we additively increase/decrease the gas price when the
+  // net block utilization difference in the window is above/below the target
+  // utilization.
+  string delta = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+
+  // MinBaseGasPrice determines the initial gas price of the module and the
+  // global minimum for the network.
+  string min_base_gas_price = 5 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+
+  // MinLearningRate is the lower bound for the learning rate.
+  string min_learning_rate = 6 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+
+  // MaxLearningRate is the upper bound for the learning rate.
+  string max_learning_rate = 7 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+
+  // MaxBlockUtilization is the maximum block utilization.
+  uint64 max_block_utilization = 8;
+
+  // Window defines the window size for calculating an adaptive learning rate
+  // over a moving window of blocks.
+  uint64 window = 9;
+
+  // FeeDenom is the denom that will be used for all fee payments.
+  string fee_denom = 10;
+
+  // Enabled is a boolean that determines whether the EIP1559 fee market is
+  // enabled.
+  bool enabled = 11;
 }
-
-// netGasDelta returns the net gas difference between every block in the window and the target block size.
-newBaseFee := currentBaseFee * (1 + newLearningRate * (currentBlockSize - targetBlockSize) / targetBlockSize) + delta * netGasDelta(window)
 ```
 
-## Examples
+## Client
 
-> **Assume the following parameters:**
->
-> * `TargetBlockSize = 50`
-> * `MaxBlockSize = 100`
-> * `Window = 1`
-> * `Alpha = 0.025`
-> * `Beta = 0.95`
-> * `Gamma = 0.25`
-> * `MAX_LEARNING_RATE = 1.0`
-> * `MIN_LEARNING_RATE = 0.0125`
-> * `Current Learning Rate = 0.125`
-> * `Previous Base Fee = 10.0`
-> * `Delta = 0`
+### CLI
 
-### Block is Completely Empty
+A user can query and interact with the `feemarket` module using the CLI.
 
-In this example, we expect the learning rate to additively increase and the base fee to decrease.
+#### Query
 
-```golang
-blockConsumption := sumBlockSizesInWindow(1) / (1 * 100) == 0
-newLearningRate := min(1.0, 0.025 + 0.125) == 0.15
-newBaseFee := 10 * (1 + 0.15 * (0 - 50) / 50) == 8.5
+The `query` commands allow users to query `feemarket` state.
+
+```shell
+atomoned query feemarket --help
 ```
 
-As we can see, the base fee decreased by 1.5 and the learning rate increases.
+##### params
 
-### Block is Completely Full
+The `params` command allows users to query the on-chain parameters.
 
-In this example, we expect the learning rate to multiplicatively increase and the base fee to increase.
-
-```golang
-blockConsumption := sumBlockSizesInWindow(1) / (1 * 100) == 1
-newLearningRate := min(1.0, 0.025 + 0.125) == 0.15
-newBaseFee := 10 * (1 + 0.95 * 0.125) == 11.875
+```shell
+atomoned query feemarket params [flags]
 ```
 
-As we can see, the base fee increased by 1.875 and the learning rate increases.
+Example:
 
-### Block is at Target Utilization
-
-In this example, we expect the learning rate to decrease and the base fee to remain the same.
-
-```golang
-blockConsumption := sumBlockSizesInWindow(1) / (1 * 100) == 0.5
-newLearningRate := max(0.0125, 0.95 * 0.125) == 0.11875
-newBaseFee := 10 * (1 + 0.11875 * (0 - 50) / 50) == 10
+```shell
+atomoned query feemarket params
 ```
 
-As we can see, the base fee remained the same and the learning rate decreased.
+Example Output:
 
-## Default EIP-1559 With AIMD EIP-1559
+```yml
+alpha: "0.000000000000000000"
+beta: "1.000000000000000000"
+delta: "0.000000000000000000"
+enabled: true
+fee_denom: uatone
+max_block_utilization: "30000000"
+max_learning_rate: "0.125000000000000000"
+min_base_fee: "1.000000000000000000"
+min_learning_rate: "0.125000000000000000"
+theta: "0.000000000000000000"
+window: "1"
+```
 
-It is entirely possible to implement the default EIP-1559 fee market with the AIMD EIP-1559 fee market. This can be done by setting the following parameters:
+##### state
 
-* `Alpha = 0.0`
-* `Beta = 1.0`
-* `Gamma = 1.0`
-* `MAX_LEARNING_RATE = 0.125`
-* `MIN_LEARNING_RATE = 0.125`
-* `Delta = 0`
-* `Window = 1`
+The `state` command allows users to query the current on-chain state.
+
+```shell
+atomoned query feemarket state [flags]
+```
+
+Example:
+
+```shell
+atomoned query feemarket state
+```
+
+Example Output:
+
+```yml
+base_fee: "1.000000000000000000"
+index: "0"
+learning_rate: "0.125000000000000000"
+window:
+  - "0"
+```
+
+##### gas-price
+
+The `gas-price` command allows users to query the current gas-price for a given denom.
+
+```shell
+atomoned query feemarket gas-price [denom] [flags]
+```
+
+Example:
+
+```shell
+atomoned query feemarket gas-price uatone
+```
+
+Example Output:
+
+```yml
+1000000uatone
+```
+
+##### gas-prices
+
+The `gas-prices` command allows users to query the current gas-price for all
+supported denoms.
+
+```shell
+atomoned query feemarket gas-prices [flags]
+```
+
+Example:
+
+```shell
+atomoned query feemarket gas-prices
+```
+
+Example Output:
+
+```yml
+1000000stake,100000uatone
+```
+
+## gRPC
+
+A user can query the `feemarket` module using gRPC endpoints.
+
+### Params
+
+The `Params` endpoint allows users to query the on-chain parameters.
+
+```shell
+atomone.feemarket.v1.Query/Params
+```
+
+Example:
+
+```shell
+grpcurl -plaintext \
+    localhost:9090 \
+    atomone.feemarket.v1.Query/Params
+```
+
+Example Output:
+
+```json
+{
+  "params": {
+    "alpha": "0",
+    "beta": "1000000000000000000",
+    "theta": "0",
+    "delta": "0",
+    "minBaseFee": "1000000",
+    "minLearningRate": "125000000000000000",
+    "maxLearningRate": "125000000000000000",
+    "maxBlockUtilization": "30000000",
+    "window": "1",
+    "feeDenom": "uatone",
+    "enabled": true
+  }
+}
+```
+
+### State
+
+The `State` endpoint allows users to query the current on-chain state.
+
+```shell
+atomone.feemarket.v1.Query/State
+```
+
+Example:
+
+```shell
+grpcurl -plaintext \
+    localhost:9090 \
+    atomone.feemarket.v1.Query/State
+```
+
+Example Output:
+
+```json
+{
+  "state": {
+    "baseGasPrice": "1000000",
+    "learningRate": "125000000000000000",
+    "window": [
+      "0"
+    ]
+  }
+}
+```
+
+### GasPrice
+
+The `GasPrice` endpoint allows users to query the current on-chain gas price for
+a given denom.
+
+```shell
+atomone.feemarket.v1.Query/GasPrice
+```
+
+Example:
+
+```shell
+grpcurl -plaintext \
+    -d '{"denom": "uatone"}' \
+    localhost:9090 \
+    atomone.feemarket.v1.Query/GasPrice/
+```
+
+Example Output:
+
+```json
+{
+  "price": {
+      "denom": "uatone",
+      "amount": "1000000"
+  }
+}
+```
+
+### GasPrices
+
+The `GasPrices` endpoint allows users to query the current on-chain gas prices
+for all denoms.
+
+```shell
+atomone.feemarket.v1.Query/GasPrices
+```
+
+Example:
+
+```shell
+grpcurl -plaintext \
+    localhost:9090 \
+    atomone.feemarket.v1.Query/GasPrices
+```
+
+Example Output:
+
+```json
+{
+  "prices": [
+    {
+      "denom": "uatone",
+      "amount": "1000000"
+    }
+  ]
+}
+```
