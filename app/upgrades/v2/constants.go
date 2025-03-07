@@ -5,6 +5,7 @@ import (
 
 	"github.com/atomone-hub/atomone/app/upgrades"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
+	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
 )
 
 const (
@@ -18,6 +19,9 @@ var Upgrade = upgrades.Upgrade{
 		Added: []string{
 			// new module added in v2
 			photontypes.ModuleName,
+		},
+		Deleted: []string{
+			crisistypes.ModuleName,
 		},
 	},
 }
