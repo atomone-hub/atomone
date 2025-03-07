@@ -35,6 +35,7 @@
 
 - Upgrade CometBFT to v0.37.15 to fix securities issues (ASA-2025-001, ASA-2025-002) [#78](https://github.com/atomone-hub/atomone/pull/78)
 - Upgrade ibc-go to v7.9.2 to fix ASA-2025-004 [#84](https://github.com/atomone-hub/atomone/pull/84) [#85](https://github.com/atomone-hub/atomone/pull/85)
+- Remove x/crisis [#93](https://github.com/atomone-hub/atomone/pull/93)
 
 ### IMPROVEMENTS
 
