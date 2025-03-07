@@ -233,9 +233,9 @@ when it is above or below the target +/- threshold.
 Beta is the amount we multiplicatively decrease the learning rate
 when it is within the target +/- threshold.
 
-### Theta
+### Gamma
 
-Theta is the threshold for the learning rate. If the learning rate is
+Gamma is the threshold for the learning rate. If the learning rate is
 above or below the target +/- threshold, we additively increase the
 learning rate by Alpha. Otherwise, we multiplicatively decrease the
 learning rate by Beta.
