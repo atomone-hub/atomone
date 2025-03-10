@@ -2,10 +2,10 @@ package v2
 
 import (
 	store "github.com/cosmos/cosmos-sdk/store/types"
+	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
 
 	"github.com/atomone-hub/atomone/app/upgrades"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
-	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
 )
 
 const (
