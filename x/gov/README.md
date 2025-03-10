@@ -204,7 +204,7 @@ favor or against the proposal but accept the result of the vote.
 At the end of the voting period, if the percentage of `No` votes (excluding
 `Abstain` votes) is greater than a specific threshold (see [Burnable
 Params](#burnable-params) section), then the proposal is considered as SPAM and
-its deposit is burnt.
+its deposit is burned.
 
 #### Weighted Votes
 
