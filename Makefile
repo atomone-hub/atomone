@@ -277,7 +277,7 @@ start-localnet-ci: build
 	./build/atomoned genesis gentx val 1000000000uatone --home ~/.atomoned-liveness --chain-id liveness
 	./build/atomoned genesis collect-gentxs --home ~/.atomoned-liveness
 	sed -i.bak 's#^minimum-gas-prices = .*#minimum-gas-prices = "0.001uatone,0.001uphoton"#g' ~/.atomoned-liveness/config/app.toml
-	./build/atomoned start --home ~/.atomoned-liveness --x-crisis-skip-assert-invariants
+	./build/atomoned start --home ~/.atomoned-liveness
 
 .PHONY: start-localnet-ci
 
