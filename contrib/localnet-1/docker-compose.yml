@@ -1,0 +1,17 @@
+---
+services:
+  atomone:
+    image: ghcr.io/atomone-hub/atomone:dev
+    build:
+      context: ../..
+      args:
+        GO_VERSION: ${GO_VERSION}
+    entrypoint: ["/bin/sh", "/entrypoint.sh"]
+    volumes:
+      - ./entrypoint.sh:/entrypoint.sh
+    ports:
+      - 1317:1317
+      - 9090:9090
+      - 9091:9091
+      - 26656:26656
+      - 26657:26657
