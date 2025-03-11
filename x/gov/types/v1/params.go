@@ -427,8 +427,14 @@ func (p Params) ValidateBasic() error {
 	if err != nil {
 		return fmt.Errorf("invalid burnDepositNoThreshold string: %w", err)
 	}
-	if !burnDepositNoThreshold.IsPositive() {
-		return fmt.Errorf("burnDepositNoThreshold must be positive: %s", burnDepositNoThreshold)
+	if burnDepositNoThreshold.LTE(math.LegacyOneDec().Sub(amendmentThreshold)) {
+		return fmt.Errorf("burnDepositNoThreshold must greater than 1-constitutionThreshold")
+	}
+	if burnDepositNoThreshold.LTE(math.LegacyOneDec().Sub(lawThreshold)) {
+		return fmt.Errorf("burnDepositNoThreshold must greater than 1-lawThreshold")
+	}
+	if burnDepositNoThreshold.LTE(math.LegacyOneDec().Sub(threshold)) {
+		return fmt.Errorf("burnDepositNoThreshold must greater than 1-threshold")
 	}
 	if burnDepositNoThreshold.GT(math.LegacyOneDec()) {
 		return fmt.Errorf("burnDepositNoThreshold too large: %s", burnDepositNoThreshold)

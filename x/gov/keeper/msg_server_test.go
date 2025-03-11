@@ -1262,10 +1262,12 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 			expErrMsg: "invalid burnDepositNoThreshold string",
 		},
 		{
-			name: "negative burnDepositNoThreshold",
+			name: "burnDepositNoThreshold <= 1 - constitutionThreshold",
 			input: func() *v1.MsgUpdateParams {
 				params1 := params
-				params1.BurnDepositNoThreshold = "-0.1"
+				params1.LawThreshold = "0.8"
+				params1.ConstitutionAmendmentThreshold = "0.8"
+				params1.BurnDepositNoThreshold = "0.2"
 
 				return &v1.MsgUpdateParams{
 					Authority: authority,
@@ -1273,7 +1275,40 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 				}
 			},
 			expErr:    true,
-			expErrMsg: "burnDepositNoThreshold must be positive",
+			expErrMsg: "burnDepositNoThreshold must greater than 1-constitutionThreshold",
+		},
+		{
+			name: "burnDepositNoThreshold <= 1 - lawThreshold",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.ConstitutionAmendmentThreshold = "0.9"
+				params1.LawThreshold = "0.8"
+				params1.BurnDepositNoThreshold = "0.2"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "burnDepositNoThreshold must greater than 1-lawThreshold",
+		},
+		{
+			name: "burnDepositNoThreshold <= 1 - threshold",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.ConstitutionAmendmentThreshold = "0.8"
+				params1.LawThreshold = "0.8"
+				params1.Threshold = "0.6"
+				params1.BurnDepositNoThreshold = "0.4"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "burnDepositNoThreshold must greater than 1-threshold",
 		},
 		{
 			name: "burnDepositNoThreshold > 1",
