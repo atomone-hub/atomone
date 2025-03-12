@@ -69,10 +69,7 @@ func EndBlocker(ctx sdk.Context, keeper *keeper.Keeper) {
 			// remove from queue
 			keeper.RemoveFromQuorumCheckQueue(ctx, proposal.Id, endTime)
 			// check if proposal passed quorum
-			quorum, err := keeper.HasReachedQuorum(ctx, proposal)
-			if err != nil {
-				return false
-			}
+			quorum := keeper.HasReachedQuorum(ctx, proposal)
 			logMsg := "proposal did not pass quorum after timeout, but was removed from quorum check queue"
 			tagValue := types.AttributeValueProposalQuorumNotMet
 
