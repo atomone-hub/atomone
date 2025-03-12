@@ -14,6 +14,15 @@
 
 ### STATE BREAKING
 
+## v1.1.2
+
+*Mar 12th, 2025*
+
+### DEPENDENCIES
+
+- Upgrade ibc-go to v7.10.0 to fix ISA-2025-001 [#97](https://github.com/atomone-hub/atomone/pull/97)
+
+
 ## v1.1.1
 
 *Feb 28th, 2025*
