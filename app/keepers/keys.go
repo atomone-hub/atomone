@@ -48,11 +48,11 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 		authzkeeper.StoreKey,
 		consensusparamtypes.StoreKey,
 		photontypes.StoreKey,
-		// TODO: to be removed in a future release, since x/crisis was
-		// deprecated. The key had to be left here to facilitate
-		// deletion of the module's state from the store during the 
+		// TODO: to be removed in a future release, since x/crisis
+		// was deprecated. The key had to be left here to facilitate
+		// deletion of the module's state from the store during the
 		// software upgrade.
-		crisistypes.StoreKey, 
+		crisistypes.StoreKey,
 	)
 
 	// Define transient store keys
