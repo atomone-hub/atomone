@@ -1,3 +1,21 @@
+# v1.1.1
+
+2b6046d9da9e88821a85e094ad3fccc21359b51883c8d3b73546df234250977b  atomoned-v1.1.1-darwin-amd64
+0a288988ab470a9bf245e7e19bea917fb8134786c37163309fd47ddf8e98f773  atomoned-v1.1.1-darwin-arm64
+8462f489b293d050ce58ed1adc0e9891b540ec77e80ed20bb5c1aa7389f61221  atomoned-v1.1.1-linux-amd64
+6b55e9318437bbbce58fde03d70c1de224b6890bbd9228a2e6eed75ccfce3e4b  atomoned-v1.1.1-linux-arm64
+ea40eb0abe24d0c6d7ba7fe7f8dbc5a1c1684ad6a86e1c2282320580728ea317  atomoned-v1.1.1-windows-amd64.exe
+7924285b362b89fb4d83aba61a56c5a5346813a45d13bf902986d8aad3dba720  atomoned-v1.1.1-windows-arm64.exe
+
+# v1.0.1
+
+0ce4da89a588a898e01ec1568c5253e9f4853f90f4e588408fb6c7ffc42d3425  atomoned-v1.0.1-darwin-amd64
+f36790fa7613ae86f2c64745532a4536bc814156bb1305df5fdb6ddc44bdada8  atomoned-v1.0.1-darwin-arm64
+2b87e2965c6f614761cb9e54e271b8b7fd3f8d3344d2554e52f1c9384ce43e52  atomoned-v1.0.1-linux-amd64
+40d97ad3c8fd639ce8ed34b10a022872d124956209536f372ac85b165ecb796c  atomoned-v1.0.1-linux-arm64
+1e08f5a7b4b0f5573ef0336fbca0ceb472a8d14eb0606eb89ccf47c9d66f3999  atomoned-v1.0.1-windows-amd64.exe
+96dc79cb3e1942efa43ae1f5e9ff59c2f93536a00fa3c869b9ad6871ecda5039  atomoned-v1.0.1-windows-arm64.exe
+
 # v1.0.0
 
 9e9ba6fda17e9791d5ea38e93807cd6dbd2af3a1a3e1dc97bfae26b9cb2fb201  atomoned-v1.0.0-darwin-amd64

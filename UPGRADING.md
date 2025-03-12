@@ -103,7 +103,7 @@ case the upgrade fails and the previous chain needs to be restarted.
 ### Current runtime
 
 The AtomOne mainnet network, `atomone-1`, is currently running [AtomOne
-v1.0.0][v1]. We anticipate that operators who are running on v1.0.0, will be
+v1.1.1][v1]. We anticipate that operators who are running on v1.1.1, will be
 able to upgrade successfully. Validators are expected to ensure that their
 systems are up to date and capable of performing the upgrade. This includes
 running the correct binary and if building from source, building with the
@@ -174,13 +174,24 @@ Note that unlike the validator config change which still accepts `uatone` for
 fees, this change should be done **after** the upgrade because it is restricted
 to `uphoton` which has no supply before the upgrade.
 
+### Relayer account balance
+
+Additionally, the relayer account balance will now require `uphoton` token
+instead of `uatone` to pay the fees.
+
+Accordingly, after the upgrade, the relayer operator will have to mint some
+photons using the new `MsgMintPhoton` message, and then transfer them to the
+relayer account. Consequently it is expected that IBC will take a bit of time
+to work properly after the upgrade, until the relayer account balance is filled
+with photons.
+
 ### Method I: Manual Upgrade
 
-Make sure **AtomOne v1.0.0** is installed by either downloading a [compatible
+Make sure **AtomOne v1.1.1** is installed by either downloading a [compatible
 binary][v1], or building from source. Check the required version to build this
 binary in the `Makefile`.
 
-Run AtomOne v1.0.0 till upgrade height, the node will panic:
+Run AtomOne v1.1.1 till upgrade height, the node will panic:
 
 ```shell
 ERR UPGRADE "v2" NEEDED at height: <UPGRADE_HEIGHT>: upgrade to v2 and applying upgrade "v2" at height:<UPGRADE_HEIGHT>
@@ -199,15 +210,13 @@ continue to produce blocks.
 
 ##### Preparation
 
-- Install the latest version of Cosmovisor (`1.5.0`):
+- Install the latest version of Cosmovisor:
 
 ```shell
 go install cosmossdk.io/tools/cosmovisor/cmd/cosmovisor@latest
-cosmovisor version
-# cosmovisor version: v1.5.0
 ```
 
-- Create a `cosmovisor` folder inside `$ATOMONE_HOME` and move AtomOne `v1.0.0`
+- Create a `cosmovisor` folder inside `$ATOMONE_HOME` and move AtomOne `v1.1.1`
 into `$ATOMONE_HOME/cosmovisor/genesis/bin`:
 
 ```shell
@@ -230,7 +239,7 @@ At this moment, you should have the following structure:
 ├── current -> genesis or upgrades/<name>
 ├── genesis
 │   └── bin
-│       └── atomoned  # old: v1.0.0
+│       └── atomoned  # old: v1.1.1
 └── upgrades
     └── v2
         └── bin
@@ -286,7 +295,7 @@ challenges, the core teams, after conferring with operators and attaining
 social consensus, may choose to declare that the upgrade will be skipped.
 
 Steps to skip this upgrade proposal are simply to resume the `atomone-1`
-network with the (downgraded) v1.0.0 binary using the following command:
+network with the (downgraded) v1.1.1 binary using the following command:
 
 ```shell
 atomoned start --unsafe-skip-upgrade <UPGRADE_HEIGHT>
@@ -320,5 +329,5 @@ repeat the upgrade procedure again during the network startup. If you discover
 a mistake in the process, the best thing to do is wait for the network to start
 before correcting it.
 
-[v1]: https://github.com/atomone-hub/atomone/releases/tag/v1.0.0
+[v1]: https://github.com/atomone-hub/atomone/releases/tag/v1.1.1
 [v2]: https://github.com/atomone-hub/atomone/releases/tag/v2.0.0
