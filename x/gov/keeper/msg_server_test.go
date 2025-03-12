@@ -1262,12 +1262,12 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 			expErrMsg: "invalid burnDepositNoThreshold string",
 		},
 		{
-			name: "burnDepositNoThreshold <= 1 - constitutionThreshold",
+			name: "burnDepositNoThreshold <= 1 - amendmentThreshold",
 			input: func() *v1.MsgUpdateParams {
 				params1 := params
 				params1.LawThreshold = "0.8"
 				params1.ConstitutionAmendmentThreshold = "0.8"
-				params1.BurnDepositNoThreshold = "0.2"
+				params1.BurnDepositNoThreshold = "0.199"
 
 				return &v1.MsgUpdateParams{
 					Authority: authority,
@@ -1275,7 +1275,7 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 				}
 			},
 			expErr:    true,
-			expErrMsg: "burnDepositNoThreshold must greater than 1-constitutionThreshold",
+			expErrMsg: "burnDepositNoThreshold cannot be lower than 1-amendmentThreshold",
 		},
 		{
 			name: "burnDepositNoThreshold <= 1 - lawThreshold",
@@ -1283,7 +1283,7 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 				params1 := params
 				params1.ConstitutionAmendmentThreshold = "0.9"
 				params1.LawThreshold = "0.8"
-				params1.BurnDepositNoThreshold = "0.2"
+				params1.BurnDepositNoThreshold = "0.199"
 
 				return &v1.MsgUpdateParams{
 					Authority: authority,
@@ -1291,7 +1291,7 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 				}
 			},
 			expErr:    true,
-			expErrMsg: "burnDepositNoThreshold must greater than 1-lawThreshold",
+			expErrMsg: "burnDepositNoThreshold cannot be lower than 1-lawThreshold",
 		},
 		{
 			name: "burnDepositNoThreshold <= 1 - threshold",
@@ -1300,7 +1300,7 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 				params1.ConstitutionAmendmentThreshold = "0.8"
 				params1.LawThreshold = "0.8"
 				params1.Threshold = "0.6"
-				params1.BurnDepositNoThreshold = "0.4"
+				params1.BurnDepositNoThreshold = "0.399"
 
 				return &v1.MsgUpdateParams{
 					Authority: authority,
@@ -1308,7 +1308,7 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 				}
 			},
 			expErr:    true,
-			expErrMsg: "burnDepositNoThreshold must greater than 1-threshold",
+			expErrMsg: "burnDepositNoThreshold cannot be lower than 1-threshold",
 		},
 		{
 			name: "burnDepositNoThreshold > 1",
