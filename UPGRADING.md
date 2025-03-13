@@ -259,12 +259,8 @@ export DAEMON_RESTART_AFTER_UPGRADE=true
 - Start the node:
 
 ```shell
-cosmovisor run start --x-crisis-skip-assert-invariants --home $DAEMON_HOME
+cosmovisor run start --home $DAEMON_HOME
 ```
-
-Skipping the invariant checks can be used to decreases the upgrade time
-significantly, but it is done at the expense of verifying state validity and
-must be done cautiously.
 
 #### Auto-Downloading the AtomOne binary
 
