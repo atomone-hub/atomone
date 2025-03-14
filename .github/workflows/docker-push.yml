@@ -1,5 +1,8 @@
 name: Create and publish a Docker image
 on:
+  push:
+    branches:
+      - ci/docker
   release:
     types: [published]
 
@@ -20,6 +23,13 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+
+      - name: Get go_version
+        run: |
+          echo GO_VERSION=$(go list -f {{.GoVersion}} -m) >> $GITHUB_ENV
 
       - name: Login to Docker registry
         uses: docker/login-action@v3
@@ -62,7 +72,9 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           platforms: linux/amd64,linux/arm64
-          push: true
+          build-args: |
+            GO_VERSION=${{ env.GO_VERSION }}
+          push: ${{ github.event_name != 'pull_request' }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           tags: ${{ steps.meta.outputs.tags }}
