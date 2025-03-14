@@ -1,8 +1,5 @@
 name: Create and publish a Docker image
 on:
-  push:
-    branches:
-      - ci/docker
   release:
     types: [published]
 
