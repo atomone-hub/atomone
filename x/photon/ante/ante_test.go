@@ -3,16 +3,16 @@ package ante
 import (
 	"testing"
 
-	"gotest.tools/v3/assert"
-
-	appparams "github.com/atomone-hub/atomone/app/params"
-	"github.com/atomone-hub/atomone/x/photon/testutil"
-	"github.com/atomone-hub/atomone/x/photon/types"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/tx"
+
+	appparams "github.com/atomone-hub/atomone/app/params"
+	"github.com/atomone-hub/atomone/x/photon/testutil"
+	"github.com/atomone-hub/atomone/x/photon/types"
 )
 
 func TestValidateFeeDecorator(t *testing.T) {

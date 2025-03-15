@@ -10,17 +10,19 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
+	"github.com/atomone-hub/atomone/x/feemarket/keeper"
+	"github.com/atomone-hub/atomone/x/feemarket/types"
 	feemarkettypes "github.com/atomone-hub/atomone/x/feemarket/types"
 )
 
 type feeMarketCheckDecorator struct {
-	feemarketKeeper FeeMarketKeeper
-	bankKeeper      BankKeeper
-	feegrantKeeper  FeeGrantKeeper
-	accountKeeper   AccountKeeper
+	feemarketKeeper *keeper.Keeper
+	bankKeeper      types.BankKeeper
+	feegrantKeeper  types.FeeGrantKeeper
+	accountKeeper   types.AccountKeeper
 }
 
-func newFeeMarketCheckDecorator(ak AccountKeeper, bk BankKeeper, fk FeeGrantKeeper, fmk FeeMarketKeeper) feeMarketCheckDecorator {
+func newFeeMarketCheckDecorator(ak types.AccountKeeper, bk types.BankKeeper, fk types.FeeGrantKeeper, fmk *keeper.Keeper) feeMarketCheckDecorator {
 	return feeMarketCheckDecorator{
 		feemarketKeeper: fmk,
 		bankKeeper:      bk,
@@ -39,13 +41,13 @@ func newFeeMarketCheckDecorator(ak AccountKeeper, bk BankKeeper, fk FeeGrantKeep
 //
 // CONTRACT: Tx must implement FeeTx interface
 type FeeMarketCheckDecorator struct {
-	feemarketKeeper FeeMarketKeeper
+	feemarketKeeper *keeper.Keeper
 
 	feemarketDecorator feeMarketCheckDecorator
 	fallbackDecorator  sdk.AnteDecorator
 }
 
-func NewFeeMarketCheckDecorator(ak AccountKeeper, bk BankKeeper, fk FeeGrantKeeper, fmk FeeMarketKeeper, fallbackDecorator sdk.AnteDecorator) FeeMarketCheckDecorator {
+func NewFeeMarketCheckDecorator(ak types.AccountKeeper, bk types.BankKeeper, fk types.FeeGrantKeeper, fmk *keeper.Keeper, fallbackDecorator sdk.AnteDecorator) FeeMarketCheckDecorator {
 	return FeeMarketCheckDecorator{
 		feemarketKeeper: fmk,
 		feemarketDecorator: newFeeMarketCheckDecorator(
@@ -230,9 +232,7 @@ func (dfd feeMarketCheckDecorator) DeductFees(ctx sdk.Context, sdkTx sdk.Tx, pro
 func CheckTxFee(ctx sdk.Context, gasPrice sdk.DecCoin, feeCoin sdk.Coin, feeGas int64) error {
 	// Ensure that the provided fees meet the minimum
 	if !gasPrice.IsZero() {
-		var (
-			requiredFee sdk.Coin
-		)
+		var requiredFee sdk.Coin
 
 		glDec := sdkmath.LegacyNewDec(feeGas)
 		limitFee := gasPrice.Amount.Mul(glDec)
