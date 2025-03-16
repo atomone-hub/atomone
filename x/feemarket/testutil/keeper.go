@@ -50,6 +50,6 @@ func SetupFeemarketKeeper(t *testing.T) (
 	types.RegisterInterfaces(encCfg.InterfaceRegistry)
 	// banktypes.RegisterInterfaces(encCfg.InterfaceRegistry)
 	authority := authtypes.NewModuleAddress(govtypes.ModuleName).String()
-	k := keeper.NewKeeper(encCfg.Codec, key, &types.TestDenomResolver{}, authority)
+	k := keeper.NewKeeper(encCfg.Codec, key, &types.ErrorDenomResolver{}, authority)
 	return k, m, ctx
 }

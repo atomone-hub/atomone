@@ -1,6 +1,8 @@
 package ante_test
 
 import (
+	"errors"
+	"fmt"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -28,11 +30,13 @@ func TestAnteHandle(t *testing.T) {
 	// validFeeDifferentDenom := sdk.NewCoins(sdk.NewCoin("atom", math.Int(validFeeAmount)))
 
 	var (
-		addrs  = simtestutil.CreateIncrementalAccounts(1)
+		addrs  = simtestutil.CreateIncrementalAccounts(3)
 		acc1   = authtypes.NewBaseAccountWithAddress(addrs[0])
+		acc2   = authtypes.NewBaseAccountWithAddress(addrs[1])
+		acc3   = authtypes.NewBaseAccountWithAddress(addrs[2])
 		txBody = &tx.TxBody{
 			Messages: []*codectypes.Any{
-				codectypes.UnsafePackAny(testdata.NewTestMsg(addrs[0])),
+				codectypes.UnsafePackAny(testdata.NewTestMsg(addrs[0], addrs[1])),
 			},
 		}
 	)
@@ -41,8 +45,11 @@ func TestAnteHandle(t *testing.T) {
 		tx                   sdk.Tx
 		genTx                bool
 		simulate             bool
+		disableFeeGrant      bool
+		denomResolver        types.DenomResolver
 		setup                func(testutil.Mocks)
 		expectedMinGasPrices string
+		expectedTxPriority   int64
 		expectedError        string
 	}{
 		{
@@ -53,7 +60,9 @@ func TestAnteHandle(t *testing.T) {
 				},
 				Body: txBody,
 			},
-			genTx: true,
+			genTx:                true,
+			expectedMinGasPrices: "",
+			expectedTxPriority:   0,
 		},
 		{
 			name: "fail: 0 gas given",
@@ -69,9 +78,7 @@ func TestAnteHandle(t *testing.T) {
 			name: "ok: simulate --gas=auto behavior",
 			tx: &tx.Tx{
 				AuthInfo: &tx.AuthInfo{
-					Fee: &tx.Fee{
-						GasLimit: 42,
-					},
+					Fee: &tx.Fee{},
 				},
 				Body: txBody,
 			},
@@ -84,147 +91,236 @@ func TestAnteHandle(t *testing.T) {
 						authtypes.FeeCollectorName, sdk.NewCoins())
 			},
 			expectedMinGasPrices: "1.000000000000000000stake",
+			expectedTxPriority:   0,
+		},
+		{
+			name: "fail: 0 fee given",
+			tx: &tx.Tx{
+				AuthInfo: &tx.AuthInfo{
+					Fee: &tx.Fee{
+						GasLimit: 42,
+					},
+				},
+				Body: txBody,
+			},
+			expectedError: "got length 0: no fee coin provided. Must provide one.",
+		},
+		{
+			name: "fail: too many fee coins given",
+			tx: &tx.Tx{
+				AuthInfo: &tx.AuthInfo{
+					Fee: &tx.Fee{
+						GasLimit: 42,
+						Amount: sdk.NewCoins(
+							sdk.NewInt64Coin(sdk.DefaultBondDenom, 1),
+							sdk.NewInt64Coin("photon", 2),
+						),
+					},
+				},
+				Body: txBody,
+			},
+			expectedError: "got length 2: too many fee coins provided. Only one fee coin may be provided",
+		},
+		{
+			name: "fail: unresolvable denom",
+			tx: &tx.Tx{
+				AuthInfo: &tx.AuthInfo{
+					Fee: &tx.Fee{
+						GasLimit: 42,
+						Amount: sdk.NewCoins(
+							sdk.NewInt64Coin("photon", 2),
+						),
+					},
+				},
+				Body: txBody,
+			},
+			expectedError: "unable to get min gas price for denom photon: error resolving denom",
+		},
+		{
+			name: "fail: not enough fee",
+			tx: &tx.Tx{
+				AuthInfo: &tx.AuthInfo{
+					Fee: &tx.Fee{
+						GasLimit: 42,
+						Amount: sdk.NewCoins(
+							sdk.NewInt64Coin(sdk.DefaultBondDenom, 2),
+						),
+					},
+				},
+				Body: txBody,
+			},
+			expectedError: "error checking fee: got: 2stake required: 42stake, minGasPrice: 1.000000000000000000stake: insufficient fee",
+		},
+		{
+			name: "ok: enough fee",
+			tx: &tx.Tx{
+				AuthInfo: &tx.AuthInfo{
+					Fee: &tx.Fee{
+						GasLimit: 42,
+						Amount: sdk.NewCoins(
+							sdk.NewInt64Coin(sdk.DefaultBondDenom, 42),
+						),
+					},
+				},
+				Body: txBody,
+			},
+			setup: func(m testutil.Mocks) {
+				m.AccountKeeper.EXPECT().
+					GetAccount(gomock.Any(), addrs[0]).Return(acc1)
+				m.BankKeeper.EXPECT().
+					SendCoinsFromAccountToModule(gomock.Any(), addrs[0],
+						authtypes.FeeCollectorName,
+						sdk.NewCoins(sdk.NewInt64Coin(sdk.DefaultBondDenom, 42)))
+			},
+			expectedMinGasPrices: "1.000000000000000000stake",
+			expectedTxPriority:   1000000,
+		},
+		{
+			name:          "ok: enough fee with resolvable denom",
+			denomResolver: &types.TestDenomResolver{},
+			tx: &tx.Tx{
+				AuthInfo: &tx.AuthInfo{
+					Fee: &tx.Fee{
+						GasLimit: 42,
+						Amount: sdk.NewCoins(
+							sdk.NewInt64Coin("photon", 42),
+						),
+					},
+				},
+				Body: txBody,
+			},
+			setup: func(m testutil.Mocks) {
+				m.AccountKeeper.EXPECT().
+					GetAccount(gomock.Any(), addrs[0]).Return(acc1)
+				m.BankKeeper.EXPECT().
+					SendCoinsFromAccountToModule(gomock.Any(), addrs[0],
+						authtypes.FeeCollectorName,
+						sdk.NewCoins(sdk.NewInt64Coin("photon", 42)))
+			},
+			expectedMinGasPrices: "1.000000000000000000photon",
+			expectedTxPriority:   1000000,
+		},
+		{
+			name: "ok: enough fee with named payer",
+			tx: &tx.Tx{
+				AuthInfo: &tx.AuthInfo{
+					Fee: &tx.Fee{
+						GasLimit: 42,
+						Amount: sdk.NewCoins(
+							sdk.NewInt64Coin(sdk.DefaultBondDenom, 42),
+						),
+						// payer is the second signer
+						Payer: acc2.Address,
+					},
+				},
+				Body: txBody,
+			},
+			setup: func(m testutil.Mocks) {
+				m.AccountKeeper.EXPECT().
+					GetAccount(gomock.Any(), addrs[1]).Return(acc2)
+				m.BankKeeper.EXPECT().
+					SendCoinsFromAccountToModule(gomock.Any(), addrs[1],
+						authtypes.FeeCollectorName,
+						sdk.NewCoins(sdk.NewInt64Coin(sdk.DefaultBondDenom, 42)))
+			},
+			expectedMinGasPrices: "1.000000000000000000stake",
+			expectedTxPriority:   1000000,
+		},
+		{
+			name: "fail: enough fee with not enough funds",
+			tx: &tx.Tx{
+				AuthInfo: &tx.AuthInfo{
+					Fee: &tx.Fee{
+						GasLimit: 42,
+						Amount: sdk.NewCoins(
+							sdk.NewInt64Coin(sdk.DefaultBondDenom, 42),
+						),
+					},
+				},
+				Body: txBody,
+			},
+			setup: func(m testutil.Mocks) {
+				m.AccountKeeper.EXPECT().
+					GetAccount(gomock.Any(), addrs[0]).Return(acc1)
+				m.BankKeeper.EXPECT().
+					SendCoinsFromAccountToModule(gomock.Any(), addrs[0],
+						authtypes.FeeCollectorName,
+						sdk.NewCoins(sdk.NewInt64Coin(sdk.DefaultBondDenom, 42))).
+					Return(errors.New("NOPE"))
+			},
+			expectedError: "error escrowing funds: NOPE",
+		},
+		{
+			name: "ok: enough fee with granter",
+			tx: &tx.Tx{
+				AuthInfo: &tx.AuthInfo{
+					Fee: &tx.Fee{
+						GasLimit: 42,
+						Amount: sdk.NewCoins(
+							sdk.NewInt64Coin(sdk.DefaultBondDenom, 42),
+						),
+						Granter: acc3.Address,
+					},
+				},
+				Body: txBody,
+			},
+			setup: func(m testutil.Mocks) {
+				m.FeeGrantKeeper.EXPECT().UseGrantedFees(gomock.Any(), addrs[2], addrs[0],
+					sdk.NewCoins(sdk.NewInt64Coin(sdk.DefaultBondDenom, 42)),
+					gomock.Any(),
+				)
+				m.AccountKeeper.EXPECT().
+					GetAccount(gomock.Any(), addrs[2]).Return(acc3)
+				m.BankKeeper.EXPECT().
+					SendCoinsFromAccountToModule(gomock.Any(), addrs[2],
+						authtypes.FeeCollectorName,
+						sdk.NewCoins(sdk.NewInt64Coin(sdk.DefaultBondDenom, 42)))
+			},
+			expectedMinGasPrices: "1.000000000000000000stake",
+			expectedTxPriority:   1000000,
+		},
+		{
+			name: "fail: enough fee with granter but feegrant disabled",
+			tx: &tx.Tx{
+				AuthInfo: &tx.AuthInfo{
+					Fee: &tx.Fee{
+						GasLimit: 42,
+						Amount: sdk.NewCoins(
+							sdk.NewInt64Coin(sdk.DefaultBondDenom, 42),
+						),
+						Granter: acc3.Address,
+					},
+				},
+				Body: txBody,
+			},
+			disableFeeGrant: true,
+			expectedError:   "error escrowing funds: fee grants are not enabled: invalid request",
+		},
+		{
+			name: "fail: enough fee with granter but not granted",
+			tx: &tx.Tx{
+				AuthInfo: &tx.AuthInfo{
+					Fee: &tx.Fee{
+						GasLimit: 42,
+						Amount: sdk.NewCoins(
+							sdk.NewInt64Coin(sdk.DefaultBondDenom, 42),
+						),
+						Granter: acc3.Address,
+					},
+				},
+				Body: txBody,
+			},
+			setup: func(m testutil.Mocks) {
+				m.FeeGrantKeeper.EXPECT().UseGrantedFees(gomock.Any(), addrs[2], addrs[0],
+					sdk.NewCoins(sdk.NewInt64Coin(sdk.DefaultBondDenom, 42)),
+					gomock.Any(),
+				).Return(errors.New("NOPE"))
+			},
+			expectedError: fmt.Sprintf(
+				"error escrowing funds: %s does not allow to pay fees for %s: NOPE",
+				acc3.Address, acc1.Address),
 		},
 	}
-	/*
-		testCases := []antesuite.TestCase{
-			// test --gas=auto flag settings
-			// when --gas=auto is set, cosmos-sdk sets gas=0 and simulate=true
-			{
-				Name: "--gas=auto behaviour test",
-				Malleate: func(s *antesuite.TestSuite) antesuite.TestCaseArgs {
-					accs := s.CreateTestAccounts(1)
-					s.MockBankKeeper.On("SendCoinsFromAccountToModule", mock.Anything, accs[0].Account.GetAddress(),
-						types.FeeCollectorName, mock.Anything).Return(nil)
-					return antesuite.TestCaseArgs{
-						Msgs:      []sdk.Msg{testdata.NewTestMsg(accs[0].Account.GetAddress())},
-						GasLimit:  0,
-						FeeAmount: validFee,
-					}
-				},
-				RunAnte:  true,
-				Simulate: true,
-				ExpPass:  true,
-			},
-			{
-				Name: "0 gas given should fail with resolvable denom",
-				Malleate: func(s *antesuite.TestSuite) antesuite.TestCaseArgs {
-					accs := s.CreateTestAccounts(1)
-
-					return antesuite.TestCaseArgs{
-						Msgs:      []sdk.Msg{testdata.NewTestMsg(accs[0].Account.GetAddress())},
-						GasLimit:  0,
-						FeeAmount: validFeeDifferentDenom,
-					}
-				},
-				RunAnte:  true,
-				Simulate: false,
-				ExpPass:  false,
-				ExpErr:   sdkerrors.ErrOutOfGas,
-			},
-			{
-				Name: "0 gas given should pass in simulate - no fee",
-				Malleate: func(s *antesuite.TestSuite) antesuite.TestCaseArgs {
-					accs := s.CreateTestAccounts(1)
-					s.MockBankKeeper.On("SendCoinsFromAccountToModule", mock.Anything, accs[0].Account.GetAddress(),
-						types.FeeCollectorName, mock.Anything).Return(nil).Once()
-					return antesuite.TestCaseArgs{
-						Msgs:      []sdk.Msg{testdata.NewTestMsg(accs[0].Account.GetAddress())},
-						GasLimit:  0,
-						FeeAmount: nil,
-					}
-				},
-				RunAnte:  true,
-				Simulate: true,
-				ExpPass:  true,
-				ExpErr:   nil,
-			},
-			{
-				Name: "0 gas given should pass in simulate - fee",
-				Malleate: func(s *antesuite.TestSuite) antesuite.TestCaseArgs {
-					accs := s.CreateTestAccounts(1)
-					s.MockBankKeeper.On("SendCoinsFromAccountToModule", mock.Anything, accs[0].Account.GetAddress(),
-						types.FeeCollectorName, mock.Anything).Return(nil).Once()
-					return antesuite.TestCaseArgs{
-						Msgs:      []sdk.Msg{testdata.NewTestMsg(accs[0].Account.GetAddress())},
-						GasLimit:  0,
-						FeeAmount: validFee,
-					}
-				},
-				RunAnte:  true,
-				Simulate: true,
-				ExpPass:  true,
-				ExpErr:   nil,
-			},
-			{
-				Name: "signer has enough funds, should pass",
-				Malleate: func(s *antesuite.TestSuite) antesuite.TestCaseArgs {
-					accs := s.CreateTestAccounts(1)
-					s.MockBankKeeper.On("SendCoinsFromAccountToModule", mock.Anything, accs[0].Account.GetAddress(),
-						types.FeeCollectorName, mock.Anything).Return(nil)
-					return antesuite.TestCaseArgs{
-						Msgs:      []sdk.Msg{testdata.NewTestMsg(accs[0].Account.GetAddress())},
-						GasLimit:  gasLimit,
-						FeeAmount: validFee,
-					}
-				},
-				RunAnte:  true,
-				Simulate: false,
-				ExpPass:  true,
-				ExpErr:   nil,
-			},
-			{
-				Name: "signer has enough funds in resolvable denom, should pass",
-				Malleate: func(s *antesuite.TestSuite) antesuite.TestCaseArgs {
-					accs := s.CreateTestAccounts(1)
-					s.MockBankKeeper.On("SendCoinsFromAccountToModule", mock.Anything, accs[0].Account.GetAddress(),
-						types.FeeCollectorName, mock.Anything).Return(nil).Once()
-					return antesuite.TestCaseArgs{
-						Msgs:      []sdk.Msg{testdata.NewTestMsg(accs[0].Account.GetAddress())},
-						GasLimit:  gasLimit,
-						FeeAmount: validFeeDifferentDenom,
-					}
-				},
-				RunAnte:  true,
-				Simulate: false,
-				ExpPass:  true,
-				ExpErr:   nil,
-			},
-			{
-				Name: "no fee - fail",
-				Malleate: func(s *antesuite.TestSuite) antesuite.TestCaseArgs {
-					accs := s.CreateTestAccounts(1)
-
-					return antesuite.TestCaseArgs{
-						Msgs:      []sdk.Msg{testdata.NewTestMsg(accs[0].Account.GetAddress())},
-						GasLimit:  1000000000,
-						FeeAmount: nil,
-					}
-				},
-				RunAnte:  true,
-				Simulate: false,
-				ExpPass:  false,
-				ExpErr:   types.ErrNoFeeCoins,
-			},
-			{
-				Name: "no gas limit - fail",
-				Malleate: func(s *antesuite.TestSuite) antesuite.TestCaseArgs {
-					accs := s.CreateTestAccounts(1)
-
-					return antesuite.TestCaseArgs{
-						Msgs:      []sdk.Msg{testdata.NewTestMsg(accs[0].Account.GetAddress())},
-						GasLimit:  0,
-						FeeAmount: nil,
-					}
-				},
-				RunAnte:  true,
-				Simulate: false,
-				ExpPass:  false,
-				ExpErr:   sdkerrors.ErrOutOfGas,
-			},
-		}
-	*/
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			k, m, ctx := testutil.SetupFeemarketKeeper(t)
@@ -233,14 +329,21 @@ func TestAnteHandle(t *testing.T) {
 			require.NoError(t, err)
 			err = k.SetState(ctx, types.DefaultState())
 			require.NoError(t, err)
+			if tt.denomResolver != nil {
+				k.SetDenomResolver(tt.denomResolver)
+			}
 			var (
 				nextInvoked bool
 				next        = func(ctx sdk.Context, tx sdk.Tx, simulate bool) (sdk.Context, error) {
 					nextInvoked = true
 					return ctx, nil
 				}
-				fmd = ante.NewFeeMarketCheckDecorator(m.AccountKeeper, m.BankKeeper, m.FeeGrantKeeper, k, nil)
 			)
+			var feeGrantKeeper types.FeeGrantKeeper
+			if !tt.disableFeeGrant {
+				feeGrantKeeper = m.FeeGrantKeeper
+			}
+			fmd := ante.NewFeeMarketCheckDecorator(m.AccountKeeper, m.BankKeeper, feeGrantKeeper, k, nil)
 			if tt.genTx {
 				ctx = ctx.WithBlockHeight(0)
 			} else {
@@ -259,13 +362,7 @@ func TestAnteHandle(t *testing.T) {
 			require.NoError(t, err)
 			assert.True(t, nextInvoked, "next is not invoked")
 			assert.Equal(t, tt.expectedMinGasPrices, newCtx.MinGasPrices().String())
+			assert.Equal(t, tt.expectedTxPriority, newCtx.Priority())
 		})
-		// t.Run(fmt.Sprintf("Case %s", tc.Name), func(t *testing.T) {
-		// s := antesuite.SetupTestSuite(t, true)
-		// s.TxBuilder = s.ClientCtx.TxConfig.NewTxBuilder()
-		// args := tc.Malleate(s)
-		//
-		// s.RunTestCase(t, tc, args)
-		// })
 	}
 }
