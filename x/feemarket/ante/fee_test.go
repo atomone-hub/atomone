@@ -22,13 +22,6 @@ import (
 )
 
 func TestAnteHandle(t *testing.T) {
-	// Same data for every test case
-	// gasLimit := antesuite.NewTestGasLimit()
-	//
-	// validFeeAmount := types.DefaultMinBaseGasPrice.MulInt64(int64(gasLimit))
-	// validFee := sdk.NewCoins(sdk.NewCoin("stake", validFeeAmount.TruncateInt()))
-	// validFeeDifferentDenom := sdk.NewCoins(sdk.NewCoin("atom", math.Int(validFeeAmount)))
-
 	var (
 		addrs  = simtestutil.CreateIncrementalAccounts(3)
 		acc1   = authtypes.NewBaseAccountWithAddress(addrs[0])
@@ -46,6 +39,7 @@ func TestAnteHandle(t *testing.T) {
 		genTx                bool
 		simulate             bool
 		disableFeeGrant      bool
+		disableFeemarket     bool
 		denomResolver        types.DenomResolver
 		setup                func(testutil.Mocks)
 		expectedMinGasPrices string
@@ -73,6 +67,16 @@ func TestAnteHandle(t *testing.T) {
 				Body: txBody,
 			},
 			expectedError: "must provide positive gas: invalid gas limit",
+		},
+		{
+			name: "ok: 0 gas given with disabled feemarket",
+			tx: &tx.Tx{
+				AuthInfo: &tx.AuthInfo{
+					Fee: &tx.Fee{},
+				},
+				Body: txBody,
+			},
+			disableFeemarket: true,
 		},
 		{
 			name: "ok: simulate --gas=auto behavior",
@@ -325,7 +329,9 @@ func TestAnteHandle(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			k, m, ctx := testutil.SetupFeemarketKeeper(t)
 			// set default params and state
-			err := k.SetParams(ctx, types.DefaultParams())
+			params := types.DefaultParams()
+			params.Enabled = !tt.disableFeemarket
+			err := k.SetParams(ctx, params)
 			require.NoError(t, err)
 			err = k.SetState(ctx, types.DefaultState())
 			require.NoError(t, err)

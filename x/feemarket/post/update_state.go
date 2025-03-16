@@ -1,6 +1,8 @@
 package post
 
 import (
+	"github.com/atomone-hub/atomone/x/feemarket/keeper"
+
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -9,10 +11,10 @@ import (
 // Call next PostHandler if fees successfully deducted.
 // CONTRACT: Tx must implement FeeTx interface
 type FeemarketStateUpdateDecorator struct {
-	feemarketKeeper FeemarketKeeper
+	feemarketKeeper *keeper.Keeper
 }
 
-func NewFeemarketStateUpdateDecorator(fmk FeemarketKeeper) FeemarketStateUpdateDecorator {
+func NewFeemarketStateUpdateDecorator(fmk *keeper.Keeper) FeemarketStateUpdateDecorator {
 	return FeemarketStateUpdateDecorator{
 		feemarketKeeper: fmk,
 	}
