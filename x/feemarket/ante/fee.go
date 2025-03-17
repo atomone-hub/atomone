@@ -6,13 +6,13 @@ import (
 
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	"github.com/atomone-hub/atomone/x/feemarket/keeper"
 	"github.com/atomone-hub/atomone/x/feemarket/types"
-	feemarkettypes "github.com/atomone-hub/atomone/x/feemarket/types"
 )
 
 type feeMarketCheckDecorator struct {
@@ -106,10 +106,10 @@ func (dfd feeMarketCheckDecorator) anteHandle(ctx sdk.Context, tx sdk.Tx, simula
 	gas := feeTx.GetGas() // use provided gas limit
 
 	if len(feeCoins) == 0 && !simulate {
-		return ctx, errorsmod.Wrapf(feemarkettypes.ErrNoFeeCoins, "got length %d", len(feeCoins))
+		return ctx, errorsmod.Wrapf(types.ErrNoFeeCoins, "got length %d", len(feeCoins))
 	}
 	if len(feeCoins) > 1 {
-		return ctx, errorsmod.Wrapf(feemarkettypes.ErrTooManyFeeCoins, "got length %d", len(feeCoins))
+		return ctx, errorsmod.Wrapf(types.ErrTooManyFeeCoins, "got length %d", len(feeCoins))
 	}
 
 	// if simulating - create a dummy zero value for the user

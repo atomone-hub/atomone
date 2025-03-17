@@ -1,10 +1,11 @@
 package post
 
 import (
-	"github.com/atomone-hub/atomone/x/feemarket/keeper"
-
 	errorsmod "cosmossdk.io/errors"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/atomone-hub/atomone/x/feemarket/keeper"
 )
 
 // FeemarketStateUpdateDecorator updates the state of the fee market based on the gas consumed in the gasmeter.

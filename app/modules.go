@@ -46,7 +46,6 @@ import (
 
 	atomoneappparams "github.com/atomone-hub/atomone/app/params"
 	"github.com/atomone-hub/atomone/x/feemarket"
-	feemarketmodule "github.com/atomone-hub/atomone/x/feemarket"
 	feemarkettypes "github.com/atomone-hub/atomone/x/feemarket/types"
 	"github.com/atomone-hub/atomone/x/gov"
 	govclient "github.com/atomone-hub/atomone/x/gov/client"
@@ -102,7 +101,7 @@ var ModuleBasics = module.NewBasicManager(
 	vesting.AppModuleBasic{},
 	ica.AppModuleBasic{},
 	consensus.AppModuleBasic{},
-	feemarketmodule.AppModuleBasic{},
+	feemarket.AppModuleBasic{},
 )
 
 func appModules(
