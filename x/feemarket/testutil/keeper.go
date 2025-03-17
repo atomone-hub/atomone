@@ -30,6 +30,12 @@ func SetupMsgServer(t *testing.T) (types.MsgServer, *keeper.Keeper, Mocks, sdk.C
 	return keeper.NewMsgServer(k), k, m, ctx
 }
 
+func SetupQueryServer(t *testing.T) (types.QueryServer, *keeper.Keeper, Mocks, sdk.Context) {
+	t.Helper()
+	k, m, ctx := SetupFeemarketKeeper(t)
+	return keeper.NewQueryServer(*k), k, m, ctx
+}
+
 func SetupFeemarketKeeper(t *testing.T) (
 	*keeper.Keeper,
 	Mocks,

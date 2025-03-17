@@ -27,7 +27,6 @@ require (
 	github.com/manifoldco/promptui v0.9.0
 	github.com/ory/dockertest/v3 v3.10.0
 	github.com/rakyll/statik v0.1.7
-	github.com/skip-mev/chaintestutil v0.0.0-20240116134239-3e8274c98981
 	github.com/spf13/cast v1.6.0
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/pflag v1.0.5
@@ -174,7 +173,6 @@ require (
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/sourcegraph/conc v0.3.0 // indirect
 	github.com/spf13/afero v1.11.0 // indirect
-	github.com/stretchr/objx v0.5.2 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/syndtr/goleveldb v1.0.1-0.20220721030215-126854af5e6d // indirect
 	github.com/tendermint/go-amino v0.16.0 // indirect
