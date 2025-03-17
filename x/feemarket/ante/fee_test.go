@@ -156,6 +156,28 @@ func TestAnteHandle(t *testing.T) {
 			expectedError: "error checking fee: got: 2stake required: 42stake, minGasPrice: 1.000000000000000000stake: insufficient fee",
 		},
 		{
+			name: "fail: unknown account",
+			tx: &tx.Tx{
+				AuthInfo: &tx.AuthInfo{
+					Fee: &tx.Fee{
+						GasLimit: 42,
+						Amount: sdk.NewCoins(
+							sdk.NewInt64Coin(sdk.DefaultBondDenom, 42),
+						),
+					},
+				},
+				Body: txBody,
+			},
+			setup: func(m testutil.Mocks) {
+				m.AccountKeeper.EXPECT().
+					GetAccount(gomock.Any(), addrs[0]).Return(nil)
+			},
+			expectedError: fmt.Sprintf(
+				"error escrowing funds: fee payer address: %s does not exist: unknown address",
+				addrs[0],
+			),
+		},
+		{
 			name: "ok: enough fee",
 			tx: &tx.Tx{
 				AuthInfo: &tx.AuthInfo{
