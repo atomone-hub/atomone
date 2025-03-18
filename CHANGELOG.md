@@ -30,7 +30,8 @@
 ### FEATURES
 
 - Add the photon module and use photon as the only fee denom [#57](https://github.com/atomone-hub/atomone/pull/57)
-- Bur proposals deposit if number of no votes > `params.BurnDepositNoThreshold` when tallying [#90](https://github.com/atomone-hub/atomone/pull/90)
+- Make `x/gov` proposals deposits dynamic [#69](https://github.com/atomone-hub/atomone/pull/69)
+- Burn proposals deposit if percentage of no votes > `params.BurnDepositNoThreshold` when tallying [#90](https://github.com/atomone-hub/atomone/pull/90)
 
 ### DEPENDENCIES
 
