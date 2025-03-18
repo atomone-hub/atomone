@@ -48,6 +48,7 @@ const (
 	QuorumTimeout            = "quorum_timeout"
 	MaxVotingPeriodExtension = "max_voting_period_extension"
 	QuorumCheckCount         = "quorum_check_count"
+	BurnDepositNoThreshold   = "burn_deposit_no_threshold"
 )
 
 // GenDepositParamsDepositPeriod returns randomized DepositParamsDepositPeriod
@@ -85,13 +86,13 @@ func GenMinDepositRatio(r *rand.Rand) math.LegacyDec {
 	return math.LegacyMustNewDecFromStr("0.01")
 }
 
-// GenTallyParamsQuorum returns randomized TallyParamsQuorum
+// GenTallyParamsQuorum returns randomized TallyParamsConstitutionQuorum
 func GenTallyParamsConstitutionalQuorum(r *rand.Rand, minDec sdk.Dec) math.LegacyDec {
 	min := int(minDec.Mul(sdk.NewDec(1000)).RoundInt64())
 	return sdk.NewDecWithPrec(int64(simulation.RandIntBetween(r, min, 600)), 3)
 }
 
-// GenTallyParamsThreshold returns randomized TallyParamsThreshold
+// GenTallyParamsThreshold returns randomized TallyParamsConstitutionalThreshold
 func GenTallyParamsConstitutionalThreshold(r *rand.Rand, minDec sdk.Dec) math.LegacyDec {
 	min := int(minDec.Mul(sdk.NewDec(1000)).RoundInt64())
 	return sdk.NewDecWithPrec(int64(simulation.RandIntBetween(r, min, 950)), 3)
@@ -150,6 +151,11 @@ func GenDepositParamsMinInitialDepositChangeRatio(r *rand.Rand, max, prec int) s
 
 func GenDepositParamsMinInitialDepositTargetProposals(r *rand.Rand) uint64 {
 	return uint64(simulation.RandIntBetween(r, 1, 100))
+}
+
+// GenBurnDepositNoThreshold returns a randomized BurnDepositNoThreshold between 0.5 and 0.95
+func GenBurnDepositNoThreshold(r *rand.Rand) math.LegacyDec {
+	return sdk.NewDecWithPrec(int64(simulation.RandIntBetween(r, 500, 950)), 3)
 }
 
 // RandomizedGenState generates a random GenesisState for gov
@@ -324,6 +330,12 @@ func RandomizedGenState(simState *module.SimulationState) {
 		},
 	)
 
+	var burnDepositNoThreshold sdk.Dec
+	simState.AppParams.GetOrGenerate(
+		simState.Cdc, BurnDepositNoThreshold, &burnDepositNoThreshold, simState.Rand,
+		func(r *rand.Rand) { burnDepositNoThreshold = GenBurnDepositNoThreshold(r) },
+	)
+
 	govGenesis := v1.NewGenesisState(
 		startingProposalID,
 		v1.NewParams(depositPeriod, votingPeriod, quorum.String(), threshold.String(), amendmentsQuorum.String(),
@@ -333,7 +345,9 @@ func RandomizedGenState(simState *module.SimulationState) {
 			minDepositSensitivityTargetDistance, minDepositIncreaseRatio.String(), minDepositDecreaseRatio.String(),
 			targetActiveProposals, minInitialDepositFloor, minInitialDepositUpdatePeriod,
 			minInitialDepositSensitivityTargetDistance, minInitialDepositIncreaseRatio.String(),
-			minInitialDepositDecreaseRatio.String(), minInitialDepositTargetProposals),
+			minInitialDepositDecreaseRatio.String(), minInitialDepositTargetProposals,
+			burnDepositNoThreshold.String(),
+		),
 	)
 
 	bz, err := json.MarshalIndent(&govGenesis, "", " ")

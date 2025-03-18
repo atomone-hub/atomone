@@ -27,6 +27,7 @@ func TestMigrateStore(t *testing.T) {
 	require.NotNil(t, params)
 	require.Nil(t, params.MinDepositThrottler)
 	require.Nil(t, params.MinInitialDepositThrottler)
+	require.Equal(t, "", params.BurnDepositNoThreshold)
 
 	// Run migrations.
 	err := v5.MigrateStore(ctx, govKey, cdc)
@@ -38,4 +39,5 @@ func TestMigrateStore(t *testing.T) {
 	require.NotNil(t, params)
 	require.Equal(t, govv1.DefaultParams().MinDepositThrottler, params.MinDepositThrottler)
 	require.Equal(t, govv1.DefaultParams().MinInitialDepositThrottler, params.MinInitialDepositThrottler)
+	require.Equal(t, govv1.DefaultParams().BurnDepositNoThreshold, params.BurnDepositNoThreshold)
 }
