@@ -1,20 +1,19 @@
 package ante
 
 import (
+	errorsmod "cosmossdk.io/errors"
+	"github.com/atomone-hub/atomone/x/photon/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-
-	"github.com/atomone-hub/atomone/x/photon/keeper"
-	"github.com/atomone-hub/atomone/x/photon/types"
 )
 
 var _ sdk.AnteDecorator = ValidateFeeDecorator{}
 
 type ValidateFeeDecorator struct {
-	k *keeper.Keeper
+	k PhotonKeeper
 }
 
-func NewValidateFeeDecorator(k *keeper.Keeper) ValidateFeeDecorator {
+func NewValidateFeeDecorator(k PhotonKeeper) ValidateFeeDecorator {
 	return ValidateFeeDecorator{k: k}
 }
 
@@ -26,7 +25,7 @@ func NewValidateFeeDecorator(k *keeper.Keeper) ValidateFeeDecorator {
 func (vfd ValidateFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (sdk.Context, error) {
 	feeTx, ok := tx.(sdk.FeeTx)
 	if !ok {
-		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "Tx must be a FeeTx") //nolint:staticcheck
+		return ctx, errorsmod.Wrap(sdkerrors.ErrTxDecode, "Tx must be a FeeTx")
 	}
 	feeCoins := feeTx.GetFee()
 	if feeCoins.IsZero() {
@@ -44,7 +43,7 @@ func (vfd ValidateFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate 
 	}
 	if feeDenom := feeCoins[0].Denom; feeDenom != types.Denom {
 		// feeDenom not allowed
-		return ctx, sdkerrors.Wrapf(types.ErrInvalidFeeToken, "fee denom %s not allowed", feeDenom) //nolint:staticcheck
+		return ctx, errorsmod.Wrapf(types.ErrInvalidFeeToken, "fee denom %s not allowed", feeDenom)
 	}
 	// feeDenom photon is allowed
 	return next(ctx, tx, simulate)
