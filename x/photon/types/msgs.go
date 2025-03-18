@@ -1,6 +1,7 @@
 package types
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -37,13 +38,13 @@ func (msg *MsgMintPhoton) GetSignBytes() []byte {
 
 func (msg *MsgMintPhoton) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.ToAddress); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid toAddress: %s", err) //nolint:staticcheck
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid toAddress: %s", err)
 	}
 	if err := msg.Amount.Validate(); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "invalid coin to burn: %s", err) //nolint:staticcheck
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidCoins, "invalid coin to burn: %s", err)
 	}
 	if !msg.Amount.IsPositive() {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "coin to burn must be positive") //nolint:staticcheck
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidCoins, "coin to burn must be positive")
 	}
 	return nil
 }
