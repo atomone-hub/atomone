@@ -30,6 +30,7 @@
 ### FEATURES
 
 - Add the photon module and use photon as the only fee denom [#57](https://github.com/atomone-hub/atomone/pull/57)
+- Make `x/gov` proposals deposits dynamic [#69](https://github.com/atomone-hub/atomone/pull/69)
 
 ### DEPENDENCIES
 
