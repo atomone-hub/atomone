@@ -2,9 +2,11 @@ package ante
 
 import (
 	errorsmod "cosmossdk.io/errors"
-	"github.com/atomone-hub/atomone/x/photon/types"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
+	"github.com/atomone-hub/atomone/x/photon/types"
 )
 
 var _ sdk.AnteDecorator = ValidateFeeDecorator{}
