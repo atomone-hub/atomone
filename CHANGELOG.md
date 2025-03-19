@@ -26,7 +26,7 @@
 - Fix vuln GO-2024-3279 [#60](https://github.com/atomone-hub/atomone/pull/60)
 - Fix vuln GO-2024-3112 and GO-2024-2951 [#62](https://github.com/atomone-hub/atomone/pull/62)
 - Fix vuln GHSA-8wcc-m6j2-qxvm [#67](https://github.com/atomone-hub/atomone/pull/67)
-- (x/gov): Fix proposal converter from v1 to v1beta1 when proposal has not
+- (x/gov): Fix proposal converter from v1 to v1beta1 when proposal has no
   messages [#102](https://github.com/atomone-hub/atomone/pull/102)
 
 ### FEATURES
