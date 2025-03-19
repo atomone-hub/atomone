@@ -3,7 +3,7 @@ package types
 import (
 	"cosmossdk.io/math"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	photontypes "github.com/atomone-hub/atomone/x/photon/types"
 )
 
 // Note: We use the same default values as Ethereum for the EIP-1559
@@ -33,7 +33,7 @@ var (
 	DefaultMaxBlockUtilization uint64 = 30_000_000
 
 	// DefaultMinBaseGasPrice is the default minimum base fee.
-	DefaultMinBaseGasPrice = math.LegacyOneDec()
+	DefaultMinBaseGasPrice = math.LegacyMustNewDecFromStr("0.01")
 
 	// DefaultMinLearningRate is not used in the base EIP-1559 implementation.
 	DefaultMinLearningRate = math.LegacyMustNewDecFromStr("0.125")
@@ -42,7 +42,7 @@ var (
 	DefaultMaxLearningRate = math.LegacyMustNewDecFromStr("0.125")
 
 	// DefaultFeeDenom is the Cosmos SDK default bond denom.
-	DefaultFeeDenom = sdk.DefaultBondDenom
+	DefaultFeeDenom = photontypes.Denom
 )
 
 // DefaultParams returns a default set of parameters that implements

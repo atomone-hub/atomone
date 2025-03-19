@@ -94,7 +94,7 @@ func TestAnteHandle(t *testing.T) {
 					SendCoinsFromAccountToModule(gomock.Any(), addrs[0],
 						authtypes.FeeCollectorName, sdk.NewCoins())
 			},
-			expectedMinGasPrices: "1.000000000000000000stake",
+			expectedMinGasPrices: "0.010000000000000000uphoton",
 			expectedTxPriority:   0,
 		},
 		{
@@ -102,7 +102,7 @@ func TestAnteHandle(t *testing.T) {
 			tx: &tx.Tx{
 				AuthInfo: &tx.AuthInfo{
 					Fee: &tx.Fee{
-						GasLimit: 42,
+						GasLimit: 4200,
 					},
 				},
 				Body: txBody,
@@ -114,9 +114,9 @@ func TestAnteHandle(t *testing.T) {
 			tx: &tx.Tx{
 				AuthInfo: &tx.AuthInfo{
 					Fee: &tx.Fee{
-						GasLimit: 42,
+						GasLimit: 4200,
 						Amount: sdk.NewCoins(
-							sdk.NewInt64Coin(sdk.DefaultBondDenom, 1),
+							sdk.NewInt64Coin(types.DefaultFeeDenom, 1),
 							sdk.NewInt64Coin("photon", 2),
 						),
 					},
@@ -130,39 +130,39 @@ func TestAnteHandle(t *testing.T) {
 			tx: &tx.Tx{
 				AuthInfo: &tx.AuthInfo{
 					Fee: &tx.Fee{
-						GasLimit: 42,
+						GasLimit: 4200,
 						Amount: sdk.NewCoins(
-							sdk.NewInt64Coin("photon", 2),
+							sdk.NewInt64Coin("stake", 2),
 						),
 					},
 				},
 				Body: txBody,
 			},
-			expectedError: "unable to get min gas price for denom photon: error resolving denom",
+			expectedError: "unable to get min gas price for denom stake: error resolving denom",
 		},
 		{
 			name: "fail: not enough fee",
 			tx: &tx.Tx{
 				AuthInfo: &tx.AuthInfo{
 					Fee: &tx.Fee{
-						GasLimit: 42,
+						GasLimit: 4200,
 						Amount: sdk.NewCoins(
-							sdk.NewInt64Coin(sdk.DefaultBondDenom, 2),
+							sdk.NewInt64Coin(types.DefaultFeeDenom, 2),
 						),
 					},
 				},
 				Body: txBody,
 			},
-			expectedError: "error checking fee: got: 2stake required: 42stake, minGasPrice: 1.000000000000000000stake: insufficient fee",
+			expectedError: "error checking fee: got: 2uphoton required: 42uphoton, minGasPrice: 0.010000000000000000uphoton: insufficient fee",
 		},
 		{
 			name: "fail: unknown account",
 			tx: &tx.Tx{
 				AuthInfo: &tx.AuthInfo{
 					Fee: &tx.Fee{
-						GasLimit: 42,
+						GasLimit: 4200,
 						Amount: sdk.NewCoins(
-							sdk.NewInt64Coin(sdk.DefaultBondDenom, 42),
+							sdk.NewInt64Coin(types.DefaultFeeDenom, 42),
 						),
 					},
 				},
@@ -182,9 +182,9 @@ func TestAnteHandle(t *testing.T) {
 			tx: &tx.Tx{
 				AuthInfo: &tx.AuthInfo{
 					Fee: &tx.Fee{
-						GasLimit: 42,
+						GasLimit: 4200,
 						Amount: sdk.NewCoins(
-							sdk.NewInt64Coin(sdk.DefaultBondDenom, 42),
+							sdk.NewInt64Coin(types.DefaultFeeDenom, 42),
 						),
 					},
 				},
@@ -196,10 +196,34 @@ func TestAnteHandle(t *testing.T) {
 				m.BankKeeper.EXPECT().
 					SendCoinsFromAccountToModule(gomock.Any(), addrs[0],
 						authtypes.FeeCollectorName,
-						sdk.NewCoins(sdk.NewInt64Coin(sdk.DefaultBondDenom, 42)))
+						sdk.NewCoins(sdk.NewInt64Coin(types.DefaultFeeDenom, 42)))
 			},
-			expectedMinGasPrices: "1.000000000000000000stake",
+			expectedMinGasPrices: "0.010000000000000000uphoton",
 			expectedTxPriority:   1000000,
+		},
+		{
+			name: "ok: more fee than gas limit increases tx priority",
+			tx: &tx.Tx{
+				AuthInfo: &tx.AuthInfo{
+					Fee: &tx.Fee{
+						GasLimit: 4200,
+						Amount: sdk.NewCoins(
+							sdk.NewInt64Coin(types.DefaultFeeDenom, 420),
+						),
+					},
+				},
+				Body: txBody,
+			},
+			setup: func(m testutil.Mocks) {
+				m.AccountKeeper.EXPECT().
+					GetAccount(gomock.Any(), addrs[0]).Return(acc1)
+				m.BankKeeper.EXPECT().
+					SendCoinsFromAccountToModule(gomock.Any(), addrs[0],
+						authtypes.FeeCollectorName,
+						sdk.NewCoins(sdk.NewInt64Coin(types.DefaultFeeDenom, 420)))
+			},
+			expectedMinGasPrices: "0.010000000000000000uphoton",
+			expectedTxPriority:   10000000,
 		},
 		{
 			name:          "ok: enough fee with resolvable denom",
@@ -207,9 +231,9 @@ func TestAnteHandle(t *testing.T) {
 			tx: &tx.Tx{
 				AuthInfo: &tx.AuthInfo{
 					Fee: &tx.Fee{
-						GasLimit: 42,
+						GasLimit: 4200,
 						Amount: sdk.NewCoins(
-							sdk.NewInt64Coin("photon", 42),
+							sdk.NewInt64Coin("uatone", 42),
 						),
 					},
 				},
@@ -221,9 +245,9 @@ func TestAnteHandle(t *testing.T) {
 				m.BankKeeper.EXPECT().
 					SendCoinsFromAccountToModule(gomock.Any(), addrs[0],
 						authtypes.FeeCollectorName,
-						sdk.NewCoins(sdk.NewInt64Coin("photon", 42)))
+						sdk.NewCoins(sdk.NewInt64Coin("uatone", 42)))
 			},
-			expectedMinGasPrices: "1.000000000000000000photon",
+			expectedMinGasPrices: "0.010000000000000000uatone",
 			expectedTxPriority:   1000000,
 		},
 		{
@@ -231,9 +255,9 @@ func TestAnteHandle(t *testing.T) {
 			tx: &tx.Tx{
 				AuthInfo: &tx.AuthInfo{
 					Fee: &tx.Fee{
-						GasLimit: 42,
+						GasLimit: 4200,
 						Amount: sdk.NewCoins(
-							sdk.NewInt64Coin(sdk.DefaultBondDenom, 42),
+							sdk.NewInt64Coin(types.DefaultFeeDenom, 42),
 						),
 						// payer is the second signer
 						Payer: acc2.Address,
@@ -247,9 +271,9 @@ func TestAnteHandle(t *testing.T) {
 				m.BankKeeper.EXPECT().
 					SendCoinsFromAccountToModule(gomock.Any(), addrs[1],
 						authtypes.FeeCollectorName,
-						sdk.NewCoins(sdk.NewInt64Coin(sdk.DefaultBondDenom, 42)))
+						sdk.NewCoins(sdk.NewInt64Coin(types.DefaultFeeDenom, 42)))
 			},
-			expectedMinGasPrices: "1.000000000000000000stake",
+			expectedMinGasPrices: "0.010000000000000000uphoton",
 			expectedTxPriority:   1000000,
 		},
 		{
@@ -257,9 +281,9 @@ func TestAnteHandle(t *testing.T) {
 			tx: &tx.Tx{
 				AuthInfo: &tx.AuthInfo{
 					Fee: &tx.Fee{
-						GasLimit: 42,
+						GasLimit: 4200,
 						Amount: sdk.NewCoins(
-							sdk.NewInt64Coin(sdk.DefaultBondDenom, 42),
+							sdk.NewInt64Coin(types.DefaultFeeDenom, 42),
 						),
 					},
 				},
@@ -271,7 +295,7 @@ func TestAnteHandle(t *testing.T) {
 				m.BankKeeper.EXPECT().
 					SendCoinsFromAccountToModule(gomock.Any(), addrs[0],
 						authtypes.FeeCollectorName,
-						sdk.NewCoins(sdk.NewInt64Coin(sdk.DefaultBondDenom, 42))).
+						sdk.NewCoins(sdk.NewInt64Coin(types.DefaultFeeDenom, 42))).
 					Return(errors.New("NOPE"))
 			},
 			expectedError: "error escrowing funds: NOPE",
@@ -281,9 +305,9 @@ func TestAnteHandle(t *testing.T) {
 			tx: &tx.Tx{
 				AuthInfo: &tx.AuthInfo{
 					Fee: &tx.Fee{
-						GasLimit: 42,
+						GasLimit: 4200,
 						Amount: sdk.NewCoins(
-							sdk.NewInt64Coin(sdk.DefaultBondDenom, 42),
+							sdk.NewInt64Coin(types.DefaultFeeDenom, 42),
 						),
 						Granter: acc3.Address,
 					},
@@ -292,7 +316,7 @@ func TestAnteHandle(t *testing.T) {
 			},
 			setup: func(m testutil.Mocks) {
 				m.FeeGrantKeeper.EXPECT().UseGrantedFees(gomock.Any(), addrs[2], addrs[0],
-					sdk.NewCoins(sdk.NewInt64Coin(sdk.DefaultBondDenom, 42)),
+					sdk.NewCoins(sdk.NewInt64Coin(types.DefaultFeeDenom, 42)),
 					gomock.Any(),
 				)
 				m.AccountKeeper.EXPECT().
@@ -300,9 +324,9 @@ func TestAnteHandle(t *testing.T) {
 				m.BankKeeper.EXPECT().
 					SendCoinsFromAccountToModule(gomock.Any(), addrs[2],
 						authtypes.FeeCollectorName,
-						sdk.NewCoins(sdk.NewInt64Coin(sdk.DefaultBondDenom, 42)))
+						sdk.NewCoins(sdk.NewInt64Coin(types.DefaultFeeDenom, 42)))
 			},
-			expectedMinGasPrices: "1.000000000000000000stake",
+			expectedMinGasPrices: "0.010000000000000000uphoton",
 			expectedTxPriority:   1000000,
 		},
 		{
@@ -310,9 +334,9 @@ func TestAnteHandle(t *testing.T) {
 			tx: &tx.Tx{
 				AuthInfo: &tx.AuthInfo{
 					Fee: &tx.Fee{
-						GasLimit: 42,
+						GasLimit: 4200,
 						Amount: sdk.NewCoins(
-							sdk.NewInt64Coin(sdk.DefaultBondDenom, 42),
+							sdk.NewInt64Coin(types.DefaultFeeDenom, 42),
 						),
 						Granter: acc3.Address,
 					},
@@ -327,9 +351,9 @@ func TestAnteHandle(t *testing.T) {
 			tx: &tx.Tx{
 				AuthInfo: &tx.AuthInfo{
 					Fee: &tx.Fee{
-						GasLimit: 42,
+						GasLimit: 4200,
 						Amount: sdk.NewCoins(
-							sdk.NewInt64Coin(sdk.DefaultBondDenom, 42),
+							sdk.NewInt64Coin(types.DefaultFeeDenom, 42),
 						),
 						Granter: acc3.Address,
 					},
@@ -338,7 +362,7 @@ func TestAnteHandle(t *testing.T) {
 			},
 			setup: func(m testutil.Mocks) {
 				m.FeeGrantKeeper.EXPECT().UseGrantedFees(gomock.Any(), addrs[2], addrs[0],
-					sdk.NewCoins(sdk.NewInt64Coin(sdk.DefaultBondDenom, 42)),
+					sdk.NewCoins(sdk.NewInt64Coin(types.DefaultFeeDenom, 42)),
 					gomock.Any(),
 				).Return(errors.New("NOPE"))
 			},
@@ -389,8 +413,8 @@ func TestAnteHandle(t *testing.T) {
 			}
 			require.NoError(t, err)
 			assert.True(t, nextInvoked, "next is not invoked")
-			assert.Equal(t, tt.expectedMinGasPrices, newCtx.MinGasPrices().String())
-			assert.Equal(t, tt.expectedTxPriority, newCtx.Priority())
+			assert.Equal(t, tt.expectedMinGasPrices, newCtx.MinGasPrices().String(), "wrong min gas price")
+			assert.Equal(t, tt.expectedTxPriority, newCtx.Priority(), "wrong tx priority")
 		})
 	}
 }

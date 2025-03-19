@@ -107,7 +107,7 @@ func TestStateRequest(t *testing.T) {
 	})
 }
 
-func TestBaseFeeRequest(t *testing.T) {
+func TestGasPriceRequest(t *testing.T) {
 	t.Run("can get gas price", func(t *testing.T) {
 		require := require.New(t)
 		queryServer, k, _, ctx := testutil.SetupQueryServer(t)
@@ -116,7 +116,7 @@ func TestBaseFeeRequest(t *testing.T) {
 		err = k.SetState(ctx, types.DefaultState())
 		require.NoError(err)
 		req := &types.GasPriceRequest{
-			Denom: "stake",
+			Denom: types.DefaultFeeDenom,
 		}
 		resp, err := queryServer.GasPrice(ctx, req)
 		require.NoError(err)

@@ -504,7 +504,7 @@ func TestGetMinGasPrices(t *testing.T) {
 		gs := types.DefaultGenesisState()
 		k.InitGenesis(ctx, *gs)
 
-		expected := sdk.NewDecCoins(sdk.NewDecCoinFromDec(sdk.DefaultBondDenom, gs.State.BaseGasPrice))
+		expected := sdk.NewDecCoins(sdk.NewDecCoinFromDec(types.DefaultFeeDenom, gs.State.BaseGasPrice))
 
 		mgp, err := k.GetMinGasPrices(ctx)
 		require.NoError(err)
@@ -517,7 +517,7 @@ func TestGetMinGasPrices(t *testing.T) {
 		gs := types.DefaultAIMDGenesisState()
 		k.InitGenesis(ctx, *gs)
 
-		expected := sdk.NewDecCoins(sdk.NewDecCoinFromDec(sdk.DefaultBondDenom, gs.State.BaseGasPrice))
+		expected := sdk.NewDecCoins(sdk.NewDecCoinFromDec(types.DefaultFeeDenom, gs.State.BaseGasPrice))
 
 		mgp, err := k.GetMinGasPrices(ctx)
 		require.NoError(err)

@@ -42,7 +42,7 @@ func TestPostHandle(t *testing.T) {
 			name: "ok: state updated",
 			expectedState: func() types.State {
 				s := types.DefaultState()
-				s.Window[0] = 12052
+				s.Window[0] = 11986
 				return s
 			},
 		},
@@ -51,7 +51,7 @@ func TestPostHandle(t *testing.T) {
 			simulate: true,
 			expectedState: func() types.State {
 				s := types.DefaultState()
-				s.Window[0] = 12052
+				s.Window[0] = 11986
 				return s
 			},
 		},
