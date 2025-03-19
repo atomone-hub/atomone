@@ -127,13 +127,27 @@ func (suite *KeeperTestSuite) TestLegacyGRPCQueryProposal() {
 			false,
 		},
 		{
-			"valid request",
+			"valid request with proposal containing a ExecLegacyContent msg",
 			func() {
 				req = &v1beta1.QueryProposalRequest{ProposalId: 1}
 				testProposal := v1beta1.NewTextProposal("Proposal", "testing proposal")
 				msgContent, err := v1.NewLegacyContent(testProposal, govAcct.String())
 				suite.Require().NoError(err)
 				submittedProposal, err := suite.govKeeper.SubmitProposal(ctx, []sdk.Msg{msgContent}, "", "test", "summary", sdk.AccAddress("cosmos1ghekyjucln7y67ntx7cf27m9dpuxxemn4c8g4r"))
+				suite.Require().NoError(err)
+				suite.Require().NotEmpty(submittedProposal)
+
+				expProposal, err = v3.ConvertToLegacyProposal(submittedProposal)
+				suite.Require().NoError(err)
+			},
+			true,
+		},
+		{
+			"valid request with proposal containing no msg",
+			func() {
+				req = &v1beta1.QueryProposalRequest{ProposalId: 2}
+
+				submittedProposal, err := suite.govKeeper.SubmitProposal(ctx, nil, "metadata", "test", "summary", sdk.AccAddress("cosmos1ghekyjucln7y67ntx7cf27m9dpuxxemn4c8g4r"))
 				suite.Require().NoError(err)
 				suite.Require().NotEmpty(submittedProposal)
 
@@ -158,7 +172,7 @@ func (suite *KeeperTestSuite) TestLegacyGRPCQueryProposal() {
 				suite.Require().NoError(err)
 				actualJSON, err := suite.cdc.MarshalJSON(&proposalRes.Proposal)
 				suite.Require().NoError(err)
-				suite.Require().Equal(expJSON, actualJSON)
+				suite.Require().JSONEq(string(expJSON), string(actualJSON))
 			} else {
 				suite.Require().Error(err)
 				suite.Require().Nil(proposalRes)
