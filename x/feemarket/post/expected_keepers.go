@@ -1,9 +1,9 @@
 package post
 
 import (
-	"github.com/atomone-hub/atomone/x/feemarket/types"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/atomone-hub/atomone/x/feemarket/types"
 )
 
 type FeeMarketKeeper interface {
