@@ -35,7 +35,7 @@ func (vfd ValidateFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate 
 		return next(ctx, tx, simulate)
 	}
 
-	if allowsAnyTxFee(tx, vfd.k.GetParams(ctx).TxFeeExceptions) {
+	if AllowsAnyTxFee(tx, vfd.k.GetParams(ctx).TxFeeExceptions) {
 		// Skip if tx is declared in TxFeeExceptions (any fee coins are allowed).
 		return next(ctx, tx, simulate)
 	}
@@ -51,9 +51,9 @@ func (vfd ValidateFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate 
 	return next(ctx, tx, simulate)
 }
 
-// allowsAnyTxFee returns true if all tx messages type URL are presents in
+// AllowsAnyTxFee returns true if all tx messages type URL are presents in
 // txFeeExceptions, or if it starts with a wildcard "*".
-func allowsAnyTxFee(tx sdk.Tx, txFeeExceptions []string) bool {
+func AllowsAnyTxFee(tx sdk.Tx, txFeeExceptions []string) bool {
 	if len(txFeeExceptions) > 0 && txFeeExceptions[0] == "*" {
 		// wildcard detected, all tx fees are allowed.
 		return true
