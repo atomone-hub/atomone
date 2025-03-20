@@ -4,18 +4,16 @@ import (
 	errorsmod "cosmossdk.io/errors"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	"github.com/atomone-hub/atomone/x/feemarket/keeper"
 )
 
 // FeemarketStateUpdateDecorator updates the state of the fee market based on the gas consumed in the gasmeter.
 // Call next PostHandler if fees successfully deducted.
 // CONTRACT: Tx must implement FeeTx interface
 type FeemarketStateUpdateDecorator struct {
-	feemarketKeeper *keeper.Keeper
+	feemarketKeeper FeeMarketKeeper
 }
 
-func NewFeemarketStateUpdateDecorator(fmk *keeper.Keeper) FeemarketStateUpdateDecorator {
+func NewFeemarketStateUpdateDecorator(fmk FeeMarketKeeper) FeemarketStateUpdateDecorator {
 	return FeemarketStateUpdateDecorator{
 		feemarketKeeper: fmk,
 	}

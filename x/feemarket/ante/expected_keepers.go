@@ -1,9 +1,16 @@
-package types
+package ante
 
 import (
+	"github.com/atomone-hub/atomone/x/feemarket/types"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
+
+type FeeMarketKeeper interface {
+	GetMinGasPrice(sdk.Context, string) (sdk.DecCoin, error)
+	GetParams(sdk.Context) (types.Params, error)
+}
 
 // AccountKeeper defines the contract needed for AccountKeeper related APIs.
 // Interface provides support to use non-sdk AccountKeeper for AnteHandler's decorators.
@@ -18,7 +25,5 @@ type FeeGrantKeeper interface {
 
 // BankKeeper defines the contract needed for supply related APIs.
 type BankKeeper interface {
-	IsSendEnabledCoins(ctx sdk.Context, coins ...sdk.Coin) error
-	SendCoins(ctx sdk.Context, from, to sdk.AccAddress, amt sdk.Coins) error
 	SendCoinsFromAccountToModule(ctx sdk.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
 }

@@ -219,9 +219,10 @@ docker-build-all: docker-build-debug docker-build-hermes
 mockgen_cmd=$(rundep) github.com/golang/mock/mockgen
 
 mocks-gen:
-	$(mockgen_cmd) -source=x/gov/testutil/expected_keepers.go    -package testutil -destination x/gov/testutil/expected_keepers_mocks.go
-	$(mockgen_cmd) -source=x/photon/types/expected_keepers.go    -package testutil -destination x/photon/testutil/expected_keepers_mocks.go
-	$(mockgen_cmd) -source=x/feemarket/types/expected_keepers.go -package testutil -destination x/feemarket/testutil/expected_keepers_mocks.go
+	$(mockgen_cmd) -source=x/gov/testutil/expected_keepers.go -package testutil -destination x/gov/testutil/expected_keepers_mocks.go
+	$(mockgen_cmd) -source=x/photon/types/expected_keepers.go -package testutil -destination x/photon/testutil/expected_keepers_mocks.go
+	$(mockgen_cmd) -source=x/feemarket/ante/expected_keepers.go -package ante_test -destination x/feemarket/ante/expected_keepers_mocks_test.go
+	$(mockgen_cmd) -source=x/feemarket/post/expected_keepers.go -package post_test -destination x/feemarket/post/expected_keepers_mocks_test.go
 
 .PHONY: docker-build-debug docker-build-hermes docker-build-all mocks-gen
 

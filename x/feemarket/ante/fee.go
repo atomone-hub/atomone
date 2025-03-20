@@ -11,18 +11,17 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	"github.com/atomone-hub/atomone/x/feemarket/keeper"
 	"github.com/atomone-hub/atomone/x/feemarket/types"
 )
 
 type feeMarketCheckDecorator struct {
-	feemarketKeeper *keeper.Keeper
-	bankKeeper      types.BankKeeper
-	feegrantKeeper  types.FeeGrantKeeper
-	accountKeeper   types.AccountKeeper
+	feemarketKeeper FeeMarketKeeper
+	bankKeeper      BankKeeper
+	feegrantKeeper  FeeGrantKeeper
+	accountKeeper   AccountKeeper
 }
 
-func newFeeMarketCheckDecorator(ak types.AccountKeeper, bk types.BankKeeper, fk types.FeeGrantKeeper, fmk *keeper.Keeper) feeMarketCheckDecorator {
+func newFeeMarketCheckDecorator(ak AccountKeeper, bk BankKeeper, fk FeeGrantKeeper, fmk FeeMarketKeeper) feeMarketCheckDecorator {
 	return feeMarketCheckDecorator{
 		feemarketKeeper: fmk,
 		bankKeeper:      bk,
@@ -41,13 +40,13 @@ func newFeeMarketCheckDecorator(ak types.AccountKeeper, bk types.BankKeeper, fk 
 //
 // CONTRACT: Tx must implement FeeTx interface
 type FeeMarketCheckDecorator struct {
-	feemarketKeeper *keeper.Keeper
+	feemarketKeeper FeeMarketKeeper
 
 	feemarketDecorator feeMarketCheckDecorator
 	fallbackDecorator  sdk.AnteDecorator
 }
 
-func NewFeeMarketCheckDecorator(ak types.AccountKeeper, bk types.BankKeeper, fk types.FeeGrantKeeper, fmk *keeper.Keeper, fallbackDecorator sdk.AnteDecorator) FeeMarketCheckDecorator {
+func NewFeeMarketCheckDecorator(ak AccountKeeper, bk BankKeeper, fk FeeGrantKeeper, fmk FeeMarketKeeper, fallbackDecorator sdk.AnteDecorator) FeeMarketCheckDecorator {
 	return FeeMarketCheckDecorator{
 		feemarketKeeper: fmk,
 		feemarketDecorator: newFeeMarketCheckDecorator(
@@ -146,35 +145,29 @@ func (dfd feeMarketCheckDecorator) anteHandle(ctx sdk.Context, tx sdk.Tx, simula
 		return ctx, errorsmod.Wrapf(err, "error escrowing funds")
 	}
 
-	priorityFee, err := dfd.resolveTxPriorityCoins(ctx, payCoin, params.FeeDenom)
-	if err != nil {
-		return ctx, errorsmod.Wrapf(err, "error resolving fee priority")
+	// Compute tx priority
+	if payCoin.Denom == params.FeeDenom {
+		// Same denom no conversion needed
+		ctx = ctx.WithPriority(GetTxPriority(payCoin, int64(gas), minGasPrice))
+	} else {
+		// Different denom, payCoin needs to be converted to params.FeeDenom
+		// 1. get gas price in params.FeeDenom
+		baseGasPrice, err := dfd.feemarketKeeper.GetMinGasPrice(ctx, params.FeeDenom)
+		if err != nil {
+			return ctx, err
+		}
+		// 2. compute conversion factor between the 2 denoms
+		factor := baseGasPrice.Amount.Quo(minGasPrice.Amount)
+		// 3. convert payCoin
+		feeCoin := sdk.NewCoin(
+			params.FeeDenom,
+			payCoin.Amount.ToLegacyDec().Mul(factor).TruncateInt(),
+		)
+		// 4. compute tx priority
+		ctx = ctx.WithPriority(GetTxPriority(feeCoin, int64(gas), baseGasPrice))
 	}
-
-	baseGasPrice, err := dfd.feemarketKeeper.GetMinGasPrice(ctx, params.FeeDenom)
-	if err != nil {
-		return ctx, err
-	}
-
-	ctx = ctx.WithPriority(GetTxPriority(priorityFee, int64(gas), baseGasPrice))
 
 	return next(ctx, tx, simulate)
-}
-
-// resolveTxPriorityCoins converts the coins to the proper denom used for tx prioritization calculation.
-func (dfd feeMarketCheckDecorator) resolveTxPriorityCoins(ctx sdk.Context, fee sdk.Coin, baseDenom string) (sdk.Coin, error) {
-	if fee.Denom == baseDenom {
-		return fee, nil
-	}
-
-	feeDec := sdk.NewDecCoinFromCoin(fee)
-	convertedDec, err := dfd.feemarketKeeper.ResolveToDenom(ctx, feeDec, baseDenom)
-	if err != nil {
-		return sdk.Coin{}, err
-	}
-
-	// truncate down
-	return sdk.NewCoin(baseDenom, convertedDec.Amount.TruncateInt()), nil
 }
 
 // DeductFees deducts the provided fee from the payer account during tx execution.
