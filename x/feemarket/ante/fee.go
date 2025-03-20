@@ -14,6 +14,9 @@ import (
 	"github.com/atomone-hub/atomone/x/feemarket/types"
 )
 
+// BankSendGasConsumption is the gas consumption of the bank send that occur during feemarket handler execution.
+const BankSendGasConsumption = 385
+
 type feeMarketCheckDecorator struct {
 	feemarketKeeper FeeMarketKeeper
 	bankKeeper      BankKeeper
@@ -142,7 +145,10 @@ func (dfd feeMarketCheckDecorator) anteHandle(ctx sdk.Context, tx sdk.Tx, simula
 	// deduct the entire amount that the account provided as fee (payCoin)
 	err = dfd.DeductFees(ctx, tx, payCoin)
 	if err != nil {
-		return ctx, errorsmod.Wrapf(err, "error escrowing funds")
+		return ctx, errorsmod.Wrapf(err, "error deducting fee")
+	}
+	if simulate {
+		ctx.GasMeter().ConsumeGas(BankSendGasConsumption, "simulation send gas consumption")
 	}
 
 	// Compute tx priority
@@ -205,7 +211,7 @@ func (dfd feeMarketCheckDecorator) DeductFees(ctx sdk.Context, sdkTx sdk.Tx, pro
 
 	err := dfd.bankKeeper.SendCoinsFromAccountToModule(ctx, deductFeesFromAcc.GetAddress(), authtypes.FeeCollectorName, sdk.NewCoins(providedFee))
 	if err != nil {
-		return err
+		return errorsmod.Wrapf(sdkerrors.ErrInsufficientFunds, err.Error())
 	}
 
 	events := sdk.Events{
