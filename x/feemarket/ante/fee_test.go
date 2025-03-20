@@ -231,7 +231,7 @@ func TestAnteHandle(t *testing.T) {
 				m.AccountKeeper.EXPECT().GetAccount(gomock.Any(), addrs[0]).Return(nil)
 			},
 			expectedError: fmt.Sprintf(
-				"error escrowing funds: fee payer address: %s does not exist: unknown address",
+				"error deducting fee: fee payer address: %s does not exist: unknown address",
 				addrs[0],
 			),
 		},
@@ -375,7 +375,7 @@ func TestAnteHandle(t *testing.T) {
 					sdk.NewCoins(sdk.NewInt64Coin(types.DefaultFeeDenom, 42))).
 					Return(errors.New("NOPE"))
 			},
-			expectedError: "error escrowing funds: NOPE",
+			expectedError: "error deducting fee: NOPE: insufficient funds",
 		},
 		{
 			name: "ok: enough fee with granter",
@@ -430,7 +430,7 @@ func TestAnteHandle(t *testing.T) {
 				m.FeeMarketKeeper.EXPECT().GetMinGasPrice(m.ctx, types.DefaultFeeDenom).
 					Return(sdk.NewInt64DecCoin(types.DefaultFeeDenom, 1), nil)
 			},
-			expectedError: "error escrowing funds: fee grants are not enabled: invalid request",
+			expectedError: "error deducting fee: fee grants are not enabled: invalid request",
 		},
 		{
 			name: "fail: enough fee with granter but not granted",
@@ -457,7 +457,7 @@ func TestAnteHandle(t *testing.T) {
 					Return(errors.New("NOPE"))
 			},
 			expectedError: fmt.Sprintf(
-				"error escrowing funds: %s does not allow to pay fees for %s: NOPE",
+				"error deducting fee: %s does not allow to pay fees for %s: NOPE",
 				acc3.Address, acc1.Address),
 		},
 	}
