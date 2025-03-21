@@ -2,6 +2,7 @@ package app
 
 import (
 	errorsmod "cosmossdk.io/errors"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -10,7 +11,7 @@ import (
 
 // PostHandlerOptions are the options required for constructing a FeeMarket PostHandler.
 type HandlerOptions struct {
-	FeemarketKeeper feemarketpost.FeemarketKeeper
+	FeemarketKeeper feemarketpost.FeeMarketKeeper
 }
 
 // NewPostHandler returns a PostHandler chain with the fee deduct decorator.

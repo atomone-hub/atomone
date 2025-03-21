@@ -3,9 +3,10 @@ package cli
 import (
 	"fmt"
 
+	"github.com/spf13/cobra"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/spf13/cobra"
 
 	"github.com/atomone-hub/atomone/x/feemarket/types"
 )
@@ -89,7 +90,7 @@ func GetStateCmd() *cobra.Command {
 // GetGasPriceCmd returns the cli-command that queries the current feemarket gas price.
 func GetGasPriceCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "gas-price",
+		Use:   "gas-price [denom]",
 		Short: "Query for the current feemarket gas price",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {

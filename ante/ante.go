@@ -49,6 +49,9 @@ func NewAnteHandler(opts HandlerOptions) (sdk.AnteHandler, error) {
 	if opts.PhotonKeeper == nil {
 		return nil, errorsmod.Wrap(atomoneerrors.ErrNotFound, "photon keeper is required for AnteHandler")
 	}
+	if opts.FeemarketKeeper == nil {
+		return nil, errorsmod.Wrap(atomoneerrors.ErrNotFound, "feemarket keeper is required for AnteHandler")
+	}
 
 	sigGasConsumer := opts.SigGasConsumer
 	if sigGasConsumer == nil {

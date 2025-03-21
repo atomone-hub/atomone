@@ -46,7 +46,6 @@ import (
 
 	atomoneappparams "github.com/atomone-hub/atomone/app/params"
 	"github.com/atomone-hub/atomone/x/feemarket"
-	feemarketmodule "github.com/atomone-hub/atomone/x/feemarket"
 	feemarkettypes "github.com/atomone-hub/atomone/x/feemarket/types"
 	"github.com/atomone-hub/atomone/x/gov"
 	govclient "github.com/atomone-hub/atomone/x/gov/client"
@@ -102,7 +101,7 @@ var ModuleBasics = module.NewBasicManager(
 	vesting.AppModuleBasic{},
 	ica.AppModuleBasic{},
 	consensus.AppModuleBasic{},
-	feemarketmodule.AppModuleBasic{},
+	feemarket.AppModuleBasic{},
 )
 
 func appModules(
@@ -159,6 +158,7 @@ func simulationModules(
 		feegrantmodule.NewAppModule(appCodec, app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper, app.interfaceRegistry),
 		gov.NewAppModule(appCodec, app.GovKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(govtypes.ModuleName)),
 		mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper, nil, app.GetSubspace(minttypes.ModuleName)),
+		feemarket.NewAppModule(appCodec, *app.FeemarketKeeper),
 		staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
 		photon.NewAppModule(appCodec, *app.PhotonKeeper, app.BankKeeper, app.AccountKeeper, app.StakingKeeper),
 		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(distrtypes.ModuleName)),

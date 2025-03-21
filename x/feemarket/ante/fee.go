@@ -6,12 +6,16 @@ import (
 
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	feemarkettypes "github.com/atomone-hub/atomone/x/feemarket/types"
+	"github.com/atomone-hub/atomone/x/feemarket/types"
 )
+
+// BankSendGasConsumption is the gas consumption of the bank send that occur during feemarket handler execution.
+const BankSendGasConsumption = 385
 
 type feeMarketCheckDecorator struct {
 	feemarketKeeper FeeMarketKeeper
@@ -104,10 +108,10 @@ func (dfd feeMarketCheckDecorator) anteHandle(ctx sdk.Context, tx sdk.Tx, simula
 	gas := feeTx.GetGas() // use provided gas limit
 
 	if len(feeCoins) == 0 && !simulate {
-		return ctx, errorsmod.Wrapf(feemarkettypes.ErrNoFeeCoins, "got length %d", len(feeCoins))
+		return ctx, errorsmod.Wrapf(types.ErrNoFeeCoins, "got length %d", len(feeCoins))
 	}
 	if len(feeCoins) > 1 {
-		return ctx, errorsmod.Wrapf(feemarkettypes.ErrTooManyFeeCoins, "got length %d", len(feeCoins))
+		return ctx, errorsmod.Wrapf(types.ErrTooManyFeeCoins, "got length %d", len(feeCoins))
 	}
 
 	// if simulating - create a dummy zero value for the user
@@ -141,38 +145,35 @@ func (dfd feeMarketCheckDecorator) anteHandle(ctx sdk.Context, tx sdk.Tx, simula
 	// deduct the entire amount that the account provided as fee (payCoin)
 	err = dfd.DeductFees(ctx, tx, payCoin)
 	if err != nil {
-		return ctx, errorsmod.Wrapf(err, "error escrowing funds")
+		return ctx, errorsmod.Wrapf(err, "error deducting fee")
+	}
+	if simulate {
+		ctx.GasMeter().ConsumeGas(BankSendGasConsumption, "simulation send gas consumption")
 	}
 
-	priorityFee, err := dfd.resolveTxPriorityCoins(ctx, payCoin, params.FeeDenom)
-	if err != nil {
-		return ctx, errorsmod.Wrapf(err, "error resolving fee priority")
+	// Compute tx priority
+	if payCoin.Denom == params.FeeDenom {
+		// Same denom no conversion needed
+		ctx = ctx.WithPriority(GetTxPriority(payCoin, int64(gas), minGasPrice))
+	} else {
+		// Different denom, payCoin needs to be converted to params.FeeDenom
+		// 1. get gas price in params.FeeDenom
+		baseGasPrice, err := dfd.feemarketKeeper.GetMinGasPrice(ctx, params.FeeDenom)
+		if err != nil {
+			return ctx, err
+		}
+		// 2. compute conversion factor between the 2 denoms
+		factor := baseGasPrice.Amount.Quo(minGasPrice.Amount)
+		// 3. convert payCoin
+		feeCoin := sdk.NewCoin(
+			params.FeeDenom,
+			payCoin.Amount.ToLegacyDec().Mul(factor).TruncateInt(),
+		)
+		// 4. compute tx priority
+		ctx = ctx.WithPriority(GetTxPriority(feeCoin, int64(gas), baseGasPrice))
 	}
-
-	baseGasPrice, err := dfd.feemarketKeeper.GetMinGasPrice(ctx, params.FeeDenom)
-	if err != nil {
-		return ctx, err
-	}
-
-	ctx = ctx.WithPriority(GetTxPriority(priorityFee, int64(gas), baseGasPrice))
 
 	return next(ctx, tx, simulate)
-}
-
-// resolveTxPriorityCoins converts the coins to the proper denom used for tx prioritization calculation.
-func (dfd feeMarketCheckDecorator) resolveTxPriorityCoins(ctx sdk.Context, fee sdk.Coin, baseDenom string) (sdk.Coin, error) {
-	if fee.Denom == baseDenom {
-		return fee, nil
-	}
-
-	feeDec := sdk.NewDecCoinFromCoin(fee)
-	convertedDec, err := dfd.feemarketKeeper.ResolveToDenom(ctx, feeDec, baseDenom)
-	if err != nil {
-		return sdk.Coin{}, err
-	}
-
-	// truncate down
-	return sdk.NewCoin(baseDenom, convertedDec.Amount.TruncateInt()), nil
 }
 
 // DeductFees deducts the provided fee from the payer account during tx execution.
@@ -210,7 +211,7 @@ func (dfd feeMarketCheckDecorator) DeductFees(ctx sdk.Context, sdkTx sdk.Tx, pro
 
 	err := dfd.bankKeeper.SendCoinsFromAccountToModule(ctx, deductFeesFromAcc.GetAddress(), authtypes.FeeCollectorName, sdk.NewCoins(providedFee))
 	if err != nil {
-		return err
+		return errorsmod.Wrapf(sdkerrors.ErrInsufficientFunds, err.Error())
 	}
 
 	events := sdk.Events{
@@ -230,9 +231,7 @@ func (dfd feeMarketCheckDecorator) DeductFees(ctx sdk.Context, sdkTx sdk.Tx, pro
 func CheckTxFee(ctx sdk.Context, gasPrice sdk.DecCoin, feeCoin sdk.Coin, feeGas int64) error {
 	// Ensure that the provided fees meet the minimum
 	if !gasPrice.IsZero() {
-		var (
-			requiredFee sdk.Coin
-		)
+		var requiredFee sdk.Coin
 
 		glDec := sdkmath.LegacyNewDec(feeGas)
 		limitFee := gasPrice.Amount.Mul(glDec)

@@ -1,62 +1,67 @@
 package keeper_test
 
 import (
+	"testing"
+
 	"github.com/atomone-hub/atomone/x/feemarket/types"
+	"github.com/stretchr/testify/require"
 )
 
-func (s *KeeperTestSuite) TestInitGenesis() {
-	s.Run("default genesis should not panic", func() {
-		s.Require().NotPanics(func() {
-			s.feeMarketKeeper.InitGenesis(s.ctx, *types.DefaultGenesisState())
+func TestInitGenesis(t *testing.T) {
+	k, ctx := setupKeeper(t)
+	t.Run("default genesis should not panic", func(t *testing.T) {
+		require.NotPanics(t, func() {
+			k.InitGenesis(ctx, *types.DefaultGenesisState())
 		})
 	})
 
-	s.Run("default AIMD genesis should not panic", func() {
-		s.Require().NotPanics(func() {
-			s.feeMarketKeeper.InitGenesis(s.ctx, *types.DefaultAIMDGenesisState())
+	t.Run("default AIMD genesis should not panic", func(t *testing.T) {
+		require.NotPanics(t, func() {
+			k.InitGenesis(ctx, *types.DefaultAIMDGenesisState())
 		})
 	})
 
-	s.Run("bad genesis state should panic", func() {
+	t.Run("bad genesis state should panic", func(t *testing.T) {
 		gs := types.DefaultGenesisState()
 		gs.Params.Window = 0
-		s.Require().Panics(func() {
-			s.feeMarketKeeper.InitGenesis(s.ctx, *gs)
+		require.Panics(t, func() {
+			k.InitGenesis(ctx, *gs)
 		})
 	})
 
-	s.Run("mismatch in params and state for window should panic", func() {
+	t.Run("mismatch in params and state for window should panic", func(t *testing.T) {
 		gs := types.DefaultAIMDGenesisState()
 		gs.Params.Window = 1
 
-		s.Require().Panics(func() {
-			s.feeMarketKeeper.InitGenesis(s.ctx, *gs)
+		require.Panics(t, func() {
+			k.InitGenesis(ctx, *gs)
 		})
 	})
 }
 
-func (s *KeeperTestSuite) TestExportGenesis() {
-	s.Run("export genesis should not panic for default eip-1559", func() {
+func TestExportGenesis(t *testing.T) {
+	k, ctx := setupKeeper(t)
+	t.Run("export genesis should not panic for default eip-1559", func(t *testing.T) {
 		gs := types.DefaultGenesisState()
-		s.feeMarketKeeper.InitGenesis(s.ctx, *gs)
+		k.InitGenesis(ctx, *gs)
 
 		var exportedGenesis *types.GenesisState
-		s.Require().NotPanics(func() {
-			exportedGenesis = s.feeMarketKeeper.ExportGenesis(s.ctx)
+		require.NotPanics(t, func() {
+			exportedGenesis = k.ExportGenesis(ctx)
 		})
 
-		s.Require().Equal(gs, exportedGenesis)
+		require.Equal(t, gs, exportedGenesis)
 	})
 
-	s.Run("export genesis should not panic for default AIMD eip-1559", func() {
+	t.Run("export genesis should not panic for default AIMD eip-1559", func(t *testing.T) {
 		gs := types.DefaultAIMDGenesisState()
-		s.feeMarketKeeper.InitGenesis(s.ctx, *gs)
+		k.InitGenesis(ctx, *gs)
 
 		var exportedGenesis *types.GenesisState
-		s.Require().NotPanics(func() {
-			exportedGenesis = s.feeMarketKeeper.ExportGenesis(s.ctx)
+		require.NotPanics(t, func() {
+			exportedGenesis = k.ExportGenesis(ctx)
 		})
 
-		s.Require().Equal(gs, exportedGenesis)
+		require.Equal(t, gs, exportedGenesis)
 	})
 }

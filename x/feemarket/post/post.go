@@ -2,6 +2,7 @@ package post
 
 import (
 	errorsmod "cosmossdk.io/errors"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -9,10 +10,10 @@ import (
 // Call next PostHandler if fees successfully deducted.
 // CONTRACT: Tx must implement FeeTx interface
 type FeemarketStateUpdateDecorator struct {
-	feemarketKeeper FeemarketKeeper
+	feemarketKeeper FeeMarketKeeper
 }
 
-func NewFeemarketStateUpdateDecorator(fmk FeemarketKeeper) FeemarketStateUpdateDecorator {
+func NewFeemarketStateUpdateDecorator(fmk FeeMarketKeeper) FeemarketStateUpdateDecorator {
 	return FeemarketStateUpdateDecorator{
 		feemarketKeeper: fmk,
 	}

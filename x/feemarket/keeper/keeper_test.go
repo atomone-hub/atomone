@@ -3,99 +3,78 @@ package keeper_test
 import (
 	"testing"
 
-	"cosmossdk.io/math"
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/codec"
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
-	"github.com/cosmos/cosmos-sdk/std"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	"github.com/skip-mev/chaintestutil/encoding"
-	"github.com/stretchr/testify/suite"
+	"github.com/stretchr/testify/require"
 
-	atomone "github.com/atomone-hub/atomone/app"
+	"cosmossdk.io/math"
+
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	tmtime "github.com/cometbft/cometbft/types/time"
+
+	"github.com/cosmos/cosmos-sdk/testutil"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+
 	"github.com/atomone-hub/atomone/x/feemarket/keeper"
-	testkeeper "github.com/atomone-hub/atomone/x/feemarket/testutil/keeper"
 	"github.com/atomone-hub/atomone/x/feemarket/types"
-	"github.com/atomone-hub/atomone/x/feemarket/types/mocks"
+	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 )
 
-type KeeperTestSuite struct {
-	suite.Suite
-
-	accountKeeper    *mocks.AccountKeeper
-	feeMarketKeeper  *keeper.Keeper
-	encCfg           encoding.TestEncodingConfig
-	ctx              sdk.Context
-	authorityAccount sdk.AccAddress
-
-	// Message server variables
-	msgServer types.MsgServer
-
-	// Query server variables
-	queryServer types.QueryServer
+func setupKeeper(t *testing.T) (*keeper.Keeper, sdk.Context) {
+	t.Helper()
+	key := sdk.NewKVStoreKey(types.StoreKey)
+	testCtx := testutil.DefaultContextWithDB(t, key, sdk.NewTransientStoreKey("transient_test"))
+	ctx := testCtx.Ctx.WithBlockHeader(tmproto.Header{Time: tmtime.Now()})
+	encCfg := moduletestutil.MakeTestEncodingConfig()
+	types.RegisterInterfaces(encCfg.InterfaceRegistry)
+	// banktypes.RegisterInterfaces(encCfg.InterfaceRegistry)
+	authority := authtypes.NewModuleAddress(govtypes.ModuleName).String()
+	k := keeper.NewKeeper(encCfg.Codec, key, &types.ErrorDenomResolver{}, authority)
+	return k, ctx
 }
 
-func TestKeeperTestSuite(t *testing.T) {
-	suite.Run(t, new(KeeperTestSuite))
-}
-
-func (s *KeeperTestSuite) SetupTest() {
-	s.encCfg = encoding.MakeTestEncodingConfig(atomone.ModuleBasics.RegisterInterfaces)
-	s.authorityAccount = authtypes.NewModuleAddress(govtypes.ModuleName)
-	s.accountKeeper = mocks.NewAccountKeeper(s.T())
-	ctx, tk, tm := testkeeper.NewTestSetup(s.T())
-
-	s.ctx = ctx
-	s.feeMarketKeeper = tk.FeeMarketKeeper
-	s.msgServer = tm.FeeMarketMsgServer
-	s.queryServer = keeper.NewQueryServer(*s.feeMarketKeeper)
-	s.feeMarketKeeper.SetEnabledHeight(s.ctx, -1)
-}
-
-func (s *KeeperTestSuite) TestState() {
-	s.Run("set and get default eip1559 state", func() {
+func TestState(t *testing.T) {
+	k, ctx := setupKeeper(t)
+	t.Run("set and get default eip1559 state", func(t *testing.T) {
 		state := types.DefaultState()
 
-		err := s.feeMarketKeeper.SetState(s.ctx, state)
-		s.Require().NoError(err)
+		err := k.SetState(ctx, state)
+		require.NoError(t, err)
 
-		gotState, err := s.feeMarketKeeper.GetState(s.ctx)
-		s.Require().NoError(err)
+		gotState, err := k.GetState(ctx)
+		require.NoError(t, err)
 
-		s.Require().EqualValues(state, gotState)
+		require.Equal(t, state, gotState)
 	})
 
-	s.Run("set and get aimd eip1559 state", func() {
+	t.Run("set and get aimd eip1559 state", func(t *testing.T) {
 		state := types.DefaultAIMDState()
 
-		err := s.feeMarketKeeper.SetState(s.ctx, state)
-		s.Require().NoError(err)
+		err := k.SetState(ctx, state)
+		require.NoError(t, err)
 
-		gotState, err := s.feeMarketKeeper.GetState(s.ctx)
-		s.Require().NoError(err)
+		gotState, err := k.GetState(ctx)
+		require.NoError(t, err)
 
-		s.Require().Equal(state, gotState)
+		require.Equal(t, state, gotState)
 	})
 }
 
-func (s *KeeperTestSuite) TestParams() {
-	s.Run("set and get default params", func() {
+func TestParams(t *testing.T) {
+	k, ctx := setupKeeper(t)
+	t.Run("set and get default params", func(t *testing.T) {
 		params := types.DefaultParams()
 
-		err := s.feeMarketKeeper.SetParams(s.ctx, params)
-		s.Require().NoError(err)
+		err := k.SetParams(ctx, params)
+		require.NoError(t, err)
 
-		gotParams, err := s.feeMarketKeeper.GetParams(s.ctx)
-		s.Require().NoError(err)
+		gotParams, err := k.GetParams(ctx)
+		require.NoError(t, err)
 
-		s.Require().EqualValues(params, gotParams)
+		require.Equal(t, params, gotParams)
 	})
 
-	s.Run("set and get custom params", func() {
+	t.Run("set and get custom params", func(t *testing.T) {
 		params := types.Params{
 			Alpha:               math.LegacyMustNewDecFromStr("0.1"),
 			Beta:                math.LegacyMustNewDecFromStr("0.1"),
@@ -109,63 +88,23 @@ func (s *KeeperTestSuite) TestParams() {
 			Enabled:             true,
 		}
 
-		err := s.feeMarketKeeper.SetParams(s.ctx, params)
-		s.Require().NoError(err)
+		err := k.SetParams(ctx, params)
+		require.NoError(t, err)
 
-		gotParams, err := s.feeMarketKeeper.GetParams(s.ctx)
-		s.Require().NoError(err)
+		gotParams, err := k.GetParams(ctx)
+		require.NoError(t, err)
 
-		s.Require().EqualValues(params, gotParams)
+		require.Equal(t, params, gotParams)
 	})
 }
 
-func (s *KeeperTestSuite) TestEnabledHeight() {
-	s.Run("get and set values", func() {
-		s.feeMarketKeeper.SetEnabledHeight(s.ctx, 10)
+func TestEnabledHeight(t *testing.T) {
+	k, ctx := setupKeeper(t)
+	t.Run("get and set values", func(t *testing.T) {
+		k.SetEnabledHeight(ctx, 10)
 
-		got, err := s.feeMarketKeeper.GetEnabledHeight(s.ctx)
-		s.Require().NoError(err)
-		s.Require().Equal(int64(10), got)
+		got, err := k.GetEnabledHeight(ctx)
+		require.NoError(t, err)
+		require.Equal(t, int64(10), got)
 	})
-}
-
-// TestEncodingConfig specifies the concrete encoding types to use for a given app.
-// This is provided for compatibility between protobuf and amino implementations.
-type TestEncodingConfig struct {
-	InterfaceRegistry codectypes.InterfaceRegistry
-	Codec             codec.Codec
-	TxConfig          client.TxConfig
-	Amino             *codec.LegacyAmino
-}
-
-// MakeTestEncodingConfig creates a test EncodingConfig for a test configuration.
-func MakeTestEncodingConfig() TestEncodingConfig {
-	amino := codec.NewLegacyAmino()
-
-	interfaceRegistry := InterfaceRegistry()
-	cdc := codec.NewProtoCodec(interfaceRegistry)
-	txCfg := authtx.NewTxConfig(cdc, authtx.DefaultSignModes)
-
-	std.RegisterLegacyAminoCodec(amino)
-	std.RegisterInterfaces(interfaceRegistry)
-
-	return TestEncodingConfig{
-		InterfaceRegistry: interfaceRegistry,
-		Codec:             cdc,
-		TxConfig:          txCfg,
-		Amino:             amino,
-	}
-}
-
-func InterfaceRegistry() codectypes.InterfaceRegistry {
-	interfaceRegistry := codectypes.NewInterfaceRegistry()
-
-	// always register
-	cryptocodec.RegisterInterfaces(interfaceRegistry)
-	authtypes.RegisterInterfaces(interfaceRegistry)
-
-	// call extra registry functions
-	types.RegisterInterfaces(interfaceRegistry)
-
-	return interfaceRegistry
 }

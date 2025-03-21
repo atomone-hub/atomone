@@ -3,8 +3,9 @@ package keeper
 import (
 	"fmt"
 
-	"github.com/atomone-hub/atomone/x/photon/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/atomone-hub/atomone/x/photon/types"
 )
 
 // ConvertToDenom returns "coin.Amount denom" for all coins that are not the denom.
@@ -25,7 +26,6 @@ func (k Keeper) ConvertToDenom(ctx sdk.Context, coin sdk.DecCoin, denom string) 
 	}
 
 	return sdk.DecCoin{}, fmt.Errorf("error resolving denom")
-
 }
 
 func (k Keeper) ExtraDenoms(ctx sdk.Context) ([]string, error) {
