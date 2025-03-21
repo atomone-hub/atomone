@@ -3,6 +3,8 @@
 syntax = "proto3";
 package atomone.gov.v1;
 
+import "cosmos/base/v1beta1/coin.proto";
+import "gogoproto/gogo.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "google/api/annotations.proto";
 import "atomone/gov/v1/gov.proto";
@@ -60,6 +62,18 @@ service Query {
   rpc TallyResult(QueryTallyResultRequest) returns (QueryTallyResultResponse) {
     option (google.api.http).get =
         "/atomone/gov/v1/proposals/{proposal_id}/tally";
+  }
+
+  // MinDeposit queries the minimum deposit currently
+  // required for a proposal to enter voting period.
+  rpc MinDeposit(QueryMinDepositRequest) returns (QueryMinDepositResponse) {
+    option (google.api.http).get = "/atomone/gov/v1/mindeposit";
+  }
+
+  // MinInitialDeposit queries the minimum initial deposit
+  // currently required for a proposal to be submitted.
+  rpc MinInitialDeposit(QueryMinInitialDepositRequest) returns (QueryMinInitialDepositResponse) {
+    option (google.api.http).get = "/atomone/gov/v1/mininitialdeposit";
   }
 }
 
@@ -208,4 +222,22 @@ message QueryTallyResultRequest {
 message QueryTallyResultResponse {
   // tally defines the requested tally.
   TallyResult tally = 1;
+}
+
+// QueryMinDepositRequest is the request type for the Query/MinDeposit RPC method.
+message QueryMinDepositRequest {}
+
+// QueryMinDepositResponse is the response type for the Query/MinDeposit RPC method.
+message QueryMinDepositResponse {
+  // min_deposit defines the minimum deposit required for a proposal to enter voting period.
+  repeated cosmos.base.v1beta1.Coin min_deposit = 1 [ (gogoproto.nullable) = false];
+}
+
+// QueryMinInitialDepositRequest is the request type for the Query/MinInitialDeposit RPC method.
+message QueryMinInitialDepositRequest {}
+
+// QueryMinInitialDepositResponse is the response type for the Query/MinInitialDeposit RPC method.
+message QueryMinInitialDepositResponse {
+  // min_initial_deposit defines the minimum initial deposit required for a proposal to be submitted.
+  repeated cosmos.base.v1beta1.Coin min_initial_deposit = 1 [ (gogoproto.nullable) = false];
 }
