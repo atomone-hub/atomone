@@ -54,6 +54,7 @@ func TestGetMinInitialDeposit(t *testing.T) {
 			setup: func(ctx sdk.Context, k *keeper.Keeper) {
 				k.SetInactiveProposalsNumber(ctx, 0)
 				k.SetLastMinInitialDeposit(ctx, minInitialDepositFloor, minInitialDepositTimeFromTicks(0))
+				k.UpdateMinInitialDeposit(ctx, false)
 			},
 			expectedMinInitialDeposit: minInitialDepositFloor.String(),
 		},
@@ -62,6 +63,7 @@ func TestGetMinInitialDeposit(t *testing.T) {
 			setup: func(ctx sdk.Context, k *keeper.Keeper) {
 				k.SetInactiveProposalsNumber(ctx, N)
 				k.SetLastMinInitialDeposit(ctx, minInitialDepositFloor, minInitialDepositTimeFromTicks(0))
+				k.UpdateMinInitialDeposit(ctx, false)
 			},
 			expectedMinInitialDeposit: minInitialDepositFloor.String(),
 		},
@@ -70,6 +72,7 @@ func TestGetMinInitialDeposit(t *testing.T) {
 			setup: func(ctx sdk.Context, k *keeper.Keeper) {
 				k.SetInactiveProposalsNumber(ctx, N+1)
 				k.SetLastMinInitialDeposit(ctx, minInitialDepositFloor, minInitialDepositTimeFromTicks(0))
+				k.UpdateMinInitialDeposit(ctx, false)
 			},
 			expectedMinInitialDeposit: "101000stake",
 		},
@@ -82,6 +85,7 @@ func TestGetMinInitialDeposit(t *testing.T) {
 				),
 					minInitialDepositTimeFromTicks(0),
 				)
+				k.UpdateMinInitialDeposit(ctx, false)
 			},
 			expectedMinInitialDeposit: "101000stake",
 		},
@@ -90,6 +94,7 @@ func TestGetMinInitialDeposit(t *testing.T) {
 			setup: func(ctx sdk.Context, k *keeper.Keeper) {
 				k.SetInactiveProposalsNumber(ctx, N-1)
 				k.SetLastMinInitialDeposit(ctx, minInitialDepositFloorX2, minInitialDepositTimeFromTicks(0))
+				k.UpdateMinInitialDeposit(ctx, false)
 			},
 			expectedMinInitialDeposit: "199000stake",
 		},
@@ -98,6 +103,7 @@ func TestGetMinInitialDeposit(t *testing.T) {
 			setup: func(ctx sdk.Context, k *keeper.Keeper) {
 				k.SetInactiveProposalsNumber(ctx, N)
 				k.SetLastMinInitialDeposit(ctx, minInitialDepositFloorX2, minInitialDepositTimeFromTicks(0))
+				k.UpdateMinInitialDeposit(ctx, false)
 			},
 			expectedMinInitialDeposit: minInitialDepositFloorX2.String(),
 		},
@@ -106,6 +112,7 @@ func TestGetMinInitialDeposit(t *testing.T) {
 			setup: func(ctx sdk.Context, k *keeper.Keeper) {
 				k.SetInactiveProposalsNumber(ctx, N+1)
 				k.SetLastMinInitialDeposit(ctx, minInitialDepositFloorX2, minInitialDepositTimeFromTicks(0))
+				k.UpdateMinInitialDeposit(ctx, false)
 			},
 			expectedMinInitialDeposit: "202000stake",
 		},
@@ -114,6 +121,7 @@ func TestGetMinInitialDeposit(t *testing.T) {
 			setup: func(ctx sdk.Context, k *keeper.Keeper) {
 				k.SetInactiveProposalsNumber(ctx, N-1)
 				k.SetLastMinInitialDeposit(ctx, minInitialDepositFloorX2, minInitialDepositTimeFromTicks(1))
+				k.UpdateMinInitialDeposit(ctx, true)
 			},
 			expectedMinInitialDeposit: "199000stake",
 		},
@@ -122,6 +130,7 @@ func TestGetMinInitialDeposit(t *testing.T) {
 			setup: func(ctx sdk.Context, k *keeper.Keeper) {
 				k.SetInactiveProposalsNumber(ctx, N)
 				k.SetLastMinInitialDeposit(ctx, minInitialDepositFloorX2, minInitialDepositTimeFromTicks(1))
+				k.UpdateMinInitialDeposit(ctx, true)
 			},
 			expectedMinInitialDeposit: minInitialDepositFloorX2.String(),
 		},
@@ -130,6 +139,7 @@ func TestGetMinInitialDeposit(t *testing.T) {
 			setup: func(ctx sdk.Context, k *keeper.Keeper) {
 				k.SetInactiveProposalsNumber(ctx, N+1)
 				k.SetLastMinInitialDeposit(ctx, minInitialDepositFloorX2, minInitialDepositTimeFromTicks(1))
+				k.UpdateMinInitialDeposit(ctx, true)
 			},
 			expectedMinInitialDeposit: "202000stake",
 		},
@@ -138,6 +148,8 @@ func TestGetMinInitialDeposit(t *testing.T) {
 			setup: func(ctx sdk.Context, k *keeper.Keeper) {
 				k.SetInactiveProposalsNumber(ctx, N-1)
 				k.SetLastMinInitialDeposit(ctx, minInitialDepositFloorX2, minInitialDepositTimeFromTicks(2))
+				k.UpdateMinInitialDeposit(ctx.WithBlockTime(minInitialDepositTimeFromTicks(1)), true)
+				k.UpdateMinInitialDeposit(ctx, true)
 			},
 			expectedMinInitialDeposit: "198005stake",
 		},
@@ -146,6 +158,8 @@ func TestGetMinInitialDeposit(t *testing.T) {
 			setup: func(ctx sdk.Context, k *keeper.Keeper) {
 				k.SetInactiveProposalsNumber(ctx, N)
 				k.SetLastMinInitialDeposit(ctx, minInitialDepositFloorX2, minInitialDepositTimeFromTicks(2))
+				k.UpdateMinInitialDeposit(ctx.WithBlockTime(minInitialDepositTimeFromTicks(1)), true)
+				k.UpdateMinInitialDeposit(ctx, false)
 			},
 			expectedMinInitialDeposit: minInitialDepositFloorX2.String(),
 		},
@@ -154,6 +168,8 @@ func TestGetMinInitialDeposit(t *testing.T) {
 			setup: func(ctx sdk.Context, k *keeper.Keeper) {
 				k.SetInactiveProposalsNumber(ctx, N+1)
 				k.SetLastMinInitialDeposit(ctx, minInitialDepositFloorX2, minInitialDepositTimeFromTicks(2))
+				k.UpdateMinInitialDeposit(ctx.WithBlockTime(minInitialDepositTimeFromTicks(1)), true)
+				k.UpdateMinInitialDeposit(ctx, false)
 			},
 			expectedMinInitialDeposit: "204020stake",
 		},
