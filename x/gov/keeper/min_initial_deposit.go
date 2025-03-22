@@ -110,7 +110,11 @@ func (keeper Keeper) GetMinInitialDeposit(ctx sdk.Context) sdk.Coins {
 		if err != nil {
 			// in case of error bypass the sensitivity, i.e. assume k = 1
 			b = distance.ToLegacyDec()
-			logger.Error("failed to calculate ApproxRoot", "error", err)
+			logger.Error("failed to calculate ApproxRoot for min initial deposit",
+				"error", err,
+				"distance", distance.String(),
+				"k", k,
+				"fallback", "using k=1")
 		}
 		c := a.Mul(b)
 		percChange = percChange.Add(c)
