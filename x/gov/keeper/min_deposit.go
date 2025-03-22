@@ -78,6 +78,8 @@ func (keeper Keeper) GetLastMinDeposit(ctx sdk.Context) (sdk.Coins, time.Time) {
 
 // GetMinDeposit returns the (dynamic) minimum deposit currently required for a proposal
 func (keeper Keeper) GetMinDeposit(ctx sdk.Context) sdk.Coins {
+	logger := keeper.Logger(ctx)
+
 	params := keeper.GetParams(ctx)
 	minDepositFloor := sdk.Coins(params.MinDepositThrottler.FloorValue)
 	tick := params.MinDepositThrottler.UpdatePeriod
@@ -99,10 +101,20 @@ func (keeper Keeper) GetMinDeposit(ctx sdk.Context) sdk.Coins {
 	distance := numActiveProposals.Sub(targetActiveProposals)
 	percChange := math.LegacyOneDec()
 	if !distance.IsZero() {
+		// ApproxRoot is here being called on a relatively small positive
+		// integer (even if distance < 0, ApproxRoot will return
+		// `|distance|.ApproxRoot(k) * -1`) with a value of k expected to also
+		// be relatively small (<= 100).
+		// This is a safe operation and should not error.
 		b, err := distance.ToLegacyDec().ApproxRoot(k)
 		if err != nil {
 			// in case of error bypass the sensitivity, i.e. assume k = 1
 			b = distance.ToLegacyDec()
+			logger.Error("failed to calculate ApproxRoot for min deposit",
+				"error", err,
+				"distance", distance.String(),
+				"k", k,
+				"fallback", "using k=1")
 		}
 		c := a.Mul(b)
 		percChange = percChange.Add(c)
