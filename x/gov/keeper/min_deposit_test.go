@@ -56,6 +56,7 @@ func TestGetMinDeposit(t *testing.T) {
 			setup: func(ctx sdk.Context, k *keeper.Keeper) {
 				k.SetActiveProposalsNumber(ctx, 0)
 				k.SetLastMinDeposit(ctx, minDepositFloor, minDepositTimeFromTicks(0))
+				k.UpdateMinDeposit(ctx, false)
 			},
 			expectedMinDeposit: minDepositFloor.String(),
 		},
@@ -64,6 +65,7 @@ func TestGetMinDeposit(t *testing.T) {
 			setup: func(ctx sdk.Context, k *keeper.Keeper) {
 				k.SetActiveProposalsNumber(ctx, N)
 				k.SetLastMinDeposit(ctx, minDepositFloor, minDepositTimeFromTicks(0))
+				k.UpdateMinDeposit(ctx, false)
 			},
 			expectedMinDeposit: minDepositFloor.String(),
 		},
@@ -72,6 +74,7 @@ func TestGetMinDeposit(t *testing.T) {
 			setup: func(ctx sdk.Context, k *keeper.Keeper) {
 				k.SetActiveProposalsNumber(ctx, N+1)
 				k.SetLastMinDeposit(ctx, minDepositFloor, minDepositTimeFromTicks(0))
+				k.UpdateMinDeposit(ctx, false)
 			},
 			expectedMinDeposit: "10500000stake",
 		},
@@ -84,6 +87,7 @@ func TestGetMinDeposit(t *testing.T) {
 				),
 					minDepositTimeFromTicks(0),
 				)
+				k.UpdateMinDeposit(ctx, false)
 			},
 			expectedMinDeposit: "10500000stake",
 		},
@@ -92,6 +96,7 @@ func TestGetMinDeposit(t *testing.T) {
 			setup: func(ctx sdk.Context, k *keeper.Keeper) {
 				k.SetActiveProposalsNumber(ctx, N-1)
 				k.SetLastMinDeposit(ctx, minDepositFloorX2, minDepositTimeFromTicks(0))
+				k.UpdateMinDeposit(ctx, false)
 			},
 			expectedMinDeposit: "19500000stake",
 		},
@@ -100,6 +105,7 @@ func TestGetMinDeposit(t *testing.T) {
 			setup: func(ctx sdk.Context, k *keeper.Keeper) {
 				k.SetActiveProposalsNumber(ctx, N)
 				k.SetLastMinDeposit(ctx, minDepositFloorX2, minDepositTimeFromTicks(0))
+				k.UpdateMinDeposit(ctx, false)
 			},
 			expectedMinDeposit: minDepositFloorX2.String(),
 		},
@@ -108,6 +114,7 @@ func TestGetMinDeposit(t *testing.T) {
 			setup: func(ctx sdk.Context, k *keeper.Keeper) {
 				k.SetActiveProposalsNumber(ctx, N+1)
 				k.SetLastMinDeposit(ctx, minDepositFloorX2, minDepositTimeFromTicks(0))
+				k.UpdateMinDeposit(ctx, false)
 			},
 			expectedMinDeposit: "21000000stake",
 		},
@@ -116,6 +123,7 @@ func TestGetMinDeposit(t *testing.T) {
 			setup: func(ctx sdk.Context, k *keeper.Keeper) {
 				k.SetActiveProposalsNumber(ctx, N-1)
 				k.SetLastMinDeposit(ctx, minDepositFloorX2, minDepositTimeFromTicks(1))
+				k.UpdateMinDeposit(ctx, true)
 			},
 			expectedMinDeposit: "19500000stake",
 		},
@@ -124,6 +132,7 @@ func TestGetMinDeposit(t *testing.T) {
 			setup: func(ctx sdk.Context, k *keeper.Keeper) {
 				k.SetActiveProposalsNumber(ctx, N)
 				k.SetLastMinDeposit(ctx, minDepositFloorX2, minDepositTimeFromTicks(1))
+				k.UpdateMinDeposit(ctx, true)
 			},
 			expectedMinDeposit: minDepositFloorX2.String(),
 		},
@@ -132,6 +141,7 @@ func TestGetMinDeposit(t *testing.T) {
 			setup: func(ctx sdk.Context, k *keeper.Keeper) {
 				k.SetActiveProposalsNumber(ctx, N+1)
 				k.SetLastMinDeposit(ctx, minDepositFloorX2, minDepositTimeFromTicks(1))
+				k.UpdateMinDeposit(ctx, true)
 			},
 			expectedMinDeposit: "21000000stake",
 		},
@@ -140,6 +150,8 @@ func TestGetMinDeposit(t *testing.T) {
 			setup: func(ctx sdk.Context, k *keeper.Keeper) {
 				k.SetActiveProposalsNumber(ctx, N-1)
 				k.SetLastMinDeposit(ctx, minDepositFloorX2, minDepositTimeFromTicks(2))
+				k.UpdateMinDeposit(ctx.WithBlockTime(minDepositTimeFromTicks(1)), true)
+				k.UpdateMinDeposit(ctx, true)
 			},
 			expectedMinDeposit: "19012500stake",
 		},
@@ -148,6 +160,8 @@ func TestGetMinDeposit(t *testing.T) {
 			setup: func(ctx sdk.Context, k *keeper.Keeper) {
 				k.SetActiveProposalsNumber(ctx, N)
 				k.SetLastMinDeposit(ctx, minDepositFloorX2, minDepositTimeFromTicks(2))
+				k.UpdateMinDeposit(ctx.WithBlockTime(minDepositTimeFromTicks(1)), true)
+				k.UpdateMinDeposit(ctx, true)
 			},
 			expectedMinDeposit: minDepositFloorX2.String(),
 		},
@@ -156,6 +170,8 @@ func TestGetMinDeposit(t *testing.T) {
 			setup: func(ctx sdk.Context, k *keeper.Keeper) {
 				k.SetActiveProposalsNumber(ctx, N+1)
 				k.SetLastMinDeposit(ctx, minDepositFloorX2, minDepositTimeFromTicks(2))
+				k.UpdateMinDeposit(ctx.WithBlockTime(minDepositTimeFromTicks(1)), true)
+				k.UpdateMinDeposit(ctx, true)
 			},
 			expectedMinDeposit: "22050000stake",
 		},
