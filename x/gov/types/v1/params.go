@@ -9,10 +9,17 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// Default period for deposits & voting and min voting period
 const (
+	// Default period for deposits & voting and min voting period
 	DefaultVotingPeriod  time.Duration = time.Hour * 24 * 21 // 21 days
 	DefaultDepositPeriod time.Duration = time.Hour * 24 * 14 // 14 days
+
+	// MaxSensitivityTargetDistanceDepositThrottler is the maximum value that
+	// can be set for the sensitivity target distance in the initial and
+	// total deposit throttlers. This value has been experimentally found to
+	// be sufficient for realistic usage. A higher value would make the
+	// throttler too little sensitive to the distance from the target.
+	MaxSensitivityTargetDistanceDepositThrottler = 100
 )
 
 // MinVotingPeriod is set in stone by the constitution at 21 days, but it can
@@ -351,6 +358,10 @@ func (p Params) ValidateBasic() error {
 		return fmt.Errorf("minimum deposit sensitivity target distance must be positive: %d", p.MinDepositThrottler.SensitivityTargetDistance)
 	}
 
+	if p.MinDepositThrottler.SensitivityTargetDistance > MaxSensitivityTargetDistanceDepositThrottler {
+		return fmt.Errorf("minimum deposit sensitivity target distance must be less than or equal to %d: %d", MaxSensitivityTargetDistanceDepositThrottler, p.MinDepositThrottler.SensitivityTargetDistance)
+	}
+
 	minDepositIncreaseRatio, err := sdk.NewDecFromStr(p.MinDepositThrottler.IncreaseRatio)
 	if err != nil {
 		return fmt.Errorf("invalid minimum deposit increase ratio: %w", err)
@@ -395,6 +406,10 @@ func (p Params) ValidateBasic() error {
 
 	if p.MinInitialDepositThrottler.SensitivityTargetDistance == 0 {
 		return fmt.Errorf("minimum initial deposit sensitivity target distance must be positive: %d", p.MinInitialDepositThrottler.SensitivityTargetDistance)
+	}
+
+	if p.MinInitialDepositThrottler.SensitivityTargetDistance > MaxSensitivityTargetDistanceDepositThrottler {
+		return fmt.Errorf("minimum initial deposit sensitivity target distance must be less than or equal to %d: %d", MaxSensitivityTargetDistanceDepositThrottler, p.MinInitialDepositThrottler.SensitivityTargetDistance)
 	}
 
 	minInitialDepositIncreaseRatio, err := sdk.NewDecFromStr(p.MinInitialDepositThrottler.IncreaseRatio)
