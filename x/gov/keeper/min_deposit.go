@@ -103,7 +103,7 @@ func (keeper Keeper) GetMinDeposit(ctx sdk.Context) sdk.Coins {
 	if !distance.IsZero() {
 		// ApproxRoot is here being called on a relatively small positive
 		// integer (even if distance < 0, ApproxRoot will return
-		// `|distance|.ApproxRoot(k) * -1)` with a value of k expected to also
+		// `|distance|.ApproxRoot(k) * -1`) with a value of k expected to also
 		// be relatively small (<= 100).
 		// This is a safe operation and should not error.
 		b, err := distance.ToLegacyDec().ApproxRoot(k)
