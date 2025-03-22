@@ -15,8 +15,8 @@ const (
 	DefaultDepositPeriod time.Duration = time.Hour * 24 * 14 // 14 days
 
 	// MaxSensitivityTargetDistanceDepositThrottler is the maximum value that
-	// can be set for the sensitivity target distance in the initial and
-	// total deposit throttlers. This value has been experimentally found to
+	// can be set for the sensitivity to target distance for dynamic initial
+	// and total deposit. This value has been empirically found to
 	// be sufficient for realistic usage. A higher value would make the
 	// throttler too little sensitive to the distance from the target.
 	MaxSensitivityTargetDistanceDepositThrottler = 100
