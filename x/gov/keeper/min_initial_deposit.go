@@ -101,7 +101,7 @@ func (keeper Keeper) UpdateMinInitialDeposit(ctx sdk.Context, checkElapsedTime b
 
 	minInitialDepositFloor := sdk.Coins(params.MinInitialDepositThrottler.FloorValue)
 	targetInactiveProposals := math.NewIntFromUint64(params.MinInitialDepositThrottler.TargetProposals)
-	k := params.MinInitialDepositThrottler.SensitivityTargetDistance
+	k := params.MinInitialDepositThrottler.DecreaseSensitivityTargetDistance
 	var alpha math.LegacyDec
 
 	numInactiveProposals := math.NewIntFromUint64(keeper.GetInactiveProposalsNumber(ctx))

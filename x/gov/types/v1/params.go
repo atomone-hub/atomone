@@ -14,13 +14,13 @@ const (
 	DefaultVotingPeriod  time.Duration = time.Hour * 24 * 21 // 21 days
 	DefaultDepositPeriod time.Duration = time.Hour * 24 * 14 // 14 days
 
-	// MaxSensitivityTargetDistanceDepositThrottler is the maximum value that
-	// can be set for the sensitivity to target distance for dynamic initial
-	// and total deposit (decreases). This value has been empirically found to
-	// be sufficient for realistic usage. A higher value would make the
-	// throttler too little sensitive to the distance from the target when
-	// decreasing the deposit.
-	MaxSensitivityTargetDistanceDepositThrottler = 100
+	// MaxDecreaseSensitivityTargetDistanceDepositThrottler is the maximum
+	// value that can be set for the sensitivity to target distance for
+	// dynamic initial and total deposit (decreases). This value has been
+	// empirically found to be sufficient for realistic usage. A higher
+	// value would make the throttler too little sensitive to the distance
+	// from the target when decreasing the deposit.
+	MaxDecreaseSensitivityTargetDistanceDepositThrottler = 100
 )
 
 // MinVotingPeriod is set in stone by the constitution at 21 days, but it can
@@ -50,22 +50,22 @@ var (
 	DefaultBurnVoteQuorom      = false                    // set to false to  replicate behavior of when this change was made (0.47)
 	DefaultMinDepositRatio     = sdk.NewDecWithPrec(1, 2) // NOTE: backport from v50
 
-	DefaultQuorumTimeout                              time.Duration = DefaultVotingPeriod - (time.Hour * 24 * 1) // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
-	DefaultMaxVotingPeriodExtension                   time.Duration = DefaultVotingPeriod - DefaultQuorumTimeout // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
-	DefaultQuorumCheckCount                           uint64        = 0                                          // disabled by default (0 means no check)
-	DefaultMinDepositFloor                            sdk.Coins     = sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, DefaultMinDepositTokens))
-	DefaultMinDepositUpdatePeriod                     time.Duration = time.Hour * 24 * 7
-	DefaultMinDepositSensitivityTargetDistance        uint64        = 2
-	DefaultMinDepositIncreaseRatio                                  = sdk.NewDecWithPrec(5, 2)
-	DefaultMinDepositDecreaseRatio                                  = sdk.NewDecWithPrec(25, 3)
-	DefaultTargetActiveProposals                      uint64        = 2
-	DefaultMinInitialDepositFloor                     sdk.Coins     = sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewDecWithPrec(1, 2).MulInt(DefaultMinDepositTokens).TruncateInt()))
-	DefaultMinInitialDepositUpdatePeriod              time.Duration = time.Hour * 24
-	DefaultMinInitialDepositSensitivityTargetDistance uint64        = 2
-	DefaultMinInitialDepositIncreaseRatio                           = sdk.NewDecWithPrec(1, 2)
-	DefaultMinInitialDepositDecreaseRatio                           = sdk.NewDecWithPrec(5, 3)
-	DefaultTargetProposalsInDepositPeriod             uint64        = 5
-	DefaultBurnDepositNoThreshold                                   = sdk.NewDecWithPrec(80, 2)
+	DefaultQuorumTimeout                                      time.Duration = DefaultVotingPeriod - (time.Hour * 24 * 1) // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
+	DefaultMaxVotingPeriodExtension                           time.Duration = DefaultVotingPeriod - DefaultQuorumTimeout // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
+	DefaultQuorumCheckCount                                   uint64        = 0                                          // disabled by default (0 means no check)
+	DefaultMinDepositFloor                                    sdk.Coins     = sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, DefaultMinDepositTokens))
+	DefaultMinDepositUpdatePeriod                             time.Duration = time.Hour * 24 * 7
+	DefaultMinDepositDecreaseSensitivityTargetDistance        uint64        = 2
+	DefaultMinDepositIncreaseRatio                                          = sdk.NewDecWithPrec(5, 2)
+	DefaultMinDepositDecreaseRatio                                          = sdk.NewDecWithPrec(25, 3)
+	DefaultTargetActiveProposals                              uint64        = 2
+	DefaultMinInitialDepositFloor                             sdk.Coins     = sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewDecWithPrec(1, 2).MulInt(DefaultMinDepositTokens).TruncateInt()))
+	DefaultMinInitialDepositUpdatePeriod                      time.Duration = time.Hour * 24
+	DefaultMinInitialDepositDecreaseSensitivityTargetDistance uint64        = 2
+	DefaultMinInitialDepositIncreaseRatio                                   = sdk.NewDecWithPrec(1, 2)
+	DefaultMinInitialDepositDecreaseRatio                                   = sdk.NewDecWithPrec(5, 3)
+	DefaultTargetProposalsInDepositPeriod                     uint64        = 5
+	DefaultBurnDepositNoThreshold                                           = sdk.NewDecWithPrec(80, 2)
 )
 
 // Deprecated: NewDepositParams creates a new DepositParams object
@@ -99,9 +99,9 @@ func NewParams(
 	// minInitialDepositRatio string, // Deprecated in favor of dynamic min initial deposit
 	burnProposalDeposit, burnVoteQuorum bool, minDepositRatio string,
 	quorumTimeout, maxVotingPeriodExtension time.Duration, quorumCheckCount uint64,
-	minDepositFloor sdk.Coins, minDepositUpdatePeriod time.Duration, minDepositSensitivityTargetDistance uint64,
+	minDepositFloor sdk.Coins, minDepositUpdatePeriod time.Duration, minDepositDecreaseSensitivityTargetDistance uint64,
 	minDepositIncreaseRatio, minDepositDecreaseRatio string, targetActiveProposals uint64,
-	minInitialDepositFloor sdk.Coins, minInitialDepositUpdatePeriod time.Duration, minInitialDepositSensitivityTargetDistance uint64,
+	minInitialDepositFloor sdk.Coins, minInitialDepositUpdatePeriod time.Duration, minInitialDepositDecreaseSensitivityTargetDistance uint64,
 	minInitialDepositIncreaseRatio, minInitialDepositDecreaseRatio string, targetProposalsInDepositPeriod uint64,
 	burnDepositNoThreshold string,
 ) Params {
@@ -123,20 +123,20 @@ func NewParams(
 		MaxVotingPeriodExtension:   &maxVotingPeriodExtension,
 		QuorumCheckCount:           quorumCheckCount,
 		MinDepositThrottler: &MinDepositThrottler{
-			FloorValue:                minDepositFloor,
-			UpdatePeriod:              &minDepositUpdatePeriod,
-			SensitivityTargetDistance: minDepositSensitivityTargetDistance,
-			IncreaseRatio:             minDepositIncreaseRatio,
-			DecreaseRatio:             minDepositDecreaseRatio,
-			TargetActiveProposals:     targetActiveProposals,
+			FloorValue:                        minDepositFloor,
+			UpdatePeriod:                      &minDepositUpdatePeriod,
+			DecreaseSensitivityTargetDistance: minDepositDecreaseSensitivityTargetDistance,
+			IncreaseRatio:                     minDepositIncreaseRatio,
+			DecreaseRatio:                     minDepositDecreaseRatio,
+			TargetActiveProposals:             targetActiveProposals,
 		},
 		MinInitialDepositThrottler: &MinInitialDepositThrottler{
-			FloorValue:                minInitialDepositFloor,
-			UpdatePeriod:              &minInitialDepositUpdatePeriod,
-			SensitivityTargetDistance: minInitialDepositSensitivityTargetDistance,
-			IncreaseRatio:             minInitialDepositIncreaseRatio,
-			DecreaseRatio:             minInitialDepositDecreaseRatio,
-			TargetProposals:           targetProposalsInDepositPeriod,
+			FloorValue:                        minInitialDepositFloor,
+			UpdatePeriod:                      &minInitialDepositUpdatePeriod,
+			DecreaseSensitivityTargetDistance: minInitialDepositDecreaseSensitivityTargetDistance,
+			IncreaseRatio:                     minInitialDepositIncreaseRatio,
+			DecreaseRatio:                     minInitialDepositDecreaseRatio,
+			TargetProposals:                   targetProposalsInDepositPeriod,
 		},
 		BurnDepositNoThreshold: burnDepositNoThreshold,
 	}
@@ -163,13 +163,13 @@ func DefaultParams() Params {
 		DefaultQuorumCheckCount,
 		DefaultMinDepositFloor,
 		DefaultMinDepositUpdatePeriod,
-		DefaultMinDepositSensitivityTargetDistance,
+		DefaultMinDepositDecreaseSensitivityTargetDistance,
 		DefaultMinDepositIncreaseRatio.String(),
 		DefaultMinDepositDecreaseRatio.String(),
 		DefaultTargetActiveProposals,
 		DefaultMinInitialDepositFloor,
 		DefaultMinInitialDepositUpdatePeriod,
-		DefaultMinInitialDepositSensitivityTargetDistance,
+		DefaultMinInitialDepositDecreaseSensitivityTargetDistance,
 		DefaultMinInitialDepositIncreaseRatio.String(),
 		DefaultMinInitialDepositDecreaseRatio.String(),
 		DefaultTargetProposalsInDepositPeriod,
@@ -355,12 +355,12 @@ func (p Params) ValidateBasic() error {
 		return fmt.Errorf("minimum deposit update period must be less than or equal to the voting period: %s", p.MinDepositThrottler.UpdatePeriod)
 	}
 
-	if p.MinDepositThrottler.SensitivityTargetDistance == 0 {
-		return fmt.Errorf("minimum deposit sensitivity target distance must be positive: %d", p.MinDepositThrottler.SensitivityTargetDistance)
+	if p.MinDepositThrottler.DecreaseSensitivityTargetDistance == 0 {
+		return fmt.Errorf("minimum deposit sensitivity target distance must be positive: %d", p.MinDepositThrottler.DecreaseSensitivityTargetDistance)
 	}
 
-	if p.MinDepositThrottler.SensitivityTargetDistance > MaxSensitivityTargetDistanceDepositThrottler {
-		return fmt.Errorf("minimum deposit sensitivity target distance must be less than or equal to %d: %d", MaxSensitivityTargetDistanceDepositThrottler, p.MinDepositThrottler.SensitivityTargetDistance)
+	if p.MinDepositThrottler.DecreaseSensitivityTargetDistance > MaxDecreaseSensitivityTargetDistanceDepositThrottler {
+		return fmt.Errorf("minimum deposit sensitivity target distance must be less than or equal to %d: %d", MaxDecreaseSensitivityTargetDistanceDepositThrottler, p.MinDepositThrottler.DecreaseSensitivityTargetDistance)
 	}
 
 	minDepositIncreaseRatio, err := sdk.NewDecFromStr(p.MinDepositThrottler.IncreaseRatio)
@@ -405,12 +405,12 @@ func (p Params) ValidateBasic() error {
 		return fmt.Errorf("minimum initial deposit update period must be less than or equal to the voting period: %s", p.MinInitialDepositThrottler.UpdatePeriod)
 	}
 
-	if p.MinInitialDepositThrottler.SensitivityTargetDistance == 0 {
-		return fmt.Errorf("minimum initial deposit sensitivity target distance must be positive: %d", p.MinInitialDepositThrottler.SensitivityTargetDistance)
+	if p.MinInitialDepositThrottler.DecreaseSensitivityTargetDistance == 0 {
+		return fmt.Errorf("minimum initial deposit sensitivity target distance must be positive: %d", p.MinInitialDepositThrottler.DecreaseSensitivityTargetDistance)
 	}
 
-	if p.MinInitialDepositThrottler.SensitivityTargetDistance > MaxSensitivityTargetDistanceDepositThrottler {
-		return fmt.Errorf("minimum initial deposit sensitivity target distance must be less than or equal to %d: %d", MaxSensitivityTargetDistanceDepositThrottler, p.MinInitialDepositThrottler.SensitivityTargetDistance)
+	if p.MinInitialDepositThrottler.DecreaseSensitivityTargetDistance > MaxDecreaseSensitivityTargetDistanceDepositThrottler {
+		return fmt.Errorf("minimum initial deposit sensitivity target distance must be less than or equal to %d: %d", MaxDecreaseSensitivityTargetDistanceDepositThrottler, p.MinInitialDepositThrottler.DecreaseSensitivityTargetDistance)
 	}
 
 	minInitialDepositIncreaseRatio, err := sdk.NewDecFromStr(p.MinInitialDepositThrottler.IncreaseRatio)
