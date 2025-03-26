@@ -231,7 +231,8 @@ message MinDepositThrottler {
   // The number of active proposals the dynamic minimum deposit should target.
   uint64 target_active_proposals = 3;
 
-  // The ratio of increase for the minimum deposit
+  // The ratio of increase for the minimum deposit when the number of active proposals
+  // is at or above the target.
   string increase_ratio = 4 [(cosmos_proto.scalar) = "cosmos.Dec"];
 
   // The ratio of decrease for the minimum deposit when the number of active proposals
@@ -258,7 +259,7 @@ message MinInitialDepositThrottler {
   uint64 target_proposals = 3;
 
   // The ratio of increase for the minimum initial deposit when the number of proposals
-  // in deposit period exceeds the target by 1.
+  // in deposit period exceeds is at or above the target.
   string increase_ratio = 4 [(cosmos_proto.scalar) = "cosmos.Dec"];
 
   // The ratio of decrease for the minimum initial deposit when the number of proposals

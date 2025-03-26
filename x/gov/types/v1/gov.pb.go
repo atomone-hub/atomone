@@ -863,7 +863,8 @@ type MinDepositThrottler struct {
 	UpdatePeriod *time.Duration `protobuf:"bytes,2,opt,name=update_period,json=updatePeriod,proto3,stdduration" json:"update_period,omitempty"`
 	// The number of active proposals the dynamic minimum deposit should target.
 	TargetActiveProposals uint64 `protobuf:"varint,3,opt,name=target_active_proposals,json=targetActiveProposals,proto3" json:"target_active_proposals,omitempty"`
-	// The ratio of increase for the minimum deposit
+	// The ratio of increase for the minimum deposit when the number of active proposals
+	// is at or above the target.
 	IncreaseRatio string `protobuf:"bytes,4,opt,name=increase_ratio,json=increaseRatio,proto3" json:"increase_ratio,omitempty"`
 	// The ratio of decrease for the minimum deposit when the number of active proposals
 	// is 1 less than the target.
@@ -959,7 +960,7 @@ type MinInitialDepositThrottler struct {
 	// The number of proposals in deposit period the dynamic minimum initial deposit should target.
 	TargetProposals uint64 `protobuf:"varint,3,opt,name=target_proposals,json=targetProposals,proto3" json:"target_proposals,omitempty"`
 	// The ratio of increase for the minimum initial deposit when the number of proposals
-	// in deposit period exceeds the target by 1.
+	// in deposit period exceeds is at or above the target.
 	IncreaseRatio string `protobuf:"bytes,4,opt,name=increase_ratio,json=increaseRatio,proto3" json:"increase_ratio,omitempty"`
 	// The ratio of decrease for the minimum initial deposit when the number of proposals
 	// in deposit period is 1 less than the target.

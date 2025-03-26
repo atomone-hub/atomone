@@ -124,6 +124,8 @@ func (suite *KeeperTestSuite) TestSubmitProposalReq() {
 			msg, err := tc.preRun()
 			suite.Require().NoError(err)
 			res, err := suite.msgSrvr.SubmitProposal(suite.ctx, msg)
+			// reset proposal number, we ignore the dynamic deposit system in these tests
+			suite.govKeeper.SetActiveProposalsNumber(suite.ctx, 0)
 			if tc.expErr {
 				suite.Require().Error(err)
 				suite.Require().Contains(err.Error(), tc.expErrMsg)
@@ -164,6 +166,9 @@ func (suite *KeeperTestSuite) TestVoteReq() {
 	suite.Require().NotNil(res.ProposalId)
 	proposalId := res.ProposalId
 
+	// reset proposal number, we ignore the dynamic deposit system in these tests
+	suite.govKeeper.SetActiveProposalsNumber(suite.ctx, 0)
+
 	cases := map[string]struct {
 		preRun    func() uint64
 		expErr    bool
@@ -187,6 +192,10 @@ func (suite *KeeperTestSuite) TestVoteReq() {
 				res, err := suite.msgSrvr.SubmitProposal(suite.ctx, msg)
 				suite.Require().NoError(err)
 				suite.Require().NotNil(res.ProposalId)
+
+				// reset proposal number, we ignore the dynamic deposit system in these tests
+				suite.govKeeper.SetActiveProposalsNumber(suite.ctx, 0)
+
 				return res.ProposalId
 			},
 			option:    v1.VoteOption_VOTE_OPTION_YES,
@@ -230,6 +239,10 @@ func (suite *KeeperTestSuite) TestVoteReq() {
 				res, err := suite.msgSrvr.SubmitProposal(suite.ctx, msg)
 				suite.Require().NoError(err)
 				suite.Require().NotNil(res.ProposalId)
+
+				// reset proposal number, we ignore the dynamic deposit system in these tests
+				suite.govKeeper.SetActiveProposalsNumber(suite.ctx, 0)
+
 				return res.ProposalId
 			},
 			option:   v1.VoteOption_VOTE_OPTION_YES,
@@ -283,6 +296,9 @@ func (suite *KeeperTestSuite) TestVoteWeightedReq() {
 	suite.Require().NotNil(res.ProposalId)
 	proposalId := res.ProposalId
 
+	// reset proposal number, we ignore the dynamic deposit system in these tests
+	suite.govKeeper.SetActiveProposalsNumber(suite.ctx, 0)
+
 	cases := map[string]struct {
 		preRun    func() uint64
 		vote      *v1.MsgVote
@@ -307,6 +323,10 @@ func (suite *KeeperTestSuite) TestVoteWeightedReq() {
 				res, err := suite.msgSrvr.SubmitProposal(suite.ctx, msg)
 				suite.Require().NoError(err)
 				suite.Require().NotNil(res.ProposalId)
+
+				// reset proposal number, we ignore the dynamic deposit system in these tests
+				suite.govKeeper.SetActiveProposalsNumber(suite.ctx, 0)
+
 				return res.ProposalId
 			},
 			option:    v1.VoteOption_VOTE_OPTION_YES,
@@ -350,6 +370,10 @@ func (suite *KeeperTestSuite) TestVoteWeightedReq() {
 				res, err := suite.msgSrvr.SubmitProposal(suite.ctx, msg)
 				suite.Require().NoError(err)
 				suite.Require().NotNil(res.ProposalId)
+
+				// reset proposal number, we ignore the dynamic deposit system in these tests
+				suite.govKeeper.SetActiveProposalsNumber(suite.ctx, 0)
+
 				return res.ProposalId
 			},
 			option:   v1.VoteOption_VOTE_OPTION_YES,
@@ -492,6 +516,8 @@ func (suite *KeeperTestSuite) TestLegacyMsgSubmitProposal() {
 			msg, err := c.preRun()
 			suite.Require().NoError(err)
 			res, err := suite.legacyMsgSrvr.SubmitProposal(suite.ctx, msg)
+			// reset proposal number, we ignore the dynamic deposit system in these tests
+			suite.govKeeper.SetActiveProposalsNumber(suite.ctx, 0)
 			if c.expErr {
 				suite.Require().Error(err)
 			} else {
@@ -529,6 +555,9 @@ func (suite *KeeperTestSuite) TestLegacyMsgVote() {
 	suite.Require().NotNil(res.ProposalId)
 	proposalId := res.ProposalId
 
+	// reset proposal number, we ignore the dynamic deposit system in these tests
+	suite.govKeeper.SetActiveProposalsNumber(suite.ctx, 0)
+
 	cases := map[string]struct {
 		preRun    func() uint64
 		expErr    bool
@@ -553,6 +582,10 @@ func (suite *KeeperTestSuite) TestLegacyMsgVote() {
 				res, err := suite.msgSrvr.SubmitProposal(suite.ctx, msg)
 				suite.Require().NoError(err)
 				suite.Require().NotNil(res.ProposalId)
+
+				// reset proposal number, we ignore the dynamic deposit system in these tests
+				suite.govKeeper.SetActiveProposalsNumber(suite.ctx, 0)
+
 				return res.ProposalId
 			},
 			option:    v1beta1.OptionYes,
@@ -587,6 +620,10 @@ func (suite *KeeperTestSuite) TestLegacyMsgVote() {
 				res, err := suite.msgSrvr.SubmitProposal(suite.ctx, msg)
 				suite.Require().NoError(err)
 				suite.Require().NotNil(res.ProposalId)
+
+				// reset proposal number, we ignore the dynamic deposit system in these tests
+				suite.govKeeper.SetActiveProposalsNumber(suite.ctx, 0)
+
 				return res.ProposalId
 			},
 			option:   v1beta1.OptionYes,
@@ -640,6 +677,9 @@ func (suite *KeeperTestSuite) TestLegacyVoteWeighted() {
 	suite.Require().NotNil(res.ProposalId)
 	proposalId := res.ProposalId
 
+	// reset proposal number, we ignore the dynamic deposit system in these tests
+	suite.govKeeper.SetActiveProposalsNumber(suite.ctx, 0)
+
 	cases := map[string]struct {
 		preRun    func() uint64
 		vote      *v1beta1.MsgVote
@@ -664,6 +704,10 @@ func (suite *KeeperTestSuite) TestLegacyVoteWeighted() {
 				res, err := suite.msgSrvr.SubmitProposal(suite.ctx, msg)
 				suite.Require().NoError(err)
 				suite.Require().NotNil(res.ProposalId)
+
+				// reset proposal number, we ignore the dynamic deposit system in these tests
+				suite.govKeeper.SetActiveProposalsNumber(suite.ctx, 0)
+
 				return res.ProposalId
 			},
 			option:    v1beta1.OptionYes,
@@ -697,6 +741,10 @@ func (suite *KeeperTestSuite) TestLegacyVoteWeighted() {
 				res, err := suite.msgSrvr.SubmitProposal(suite.ctx, msg)
 				suite.Require().NoError(err)
 				suite.Require().NotNil(res.ProposalId)
+
+				// reset proposal number, we ignore the dynamic deposit system in these tests
+				suite.govKeeper.SetActiveProposalsNumber(suite.ctx, 0)
+
 				return res.ProposalId
 			},
 			option:   v1beta1.OptionYes,
@@ -1421,6 +1469,9 @@ func (suite *KeeperTestSuite) TestSubmitProposal_InitialDeposit() {
 
 			// System under test
 			_, err = suite.msgSrvr.SubmitProposal(sdk.WrapSDKContext(ctx), msg)
+
+			// reset proposal number, we ignore the dynamic deposit system in these tests
+			suite.govKeeper.SetInactiveProposalsNumber(suite.ctx, 0)
 
 			// Assertions
 			if tc.expectError {

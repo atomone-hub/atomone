@@ -105,7 +105,7 @@ func (keeper Keeper) UpdateMinInitialDeposit(ctx sdk.Context, checkElapsedTime b
 	var alpha math.LegacyDec
 
 	numInactiveProposals := math.NewIntFromUint64(keeper.GetInactiveProposalsNumber(ctx))
-	if numInactiveProposals.GT(targetInactiveProposals) {
+	if numInactiveProposals.GTE(targetInactiveProposals) {
 		if checkElapsedTime {
 			// no time-based increases
 			return
@@ -113,7 +113,7 @@ func (keeper Keeper) UpdateMinInitialDeposit(ctx sdk.Context, checkElapsedTime b
 		alpha = sdk.MustNewDecFromStr(params.MinInitialDepositThrottler.IncreaseRatio)
 	} else {
 		distance := numInactiveProposals.Sub(targetInactiveProposals)
-		if !checkElapsedTime || distance.IsZero() {
+		if !checkElapsedTime {
 			// decreases can only happen due to time-based updates
 			// and if the number of active proposals is below the target
 			return

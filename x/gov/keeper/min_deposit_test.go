@@ -62,13 +62,13 @@ func TestGetMinDeposit(t *testing.T) {
 			expectedMinDeposit: minDepositFloor.String(),
 		},
 		{
-			name: "n=N lastMinDeposit=minDepositFloor ticksPassed=0 : expectedMinDeposit=minDepositFloor",
+			name: "n=N lastMinDeposit=minDepositFloor ticksPassed=0 : expectedMinDeposit>minDepositFloor",
 			setup: func(ctx sdk.Context, k *keeper.Keeper) {
 				k.SetActiveProposalsNumber(ctx, N)
 				k.SetLastMinDeposit(ctx, minDepositFloor, minDepositTimeFromTicks(0))
 				k.UpdateMinDeposit(ctx, false)
 			},
-			expectedMinDeposit: minDepositFloor.String(),
+			expectedMinDeposit: "10500000stake",
 		},
 		{
 			name: "n=N+1 lastMinDeposit=minDepositFloor ticksPassed=0 : expectedMinDeposit>minDepositFloor",
@@ -102,13 +102,13 @@ func TestGetMinDeposit(t *testing.T) {
 			expectedMinDeposit: minDepositFloorX2.String(),
 		},
 		{
-			name: "n=N lastMinDeposit=minDepositFloor*2 ticksPassed=0 : expectedMinDeposit=minDepositFloor*2",
+			name: "n=N lastMinDeposit=minDepositFloor*2 ticksPassed=0 : expectedMinDeposit>minDepositFloor*2",
 			setup: func(ctx sdk.Context, k *keeper.Keeper) {
 				k.SetActiveProposalsNumber(ctx, N)
 				k.SetLastMinDeposit(ctx, minDepositFloorX2, minDepositTimeFromTicks(0))
 				k.UpdateMinDeposit(ctx, false)
 			},
-			expectedMinDeposit: minDepositFloorX2.String(),
+			expectedMinDeposit: "21000000stake",
 		},
 		{
 			name: "n=N+1 lastMinDeposit=minDepositFloor*2 ticksPassed=0 : expectedMinDeposit>minDepositFloor*2",
