@@ -57,6 +57,12 @@ message LastMinDeposit {
 
   // time is the time the minimum deposit was last updated
   google.protobuf.Timestamp time = 2 [ (gogoproto.stdtime) = true ];
+
+  // max_before_decreases is a record of the maximum value reached
+  // before the minimum deposit starts decreasing, after the total
+  // number of active proposals drops below the target.
+  repeated cosmos.base.v1beta1.Coin max_before_decreases = 3
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
 // Proposal defines the core field members of a governance proposal.

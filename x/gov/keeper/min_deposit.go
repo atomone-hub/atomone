@@ -50,31 +50,32 @@ func (keeper Keeper) DecrementActiveProposalsNumber(ctx sdk.Context) {
 
 // SetLastMinDeposit updates the last min deposit and last min deposit time.
 // Used to record these values the last time the number of active proposals changed
-func (keeper Keeper) SetLastMinDeposit(ctx sdk.Context, minDeposit sdk.Coins, timeStamp time.Time) {
+func (keeper Keeper) SetLastMinDeposit(ctx sdk.Context, minDeposit sdk.Coins, timeStamp time.Time, maxBeforeDecreases sdk.Coins) {
 	store := ctx.KVStore(keeper.storeKey)
 	lastMinDeposit := v1.LastMinDeposit{
-		Value: minDeposit,
-		Time:  &timeStamp,
+		Value:              minDeposit,
+		Time:               &timeStamp,
+		MaxBeforeDecreases: maxBeforeDecreases,
 	}
 	bz := keeper.cdc.MustMarshal(&lastMinDeposit)
 	store.Set(types.LastMinDepositKey, bz)
 }
 
 // GetLastMinDeposit returns the last min deposit and the time it was set
-func (keeper Keeper) GetLastMinDeposit(ctx sdk.Context) (sdk.Coins, time.Time) {
+func (keeper Keeper) GetLastMinDeposit(ctx sdk.Context) (sdk.Coins, time.Time, sdk.Coins) {
 	store := ctx.KVStore(keeper.storeKey)
 	bz := store.Get(types.LastMinDepositKey)
 	if bz == nil {
-		return sdk.Coins{}, time.Time{}
+		return sdk.Coins{}, time.Time{}, sdk.Coins{}
 	}
 	var lastMinDeposit v1.LastMinDeposit
 	keeper.cdc.MustUnmarshal(bz, &lastMinDeposit)
-	return lastMinDeposit.Value, *lastMinDeposit.Time
+	return lastMinDeposit.Value, *lastMinDeposit.Time, lastMinDeposit.MaxBeforeDecreases
 }
 
 // GetMinDeposit returns the (dynamic) minimum deposit currently required for a proposal
 func (keeper Keeper) GetMinDeposit(ctx sdk.Context) sdk.Coins {
-	minDeposit, _ := keeper.GetLastMinDeposit(ctx)
+	minDeposit, _, _ := keeper.GetLastMinDeposit(ctx)
 
 	if minDeposit.Empty() {
 		// ValidateBasic prevents an empty FloorValue
@@ -92,14 +93,13 @@ func (keeper Keeper) UpdateMinDeposit(ctx sdk.Context, checkElapsedTime bool) {
 
 	params := keeper.GetParams(ctx)
 	tick := params.MinDepositThrottler.UpdatePeriod
-	lastMinDeposit, lastMinDepositTime := keeper.GetLastMinDeposit(ctx)
+	lastMinDeposit, lastMinDepositTime, maxLastMinDeposit := keeper.GetLastMinDeposit(ctx)
 	if checkElapsedTime && ctx.BlockTime().Sub(lastMinDepositTime).Nanoseconds() < tick.Nanoseconds() {
 		return
 	}
 
 	minDepositFloor := sdk.Coins(params.MinDepositThrottler.FloorValue)
 	targetActiveProposals := math.NewIntFromUint64(params.MinDepositThrottler.TargetActiveProposals)
-	k := params.MinDepositThrottler.DecreaseSensitivityTargetDistance
 	var alpha math.LegacyDec
 
 	numActiveProposals := math.NewIntFromUint64(keeper.GetActiveProposalsNumber(ctx))
@@ -122,6 +122,7 @@ func (keeper Keeper) UpdateMinDeposit(ctx sdk.Context, checkElapsedTime bool) {
 		// `|distance|.ApproxRoot(k) * -1`) with a value of k expected to also
 		// be relatively small (<= 100).
 		// This is a safe operation and should not error.
+		k := params.MinDepositThrottler.DecreaseSensitivityTargetDistance
 		b, err := distance.ToLegacyDec().ApproxRoot(k)
 		if err != nil {
 			// in case of error bypass the sensitivity, i.e. assume k = 1
@@ -134,7 +135,6 @@ func (keeper Keeper) UpdateMinDeposit(ctx sdk.Context, checkElapsedTime bool) {
 		}
 		alpha = alpha.Mul(b)
 	}
-	percChange := math.LegacyOneDec().Add(alpha)
-	newMinDeposit := v1.GetNewMinDeposit(minDepositFloor, lastMinDeposit, percChange)
-	keeper.SetLastMinDeposit(ctx, newMinDeposit, ctx.BlockTime())
+	newMinDeposit, newMaxLastMinDeposit := v1.GetNewMinDeposit(minDepositFloor, lastMinDeposit, maxLastMinDeposit, alpha)
+	keeper.SetLastMinDeposit(ctx, newMinDeposit, ctx.BlockTime(), newMaxLastMinDeposit)
 }

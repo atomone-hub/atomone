@@ -1,9 +1,14 @@
 package v1
 
-import sdk "github.com/cosmos/cosmos-sdk/types"
+import (
+	"cosmossdk.io/math"
 
-func GetNewMinDeposit(minDepositFloor, lastMinDeposit sdk.Coins, percChange sdk.Dec) sdk.Coins {
-	newMinDeposit := sdk.Coins{}
+	sdk "github.com/cosmos/cosmos-sdk/types"
+)
+
+func GetNewMinDeposit(minDepositFloor, lastMinDeposit, maxLastMinDeposit sdk.Coins, alpha sdk.Dec) (newMinDeposit, maxMinDeposit sdk.Coins) {
+	newMinDeposit = sdk.NewCoins()
+	maxMinDeposit = sdk.NewCoins()
 	minDepositFloorDenomsSeen := make(map[string]bool)
 	for _, lastMinDepositCoin := range lastMinDeposit {
 		minDepositFloorCoinAmt := minDepositFloor.AmountOf(lastMinDepositCoin.Denom)
@@ -15,25 +20,57 @@ func GetNewMinDeposit(minDepositFloor, lastMinDeposit sdk.Coins, percChange sdk.
 			continue
 		}
 		minDepositFloorDenomsSeen[lastMinDepositCoin.Denom] = true
-		minDepositCoinAmt := lastMinDepositCoin.Amount.ToLegacyDec().Mul(percChange).TruncateInt()
-		if minDepositCoinAmt.LT(minDepositFloorCoinAmt) {
-			newMinDeposit = append(newMinDeposit, sdk.NewCoin(lastMinDepositCoin.Denom, minDepositFloorCoinAmt))
-		} else {
-			newMinDeposit = append(newMinDeposit, sdk.NewCoin(lastMinDepositCoin.Denom, minDepositCoinAmt))
-		}
+		minDepositCoinAmt, maxMinDepositCoinAmt := calculateMinDepositAmount(
+			lastMinDepositCoin,
+			minDepositFloorCoinAmt,
+			alpha,
+			maxLastMinDeposit,
+		)
+		newMinDeposit = append(newMinDeposit, sdk.NewCoin(lastMinDepositCoin.Denom, minDepositCoinAmt))
+		maxMinDeposit = append(maxMinDeposit, sdk.NewCoin(lastMinDepositCoin.Denom, maxMinDepositCoinAmt))
 	}
 
 	// make sure any new denoms in minDepositFloor are added to minDeposit
 	for _, minDepositFloorCoin := range minDepositFloor {
 		if _, seen := minDepositFloorDenomsSeen[minDepositFloorCoin.Denom]; !seen {
-			minDepositCoinAmt := minDepositFloorCoin.Amount.ToLegacyDec().Mul(percChange).TruncateInt()
-			if minDepositCoinAmt.LT(minDepositFloorCoin.Amount) {
-				newMinDeposit = append(newMinDeposit, minDepositFloorCoin)
-			} else {
-				newMinDeposit = append(newMinDeposit, sdk.NewCoin(minDepositFloorCoin.Denom, minDepositCoinAmt))
-			}
+			minDepositCoinAmt, maxMinDepositCoinAmt := calculateMinDepositAmount(
+				minDepositFloorCoin,
+				minDepositFloorCoin.Amount,
+				alpha,
+				maxLastMinDeposit,
+			)
+			newMinDeposit = append(newMinDeposit, sdk.NewCoin(minDepositFloorCoin.Denom, minDepositCoinAmt))
+			maxMinDeposit = append(maxMinDeposit, sdk.NewCoin(minDepositFloorCoin.Denom, maxMinDepositCoinAmt))
 		}
 	}
 
-	return newMinDeposit
+	return newMinDeposit, maxMinDeposit
+}
+
+func calculateMinDepositAmount(
+	lastMinDepositCoin sdk.Coin,
+	minDepositFloorCoinAmt math.Int,
+	alpha sdk.Dec,
+	maxLastMinDeposit sdk.Coins,
+) (minDepositCoinAmt, maxMinDepositCoinAmt math.Int) {
+	percChange := math.LegacyOneDec().Add(alpha)
+
+	if alpha.IsPositive() {
+		minDepositCoinAmt = lastMinDepositCoin.Amount.ToLegacyDec().Mul(percChange).TruncateInt()
+		maxMinDepositCoinAmt = minDepositCoinAmt
+	} else {
+		// Since update for decreases is `maxLastMinDeposit - (maxLastMinDeposit - lastMinDeposit) * (1 + alpha)`,
+		// we can simplify this to `lastMinDeposit * (1 + alpha) - maxLastMinDeposit * alpha`.
+		// Alpha here is negative so the term `- maxLastMinDeposit * alpha` is in fact positive.
+		maxLastMinDepositCoinAmt := maxLastMinDeposit.AmountOf(lastMinDepositCoin.Denom)
+		if maxLastMinDepositCoinAmt.IsZero() {
+			panic("maxLastMinDeposit should have all the same denoms as lastMinDeposit")
+		}
+		minDepositCoinAmt = lastMinDepositCoin.Amount.ToLegacyDec().Mul(percChange).Sub(maxLastMinDepositCoinAmt.ToLegacyDec().Mul(alpha)).TruncateInt()
+		maxMinDepositCoinAmt = maxLastMinDepositCoinAmt
+	}
+	if minDepositCoinAmt.LT(minDepositFloorCoinAmt) {
+		return minDepositFloorCoinAmt, maxMinDepositCoinAmt
+	}
+	return minDepositCoinAmt, maxMinDepositCoinAmt
 }

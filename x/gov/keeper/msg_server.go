@@ -187,9 +187,9 @@ func (k msgServer) UpdateParams(goCtx context.Context, msg *v1.MsgUpdateParams) 
 
 	// before params change, trigger an update of the last min deposit
 	minDeposit := k.GetMinDeposit(ctx)
-	k.SetLastMinDeposit(ctx, minDeposit, ctx.BlockTime())
+	k.SetLastMinDeposit(ctx, minDeposit, ctx.BlockTime(), minDeposit)
 	minInitialDeposit := k.GetMinInitialDeposit(ctx)
-	k.SetLastMinInitialDeposit(ctx, minInitialDeposit, ctx.BlockTime())
+	k.SetLastMinInitialDeposit(ctx, minInitialDeposit, ctx.BlockTime(), minInitialDeposit)
 
 	if err := k.SetParams(ctx, msg.Params); err != nil {
 		return nil, err
