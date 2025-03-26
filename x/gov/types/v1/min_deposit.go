@@ -56,17 +56,22 @@ func calculateMinDepositAmount(
 	if alpha.IsPositive() {
 		// lastMinDeposit * (1 + alpha)
 		percChange := math.LegacyOneDec().Add(alpha)
-		minDepositCoinAmt = lastMinDepositCoin.Amount.ToLegacyDec().Mul(percChange).TruncateInt()
+		minDepositCoinAmt = percChange.MulInt(lastMinDepositCoin.Amount).TruncateInt()
 		maxMinDepositCoinAmt = minDepositCoinAmt
 	} else {
 		// Alpha here is negative, indicating a decrease.
 		// Update for decreases is `maxLastMinDeposit - (maxLastMinDeposit - lastMinDeposit) * (1 - alpha)`,
 		percChange := math.LegacyOneDec().Sub(alpha)
 		maxLastMinDepositCoinAmt := maxLastMinDeposit.AmountOf(lastMinDepositCoin.Denom)
-		if maxLastMinDepositCoinAmt.IsZero() {
-			panic("maxLastMinDeposit should have all the same denoms as lastMinDeposit")
+		gap := maxLastMinDepositCoinAmt.Sub(lastMinDepositCoin.Amount)
+		if !gap.IsPositive() {
+			// a negative gap should actually never happen, but we cover it here anyway.
+			// If instead the gap is zero, it indicates the first decrease. We should
+			// set a minimum gap to start from or decreases will never actually start.
+			// we arbitrarily choose to start from lastMinDepositAmt * alpha^2
+			gap = alpha.Power(2).MulInt(lastMinDepositCoin.Amount).TruncateInt()
 		}
-		minDepositCoinAmt = maxLastMinDepositCoinAmt.Sub(maxLastMinDepositCoinAmt.Sub(lastMinDepositCoin.Amount).ToLegacyDec().Mul(percChange).TruncateInt())
+		minDepositCoinAmt = maxLastMinDepositCoinAmt.Sub(percChange.MulInt(gap).TruncateInt())
 		maxMinDepositCoinAmt = maxLastMinDepositCoinAmt
 	}
 	if minDepositCoinAmt.LT(minDepositFloorCoinAmt) {
