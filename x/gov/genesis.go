@@ -75,13 +75,13 @@ func InitGenesis(ctx sdk.Context, ak types.AccountKeeper, bk types.BankKeeper, k
 	}
 
 	if data.LastMinDeposit != nil {
-		k.SetLastMinDeposit(ctx, data.LastMinDeposit.Value, *data.LastMinDeposit.Time, data.LastMinDeposit.MaxBeforeDecreases)
+		k.SetLastMinDeposit(ctx, data.LastMinDeposit.Value, *data.LastMinDeposit.Time, data.LastMinDeposit.MaxBeforeDecrease)
 	} else {
 		k.SetLastMinDeposit(ctx, data.Params.MinDepositThrottler.FloorValue, ctx.BlockTime(), data.Params.MinDepositThrottler.FloorValue)
 	}
 
 	if data.LastMinInitialDeposit != nil {
-		k.SetLastMinInitialDeposit(ctx, data.LastMinInitialDeposit.Value, *data.LastMinInitialDeposit.Time, data.LastMinInitialDeposit.MaxBeforeDecreases)
+		k.SetLastMinInitialDeposit(ctx, data.LastMinInitialDeposit.Value, *data.LastMinInitialDeposit.Time, data.LastMinInitialDeposit.MaxBeforeDecrease)
 	} else {
 		k.SetLastMinInitialDeposit(ctx, data.Params.MinInitialDepositThrottler.FloorValue, ctx.BlockTime(), data.Params.MinInitialDepositThrottler.FloorValue)
 	}

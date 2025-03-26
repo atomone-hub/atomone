@@ -50,12 +50,12 @@ func (keeper Keeper) DecrementActiveProposalsNumber(ctx sdk.Context) {
 
 // SetLastMinDeposit updates the last min deposit and last min deposit time.
 // Used to record these values the last time the number of active proposals changed
-func (keeper Keeper) SetLastMinDeposit(ctx sdk.Context, minDeposit sdk.Coins, timeStamp time.Time, maxBeforeDecreases sdk.Coins) {
+func (keeper Keeper) SetLastMinDeposit(ctx sdk.Context, minDeposit sdk.Coins, timeStamp time.Time, maxBeforeDecrease sdk.Coins) {
 	store := ctx.KVStore(keeper.storeKey)
 	lastMinDeposit := v1.LastMinDeposit{
-		Value:              minDeposit,
-		Time:               &timeStamp,
-		MaxBeforeDecreases: maxBeforeDecreases,
+		Value:             minDeposit,
+		Time:              &timeStamp,
+		MaxBeforeDecrease: maxBeforeDecrease,
 	}
 	bz := keeper.cdc.MustMarshal(&lastMinDeposit)
 	store.Set(types.LastMinDepositKey, bz)
@@ -70,7 +70,7 @@ func (keeper Keeper) GetLastMinDeposit(ctx sdk.Context) (sdk.Coins, time.Time, s
 	}
 	var lastMinDeposit v1.LastMinDeposit
 	keeper.cdc.MustUnmarshal(bz, &lastMinDeposit)
-	return lastMinDeposit.Value, *lastMinDeposit.Time, lastMinDeposit.MaxBeforeDecreases
+	return lastMinDeposit.Value, *lastMinDeposit.Time, lastMinDeposit.MaxBeforeDecrease
 }
 
 // GetMinDeposit returns the (dynamic) minimum deposit currently required for a proposal
