@@ -960,7 +960,7 @@ type MinInitialDepositThrottler struct {
 	// The number of proposals in deposit period the dynamic minimum initial deposit should target.
 	TargetProposals uint64 `protobuf:"varint,3,opt,name=target_proposals,json=targetProposals,proto3" json:"target_proposals,omitempty"`
 	// The ratio of increase for the minimum initial deposit when the number of proposals
-	// in deposit period exceeds is at or above the target.
+	// in deposit period is at or above the target.
 	IncreaseRatio string `protobuf:"bytes,4,opt,name=increase_ratio,json=increaseRatio,proto3" json:"increase_ratio,omitempty"`
 	// The ratio of decrease for the minimum initial deposit when the number of proposals
 	// in deposit period is 1 less than the target.

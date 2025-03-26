@@ -259,7 +259,7 @@ message MinInitialDepositThrottler {
   uint64 target_proposals = 3;
 
   // The ratio of increase for the minimum initial deposit when the number of proposals
-  // in deposit period exceeds is at or above the target.
+  // in deposit period is at or above the target.
   string increase_ratio = 4 [(cosmos_proto.scalar) = "cosmos.Dec"];
 
   // The ratio of decrease for the minimum initial deposit when the number of proposals
