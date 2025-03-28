@@ -104,7 +104,7 @@ func TestValidateGenesis(t *testing.T) {
 			genesisState: func() *v1.GenesisState {
 				params1 := params
 				mdt := *params.MinDepositThrottler
-				mdt.SensitivityTargetDistance = 0
+				mdt.DecreaseSensitivityTargetDistance = 0
 				params1.MinDepositThrottler = &mdt
 				return v1.NewGenesisState(v1.DefaultStartingProposalID, params1)
 			},
