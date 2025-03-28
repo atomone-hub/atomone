@@ -43,6 +43,7 @@
 ### IMPROVEMENTS
 
 - (x/gov): override MinVotingPeriod with ldflags [#63](https://github.com/atomone-hub/atomone/pull/63)
+- (CLI): backport `tx simulate` from cosmos-sdk v0.50.x and remove unused/misleading flags from `tx broadcast` [#109](https://github.com/atomone-hub/atomone/pull/109)
 
 ## v1.0.0
 
