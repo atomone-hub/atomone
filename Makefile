@@ -291,19 +291,40 @@ format-batch:
 ###                                Localnet                                 ###
 ###############################################################################
 
-start-localnet-ci: build
-	rm -rf ~/.atomoned-liveness
-	./build/atomoned init liveness --chain-id liveness --home ~/.atomoned-liveness
-	./build/atomoned config chain-id liveness --home ~/.atomoned-liveness
-	./build/atomoned config keyring-backend test --home ~/.atomoned-liveness
-	./build/atomoned keys add val --home ~/.atomoned-liveness
-	./build/atomoned genesis add-genesis-account val 10000000000000000000000000stake --home ~/.atomoned-liveness --keyring-backend test
-	./build/atomoned genesis gentx val 1000000000stake --home ~/.atomoned-liveness --chain-id liveness
-	./build/atomoned genesis collect-gentxs --home ~/.atomoned-liveness
-	sed -i.bak'' 's/minimum-gas-prices = ""/minimum-gas-prices = "0uatone"/' ~/.atomoned-liveness/config/app.toml
-	./build/atomoned start --home ~/.atomoned-liveness --x-crisis-skip-assert-invariants
+localnet_home=~/.atomone-localnet
+localnetd=./build/atomoned --home $(localnet_home)
 
-.PHONY: start-localnet-ci
+localnet-start: build
+	rm -rf ~/.atomone-localnet
+	$(localnetd) init localnet --default-denom uatone --chain-id localnet
+	$(localnetd) config chain-id localnet
+	$(localnetd) config keyring-backend test
+	$(localnetd) keys add val
+	$(localnetd) genesis add-genesis-account val 1000000000000uatone,1000000000uphoton 
+	$(localnetd) keys add user
+	$(localnetd) genesis add-genesis-account user 1000000000uatone,1000000000uphoton
+	$(localnetd) genesis gentx val 1000000000uatone 
+	$(localnetd) genesis collect-gentxs
+	sed -i.bak 's#^minimum-gas-prices = .*#minimum-gas-prices = "0.01uatone,0.01uphoton"#g' $(localnet_home)/config/app.toml
+	# enable REST API
+	sed -i -z 's/# Enable defines if the API server should be enabled.\nenable = false/enable = true/' $(localnet_home)/config/app.toml
+	# Decrease voting period to 5min
+	jq '.app_state.gov.params.voting_period = "300s"' $(localnet_home)/config/genesis.json > /tmp/gen
+	mv /tmp/gen $(localnet_home)/config/genesis.json
+	$(localnetd) start
+
+localnet-restart: build
+	$(localnetd) start
+
+localnet-submit-upgrade-proposal:
+	$(localnetd) tx gov submit-proposal --from user contrib/localnet/proposal_upgrade.json -y --gas-prices 0.02uatone
+	sleep 5
+	$(localnetd) tx gov vote 1 yes --from val -y --gas-prices 0.02uphoton
+
+localnet-submit-text-proposal:
+	$(localnetd) tx gov submit-proposal --from user contrib/localnet/proposal_text.json -y --gas-prices 0.002uatone
+
+.PHONY: localnet-start localnet-restart localnet-submit-upgrade-proposal localnet-submit-text-proposal
 
 ###############################################################################
 ###                                Docker                                   ###
