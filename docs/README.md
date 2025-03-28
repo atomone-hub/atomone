@@ -22,7 +22,7 @@ localnet.
 3. Run `make localnet-start` to start a new localnet.
 4. Run `make localnet-submit-upgrade-proposal` to submit the upgrade proposal
    and give it enough yes votes for passing the tally.
-5. Wait for 5 minutes and run `atomoned --home ~/.atomone-localnet q gov proposals`
+5. Wait for 5 minutes (the voting period) and run `atomoned --home ~/.atomone-localnet q gov proposals`
    to check that the proposal has passed.
 6. Wait for the block height that was registered in the upgrade proposal. Once
    reached the localnet should stop producing blocks, and return an error like:
