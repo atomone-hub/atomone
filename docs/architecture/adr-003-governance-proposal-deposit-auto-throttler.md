@@ -63,7 +63,7 @@ While the following description focuses on `MinDeposit`, the system can be repli
 
 The `MinDeposit` should exponentially increase -- upon proposal activation -- and decrease -- with time -- to target having on average *N* proposals active at any time, with *N* being a low number, e.g. 1 or 2. The dynamic value will have a floor below which it will not be able to go. Conversely, it is allowed to grow with no bounds.
 
-An update of the `MinDeposit` can be triggered **by the passage of a certain amount of time for decreases** - denoted as a *tick -* or **by the activation of a proposal when doing an increase**, and the new value is calculated from the previous value as such:
+An update of the `MinDeposit` can be triggered **by the passage of a certain amount of time for decreases** - denoted as a *tick* - or **by the activation of a proposal when doing an increase**, and the new value is calculated from the previous value as such:
 
 $$
 D_{t+1} = \max(D_{\min}, D_t \times (1+ sign(n_t - N) \times \alpha \times \sigma))
