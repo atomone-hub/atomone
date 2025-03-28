@@ -96,7 +96,7 @@ Where:
 
 - $D_{t+1}$ is the new deposit value, $D_{\min}$ is the floor deposit value and $D_t$ the deposit at time $t$
 - $n_t$ is the number of active proposals at time $t$ and $N$ the target number of proposals
-- $k$ is a positive integer that expresses the *sensitivity* of the rate of decrease to the distance of the number of active proposals $n_t$ with respect to the target $N$. Since the rate of decrease is proportional to this distance, $\sigma$ can be used to tune how much getting further away from $N$ affects the speed of decrease.
+- $k$ is a positive integer that expresses the *sensitivity* of the rate of decrease to the distance of the number of active proposals $n_t$ with respect to the target $N$. Since the rate of decrease is proportional to this distance, $\k$ can be used to tune how much getting further away from $N$ affects the speed of decrease.
 - $\alpha_{up}$ is the base rate of increase for each new proposal activation when the number of proposals equal or bigger than the target, and is a positive number between 0 and 1 (excluded)
 - $\alpha_{down}$ is the base rate of decrease when the number of proposals is below target, and is a positive number between 0 and 1 (excluded)
 - $\alpha_{down}  \lt \alpha_{up}$ implies that the rate of decrease will be slower than the rate of increase. A typical value might be $\alpha_{down} = \frac{\alpha_{up}}{2}$
