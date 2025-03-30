@@ -15,7 +15,6 @@ import (
 
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	govtypesv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
-	govtypesv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
 )
 
@@ -242,6 +241,92 @@ func (s *IntegrationTestSuite) testGovConstitutionAmendment() {
 	})
 }
 
+// testGovGovernors tests passing a text proposal and vote with governors.
+func (s *IntegrationTestSuite) testGovGovernors() {
+	s.Run("governors", func() {
+		chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
+		senderAddress, _ := s.chainA.validators[0].keyInfo.GetAddress()
+		sender := senderAddress.String()
+		s.writeGovTextProposal(s.chainA)
+
+		// create a governor
+		acc1Addr, _ := s.chainA.genesisAccounts[1].keyInfo.GetAddress()
+		governorAddr := govtypes.GovernorAddress(acc1Addr).String()
+		// a governor must have a delegation of at least 10atone
+		valAddr, _ := s.chainA.validators[0].keyInfo.GetAddress()
+		validatorAddr := sdk.ValAddress(valAddr).String()
+		govDelegatorAddr := acc1Addr.String()
+		govDelegation := sdk.NewInt64Coin("uatone", 10_000_000)
+		s.execDelegate(s.chainA, 0, govDelegation, validatorAddr, govDelegatorAddr)
+		// run create-governor
+		s.runGovExec(s.chainA, 0, govDelegatorAddr, "create-governor", []string{
+			govDelegatorAddr, "moniker", "identity", "website", "security-contact", "details",
+		})
+		// check governor is created
+		s.Require().Eventually(
+			func() bool {
+				governor, err := queryGovGovernor(chainAAPIEndpoint, governorAddr)
+				s.Require().NoError(err)
+				return governor.Governor != nil
+			},
+			15*time.Second,
+			time.Second,
+		)
+
+		// delegate to this governor
+		// first create a delegator
+		acc2Addr, _ := s.chainA.genesisAccounts[2].keyInfo.GetAddress()
+		delegatorAddr := acc2Addr.String()
+		delDelegation := sdk.NewInt64Coin("uatone", 10_000_000)
+		s.execDelegate(s.chainA, 0, delDelegation, validatorAddr, delegatorAddr)
+		// then delegate to governor
+		s.runGovExec(s.chainA, 0, delegatorAddr, "delegate-governor", []string{
+			delegatorAddr, governorAddr,
+		})
+		// check governor delegation is created
+		s.Require().Eventually(
+			func() bool {
+				resp, err := queryGovGovernorDelegation(chainAAPIEndpoint, delegatorAddr)
+				s.Require().NoError(err)
+				return resp.GovernorAddress == governorAddr
+			},
+			15*time.Second,
+			time.Second,
+		)
+		// assert governor valshares
+		resp, err := queryGovGovernorValShares(chainAAPIEndpoint, governorAddr)
+		s.Require().NoError(err)
+		s.Require().Len(resp.ValShares, 1, "expected 1 valshare")
+		s.Require().Equal(governorAddr, resp.ValShares[0].GovernorAddress)
+		s.Require().Equal(validatorAddr, resp.ValShares[0].ValidatorAddress)
+		validator, err := queryValidator(chainAAPIEndpoint, validatorAddr)
+		s.Require().NoError(err)
+		totalDelegations := delDelegation.Add(govDelegation)
+		expectedShares, err := validator.SharesFromTokens(totalDelegations.Amount)
+		s.Require().NoError(err)
+		s.Require().True(expectedShares.Equal(resp.ValShares[0].Shares), "want shares %s, got %s", expectedShares, resp.ValShares[0].Shares)
+
+		// Create a governance proposal
+		proposalCounter++
+		submitGovFlags := []string{configFile(proposalTextFilename)}
+		s.submitGovCommand(chainAAPIEndpoint, sender, proposalCounter, "submit-proposal", submitGovFlags, govtypesv1.StatusVotingPeriod)
+
+		// Vote with governor
+		voteFlags := []string{strconv.Itoa(proposalCounter), "yes"}
+		s.submitGovCommand(chainAAPIEndpoint, govDelegatorAddr, proposalCounter, "vote", voteFlags, govtypesv1.StatusPassed)
+
+		// assert tally result
+		prop, err := queryGovProposal(chainAAPIEndpoint, proposalCounter)
+		s.Require().NoError(err)
+		expectedTally := &govtypesv1.TallyResult{
+			YesCount:     totalDelegations.Amount.String(),
+			NoCount:      "0",
+			AbstainCount: "0",
+		}
+		s.Require().Equal(expectedTally, prop.Proposal.FinalTallyResult)
+	})
+}
+
 func (s *IntegrationTestSuite) submitLegacyGovProposal(chainAAPIEndpoint, sender string, proposalID int, proposalType string, submitFlags []string, depositFlags []string, voteFlags []string, voteCommand string, withDeposit bool) {
 	s.T().Logf("Submitting Gov Proposal: %s", proposalType)
 	// min deposit of 1000uatone is required in e2e tests, otherwise the gov antehandler causes the proposal to be dropped
@@ -249,11 +334,11 @@ func (s *IntegrationTestSuite) submitLegacyGovProposal(chainAAPIEndpoint, sender
 	if withDeposit {
 		sflags = append(sflags, "--deposit="+initialDepositAmount.String())
 	}
-	s.submitGovCommand(chainAAPIEndpoint, sender, proposalID, "submit-legacy-proposal", sflags, govtypesv1beta1.StatusDepositPeriod)
+	s.submitGovCommand(chainAAPIEndpoint, sender, proposalID, "submit-legacy-proposal", sflags, govtypesv1.StatusDepositPeriod)
 	s.T().Logf("Depositing Gov Proposal: %s", proposalType)
-	s.submitGovCommand(chainAAPIEndpoint, sender, proposalID, "deposit", depositFlags, govtypesv1beta1.StatusVotingPeriod)
+	s.submitGovCommand(chainAAPIEndpoint, sender, proposalID, "deposit", depositFlags, govtypesv1.StatusVotingPeriod)
 	s.T().Logf("Voting Gov Proposal: %s", proposalType)
-	s.submitGovCommand(chainAAPIEndpoint, sender, proposalID, voteCommand, voteFlags, govtypesv1beta1.StatusPassed)
+	s.submitGovCommand(chainAAPIEndpoint, sender, proposalID, voteCommand, voteFlags, govtypesv1.StatusPassed)
 }
 
 // NOTE: in SDK >= v0.47 the submit-proposal does not have a --deposit flag
@@ -263,11 +348,11 @@ func (s *IntegrationTestSuite) submitLegacyGovProposal(chainAAPIEndpoint, sender
 func (s *IntegrationTestSuite) submitGovProposal(chainAAPIEndpoint, sender string, proposalID int, proposalType string, submitFlags []string, depositFlags []string, voteFlags []string, voteCommand string) {
 	s.T().Logf("Submitting Gov Proposal: %s", proposalType)
 	sflags := submitFlags
-	s.submitGovCommand(chainAAPIEndpoint, sender, proposalID, "submit-proposal", sflags, govtypesv1beta1.StatusDepositPeriod)
+	s.submitGovCommand(chainAAPIEndpoint, sender, proposalID, "submit-proposal", sflags, govtypesv1.StatusDepositPeriod)
 	s.T().Logf("Depositing Gov Proposal: %s", proposalType)
-	s.submitGovCommand(chainAAPIEndpoint, sender, proposalID, "deposit", depositFlags, govtypesv1beta1.StatusVotingPeriod)
+	s.submitGovCommand(chainAAPIEndpoint, sender, proposalID, "deposit", depositFlags, govtypesv1.StatusVotingPeriod)
 	s.T().Logf("Voting Gov Proposal: %s", proposalType)
-	s.submitGovCommand(chainAAPIEndpoint, sender, proposalID, voteCommand, voteFlags, govtypesv1beta1.StatusPassed)
+	s.submitGovCommand(chainAAPIEndpoint, sender, proposalID, voteCommand, voteFlags, govtypesv1.StatusPassed)
 }
 
 func (s *IntegrationTestSuite) verifyChainHaltedAtUpgradeHeight(c *chain, valIdx int, upgradeHeight int64) {
@@ -312,7 +397,7 @@ func (s *IntegrationTestSuite) verifyChainPassesUpgradeHeight(c *chain, valIdx i
 	)
 }
 
-func (s *IntegrationTestSuite) submitGovCommand(chainAAPIEndpoint, sender string, proposalID int, govCommand string, proposalFlags []string, expectedSuccessStatus govtypesv1beta1.ProposalStatus) {
+func (s *IntegrationTestSuite) submitGovCommand(chainAAPIEndpoint, sender string, proposalID int, govCommand string, proposalFlags []string, expectedSuccessStatus govtypesv1.ProposalStatus) {
 	s.runGovExec(s.chainA, 0, sender, govCommand, proposalFlags)
 
 	s.Require().Eventually(
@@ -371,6 +456,21 @@ func (s *IntegrationTestSuite) writePhotonParamChangeProposal(c *chain, params p
 	`
 	propMsgBody := fmt.Sprintf(template, govModuleAddress, cdc.MustMarshalJSON(&params), initialDepositAmount)
 	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
+	s.Require().NoError(err)
+}
+
+// writeGovTextProposal creates a text proposal JSON file with full required deposit.
+func (s *IntegrationTestSuite) writeGovTextProposal(c *chain) {
+	template := `
+	{
+		"deposit": "%s",
+		"metadata": "The metadata",
+		"title": "A text proposal",
+		"summary": "The summary"
+	}
+	`
+	propMsgBody := fmt.Sprintf(template, depositAmount)
+	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalTextFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
