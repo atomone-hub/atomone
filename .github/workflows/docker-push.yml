@@ -1,51 +1,78 @@
-# source: https://docs.github.com/en/enterprise-cloud@latest/actions/publishing-packages/publishing-docker-images
 name: Create and publish a Docker image
-
 on:
-  push:
-    branches: ['release']
+  release:
+    types: [published]
 
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+permissions:
+  contents: read
+  packages: write
 
 jobs:
-  build-and-push-image:
+  build-docker:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Log in to the Container registry
-        uses: docker/login-action@v3.0.0
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+
+      - name: Get go_version
+        run: |
+          echo GO_VERSION=$(go list -f {{.GoVersion}} -m) >> $GITHUB_ENV
+
+      - name: Login to Docker registry
+        uses: docker/login-action@v3
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels) for Docker
+      - name: Docker meta
         id: meta
-        uses: docker/metadata-action@v5.5.1
+        uses: docker/metadata-action@v4
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=raw,value=latest
+            type=semver,pattern={{version}}
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5.1.0
+      - name: Go Build Cache for Docker
+        id: cache
+        uses: actions/cache@v4.2.0
         with:
-          context: .
-          push: true
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-build-cache-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-build-cache-
+
+      - name: inject go-build-cache into docker
+        uses: reproducible-containers/buildkit-cache-dance@v3.1.0
+        with:
+          cache-map: |
+            {
+              "go-pkg-mod": "/go/pkg/mod",
+              "go-build-cache": "/root/.cache/go-build"
+            }
+          skip-extraction: ${{ steps.cache.outputs.cache-hit }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          platforms: linux/amd64,linux/arm64
+          build-args: |
+            GO_VERSION=${{ env.GO_VERSION }}
+          push: ${{ github.event_name != 'pull_request' }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-
-      - name: Build and push e2e docker image
-        uses: docker/build-push-action@v5.1.0
-        with:
-          context: .
-          file: Dockerfile.e2e
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}-e2e
           labels: ${{ steps.meta.outputs.labels }}
