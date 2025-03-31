@@ -38,8 +38,8 @@ var (
 	// consumed in a block.
 	DefaultAIMDMaxBlockSize uint64 = 30_000_000
 
-	// DefaultAIMDMinBaseFee is the default minimum base fee.
-	DefaultAIMDMinBaseFee = math.LegacyMustNewDecFromStr("1000000000")
+	// DefaultAIMDMinBaseGasPrice is the default minimum base gas price.
+	DefaultAIMDMinBaseGasPrice = DefaultMinBaseGasPrice
 
 	// DefaultAIMDMinLearningRate is the default minimum learning rate.
 	DefaultAIMDMinLearningRate = math.LegacyMustNewDecFromStr("0.01")
@@ -63,7 +63,7 @@ func DefaultAIMDParams() Params {
 		DefaultAIMDGamma,
 		DefaultAIMDDelta,
 		DefaultAIMDMaxBlockSize,
-		DefaultAIMDMinBaseFee,
+		DefaultAIMDMinBaseGasPrice,
 		DefaultAIMDMinLearningRate,
 		DefaultAIMDMaxLearningRate,
 		DefaultAIMDFeeDenom,
@@ -78,7 +78,7 @@ func DefaultAIMDParams() Params {
 func DefaultAIMDState() State {
 	return NewState(
 		DefaultAIMDWindow,
-		DefaultAIMDMinBaseFee,
+		DefaultAIMDMinBaseGasPrice,
 		DefaultAIMDMinLearningRate,
 	)
 }

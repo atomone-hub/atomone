@@ -13,15 +13,15 @@ EIP-1559 fee market as described in this
 
 The AIMD EIP-1559 fee market is a slight modification to Ethereum's EIP-1559 fee
 market. Specifically it introduces the notion of a adaptive learning rate which
-scales the base fee (reserve price to be included in a block) more aggressively
-when the network is congested and less aggressively when the network is not
-congested. This is primarily done to address the often cited criticism of
-EIP-1559 that it's base fee often lags behind the current demand for block space.
-The learning rate on Ethereum is effectively hard-coded to be 12.5%, which means
-that between any two blocks the base fee can maximally increase by 12.5% or
-decrease by 12.5%. Additionally, AIMD EIP-1559 differs from Ethereum's EIP-1559
-by considering a configured time window (number of blocks) to consider when
-calculating and comparing target block utilization and current block utilization.
+scales the base gas price more aggressively when the network is congested and
+less aggressively when the network is not congested. This is primarily done to
+address the often cited criticism of EIP-1559 that it's base fee often lags
+behind the current demand for block space.  The learning rate on Ethereum is
+effectively hard-coded to be 12.5%, which means that between any two blocks the
+base fee can maximally increase by 12.5% or decrease by 12.5%. Additionally,
+AIMD EIP-1559 differs from Ethereum's EIP-1559 by considering a configured time
+window (number of blocks) to consider when calculating and comparing target
+block utilization and current block utilization.
 
 ## Parameters
 
@@ -29,8 +29,8 @@ calculating and comparing target block utilization and current block utilization
 
 Base EIP-1559 currently utilizes the following parameters to compute the base fee:
 
-* **`PreviousBaseFee`**: This is the base fee from the previous block. This must
-  be a value that is greater than `0`.
+* **`PreviousBaseGasPrice`**: This is the base gas price from the previous
+  block. This must be a value that is greater than `0`.
 * **`TargetBlockSize`**: This is the target block size in bytes. This must be a
   value that is greater than `0`.
 * **`PreviousBlockSize`**: This is the block size from the previous block.
@@ -38,7 +38,7 @@ Base EIP-1559 currently utilizes the following parameters to compute the base fe
 The calculation for the updated base fee for the next block is as follows:
 
 ```golang
-currentBaseFee := previousBaseFee * (1 + 0.125 * (currentBlockSize - targetBlockSize) / targetBlockSize)
+currentBaseGasPrice := previousBaseGasPrice * (1 + 0.125 * (currentBlockSize - targetBlockSize) / targetBlockSize)
 ```
 
 ### AIMD EIP-1559
@@ -88,7 +88,7 @@ if blockConsumption < gamma || blockConsumption > 1 - gamma {
 }
 
 // netGasDelta returns the net gas difference between every block in the window and the target block size.
-newBaseFee := currentBaseFee * (1 + newLearningRate * (currentBlockSize - targetBlockSize) / targetBlockSize) + delta * netGasDelta(window)
+newBaseGasPrice := currentBaseGasPrice * (1 + newLearningRate * (currentBlockSize - targetBlockSize) / targetBlockSize) + delta * netGasDelta(window)
 ```
 
 ## Examples
@@ -115,7 +115,7 @@ fee to decrease.
 ```golang
 blockConsumption := sumBlockSizesInWindow(1) / (1 * 100) == 0
 newLearningRate := min(1.0, 0.025 + 0.125) == 0.15
-newBaseFee := 10 * (1 + 0.15 * (0 - 50) / 50) == 8.5
+newBaseGasPrice := 10 * (1 + 0.15 * (0 - 50) / 50) == 8.5
 ```
 
 As we can see, the base fee decreased by 1.5 and the learning rate increases.
@@ -128,7 +128,7 @@ fee to increase.
 ```golang
 blockConsumption := sumBlockSizesInWindow(1) / (1 * 100) == 1
 newLearningRate := min(1.0, 0.025 + 0.125) == 0.15
-newBaseFee := 10 * (1 + 0.15 * ((100 - 50) / 50)) == 11.5
+newBaseGasPrice := 10 * (1 + 0.15 * ((100 - 50) / 50)) == 11.5
 ```
 
 As we can see, the base fee increased by 1.5 and the learning rate increases.
@@ -141,7 +141,7 @@ base fee to remain the same.
 ```golang
 blockConsumption := sumBlockSizesInWindow(1) / (1 * 100) == 0.5
 newLearningRate := max(0.0125, 0.95 * 0.125) == 0.11875
-newBaseFee := 10 * (1 + 0.11875 * (50 - 50) / 50) == 10
+newBaseGasPrice := 10 * (1 + 0.11875 * (50 - 50) / 50) == 10
 ```
 
 As we can see, the base fee remained the same and the learning rate decreased.

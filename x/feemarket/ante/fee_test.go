@@ -62,6 +62,7 @@ func TestAnteHandle(t *testing.T) {
 		simulate             bool
 		disableFeeGrant      bool
 		setup                func(mocks)
+		expectedConsumedGas  int
 		expectedMinGasPrices string
 		expectedTxPriority   int64
 		expectedError        string
@@ -129,6 +130,7 @@ func TestAnteHandle(t *testing.T) {
 				m.BankKeeper.EXPECT().SendCoinsFromAccountToModule(gomock.Any(),
 					addrs[0], authtypes.FeeCollectorName, sdk.NewCoins())
 			},
+			expectedConsumedGas:  ante.BankSendGasConsumption,
 			expectedMinGasPrices: "1.000000000000000000uphoton",
 			expectedTxPriority:   0,
 		},
@@ -493,6 +495,7 @@ func TestAnteHandle(t *testing.T) {
 			}
 			require.NoError(t, err)
 			assert.True(t, nextInvoked, "next is not invoked")
+			assert.EqualValues(t, tt.expectedConsumedGas, newCtx.GasMeter().GasConsumed())
 			assert.Equal(t, tt.expectedMinGasPrices, newCtx.MinGasPrices().String(), "wrong min gas price")
 			assert.Equal(t, tt.expectedTxPriority, newCtx.Priority(), "wrong tx priority")
 		})

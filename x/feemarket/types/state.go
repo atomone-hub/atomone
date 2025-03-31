@@ -3,6 +3,7 @@ package types
 import (
 	fmt "fmt"
 
+	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 )
 
@@ -28,7 +29,7 @@ func NewState(
 func (s *State) Update(gas uint64, params Params) error {
 	update := s.Window[s.Index] + gas
 	if update > params.MaxBlockUtilization {
-		return fmt.Errorf("block utilization of %d cannot exceed max block utilization of %d", update, params.MaxBlockUtilization)
+		return errorsmod.Wrapf(ErrMaxGasExceeded, "gas %d > max %d", update, params.MaxBlockUtilization)
 	}
 
 	s.Window[s.Index] = update

@@ -448,7 +448,7 @@ func TestUpdateFeeMarket(t *testing.T) {
 	})
 }
 
-func TestGetBaseFee(t *testing.T) {
+func TestGetBaseGasPrice(t *testing.T) {
 	t.Run("can retrieve base fee with default eip-1559", func(t *testing.T) {
 		require := require.New(t)
 		k, ctx := setupKeeper(t)

@@ -4,8 +4,9 @@ import (
 	"math/rand"
 	"testing"
 
-	"cosmossdk.io/math"
 	"github.com/stretchr/testify/require"
+
+	"cosmossdk.io/math"
 
 	"github.com/atomone-hub/atomone/x/feemarket/types"
 )
@@ -125,94 +126,93 @@ func TestState_UpdateBaseGasPrice(t *testing.T) {
 	t.Run("empty block with default eip-1559", func(t *testing.T) {
 		state := types.DefaultState()
 		params := types.DefaultParams()
-
 		state.BaseGasPrice = math.LegacyMustNewDecFromStr("1000")
 		params.MinBaseGasPrice = math.LegacyMustNewDecFromStr("125")
 
 		newBaseGasPrice := state.UpdateBaseGasPrice(params)
+
+		require.Equal(t, newBaseGasPrice, state.BaseGasPrice)
 		expectedBaseGasPrice := math.LegacyMustNewDecFromStr("875")
-		require.True(t, expectedBaseGasPrice.Equal(newBaseGasPrice))
+		require.Equal(t, expectedBaseGasPrice, newBaseGasPrice)
 	})
 
 	t.Run("target block with default eip-1559", func(t *testing.T) {
 		state := types.DefaultState()
 		params := types.DefaultParams()
-
 		state.BaseGasPrice = math.LegacyMustNewDecFromStr("1000")
 		params.MinBaseGasPrice = math.LegacyMustNewDecFromStr("125")
-
 		state.Window[0] = params.TargetBlockUtilization()
 
 		newBaseGasPrice := state.UpdateBaseGasPrice(params)
+
+		require.Equal(t, newBaseGasPrice, state.BaseGasPrice)
 		expectedBaseGasPrice := math.LegacyMustNewDecFromStr("1000")
-		require.True(t, expectedBaseGasPrice.Equal(newBaseGasPrice))
+		require.Equal(t, expectedBaseGasPrice, newBaseGasPrice)
 	})
 
 	t.Run("full block with default eip-1559", func(t *testing.T) {
 		state := types.DefaultState()
 		params := types.DefaultParams()
-
 		state.BaseGasPrice = math.LegacyMustNewDecFromStr("1000")
 		params.MinBaseGasPrice = math.LegacyMustNewDecFromStr("125")
-
 		state.Window[0] = params.MaxBlockUtilization
 
 		newBaseGasPrice := state.UpdateBaseGasPrice(params)
+
+		require.Equal(t, newBaseGasPrice, state.BaseGasPrice)
 		expectedBaseGasPrice := math.LegacyMustNewDecFromStr("1125")
-		require.True(t, expectedBaseGasPrice.Equal(newBaseGasPrice))
+		require.Equal(t, expectedBaseGasPrice, newBaseGasPrice)
 	})
 
 	t.Run("empty block with default aimd eip-1559", func(t *testing.T) {
 		state := types.DefaultAIMDState()
 		params := types.DefaultAIMDParams()
-
 		state.BaseGasPrice = math.LegacyMustNewDecFromStr("1000")
 		params.MinBaseGasPrice = math.LegacyMustNewDecFromStr("125")
 		state.LearningRate = math.LegacyMustNewDecFromStr("0.125")
-
 		state.UpdateLearningRate(params)
+
 		newBaseGasPrice := state.UpdateBaseGasPrice(params)
 
+		require.Equal(t, newBaseGasPrice, state.BaseGasPrice)
 		expectedBaseGasPrice := math.LegacyMustNewDecFromStr("850")
-		require.True(t, expectedBaseGasPrice.Equal(newBaseGasPrice))
+		require.Equal(t, expectedBaseGasPrice, newBaseGasPrice)
 	})
 
 	t.Run("target block with default aimd eip-1559", func(t *testing.T) {
 		state := types.DefaultAIMDState()
 		params := types.DefaultAIMDParams()
-
 		state.BaseGasPrice = math.LegacyMustNewDecFromStr("1000")
 		params.MinBaseGasPrice = math.LegacyMustNewDecFromStr("125")
 		state.LearningRate = math.LegacyMustNewDecFromStr("0.125")
-
 		for i := 0; i < len(state.Window); i++ {
 			state.Window[i] = params.TargetBlockUtilization()
 		}
-
 		state.UpdateLearningRate(params)
+
 		newBaseGasPrice := state.UpdateBaseGasPrice(params)
 
+		require.Equal(t, newBaseGasPrice, state.BaseGasPrice)
 		expectedBaseGasPrice := math.LegacyMustNewDecFromStr("1000")
-		require.True(t, expectedBaseGasPrice.Equal(newBaseGasPrice))
+		require.Equal(t, expectedBaseGasPrice, newBaseGasPrice)
 	})
 
 	t.Run("full blocks with default aimd eip-1559", func(t *testing.T) {
 		state := types.DefaultAIMDState()
 		params := types.DefaultAIMDParams()
-
 		state.BaseGasPrice = math.LegacyMustNewDecFromStr("1000")
 		params.MinBaseGasPrice = math.LegacyMustNewDecFromStr("125")
 		state.LearningRate = math.LegacyMustNewDecFromStr("0.125")
-
 		for i := 0; i < len(state.Window); i++ {
 			state.Window[i] = params.MaxBlockUtilization
 		}
-
 		state.UpdateLearningRate(params)
+
 		newBaseGasPrice := state.UpdateBaseGasPrice(params)
 
+		require.Equal(t, newBaseGasPrice, state.BaseGasPrice)
 		expectedBaseGasPrice := math.LegacyMustNewDecFromStr("1150")
-		require.True(t, expectedBaseGasPrice.Equal(newBaseGasPrice))
+		require.Equal(t, expectedBaseGasPrice, newBaseGasPrice)
 	})
 
 	t.Run("never goes below min base gas price with default eip1599", func(t *testing.T) {
@@ -221,8 +221,10 @@ func TestState_UpdateBaseGasPrice(t *testing.T) {
 
 		// Empty block
 		newBaseGasPrice := state.UpdateBaseGasPrice(params)
+
+		require.Equal(t, newBaseGasPrice, state.BaseGasPrice)
 		expectedBaseGasPrice := params.MinBaseGasPrice
-		require.True(t, expectedBaseGasPrice.Equal(newBaseGasPrice))
+		require.Equal(t, expectedBaseGasPrice, newBaseGasPrice)
 	})
 
 	t.Run("never goes below min base gas price with default aimd eip1599", func(t *testing.T) {
@@ -231,8 +233,10 @@ func TestState_UpdateBaseGasPrice(t *testing.T) {
 
 		// Empty blocks
 		newBaseGasPrice := state.UpdateBaseGasPrice(params)
+
+		require.Equal(t, newBaseGasPrice, state.BaseGasPrice)
 		expectedBaseGasPrice := params.MinBaseGasPrice
-		require.True(t, expectedBaseGasPrice.Equal(newBaseGasPrice))
+		require.Equal(t, expectedBaseGasPrice, newBaseGasPrice)
 	})
 
 	t.Run("empty blocks with aimd eip1559 with a delta", func(t *testing.T) {
@@ -332,8 +336,8 @@ func TestState_UpdateBaseGasPrice(t *testing.T) {
 	t.Run("half target block size with aimd eip1559 with a delta", func(t *testing.T) {
 		state := types.DefaultAIMDState()
 		state.Window = make([]uint64, 1)
-		state.BaseGasPrice = state.BaseGasPrice.Mul(math.LegacyMustNewDecFromStr("10"))
-		prevBF := state.BaseGasPrice
+		state.BaseGasPrice = state.BaseGasPrice.Mul(math.LegacyNewDec(10))
+		prevGasPrice := state.BaseGasPrice
 
 		// Instantiate the params with a delta.
 		params := types.DefaultAIMDParams()
@@ -345,18 +349,18 @@ func TestState_UpdateBaseGasPrice(t *testing.T) {
 
 		prevLR := state.LearningRate
 		lr := state.UpdateLearningRate(params)
-		bgs := state.UpdateBaseGasPrice(params)
+		newGasPrice := state.UpdateBaseGasPrice(params)
 
-		expectedUtilization := math.LegacyMustNewDecFromStr("-0.5")
 		expectedLR := prevLR.Add(params.Alpha)
+		expectedUtilization := math.LegacyMustNewDecFromStr("-0.5")
 		expectedLRAdjustment := (expectedLR.Mul(expectedUtilization)).Add(math.LegacyOneDec())
 
 		expectedNetUtilization := math.LegacyNewDec(-1 * int64(params.TargetBlockUtilization()) / 2)
 		deltaDiff := expectedNetUtilization.Mul(params.Delta)
-		expectedGasPrice := prevBF.Mul(expectedLRAdjustment).Add(deltaDiff)
+		expectedGasPrice := prevGasPrice.Mul(expectedLRAdjustment).Add(deltaDiff)
 
 		require.Equal(t, expectedLR, lr)
-		require.Equal(t, expectedGasPrice, bgs)
+		require.Equal(t, expectedGasPrice, newGasPrice)
 	})
 
 	t.Run("3/4 max block size with aimd eip1559 with a delta", func(t *testing.T) {
@@ -395,8 +399,9 @@ func TestState_UpdateLearningRate(t *testing.T) {
 		params := types.DefaultParams()
 
 		state.UpdateLearningRate(params)
+
 		expectedLearningRate := math.LegacyMustNewDecFromStr("0.125")
-		require.True(t, expectedLearningRate.Equal(state.LearningRate))
+		require.Equal(t, expectedLearningRate, state.LearningRate)
 	})
 
 	t.Run("target block with default eip-1559", func(t *testing.T) {
@@ -407,52 +412,52 @@ func TestState_UpdateLearningRate(t *testing.T) {
 
 		state.UpdateLearningRate(params)
 		expectedLearningRate := math.LegacyMustNewDecFromStr("0.125")
-		require.True(t, expectedLearningRate.Equal(state.LearningRate))
+		require.Equal(t, expectedLearningRate, state.LearningRate)
 	})
 
 	t.Run("full block with default eip-1559", func(t *testing.T) {
 		state := types.DefaultState()
 		params := types.DefaultParams()
-
 		state.Window[0] = params.MaxBlockUtilization
 
 		state.UpdateLearningRate(params)
+
 		expectedLearningRate := math.LegacyMustNewDecFromStr("0.125")
-		require.True(t, expectedLearningRate.Equal(state.LearningRate))
+		require.Equal(t, expectedLearningRate, state.LearningRate)
 	})
 
 	t.Run("between 0 and target with default eip-1559", func(t *testing.T) {
 		state := types.DefaultState()
 		params := types.DefaultParams()
-
 		state.Window[0] = 50000
 
 		state.UpdateLearningRate(params)
+
 		expectedLearningRate := math.LegacyMustNewDecFromStr("0.125")
-		require.True(t, expectedLearningRate.Equal(state.LearningRate))
+		require.Equal(t, expectedLearningRate, state.LearningRate)
 	})
 
 	t.Run("between target and max with default eip-1559", func(t *testing.T) {
 		state := types.DefaultState()
 		params := types.DefaultParams()
-
 		state.Window[0] = params.TargetBlockUtilization() + 50000
 
 		state.UpdateLearningRate(params)
+
 		expectedLearningRate := math.LegacyMustNewDecFromStr("0.125")
-		require.True(t, expectedLearningRate.Equal(state.LearningRate))
+		require.Equal(t, expectedLearningRate, state.LearningRate)
 	})
 
 	t.Run("random value with default eip-1559", func(t *testing.T) {
 		state := types.DefaultState()
 		params := types.DefaultParams()
-
 		randomValue := rand.Int63n(1000000000)
 		state.Window[0] = uint64(randomValue)
 
 		state.UpdateLearningRate(params)
+
 		expectedLearningRate := math.LegacyMustNewDecFromStr("0.125")
-		require.True(t, expectedLearningRate.Equal(state.LearningRate))
+		require.Equal(t, expectedLearningRate, state.LearningRate)
 	})
 
 	t.Run("empty block with default aimd eip-1559", func(t *testing.T) {
@@ -460,49 +465,46 @@ func TestState_UpdateLearningRate(t *testing.T) {
 		params := types.DefaultAIMDParams()
 
 		state.UpdateLearningRate(params)
+
 		expectedLearningRate := params.MinLearningRate.Add(params.Alpha)
-		require.True(t, expectedLearningRate.Equal(state.LearningRate))
+		require.Equal(t, expectedLearningRate, state.LearningRate)
 	})
 
 	t.Run("target block with default aimd eip-1559", func(t *testing.T) {
 		state := types.DefaultAIMDState()
 		defaultLR := math.LegacyMustNewDecFromStr("0.125")
 		state.LearningRate = defaultLR
-
 		params := types.DefaultAIMDParams()
-
 		for i := 0; i < len(state.Window); i++ {
 			state.Window[i] = params.TargetBlockUtilization()
 		}
 
 		state.UpdateLearningRate(params)
+
 		expectedLearningRate := defaultLR.Mul(params.Beta)
-		require.True(t, expectedLearningRate.Equal(state.LearningRate))
+		require.Equal(t, expectedLearningRate, state.LearningRate)
 	})
 
 	t.Run("full blocks with default aimd eip-1559", func(t *testing.T) {
 		state := types.DefaultAIMDState()
 		defaultLR := math.LegacyMustNewDecFromStr("0.125")
 		state.LearningRate = defaultLR
-
 		params := types.DefaultAIMDParams()
-
 		for i := 0; i < len(state.Window); i++ {
 			state.Window[i] = params.MaxBlockUtilization
 		}
 
 		state.UpdateLearningRate(params)
+
 		expectedLearningRate := defaultLR.Add(params.Alpha)
-		require.True(t, expectedLearningRate.Equal(state.LearningRate))
+		require.Equal(t, expectedLearningRate, state.LearningRate)
 	})
 
 	t.Run("varying blocks with default aimd eip-1559", func(t *testing.T) {
 		state := types.DefaultAIMDState()
 		defaultLR := math.LegacyMustNewDecFromStr("0.125")
 		state.LearningRate = defaultLR
-
 		params := types.DefaultAIMDParams()
-
 		for i := 0; i < len(state.Window); i++ {
 			if i%2 == 0 {
 				state.Window[i] = params.MaxBlockUtilization
@@ -512,17 +514,16 @@ func TestState_UpdateLearningRate(t *testing.T) {
 		}
 
 		state.UpdateLearningRate(params)
+
 		expectedLearningRate := defaultLR.Mul(params.Beta)
-		require.True(t, expectedLearningRate.Equal(state.LearningRate))
+		require.Equal(t, expectedLearningRate, state.LearningRate)
 	})
 
 	t.Run("exceeds threshold with default aimd eip-1559", func(t *testing.T) {
 		state := types.DefaultAIMDState()
 		defaultLR := math.LegacyMustNewDecFromStr("0.125")
 		state.LearningRate = defaultLR
-
 		params := types.DefaultAIMDParams()
-
 		for i := 0; i < len(state.Window); i++ {
 			if i%2 == 0 {
 				state.Window[i] = params.MaxBlockUtilization
@@ -532,8 +533,9 @@ func TestState_UpdateLearningRate(t *testing.T) {
 		}
 
 		state.UpdateLearningRate(params)
+
 		expectedLearningRate := defaultLR.Add(params.Alpha)
-		require.True(t, expectedLearningRate.Equal(state.LearningRate))
+		require.Equal(t, expectedLearningRate, state.LearningRate)
 	})
 }
 
