@@ -11,12 +11,12 @@ This plugin implements the AIMD (Additive Increase Multiplicative Decrease)
 EIP-1559 fee market as described in this
 [AIMD EIP-1559](https://arxiv.org/abs/2110.04753) research publication.
 
-The AIMD EIP-1559 fee market is a slight modification to Ethereum's EIP-1559 fee
-market. Specifically it introduces the notion of a adaptive learning rate which
-scales the base gas price more aggressively when the network is congested and
-less aggressively when the network is not congested. This is primarily done to
-address the often cited criticism of EIP-1559 that it's base fee often lags
-behind the current demand for block space.  The learning rate on Ethereum is
+The AIMD EIP-1559 fee market is a slight modification to Ethereum's EIP-1559
+fee market. Specifically it introduces the notion of an adaptive learning rate
+which scales the base gas price more aggressively when the network is congested
+and less aggressively when the network is not congested. This is primarily done
+to address the often cited criticism of EIP-1559 that it's base fee often lags
+behind the current demand for block space. The learning rate on Ethereum is
 effectively hard-coded to be 12.5%, which means that between any two blocks the
 base fee can maximally increase by 12.5% or decrease by 12.5%. Additionally,
 AIMD EIP-1559 differs from Ethereum's EIP-1559 by considering a configured time
@@ -90,6 +90,15 @@ if blockConsumption < gamma || blockConsumption > 1 - gamma {
 // netGasDelta returns the net gas difference between every block in the window and the target block size.
 newBaseGasPrice := currentBaseGasPrice * (1 + newLearningRate * (currentBlockSize - targetBlockSize) / targetBlockSize) + delta * netGasDelta(window)
 ```
+
+The expected behavior is the following: when the current block size is close to
+the `targetBlockSize` (in other words, when `blockConsumption` is in the
+`gamma` range), then the base gas price is close to the right value, so the
+algorithm reduces the learning rate to reduce the size of the oscillations. By
+contrast, if the current block size is too small or too high
+(`blockConsumption` is out of `gamma` range), then the base fee is apparently
+far away from its equilibrium value, and the algorithm increases the learning
+rate.
 
 ## Examples
 
