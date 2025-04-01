@@ -369,9 +369,9 @@ func TestUpdateFeeMarket(t *testing.T) {
 
 		state := types.DefaultAIMDState()
 		lr := math.LegacyMustNewDecFromStr("0.125")
-		increase := state.BaseGasPrice.Mul(lr).TruncateInt()
+		increase := state.BaseGasPrice.Mul(lr)
 
-		state.BaseGasPrice = types.DefaultMinBaseGasPrice.Add(math.LegacyNewDecFromInt(increase)).Sub(math.LegacyNewDec(1))
+		state.BaseGasPrice = types.DefaultMinBaseGasPrice.Add(increase)
 		state.LearningRate = lr
 
 		k.InitGenesis(ctx, types.GenesisState{Params: params, State: state})
