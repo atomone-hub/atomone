@@ -342,7 +342,8 @@ func TestState_UpdateBaseGasPrice(t *testing.T) {
 		// Instantiate the params with a delta.
 		params := types.DefaultAIMDParams()
 		params.Window = 1
-		params.Delta = math.LegacyNewDec(10)
+		// Delta is expected to convert the net gas utilization into the gas price range.
+		params.Delta = math.LegacyMustNewDecFromStr("0.00000001")
 
 		// 1/4th of the window is full.
 		state.Window[0] = params.TargetBlockUtilization() / 2
@@ -372,7 +373,8 @@ func TestState_UpdateBaseGasPrice(t *testing.T) {
 		// Instantiate the params with a delta.
 		params := types.DefaultAIMDParams()
 		params.Window = 1
-		params.Delta = math.LegacyNewDec(10)
+		// Delta is expected to convert the net gas utilization into the gas price range.
+		params.Delta = math.LegacyMustNewDecFromStr("0.00000001")
 
 		// 1/4th of the window is full.
 		state.Window[0] = params.MaxBlockUtilization / 4 * 3
