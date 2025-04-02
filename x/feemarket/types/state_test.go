@@ -239,111 +239,14 @@ func TestState_UpdateBaseGasPrice(t *testing.T) {
 		require.Equal(t, expectedBaseGasPrice, newBaseGasPrice)
 	})
 
-	t.Run("empty blocks with aimd eip1559 with a delta", func(t *testing.T) {
-		// Instantiate the params with a delta.
-		params := types.DefaultAIMDParams()
-
-		paramsWithDelta := types.DefaultAIMDParams()
-		delta := math.LegacyNewDec(10)
-		paramsWithDelta.Delta = delta
-
-		// Empty blocks
-		state := types.DefaultAIMDState()
-		state.BaseGasPrice = state.BaseGasPrice.Mul(math.LegacyMustNewDecFromStr("10"))
-		lr := state.UpdateLearningRate(params)
-		bgs := state.UpdateBaseGasPrice(params)
-
-		state = types.DefaultAIMDState()
-		state.BaseGasPrice = state.BaseGasPrice.Mul(math.LegacyMustNewDecFromStr("10"))
-		lrWithDelta := state.UpdateLearningRate(paramsWithDelta)
-		bgsWithDelta := state.UpdateBaseGasPrice(paramsWithDelta)
-
-		// Ensure that the learning rate is the same.
-		require.Equal(t, lr, lrWithDelta)
-
-		// Ensure that the base gas price is less with the delta.
-		require.True(t, bgsWithDelta.LT(bgs))
-	})
-
-	t.Run("full blocks with aimd eip1559 with a delta", func(t *testing.T) {
-		// Instantiate the params with a delta.
-		params := types.DefaultAIMDParams()
-
-		paramsWithDelta := types.DefaultAIMDParams()
-		delta := math.LegacyNewDec(10)
-		paramsWithDelta.Delta = delta
-
-		// Empty blocks
-		state := types.DefaultAIMDState()
-		state.BaseGasPrice = state.BaseGasPrice.Mul(math.LegacyMustNewDecFromStr("10"))
-		for i := 0; i < len(state.Window); i++ {
-			state.Window[i] = params.MaxBlockUtilization
-		}
-
-		lr := state.UpdateLearningRate(params)
-		bgs := state.UpdateBaseGasPrice(params)
-
-		state = types.DefaultAIMDState()
-		state.BaseGasPrice = state.BaseGasPrice.Mul(math.LegacyMustNewDecFromStr("10"))
-		for i := 0; i < len(state.Window); i++ {
-			state.Window[i] = params.MaxBlockUtilization
-		}
-
-		lrWithDelta := state.UpdateLearningRate(paramsWithDelta)
-		bgsWithDelta := state.UpdateBaseGasPrice(paramsWithDelta)
-
-		// Ensure that the learning rate is the same.
-		require.Equal(t, lr, lrWithDelta)
-
-		// Ensure that the base gas price is greater with the delta.
-		require.True(t, bgsWithDelta.GT(bgs))
-	})
-
-	t.Run("target blocks with aimd eip1559 with a delta", func(t *testing.T) {
-		// Instantiate the params with a delta.
-		params := types.DefaultAIMDParams()
-
-		paramsWithDelta := types.DefaultAIMDParams()
-		delta := math.LegacyNewDec(10)
-		paramsWithDelta.Delta = delta
-
-		// Empty blocks
-		state := types.DefaultAIMDState()
-		state.BaseGasPrice = state.BaseGasPrice.Mul(math.LegacyMustNewDecFromStr("10"))
-		for i := 0; i < len(state.Window); i++ {
-			state.Window[i] = params.TargetBlockUtilization()
-		}
-
-		lr := state.UpdateLearningRate(params)
-		bgs := state.UpdateBaseGasPrice(params)
-
-		state = types.DefaultAIMDState()
-		state.BaseGasPrice = state.BaseGasPrice.Mul(math.LegacyMustNewDecFromStr("10"))
-		for i := 0; i < len(state.Window); i++ {
-			state.Window[i] = params.TargetBlockUtilization()
-		}
-
-		lrWithDelta := state.UpdateLearningRate(paramsWithDelta)
-		bgsWithDelta := state.UpdateBaseGasPrice(paramsWithDelta)
-
-		// Ensure that the learning rate is the same.
-		require.Equal(t, lr, lrWithDelta)
-
-		// Ensure that the base gas prices are equal.
-		require.Equal(t, bgs, bgsWithDelta)
-	})
-
-	t.Run("half target block size with aimd eip1559 with a delta", func(t *testing.T) {
+	t.Run("half target block size with aimd eip1559", func(t *testing.T) {
 		state := types.DefaultAIMDState()
 		state.Window = make([]uint64, 1)
 		state.BaseGasPrice = state.BaseGasPrice.Mul(math.LegacyNewDec(10))
 		prevGasPrice := state.BaseGasPrice
 
-		// Instantiate the params with a delta.
 		params := types.DefaultAIMDParams()
 		params.Window = 1
-		// Delta is expected to convert the net gas utilization into the gas price range.
-		params.Delta = math.LegacyMustNewDecFromStr("0.00000001")
 
 		// 1/4th of the window is full.
 		state.Window[0] = params.TargetBlockUtilization() / 2
@@ -356,25 +259,20 @@ func TestState_UpdateBaseGasPrice(t *testing.T) {
 		expectedUtilization := math.LegacyMustNewDecFromStr("-0.5")
 		expectedLRAdjustment := (expectedLR.Mul(expectedUtilization)).Add(math.LegacyOneDec())
 
-		expectedNetUtilization := math.LegacyNewDec(-1 * int64(params.TargetBlockUtilization()) / 2)
-		deltaDiff := expectedNetUtilization.Mul(params.Delta)
-		expectedGasPrice := prevGasPrice.Mul(expectedLRAdjustment).Add(deltaDiff)
+		expectedGasPrice := prevGasPrice.Mul(expectedLRAdjustment)
 
 		require.Equal(t, expectedLR, lr)
 		require.Equal(t, expectedGasPrice, newGasPrice)
 	})
 
-	t.Run("3/4 max block size with aimd eip1559 with a delta", func(t *testing.T) {
+	t.Run("3/4 max block size with aimd eip1559", func(t *testing.T) {
 		state := types.DefaultAIMDState()
 		state.Window = make([]uint64, 1)
 		state.BaseGasPrice = state.BaseGasPrice.Mul(math.LegacyMustNewDecFromStr("10"))
 		prevBGS := state.BaseGasPrice
 
-		// Instantiate the params with a delta.
 		params := types.DefaultAIMDParams()
 		params.Window = 1
-		// Delta is expected to convert the net gas utilization into the gas price range.
-		params.Delta = math.LegacyMustNewDecFromStr("0.00000001")
 
 		// 1/4th of the window is full.
 		state.Window[0] = params.MaxBlockUtilization / 4 * 3
@@ -387,9 +285,7 @@ func TestState_UpdateBaseGasPrice(t *testing.T) {
 		expectedLR := prevLR.Add(params.Alpha)
 		expectedLRAdjustment := (expectedLR.Mul(expectedUtilization)).Add(math.LegacyOneDec())
 
-		expectedNetUtilization := math.LegacyNewDec(int64(params.MaxBlockUtilization) / 4)
-		deltaDiff := expectedNetUtilization.Mul(params.Delta)
-		expectedGasPrice := prevBGS.Mul(expectedLRAdjustment).Add(deltaDiff)
+		expectedGasPrice := prevBGS.Mul(expectedLRAdjustment)
 		require.Equal(t, expectedLR, lr)
 		require.Equal(t, expectedGasPrice, bgs)
 	})
