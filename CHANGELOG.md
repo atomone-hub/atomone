@@ -30,6 +30,7 @@
 ### FEATURES
 
 - Add the photon module and use photon as the only fee denom [#57](https://github.com/atomone-hub/atomone/pull/57)
+- Add the feemarket module and use the EIP-15559 AIMD algorithm [#114](https://github.com/atomone-hub/atomone/pull/114)
 
 ### DEPENDENCIES
 
