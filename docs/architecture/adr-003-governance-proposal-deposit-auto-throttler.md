@@ -1,6 +1,6 @@
 # ADR 003: Governance Proposal Deposit Auto-Throttler
 
-**Changelog**
+## **Changelog**
 
 - 26 Nov 2024: Initial draft
 - 3 Dec 2024: Improve formulation
@@ -103,7 +103,7 @@ Where:
 
 ### Regarding update frequency of $D_t$ and the possibility to update it lazily
 
-In a naive implementation for time-based decreases every $T$ time has elapsed (a *tick*) the current value of $n_t$ should be used to calculate $D_t$. Having the accurate $D_t$ available to query at all times is important to be able to correctly submit a proposal.
+The straightforward implementation for time-based decreases is such that every $T$ time has elapsed (a *tick*) the current value of $n_t$ should be used to calculate $D_t$. Having the accurate $D_t$ available to query at all times is important to be able to correctly submit a proposal.
 But in reality, all we need to know is when $n_t$ **actually** changed the last time (which happens when proposals enters the active proposals queue, and in itself also trigger a `MinDeposit` increase), and how much time has passed since then, anytime the $D_t$ value is requested.
 Assume $n_{t_1}$ changed at a certain time $t_1$ (and $D_t$ was last updated at that time so it is equal to $D_{t_1}$), and has not changed up to a certain time $t_2$ when the deposit is queried or requested for a new proposal. At time $t_2$ all we need to know is $\tau = ticks = \lfloor \frac{\Delta t}{T} \rfloor = \lfloor \frac{t_2 - t_1}{T} \rfloor$ and  then a way to compute easily $D_{t_2}$ as a function of $D_{t_1}$ and the number of ticks elapsed $\tau$. Due to the fact that $n_t$ has not changed since $t_1$ and is still $n_{t_1}$, all we need is to do is apply the same rate of decrease/increase multiple times, i.e.
 
@@ -126,10 +126,9 @@ The following parameters are added to the `x/gov` module params, inside a dedica
 - `target_active_proposals`:  the number of active proposals the dynamic minimum deposit should target.
 - `increase_ratio`: the ratio of increase for the minimum deposit when the number of active proposals is at or above the target.
 - `decrease_ratio`: the ratio of increase for the minimum deposit when the number of active proposals is below the target.
-- `decrease_sensitivity_target_distance`: A positive integer representing the sensitivity of the dynamic minimum deposit time-based decrease to the distance from the target number of active proposals. The higher the number, the lower the sensitivity. A value of 1 represents the highest sensitivity.
+- `decrease_sensitivity_target_distance`: A positive integer representing the sensitivity to the distance from the target number of active proposals for time-based decreases of the minimum deposit. The higher the number, the lower the sensitivity. A value of 1 represents the highest sensitivity.
 
 Proposals activation - i.e. when a proposal is added to the `keeper.ActiveProposalsQueue` - triggers a `MinDeposit` increase which is also saved in state via setting the `LastMinDeposit` if number of active proposals is at or above `target_active_proposals`. In the `EndBlocker` time-based updates are performed to decrease the `MinDeposit` -- by `setting LastMinDeposit` -- value if the `update_period` has elapsed since the last update, and the number of active proposals is below the target.
-
 
 ### Querying deposits value
 
