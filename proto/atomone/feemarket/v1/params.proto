@@ -41,15 +41,6 @@ message Params {
     (gogoproto.nullable) = false
   ];
 
-  // Delta is the amount we additively increase/decrease the gas price when the
-  // net block utilization difference in the window is above/below the target
-  // utilization.
-  string delta = 4 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-
   // MinBaseGasPrice determines the initial gas price of the module and the
   // global minimum for the network.
   string min_base_gas_price = 5 [

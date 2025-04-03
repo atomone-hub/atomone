@@ -3,9 +3,10 @@ package fuzz_test
 import (
 	"testing"
 
-	"cosmossdk.io/math"
 	"github.com/stretchr/testify/require"
 	"pgregory.net/rapid"
+
+	"cosmossdk.io/math"
 
 	"github.com/atomone-hub/atomone/x/feemarket/types"
 )
@@ -43,8 +44,8 @@ func TestGasPrice(t *testing.T) {
 		params := CreateRandomParams(t)
 
 		// Update the current base fee to be 10% higher than the minimum base fee.
-		prevBaseFee := state.BaseGasPrice.Mul(math.LegacyNewDec(11)).Quo(math.LegacyNewDec(10))
-		state.BaseGasPrice = prevBaseFee
+		prevBaseGasPrice := state.BaseGasPrice.Mul(math.LegacyNewDec(11)).Quo(math.LegacyNewDec(10))
+		state.BaseGasPrice = prevBaseGasPrice
 
 		// Randomly generate the block utilization.
 		blockUtilization := rapid.Uint64Range(0, params.MaxBlockUtilization).Draw(t, "gas")
@@ -64,11 +65,11 @@ func TestGasPrice(t *testing.T) {
 
 		switch {
 		case blockUtilization > params.TargetBlockUtilization():
-			require.True(t, state.BaseGasPrice.GTE(prevBaseFee))
+			require.True(t, state.BaseGasPrice.GTE(prevBaseGasPrice))
 		case blockUtilization < params.TargetBlockUtilization():
-			require.True(t, state.BaseGasPrice.LTE(prevBaseFee))
+			require.True(t, state.BaseGasPrice.LTE(prevBaseGasPrice))
 		default:
-			require.Equal(t, state.BaseGasPrice, prevBaseFee)
+			require.Equal(t, state.BaseGasPrice, prevBaseGasPrice)
 		}
 	})
 }

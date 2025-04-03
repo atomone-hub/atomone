@@ -3,8 +3,9 @@ package types_test
 import (
 	"testing"
 
-	"cosmossdk.io/math"
 	"github.com/stretchr/testify/require"
+
+	"cosmossdk.io/math"
 
 	"github.com/atomone-hub/atomone/x/feemarket/types"
 )
@@ -109,36 +110,12 @@ func TestParams(t *testing.T) {
 			expectedErr: true,
 		},
 		{
-			name: "delta is nil",
-			p: types.Params{
-				Window:   1,
-				Alpha:    math.LegacyMustNewDecFromStr("0.1"),
-				Beta:     math.LegacyMustNewDecFromStr("0.1"),
-				Gamma:    math.LegacyMustNewDecFromStr("0.1"),
-				FeeDenom: types.DefaultFeeDenom,
-			},
-			expectedErr: true,
-		},
-		{
-			name: "delta is negative",
-			p: types.Params{
-				Window:   1,
-				Alpha:    math.LegacyMustNewDecFromStr("0.1"),
-				Beta:     math.LegacyMustNewDecFromStr("0.1"),
-				Gamma:    math.LegacyMustNewDecFromStr("0.1"),
-				Delta:    math.LegacyMustNewDecFromStr("-0.1"),
-				FeeDenom: types.DefaultFeeDenom,
-			},
-			expectedErr: true,
-		},
-		{
 			name: "target block size is zero",
 			p: types.Params{
 				Window:   1,
 				Alpha:    math.LegacyMustNewDecFromStr("0.1"),
 				Beta:     math.LegacyMustNewDecFromStr("0.1"),
 				Gamma:    math.LegacyMustNewDecFromStr("0.1"),
-				Delta:    math.LegacyMustNewDecFromStr("0.1"),
 				FeeDenom: types.DefaultFeeDenom,
 			},
 			expectedErr: true,
@@ -150,7 +127,6 @@ func TestParams(t *testing.T) {
 				Alpha:    math.LegacyMustNewDecFromStr("0.1"),
 				Beta:     math.LegacyMustNewDecFromStr("0.1"),
 				Gamma:    math.LegacyMustNewDecFromStr("0.1"),
-				Delta:    math.LegacyMustNewDecFromStr("0.1"),
 				FeeDenom: types.DefaultFeeDenom,
 			},
 			expectedErr: true,
@@ -162,7 +138,6 @@ func TestParams(t *testing.T) {
 				Alpha:               math.LegacyMustNewDecFromStr("0.1"),
 				Beta:                math.LegacyMustNewDecFromStr("0.1"),
 				Gamma:               math.LegacyMustNewDecFromStr("0.1"),
-				Delta:               math.LegacyMustNewDecFromStr("0.1"),
 				MaxBlockUtilization: 3,
 				FeeDenom:            types.DefaultFeeDenom,
 			},
@@ -175,7 +150,6 @@ func TestParams(t *testing.T) {
 				Alpha:               math.LegacyMustNewDecFromStr("0.1"),
 				Beta:                math.LegacyMustNewDecFromStr("0.1"),
 				Gamma:               math.LegacyMustNewDecFromStr("0.1"),
-				Delta:               math.LegacyMustNewDecFromStr("0.1"),
 				MaxBlockUtilization: 3,
 				MinBaseGasPrice:     math.LegacyMustNewDecFromStr("-1.0"),
 				FeeDenom:            types.DefaultFeeDenom,
@@ -189,7 +163,6 @@ func TestParams(t *testing.T) {
 				Alpha:               math.LegacyMustNewDecFromStr("0.1"),
 				Beta:                math.LegacyMustNewDecFromStr("0.1"),
 				Gamma:               math.LegacyMustNewDecFromStr("0.1"),
-				Delta:               math.LegacyMustNewDecFromStr("0.1"),
 				MaxBlockUtilization: 3,
 				MinBaseGasPrice:     math.LegacyMustNewDecFromStr("1.0"),
 				FeeDenom:            types.DefaultFeeDenom,
@@ -203,7 +176,6 @@ func TestParams(t *testing.T) {
 				Alpha:               math.LegacyMustNewDecFromStr("0.1"),
 				Beta:                math.LegacyMustNewDecFromStr("0.1"),
 				Gamma:               math.LegacyMustNewDecFromStr("0.1"),
-				Delta:               math.LegacyMustNewDecFromStr("0.1"),
 				MaxBlockUtilization: 3,
 				MinBaseGasPrice:     math.LegacyMustNewDecFromStr("1.0"),
 				MinLearningRate:     math.LegacyMustNewDecFromStr("-0.1"),
@@ -218,7 +190,6 @@ func TestParams(t *testing.T) {
 				Alpha:               math.LegacyMustNewDecFromStr("0.1"),
 				Beta:                math.LegacyMustNewDecFromStr("0.1"),
 				Gamma:               math.LegacyMustNewDecFromStr("0.1"),
-				Delta:               math.LegacyMustNewDecFromStr("0.1"),
 				MaxBlockUtilization: 3,
 				MinBaseGasPrice:     math.LegacyMustNewDecFromStr("1.0"),
 				MinLearningRate:     math.LegacyMustNewDecFromStr("0.1"),
@@ -233,7 +204,6 @@ func TestParams(t *testing.T) {
 				Alpha:               math.LegacyMustNewDecFromStr("0.1"),
 				Beta:                math.LegacyMustNewDecFromStr("0.1"),
 				Gamma:               math.LegacyMustNewDecFromStr("0.1"),
-				Delta:               math.LegacyMustNewDecFromStr("0.1"),
 				MaxBlockUtilization: 3,
 				MinBaseGasPrice:     math.LegacyMustNewDecFromStr("1.0"),
 				MinLearningRate:     math.LegacyMustNewDecFromStr("0.1"),
@@ -249,7 +219,6 @@ func TestParams(t *testing.T) {
 				Alpha:               math.LegacyMustNewDecFromStr("0.1"),
 				Beta:                math.LegacyMustNewDecFromStr("0.1"),
 				Gamma:               math.LegacyMustNewDecFromStr("0.1"),
-				Delta:               math.LegacyMustNewDecFromStr("0.1"),
 				MaxBlockUtilization: 3,
 				MinBaseGasPrice:     math.LegacyMustNewDecFromStr("1.0"),
 				MinLearningRate:     math.LegacyMustNewDecFromStr("0.1"),
@@ -265,7 +234,6 @@ func TestParams(t *testing.T) {
 				Alpha:               math.LegacyMustNewDecFromStr("0.1"),
 				Beta:                math.LegacyMustNewDecFromStr("0.1"),
 				Gamma:               math.LegacyMustNewDecFromStr("0.1"),
-				Delta:               math.LegacyMustNewDecFromStr("0.1"),
 				MaxBlockUtilization: 3,
 				MinBaseGasPrice:     math.LegacyMustNewDecFromStr("1.0"),
 				MinLearningRate:     math.LegacyMustNewDecFromStr("0.01"),

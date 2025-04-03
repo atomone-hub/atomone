@@ -34,8 +34,7 @@ branch) and includes changes and adaptations to suit the AtomOne project.
   - [Parameters](#parameters)
     - [Alpha](#alpha)
     - [Beta](#beta)
-    - [Theta](#theta)
-    - [Delta](#delta)
+    - [Gamma](#gamma)
     - [MinBaseGasPrice](#minbasegasprice)
     - [MinLearningRate](#minlearningrate)
     - [MaxLearningRate](#maxlearningrate)
@@ -240,12 +239,6 @@ above or below the target +/- threshold, we additively increase the
 learning rate by Alpha. Otherwise, we multiplicatively decrease the
 learning rate by Beta.
 
-### Delta
-
-Delta is the amount we additively increase/decrease the base fee when the
-net block utilization difference in the window is above/below the target
-utilization.
-
 ### MinBaseGasPrice
 
 MinBaseGasPrice determines the initial gas price of the module and the global
@@ -311,15 +304,6 @@ message Params {
   //
   // Must be [0, 0.5].
   string gamma = 3 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-
-  // Delta is the amount we additively increase/decrease the gas price when the
-  // net block utilization difference in the window is above/below the target
-  // utilization.
-  string delta = 4 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
@@ -396,14 +380,13 @@ Example Output:
 ```yml
 alpha: "0.000000000000000000"
 beta: "1.000000000000000000"
-delta: "0.000000000000000000"
 enabled: true
 fee_denom: uatone
 max_block_utilization: "30000000"
 max_learning_rate: "0.125000000000000000"
-min_base_fee: "1.000000000000000000"
+min_base_gas_price: "1.000000000000000000"
 min_learning_rate: "0.125000000000000000"
-theta: "0.000000000000000000"
+gamma: "0.000000000000000000"
 window: "1"
 ```
 
@@ -499,9 +482,8 @@ Example Output:
   "params": {
     "alpha": "0",
     "beta": "1000000000000000000",
-    "theta": "0",
-    "delta": "0",
-    "minBaseFee": "1000000",
+    "gamma": "0",
+    "minBaseGasPrice": "1000000",
     "minLearningRate": "125000000000000000",
     "maxLearningRate": "125000000000000000",
     "maxBlockUtilization": "30000000",

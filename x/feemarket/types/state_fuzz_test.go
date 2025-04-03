@@ -3,8 +3,9 @@ package types_test
 import (
 	"testing"
 
-	"cosmossdk.io/math"
 	"github.com/stretchr/testify/require"
+
+	"cosmossdk.io/math"
 
 	"github.com/atomone-hub/atomone/x/feemarket/types"
 )
@@ -36,7 +37,7 @@ func FuzzDefaultFeeMarket(f *testing.F) {
 		err := state.Update(blockGasUsed, params)
 
 		if blockGasUsed > params.MaxBlockUtilization {
-			require.Error(t, err)
+			require.ErrorIs(t, err, types.ErrMaxGasExceeded)
 			return
 		}
 
@@ -85,7 +86,7 @@ func FuzzAIMDFeeMarket(f *testing.F) {
 		err := state.Update(blockGasUsed, params)
 
 		if blockGasUsed > params.MaxBlockUtilization {
-			require.Error(t, err)
+			require.ErrorIs(t, err, types.ErrMaxGasExceeded)
 			return
 		}
 

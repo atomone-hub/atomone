@@ -45,7 +45,6 @@ func TestParamsRequest(t *testing.T) {
 			Alpha:               math.LegacyMustNewDecFromStr("0.1"),
 			Beta:                math.LegacyMustNewDecFromStr("0.1"),
 			Gamma:               math.LegacyMustNewDecFromStr("0.1"),
-			Delta:               math.LegacyMustNewDecFromStr("0.1"),
 			MinBaseGasPrice:     math.LegacyNewDec(10),
 			MinLearningRate:     math.LegacyMustNewDecFromStr("0.1"),
 			MaxLearningRate:     math.LegacyMustNewDecFromStr("0.1"),

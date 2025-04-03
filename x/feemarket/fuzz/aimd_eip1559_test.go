@@ -3,9 +3,10 @@ package fuzz_test
 import (
 	"testing"
 
-	"cosmossdk.io/math"
 	"github.com/stretchr/testify/require"
 	"pgregory.net/rapid"
+
+	"cosmossdk.io/math"
 
 	"github.com/atomone-hub/atomone/x/feemarket/types"
 )
@@ -114,11 +115,8 @@ func TestAIMDGasPrice(t *testing.T) {
 				// 1 + (learningRate * (currentBlockSize - targetBlockSize) / targetBlockSize)
 				learningRateAdjustment := math.LegacyOneDec().Add(lr.Mul(utilization))
 
-				// Calculate the delta adjustment.
-				net := math.LegacyNewDecFromInt(state.GetNetUtilization(params)).Mul(params.Delta)
-
 				// Update the base gasPrice.
-				newPrice = prevBaseGasPrice.Mul(learningRateAdjustment).Add(net)
+				newPrice = prevBaseGasPrice.Mul(learningRateAdjustment)
 				// Ensure the base gasPrice is greater than the minimum base gasPrice.
 				if newPrice.LT(params.MinBaseGasPrice) {
 					newPrice = params.MinBaseGasPrice
@@ -150,9 +148,6 @@ func CreateRandomAIMDParams(t *rapid.T) types.Params {
 	g := rapid.Uint64Range(10, 50).Draw(t, "gamma")
 	gamma := math.LegacyNewDec(int64(g)).Quo(math.LegacyNewDec(100))
 
-	d := rapid.Uint64Range(1, 1000).Draw(t, "delta")
-	delta := math.LegacyNewDec(int64(d)).Quo(math.LegacyNewDec(1000))
-
 	targetBlockUtilization := rapid.Uint64Range(1, 30_000_000).Draw(t, "target_block_utilization")
 	maxBlockUtilization := rapid.Uint64Range(targetBlockUtilization, targetBlockUtilization*5).Draw(t, "max_block_utilization")
 
@@ -160,7 +155,6 @@ func CreateRandomAIMDParams(t *rapid.T) types.Params {
 	params.Alpha = alpha
 	params.Beta = beta
 	params.Gamma = gamma
-	params.Delta = delta
 	params.MaxBlockUtilization = maxBlockUtilization
 
 	return params

@@ -28,18 +28,13 @@ var (
 	// the learning rate.
 	DefaultAIMDGamma = math.LegacyMustNewDecFromStr("0.25")
 
-	// DefaultAIMDDelta is the default delta value for how much we additively
-	// increase or decrease the base fee when the net block utilization within
-	// the window is not equal to the target utilization.
-	DefaultAIMDDelta = math.LegacyMustNewDecFromStr("0.0")
-
 	// DefaultAIMDMaxBlockSize is the default maximum block utilization.
 	// This is the default on Ethereum. This denominated in units of gas
 	// consumed in a block.
 	DefaultAIMDMaxBlockSize uint64 = 30_000_000
 
-	// DefaultAIMDMinBaseFee is the default minimum base fee.
-	DefaultAIMDMinBaseFee = math.LegacyMustNewDecFromStr("1000000000")
+	// DefaultAIMDMinBaseGasPrice is the default minimum base gas price.
+	DefaultAIMDMinBaseGasPrice = DefaultMinBaseGasPrice
 
 	// DefaultAIMDMinLearningRate is the default minimum learning rate.
 	DefaultAIMDMinLearningRate = math.LegacyMustNewDecFromStr("0.01")
@@ -61,9 +56,8 @@ func DefaultAIMDParams() Params {
 		DefaultAIMDAlpha,
 		DefaultAIMDBeta,
 		DefaultAIMDGamma,
-		DefaultAIMDDelta,
 		DefaultAIMDMaxBlockSize,
-		DefaultAIMDMinBaseFee,
+		DefaultAIMDMinBaseGasPrice,
 		DefaultAIMDMinLearningRate,
 		DefaultAIMDMaxLearningRate,
 		DefaultAIMDFeeDenom,
@@ -78,7 +72,7 @@ func DefaultAIMDParams() Params {
 func DefaultAIMDState() State {
 	return NewState(
 		DefaultAIMDWindow,
-		DefaultAIMDMinBaseFee,
+		DefaultAIMDMinBaseGasPrice,
 		DefaultAIMDMinLearningRate,
 	)
 }

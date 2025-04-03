@@ -37,7 +37,7 @@ func (k *Keeper) UpdateFeeMarket(ctx sdk.Context) error {
 		params,
 	)
 
-	// Update the base gas price based with the new learning rate and delta adjustment.
+	// Update the base gas price based with the new learning rate.
 	newBaseGasPrice := state.UpdateBaseGasPrice(params)
 
 	k.Logger(ctx).Info(
