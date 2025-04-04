@@ -99,7 +99,7 @@ decorator to the `AnteHandler`. Just before the `auth/ante.DeductFeeDecorator`,
 we want to add a decorator that should:
 
 - enforce that the fee denom is `uphoton`, and return a specific error message if
-  it does not (this to be explicitely separated with the insufficient fee error
+  it does not (this to be explicitly separated with the insufficient fee error
   message)
 - make exception for some messages, specifically like `MsgMintPhoton`, because
   `MsgMintPhoton` is the only way to get PHOTONs, so it should accept ATONEs as
@@ -116,7 +116,7 @@ The `photon` module has the following params:
 
 ### State
 
-Aside from its params, the `x/photon` module does not have any additionnal state,
+Aside from its params, the `x/photon` module does not have any additional state,
 as the PHOTON balances and supply are handled by the `x/bank` module.
 
 ### Migration
@@ -194,7 +194,7 @@ provided by the `x/photon` module).
   inflate between the 7% and 20% bounds,targeting the 2/3 bonding ratio.
   PHOTON as the fee token reinforces this property.
 
-- Having a non-inflationnary fee token (in contrast to ATONE) ensures PHOTON
+- Having a non-inflationary fee token (in contrast to ATONE) ensures PHOTON
   will not be subject to the same dilution tax for non-stakers as ATONE does.
   PHOTON holders will be subject to no dilution at all. The more stable nature
   of PHOTON  makes it a perfect candidate for a fee token.
@@ -208,7 +208,7 @@ provided by the `x/photon` module).
 ### Neutral
 
 - Dual token model like this has not been experimented at this scale in the
-  Cosmos ecosytem, we might experience some unexpected side effect, positive or
+  Cosmos ecosystem, we might experience some unexpected side effect, positive or
   negative.
 
 ## References
