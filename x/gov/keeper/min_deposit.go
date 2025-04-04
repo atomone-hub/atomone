@@ -137,4 +137,12 @@ func (keeper Keeper) UpdateMinDeposit(ctx sdk.Context, checkElapsedTime bool) {
 	percChange := math.LegacyOneDec().Add(alpha)
 	newMinDeposit := v1.GetNewMinDeposit(minDepositFloor, lastMinDeposit, percChange)
 	keeper.SetLastMinDeposit(ctx, newMinDeposit, ctx.BlockTime())
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeMinDepositChange,
+			sdk.NewAttribute(types.AttributeKeyNewMinDeposit, newMinDeposit.String()),
+			sdk.NewAttribute(types.AttributeKeyLastMinDeposit, lastMinDeposit.String()),
+		),
+	)
 }
