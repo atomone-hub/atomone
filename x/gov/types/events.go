@@ -2,13 +2,15 @@ package types
 
 // Governance module event types
 const (
-	EventTypeSubmitProposal   = "submit_proposal"
-	EventTypeProposalDeposit  = "proposal_deposit"
-	EventTypeProposalVote     = "proposal_vote"
-	EventTypeInactiveProposal = "inactive_proposal"
-	EventTypeActiveProposal   = "active_proposal"
-	EventTypeSignalProposal   = "signal_proposal"
-	EventTypeQuorumCheck      = "quorum_check"
+	EventTypeSubmitProposal          = "submit_proposal"
+	EventTypeProposalDeposit         = "proposal_deposit"
+	EventTypeProposalVote            = "proposal_vote"
+	EventTypeInactiveProposal        = "inactive_proposal"
+	EventTypeActiveProposal          = "active_proposal"
+	EventTypeSignalProposal          = "signal_proposal"
+	EventTypeQuorumCheck             = "quorum_check"
+	EventTypeMinDepositChange        = "min_deposit_change"
+	EventTypeMinInitialDepositChange = "min_initial_deposit_change"
 
 	AttributeKeyVoter                        = "voter"
 	AttributeKeyProposalResult               = "proposal_result"
@@ -26,4 +28,8 @@ const (
 	AttributeValueProposalQuorumMet          = "proposal_quorum_met"           // met quorum
 	AttributeValueProposalQuorumNotMet       = "proposal_quorum_not_met"       // didn't meet quorum
 	AttributeValueProposalQuorumCheckSkipped = "proposal_quorum_check_skipped" // skipped quorum check
+	AttributeKeyNewMinDeposit                = "new_min_deposit"               // new min deposit value
+	AttributeKeyLastMinDeposit               = "last_min_deposit"              // last min deposit value
+	AttributeKeyNewMinInitialDeposit         = "new_min_initial_deposit"       // new min initial deposit value
+	AttributeKeyLastMinInitialDeposit        = "last_min_initial_deposit"      // last min initial deposit value
 )

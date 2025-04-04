@@ -37,40 +37,104 @@ can be adapted to any Proof-Of-Stake blockchain by replacing *ATONE* with the na
 staking token of the chain.
 
 
-* [Concepts](#concepts)
-    * [Proposal submission](#proposal-submission)
-    * [Deposit](#deposit)
-    * [Vote](#vote)
-    * [Quorum](#quorum)
-* [State](#state)
-    * [Proposals](#proposals)
-    * [Parameters and base types](#parameters-and-base-types)
-    * [Deposit](#deposit-1)
-* [Stores](#stores)
-    * [Proposal Processing Queue](#proposal-processing-queue)
-    * [Legacy Proposal](#legacy-proposal)
-    * [Quorum Checks and Voting Period Extension](#quorum-checks-and-voting-period-extension)
-    * [Constitution](#constitution)
-    * [Law and Constitution Amendment Proposals](#law-and-constitution-amendment-proposals)
-    * [Last Min Deposit and Last Min Initial Deposit](#last-min-deposit-and-last-min-initial-deposit)
-* [Messages](#messages)
-    * [Proposal Submission](#proposal-submission-1)
-    * [Deposit](#deposit-2)
-    * [Vote](#vote-1)
-* [Events](#events)
-    * [EndBlocker](#endblocker)
-    * [Handlers](#handlers)
-* [Parameters](#parameters)
-    * [MinDepositThrottler (dynamic MinDeposit)](#mindepositthrottler-dynamic-mindeposit)
-    * [MinInitialDepositThrottler (dynamic MinInitialDeposit)](#mininitialdepositthrottler-dynamic-mininitialdeposit)
-* [Client](#client)
-    * [CLI](#cli)
-    * [gRPC](#grpc)
-    * [REST](#rest)
-* [Metadata](#metadata)
-    * [Proposal](#proposal-3)
-    * [Vote](#vote-5)
-* [Future Improvements](#future-improvements)
+- [`x/gov`](#xgov)
+  - [Abstract](#abstract)
+  - [Contents](#contents)
+  - [Concepts](#concepts)
+    - [Proposal submission](#proposal-submission)
+      - [Right to submit a proposal](#right-to-submit-a-proposal)
+      - [Proposal Messages](#proposal-messages)
+    - [Deposit](#deposit)
+      - [Dynamic MinInitialDeposit and MinDeposit](#dynamic-mininitialdeposit-and-mindeposit)
+      - [Deposit process](#deposit-process)
+      - [Deposit refund](#deposit-refund)
+    - [Vote](#vote)
+      - [Participants](#participants)
+      - [Voting period](#voting-period)
+      - [Option set](#option-set)
+      - [Weighted Votes](#weighted-votes)
+    - [Quorum](#quorum)
+      - [Threshold](#threshold)
+      - [No inheritance](#no-inheritance)
+      - [Validator’s punishment for non-voting](#validators-punishment-for-non-voting)
+      - [Governance address](#governance-address)
+      - [Burnable Params](#burnable-params)
+  - [State](#state)
+    - [Proposals](#proposals)
+      - [Writing a module that uses governance](#writing-a-module-that-uses-governance)
+    - [Parameters and base types](#parameters-and-base-types)
+      - [DepositParams](#depositparams)
+      - [VotingParams](#votingparams)
+      - [TallyParams](#tallyparams)
+    - [Deposit](#deposit-1)
+  - [Stores](#stores)
+    - [Proposal Processing Queue](#proposal-processing-queue)
+    - [Legacy Proposal](#legacy-proposal)
+    - [Quorum Checks and Voting Period Extension](#quorum-checks-and-voting-period-extension)
+    - [Constitution](#constitution)
+    - [Law and Constitution Amendment Proposals](#law-and-constitution-amendment-proposals)
+    - [Last Min Deposit and Last Min Initial Deposit](#last-min-deposit-and-last-min-initial-deposit)
+  - [Messages](#messages)
+    - [Proposal Submission](#proposal-submission-1)
+    - [Deposit](#deposit-2)
+    - [Vote](#vote-1)
+  - [Events](#events)
+    - [EndBlocker](#endblocker)
+    - [Handlers](#handlers)
+      - [MsgSubmitProposal](#msgsubmitproposal)
+      - [MsgVote](#msgvote)
+      - [MsgVoteWeighted](#msgvoteweighted)
+      - [MsgDeposit](#msgdeposit)
+  - [Parameters](#parameters)
+    - [MinDepositThrottler (dynamic MinDeposit)](#mindepositthrottler-dynamic-mindeposit)
+    - [MinInitialDepositThrottler (dynamic MinInitialDeposit)](#mininitialdepositthrottler-dynamic-mininitialdeposit)
+  - [Client](#client)
+    - [CLI](#cli)
+      - [Query](#query)
+        - [deposit](#deposit-3)
+        - [deposits](#deposits)
+        - [min deposit](#min-deposit)
+        - [min initial deposit](#min-initial-deposit)
+        - [param](#param)
+        - [params](#params)
+        - [proposal](#proposal)
+        - [proposals](#proposals-1)
+        - [proposer](#proposer)
+        - [tally](#tally)
+        - [vote](#vote-2)
+        - [votes](#votes)
+      - [Transactions](#transactions)
+        - [deposit](#deposit-4)
+        - [draft-proposal](#draft-proposal)
+        - [generate-constitution-amendment](#generate-constitution-amendment)
+        - [submit-proposal](#submit-proposal)
+        - [submit-legacy-proposal](#submit-legacy-proposal)
+        - [vote](#vote-3)
+        - [weighted-vote](#weighted-vote)
+    - [gRPC](#grpc)
+      - [Proposal](#proposal-1)
+      - [Proposals](#proposals-2)
+      - [Vote](#vote-4)
+      - [Votes](#votes-1)
+      - [Params](#params-1)
+      - [Deposit](#deposit-5)
+      - [deposits](#deposits-1)
+      - [TallyResult](#tallyresult)
+    - [REST](#rest)
+      - [proposal](#proposal-2)
+      - [proposals](#proposals-3)
+      - [voter vote](#voter-vote)
+      - [votes](#votes-2)
+      - [params](#params-2)
+      - [min deposit](#min-deposit-1)
+      - [min initial deposit](#min-initial-deposit-1)
+      - [deposits](#deposits-2)
+      - [proposal deposits](#proposal-deposits)
+      - [tally](#tally-1)
+  - [Metadata](#metadata)
+    - [Proposal](#proposal-3)
+    - [Vote](#vote-5)
+  - [Future Improvements](#future-improvements)
 
 ## Concepts
 
@@ -655,11 +719,11 @@ need to be crafted with care.
 
 ### Last Min Deposit and Last Min Initial Deposit
 
-The `LastMinDeposit` and `LastMinInitialDeposit` are used to store the last values
-of the dynamic `MinDeposit` and `MinInitialDeposit` respectively upon proposals
-activation or deactivation. These values are used to determine the current values
-for the dynamic `MinDeposit` and `MinInitialDeposit` accounting also for the
-passage of time as detailed in [ADR-003](../../docs/architecture/adr-003-governance-proposal-deposit-auto-throttler.md)
+The `LastMinDeposit` and `LastMinInitialDeposit` are used to store the current values
+of the dynamic `MinDeposit` and `MinInitialDeposit` respectively, and a timestamp
+of the last time they were updated.
+These values are updated upon proposals activation (for increases) and with the
+passage of time (for decreases) as detailed in [ADR-003](../../docs/architecture/adr-003-governance-proposal-deposit-auto-throttler.md)
 
 **Store:**
 
@@ -963,13 +1027,15 @@ Some older fields have been deprecated but remain in `gov.proto` for backward co
 The `min_deposit_throttler` field in `Params` controls how `MinDeposit` is computed dynamically:
 
 - `floor_value`: The floor (lowest possible) deposit requirement.
-- `update_period`: After how long the system should recalculate (time-based updates).
+- `update_period`: After how long the system should recalculate for time-based decreases,
+  i.e. when the numbner of proposals in voting period is below the target.  
 - `target_active_proposals`: The number of active proposals the dynamic deposit
   tries to target.
 - `increase_ratio` / `decrease_ratio`: How fast the min deposit goes up/down
-  relative to exceeding or being under that target.
+  when exceeding or being under the target.
 - `sensitivity_target_distance`: A positive integer indicating how sensitive
-  the multiplier is to how far away we are from the target number of active proposals.
+  the multiplier for time-based decreases is to how far away we are from the
+  target number of active proposals.
 
 ### MinInitialDepositThrottler (dynamic MinInitialDeposit)
 
@@ -977,13 +1043,15 @@ Similarly, the `min_initial_deposit_throttler` sub-structure defines the dynamic
 `MinInitialDeposit`:
 
 - `floor_value`: The floor (lowest possible) initial deposit requirement.
-- `update_period`: After how long the system should recalculate (time-based
-  updates).  
+- `update_period`: After how long the system should recalculate for time-based
+  decreases, i.e. when the numbner of proposals in deposit period is below the
+  target.  
 - `target_proposals`: The target number of proposals in the deposit period.  
 - `increase_ratio` / `decrease_ratio`: Rate of upward/downward adjustments when
-  the number of deposit-period proposals deviates from the target.  
-- `sensitivity_target_distance`: Like above, how sharply the required deposit
-  reacts to that deviation.
+  the number of deposit-period proposals deviates from the target.
+- `sensitivity_target_distance`: Like for the `MinDepositThrottler`, it indicates
+  how sharply the required deposit reacts to distance from the target when
+  doing time-based decreases.
 
 :::note
 Both dynamic thresholds are maintained internally and automatically updated

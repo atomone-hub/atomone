@@ -217,6 +217,9 @@ func EndBlocker(ctx sdk.Context, keeper *keeper.Keeper) {
 		)
 		return false
 	})
+
+	keeper.UpdateMinInitialDeposit(ctx, true)
+	keeper.UpdateMinDeposit(ctx, true)
 }
 
 // executes handle(msg) and recovers from panic.
