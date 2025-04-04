@@ -66,18 +66,12 @@ The `MinDeposit` should exponentially increase -- upon proposal activation -- an
 An update of the `MinDeposit` can be triggered **by the passage of a certain amount of time for decreases** - denoted as a *tick* - or **by the activation of a proposal when doing an increase**, and the new value is calculated from the previous value as such:
 
 $$
-D_{t+1} = \max(D_{\min}, D_t \times (1+ sign(n_t - N) \times \alpha \times \sigma))
+D_{t+1} = \max(D_{\min}, D_t \times (1 + \alpha \times \sigma))
 $$
 
 $$
 \alpha = \begin{cases} \alpha_{up} & n_t \geq N \\
-\alpha_{down} & n_t \lt N
-\end{cases}
-$$
-
-$$
-sign(n_t - N) = \begin{cases} 1 & n_t \geq N \\
--1 & n_t \lt N
+-\alpha_{down} & n_t \lt N
 \end{cases}
 $$
 
@@ -108,14 +102,14 @@ But in reality, all we need to know is when $n_t$ **actually** changed the last 
 Assume $n_{t_1}$ changed at a certain time $t_1$ (and $D_t$ was last updated at that time so it is equal to $D_{t_1}$), and has not changed up to a certain time $t_2$ when the deposit is queried or requested for a new proposal. At time $t_2$ all we need to know is $\tau = ticks = \lfloor \frac{\Delta t}{T} \rfloor = \lfloor \frac{t_2 - t_1}{T} \rfloor$ and  then a way to compute easily $D_{t_2}$ as a function of $D_{t_1}$ and the number of ticks elapsed $\tau$. Due to the fact that $n_t$ has not changed since $t_1$ and is still $n_{t_1}$, all we need is to do is apply the same rate of decrease/increase multiple times, i.e.
 
 $$
-D_{t+1} = \max(D_{\min}, D_t \times (1+ sign(n_t - N) \times \alpha \times \sigma)^{\tau})
+D_{t+1} = \max(D_{\min}, D_t \times (1 + \alpha \times \sigma)^{\tau})
 $$
 
 What does this mean in practice?
 
 1. The deposit value need to only be actually updated in state when $n_t$ changes, i.e. when proposals actually enter or exit the voting period. Time-based updates can be avoided in principle, and the current value can be calculated on-demand. To further simplify the computation, the value of $1+\alpha \times \sigma$ could also be computed at this time (and maybe cached by nodes in memory instead of being stored in blockchain state) since it also won’t change until $n_t$ also changes again.
 2. If the current deposit value at a certain time $t$ is requested - say $t_1$ was the last time the min deposit was actually updated in state due to a change of the total active proposals $n_t$, it can be computed lazily as
-$D_t = \max( D_{\min}, D_{t_1} \times \gamma^\tau)$, where again $\tau = \lfloor \frac{t - t_1}{T} \rfloor$ - i.e. how many ticks have passed since $t_1$, and $\gamma = 1+ sign(n_t - N) \times \alpha \times \sigma}$ 
+$D_t = \max( D_{\min}, D_{t_1} \times \gamma^\tau)$, where again $\tau = \lfloor \frac{t - t_1}{T} \rfloor$ - i.e. how many ticks have passed since $t_1$, and $\gamma = 1 + \alpha \times \sigma}$ 
 
 ### Implementation
 
