@@ -48,11 +48,7 @@ func InitGenesis(ctx sdk.Context, ak types.AccountKeeper, bk types.BankKeeper, k
 			quorumCheckEntry := v1.NewQuorumCheckQueueEntry(quorumTimeoutTime, data.Params.QuorumCheckCount)
 			quorum := false
 			if ctx.BlockTime().After(quorumTimeoutTime) {
-				var err error
-				quorum, err = k.HasReachedQuorum(ctx, *proposal)
-				if err != nil {
-					panic(err)
-				}
+				quorum = k.HasReachedQuorum(ctx, *proposal)
 				if !quorum {
 					// since we don't export the state of the quorum check queue, we can't know how many checks were actually
 					// done. However, in order to trigger a vote time extension, it is enough to have QuorumChecksDone > 0 to
@@ -77,6 +73,18 @@ func InitGenesis(ctx sdk.Context, ak types.AccountKeeper, bk types.BankKeeper, k
 	if !balance.IsEqual(totalDeposits) {
 		panic(fmt.Sprintf("expected module account was %s but we got %s", balance.String(), totalDeposits.String()))
 	}
+
+	if data.LastMinDeposit != nil {
+		k.SetLastMinDeposit(ctx, data.LastMinDeposit.Value, *data.LastMinDeposit.Time)
+	} else {
+		k.SetLastMinDeposit(ctx, data.Params.MinDepositThrottler.FloorValue, ctx.BlockTime())
+	}
+
+	if data.LastMinInitialDeposit != nil {
+		k.SetLastMinInitialDeposit(ctx, data.LastMinInitialDeposit.Value, *data.LastMinInitialDeposit.Time)
+	} else {
+		k.SetLastMinInitialDeposit(ctx, data.Params.MinInitialDepositThrottler.FloorValue, ctx.BlockTime())
+	}
 }
 
 // ExportGenesis - output genesis parameters
@@ -96,12 +104,25 @@ func ExportGenesis(ctx sdk.Context, k *keeper.Keeper) *v1.GenesisState {
 		proposalsVotes = append(proposalsVotes, votes...)
 	}
 
+	blockTime := ctx.BlockTime()
+	lastMinDeposit := v1.LastMinDeposit{
+		Value: k.GetMinDeposit(ctx),
+		Time:  &blockTime,
+	}
+
+	lastMinInitialDeposit := v1.LastMinDeposit{
+		Value: k.GetMinInitialDeposit(ctx),
+		Time:  &blockTime,
+	}
+
 	return &v1.GenesisState{
-		StartingProposalId: startingProposalID,
-		Deposits:           proposalsDeposits,
-		Votes:              proposalsVotes,
-		Proposals:          proposals,
-		Params:             &params,
-		Constitution:       constitution,
+		StartingProposalId:    startingProposalID,
+		Deposits:              proposalsDeposits,
+		Votes:                 proposalsVotes,
+		Proposals:             proposals,
+		Params:                &params,
+		Constitution:          constitution,
+		LastMinDeposit:        &lastMinDeposit,
+		LastMinInitialDeposit: &lastMinInitialDeposit,
 	}
 }
