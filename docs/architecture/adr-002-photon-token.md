@@ -102,7 +102,7 @@ we want to add a decorator that should:
   it does not (this to be explicitely separated with the insufficient fee error
   message)
 - make exception for some messages, specifically like `MsgMintPhoton`, because
-  `MsgMintPhoton` is the only way to create PHOTONs, so it should accept ATONEs as
+  `MsgMintPhoton` is the only way to mint PHOTONs, so it should accept ATONEs as
   fee token. The list of exceptions will in fact be a module parameter.
 
 ### Params
