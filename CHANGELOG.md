@@ -18,7 +18,7 @@
 
 ## v2.0.0
 
-*Release date*
+*Apr 4th, 2025*
 
 ### BUG FIXES
 
