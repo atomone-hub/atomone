@@ -13,7 +13,7 @@ Implemented (https://github.com/atomone-hub/atomone/pull/57)
 ## Abstract
 
 This ADR proposes the introduction of the PHOTON token as the only fee token of
-AtomOne. The only way to get PHOTONs is to burn ATONEs, with a one-way burn
+AtomOne. The only way to mint PHOTONs is to burn ATONEs, with a one-way burn
 that is not reversible at protocol level.
 
 The PHOTON denom is `photon`, while the base denom is `uphoton`, with:
@@ -102,7 +102,7 @@ we want to add a decorator that should:
   it does not (this to be explicitly separated with the insufficient fee error
   message)
 - make exception for some messages, specifically like `MsgMintPhoton`, because
-  `MsgMintPhoton` is the only way to get PHOTONs, so it should accept ATONEs as
+  `MsgMintPhoton` is the only way to mint PHOTONs, so it should accept ATONEs as
   fee token. The list of exceptions will in fact be a module parameter.
 
 ### Params
