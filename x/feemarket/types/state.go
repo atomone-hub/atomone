@@ -3,6 +3,7 @@ package types
 import (
 	fmt "fmt"
 
+	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 )
 
@@ -28,7 +29,7 @@ func NewState(
 func (s *State) Update(gas uint64, params Params) error {
 	update := s.Window[s.Index] + gas
 	if update > params.MaxBlockUtilization {
-		return fmt.Errorf("block utilization of %d cannot exceed max block utilization of %d", update, params.MaxBlockUtilization)
+		return errorsmod.Wrapf(ErrMaxGasExceeded, "gas %d > max %d", update, params.MaxBlockUtilization)
 	}
 
 	s.Window[s.Index] = update
@@ -44,8 +45,8 @@ func (s *State) IncrementHeight() {
 // UpdateBaseGasPrice updates the learning rate and base gas price based on the AIMD
 // learning rate adjustment algorithm. The learning rate is updated
 // based on the average utilization of the block window. The base gas price is
-// update using the new learning rate and the delta adjustment. Please
-// see the EIP-1559 specification for more details.
+// update using the new learning rate. Please see the EIP-1559 specification
+// for more details.
 func (s *State) UpdateBaseGasPrice(params Params) (gasPrice math.LegacyDec) {
 	// Panic catch in case there is an overflow
 	defer func() {
@@ -66,11 +67,8 @@ func (s *State) UpdateBaseGasPrice(params Params) (gasPrice math.LegacyDec) {
 	// 1 + (learningRate * (currentBlockSize - targetBlockSize) / targetBlockSize)
 	learningRateAdjustment := math.LegacyOneDec().Add(s.LearningRate.Mul(utilization))
 
-	// Calculate the delta adjustment.
-	net := math.LegacyNewDecFromInt(s.GetNetUtilization(params)).Mul(params.Delta)
-
 	// Update the base gasPrice.
-	gasPrice = s.BaseGasPrice.Mul(learningRateAdjustment).Add(net)
+	gasPrice = s.BaseGasPrice.Mul(learningRateAdjustment)
 
 	// Ensure the base gasPrice is greater than the minimum base gasPrice.
 	if gasPrice.LT(params.MinBaseGasPrice) {

@@ -369,9 +369,9 @@ func TestUpdateFeeMarket(t *testing.T) {
 
 		state := types.DefaultAIMDState()
 		lr := math.LegacyMustNewDecFromStr("0.125")
-		increase := state.BaseGasPrice.Mul(lr).TruncateInt()
+		increase := state.BaseGasPrice.Mul(lr)
 
-		state.BaseGasPrice = types.DefaultMinBaseGasPrice.Add(math.LegacyNewDecFromInt(increase)).Sub(math.LegacyNewDec(1))
+		state.BaseGasPrice = types.DefaultMinBaseGasPrice.Add(increase)
 		state.LearningRate = lr
 
 		k.InitGenesis(ctx, types.GenesisState{Params: params, State: state})
@@ -448,7 +448,7 @@ func TestUpdateFeeMarket(t *testing.T) {
 	})
 }
 
-func TestGetBaseFee(t *testing.T) {
+func TestGetBaseGasPrice(t *testing.T) {
 	t.Run("can retrieve base fee with default eip-1559", func(t *testing.T) {
 		require := require.New(t)
 		k, ctx := setupKeeper(t)

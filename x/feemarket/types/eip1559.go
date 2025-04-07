@@ -25,14 +25,11 @@ var (
 	// DefaultGamma is not used in the base EIP-1559 implementation.
 	DefaultGamma = math.LegacyMustNewDecFromStr("0.0")
 
-	// DefaultDelta is not used in the base EIP-1559 implementation.
-	DefaultDelta = math.LegacyMustNewDecFromStr("0.0")
-
 	// DefaultMaxBlockUtilization is the default maximum block utilization. This is the default
 	// on Ethereum. This denominated in units of gas consumed in a block.
 	DefaultMaxBlockUtilization uint64 = 30_000_000
 
-	// DefaultMinBaseGasPrice is the default minimum base fee.
+	// DefaultMinBaseGasPrice is the default minimum base gas price.
 	DefaultMinBaseGasPrice = math.LegacyMustNewDecFromStr("0.01")
 
 	// DefaultMinLearningRate is not used in the base EIP-1559 implementation.
@@ -54,7 +51,6 @@ func DefaultParams() Params {
 		DefaultAlpha,
 		DefaultBeta,
 		DefaultGamma,
-		DefaultDelta,
 		DefaultMaxBlockUtilization,
 		DefaultMinBaseGasPrice,
 		DefaultMinLearningRate,

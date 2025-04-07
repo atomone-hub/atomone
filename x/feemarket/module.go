@@ -118,7 +118,7 @@ func (am AppModule) RegisterServices(cfc module.Configurator) {
 // DefaultGenesis returns default genesis state as raw bytes for the feemarket
 // module.
 func (AppModuleBasic) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
-	return cdc.MustMarshalJSON(types.DefaultGenesisState())
+	return cdc.MustMarshalJSON(types.DefaultAIMDGenesisState())
 }
 
 // ValidateGenesis performs genesis state validation for the feemarket module.

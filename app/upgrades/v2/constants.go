@@ -4,6 +4,7 @@ import (
 	store "github.com/cosmos/cosmos-sdk/store/types"
 
 	"github.com/atomone-hub/atomone/app/upgrades"
+	feemarkettypes "github.com/atomone-hub/atomone/x/feemarket/types"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
 )
 
@@ -16,8 +17,9 @@ var Upgrade = upgrades.Upgrade{
 	CreateUpgradeHandler: CreateUpgradeHandler,
 	StoreUpgrades: store.StoreUpgrades{
 		Added: []string{
-			// new module added in v2
+			// new modules added in v2
 			photontypes.ModuleName,
+			feemarkettypes.ModuleName,
 		},
 	},
 }
