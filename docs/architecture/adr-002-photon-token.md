@@ -13,7 +13,7 @@ Implemented (https://github.com/atomone-hub/atomone/pull/57)
 ## Abstract
 
 This ADR proposes the introduction of the PHOTON token as the only fee token of
-AtomOne. The only way to create PHOTONs is to burn ATONEs, with a one-way burn
+AtomOne. The only way to mint PHOTONs is to burn ATONEs, with a one-way burn
 that is not reversible at protocol level.
 
 The PHOTON denom is `photon`, while the base denom is `uphoton`, with:
