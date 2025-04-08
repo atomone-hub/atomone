@@ -122,7 +122,7 @@ jobs:
         if: env.GIT_DIFF
       - name: Start Local Network
         run: |
-          make start-localnet-ci > liveness.out 2>&1 &
+          make localnet-start > liveness.out 2>&1 &
         if: env.GIT_DIFF
       - name: Test Local Network Liveness
         run: |

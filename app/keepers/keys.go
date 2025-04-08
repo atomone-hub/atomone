@@ -34,7 +34,6 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 		authtypes.StoreKey,
 		banktypes.StoreKey,
 		stakingtypes.StoreKey,
-		crisistypes.StoreKey,
 		minttypes.StoreKey,
 		distrtypes.StoreKey,
 		slashingtypes.StoreKey,
@@ -51,6 +50,11 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 		consensusparamtypes.StoreKey,
 		photontypes.StoreKey,
 		feemarkettypes.StoreKey,
+		// TODO: to be removed in a future release, since x/crisis
+		// was deprecated. The key had to be left here to facilitate
+		// deletion of the module's state from the store during the
+		// software upgrade.
+		crisistypes.StoreKey,
 	)
 
 	// Define transient store keys

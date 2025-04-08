@@ -1,0 +1,29 @@
+{
+  "messages": [
+    {
+      "@type": "/atomone.gov.v1.MsgExecLegacyContent",
+      "content": {
+        "@type": "/cosmos.params.v1beta1.ParameterChangeProposal",
+        "title": "IBC Transfers Enablement Proposal",
+        "description": "This proposal would enable interchain functionality, allowing AtomOne to connect and interact seamlessly with the wider Cosmos ecosystem.",
+        "changes": [
+          {
+            "subspace": "transfer",
+            "key": "SendEnabled",
+            "value": "true"
+          },
+          {
+            "subspace": "transfer",
+            "key": "ReceiveEnabled",
+            "value": "true"
+          }
+        ]
+      },
+      "authority": "atone10d07y265gmmuvt4z0w9aw880jnsr700j5z0zqt"
+    }
+  ],
+  "metadata": "ipfs://CID",
+  "deposit": "200000000uatone",
+  "title": "IBC Enablement",
+  "summary": "summary"
+}
