@@ -29,6 +29,7 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	"github.com/atomone-hub/atomone/x/gov/keeper"
+	govtestutil "github.com/atomone-hub/atomone/x/gov/testutil"
 	"github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
@@ -118,7 +119,7 @@ func createTestSuite(t *testing.T) suite {
 			configurator.AuthModule(),
 			configurator.StakingModule(),
 			configurator.BankModule(),
-			configurator.GovModule(),
+			govtestutil.GovModule(),
 			configurator.ConsensusModule(),
 		),
 		simtestutil.DefaultStartUpConfig(),

@@ -22,6 +22,7 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
+	feemarkettypes "github.com/atomone-hub/atomone/x/feemarket/types"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
 )
@@ -48,6 +49,7 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 		authzkeeper.StoreKey,
 		consensusparamtypes.StoreKey,
 		photontypes.StoreKey,
+		feemarkettypes.StoreKey,
 		// TODO: to be removed in a future release, since x/crisis
 		// was deprecated. The key had to be left here to facilitate
 		// deletion of the module's state from the store during the
