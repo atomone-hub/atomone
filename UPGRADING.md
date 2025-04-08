@@ -103,7 +103,7 @@ case the upgrade fails and the previous chain needs to be restarted.
 ### Current runtime
 
 The AtomOne mainnet network, `atomone-1`, is currently running [AtomOne
-v1.1.1][v1]. We anticipate that operators who are running on v1.1.1, will be
+v1.1.2][v1]. We anticipate that operators who are running on v1.1.2, will be
 able to upgrade successfully. Validators are expected to ensure that their
 systems are up to date and capable of performing the upgrade. This includes
 running the correct binary and if building from source, building with the
@@ -137,11 +137,11 @@ file.
 
 For example, considering this existing setting:
 ```toml
-minimum-gas-prices = "0.001uatone"
+minimum-gas-prices = "0.025uatone"
 ```
 Before upgrading, the setting should be changed to:
 ```toml
-minimum-gas-prices = "0.001uatone,0.001uphoton"
+minimum-gas-prices = "0.025uatone,0.001uphoton"
 ```
 
 For validators that have `authz` transactions submitted periodically, the tx
@@ -160,14 +160,14 @@ For example, considerng the existing setting:
 [[ chain ]]
 id = 'atomone-1'
 (...)
-gas_price = { price = 0.001, denom = 'uatone' }
+gas_price = { price = 0.025, denom = 'uatone' }
 ```
 Once the chain is upgraded, the setting should be changed to:
 ```toml
 [[ chain ]]
 id = 'atomone-1'
 (...)
-gas_price = { price = 0.001, denom = 'uphoton' }
+gas_price = { price = 0.025, denom = 'uphoton' }
 ```
 
 Note that unlike the validator config change which still accepts `uatone` for
@@ -187,11 +187,11 @@ with photons.
 
 ### Method I: Manual Upgrade
 
-Make sure **AtomOne v1.1.1** is installed by either downloading a [compatible
+Make sure **AtomOne v1.1.2** is installed by either downloading a [compatible
 binary][v1], or building from source. Check the required version to build this
 binary in the `Makefile`.
 
-Run AtomOne v1.1.1 till upgrade height, the node will panic:
+Run AtomOne v1.1.2 till upgrade height, the node will panic:
 
 ```shell
 ERR UPGRADE "v2" NEEDED at height: <UPGRADE_HEIGHT>: upgrade to v2 and applying upgrade "v2" at height:<UPGRADE_HEIGHT>
@@ -216,7 +216,7 @@ continue to produce blocks.
 go install cosmossdk.io/tools/cosmovisor/cmd/cosmovisor@latest
 ```
 
-- Create a `cosmovisor` folder inside `$ATOMONE_HOME` and move AtomOne `v1.1.1`
+- Create a `cosmovisor` folder inside `$ATOMONE_HOME` and move AtomOne `v1.1.2`
 into `$ATOMONE_HOME/cosmovisor/genesis/bin`:
 
 ```shell
@@ -239,7 +239,7 @@ At this moment, you should have the following structure:
 ├── current -> genesis or upgrades/<name>
 ├── genesis
 │   └── bin
-│       └── atomoned  # old: v1.1.1
+│       └── atomoned  # old: v1.1.2
 └── upgrades
     └── v2
         └── bin
@@ -325,5 +325,5 @@ repeat the upgrade procedure again during the network startup. If you discover
 a mistake in the process, the best thing to do is wait for the network to start
 before correcting it.
 
-[v1]: https://github.com/atomone-hub/atomone/releases/tag/v1.1.1
+[v1]: https://github.com/atomone-hub/atomone/releases/tag/v1.1.2
 [v2]: https://github.com/atomone-hub/atomone/releases/tag/v2.0.0
