@@ -62,7 +62,9 @@ func (k msgServer) SubmitProposal(goCtx context.Context, msg *v1.MsgSubmitPropos
 		"submit proposal",
 	)
 
-	votingStarted, err := k.Keeper.AddDeposit(ctx, proposal.Id, proposer, msg.GetInitialDeposit())
+	// skip min deposit ratio check since for proposal submissions the initial deposit is the threshold
+	// to check against.
+	votingStarted, err := k.Keeper.AddDeposit(ctx, proposal.Id, proposer, msg.GetInitialDeposit(), true)
 	if err != nil {
 		return nil, err
 	}
@@ -149,7 +151,7 @@ func (k msgServer) Deposit(goCtx context.Context, msg *v1.MsgDeposit) (*v1.MsgDe
 		return nil, err
 	}
 
-	votingStarted, err := k.Keeper.AddDeposit(ctx, msg.ProposalId, accAddr, msg.Amount)
+	votingStarted, err := k.Keeper.AddDeposit(ctx, msg.ProposalId, accAddr, msg.Amount, false)
 	if err != nil {
 		return nil, err
 	}
@@ -182,6 +184,13 @@ func (k msgServer) UpdateParams(goCtx context.Context, msg *v1.MsgUpdateParams) 
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	// before params change, trigger an update of the last min deposit
+	minDeposit := k.GetMinDeposit(ctx)
+	k.SetLastMinDeposit(ctx, minDeposit, ctx.BlockTime())
+	minInitialDeposit := k.GetMinInitialDeposit(ctx)
+	k.SetLastMinInitialDeposit(ctx, minInitialDeposit, ctx.BlockTime())
+
 	if err := k.SetParams(ctx, msg.Params); err != nil {
 		return nil, err
 	}
