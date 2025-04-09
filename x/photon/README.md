@@ -7,9 +7,9 @@ sidebar_position: 1
 ## Abstract
 
 This module manages the PHOTON token (base denom `uphoton`), introduced by
-[ADR 002](../../docs/architecture/adr-002-photon.md) as the only fee token in
-AtomOne. PHOTONs are minted by burning ATONEs at a rate capped by a maximum
-PHOTON supply of 1 B. Minting is achieved via a single message
+[ADR 002](../../docs/architecture/adr-002-photon-token.md) as the only fee
+token in AtomOne. PHOTONs are minted by burning ATONEs at a rate capped by a
+maximum PHOTON supply of 1 B. Minting is achieved via a single message
 (`MsgMintPhoton`), and the module enforces PHOTON fees with an AnteDecorator.
 
 ## Contents
@@ -86,6 +86,6 @@ Endpoints mirror the gRPC queries, allowing retrieval of conversion rate and par
 
 ## References
 
-See [ADR 002](../../docs/architecture/adr-002-photon.md) and
+See [ADR 002](../../docs/architecture/adr-002-photon-token.md) and
 [AtomOne Constitution Article 3 Section 5](https://github.com/atomone-hub/genesis/blob/b84df30364674c3f68b4bc0a43d7ed977ae22226/CONSTITUTION.md#section-5-the-photon-token)
 for more details.
