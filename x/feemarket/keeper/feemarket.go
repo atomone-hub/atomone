@@ -16,12 +16,6 @@ func (k *Keeper) UpdateFeeMarket(ctx sdk.Context) error {
 	if err != nil {
 		return err
 	}
-
-	k.Logger(ctx).Info(
-		"updated the fee market",
-		"params", params,
-	)
-
 	if !params.Enabled {
 		return nil
 	}
@@ -42,6 +36,7 @@ func (k *Keeper) UpdateFeeMarket(ctx sdk.Context) error {
 
 	k.Logger(ctx).Info(
 		"updated the fee market",
+		"params", params,
 		"height", ctx.BlockHeight(),
 		"new_base_gas_price", newBaseGasPrice,
 		"new_learning_rate", newLR,

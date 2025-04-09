@@ -57,10 +57,6 @@ func (dfd FeemarketStateUpdateDecorator) PostHandle(ctx sdk.Context, tx sdk.Tx, 
 
 	gas := ctx.GasMeter().GasConsumed() // use context gas consumed
 
-	ctx.Logger().Info("feemarket post handle",
-		"gas consumed", gas,
-	)
-
 	err = state.Update(gas, params)
 	if err != nil {
 		return ctx, errorsmod.Wrapf(err, "unable to update fee market state")
