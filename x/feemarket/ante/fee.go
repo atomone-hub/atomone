@@ -17,22 +17,6 @@ import (
 // BankSendGasConsumption is the gas consumption of the bank send that occur during feemarket handler execution.
 const BankSendGasConsumption = 385
 
-type feeMarketCheckDecorator struct {
-	feemarketKeeper FeeMarketKeeper
-	bankKeeper      BankKeeper
-	feegrantKeeper  FeeGrantKeeper
-	accountKeeper   AccountKeeper
-}
-
-func newFeeMarketCheckDecorator(ak AccountKeeper, bk BankKeeper, fk FeeGrantKeeper, fmk FeeMarketKeeper) feeMarketCheckDecorator {
-	return feeMarketCheckDecorator{
-		feemarketKeeper: fmk,
-		bankKeeper:      bk,
-		feegrantKeeper:  fk,
-		accountKeeper:   ak,
-	}
-}
-
 // FeeMarketCheckDecorator checks sufficient fees from the fee payer based off of the current
 // state of the feemarket.
 // If the fee payer does not have the funds to pay for the fees, return an InsufficientFunds error.
@@ -43,43 +27,38 @@ func newFeeMarketCheckDecorator(ak AccountKeeper, bk BankKeeper, fk FeeGrantKeep
 //
 // CONTRACT: Tx must implement FeeTx interface
 type FeeMarketCheckDecorator struct {
-	feemarketKeeper FeeMarketKeeper
-
-	feemarketDecorator feeMarketCheckDecorator
-	fallbackDecorator  sdk.AnteDecorator
+	feemarketKeeper   FeeMarketKeeper
+	bankKeeper        BankKeeper
+	feegrantKeeper    FeeGrantKeeper
+	accountKeeper     AccountKeeper
+	fallbackDecorator sdk.AnteDecorator
 }
 
 func NewFeeMarketCheckDecorator(ak AccountKeeper, bk BankKeeper, fk FeeGrantKeeper, fmk FeeMarketKeeper, fallbackDecorator sdk.AnteDecorator) FeeMarketCheckDecorator {
 	return FeeMarketCheckDecorator{
-		feemarketKeeper: fmk,
-		feemarketDecorator: newFeeMarketCheckDecorator(
-			ak, bk, fk, fmk,
-		),
+		feemarketKeeper:   fmk,
+		bankKeeper:        bk,
+		feegrantKeeper:    fk,
+		accountKeeper:     ak,
 		fallbackDecorator: fallbackDecorator,
 	}
 }
 
 // AnteHandle calls the feemarket internal antehandler if the keeper is enabled.  If disabled, the fallback
 // fee antehandler is fallen back to.
-func (d FeeMarketCheckDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
-	params, err := d.feemarketKeeper.GetParams(ctx)
+func (dfd FeeMarketCheckDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
+	params, err := dfd.feemarketKeeper.GetParams(ctx)
 	if err != nil {
 		return ctx, err
 	}
-	if params.Enabled {
-		return d.feemarketDecorator.anteHandle(ctx, tx, simulate, next)
+	if !params.Enabled {
+		// use fallbackDecorator if provided
+		if dfd.fallbackDecorator != nil {
+			return dfd.fallbackDecorator.AnteHandle(ctx, tx, simulate, next)
+		}
+		return next(ctx, tx, simulate)
 	}
 
-	// only use fallback if not nil
-	if d.fallbackDecorator != nil {
-		return d.fallbackDecorator.AnteHandle(ctx, tx, simulate, next)
-	}
-
-	return next(ctx, tx, simulate)
-}
-
-// anteHandle checks if the tx provides sufficient fee to cover the required fee from the fee market.
-func (dfd feeMarketCheckDecorator) anteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (sdk.Context, error) {
 	// GenTx consume no fee
 	if ctx.BlockHeight() == 0 {
 		return next(ctx, tx, simulate)
@@ -92,16 +71,6 @@ func (dfd feeMarketCheckDecorator) anteHandle(ctx sdk.Context, tx sdk.Tx, simula
 
 	if !simulate && ctx.BlockHeight() > 0 && feeTx.GetGas() == 0 {
 		return ctx, sdkerrors.ErrInvalidGasLimit.Wrapf("must provide positive gas")
-	}
-
-	params, err := dfd.feemarketKeeper.GetParams(ctx)
-	if err != nil {
-		return ctx, errorsmod.Wrapf(err, "unable to get fee market params")
-	}
-
-	// return if disabled
-	if !params.Enabled {
-		return next(ctx, tx, simulate)
 	}
 
 	feeCoins := feeTx.GetFee()
@@ -177,7 +146,7 @@ func (dfd feeMarketCheckDecorator) anteHandle(ctx sdk.Context, tx sdk.Tx, simula
 }
 
 // DeductFees deducts the provided fee from the payer account during tx execution.
-func (dfd feeMarketCheckDecorator) DeductFees(ctx sdk.Context, sdkTx sdk.Tx, providedFee sdk.Coin) error {
+func (dfd FeeMarketCheckDecorator) DeductFees(ctx sdk.Context, sdkTx sdk.Tx, providedFee sdk.Coin) error {
 	feeTx, ok := sdkTx.(sdk.FeeTx)
 	if !ok {
 		return errorsmod.Wrap(sdkerrors.ErrTxDecode, "Tx must be a FeeTx")
@@ -192,7 +161,8 @@ func (dfd feeMarketCheckDecorator) DeductFees(ctx sdk.Context, sdkTx sdk.Tx, pro
 	if feeGranter != nil {
 		if dfd.feegrantKeeper == nil {
 			return sdkerrors.ErrInvalidRequest.Wrap("fee grants are not enabled")
-		} else if !bytes.Equal(feeGranter, feePayer) {
+		}
+		if !bytes.Equal(feeGranter, feePayer) {
 			if !providedFee.IsNil() {
 				err := dfd.feegrantKeeper.UseGrantedFees(ctx, feeGranter, feePayer, sdk.NewCoins(providedFee), sdkTx.GetMsgs())
 				if err != nil {
@@ -200,7 +170,6 @@ func (dfd feeMarketCheckDecorator) DeductFees(ctx sdk.Context, sdkTx sdk.Tx, pro
 				}
 			}
 		}
-
 		deductFeesFrom = feeGranter
 	}
 

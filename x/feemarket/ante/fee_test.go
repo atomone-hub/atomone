@@ -122,7 +122,7 @@ func TestAnteHandle(t *testing.T) {
 			simulate: true,
 			setup: func(m mocks) {
 				m.FeeMarketKeeper.EXPECT().GetParams(m.ctx).
-					Return(types.DefaultParams(), nil).Times(2)
+					Return(types.DefaultParams(), nil)
 				m.FeeMarketKeeper.EXPECT().GetMinGasPrice(m.ctx, types.DefaultFeeDenom).
 					Return(sdk.NewInt64DecCoin(types.DefaultFeeDenom, 1), nil)
 				m.AccountKeeper.EXPECT().GetAccount(gomock.Any(), addrs[0]).
@@ -146,7 +146,7 @@ func TestAnteHandle(t *testing.T) {
 			},
 			setup: func(m mocks) {
 				m.FeeMarketKeeper.EXPECT().GetParams(m.ctx).
-					Return(types.DefaultParams(), nil).Times(2)
+					Return(types.DefaultParams(), nil)
 			},
 			expectedError: "got length 0: no fee coin provided. Must provide one.",
 		},
@@ -166,7 +166,7 @@ func TestAnteHandle(t *testing.T) {
 			},
 			setup: func(m mocks) {
 				m.FeeMarketKeeper.EXPECT().GetParams(m.ctx).
-					Return(types.DefaultParams(), nil).Times(2)
+					Return(types.DefaultParams(), nil)
 			},
 			expectedError: "got length 2: too many fee coins provided. Only one fee coin may be provided",
 		},
@@ -185,7 +185,7 @@ func TestAnteHandle(t *testing.T) {
 			},
 			setup: func(m mocks) {
 				m.FeeMarketKeeper.EXPECT().GetParams(m.ctx).
-					Return(types.DefaultParams(), nil).Times(2)
+					Return(types.DefaultParams(), nil)
 				m.FeeMarketKeeper.EXPECT().GetMinGasPrice(m.ctx, types.DefaultFeeDenom).
 					Return(sdk.DecCoin{}, errors.New("OUPS"))
 			},
@@ -206,7 +206,7 @@ func TestAnteHandle(t *testing.T) {
 			},
 			setup: func(m mocks) {
 				m.FeeMarketKeeper.EXPECT().GetParams(m.ctx).
-					Return(types.DefaultParams(), nil).Times(2)
+					Return(types.DefaultParams(), nil)
 				m.FeeMarketKeeper.EXPECT().GetMinGasPrice(m.ctx, types.DefaultFeeDenom).
 					Return(sdk.NewInt64DecCoin(types.DefaultFeeDenom, 1), nil)
 			},
@@ -227,7 +227,7 @@ func TestAnteHandle(t *testing.T) {
 			},
 			setup: func(m mocks) {
 				m.FeeMarketKeeper.EXPECT().GetParams(m.ctx).
-					Return(types.DefaultParams(), nil).Times(2)
+					Return(types.DefaultParams(), nil)
 				m.FeeMarketKeeper.EXPECT().GetMinGasPrice(m.ctx, types.DefaultFeeDenom).
 					Return(sdk.NewInt64DecCoin(types.DefaultFeeDenom, 1), nil)
 				m.AccountKeeper.EXPECT().GetAccount(gomock.Any(), addrs[0]).Return(nil)
@@ -252,7 +252,7 @@ func TestAnteHandle(t *testing.T) {
 			},
 			setup: func(m mocks) {
 				m.FeeMarketKeeper.EXPECT().GetParams(m.ctx).
-					Return(types.DefaultParams(), nil).Times(2)
+					Return(types.DefaultParams(), nil)
 				m.FeeMarketKeeper.EXPECT().GetMinGasPrice(m.ctx, types.DefaultFeeDenom).
 					Return(sdk.NewInt64DecCoin(types.DefaultFeeDenom, 1), nil)
 				m.AccountKeeper.EXPECT().GetAccount(gomock.Any(), addrs[0]).
@@ -279,7 +279,7 @@ func TestAnteHandle(t *testing.T) {
 			},
 			setup: func(m mocks) {
 				m.FeeMarketKeeper.EXPECT().GetParams(m.ctx).
-					Return(types.DefaultParams(), nil).Times(2)
+					Return(types.DefaultParams(), nil)
 				m.FeeMarketKeeper.EXPECT().GetMinGasPrice(m.ctx, types.DefaultFeeDenom).
 					Return(sdk.NewInt64DecCoin(types.DefaultFeeDenom, 1), nil)
 				m.AccountKeeper.EXPECT().GetAccount(gomock.Any(), addrs[0]).
@@ -306,7 +306,7 @@ func TestAnteHandle(t *testing.T) {
 			},
 			setup: func(m mocks) {
 				m.FeeMarketKeeper.EXPECT().GetParams(m.ctx).
-					Return(types.DefaultParams(), nil).Times(2)
+					Return(types.DefaultParams(), nil)
 				m.FeeMarketKeeper.EXPECT().GetMinGasPrice(m.ctx, "uatone").
 					Return(sdk.NewInt64DecCoin("uatone", 10), nil)
 				m.AccountKeeper.EXPECT().GetAccount(gomock.Any(), addrs[0]).
@@ -341,7 +341,7 @@ func TestAnteHandle(t *testing.T) {
 			},
 			setup: func(m mocks) {
 				m.FeeMarketKeeper.EXPECT().GetParams(m.ctx).
-					Return(types.DefaultParams(), nil).Times(2)
+					Return(types.DefaultParams(), nil)
 				m.FeeMarketKeeper.EXPECT().GetMinGasPrice(m.ctx, types.DefaultFeeDenom).
 					Return(sdk.NewInt64DecCoin(types.DefaultFeeDenom, 1), nil)
 				m.AccountKeeper.EXPECT().GetAccount(gomock.Any(), addrs[1]).
@@ -368,7 +368,7 @@ func TestAnteHandle(t *testing.T) {
 			},
 			setup: func(m mocks) {
 				m.FeeMarketKeeper.EXPECT().GetParams(m.ctx).
-					Return(types.DefaultParams(), nil).Times(2)
+					Return(types.DefaultParams(), nil)
 				m.FeeMarketKeeper.EXPECT().GetMinGasPrice(m.ctx, types.DefaultFeeDenom).
 					Return(sdk.NewInt64DecCoin(types.DefaultFeeDenom, 1), nil)
 				m.AccountKeeper.EXPECT().GetAccount(gomock.Any(), addrs[0]).Return(acc1)
@@ -395,7 +395,7 @@ func TestAnteHandle(t *testing.T) {
 			},
 			setup: func(m mocks) {
 				m.FeeMarketKeeper.EXPECT().GetParams(m.ctx).
-					Return(types.DefaultParams(), nil).Times(2)
+					Return(types.DefaultParams(), nil)
 				m.FeeMarketKeeper.EXPECT().GetMinGasPrice(m.ctx, types.DefaultFeeDenom).
 					Return(sdk.NewInt64DecCoin(types.DefaultFeeDenom, 1), nil)
 				m.FeeGrantKeeper.EXPECT().UseGrantedFees(gomock.Any(), addrs[2],
@@ -428,7 +428,7 @@ func TestAnteHandle(t *testing.T) {
 			disableFeeGrant: true,
 			setup: func(m mocks) {
 				m.FeeMarketKeeper.EXPECT().GetParams(m.ctx).
-					Return(types.DefaultParams(), nil).Times(2)
+					Return(types.DefaultParams(), nil)
 				m.FeeMarketKeeper.EXPECT().GetMinGasPrice(m.ctx, types.DefaultFeeDenom).
 					Return(sdk.NewInt64DecCoin(types.DefaultFeeDenom, 1), nil)
 			},
@@ -450,7 +450,7 @@ func TestAnteHandle(t *testing.T) {
 			},
 			setup: func(m mocks) {
 				m.FeeMarketKeeper.EXPECT().GetParams(m.ctx).
-					Return(types.DefaultParams(), nil).Times(2)
+					Return(types.DefaultParams(), nil)
 				m.FeeMarketKeeper.EXPECT().GetMinGasPrice(m.ctx, types.DefaultFeeDenom).
 					Return(sdk.NewInt64DecCoin(types.DefaultFeeDenom, 1), nil)
 				m.FeeGrantKeeper.EXPECT().UseGrantedFees(gomock.Any(), addrs[2],
