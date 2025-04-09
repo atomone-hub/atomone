@@ -192,7 +192,7 @@ gas_price = { price = 0.09, denom = 'uphoton' }
 > price in `photon`.
 
 > [!IMPORTANT]
-> Note that unlike the validator config, this change should be done **after**
+> Unlike the validator config, this change should be done **after**
 > the upgrade because it is restricted to `uphoton`.
 
 ### Method I: Manual Upgrade
