@@ -191,7 +191,7 @@ gas_price = { price = 0.09, denom = 'uphoton' }
 > burning 1ATONE. This factor should be taken into account when setting the gas
 > price in `photon`.
 
-> [!NOTE]
+> [!IMPORTANT]
 > Note that unlike the validator config, this change should be done **after**
 > the upgrade because it is restricted to `uphoton`.
 
