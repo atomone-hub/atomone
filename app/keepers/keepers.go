@@ -334,6 +334,7 @@ func NewAppKeeper(
 	appKeepers.FeemarketKeeper = feemarketkeeper.NewKeeper(
 		appCodec,
 		appKeepers.keys[feemarkettypes.StoreKey],
+		// the photon keeper implements the feemarket DenomResolver interface
 		appKeepers.PhotonKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)

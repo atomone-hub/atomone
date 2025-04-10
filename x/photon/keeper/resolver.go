@@ -8,7 +8,12 @@ import (
 	"github.com/atomone-hub/atomone/x/photon/types"
 )
 
-// ConvertToDenom returns "coin.Amount denom" for all coins that are not the denom.
+// ConvertToDenom implements the feemarket.types.DenomResolver interface.
+// The method is invoked when denom is not the expected fee denom configured
+// in the feemarket module (hence `uphoton`). When denom is the bond denom
+// (hence `uatone`), the method applies the conversion rate to convert bond
+// denom to photon.
+// CONTRACT: coin.Denom is the feemarket configured fee denom (`uphoton`).
 func (k Keeper) ConvertToDenom(ctx sdk.Context, coin sdk.DecCoin, denom string) (sdk.DecCoin, error) {
 	if coin.Denom == denom {
 		return coin, nil
@@ -25,9 +30,12 @@ func (k Keeper) ConvertToDenom(ctx sdk.Context, coin sdk.DecCoin, denom string) 
 		return sdk.NewDecCoinFromDec(denom, amount), nil
 	}
 
-	return sdk.DecCoin{}, fmt.Errorf("error resolving denom")
+	return sdk.DecCoin{}, fmt.Errorf("error resolving denom '%s'", denom)
 }
 
+// ExtraDenoms implements the feemarket.types.DenomResolver interface.
+// The method is expected to returns the other tokens that are allowed to be
+// used as a fee token; here only the bond denom.
 func (k Keeper) ExtraDenoms(ctx sdk.Context) ([]string, error) {
 	return []string{
 		k.stakingKeeper.BondDenom(ctx),
