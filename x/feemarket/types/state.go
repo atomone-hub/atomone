@@ -26,10 +26,10 @@ func NewState(
 
 // Update updates the block utilization for the current height with the given
 // transaction utilization i.e. gas limit.
-func (s *State) Update(gas uint64, params Params) error {
+func (s *State) Update(gas, maxBlockGas uint64) error {
 	update := s.Window[s.Index] + gas
-	if update > params.MaxBlockUtilization {
-		return errorsmod.Wrapf(ErrMaxGasExceeded, "gas %d > max %d", update, params.MaxBlockUtilization)
+	if update > maxBlockGas {
+		return errorsmod.Wrapf(ErrMaxGasExceeded, "gas %d > max %d", update, maxBlockGas)
 	}
 
 	s.Window[s.Index] = update
@@ -47,7 +47,7 @@ func (s *State) IncrementHeight() {
 // based on the average utilization of the block window. The base gas price is
 // update using the new learning rate. Please see the EIP-1559 specification
 // for more details.
-func (s *State) UpdateBaseGasPrice(params Params) (gasPrice math.LegacyDec) {
+func (s *State) UpdateBaseGasPrice(params Params, maxBlockGas uint64) (gasPrice math.LegacyDec) {
 	// Panic catch in case there is an overflow
 	defer func() {
 		if rec := recover(); rec != nil {
@@ -58,7 +58,7 @@ func (s *State) UpdateBaseGasPrice(params Params) (gasPrice math.LegacyDec) {
 
 	// Calculate the new base gasPrice with the learning rate adjustment.
 	currentBlockSize := math.LegacyNewDecFromInt(math.NewIntFromUint64(s.Window[s.Index]))
-	targetBlockSize := math.LegacyNewDecFromInt(math.NewIntFromUint64(params.TargetBlockUtilization()))
+	targetBlockSize := math.LegacyNewDecFromInt(math.NewIntFromUint64(GetTargetBlockUtilization(maxBlockGas)))
 	utilization := (currentBlockSize.Sub(targetBlockSize)).Quo(targetBlockSize)
 
 	// Truncate the learning rate adjustment to an integer.
@@ -92,7 +92,7 @@ func (s *State) UpdateBaseGasPrice(params Params) (gasPrice math.LegacyDec) {
 //     when blocks are relatively close to the target block utilization.
 //
 // For more details, please see the EIP-1559 specification.
-func (s *State) UpdateLearningRate(params Params) (lr math.LegacyDec) {
+func (s *State) UpdateLearningRate(params Params, maxBlockGas uint64) (lr math.LegacyDec) {
 	// Panic catch in case there is an overflow
 	defer func() {
 		if rec := recover(); rec != nil {
@@ -102,7 +102,7 @@ func (s *State) UpdateLearningRate(params Params) (lr math.LegacyDec) {
 	}()
 
 	// Calculate the average utilization of the block window.
-	avg := s.GetAverageUtilization(params)
+	avg := s.GetAverageUtilization(maxBlockGas)
 
 	// Determine if the average utilization is above or below the target
 	// threshold and adjust the learning rate accordingly.
@@ -124,10 +124,10 @@ func (s *State) UpdateLearningRate(params Params) (lr math.LegacyDec) {
 }
 
 // GetNetUtilization returns the net utilization of the block window.
-func (s *State) GetNetUtilization(params Params) math.Int {
+func (s *State) GetNetUtilization(maxBlockGas uint64) math.Int {
 	net := math.NewInt(0)
 
-	targetUtilization := math.NewIntFromUint64(params.TargetBlockUtilization())
+	targetUtilization := math.NewIntFromUint64(GetTargetBlockUtilization(maxBlockGas))
 	for _, utilization := range s.Window {
 		diff := math.NewIntFromUint64(utilization).Sub(targetUtilization)
 		net = net.Add(diff)
@@ -138,7 +138,7 @@ func (s *State) GetNetUtilization(params Params) math.Int {
 
 // GetAverageUtilization returns the average utilization of the block
 // window.
-func (s *State) GetAverageUtilization(params Params) math.LegacyDec {
+func (s *State) GetAverageUtilization(maxBlockGas uint64) math.LegacyDec {
 	var total uint64
 	for _, utilization := range s.Window {
 		total += utilization
@@ -147,7 +147,7 @@ func (s *State) GetAverageUtilization(params Params) math.LegacyDec {
 	sum := math.LegacyNewDecFromInt(math.NewIntFromUint64(total))
 
 	multiple := math.LegacyNewDecFromInt(math.NewIntFromUint64(uint64(len(s.Window))))
-	divisor := math.LegacyNewDecFromInt(math.NewIntFromUint64(params.MaxBlockUtilization)).Mul(multiple)
+	divisor := math.LegacyNewDecFromInt(math.NewIntFromUint64(maxBlockGas)).Mul(multiple)
 
 	return sum.Quo(divisor)
 }
@@ -167,4 +167,8 @@ func (s *State) ValidateBasic() error {
 	}
 
 	return nil
+}
+
+func GetTargetBlockUtilization(maxBlockGas uint64) uint64 {
+	return maxBlockGas / 2
 }

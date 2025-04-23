@@ -19,6 +19,8 @@ type Keeper struct {
 	storeKey storetypes.StoreKey
 	resolver types.DenomResolver
 
+	consensusParamsKeeper types.ConsensusParamsKeeper
+
 	// The address that is capable of executing a MsgParams message.
 	// Typically, this will be the governance module's address.
 	authority string
@@ -29,6 +31,7 @@ func NewKeeper(
 	cdc codec.BinaryCodec,
 	storeKey storetypes.StoreKey,
 	resolver types.DenomResolver,
+	cpk types.ConsensusParamsKeeper,
 	authority string,
 ) *Keeper {
 	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
@@ -36,10 +39,11 @@ func NewKeeper(
 	}
 
 	k := &Keeper{
-		cdc:       cdc,
-		storeKey:  storeKey,
-		resolver:  resolver,
-		authority: authority,
+		cdc:                   cdc,
+		storeKey:              storeKey,
+		resolver:              resolver,
+		consensusParamsKeeper: cpk,
+		authority:             authority,
 	}
 
 	return k
