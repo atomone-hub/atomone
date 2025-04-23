@@ -50,7 +50,7 @@ func (msg *MsgMintPhoton) ValidateBasic() error {
 	}
 	// Ensure burned amount denom is bond denom
 	if msg.Amount.Denom != params.BondDenom {
-		return errorsmod.Wrapf(sdkerrors.ErrInvalidCoins, ErrBurnInvalidDenom.Error())
+		return errorsmod.Wrapf(ErrBurnInvalidDenom, "invalid denom %s", msg.Amount.Denom)
 	}
 	return nil
 }
