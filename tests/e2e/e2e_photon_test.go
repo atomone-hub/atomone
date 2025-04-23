@@ -81,6 +81,9 @@ func (s *IntegrationTestSuite) testMintPhoton() {
 			_, afterUatoneBalance  = afterBalance.Find(uatoneDenom)
 		)
 
-		s.Require().True(beforeUatoneBalance.IsEqual(afterUatoneBalance), "Fees should not be deducted for a malformed tx\nAlice balance before tx: %s\nAlice balance after tx: %s", beforeUatoneBalance, afterUatoneBalance)
+		s.Require().True(beforeUatoneBalance.IsEqual(afterUatoneBalance),
+			"Fees should not be deducted for a malformed tx\n"+
+				"Balance before tx: %s != Balance after tx: %s",
+			beforeUatoneBalance, afterUatoneBalance)
 	})
 }
