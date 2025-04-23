@@ -3,26 +3,19 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/atomone-hub/atomone/x/feemarket/keeper"
+	"github.com/atomone-hub/atomone/x/feemarket/testutil"
 	"github.com/atomone-hub/atomone/x/feemarket/types"
 	"github.com/stretchr/testify/require"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 )
-
-func setupMsgServer(t *testing.T) (types.MsgServer, *keeper.Keeper, sdk.Context) {
-	t.Helper()
-	k, ctx := setupKeeper(t)
-	return keeper.NewMsgServer(k), k, ctx
-}
 
 func TestMsgUpdateParams(t *testing.T) {
 	authority := authtypes.NewModuleAddress(govtypes.ModuleName).String()
 	t.Run("accepts a req with no params", func(t *testing.T) {
 		require := require.New(t)
-		msgServer, k, ctx := setupMsgServer(t)
+		msgServer, k, _, ctx := testutil.SetupMsgServer(t, 0)
 		req := &types.MsgUpdateParams{
 			Authority: authority,
 		}
@@ -37,7 +30,7 @@ func TestMsgUpdateParams(t *testing.T) {
 
 	t.Run("accepts a req with params", func(t *testing.T) {
 		require := require.New(t)
-		msgServer, k, ctx := setupMsgServer(t)
+		msgServer, k, _, ctx := testutil.SetupMsgServer(t, 0)
 		req := &types.MsgUpdateParams{
 			Authority: authority,
 			Params:    types.DefaultParams(),
@@ -53,7 +46,7 @@ func TestMsgUpdateParams(t *testing.T) {
 
 	t.Run("rejects a req with invalid signer", func(t *testing.T) {
 		require := require.New(t)
-		msgServer, _, ctx := setupMsgServer(t)
+		msgServer, _, _, ctx := testutil.SetupMsgServer(t, 0)
 		req := &types.MsgUpdateParams{
 			Authority: "invalid",
 		}
@@ -63,7 +56,7 @@ func TestMsgUpdateParams(t *testing.T) {
 
 	t.Run("sets enabledHeight when transitioning from disabled -> enabled", func(t *testing.T) {
 		require := require.New(t)
-		msgServer, k, ctx := setupMsgServer(t)
+		msgServer, k, _, ctx := testutil.SetupMsgServer(t, 0)
 		ctx = ctx.WithBlockHeight(ctx.BlockHeight())
 		enabledParams := types.DefaultParams()
 
@@ -105,7 +98,7 @@ func TestMsgUpdateParams(t *testing.T) {
 
 	t.Run("resets state after new params request", func(t *testing.T) {
 		require := require.New(t)
-		msgServer, k, ctx := setupMsgServer(t)
+		msgServer, k, _, ctx := testutil.SetupMsgServer(t, 0)
 		params, err := k.GetParams(ctx)
 		require.NoError(err)
 		err = k.SetState(ctx, types.DefaultState())
@@ -114,7 +107,7 @@ func TestMsgUpdateParams(t *testing.T) {
 		state, err := k.GetState(ctx)
 		require.NoError(err)
 
-		err = state.Update(params.MaxBlockUtilization, params)
+		err = state.Update(testutil.MaxBlockGas, testutil.MaxBlockGas)
 		require.NoError(err)
 
 		err = k.SetState(ctx, state)

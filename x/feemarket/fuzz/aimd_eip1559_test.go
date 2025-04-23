@@ -27,11 +27,11 @@ func TestAIMDLearningRate(t *testing.T) {
 		window := rapid.Int64Range(1, 50).Draw(t, "window")
 		state.Window = make([]uint64, window)
 
-		params := CreateRandomAIMDParams(t)
+		params, maxBlockGas := CreateRandomAIMDParams(t)
 
 		// Randomly generate the block utilization.
 		numBlocks := rapid.Uint64Range(0, 1000).Draw(t, "num_blocks")
-		gasGen := rapid.Uint64Range(0, params.MaxBlockUtilization)
+		gasGen := rapid.Uint64Range(0, maxBlockGas)
 
 		// Update the fee market.
 		for i := uint64(0); i < numBlocks; i++ {
@@ -39,13 +39,13 @@ func TestAIMDLearningRate(t *testing.T) {
 			prevLearningRate := state.LearningRate
 
 			// Update the fee market.
-			if err := state.Update(blockUtilization, params); err != nil {
+			if err := state.Update(blockUtilization, maxBlockGas); err != nil {
 				t.Fatalf("block update errors: %v", err)
 			}
 
 			// Update the learning rate.
-			lr := state.UpdateLearningRate(params)
-			utilization := state.GetAverageUtilization(params)
+			lr := state.UpdateLearningRate(params, maxBlockGas)
+			utilization := state.GetAverageUtilization(maxBlockGas)
 
 			// Ensure that the learning rate is always bounded.
 			require.True(t, lr.GTE(params.MinLearningRate))
@@ -73,18 +73,18 @@ func TestAIMDGasPrice(t *testing.T) {
 		window := rapid.Int64Range(1, 50).Draw(t, "window")
 		state.Window = make([]uint64, window)
 
-		params := CreateRandomAIMDParams(t)
+		params, maxBlockGas := CreateRandomAIMDParams(t)
 
 		// Randomly generate the block utilization.
 		numBlocks := rapid.Uint64Range(0, uint64(window)*10).Draw(t, "num_blocks")
-		gasGen := rapid.Uint64Range(0, params.MaxBlockUtilization)
+		gasGen := rapid.Uint64Range(0, maxBlockGas)
 
 		// Update the fee market.
 		for i := uint64(0); i < numBlocks; i++ {
 			blockUtilization := gasGen.Draw(t, "gas")
 			prevBaseGasPrice := state.BaseGasPrice
 
-			if err := state.Update(blockUtilization, params); err != nil {
+			if err := state.Update(blockUtilization, maxBlockGas); err != nil {
 				t.Fatalf("block update errors: %v", err)
 			}
 
@@ -94,7 +94,7 @@ func TestAIMDGasPrice(t *testing.T) {
 			}
 
 			// Update the learning rate.
-			lr := state.UpdateLearningRate(params)
+			lr := state.UpdateLearningRate(params, maxBlockGas)
 			// Update the base gas price.
 
 			var newPrice math.LegacyDec
@@ -107,7 +107,7 @@ func TestAIMDGasPrice(t *testing.T) {
 
 				// Calculate the new base gasPrice with the learning rate adjustment.
 				currentBlockSize := math.LegacyNewDecFromInt(math.NewIntFromUint64(state.Window[state.Index]))
-				targetBlockSize := math.LegacyNewDecFromInt(math.NewIntFromUint64(params.TargetBlockUtilization()))
+				targetBlockSize := math.LegacyNewDecFromInt(math.NewIntFromUint64(types.GetTargetBlockUtilization(maxBlockGas)))
 				utilization := (currentBlockSize.Sub(targetBlockSize)).Quo(targetBlockSize)
 
 				// Truncate the learning rate adjustment to an integer.
@@ -124,7 +124,7 @@ func TestAIMDGasPrice(t *testing.T) {
 				}
 			}()
 
-			state.UpdateBaseGasPrice(log.NewNopLogger(), params)
+			state.UpdateBaseGasPrice(log.NewNopLogger(), params, maxBlockGas)
 
 			// Ensure that the minimum base fee is always less than the base gas price.
 			require.True(t, params.MinBaseGasPrice.LTE(state.BaseGasPrice))
@@ -139,7 +139,7 @@ func TestAIMDGasPrice(t *testing.T) {
 
 // CreateRandomAIMDParams returns a random set of parameters for the AIMD
 // EIP-1559 fee market implementation.
-func CreateRandomAIMDParams(t *rapid.T) types.Params {
+func CreateRandomAIMDParams(t *rapid.T) (types.Params, uint64) {
 	a := rapid.Uint64Range(1, 1000).Draw(t, "alpha")
 	alpha := math.LegacyNewDec(int64(a)).Quo(math.LegacyNewDec(1000))
 
@@ -156,7 +156,6 @@ func CreateRandomAIMDParams(t *rapid.T) types.Params {
 	params.Alpha = alpha
 	params.Beta = beta
 	params.Gamma = gamma
-	params.MaxBlockUtilization = maxBlockUtilization
 
-	return params
+	return params, maxBlockUtilization
 }

@@ -8,6 +8,7 @@ import (
 	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/libs/log"
 
+	"github.com/atomone-hub/atomone/x/feemarket/testutil"
 	"github.com/atomone-hub/atomone/x/feemarket/types"
 )
 
@@ -35,9 +36,9 @@ func FuzzDefaultFeeMarket(f *testing.F) {
 
 		params.MinBaseGasPrice = math.LegacyMustNewDecFromStr("100")
 		state.BaseGasPrice = math.LegacyMustNewDecFromStr("200")
-		err := state.Update(blockGasUsed, params)
+		err := state.Update(blockGasUsed, testutil.MaxBlockGas)
 
-		if blockGasUsed > params.MaxBlockUtilization {
+		if blockGasUsed > testutil.MaxBlockGas {
 			require.ErrorIs(t, err, types.ErrMaxGasExceeded)
 			return
 		}
@@ -48,13 +49,14 @@ func FuzzDefaultFeeMarket(f *testing.F) {
 		// Ensure the learning rate is always the default learning rate.
 		lr := state.UpdateLearningRate(
 			params,
+			testutil.MaxBlockGas,
 		)
 		require.Equal(t, defaultLR, lr)
 
 		oldFee := state.BaseGasPrice
-		newFee := state.UpdateBaseGasPrice(log.NewNopLogger(), params)
+		newFee := state.UpdateBaseGasPrice(log.NewNopLogger(), params, testutil.MaxBlockGas)
 
-		if blockGasUsed > params.TargetBlockUtilization() {
+		if blockGasUsed > types.GetTargetBlockUtilization(testutil.MaxBlockGas) {
 			require.True(t, newFee.GT(oldFee))
 		} else {
 			require.True(t, newFee.LT(oldFee))
@@ -84,9 +86,9 @@ func FuzzAIMDFeeMarket(f *testing.F) {
 		params.MinBaseGasPrice = math.LegacyMustNewDecFromStr("100")
 		state.BaseGasPrice = math.LegacyMustNewDecFromStr("200")
 		state.Window = make([]uint64, 1)
-		err := state.Update(blockGasUsed, params)
+		err := state.Update(blockGasUsed, testutil.MaxBlockGas)
 
-		if blockGasUsed > params.MaxBlockUtilization {
+		if blockGasUsed > testutil.MaxBlockGas {
 			require.ErrorIs(t, err, types.ErrMaxGasExceeded)
 			return
 		}
@@ -95,9 +97,9 @@ func FuzzAIMDFeeMarket(f *testing.F) {
 		require.Equal(t, blockGasUsed, state.Window[state.Index])
 
 		oldFee := state.BaseGasPrice
-		newFee := state.UpdateBaseGasPrice(log.NewNopLogger(), params)
+		newFee := state.UpdateBaseGasPrice(log.NewNopLogger(), params, testutil.MaxBlockGas)
 
-		if blockGasUsed > params.TargetBlockUtilization() {
+		if blockGasUsed > types.GetTargetBlockUtilization(testutil.MaxBlockGas) {
 			require.True(t, newFee.GT(oldFee))
 		} else {
 			require.True(t, newFee.LT(oldFee))
