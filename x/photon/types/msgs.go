@@ -47,6 +47,11 @@ func (msg *MsgMintPhoton) ValidateBasic() error {
 	if !msg.Amount.IsPositive() {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidCoins, "coin to burn must be positive")
 	}
+	// Ensure burned amount denom is bond denom
+	bondDenom := "uatone"
+	if msg.Amount.Denom != bondDenom {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidCoins, "coin must be a bonded denom")
+	}
 	return nil
 }
 

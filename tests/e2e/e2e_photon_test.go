@@ -2,6 +2,7 @@ package e2e
 
 import (
 	"fmt"
+	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -23,7 +24,7 @@ func (s *IntegrationTestSuite) testMintPhoton() {
 			burnedAtoneAmt := sdk.NewInt64Coin(uatoneDenom, 1_000_000)
 
 			resp := s.execPhotonMint(s.chainA, valIdx, alice.String(), burnedAtoneAmt.String(),
-				withKeyValue(flagFees, fees),
+				true, false, withKeyValue(flagFees, fees),
 			)
 
 			expectedBalance := beforeBalance.
@@ -55,4 +56,31 @@ func (s *IntegrationTestSuite) testMintPhoton() {
 	s.Run("mint photon", subtest(standardFees))
 	atoneFees := sdk.NewCoin(uatoneDenom, standardFees.Amount)
 	s.Run("mint photon with atone fees", subtest(atoneFees))
+	s.Run("mint photon wrong denom", func() {
+		var (
+			c             = s.chainA
+			valIdx        = 0
+			chainEndpoint = fmt.Sprintf("http://%s", s.valResources[c.id][valIdx].GetHostPort("1317/tcp"))
+		)
+		alice, _ := c.genesisAccounts[1].keyInfo.GetAddress()
+
+		atoneFees := sdk.NewCoin(uatoneDenom, standardFees.Amount)
+		beforeBalance, err := queryAtomOneAllBalances(chainEndpoint, alice.String())
+		s.Require().NoError(err)
+
+		// Issue an incorrect transaction with wrong Denom
+		_ = s.execPhotonMint(s.chainA, valIdx, alice.String(), "1000wrongDenom",
+			false, true, withKeyValue(flagFees, atoneFees),
+		)
+
+		time.Sleep(1 * time.Second)
+		afterBalance, err := queryAtomOneAllBalances(chainEndpoint, alice.String())
+
+		var (
+			_, beforeUatoneBalance = beforeBalance.Find(uatoneDenom)
+			_, afterUatoneBalance  = afterBalance.Find(uatoneDenom)
+		)
+
+		s.Require().True(beforeUatoneBalance.IsEqual(afterUatoneBalance), "Fees should not be deducted for a malformed tx\nAlice balance before tx: %s\nAlice balance after tx: %s", beforeUatoneBalance, afterUatoneBalance)
+	})
 }
