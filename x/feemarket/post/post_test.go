@@ -13,20 +13,23 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/atomone-hub/atomone/x/feemarket/post"
+	"github.com/atomone-hub/atomone/x/feemarket/testutil"
 	"github.com/atomone-hub/atomone/x/feemarket/types"
 )
 
 type mocks struct {
-	ctx             sdk.Context
-	FeeMarketKeeper *MockFeeMarketKeeper
+	ctx                   sdk.Context
+	FeeMarketKeeper       *MockFeeMarketKeeper
+	ConsensusParamsKeeper *MockConsensusParamsKeeper
 }
 
 func setupMocks(t *testing.T) mocks {
 	t.Helper()
 	ctrl := gomock.NewController(t)
 	return mocks{
-		ctx:             sdk.NewContext(nil, tmproto.Header{}, false, log.TestingLogger()),
-		FeeMarketKeeper: NewMockFeeMarketKeeper(ctrl),
+		ctx:                   sdk.NewContext(nil, tmproto.Header{}, false, log.TestingLogger()),
+		FeeMarketKeeper:       NewMockFeeMarketKeeper(ctrl),
+		ConsensusParamsKeeper: NewMockConsensusParamsKeeper(ctrl),
 	}
 }
 
@@ -62,6 +65,10 @@ func TestPostHandle(t *testing.T) {
 		{
 			name: "ok: state updated",
 			setup: func(m mocks) {
+				m.ConsensusParamsKeeper.EXPECT().Get(m.ctx).
+					Return(&tmproto.ConsensusParams{
+						Block: &tmproto.BlockParams{MaxGas: testutil.MaxBlockGas},
+					}, nil)
 				m.FeeMarketKeeper.EXPECT().GetParams(m.ctx).
 					Return(types.DefaultParams(), nil)
 				m.FeeMarketKeeper.EXPECT().GetEnabledHeight(m.ctx).Return(int64(0), nil)
@@ -80,6 +87,10 @@ func TestPostHandle(t *testing.T) {
 			name:     "ok: simulate && state updated",
 			simulate: true,
 			setup: func(m mocks) {
+				m.ConsensusParamsKeeper.EXPECT().Get(m.ctx).
+					Return(&tmproto.ConsensusParams{
+						Block: &tmproto.BlockParams{MaxGas: testutil.MaxBlockGas},
+					}, nil)
 				m.FeeMarketKeeper.EXPECT().GetParams(m.ctx).
 					Return(types.DefaultParams(), nil)
 				m.FeeMarketKeeper.EXPECT().GetEnabledHeight(m.ctx).Return(int64(0), nil)
@@ -99,7 +110,7 @@ func TestPostHandle(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			var (
 				m           = setupMocks(t)
-				dfd         = post.NewFeemarketStateUpdateDecorator(m.FeeMarketKeeper)
+				dfd         = post.NewFeemarketStateUpdateDecorator(m.FeeMarketKeeper, m.ConsensusParamsKeeper)
 				nextInvoked bool
 				next        = func(ctx sdk.Context, tx sdk.Tx, simulate, success bool) (sdk.Context, error) {
 					nextInvoked = true

@@ -231,7 +231,8 @@ func NewAtomOneApp(
 	}
 
 	postHandlerOptions := atomonepost.HandlerOptions{
-		FeemarketKeeper: app.FeemarketKeeper,
+		FeemarketKeeper:       app.FeemarketKeeper,
+		ConsensusParamsKeeper: &app.ConsensusParamsKeeper,
 	}
 	postHandler, err := atomonepost.NewPostHandler(postHandlerOptions)
 	if err != nil {
