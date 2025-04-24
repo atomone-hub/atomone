@@ -24,7 +24,7 @@ func (s *IntegrationTestSuite) testMintPhoton() {
 			burnedAtoneAmt := sdk.NewInt64Coin(uatoneDenom, 1_000_000)
 
 			resp := s.execPhotonMint(s.chainA, valIdx, alice.String(), burnedAtoneAmt.String(),
-				true, false, withKeyValue(flagFees, fees),
+				false, withKeyValue(flagFees, fees),
 			)
 
 			expectedBalance := beforeBalance.
@@ -64,26 +64,30 @@ func (s *IntegrationTestSuite) testMintPhoton() {
 		)
 		alice, _ := c.genesisAccounts[1].keyInfo.GetAddress()
 
-		atoneFees := sdk.NewCoin(uatoneDenom, standardFees.Amount)
 		beforeBalance, err := queryAtomOneAllBalances(chainEndpoint, alice.String())
 		s.Require().NoError(err)
 
 		// Issue an incorrect transaction with wrong Denom
 		_ = s.execPhotonMint(s.chainA, valIdx, alice.String(), "1000wrongDenom",
-			false, true, withKeyValue(flagFees, atoneFees),
-		)
+			true, withKeyValue(flagGas, "200000"))
 
 		time.Sleep(1 * time.Second)
 		afterBalance, err := queryAtomOneAllBalances(chainEndpoint, alice.String())
 
 		var (
-			_, beforeUatoneBalance = beforeBalance.Find(uatoneDenom)
-			_, afterUatoneBalance  = afterBalance.Find(uatoneDenom)
+			_, beforeUphotonBalance = beforeBalance.Find(uphotonDenom)
+			_, afterUphotonBalance  = afterBalance.Find(uphotonDenom)
+			_, beforeUatoneBalance  = beforeBalance.Find(uatoneDenom)
+			_, afterUatoneBalance   = afterBalance.Find(uatoneDenom)
 		)
 
 		s.Require().True(beforeUatoneBalance.IsEqual(afterUatoneBalance),
 			"Fees should not be deducted for a malformed tx\n"+
 				"Balance before tx: %s != Balance after tx: %s",
 			beforeUatoneBalance, afterUatoneBalance)
+		s.Require().True(beforeUphotonBalance.IsEqual(afterUphotonBalance),
+			"Fees should not be deducted for a malformed tx\n"+
+				"Balance before tx: %s != Balance after tx: %s",
+			beforeUphotonBalance, afterUphotonBalance)
 	})
 }

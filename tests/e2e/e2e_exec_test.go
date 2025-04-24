@@ -833,7 +833,6 @@ func (s *IntegrationTestSuite) execPhotonMint(
 	valIdx int,
 	from,
 	amt string,
-	gasAuto bool,
 	expectFail bool,
 	opt ...flagOption,
 ) (resp photontypes.MsgMintPhotonResponse) {
@@ -854,9 +853,7 @@ func (s *IntegrationTestSuite) execPhotonMint(
 		"-y",
 	}
 	for flag, value := range opts {
-		if gasAuto || flag != flagGas {
-			atomoneCommand = append(atomoneCommand, fmt.Sprintf("--%s=%v", flag, value))
-		}
+		atomoneCommand = append(atomoneCommand, fmt.Sprintf("--%s=%v", flag, value))
 	}
 
 	if !expectFail {
