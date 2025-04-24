@@ -20,9 +20,7 @@ At the time of writing, the AtomOne chain suffers from a concentration of delega
 The chain reward is distributed across validator using an even distribution weighted by stake. This means that the reward a validator `j` receives after validating block `i` can be computed as follows:
 
 $$
-
 r_{ji} = \frac {x_{ji}}{S_i} * R_i.
-
 $$
 
 Where:
@@ -36,9 +34,7 @@ Where:
 Additionally, the reward obtained by a validator is further divided using a even distribution weighted by delegation across the delegators. Hence, the reward received by delegator $k$, that delegated his stake to validator $j$ for block $i$ can be computed as:
 
 $$
-
 rd_{ki} = \frac {d_{ki}}{x_{ji}} * r_{ji}.
-
 $$
 
 
@@ -116,9 +112,7 @@ More specifically,
 
 
 $$
-
 RPS_{ji} = \frac{r_{ji}}{x_{ji}} = \frac{PR_i}{S_i} + \frac{NB_i}{N_i * x_{ji}} 
-
 $$
 
 It can be seen that, the first member of the sum of RPS_{ji} is independent from $j$, the specific validator, while the second is inversly proportional to x_{ji} - the stake of validator $j$ at block $i$.
@@ -150,9 +144,7 @@ Specifically, a validator may profit by adding multiple validators to the chain 
 Infact, in this scenario assuming y as the number of sybil instances:
 
 $$
-
 r_{ji} = y * (\frac {x_{ji}}{y * S_i} * PR_i + \frac{NB_i}{N_i}) = \frac {x_{ji}}{S_i} * PR_i + y * \frac{NB_i}{N_i}
-
 $$
 
 So the validator would keep intact its `Proportional Reward` and be rewarded y times the `Nakamoto Bonus`.
