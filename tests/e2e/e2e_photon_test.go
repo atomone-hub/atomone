@@ -56,7 +56,7 @@ func (s *IntegrationTestSuite) testMintPhoton() {
 	s.Run("mint photon", subtest(standardFees))
 	atoneFees := sdk.NewCoin(uatoneDenom, standardFees.Amount)
 	s.Run("mint photon with atone fees", subtest(atoneFees))
-	s.Run("mint photon wrong denom", func() {
+	s.Run("mint photon wrong denom does not deduct fees", func() {
 		var (
 			c             = s.chainA
 			valIdx        = 0
