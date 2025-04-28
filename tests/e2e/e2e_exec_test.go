@@ -762,7 +762,12 @@ func (s *IntegrationTestSuite) expectErrExecValidation(chain *chain, valIdx int,
 		// wait for the tx to be committed on chain
 		s.Require().Eventuallyf(
 			func() bool {
-				gotErr := queryAtomOneTx(endpoint, txResp.TxHash, nil) != nil
+				resp := queryAtomOneTx(endpoint, txResp.TxHash, nil)
+				if isErrNotFound(resp) {
+					// tx not processed yet, continue
+					return !expectErr
+				}
+				gotErr := resp != nil
 				return gotErr == expectErr
 			},
 			time.Minute,

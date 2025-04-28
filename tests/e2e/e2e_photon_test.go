@@ -2,7 +2,6 @@ package e2e
 
 import (
 	"fmt"
-	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -71,7 +70,6 @@ func (s *IntegrationTestSuite) testMintPhoton() {
 		_ = s.execPhotonMint(s.chainA, valIdx, alice.String(), "1000wrongDenom",
 			true, withKeyValue(flagGas, "200000"))
 
-		time.Sleep(1 * time.Second)
 		afterBalance, err := queryAtomOneAllBalances(chainEndpoint, alice.String())
 
 		var (
