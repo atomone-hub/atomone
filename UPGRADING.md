@@ -185,12 +185,6 @@ id = 'atomone-1'
 gas_price = { price = 0.09, denom = 'uphoton' }
 ```
 
-> [!TIP]
-> The expected conversion rate when burning `atone` to mint `photon` will be
-> around 9 after the upgrade. This means that you would get ~9PHOTONs for
-> burning 1ATONE. This factor should be taken into account when setting the gas
-> price in `photon`.
-
 > [!IMPORTANT]
 > Unlike the validator config, this change should be done **after**
 > the upgrade because it is restricted to `uphoton`.
