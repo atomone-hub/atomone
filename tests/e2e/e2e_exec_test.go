@@ -762,7 +762,12 @@ func (s *IntegrationTestSuite) expectErrExecValidation(chain *chain, valIdx int,
 		// wait for the tx to be committed on chain
 		s.Require().Eventuallyf(
 			func() bool {
-				gotErr := queryAtomOneTx(endpoint, txResp.TxHash, nil) != nil
+				resp := queryAtomOneTx(endpoint, txResp.TxHash, nil)
+				if isErrNotFound(resp) {
+					// tx not processed yet, continue
+					return !expectErr
+				}
+				gotErr := resp != nil
 				return gotErr == expectErr
 			},
 			time.Minute,
@@ -833,6 +838,7 @@ func (s *IntegrationTestSuite) execPhotonMint(
 	valIdx int,
 	from,
 	amt string,
+	expectFail bool,
 	opt ...flagOption,
 ) (resp photontypes.MsgMintPhotonResponse) {
 	opt = append(opt, withKeyValue(flagFrom, from))
@@ -855,7 +861,11 @@ func (s *IntegrationTestSuite) execPhotonMint(
 		atomoneCommand = append(atomoneCommand, fmt.Sprintf("--%s=%v", flag, value))
 	}
 
-	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx, &resp))
+	if !expectFail {
+		s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx, &resp))
+	} else {
+		s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.expectErrExecValidation(c, valIdx, true))
+	}
 	return
 }
 
