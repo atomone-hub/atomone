@@ -13,7 +13,6 @@ import (
 
 //nolint:unparam
 func (s *IntegrationTestSuite) sendIBC(c *chain, valIdx int, sender, recipient, token, note string) {
-	s.ensureIBCSetup()
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
@@ -42,7 +41,6 @@ func (s *IntegrationTestSuite) sendIBC(c *chain, valIdx int, sender, recipient, 
 }
 
 func (s *IntegrationTestSuite) hermesTransfer(configPath, srcChainID, dstChainID, srcChannelID, denom string, sendAmt, timeOutOffset, numMsg int) (success bool) {
-	s.ensureIBCSetup()
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
@@ -70,7 +68,6 @@ func (s *IntegrationTestSuite) hermesTransfer(configPath, srcChainID, dstChainID
 }
 
 func (s *IntegrationTestSuite) hermesClearPacket(configPath, chainID, channelID string) (success bool) { //nolint:unparam
-	s.ensureIBCSetup()
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
@@ -105,7 +102,6 @@ type RelayerPacketsOutput struct {
 }
 
 func (s *IntegrationTestSuite) hermesPendingPackets(chainID, channelID string) (pendingPackets bool) { //nolint:unparam
-	s.ensureIBCSetup()
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 	hermesCmd := []string{
@@ -131,7 +127,6 @@ func (s *IntegrationTestSuite) hermesPendingPackets(chainID, channelID string) (
 }
 
 func (s *IntegrationTestSuite) queryRelayerWalletsBalances() (sdk.Coin, sdk.Coin) {
-	s.ensureIBCSetup()
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
 	acctAddrChainA, _ := s.chainA.genesisAccounts[relayerAccountIndexHermes].keyInfo.GetAddress()
 	scrRelayerBalance, err := getSpecificBalance(
@@ -152,7 +147,6 @@ func (s *IntegrationTestSuite) queryRelayerWalletsBalances() (sdk.Coin, sdk.Coin
 }
 
 func (s *IntegrationTestSuite) createConnection() {
-	s.ensureIBCSetup()
 	s.T().Logf("connecting %s and %s chains via IBC", s.chainA.id, s.chainB.id)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
@@ -176,7 +170,6 @@ func (s *IntegrationTestSuite) createConnection() {
 }
 
 func (s *IntegrationTestSuite) createChannel() {
-	s.ensureIBCSetup()
 	s.T().Logf("creating IBC transfer channel created between chains %s and %s", s.chainA.id, s.chainB.id)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
@@ -201,7 +194,6 @@ func (s *IntegrationTestSuite) createChannel() {
 }
 
 func (s *IntegrationTestSuite) testIBCTokenTransfer() {
-	s.ensureIBCSetup()
 	s.Run("send_uatom_to_chainB", func() {
 		// require the recipient account receives the IBC tokens (IBC packets ACKd)
 		var (

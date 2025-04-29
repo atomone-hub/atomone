@@ -64,6 +64,7 @@ func (s *IntegrationTestSuite) TestGov() {
 }
 
 func (s *IntegrationTestSuite) TestIBC() {
+	s.ensureIBCSetup()
 	if !runIBCTest {
 		s.T().Skip()
 	}
