@@ -18,15 +18,15 @@ func setupMsgServer(t *testing.T) (types.MsgServer, *keeper.Keeper, sdk.Context)
 	return keeper.NewMsgServer(k), k, ctx
 }
 
-func TestMsgParams(t *testing.T) {
+func TestMsgUpdateParams(t *testing.T) {
 	authority := authtypes.NewModuleAddress(govtypes.ModuleName).String()
 	t.Run("accepts a req with no params", func(t *testing.T) {
 		require := require.New(t)
 		msgServer, k, ctx := setupMsgServer(t)
-		req := &types.MsgParams{
+		req := &types.MsgUpdateParams{
 			Authority: authority,
 		}
-		resp, err := msgServer.Params(ctx, req)
+		resp, err := msgServer.UpdateParams(ctx, req)
 		require.NoError(err)
 		require.NotNil(resp)
 
@@ -38,11 +38,11 @@ func TestMsgParams(t *testing.T) {
 	t.Run("accepts a req with params", func(t *testing.T) {
 		require := require.New(t)
 		msgServer, k, ctx := setupMsgServer(t)
-		req := &types.MsgParams{
+		req := &types.MsgUpdateParams{
 			Authority: authority,
 			Params:    types.DefaultParams(),
 		}
-		resp, err := msgServer.Params(ctx, req)
+		resp, err := msgServer.UpdateParams(ctx, req)
 		require.NoError(err)
 		require.NotNil(resp)
 
@@ -54,10 +54,10 @@ func TestMsgParams(t *testing.T) {
 	t.Run("rejects a req with invalid signer", func(t *testing.T) {
 		require := require.New(t)
 		msgServer, _, ctx := setupMsgServer(t)
-		req := &types.MsgParams{
+		req := &types.MsgUpdateParams{
 			Authority: "invalid",
 		}
-		_, err := msgServer.Params(ctx, req)
+		_, err := msgServer.UpdateParams(ctx, req)
 		require.Error(err)
 	})
 
@@ -67,21 +67,21 @@ func TestMsgParams(t *testing.T) {
 		ctx = ctx.WithBlockHeight(ctx.BlockHeight())
 		enabledParams := types.DefaultParams()
 
-		req := &types.MsgParams{
+		req := &types.MsgUpdateParams{
 			Authority: authority,
 			Params:    enabledParams,
 		}
-		_, err := msgServer.Params(ctx, req)
+		_, err := msgServer.UpdateParams(ctx, req)
 		require.NoError(err)
 
 		disableParams := types.DefaultParams()
 		disableParams.Enabled = false
 
-		req = &types.MsgParams{
+		req = &types.MsgUpdateParams{
 			Authority: authority,
 			Params:    disableParams,
 		}
-		_, err = msgServer.Params(ctx, req)
+		_, err = msgServer.UpdateParams(ctx, req)
 		require.NoError(err)
 
 		gotHeight, err := k.GetEnabledHeight(ctx)
@@ -91,11 +91,11 @@ func TestMsgParams(t *testing.T) {
 		// now that the markets are disabled, enable and check block height
 		ctx = ctx.WithBlockHeight(ctx.BlockHeight() + 10)
 
-		req = &types.MsgParams{
+		req = &types.MsgUpdateParams{
 			Authority: authority,
 			Params:    enabledParams,
 		}
-		_, err = msgServer.Params(ctx, req)
+		_, err = msgServer.UpdateParams(ctx, req)
 		require.NoError(err)
 
 		newHeight, err := k.GetEnabledHeight(ctx)
@@ -121,11 +121,11 @@ func TestMsgParams(t *testing.T) {
 		require.NoError(err)
 
 		params.Window = 100
-		req := &types.MsgParams{
+		req := &types.MsgUpdateParams{
 			Authority: authority,
 			Params:    params,
 		}
-		_, err = msgServer.Params(ctx, req)
+		_, err = msgServer.UpdateParams(ctx, req)
 		require.NoError(err)
 
 		state, err = k.GetState(ctx)
