@@ -12,7 +12,6 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	capabilitytypes "github.com/cosmos/cosmos-sdk/x/capability/types"
 	consensusparamtypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
-	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
 	"github.com/cosmos/cosmos-sdk/x/feegrant"
@@ -50,11 +49,6 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 		consensusparamtypes.StoreKey,
 		photontypes.StoreKey,
 		feemarkettypes.StoreKey,
-		// TODO: to be removed in a future release, since x/crisis
-		// was deprecated. The key had to be left here to facilitate
-		// deletion of the module's state from the store during the
-		// software upgrade.
-		crisistypes.StoreKey,
 	)
 
 	// Define transient store keys
