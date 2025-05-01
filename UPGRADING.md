@@ -15,6 +15,14 @@ change](#validator-config-change).
 PHOTON denom for the fees, but this time **after** the upgrade, see [Relayer
 config change](#relayer-config-change) section.
 
+> [!IMPORTANT]
+> Although the `photon` is expected to become the sole fee token, the v2
+> upgrade will implement this change gradually. Rather than immediately
+> rejecting transactions using `atone` tokens for fees, we'll provide a
+> transition period for users to switch to `photon`. During this time, both
+> `photon` and `atone` will be accepted as fee tokens. A subsequent parameter
+> change proposal will then establish `photon` as the exclusive fee token.
+
 ## Release Binary
 
 Please use the correct release binary: `v2.0.0`.
@@ -57,7 +65,7 @@ $ GOROOT=$(go1.22.10 env GOROOT) PATH=$GOROOT/bin:$PATH make build
     - [Method II: Upgrade using Cosmovisor](#method-ii-upgrade-using-cosmovisor)
       - [Manually preparing the binary](#manually-preparing-the-binary)
         - [Preparation](#preparation)
-      - [Auto-Downloading the AtomOne binary](#auto-downloading-the-gaia-binary)
+      - [Auto-Downloading the AtomOne binary](#auto-downloading-the-atomone-binary)
   - [Expected upgrade result](#expected-upgrade-result)
   - [Upgrade duration](#upgrade-duration)
   - [Rollback plan](#rollback-plan)
@@ -66,7 +74,7 @@ $ GOROOT=$(go1.22.10 env GOROOT) PATH=$GOROOT/bin:$PATH make build
 
 ## On-chain governance proposal attains consensus
 
-Once a software upgrade governance proposal is submitted to the Cosmos Hub,
+Once a software upgrade governance proposal is submitted to the AtomOne chain,
 both a reference to this proposal and an `UPGRADE_HEIGHT` are added to the
 [release notes][v2].
 If and when this proposal reaches consensus, the upgrade height will be used to
@@ -103,7 +111,7 @@ case the upgrade fails and the previous chain needs to be restarted.
 ### Current runtime
 
 The AtomOne mainnet network, `atomone-1`, is currently running [AtomOne
-v1.1.1][v1]. We anticipate that operators who are running on v1.1.1, will be
+v1.1.2][v1]. We anticipate that operators who are running on v1.1.2, will be
 able to upgrade successfully. Validators are expected to ensure that their
 systems are up to date and capable of performing the upgrade. This includes
 running the correct binary and if building from source, building with the
@@ -137,15 +145,22 @@ file.
 
 For example, considering this existing setting:
 ```toml
-minimum-gas-prices = "0.001uatone"
+minimum-gas-prices = "0.01uatone"
 ```
 Before upgrading, the setting should be changed to:
 ```toml
-minimum-gas-prices = "0.001uatone,0.001uphoton"
+minimum-gas-prices = "0.01uatone,0.09uphoton"
 ```
 
-For validators that have `authz` transactions submitted periodically, the tx
-fee denom would need to be updated as well.
+> [!TIP]
+> The expected conversion rate when burning `atone` to mint `photon` will be
+> around 9 after the upgrade. This means that you would get ~9PHOTONs for
+> burning 1ATONE. This factor should be taken into account when setting the gas
+> price in `photon`.
+
+> [!NOTE]
+> This change can be done **before** the upgrade because `minimum-gas-prices`
+> is inclusive, meaning that one token or the other can be used.
 
 ### Relayer config change
 
@@ -160,45 +175,34 @@ For example, considerng the existing setting:
 [[ chain ]]
 id = 'atomone-1'
 (...)
-gas_price = { price = 0.001, denom = 'uatone' }
+gas_price = { price = 0.01, denom = 'uatone' }
 ```
 Once the chain is upgraded, the setting should be changed to:
 ```toml
 [[ chain ]]
 id = 'atomone-1'
 (...)
-gas_price = { price = 0.001, denom = 'uphoton' }
+gas_price = { price = 0.09, denom = 'uphoton' }
 ```
 
-Note that unlike the validator config change which still accepts `uatone` for
-fees, this change should be done **after** the upgrade because it is restricted
-to `uphoton` which has no supply before the upgrade.
-
-### Relayer account balance
-
-Additionally, the relayer account balance will now require `uphoton` token
-instead of `uatone` to pay the fees.
-
-Accordingly, after the upgrade, the relayer operator will have to mint some
-photons using the new `MsgMintPhoton` message, and then transfer them to the
-relayer account. Consequently it is expected that IBC will take a bit of time
-to work properly after the upgrade, until the relayer account balance is filled
-with photons.
+> [!IMPORTANT]
+> Unlike the validator config, this change should be done **after**
+> the upgrade because it is restricted to `uphoton`.
 
 ### Method I: Manual Upgrade
 
-Make sure **AtomOne v1.1.1** is installed by either downloading a [compatible
+Make sure **AtomOne v1.1.2** is installed by either downloading a [compatible
 binary][v1], or building from source. Check the required version to build this
 binary in the `Makefile`.
 
-Run AtomOne v1.1.1 till upgrade height, the node will panic:
+Run AtomOne v1.1.2 till upgrade height, the node will panic:
 
 ```shell
 ERR UPGRADE "v2" NEEDED at height: <UPGRADE_HEIGHT>: upgrade to v2 and applying upgrade "v2" at height:<UPGRADE_HEIGHT>
 ```
 
 Stop the node, and switch the binary to **AtomOne v2.0.0** and re-start by
-`atomone start`.
+`atomoned start`.
 
 It may take several minutes to a few hours until validators with a total sum
 voting power > 2/3 to complete their node upgrades. After that, the chain can
@@ -216,7 +220,7 @@ continue to produce blocks.
 go install cosmossdk.io/tools/cosmovisor/cmd/cosmovisor@latest
 ```
 
-- Create a `cosmovisor` folder inside `$ATOMONE_HOME` and move AtomOne `v1.1.1`
+- Create a `cosmovisor` folder inside `$ATOMONE_HOME` and move AtomOne `v1.1.2`
 into `$ATOMONE_HOME/cosmovisor/genesis/bin`:
 
 ```shell
@@ -239,7 +243,7 @@ At this moment, you should have the following structure:
 ├── current -> genesis or upgrades/<name>
 ├── genesis
 │   └── bin
-│       └── atomoned  # old: v1.1.1
+│       └── atomoned  # old: v1.1.2
 └── upgrades
     └── v2
         └── bin
@@ -250,7 +254,7 @@ At this moment, you should have the following structure:
 
 ```shell
 export DAEMON_NAME=atomoned
-# please change to your own gaia home dir
+# please change to your own atomone home dir
 # please note `DAEMON_HOME` has to be absolute path
 export DAEMON_HOME=$ATOMONE_HOME
 export DAEMON_RESTART_AFTER_UPGRADE=true
@@ -283,7 +287,7 @@ network.
 
 ## Rollback plan
 
-During the network upgrade, core Cosmos teams will be keeping an ever vigilant
+During the network upgrade, core AtomOne teams will be keeping an ever vigilant
 eye and communicating with operators on the status of their upgrades. During
 this time, the core teams will listen to operator needs to determine if the
 upgrade is experiencing unintended challenges. In the event of unexpected
@@ -291,14 +295,14 @@ challenges, the core teams, after conferring with operators and attaining
 social consensus, may choose to declare that the upgrade will be skipped.
 
 Steps to skip this upgrade proposal are simply to resume the `atomone-1`
-network with the (downgraded) v1.1.1 binary using the following command:
+network with the (downgraded) v1.1.2 binary using the following command:
 
 ```shell
 atomoned start --unsafe-skip-upgrade <UPGRADE_HEIGHT>
 ```
 
 Note: There is no particular need to restore a state snapshot prior to the
-upgrade height, unless specifically directed by core Cosmos teams.
+upgrade height, unless specifically directed by core AtomOne teams.
 
 Important: A social consensus decision to skip the upgrade will be based solely
 on technical merits, thereby respecting and maintaining the decentralized
@@ -307,7 +311,7 @@ governance process of the upgrade proposal's successful YES vote.
 ## Communications
 
 Operators are encouraged to join the `#validate-private` channel
-of the AtomOne (unofficial) Discord. This channel is the primary communication
+of the AtomOne Community Discord. This channel is the primary communication
 tool for operators to ask questions, report upgrade status, report technical
 issues, and to build social consensus should the need arise. This channel is
 restricted to known operators and requires verification beforehand. Requests to
@@ -325,5 +329,5 @@ repeat the upgrade procedure again during the network startup. If you discover
 a mistake in the process, the best thing to do is wait for the network to start
 before correcting it.
 
-[v1]: https://github.com/atomone-hub/atomone/releases/tag/v1.1.1
+[v1]: https://github.com/atomone-hub/atomone/releases/tag/v1.1.2
 [v2]: https://github.com/atomone-hub/atomone/releases/tag/v2.0.0
