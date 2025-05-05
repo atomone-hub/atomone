@@ -144,7 +144,7 @@ Specifically, a validator may profit by adding multiple validators to the chain 
 In fact, in this scenario assuming $y$ as the number of sybil instances:
 
 $$
-r_{ji} = y * (\frac {x_{ji}}{y * S_i} * PR_i + \frac{NB_i}{N_i}) = \frac {x_{ji}}{S_i} * PR_i + y * \frac{NB_i}{N_i}
+r_{ji} = y \times (\frac {x_{ji}}{y \times S_i} \times PR_i + \frac{NB_i}{N_i}) = \frac {x_{ji}}{S_i} \times PR_i + y \times \frac{NB_i}{N_i}
 $$
 
 So the validator would keep intact its `Proportional Reward` and be rewarded y times the `Nakamoto Bonus`.
