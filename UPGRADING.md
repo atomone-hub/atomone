@@ -87,7 +87,7 @@ Neither core developers nor core funding entities control the governance.
 The date/time of the upgrade is subject to change as blocks are not generated
 at a constant interval. You can stay up-to-date by checking the estimated
 estimated time until the block is produced one of the block explorers (e.g.
-https://www.mintscan.io/atomone/blocks/`UPGRADE_HEIGHT`).
+https://www.mintscan.io/atomone/blocks/3318000).
 
 ## Preparing for the upgrade
 
