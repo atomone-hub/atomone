@@ -86,7 +86,7 @@ Increasing $\eta$ increases NB, and decreasing it, decreases NB.
 The reward obtained by a validator $j$ at block $i$ is computed as:
 
 $$
-r_{ji} = \frac {x_{ji}}{S_i} * PR_i + \frac{NB_i}{N_i}
+r_{ji} = \frac {x_{ji}}{S_i} \times PR_i + \frac{NB_i}{N_i}
 $$
 
 Where:
