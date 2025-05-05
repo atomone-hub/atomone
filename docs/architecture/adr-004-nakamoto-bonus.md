@@ -149,7 +149,7 @@ $$
 
 So the validator would keep intact its `Proportional Reward` and be rewarded y times the `Nakamoto Bonus`.
 
-As a measure to mitigate this, we propose to adopt and ajust the mechanism of `proportional slashing` as presented in [adr-014.](https://github.com/cosmos/cosmos-sdk/blob/main/docs/architecture/adr-014-proportional-slashing.md)
+As a measure to mitigate this, we propose to adopt and ajust the mechanism of `proportional slashing` as presented in [adr-014](https://github.com/cosmos/cosmos-sdk/blob/main/docs/architecture/adr-014-proportional-slashing.md) of the Cosmos Hub.
 Two (or more) validators are considered correlated if they fail within the same time period. The correlated validators are then slashed as follows:
 
 $$
