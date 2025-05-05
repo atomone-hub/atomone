@@ -115,7 +115,7 @@ $$
 RPS_{ji} = \frac{r_{ji}}{x_{ji}} = \frac{PR_i}{S_i} + \frac{NB_i}{N_i \times x_{ji}} 
 $$
 
-It can be seen that, the first member of the sum of RPS_{ji} is independent from $j$, the specific validator, while the second is inversly proportional to x_{ji} - the stake of validator $j$ at block $i$.
+It can be seen that, the first member of the sum of $RPS_{ji}$ is independent from $j$, the specific validator, while the second is inversly proportional to $x_{ji}$ - the stake of validator $j$ at block $i$.
 
 Therefore:
 1. The choice of the validator changes the expected return of a delegator.
