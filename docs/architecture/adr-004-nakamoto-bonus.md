@@ -80,7 +80,7 @@ Where:
 - $PR_i$ is the proportional reward for block $i$.
 - $NB_i$ is the Nakamoto Bonus for block $i$.
 
-Moreover, we define a new parameter $\eta : 0 \le eta \le 1$ that specifies how NB is computed from the reward: $ NB_i = R_i * \eta $.
+Moreover, we define a new parameter $\eta : 0 \le eta \le 1$ that specifies how NB is computed from the reward: $NB_i = R_i * \eta$.
 Increasing $\eta$ increases NB, and decreasing it, decreases NB.
 
 The reward obtained by a validator $j$ at block $i$ is computed as:
