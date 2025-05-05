@@ -141,7 +141,7 @@ The rewarding mechanism as presented above can be taken advantage of by a sybil 
 
 Specifically, a validator may profit by adding multiple validators to the chain and splitting its stake across such validators.
 
-Infact, in this scenario assuming y as the number of sybil instances:
+In fact, in this scenario assuming $y$ as the number of sybil instances:
 
 $$
 r_{ji} = y * (\frac {x_{ji}}{y * S_i} * PR_i + \frac{NB_i}{N_i}) = \frac {x_{ji}}{S_i} * PR_i + y * \frac{NB_i}{N_i}
