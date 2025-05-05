@@ -17,7 +17,7 @@ At the time of writing, the AtomOne chain suffers from a concentration of delega
 
 ### Reward Distribution
 
-The chain reward is distributed across validator using an even distribution weighted by stake. This means that the reward a validator `j` receives after validating block `i` can be computed as follows:
+The chain reward is distributed across validators using an even distribution weighted by stake. This means that the reward a validator `j` receives after validating block `i` can be computed as follows:
 
 $$
 r_{ji} = \frac {x_{ji}}{S_i} * R_i.
