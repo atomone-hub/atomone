@@ -153,12 +153,12 @@ As a measure to mitigate this, we propose to adopt and ajust the mechanism of `p
 Two (or more) validators are considered correlated if they fail within the same time period. The correlated validators are then slashed as follows:
 
 $$
-slash_percentage = k * ((power_1)^(1/r) + (power_2)^(1/r) + ... + (power_n)^(1/r))^r // where k and r are both on-chain constants
+slash\_percentage = k \times ((power_1)^{(1/r)} + (power_2)^{(1/r)} + ... + (power_n)^{(1/r)})^r 
 $$
 
 Where
 - $power_j$ refers to the voting power of validator $j$
-- k is a chain specific constant
+- $k$ and $r$ are chain specific constants
 
 For example, assuming k=1 and r=2, if one validator of 10% faults, it gets a 10% slash, while if two validators of 5% each fault together, they both get a 20% slash ((sqrt(0.05)+sqrt(0.05))^2).
 
