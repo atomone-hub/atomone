@@ -33,14 +33,13 @@ func (s *IntegrationTestSuite) testFeemarketQuery() {
 			valIdx        = 0
 			chainEndpoint = fmt.Sprintf("http://%s", s.valResources[c.id][valIdx].GetHostPort("1317/tcp"))
 		)
-		params := s.queryFeemarketState(chainEndpoint)
-		s.Require().Equal("0.000010000000000000", params.State.BaseGasPrice.String())
-		for i := range params.State.Window {
-			s.Require().Equal(uint64(0), params.State.Window[i])
-		}
-		s.Require().True(params.State.Index >= 0)
-		s.Require().True(int(params.State.Index) < len(params.State.Window))
-		s.Require().True(params.State.LearningRate.IsPositive())
+		state := s.queryFeemarketState(chainEndpoint)
+		params := s.queryFeemarketParams(chainEndpoint)
+		s.Require().Equal("0.000010000000000000", state.State.BaseGasPrice.String())
+		s.Require().Equal(uint64(len(state.State.Window)), params.Params.Window)
+		s.Require().True(state.State.Index >= 0)
+		s.Require().True(int(state.State.Index) < len(state.State.Window))
+		s.Require().True(state.State.LearningRate.IsPositive())
 	})
 
 	s.Run("feemarket test get price", func() {
