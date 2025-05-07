@@ -2,23 +2,9 @@ package e2e
 
 import (
 	"fmt"
-
-	"github.com/atomone-hub/atomone/x/feemarket/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	// "github.com/cosmos/cosmos-sdk/types/tx"
-	"time"
-
-	"cosmossdk.io/math"
 )
 
-/*
-Test Feemarket Queries:
-- params
-- state
-- gas_price/{denom}
-- gas_prices
-*/
 func (s *IntegrationTestSuite) testFeemarketQuery() {
 	s.Run("feemarket test params", func() {
 		var (
@@ -84,14 +70,6 @@ func (s *IntegrationTestSuite) testFeemarketQuery() {
 		s.Require().True(photonAmount.IsPositive())
 	})
 }
-
-func toLegacyDec(num uint64) math.LegacyDec {
-	return math.LegacyNewDecFromInt(math.NewIntFromUint64(num))
-}
-
-/*
-Test Gas Price change
-*/
 
 func (s *IntegrationTestSuite) testFeemarketGasPriceChange() {
 	s.Run("gas price change", func() {
