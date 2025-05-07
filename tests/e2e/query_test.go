@@ -17,6 +17,7 @@ import (
 	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
+	feemarkettypes "github.com/atomone-hub/atomone/x/feemarket/types"
 	govtypesv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	govtypesv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
@@ -318,6 +319,42 @@ func (s *IntegrationTestSuite) queryPhotonParams(endpoint string) photontypes.Qu
 	body, err := httpGet(fmt.Sprintf("%s/atomone/photon/v1/params", endpoint))
 	s.Require().NoError(err)
 	var res photontypes.QueryParamsResponse
+	err = cdc.UnmarshalJSON(body, &res)
+	s.Require().NoError(err)
+	return res
+}
+
+func (s *IntegrationTestSuite) queryFeemarketParams(endpoint string) feemarkettypes.ParamsResponse {
+	body, err := httpGet(fmt.Sprintf("%s/atomone/feemarket/v1/params", endpoint))
+	s.Require().NoError(err)
+	var res feemarkettypes.ParamsResponse
+	err = cdc.UnmarshalJSON(body, &res)
+	s.Require().NoError(err)
+	return res
+}
+
+func (s *IntegrationTestSuite) queryFeemarketState(endpoint string) feemarkettypes.StateResponse {
+	body, err := httpGet(fmt.Sprintf("%s/atomone/feemarket/v1/state", endpoint))
+	s.Require().NoError(err)
+	var res feemarkettypes.StateResponse
+	err = cdc.UnmarshalJSON(body, &res)
+	s.Require().NoError(err)
+	return res
+}
+
+func (s *IntegrationTestSuite) queryFeemarketGasPrice(endpoint string, denom string) feemarkettypes.GasPriceResponse {
+	body, err := httpGet(fmt.Sprintf("%s/atomone/feemarket/v1/gas_price/%s", endpoint, denom))
+	s.Require().NoError(err)
+	var res feemarkettypes.GasPriceResponse
+	err = cdc.UnmarshalJSON(body, &res)
+	s.Require().NoError(err)
+	return res
+}
+
+func (s *IntegrationTestSuite) queryFeemarketGasPrices(endpoint string) feemarkettypes.GasPricesResponse {
+	body, err := httpGet(fmt.Sprintf("%s/atomone/feemarket/v1/gas_prices", endpoint))
+	s.Require().NoError(err)
+	var res feemarkettypes.GasPricesResponse
 	err = cdc.UnmarshalJSON(body, &res)
 	s.Require().NoError(err)
 	return res

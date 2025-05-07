@@ -303,7 +303,11 @@ func (s *IntegrationTestSuite) execBankMultiSend(
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	s.T().Logf("sending %s tokens from %s to %s on chain %s", amt, from, to, c.id)
+	if len(to) < 4 {
+		s.T().Logf("sending %s tokens from %s to %s on chain %s", amt, from, to, c.id)
+	} else {
+		s.T().Logf("sending %s tokens from %s to %d accounts on chain %s", amt, from, len(to), c.id)
+	}
 
 	atomoneCommand := []string{
 		atomonedBinary,
