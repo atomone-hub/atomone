@@ -56,6 +56,7 @@ func (suite *KeeperTestSuite) TestActivateVotingPeriod() {
 	params.MaxVotingPeriodExtension = &maxVotingPeriodExtension
 	err := suite.govKeeper.SetParams(suite.ctx, params)
 	suite.Require().NoError(err)
+	currentProposalNumber := suite.govKeeper.GetActiveProposalsNumber(suite.ctx)
 
 	tp := TestProposal
 	proposal, err := suite.govKeeper.SubmitProposal(suite.ctx, tp, "", "test", "summary", sdk.AccAddress("cosmos1ghekyjucln7y67ntx7cf27m9dpuxxemn4c8g4r"))
@@ -65,6 +66,8 @@ func (suite *KeeperTestSuite) TestActivateVotingPeriod() {
 
 	suite.govKeeper.ActivateVotingPeriod(suite.ctx, proposal)
 
+	suite.Require().Equal(currentProposalNumber+1, suite.govKeeper.GetActiveProposalsNumber(suite.ctx),
+		"active proposal number not incremented after proposal activation")
 	proposal, ok := suite.govKeeper.GetProposal(suite.ctx, proposal.Id)
 	suite.Require().True(ok)
 	suite.Require().True(proposal.VotingStartTime.Equal(suite.ctx.BlockHeader().Time))
