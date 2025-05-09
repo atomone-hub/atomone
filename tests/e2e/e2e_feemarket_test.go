@@ -81,7 +81,7 @@ func (s *IntegrationTestSuite) testFeemarketGasPriceChange() {
 		sender, _ := c.genesisAccounts[0].keyInfo.GetAddress()
 		// Initialize array of recipients account
 		var destAccounts []string
-		tokenAmount = sdk.NewInt64Coin(uatoneDenom, 100_000) // 0.1atone
+		tokenAmount := sdk.NewInt64Coin(uatoneDenom, 100_000) // 0.1atone
 		for i := range len(c.genesisAccounts) {
 			address, _ := c.genesisAccounts[i].keyInfo.GetAddress()
 			destAccounts = append(destAccounts, address.String())
