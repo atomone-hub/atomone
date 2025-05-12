@@ -97,6 +97,8 @@ func (s *IntegrationTestSuite) testFeemarketGasPriceChange() {
 		StateBeforeMultisendTx := s.queryFeemarketState(chainEndpoint)
 		s.execBankMultiSend(s.chainA, valIdx, sender.String(),
 			destAccountsMultisend, tokenAmount.String(), false)
+		s.execBankMultiSend(s.chainA, valIdx, sender.String(),
+			destAccountsMultisend, tokenAmount.String(), false)
 		StateAfterMultisendTx := s.queryFeemarketState(chainEndpoint)
 
 		oldFee := StateBeforeMultisendTx.State.BaseGasPrice
