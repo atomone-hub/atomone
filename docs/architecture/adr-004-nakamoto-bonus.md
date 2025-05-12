@@ -160,7 +160,7 @@ Where
 - $power_j$ refers to the voting power of validator $j$
 - $k$ and $r$ are chain specific constants
 
-For example, assuming k=1 and r=2, if one validator of 10% faults, it gets a 10% slash, while if two validators of 5% each fault together, they both get a 20% slash ((sqrt(0.05)+sqrt(0.05))^2).
+For example, assuming $k=1$ and $r=2$, if one validator of 10% faults, it gets a 10% slash, while if two validators of 5% each fault together, they both get a 20% slash ($1 \times (0.05^{\frac{1}{2}}+0.05^{\frac{1}{2}})^2$).
 
 
 
