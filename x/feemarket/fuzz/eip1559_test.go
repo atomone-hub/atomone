@@ -6,6 +6,8 @@ import (
 	"github.com/stretchr/testify/require"
 	"pgregory.net/rapid"
 
+	"github.com/cometbft/cometbft/libs/log"
+
 	"cosmossdk.io/math"
 
 	"github.com/atomone-hub/atomone/x/feemarket/types"
@@ -58,7 +60,7 @@ func TestGasPrice(t *testing.T) {
 		// Update the learning rate.
 		state.UpdateLearningRate(params)
 		// Update the base fee.
-		state.UpdateBaseGasPrice(params)
+		state.UpdateBaseGasPrice(log.NewNopLogger(), params)
 
 		// Ensure that the minimum base fee is always less than the base fee.
 		require.True(t, params.MinBaseGasPrice.LTE(state.BaseGasPrice))

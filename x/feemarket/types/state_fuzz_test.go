@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"cosmossdk.io/math"
+	"github.com/cometbft/cometbft/libs/log"
 
 	"github.com/atomone-hub/atomone/x/feemarket/types"
 )
@@ -51,7 +52,7 @@ func FuzzDefaultFeeMarket(f *testing.F) {
 		require.Equal(t, defaultLR, lr)
 
 		oldFee := state.BaseGasPrice
-		newFee := state.UpdateBaseGasPrice(params)
+		newFee := state.UpdateBaseGasPrice(log.NewNopLogger(), params)
 
 		if blockGasUsed > params.TargetBlockUtilization() {
 			require.True(t, newFee.GT(oldFee))
@@ -94,7 +95,7 @@ func FuzzAIMDFeeMarket(f *testing.F) {
 		require.Equal(t, blockGasUsed, state.Window[state.Index])
 
 		oldFee := state.BaseGasPrice
-		newFee := state.UpdateBaseGasPrice(params)
+		newFee := state.UpdateBaseGasPrice(log.NewNopLogger(), params)
 
 		if blockGasUsed > params.TargetBlockUtilization() {
 			require.True(t, newFee.GT(oldFee))

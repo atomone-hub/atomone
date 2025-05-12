@@ -3,6 +3,8 @@ package types
 import (
 	fmt "fmt"
 
+	"github.com/cometbft/cometbft/libs/log"
+
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 )
@@ -47,15 +49,15 @@ func (s *State) IncrementHeight() {
 // based on the average utilization of the block window. The base gas price is
 // update using the new learning rate. Please see the EIP-1559 specification
 // for more details.
-func (s *State) UpdateBaseGasPrice(params Params) (gasPrice math.LegacyDec) {
+func (s *State) UpdateBaseGasPrice(logger log.Logger, params Params) (gasPrice math.LegacyDec) {
 	// Panic catch in case there is an overflow
 	defer func() {
 		if rec := recover(); rec != nil {
+			logger.Error("Panic recovered in state.UpdateBaseGasPrice", "err", rec)
 			s.BaseGasPrice = params.MinBaseGasPrice
 			gasPrice = s.BaseGasPrice
 		}
 	}()
-
 	// Calculate the new base gasPrice with the learning rate adjustment.
 	currentBlockSize := math.LegacyNewDecFromInt(math.NewIntFromUint64(s.Window[s.Index]))
 	targetBlockSize := math.LegacyNewDecFromInt(math.NewIntFromUint64(params.TargetBlockUtilization()))

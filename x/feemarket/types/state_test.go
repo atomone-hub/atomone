@@ -6,6 +6,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	"github.com/cometbft/cometbft/libs/log"
+
 	"cosmossdk.io/math"
 
 	"github.com/atomone-hub/atomone/x/feemarket/types"
@@ -129,7 +131,7 @@ func TestState_UpdateBaseGasPrice(t *testing.T) {
 		state.BaseGasPrice = math.LegacyMustNewDecFromStr("1000")
 		params.MinBaseGasPrice = math.LegacyMustNewDecFromStr("125")
 
-		newBaseGasPrice := state.UpdateBaseGasPrice(params)
+		newBaseGasPrice := state.UpdateBaseGasPrice(log.NewNopLogger(), params)
 
 		require.Equal(t, newBaseGasPrice, state.BaseGasPrice)
 		expectedBaseGasPrice := math.LegacyMustNewDecFromStr("875")
@@ -143,7 +145,7 @@ func TestState_UpdateBaseGasPrice(t *testing.T) {
 		params.MinBaseGasPrice = math.LegacyMustNewDecFromStr("125")
 		state.Window[0] = params.TargetBlockUtilization()
 
-		newBaseGasPrice := state.UpdateBaseGasPrice(params)
+		newBaseGasPrice := state.UpdateBaseGasPrice(log.NewNopLogger(), params)
 
 		require.Equal(t, newBaseGasPrice, state.BaseGasPrice)
 		expectedBaseGasPrice := math.LegacyMustNewDecFromStr("1000")
@@ -157,7 +159,7 @@ func TestState_UpdateBaseGasPrice(t *testing.T) {
 		params.MinBaseGasPrice = math.LegacyMustNewDecFromStr("125")
 		state.Window[0] = params.MaxBlockUtilization
 
-		newBaseGasPrice := state.UpdateBaseGasPrice(params)
+		newBaseGasPrice := state.UpdateBaseGasPrice(log.NewNopLogger(), params)
 
 		require.Equal(t, newBaseGasPrice, state.BaseGasPrice)
 		expectedBaseGasPrice := math.LegacyMustNewDecFromStr("1125")
@@ -172,7 +174,7 @@ func TestState_UpdateBaseGasPrice(t *testing.T) {
 		state.LearningRate = math.LegacyMustNewDecFromStr("0.125")
 		state.UpdateLearningRate(params)
 
-		newBaseGasPrice := state.UpdateBaseGasPrice(params)
+		newBaseGasPrice := state.UpdateBaseGasPrice(log.NewNopLogger(), params)
 
 		require.Equal(t, newBaseGasPrice, state.BaseGasPrice)
 		expectedBaseGasPrice := math.LegacyMustNewDecFromStr("850")
@@ -190,7 +192,7 @@ func TestState_UpdateBaseGasPrice(t *testing.T) {
 		}
 		state.UpdateLearningRate(params)
 
-		newBaseGasPrice := state.UpdateBaseGasPrice(params)
+		newBaseGasPrice := state.UpdateBaseGasPrice(log.NewNopLogger(), params)
 
 		require.Equal(t, newBaseGasPrice, state.BaseGasPrice)
 		expectedBaseGasPrice := math.LegacyMustNewDecFromStr("1000")
@@ -208,7 +210,7 @@ func TestState_UpdateBaseGasPrice(t *testing.T) {
 		}
 		state.UpdateLearningRate(params)
 
-		newBaseGasPrice := state.UpdateBaseGasPrice(params)
+		newBaseGasPrice := state.UpdateBaseGasPrice(log.NewNopLogger(), params)
 
 		require.Equal(t, newBaseGasPrice, state.BaseGasPrice)
 		expectedBaseGasPrice := math.LegacyMustNewDecFromStr("1150")
@@ -220,7 +222,7 @@ func TestState_UpdateBaseGasPrice(t *testing.T) {
 		params := types.DefaultParams()
 
 		// Empty block
-		newBaseGasPrice := state.UpdateBaseGasPrice(params)
+		newBaseGasPrice := state.UpdateBaseGasPrice(log.NewNopLogger(), params)
 
 		require.Equal(t, newBaseGasPrice, state.BaseGasPrice)
 		expectedBaseGasPrice := params.MinBaseGasPrice
@@ -232,7 +234,7 @@ func TestState_UpdateBaseGasPrice(t *testing.T) {
 		params := types.DefaultAIMDParams()
 
 		// Empty blocks
-		newBaseGasPrice := state.UpdateBaseGasPrice(params)
+		newBaseGasPrice := state.UpdateBaseGasPrice(log.NewNopLogger(), params)
 
 		require.Equal(t, newBaseGasPrice, state.BaseGasPrice)
 		expectedBaseGasPrice := params.MinBaseGasPrice
@@ -253,7 +255,7 @@ func TestState_UpdateBaseGasPrice(t *testing.T) {
 
 		prevLR := state.LearningRate
 		lr := state.UpdateLearningRate(params)
-		newGasPrice := state.UpdateBaseGasPrice(params)
+		newGasPrice := state.UpdateBaseGasPrice(log.NewNopLogger(), params)
 
 		expectedLR := prevLR.Add(params.Alpha)
 		expectedUtilization := math.LegacyMustNewDecFromStr("-0.5")
@@ -279,7 +281,7 @@ func TestState_UpdateBaseGasPrice(t *testing.T) {
 
 		prevLR := state.LearningRate
 		lr := state.UpdateLearningRate(params)
-		bgs := state.UpdateBaseGasPrice(params)
+		bgs := state.UpdateBaseGasPrice(log.NewNopLogger(), params)
 
 		expectedUtilization := math.LegacyMustNewDecFromStr("0.5")
 		expectedLR := prevLR.Add(params.Alpha)
