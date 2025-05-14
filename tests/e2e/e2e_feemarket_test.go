@@ -2,6 +2,8 @@ package e2e
 
 import (
 	"fmt"
+	"strconv"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -77,7 +79,8 @@ func (s *IntegrationTestSuite) testFeemarketGasPriceChange() {
 			valIdx        = 0
 			chainEndpoint = fmt.Sprintf("http://%s", s.valResources[c.id][valIdx].GetHostPort("1317/tcp"))
 		)
-		// define one sender and two recipient accounts
+		params := s.queryFeemarketParams(chainEndpoint)
+		// define one sender
 		sender, _ := c.genesisAccounts[0].keyInfo.GetAddress()
 		// Initialize array of recipients account
 		var destAccounts []string
@@ -95,11 +98,9 @@ func (s *IntegrationTestSuite) testFeemarketGasPriceChange() {
 		}
 
 		StateBeforeMultisendTx := s.queryFeemarketState(chainEndpoint)
-		s.execBankMultiSend(s.chainA, valIdx, sender.String(),
+		txHeight := s.execBankMultiSend(s.chainA, valIdx, sender.String(),
 			destAccountsMultisend, tokenAmount.String(), false)
-		s.execBankMultiSend(s.chainA, valIdx, sender.String(),
-			destAccountsMultisend, tokenAmount.String(), false)
-		StateAfterMultisendTx := s.queryFeemarketState(chainEndpoint)
+		StateAfterMultisendTx := s.queryFeemarketStateAtHeight(chainEndpoint, strconv.Itoa(txHeight))
 
 		oldFee := StateBeforeMultisendTx.State.BaseGasPrice
 		newFee := StateAfterMultisendTx.State.BaseGasPrice
@@ -110,7 +111,7 @@ func (s *IntegrationTestSuite) testFeemarketGasPriceChange() {
 		oldLearningRate := StateBeforeMultisendTx.State.LearningRate
 		newLearningRate := StateAfterMultisendTx.State.LearningRate
 
-		s.Require().True(newLearningRate.GT(oldLearningRate),
+		s.Require().True(newLearningRate.GT(oldLearningRate) || newLearningRate.Equal(params.Params.MaxLearningRate),
 			"Expected newLearningRate (%s) higher than currentLearningRate (%s)",
 			newLearningRate, oldLearningRate)
 	})

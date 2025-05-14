@@ -295,7 +295,7 @@ func (s *IntegrationTestSuite) execBankMultiSend(
 	amt string,
 	expectErr bool,
 	opt ...flagOption,
-) {
+) int {
 	// TODO remove the hardcode opt after refactor, all methods should accept custom flags
 	opt = append(opt, withKeyValue(flagFrom, from))
 	opts := applyOptions(c.id, opt)
@@ -324,7 +324,7 @@ func (s *IntegrationTestSuite) execBankMultiSend(
 		atomoneCommand = append(atomoneCommand, fmt.Sprintf("--%s=%v", flag, value))
 	}
 
-	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.expectErrExecValidation(c, valIdx, expectErr))
+	return s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.expectErrExecValidation(c, valIdx, expectErr))
 }
 
 type txBankSend struct { //nolint:unused
@@ -676,7 +676,7 @@ func (s *IntegrationTestSuite) execWithdrawReward(
 	s.T().Logf("Successfully withdrew distribution rewards for delegator %s from validator %s", delegatorAddress, validatorAddress)
 }
 
-func (s *IntegrationTestSuite) executeAtomoneTxCommand(ctx context.Context, c *chain, atomoneCommand []string, valIdx int, validation func([]byte, []byte) bool) {
+func (s *IntegrationTestSuite) executeAtomoneTxCommand(ctx context.Context, c *chain, atomoneCommand []string, valIdx int, validation func([]byte, []byte) bool) int {
 	if validation == nil {
 		validation = s.defaultExecValidation(s.chainA, 0, nil)
 	}
@@ -708,6 +708,17 @@ func (s *IntegrationTestSuite) executeAtomoneTxCommand(ctx context.Context, c *c
 		s.Require().FailNowf("Exec validation failed", "stdout: %s, stderr: %s",
 			string(stdOut), string(stdErr))
 	}
+	var txResp sdk.TxResponse
+	if err := cdc.UnmarshalJSON(stdOut, &txResp); err != nil {
+		return 0
+	}
+	endpoint := fmt.Sprintf("http://%s", s.valResources[c.id][valIdx].GetHostPort("1317/tcp"))
+	height, err := queryAtomOneTx(endpoint, txResp.TxHash, nil)
+	if err != nil {
+		s.Require().FailNowf("Failed query of Tx height", "stdout: %s, stderr: %s",
+			string(stdOut), string(stdErr))
+	}
+	return height
 }
 
 func (s *IntegrationTestSuite) executeHermesCommand(ctx context.Context, hermesCmd []string) ([]byte, error) {
@@ -768,7 +779,8 @@ func (s *IntegrationTestSuite) expectErrExecValidation(chain *chain, valIdx int,
 		// wait for the tx to be committed on chain
 		s.Require().Eventuallyf(
 			func() bool {
-				gotErr := queryAtomOneTx(endpoint, txResp.TxHash, nil) != nil
+				_, err := queryAtomOneTx(endpoint, txResp.TxHash, nil)
+				gotErr := err != nil
 				return gotErr == expectErr
 			},
 			time.Minute,
@@ -790,7 +802,7 @@ func (s *IntegrationTestSuite) defaultExecValidation(chain *chain, valIdx int, m
 			endpoint := fmt.Sprintf("http://%s", s.valResources[chain.id][valIdx].GetHostPort("1317/tcp"))
 			s.Require().Eventually(
 				func() bool {
-					err := queryAtomOneTx(endpoint, txResp.TxHash, msgResp)
+					_, err := queryAtomOneTx(endpoint, txResp.TxHash, msgResp)
 					if isErrNotFound(err) {
 						// tx not processed yet, continue
 						return false

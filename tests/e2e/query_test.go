@@ -24,34 +24,34 @@ import (
 )
 
 // queryAtomOneTx returns an error if the tx is not found or is failed.
-func queryAtomOneTx(endpoint, txHash string, msgResp codec.ProtoMarshaler) error {
+func queryAtomOneTx(endpoint, txHash string, msgResp codec.ProtoMarshaler) (height int, err error) {
 	body, err := httpGet(fmt.Sprintf("%s/cosmos/tx/v1beta1/txs/%s", endpoint, txHash))
 	if err != nil {
-		return err
+		return 0, err
 	}
 
 	var resp tx.GetTxResponse
 	if err := cdc.UnmarshalJSON(body, &resp); err != nil {
-		return fmt.Errorf("failed to read response body: %w", err)
+		return 0, fmt.Errorf("failed to read response body: %w", err)
 	}
 	if resp.TxResponse.Code != 0 {
-		return fmt.Errorf("tx %s is failed with code=%d log='%s'", txHash, resp.TxResponse.Code, resp.TxResponse.RawLog)
+		return 0, fmt.Errorf("tx %s is failed with code=%d log='%s'", txHash, resp.TxResponse.Code, resp.TxResponse.RawLog)
 	}
 	if msgResp != nil {
 		// msgResp is provided, try to decode the tx response
 		data, err := hex.DecodeString(resp.TxResponse.Data)
 		if err != nil {
-			return err
+			return 0, err
 		}
 		var txMsgData sdk.TxMsgData
 		if err := cdc.Unmarshal(data, &txMsgData); err != nil {
-			return err
+			return 0, err
 		}
 		if err := cdc.Unmarshal(txMsgData.MsgResponses[0].Value, msgResp); err != nil {
-			return err
+			return 0, err
 		}
 	}
-	return nil
+	return int(resp.TxResponse.Height), nil
 }
 
 // if coin is zero, return empty coin.
@@ -335,6 +335,16 @@ func (s *IntegrationTestSuite) queryFeemarketParams(endpoint string) feemarketty
 
 func (s *IntegrationTestSuite) queryFeemarketState(endpoint string) feemarkettypes.StateResponse {
 	body, err := httpGet(fmt.Sprintf("%s/atomone/feemarket/v1/state", endpoint))
+	s.Require().NoError(err)
+	var res feemarkettypes.StateResponse
+	err = cdc.UnmarshalJSON(body, &res)
+	s.Require().NoError(err)
+	return res
+}
+
+func (s *IntegrationTestSuite) queryFeemarketStateAtHeight(endpoint string, height string) feemarkettypes.StateResponse {
+	headers := addHeader(nil, "x-cosmos-block-height", height)
+	body, err := httpGetWithHeader(fmt.Sprintf("%s/atomone/feemarket/v1/state", endpoint), headers)
 	s.Require().NoError(err)
 	var res feemarkettypes.StateResponse
 	err = cdc.UnmarshalJSON(body, &res)
