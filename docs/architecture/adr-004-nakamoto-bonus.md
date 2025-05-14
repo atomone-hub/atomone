@@ -12,7 +12,7 @@ The overall amount of the reward remains unchanged, however the criteria for ass
 
 ## Context
 
-At the time of writing, the AtomOne chain suffers from a concentration of delegations on the top staking validators. The current Nakamoto coefficient is 5, which is lower that the ideal (67, given that the current maximum number of validators at the time of writing is 100) and armful to the security of the chain.
+At the time of writing, the AtomOne chain suffers from a concentration of delegations on the top staking validators. The current Nakamoto coefficient is 5, which is lower that the ideal (34, given that the current maximum number of validators at the time of writing is 100) and armful to the security of the chain.
 
 
 ### Reward Distribution
