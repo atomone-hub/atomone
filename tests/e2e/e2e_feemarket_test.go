@@ -3,7 +3,9 @@ package e2e
 import (
 	"fmt"
 	"strconv"
+	"time"
 
+	feemarkettypes "github.com/atomone-hub/atomone/x/feemarket/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -97,7 +99,17 @@ func (s *IntegrationTestSuite) testFeemarketGasPriceChange() {
 			}
 		}
 
-		StateBeforeMultisendTx := s.queryFeemarketState(chainEndpoint)
+		// wait until the current LR is less than max LR
+		var StateBeforeMultisendTx feemarkettypes.StateResponse
+		s.Require().Eventually(
+			func() bool {
+				StateBeforeMultisendTx = s.queryFeemarketState(chainEndpoint)
+				return StateBeforeMultisendTx.State.LearningRate.LT(params.Params.MaxLearningRate)
+			},
+			10*time.Second,
+			time.Second,
+		)
+
 		txHeight := s.execBankMultiSend(s.chainA, valIdx, sender.String(),
 			destAccountsMultisend, tokenAmount.String(), false)
 		StateAfterMultisendTx := s.queryFeemarketStateAtHeight(chainEndpoint, strconv.Itoa(txHeight))
@@ -111,7 +123,7 @@ func (s *IntegrationTestSuite) testFeemarketGasPriceChange() {
 		oldLearningRate := StateBeforeMultisendTx.State.LearningRate
 		newLearningRate := StateAfterMultisendTx.State.LearningRate
 
-		s.Require().True(newLearningRate.GT(oldLearningRate) || newLearningRate.Equal(params.Params.MaxLearningRate),
+		s.Require().True(newLearningRate.GT(oldLearningRate),
 			"Expected newLearningRate (%s) higher than currentLearningRate (%s)",
 			newLearningRate, oldLearningRate)
 	})
