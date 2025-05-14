@@ -74,7 +74,7 @@ The calculation for the updated base fee for the next block is as follows:
 // sumBlockSizesInWindow returns the sum of the block sizes in the window.
 blockConsumption := sumBlockSizesInWindow(window) / (window * maxBlockSize)
 
-if blockConsumption < gamma || blockConsumption > 1 - gamma {
+if blockConsumption <= gamma || blockConsumption >= 1 - gamma {
     // MAX_LEARNING_RATE is a constant that is configured by the chain developer
     newLearningRate := min(MaxLearningRate, alpha + currentLearningRate)
 } else {
