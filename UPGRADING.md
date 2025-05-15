@@ -145,11 +145,11 @@ file.
 
 For example, considering this existing setting:
 ```toml
-minimum-gas-prices = "0.01uatone"
+minimum-gas-prices = "0.025uatone"
 ```
 Before upgrading, the setting should be changed to:
 ```toml
-minimum-gas-prices = "0.01uatone,0.09uphoton"
+minimum-gas-prices = "0.025uatone,0.225uphoton"
 ```
 
 > [!TIP]
@@ -175,14 +175,14 @@ For example, considerng the existing setting:
 [[ chain ]]
 id = 'atomone-1'
 (...)
-gas_price = { price = 0.01, denom = 'uatone' }
+gas_price = { price = 0.025, denom = 'uatone' }
 ```
 Once the chain is upgraded, the setting should be changed to:
 ```toml
 [[ chain ]]
 id = 'atomone-1'
 (...)
-gas_price = { price = 0.09, denom = 'uphoton' }
+gas_price = { price = 0.225, denom = 'uphoton' }
 ```
 
 > [!IMPORTANT]
