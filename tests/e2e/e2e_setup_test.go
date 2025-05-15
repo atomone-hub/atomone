@@ -100,7 +100,8 @@ type IntegrationTestSuite struct {
 	dkrNet         *dockertest.Network
 	hermesResource *dockertest.Resource
 
-	valResources map[string][]*dockertest.Resource
+	initializedForIBC bool
+	valResources      map[string][]*dockertest.Resource
 }
 
 type AddressResponse struct {
@@ -127,17 +128,16 @@ func (s *IntegrationTestSuite) SetupSuite() {
 
 	s.T().Log("setting up e2e integration test suite...")
 
+	s.initializedForIBC = false
+
 	var err error
 	s.chainA, err = newChain()
-	s.Require().NoError(err)
-
-	s.chainB, err = newChain()
 	s.Require().NoError(err)
 
 	s.dkrPool, err = dockertest.NewPool("")
 	s.Require().NoError(err)
 
-	s.dkrNet, err = s.dkrPool.CreateNetwork(fmt.Sprintf("%s-%s-testnet", s.chainA.id, s.chainB.id))
+	s.dkrNet, err = s.dkrPool.CreateNetwork(fmt.Sprintf("%s-testnet", s.chainA.id))
 	s.Require().NoError(err)
 
 	s.valResources = make(map[string][]*dockertest.Resource)
@@ -161,6 +161,18 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.initValidatorConfigs(s.chainA)
 	s.runValidators(s.chainA, 0)
 
+}
+
+func (s *IntegrationTestSuite) SetupIBCSuite() {
+	var err error
+	s.chainB, err = newChain()
+	s.Require().NoError(err)
+
+	vestingMnemonic, err := createMnemonic()
+	s.Require().NoError(err)
+
+	jailedValMnemonic, err := createMnemonic()
+	s.Require().NoError(err)
 	s.T().Logf("starting e2e infrastructure for chain B; chain-id: %s; datadir: %s", s.chainB.id, s.chainB.dataDir)
 	s.initNodes(s.chainB)
 	s.initGenesis(s.chainB, vestingMnemonic, jailedValMnemonic)
@@ -168,6 +180,13 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.runValidators(s.chainB, 10)
 
 	s.runIBCRelayer()
+}
+
+func (s *IntegrationTestSuite) ensureIBCSetup() {
+	if !s.initializedForIBC {
+		s.initializedForIBC = true
+		s.SetupIBCSuite()
+	}
 }
 
 func (s *IntegrationTestSuite) TearDownSuite() {
@@ -182,22 +201,28 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 
 	s.T().Log("tearing down e2e integration test suite...")
 
-	s.Require().NoError(s.dkrPool.Purge(s.hermesResource))
-
 	for _, vr := range s.valResources {
 		for _, r := range vr {
 			s.Require().NoError(s.dkrPool.Purge(r))
 		}
 	}
 
+	if s.initializedForIBC {
+		s.TearDownIBCSuite()
+	}
+
 	s.Require().NoError(s.dkrPool.RemoveNetwork(s.dkrNet))
 
 	os.RemoveAll(s.chainA.dataDir)
-	os.RemoveAll(s.chainB.dataDir)
 
 	for _, td := range s.tmpDirs {
 		os.RemoveAll(td)
 	}
+}
+
+func (s *IntegrationTestSuite) TearDownIBCSuite() {
+	s.Require().NoError(s.dkrPool.Purge(s.hermesResource))
+	os.RemoveAll(s.chainB.dataDir)
 }
 
 func (s *IntegrationTestSuite) initNodes(c *chain) {
