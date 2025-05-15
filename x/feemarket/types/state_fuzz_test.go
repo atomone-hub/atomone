@@ -55,7 +55,7 @@ func FuzzDefaultFeeMarket(f *testing.F) {
 		oldFee := state.BaseGasPrice
 		newFee := state.UpdateBaseGasPrice(params, testutil.MaxBlockGas)
 
-		if blockGasUsed > types.GetTargetBlockUtilization(testutil.MaxBlockGas) {
+		if blockGasUsed > types.GetTargetBlockGas(testutil.MaxBlockGas) {
 			require.True(t, newFee.GT(oldFee))
 		} else {
 			require.True(t, newFee.LT(oldFee))
@@ -98,7 +98,7 @@ func FuzzAIMDFeeMarket(f *testing.F) {
 		oldFee := state.BaseGasPrice
 		newFee := state.UpdateBaseGasPrice(params, testutil.MaxBlockGas)
 
-		if blockGasUsed > types.GetTargetBlockUtilization(testutil.MaxBlockGas) {
+		if blockGasUsed > types.GetTargetBlockGas(testutil.MaxBlockGas) {
 			require.True(t, newFee.GT(oldFee))
 		} else {
 			require.True(t, newFee.LT(oldFee))

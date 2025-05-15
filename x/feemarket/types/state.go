@@ -24,8 +24,8 @@ func NewState(
 	}
 }
 
-// Update updates the block utilization for the current height with the given
-// transaction utilization i.e. gas limit.
+// Update updates the block gas for the current height with the given
+// transaction gas i.e. gas limit.
 func (s *State) Update(gas, maxBlockGas uint64) error {
 	update := s.Window[s.Index] + gas
 	if update > maxBlockGas {
@@ -44,7 +44,7 @@ func (s *State) IncrementHeight() {
 
 // UpdateBaseGasPrice updates the learning rate and base gas price based on the AIMD
 // learning rate adjustment algorithm. The learning rate is updated
-// based on the average utilization of the block window. The base gas price is
+// based on the average gas of the block window. The base gas price is
 // update using the new learning rate. Please see the EIP-1559 specification
 // for more details.
 func (s *State) UpdateBaseGasPrice(params Params, maxBlockGas uint64) (gasPrice math.LegacyDec) {
@@ -57,15 +57,15 @@ func (s *State) UpdateBaseGasPrice(params Params, maxBlockGas uint64) (gasPrice 
 	}()
 
 	// Calculate the new base gasPrice with the learning rate adjustment.
-	currentBlockSize := math.LegacyNewDecFromInt(math.NewIntFromUint64(s.Window[s.Index]))
-	targetBlockSize := math.LegacyNewDecFromInt(math.NewIntFromUint64(GetTargetBlockUtilization(maxBlockGas)))
-	utilization := (currentBlockSize.Sub(targetBlockSize)).Quo(targetBlockSize)
+	currentBlockGas := math.LegacyNewDecFromInt(math.NewIntFromUint64(s.Window[s.Index]))
+	targetBlockGas := math.LegacyNewDecFromInt(math.NewIntFromUint64(GetTargetBlockGas(maxBlockGas)))
+	avgGas := (currentBlockGas.Sub(targetBlockGas)).Quo(targetBlockGas)
 
 	// Truncate the learning rate adjustment to an integer.
 	//
 	// This is equivalent to
-	// 1 + (learningRate * (currentBlockSize - targetBlockSize) / targetBlockSize)
-	learningRateAdjustment := math.LegacyOneDec().Add(s.LearningRate.Mul(utilization))
+	// 1 + (learningRate * (currentBlockGas - targetBlockGas) / targetBlockGas)
+	learningRateAdjustment := math.LegacyOneDec().Add(s.LearningRate.Mul(avgGas))
 
 	// Update the base gasPrice.
 	gasPrice = s.BaseGasPrice.Mul(learningRateAdjustment)
@@ -81,15 +81,15 @@ func (s *State) UpdateBaseGasPrice(params Params, maxBlockGas uint64) (gasPrice 
 
 // UpdateLearningRate updates the learning rate based on the AIMD
 // learning rate adjustment algorithm. The learning rate is updated
-// based on the average utilization of the block window. There are
+// based on the average gas of the block window. There are
 // two cases that can occur:
 //
-//  1. The average utilization is above the target threshold. In this
+//  1. The average gas is above the target threshold. In this
 //     case, the learning rate is increased by the alpha parameter. This occurs
 //     when blocks are nearly full or empty.
-//  2. The average utilization is below the target threshold. In this
+//  2. The average gas is below the target threshold. In this
 //     case, the learning rate is decreased by the beta parameter. This occurs
-//     when blocks are relatively close to the target block utilization.
+//     when blocks are relatively close to the target block gas.
 //
 // For more details, please see the EIP-1559 specification.
 func (s *State) UpdateLearningRate(params Params, maxBlockGas uint64) (lr math.LegacyDec) {
@@ -101,10 +101,10 @@ func (s *State) UpdateLearningRate(params Params, maxBlockGas uint64) (lr math.L
 		}
 	}()
 
-	// Calculate the average utilization of the block window.
-	avg := s.GetAverageUtilization(maxBlockGas)
+	// Calculate the average gas of the block window.
+	avg := s.GetAverageGas(maxBlockGas)
 
-	// Determine if the average utilization is above or below the target
+	// Determine if the average gas is above or below the target
 	// threshold and adjust the learning rate accordingly.
 	if avg.LTE(params.Gamma) || avg.GTE(math.LegacyOneDec().Sub(params.Gamma)) {
 		lr = params.Alpha.Add(s.LearningRate)
@@ -123,25 +123,25 @@ func (s *State) UpdateLearningRate(params Params, maxBlockGas uint64) (lr math.L
 	return s.LearningRate
 }
 
-// GetNetUtilization returns the net utilization of the block window.
-func (s *State) GetNetUtilization(maxBlockGas uint64) math.Int {
+// GetNetGas returns the net gas of the block window.
+func (s *State) GetNetGas(maxBlockGas uint64) math.Int {
 	net := math.NewInt(0)
 
-	targetUtilization := math.NewIntFromUint64(GetTargetBlockUtilization(maxBlockGas))
-	for _, utilization := range s.Window {
-		diff := math.NewIntFromUint64(utilization).Sub(targetUtilization)
+	targetGas := math.NewIntFromUint64(GetTargetBlockGas(maxBlockGas))
+	for _, gas := range s.Window {
+		diff := math.NewIntFromUint64(gas).Sub(targetGas)
 		net = net.Add(diff)
 	}
 
 	return net
 }
 
-// GetAverageUtilization returns the average utilization of the block
+// GetAverageGas returns the average gas of the block
 // window.
-func (s *State) GetAverageUtilization(maxBlockGas uint64) math.LegacyDec {
+func (s *State) GetAverageGas(maxBlockGas uint64) math.LegacyDec {
 	var total uint64
-	for _, utilization := range s.Window {
-		total += utilization
+	for _, gas := range s.Window {
+		total += gas
 	}
 
 	sum := math.LegacyNewDecFromInt(math.NewIntFromUint64(total))
@@ -155,7 +155,7 @@ func (s *State) GetAverageUtilization(maxBlockGas uint64) math.LegacyDec {
 // ValidateBasic performs basic validation on the state.
 func (s *State) ValidateBasic() error {
 	if s.Window == nil {
-		return fmt.Errorf("block utilization window cannot be nil or empty")
+		return fmt.Errorf("block gas window cannot be nil or empty")
 	}
 
 	if s.BaseGasPrice.IsNil() || s.BaseGasPrice.LTE(math.LegacyZeroDec()) {
@@ -169,6 +169,6 @@ func (s *State) ValidateBasic() error {
 	return nil
 }
 
-func GetTargetBlockUtilization(maxBlockGas uint64) uint64 {
+func GetTargetBlockGas(maxBlockGas uint64) uint64 {
 	return maxBlockGas / 2
 }
