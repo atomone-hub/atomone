@@ -35,7 +35,7 @@ func TestState_Update(t *testing.T) {
 		require.Equal(t, uint64(300), state.Window[0])
 	})
 
-	t.Run("errors when it exceeds max block utilization", func(t *testing.T) {
+	t.Run("errors when it exceeds max block gas", func(t *testing.T) {
 		state := types.DefaultState()
 
 		err := state.Update(testutil.MaxBlockGas+1, testutil.MaxBlockGas)
@@ -136,7 +136,7 @@ func TestState_UpdateBaseGasPrice(t *testing.T) {
 		params := types.DefaultParams()
 		state.BaseGasPrice = math.LegacyMustNewDecFromStr("1000")
 		params.MinBaseGasPrice = math.LegacyMustNewDecFromStr("125")
-		state.Window[0] = types.GetTargetBlockUtilization(testutil.MaxBlockGas)
+		state.Window[0] = types.GetTargetBlockGas(testutil.MaxBlockGas)
 
 		newBaseGasPrice := state.UpdateBaseGasPrice(params, testutil.MaxBlockGas)
 
@@ -181,7 +181,7 @@ func TestState_UpdateBaseGasPrice(t *testing.T) {
 		params.MinBaseGasPrice = math.LegacyMustNewDecFromStr("125")
 		state.LearningRate = math.LegacyMustNewDecFromStr("0.125")
 		for i := 0; i < len(state.Window); i++ {
-			state.Window[i] = types.GetTargetBlockUtilization(testutil.MaxBlockGas)
+			state.Window[i] = types.GetTargetBlockGas(testutil.MaxBlockGas)
 		}
 		state.UpdateLearningRate(params, testutil.MaxBlockGas)
 
@@ -234,7 +234,7 @@ func TestState_UpdateBaseGasPrice(t *testing.T) {
 		require.Equal(t, expectedBaseGasPrice, newBaseGasPrice)
 	})
 
-	t.Run("half target block size with aimd eip1559", func(t *testing.T) {
+	t.Run("half target block gas with aimd eip1559", func(t *testing.T) {
 		state := types.DefaultAIMDState()
 		state.Window = make([]uint64, 1)
 		state.BaseGasPrice = state.BaseGasPrice.Mul(math.LegacyNewDec(10))
@@ -244,15 +244,15 @@ func TestState_UpdateBaseGasPrice(t *testing.T) {
 		params.Window = 1
 
 		// 1/4th of the window is full.
-		state.Window[0] = types.GetTargetBlockUtilization(testutil.MaxBlockGas) / 2
+		state.Window[0] = types.GetTargetBlockGas(testutil.MaxBlockGas) / 2
 
 		prevLR := state.LearningRate
 		lr := state.UpdateLearningRate(params, testutil.MaxBlockGas)
 		newGasPrice := state.UpdateBaseGasPrice(params, testutil.MaxBlockGas)
 
 		expectedLR := prevLR.Add(params.Alpha)
-		expectedUtilization := math.LegacyMustNewDecFromStr("-0.5")
-		expectedLRAdjustment := (expectedLR.Mul(expectedUtilization)).Add(math.LegacyOneDec())
+		expectedGas := math.LegacyMustNewDecFromStr("-0.5")
+		expectedLRAdjustment := (expectedLR.Mul(expectedGas)).Add(math.LegacyOneDec())
 
 		expectedGasPrice := prevGasPrice.Mul(expectedLRAdjustment)
 
@@ -260,7 +260,7 @@ func TestState_UpdateBaseGasPrice(t *testing.T) {
 		require.Equal(t, expectedGasPrice, newGasPrice)
 	})
 
-	t.Run("3/4 max block size with aimd eip1559", func(t *testing.T) {
+	t.Run("3/4 max block gas with aimd eip1559", func(t *testing.T) {
 		state := types.DefaultAIMDState()
 		state.Window = make([]uint64, 1)
 		state.BaseGasPrice = state.BaseGasPrice.Mul(math.LegacyMustNewDecFromStr("10"))
@@ -276,9 +276,9 @@ func TestState_UpdateBaseGasPrice(t *testing.T) {
 		lr := state.UpdateLearningRate(params, testutil.MaxBlockGas)
 		bgs := state.UpdateBaseGasPrice(params, testutil.MaxBlockGas)
 
-		expectedUtilization := math.LegacyMustNewDecFromStr("0.5")
+		expectedGas := math.LegacyMustNewDecFromStr("0.5")
 		expectedLR := prevLR.Add(params.Alpha)
-		expectedLRAdjustment := (expectedLR.Mul(expectedUtilization)).Add(math.LegacyOneDec())
+		expectedLRAdjustment := (expectedLR.Mul(expectedGas)).Add(math.LegacyOneDec())
 
 		expectedGasPrice := prevBGS.Mul(expectedLRAdjustment)
 		require.Equal(t, expectedLR, lr)
@@ -301,7 +301,7 @@ func TestState_UpdateLearningRate(t *testing.T) {
 		state := types.DefaultState()
 		params := types.DefaultParams()
 
-		state.Window[0] = types.GetTargetBlockUtilization(testutil.MaxBlockGas)
+		state.Window[0] = types.GetTargetBlockGas(testutil.MaxBlockGas)
 
 		state.UpdateLearningRate(params, testutil.MaxBlockGas)
 		expectedLearningRate := math.LegacyMustNewDecFromStr("0.125")
@@ -333,7 +333,7 @@ func TestState_UpdateLearningRate(t *testing.T) {
 	t.Run("between target and max with default eip-1559", func(t *testing.T) {
 		state := types.DefaultState()
 		params := types.DefaultParams()
-		state.Window[0] = types.GetTargetBlockUtilization(testutil.MaxBlockGas) + 50000
+		state.Window[0] = types.GetTargetBlockGas(testutil.MaxBlockGas) + 50000
 
 		state.UpdateLearningRate(params, testutil.MaxBlockGas)
 
@@ -369,7 +369,7 @@ func TestState_UpdateLearningRate(t *testing.T) {
 		state.LearningRate = defaultLR
 		params := types.DefaultAIMDParams()
 		for i := 0; i < len(state.Window); i++ {
-			state.Window[i] = types.GetTargetBlockUtilization(testutil.MaxBlockGas)
+			state.Window[i] = types.GetTargetBlockGas(testutil.MaxBlockGas)
 		}
 
 		state.UpdateLearningRate(params, testutil.MaxBlockGas)
@@ -421,7 +421,7 @@ func TestState_UpdateLearningRate(t *testing.T) {
 			if i%2 == 0 {
 				state.Window[i] = testutil.MaxBlockGas
 			} else {
-				state.Window[i] = types.GetTargetBlockUtilization(testutil.MaxBlockGas) + 1
+				state.Window[i] = types.GetTargetBlockGas(testutil.MaxBlockGas) + 1
 			}
 		}
 
@@ -432,23 +432,23 @@ func TestState_UpdateLearningRate(t *testing.T) {
 	})
 }
 
-func TestState_GetNetUtilization(t *testing.T) {
+func TestState_GetNetGas(t *testing.T) {
 	t.Run("empty block with default eip-1559", func(t *testing.T) {
 		state := types.DefaultState()
 
-		netUtilization := state.GetNetUtilization(testutil.MaxBlockGas)
-		expectedUtilization := math.NewInt(0).Sub(math.NewIntFromUint64(types.GetTargetBlockUtilization(testutil.MaxBlockGas)))
-		require.True(t, expectedUtilization.Equal(netUtilization))
+		netGas := state.GetNetGas(testutil.MaxBlockGas)
+		expectedGas := math.NewInt(0).Sub(math.NewIntFromUint64(types.GetTargetBlockGas(testutil.MaxBlockGas)))
+		require.True(t, expectedGas.Equal(netGas))
 	})
 
 	t.Run("target block with default eip-1559", func(t *testing.T) {
 		state := types.DefaultState()
 
-		state.Window[0] = types.GetTargetBlockUtilization(testutil.MaxBlockGas)
+		state.Window[0] = types.GetTargetBlockGas(testutil.MaxBlockGas)
 
-		netUtilization := state.GetNetUtilization(testutil.MaxBlockGas)
-		expectedUtilization := math.NewInt(0)
-		require.True(t, expectedUtilization.Equal(netUtilization))
+		netGas := state.GetNetGas(testutil.MaxBlockGas)
+		expectedGas := math.NewInt(0)
+		require.True(t, expectedGas.Equal(netGas))
 	})
 
 	t.Run("full block with default eip-1559", func(t *testing.T) {
@@ -456,19 +456,19 @@ func TestState_GetNetUtilization(t *testing.T) {
 
 		state.Window[0] = testutil.MaxBlockGas
 
-		netUtilization := state.GetNetUtilization(testutil.MaxBlockGas)
-		expectedUtilization := math.NewIntFromUint64(testutil.MaxBlockGas - types.GetTargetBlockUtilization(testutil.MaxBlockGas))
-		require.True(t, expectedUtilization.Equal(netUtilization))
+		netGas := state.GetNetGas(testutil.MaxBlockGas)
+		expectedGas := math.NewIntFromUint64(testutil.MaxBlockGas - types.GetTargetBlockGas(testutil.MaxBlockGas))
+		require.True(t, expectedGas.Equal(netGas))
 	})
 
 	t.Run("empty block with default aimd eip-1559", func(t *testing.T) {
 		state := types.DefaultAIMDState()
 
-		netUtilization := state.GetNetUtilization(testutil.MaxBlockGas)
+		netGas := state.GetNetGas(testutil.MaxBlockGas)
 
 		multiple := math.NewIntFromUint64(uint64(len(state.Window)))
-		expectedUtilization := math.NewInt(0).Sub(math.NewIntFromUint64(types.GetTargetBlockUtilization(testutil.MaxBlockGas))).Mul(multiple)
-		require.True(t, expectedUtilization.Equal(netUtilization))
+		expectedGas := math.NewInt(0).Sub(math.NewIntFromUint64(types.GetTargetBlockGas(testutil.MaxBlockGas))).Mul(multiple)
+		require.True(t, expectedGas.Equal(netGas))
 	})
 
 	t.Run("full blocks with default aimd eip-1559", func(t *testing.T) {
@@ -478,11 +478,11 @@ func TestState_GetNetUtilization(t *testing.T) {
 			state.Window[i] = testutil.MaxBlockGas
 		}
 
-		netUtilization := state.GetNetUtilization(testutil.MaxBlockGas)
+		netGas := state.GetNetGas(testutil.MaxBlockGas)
 
 		multiple := math.NewIntFromUint64(uint64(len(state.Window)))
-		expectedUtilization := math.NewIntFromUint64(testutil.MaxBlockGas).Sub(math.NewIntFromUint64(types.GetTargetBlockUtilization(testutil.MaxBlockGas))).Mul(multiple)
-		require.True(t, expectedUtilization.Equal(netUtilization))
+		expectedGas := math.NewIntFromUint64(testutil.MaxBlockGas).Sub(math.NewIntFromUint64(types.GetTargetBlockGas(testutil.MaxBlockGas))).Mul(multiple)
+		require.True(t, expectedGas.Equal(netGas))
 	})
 
 	t.Run("varying blocks with default aimd eip-1559", func(t *testing.T) {
@@ -496,9 +496,9 @@ func TestState_GetNetUtilization(t *testing.T) {
 			}
 		}
 
-		netUtilization := state.GetNetUtilization(testutil.MaxBlockGas)
-		expectedUtilization := math.ZeroInt()
-		require.True(t, expectedUtilization.Equal(netUtilization))
+		netGas := state.GetNetGas(testutil.MaxBlockGas)
+		expectedGas := math.ZeroInt()
+		require.True(t, expectedGas.Equal(netGas))
 	})
 
 	t.Run("exceeds target rate with default aimd eip-1559", func(t *testing.T) {
@@ -509,15 +509,15 @@ func TestState_GetNetUtilization(t *testing.T) {
 			if i%2 == 0 {
 				state.Window[i] = testutil.MaxBlockGas
 			} else {
-				state.Window[i] = types.GetTargetBlockUtilization(testutil.MaxBlockGas)
+				state.Window[i] = types.GetTargetBlockGas(testutil.MaxBlockGas)
 			}
 		}
 
-		netUtilization := state.GetNetUtilization(testutil.MaxBlockGas)
+		netGas := state.GetNetGas(testutil.MaxBlockGas)
 		first := math.NewIntFromUint64(testutil.MaxBlockGas).Mul(math.NewIntFromUint64(params.Window / 2))
-		second := math.NewIntFromUint64(types.GetTargetBlockUtilization(testutil.MaxBlockGas)).Mul(math.NewIntFromUint64(params.Window / 2))
-		expectedUtilization := first.Add(second).Sub(math.NewIntFromUint64(types.GetTargetBlockUtilization(testutil.MaxBlockGas)).Mul(math.NewIntFromUint64(params.Window)))
-		require.True(t, expectedUtilization.Equal(netUtilization))
+		second := math.NewIntFromUint64(types.GetTargetBlockGas(testutil.MaxBlockGas)).Mul(math.NewIntFromUint64(params.Window / 2))
+		expectedGas := first.Add(second).Sub(math.NewIntFromUint64(types.GetTargetBlockGas(testutil.MaxBlockGas)).Mul(math.NewIntFromUint64(params.Window)))
+		require.True(t, expectedGas.Equal(netGas))
 	})
 
 	t.Run("state with 4 entries in window with different updates", func(t *testing.T) {
@@ -531,9 +531,9 @@ func TestState_GetNetUtilization(t *testing.T) {
 		state.Window[2] = 0
 		state.Window[3] = 50
 
-		netUtilization := state.GetNetUtilization(maxBlockGas)
-		expectedUtilization := math.NewIntFromUint64(50).Mul(math.NewInt(-1))
-		require.True(t, expectedUtilization.Equal(netUtilization))
+		netGas := state.GetNetGas(maxBlockGas)
+		expectedGas := math.NewIntFromUint64(50).Mul(math.NewInt(-1))
+		require.True(t, expectedGas.Equal(netGas))
 	})
 
 	t.Run("state with 4 entries in window with monotonically increasing updates", func(t *testing.T) {
@@ -547,29 +547,29 @@ func TestState_GetNetUtilization(t *testing.T) {
 		state.Window[2] = 50
 		state.Window[3] = 75
 
-		netUtilization := state.GetNetUtilization(maxBlockGas)
-		expectedUtilization := math.NewIntFromUint64(250).Mul(math.NewInt(-1))
-		require.True(t, expectedUtilization.Equal(netUtilization))
+		netGas := state.GetNetGas(maxBlockGas)
+		expectedGas := math.NewIntFromUint64(250).Mul(math.NewInt(-1))
+		require.True(t, expectedGas.Equal(netGas))
 	})
 }
 
-func TestState_GetAverageUtilization(t *testing.T) {
+func TestState_GetAverageGas(t *testing.T) {
 	t.Run("empty block with default eip-1559", func(t *testing.T) {
 		state := types.DefaultState()
 
-		avgUtilization := state.GetAverageUtilization(testutil.MaxBlockGas)
-		expectedUtilization := math.LegacyZeroDec()
-		require.True(t, expectedUtilization.Equal(avgUtilization))
+		avgGas := state.GetAverageGas(testutil.MaxBlockGas)
+		expectedGas := math.LegacyZeroDec()
+		require.True(t, expectedGas.Equal(avgGas))
 	})
 
 	t.Run("target block with default eip-1559", func(t *testing.T) {
 		state := types.DefaultState()
 
-		state.Window[0] = types.GetTargetBlockUtilization(testutil.MaxBlockGas)
+		state.Window[0] = types.GetTargetBlockGas(testutil.MaxBlockGas)
 
-		avgUtilization := state.GetAverageUtilization(testutil.MaxBlockGas)
-		expectedUtilization := math.LegacyMustNewDecFromStr("0.5")
-		require.True(t, expectedUtilization.Equal(avgUtilization))
+		avgGas := state.GetAverageGas(testutil.MaxBlockGas)
+		expectedGas := math.LegacyMustNewDecFromStr("0.5")
+		require.True(t, expectedGas.Equal(avgGas))
 	})
 
 	t.Run("full block with default eip-1559", func(t *testing.T) {
@@ -577,29 +577,29 @@ func TestState_GetAverageUtilization(t *testing.T) {
 
 		state.Window[0] = testutil.MaxBlockGas
 
-		avgUtilization := state.GetAverageUtilization(testutil.MaxBlockGas)
-		expectedUtilization := math.LegacyMustNewDecFromStr("1.0")
-		require.True(t, expectedUtilization.Equal(avgUtilization))
+		avgGas := state.GetAverageGas(testutil.MaxBlockGas)
+		expectedGas := math.LegacyMustNewDecFromStr("1.0")
+		require.True(t, expectedGas.Equal(avgGas))
 	})
 
 	t.Run("empty block with default aimd eip-1559", func(t *testing.T) {
 		state := types.DefaultAIMDState()
 
-		avgUtilization := state.GetAverageUtilization(testutil.MaxBlockGas)
-		expectedUtilization := math.LegacyZeroDec()
-		require.True(t, expectedUtilization.Equal(avgUtilization))
+		avgGas := state.GetAverageGas(testutil.MaxBlockGas)
+		expectedGas := math.LegacyZeroDec()
+		require.True(t, expectedGas.Equal(avgGas))
 	})
 
 	t.Run("target block with default aimd eip-1559", func(t *testing.T) {
 		state := types.DefaultAIMDState()
 
 		for i := 0; i < len(state.Window); i++ {
-			state.Window[i] = types.GetTargetBlockUtilization(testutil.MaxBlockGas)
+			state.Window[i] = types.GetTargetBlockGas(testutil.MaxBlockGas)
 		}
 
-		avgUtilization := state.GetAverageUtilization(testutil.MaxBlockGas)
-		expectedUtilization := math.LegacyMustNewDecFromStr("0.5")
-		require.True(t, expectedUtilization.Equal(avgUtilization))
+		avgGas := state.GetAverageGas(testutil.MaxBlockGas)
+		expectedGas := math.LegacyMustNewDecFromStr("0.5")
+		require.True(t, expectedGas.Equal(avgGas))
 	})
 
 	t.Run("full blocks with default aimd eip-1559", func(t *testing.T) {
@@ -609,9 +609,9 @@ func TestState_GetAverageUtilization(t *testing.T) {
 			state.Window[i] = testutil.MaxBlockGas
 		}
 
-		avgUtilization := state.GetAverageUtilization(testutil.MaxBlockGas)
-		expectedUtilization := math.LegacyMustNewDecFromStr("1.0")
-		require.True(t, expectedUtilization.Equal(avgUtilization))
+		avgGas := state.GetAverageGas(testutil.MaxBlockGas)
+		expectedGas := math.LegacyMustNewDecFromStr("1.0")
+		require.True(t, expectedGas.Equal(avgGas))
 	})
 
 	t.Run("varying blocks with default aimd eip-1559", func(t *testing.T) {
@@ -625,9 +625,9 @@ func TestState_GetAverageUtilization(t *testing.T) {
 			}
 		}
 
-		avgUtilization := state.GetAverageUtilization(testutil.MaxBlockGas)
-		expectedUtilization := math.LegacyMustNewDecFromStr("0.5")
-		require.True(t, expectedUtilization.Equal(avgUtilization))
+		avgGas := state.GetAverageGas(testutil.MaxBlockGas)
+		expectedGas := math.LegacyMustNewDecFromStr("0.5")
+		require.True(t, expectedGas.Equal(avgGas))
 	})
 
 	t.Run("exceeds target rate with default aimd eip-1559", func(t *testing.T) {
@@ -637,13 +637,13 @@ func TestState_GetAverageUtilization(t *testing.T) {
 			if i%2 == 0 {
 				state.Window[i] = testutil.MaxBlockGas
 			} else {
-				state.Window[i] = types.GetTargetBlockUtilization(testutil.MaxBlockGas)
+				state.Window[i] = types.GetTargetBlockGas(testutil.MaxBlockGas)
 			}
 		}
 
-		avgUtilization := state.GetAverageUtilization(testutil.MaxBlockGas)
-		expectedUtilization := math.LegacyMustNewDecFromStr("0.75")
-		require.True(t, expectedUtilization.Equal(avgUtilization))
+		avgGas := state.GetAverageGas(testutil.MaxBlockGas)
+		expectedGas := math.LegacyMustNewDecFromStr("0.75")
+		require.True(t, expectedGas.Equal(avgGas))
 	})
 
 	t.Run("state with 4 entries in window with different updates", func(t *testing.T) {
@@ -657,9 +657,9 @@ func TestState_GetAverageUtilization(t *testing.T) {
 		state.Window[2] = 0
 		state.Window[3] = 50
 
-		avgUtilization := state.GetAverageUtilization(maxBlockGas)
-		expectedUtilization := math.LegacyMustNewDecFromStr("0.4375")
-		require.True(t, expectedUtilization.Equal(avgUtilization))
+		avgGas := state.GetAverageGas(maxBlockGas)
+		expectedGas := math.LegacyMustNewDecFromStr("0.4375")
+		require.True(t, expectedGas.Equal(avgGas))
 	})
 
 	t.Run("state with 4 entries in window with monotonically increasing updates", func(t *testing.T) {
@@ -675,9 +675,9 @@ func TestState_GetAverageUtilization(t *testing.T) {
 		state.Window[2] = 50
 		state.Window[3] = 75
 
-		avgUtilization := state.GetAverageUtilization(maxBlockGas)
-		expectedUtilization := math.LegacyMustNewDecFromStr("0.1875")
-		require.True(t, expectedUtilization.Equal(avgUtilization))
+		avgGas := state.GetAverageGas(maxBlockGas)
+		expectedGas := math.LegacyMustNewDecFromStr("0.1875")
+		require.True(t, expectedGas.Equal(avgGas))
 	})
 }
 

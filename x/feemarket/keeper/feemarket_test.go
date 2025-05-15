@@ -112,7 +112,7 @@ func TestUpdateFeeMarket(t *testing.T) {
 
 		// Reaching the target block size means that we expect this to not
 		// increase.
-		err := state.Update(types.GetTargetBlockUtilization(testutil.MaxBlockGas), testutil.MaxBlockGas)
+		err := state.Update(types.GetTargetBlockGas(testutil.MaxBlockGas), testutil.MaxBlockGas)
 		require.NoError(err)
 
 		k.InitGenesis(ctx, types.GenesisState{Params: params, State: state})
@@ -138,7 +138,7 @@ func TestUpdateFeeMarket(t *testing.T) {
 		state.BaseGasPrice = state.BaseGasPrice.Mul(math.LegacyNewDec(2))
 		// Reaching the target block size means that we expect this to not
 		// increase.
-		err := state.Update(types.GetTargetBlockUtilization(testutil.MaxBlockGas), testutil.MaxBlockGas)
+		err := state.Update(types.GetTargetBlockGas(testutil.MaxBlockGas), testutil.MaxBlockGas)
 		require.NoError(err)
 
 		k.InitGenesis(ctx, types.GenesisState{Params: params, State: state})
@@ -400,7 +400,7 @@ func TestUpdateFeeMarket(t *testing.T) {
 		// Reaching the target block size means that we expect this to not
 		// increase.
 		for i := 0; i < len(state.Window); i++ {
-			state.Window[i] = types.GetTargetBlockUtilization(testutil.MaxBlockGas)
+			state.Window[i] = types.GetTargetBlockGas(testutil.MaxBlockGas)
 		}
 
 		k.InitGenesis(ctx, types.GenesisState{Params: params, State: state})
@@ -429,7 +429,7 @@ func TestUpdateFeeMarket(t *testing.T) {
 		// Reaching the target block size means that we expect this to not
 		// increase.
 		for i := 0; i < len(state.Window); i++ {
-			state.Window[i] = types.GetTargetBlockUtilization(testutil.MaxBlockGas)
+			state.Window[i] = types.GetTargetBlockGas(testutil.MaxBlockGas)
 		}
 
 		k.InitGenesis(ctx, types.GenesisState{Params: params, State: state})

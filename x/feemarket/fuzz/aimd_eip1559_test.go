@@ -14,7 +14,7 @@ import (
 // TestAIMDLearningRate ensures that the additive increase
 // multiplicative decrease learning rate algorithm correctly
 // adjusts the learning rate. In particular, if the block
-// utilization is greater than theta or less than 1 - theta, then
+// gas is greater than theta or less than 1 - theta, then
 // the learning rate is increased by the additive increase
 // parameter. Otherwise, the learning rate is decreased by
 // the multiplicative decrease parameter.
@@ -28,29 +28,29 @@ func TestAIMDLearningRate(t *testing.T) {
 
 		params, maxBlockGas := CreateRandomAIMDParams(t)
 
-		// Randomly generate the block utilization.
+		// Randomly generate the block gas
 		numBlocks := rapid.Uint64Range(0, 1000).Draw(t, "num_blocks")
 		gasGen := rapid.Uint64Range(0, maxBlockGas)
 
 		// Update the fee market.
 		for i := uint64(0); i < numBlocks; i++ {
-			blockUtilization := gasGen.Draw(t, "gas")
+			blockGas := gasGen.Draw(t, "gas")
 			prevLearningRate := state.LearningRate
 
 			// Update the fee market.
-			if err := state.Update(blockUtilization, maxBlockGas); err != nil {
+			if err := state.Update(blockGas, maxBlockGas); err != nil {
 				t.Fatalf("block update errors: %v", err)
 			}
 
 			// Update the learning rate.
 			lr := state.UpdateLearningRate(params, maxBlockGas)
-			utilization := state.GetAverageUtilization(maxBlockGas)
+			avgGas := state.GetAverageGas(maxBlockGas)
 
 			// Ensure that the learning rate is always bounded.
 			require.True(t, lr.GTE(params.MinLearningRate))
 			require.True(t, lr.LTE(params.MaxLearningRate))
 
-			if utilization.LTE(params.Gamma) || utilization.GTE(math.LegacyOneDec().Sub(params.Gamma)) {
+			if avgGas.LTE(params.Gamma) || avgGas.GTE(math.LegacyOneDec().Sub(params.Gamma)) {
 				require.True(t, lr.GTE(prevLearningRate))
 			} else {
 				require.True(t, lr.LTE(prevLearningRate))
@@ -80,10 +80,10 @@ func TestAIMDGasPrice(t *testing.T) {
 
 		// Update the fee market.
 		for i := uint64(0); i < numBlocks; i++ {
-			blockUtilization := gasGen.Draw(t, "gas")
+			blockGas := gasGen.Draw(t, "gas")
 			prevBaseGasPrice := state.BaseGasPrice
 
-			if err := state.Update(blockUtilization, maxBlockGas); err != nil {
+			if err := state.Update(blockGas, maxBlockGas); err != nil {
 				t.Fatalf("block update errors: %v", err)
 			}
 
@@ -105,15 +105,15 @@ func TestAIMDGasPrice(t *testing.T) {
 				}()
 
 				// Calculate the new base gasPrice with the learning rate adjustment.
-				currentBlockSize := math.LegacyNewDecFromInt(math.NewIntFromUint64(state.Window[state.Index]))
-				targetBlockSize := math.LegacyNewDecFromInt(math.NewIntFromUint64(types.GetTargetBlockUtilization(maxBlockGas)))
-				utilization := (currentBlockSize.Sub(targetBlockSize)).Quo(targetBlockSize)
+				currentBlockGas := math.LegacyNewDecFromInt(math.NewIntFromUint64(state.Window[state.Index]))
+				targetBlockGas := math.LegacyNewDecFromInt(math.NewIntFromUint64(types.GetTargetBlockGas(maxBlockGas)))
+				avgGas := (currentBlockGas.Sub(targetBlockGas)).Quo(targetBlockGas)
 
 				// Truncate the learning rate adjustment to an integer.
 				//
 				// This is equivalent to
-				// 1 + (learningRate * (currentBlockSize - targetBlockSize) / targetBlockSize)
-				learningRateAdjustment := math.LegacyOneDec().Add(lr.Mul(utilization))
+				// 1 + (learningRate * (currentBlockGas - targetBlockGas) / targetBlockGas)
+				learningRateAdjustment := math.LegacyOneDec().Add(lr.Mul(avgGas))
 
 				// Update the base gasPrice.
 				newPrice = prevBaseGasPrice.Mul(learningRateAdjustment)
@@ -148,13 +148,13 @@ func CreateRandomAIMDParams(t *rapid.T) (types.Params, uint64) {
 	g := rapid.Uint64Range(10, 50).Draw(t, "gamma")
 	gamma := math.LegacyNewDec(int64(g)).Quo(math.LegacyNewDec(100))
 
-	targetBlockUtilization := rapid.Uint64Range(1, 30_000_000).Draw(t, "target_block_utilization")
-	maxBlockUtilization := rapid.Uint64Range(targetBlockUtilization, targetBlockUtilization*5).Draw(t, "max_block_utilization")
+	targetBlockGas := rapid.Uint64Range(1, 30_000_000).Draw(t, "target_block_gas")
+	maxBlockGas := rapid.Uint64Range(targetBlockGas, targetBlockGas*5).Draw(t, "max_block_gas")
 
 	params := types.DefaultAIMDParams()
 	params.Alpha = alpha
 	params.Beta = beta
 	params.Gamma = gamma
 
-	return params, maxBlockUtilization
+	return params, maxBlockGas
 }
