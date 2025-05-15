@@ -7,6 +7,7 @@ import (
 	"pgregory.net/rapid"
 
 	"cosmossdk.io/math"
+	"github.com/cometbft/cometbft/libs/log"
 
 	"github.com/atomone-hub/atomone/x/feemarket/types"
 )
@@ -123,7 +124,7 @@ func TestAIMDGasPrice(t *testing.T) {
 				}
 			}()
 
-			state.UpdateBaseGasPrice(params)
+			state.UpdateBaseGasPrice(log.NewNopLogger(), params)
 
 			// Ensure that the minimum base fee is always less than the base gas price.
 			require.True(t, params.MinBaseGasPrice.LTE(state.BaseGasPrice))
