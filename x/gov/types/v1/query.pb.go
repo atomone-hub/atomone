@@ -975,6 +975,511 @@ func (m *QueryTallyResultResponse) GetTally() *TallyResult {
 	return nil
 }
 
+// QueryGovernorRequest is the request type for the Query/Governor RPC method.
+type QueryGovernorRequest struct {
+	// gvernor_address defines the address of the governor.
+	GovernorAddress string `protobuf:"bytes,1,opt,name=governor_address,json=governorAddress,proto3" json:"governor_address,omitempty"`
+}
+
+func (m *QueryGovernorRequest) Reset()         { *m = QueryGovernorRequest{} }
+func (m *QueryGovernorRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryGovernorRequest) ProtoMessage()    {}
+func (*QueryGovernorRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2290d0188dd70223, []int{18}
+}
+func (m *QueryGovernorRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGovernorRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGovernorRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGovernorRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGovernorRequest.Merge(m, src)
+}
+func (m *QueryGovernorRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGovernorRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGovernorRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGovernorRequest proto.InternalMessageInfo
+
+func (m *QueryGovernorRequest) GetGovernorAddress() string {
+	if m != nil {
+		return m.GovernorAddress
+	}
+	return ""
+}
+
+// QueryGovernorResponse is the response type for the Query/Governor RPC method.
+type QueryGovernorResponse struct {
+	// governor defines the requested governor.
+	Governor *Governor `protobuf:"bytes,1,opt,name=governor,proto3" json:"governor,omitempty"`
+}
+
+func (m *QueryGovernorResponse) Reset()         { *m = QueryGovernorResponse{} }
+func (m *QueryGovernorResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryGovernorResponse) ProtoMessage()    {}
+func (*QueryGovernorResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2290d0188dd70223, []int{19}
+}
+func (m *QueryGovernorResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGovernorResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGovernorResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGovernorResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGovernorResponse.Merge(m, src)
+}
+func (m *QueryGovernorResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGovernorResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGovernorResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGovernorResponse proto.InternalMessageInfo
+
+func (m *QueryGovernorResponse) GetGovernor() *Governor {
+	if m != nil {
+		return m.Governor
+	}
+	return nil
+}
+
+// QueryGovernorsRequest is the request type for the Query/Governors RPC method.
+type QueryGovernorsRequest struct {
+	// pagination defines an optional pagination for the request.
+	Pagination *query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (m *QueryGovernorsRequest) Reset()         { *m = QueryGovernorsRequest{} }
+func (m *QueryGovernorsRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryGovernorsRequest) ProtoMessage()    {}
+func (*QueryGovernorsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2290d0188dd70223, []int{20}
+}
+func (m *QueryGovernorsRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGovernorsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGovernorsRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGovernorsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGovernorsRequest.Merge(m, src)
+}
+func (m *QueryGovernorsRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGovernorsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGovernorsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGovernorsRequest proto.InternalMessageInfo
+
+func (m *QueryGovernorsRequest) GetPagination() *query.PageRequest {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+// QueryGovernorsResponse is the response type for the Query/Governors RPC method.
+type QueryGovernorsResponse struct {
+	// governors defines the requested governors.
+	Governors []*Governor `protobuf:"bytes,1,rep,name=governors,proto3" json:"governors,omitempty"`
+	// pagination defines the pagination in the response.
+	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (m *QueryGovernorsResponse) Reset()         { *m = QueryGovernorsResponse{} }
+func (m *QueryGovernorsResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryGovernorsResponse) ProtoMessage()    {}
+func (*QueryGovernorsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2290d0188dd70223, []int{21}
+}
+func (m *QueryGovernorsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGovernorsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGovernorsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGovernorsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGovernorsResponse.Merge(m, src)
+}
+func (m *QueryGovernorsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGovernorsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGovernorsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGovernorsResponse proto.InternalMessageInfo
+
+func (m *QueryGovernorsResponse) GetGovernors() []*Governor {
+	if m != nil {
+		return m.Governors
+	}
+	return nil
+}
+
+func (m *QueryGovernorsResponse) GetPagination() *query.PageResponse {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+// QueryGovernanceDelegationsRequest is the request type for the Query/GovernanceDelegations RPC method.
+type QueryGovernanceDelegationsRequest struct {
+	// governor_address defines the address of the governor.
+	GovernorAddress string `protobuf:"bytes,1,opt,name=governor_address,json=governorAddress,proto3" json:"governor_address,omitempty"`
+	// pagination defines an optional pagination for the request.
+	Pagination *query.PageRequest `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (m *QueryGovernanceDelegationsRequest) Reset()         { *m = QueryGovernanceDelegationsRequest{} }
+func (m *QueryGovernanceDelegationsRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryGovernanceDelegationsRequest) ProtoMessage()    {}
+func (*QueryGovernanceDelegationsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2290d0188dd70223, []int{22}
+}
+func (m *QueryGovernanceDelegationsRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGovernanceDelegationsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGovernanceDelegationsRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGovernanceDelegationsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGovernanceDelegationsRequest.Merge(m, src)
+}
+func (m *QueryGovernanceDelegationsRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGovernanceDelegationsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGovernanceDelegationsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGovernanceDelegationsRequest proto.InternalMessageInfo
+
+func (m *QueryGovernanceDelegationsRequest) GetGovernorAddress() string {
+	if m != nil {
+		return m.GovernorAddress
+	}
+	return ""
+}
+
+func (m *QueryGovernanceDelegationsRequest) GetPagination() *query.PageRequest {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+// QueryGovernanceDelegationsResponse is the response type for the Query/GovernanceDelegations RPC method.
+type QueryGovernanceDelegationsResponse struct {
+	// delegations defines the requested delegations.
+	Delegations []*GovernanceDelegation `protobuf:"bytes,1,rep,name=delegations,proto3" json:"delegations,omitempty"`
+	// pagination defines the pagination in the response.
+	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (m *QueryGovernanceDelegationsResponse) Reset()         { *m = QueryGovernanceDelegationsResponse{} }
+func (m *QueryGovernanceDelegationsResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryGovernanceDelegationsResponse) ProtoMessage()    {}
+func (*QueryGovernanceDelegationsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2290d0188dd70223, []int{23}
+}
+func (m *QueryGovernanceDelegationsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGovernanceDelegationsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGovernanceDelegationsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGovernanceDelegationsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGovernanceDelegationsResponse.Merge(m, src)
+}
+func (m *QueryGovernanceDelegationsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGovernanceDelegationsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGovernanceDelegationsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGovernanceDelegationsResponse proto.InternalMessageInfo
+
+func (m *QueryGovernanceDelegationsResponse) GetDelegations() []*GovernanceDelegation {
+	if m != nil {
+		return m.Delegations
+	}
+	return nil
+}
+
+func (m *QueryGovernanceDelegationsResponse) GetPagination() *query.PageResponse {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+// QueryGovernanceDelegationRequest is the request type for the Query/GovernanceDelegation RPC method.
+type QueryGovernanceDelegationRequest struct {
+	// delegator_address defines the address of the delegator.
+	DelegatorAddress string `protobuf:"bytes,1,opt,name=delegator_address,json=delegatorAddress,proto3" json:"delegator_address,omitempty"`
+}
+
+func (m *QueryGovernanceDelegationRequest) Reset()         { *m = QueryGovernanceDelegationRequest{} }
+func (m *QueryGovernanceDelegationRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryGovernanceDelegationRequest) ProtoMessage()    {}
+func (*QueryGovernanceDelegationRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2290d0188dd70223, []int{24}
+}
+func (m *QueryGovernanceDelegationRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGovernanceDelegationRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGovernanceDelegationRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGovernanceDelegationRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGovernanceDelegationRequest.Merge(m, src)
+}
+func (m *QueryGovernanceDelegationRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGovernanceDelegationRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGovernanceDelegationRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGovernanceDelegationRequest proto.InternalMessageInfo
+
+func (m *QueryGovernanceDelegationRequest) GetDelegatorAddress() string {
+	if m != nil {
+		return m.DelegatorAddress
+	}
+	return ""
+}
+
+// QueryGovernanceDelegationResponse is the response type for the Query/GovernanceDelegation RPC method.
+type QueryGovernanceDelegationResponse struct {
+	// governor_address defines the address of the governor.
+	GovernorAddress string `protobuf:"bytes,1,opt,name=governor_address,json=governorAddress,proto3" json:"governor_address,omitempty"`
+}
+
+func (m *QueryGovernanceDelegationResponse) Reset()         { *m = QueryGovernanceDelegationResponse{} }
+func (m *QueryGovernanceDelegationResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryGovernanceDelegationResponse) ProtoMessage()    {}
+func (*QueryGovernanceDelegationResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2290d0188dd70223, []int{25}
+}
+func (m *QueryGovernanceDelegationResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGovernanceDelegationResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGovernanceDelegationResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGovernanceDelegationResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGovernanceDelegationResponse.Merge(m, src)
+}
+func (m *QueryGovernanceDelegationResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGovernanceDelegationResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGovernanceDelegationResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGovernanceDelegationResponse proto.InternalMessageInfo
+
+func (m *QueryGovernanceDelegationResponse) GetGovernorAddress() string {
+	if m != nil {
+		return m.GovernorAddress
+	}
+	return ""
+}
+
+// QueryGovernorValSharesRequest is the request type for the Query/GovernorValShares RPC method.
+type QueryGovernorValSharesRequest struct {
+	// governor_address defines the address of the governor.
+	GovernorAddress string `protobuf:"bytes,1,opt,name=governor_address,json=governorAddress,proto3" json:"governor_address,omitempty"`
+	// pagination defines the pagination in the request.
+	Pagination *query.PageRequest `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (m *QueryGovernorValSharesRequest) Reset()         { *m = QueryGovernorValSharesRequest{} }
+func (m *QueryGovernorValSharesRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryGovernorValSharesRequest) ProtoMessage()    {}
+func (*QueryGovernorValSharesRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2290d0188dd70223, []int{26}
+}
+func (m *QueryGovernorValSharesRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGovernorValSharesRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGovernorValSharesRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGovernorValSharesRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGovernorValSharesRequest.Merge(m, src)
+}
+func (m *QueryGovernorValSharesRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGovernorValSharesRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGovernorValSharesRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGovernorValSharesRequest proto.InternalMessageInfo
+
+func (m *QueryGovernorValSharesRequest) GetGovernorAddress() string {
+	if m != nil {
+		return m.GovernorAddress
+	}
+	return ""
+}
+
+func (m *QueryGovernorValSharesRequest) GetPagination() *query.PageRequest {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+// QueryGovernorValSharesResponse is the response type for the Query/GovernorValShares RPC method.
+type QueryGovernorValSharesResponse struct {
+	// val_shares defines the requested validator shares.
+	ValShares []*GovernorValShares `protobuf:"bytes,1,rep,name=val_shares,json=valShares,proto3" json:"val_shares,omitempty"`
+	// pagination defines the pagination in the response.
+	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (m *QueryGovernorValSharesResponse) Reset()         { *m = QueryGovernorValSharesResponse{} }
+func (m *QueryGovernorValSharesResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryGovernorValSharesResponse) ProtoMessage()    {}
+func (*QueryGovernorValSharesResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2290d0188dd70223, []int{27}
+}
+func (m *QueryGovernorValSharesResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGovernorValSharesResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGovernorValSharesResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGovernorValSharesResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGovernorValSharesResponse.Merge(m, src)
+}
+func (m *QueryGovernorValSharesResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGovernorValSharesResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGovernorValSharesResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGovernorValSharesResponse proto.InternalMessageInfo
+
+func (m *QueryGovernorValSharesResponse) GetValShares() []*GovernorValShares {
+	if m != nil {
+		return m.ValShares
+	}
+	return nil
+}
+
+func (m *QueryGovernorValSharesResponse) GetPagination() *query.PageResponse {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*QueryConstitutionRequest)(nil), "atomone.gov.v1.QueryConstitutionRequest")
 	proto.RegisterType((*QueryConstitutionResponse)(nil), "atomone.gov.v1.QueryConstitutionResponse")
@@ -994,77 +1499,110 @@ func init() {
 	proto.RegisterType((*QueryDepositsResponse)(nil), "atomone.gov.v1.QueryDepositsResponse")
 	proto.RegisterType((*QueryTallyResultRequest)(nil), "atomone.gov.v1.QueryTallyResultRequest")
 	proto.RegisterType((*QueryTallyResultResponse)(nil), "atomone.gov.v1.QueryTallyResultResponse")
+	proto.RegisterType((*QueryGovernorRequest)(nil), "atomone.gov.v1.QueryGovernorRequest")
+	proto.RegisterType((*QueryGovernorResponse)(nil), "atomone.gov.v1.QueryGovernorResponse")
+	proto.RegisterType((*QueryGovernorsRequest)(nil), "atomone.gov.v1.QueryGovernorsRequest")
+	proto.RegisterType((*QueryGovernorsResponse)(nil), "atomone.gov.v1.QueryGovernorsResponse")
+	proto.RegisterType((*QueryGovernanceDelegationsRequest)(nil), "atomone.gov.v1.QueryGovernanceDelegationsRequest")
+	proto.RegisterType((*QueryGovernanceDelegationsResponse)(nil), "atomone.gov.v1.QueryGovernanceDelegationsResponse")
+	proto.RegisterType((*QueryGovernanceDelegationRequest)(nil), "atomone.gov.v1.QueryGovernanceDelegationRequest")
+	proto.RegisterType((*QueryGovernanceDelegationResponse)(nil), "atomone.gov.v1.QueryGovernanceDelegationResponse")
+	proto.RegisterType((*QueryGovernorValSharesRequest)(nil), "atomone.gov.v1.QueryGovernorValSharesRequest")
+	proto.RegisterType((*QueryGovernorValSharesResponse)(nil), "atomone.gov.v1.QueryGovernorValSharesResponse")
 }
 
 func init() { proto.RegisterFile("atomone/gov/v1/query.proto", fileDescriptor_2290d0188dd70223) }
 
 var fileDescriptor_2290d0188dd70223 = []byte{
-	// 1030 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x57, 0x5d, 0x6f, 0xdc, 0x44,
-	0x14, 0x8d, 0x37, 0x1f, 0xcd, 0xde, 0xa4, 0x01, 0x2e, 0xa1, 0x75, 0xdc, 0xb0, 0xb4, 0x26, 0x24,
-	0x69, 0x45, 0x6c, 0x36, 0x25, 0x2d, 0x42, 0x14, 0x44, 0x28, 0x0d, 0x7d, 0x40, 0x0a, 0x6e, 0xc5,
-	0x03, 0x2f, 0x91, 0x93, 0xb5, 0x5c, 0x4b, 0x1b, 0x8f, 0xbb, 0x33, 0xbb, 0x22, 0x0a, 0xab, 0x4a,
-	0x48, 0x48, 0x94, 0xa7, 0x22, 0x84, 0x10, 0xfd, 0x1d, 0xfc, 0x08, 0x1e, 0x2b, 0x78, 0xe1, 0x11,
-	0x25, 0xfc, 0x0e, 0x84, 0x3c, 0x73, 0xed, 0xb5, 0x1d, 0xef, 0x57, 0x55, 0xf1, 0xb8, 0x33, 0xe7,
-	0x9e, 0x73, 0xe6, 0xce, 0x9d, 0x7b, 0xbd, 0x60, 0xb8, 0x82, 0x1d, 0xb2, 0xd0, 0xb3, 0x7d, 0xd6,
-	0xb1, 0x3b, 0x75, 0xfb, 0x61, 0xdb, 0x6b, 0x1d, 0x59, 0x51, 0x8b, 0x09, 0x86, 0x0b, 0xb4, 0x67,
-	0xf9, 0xac, 0x63, 0x75, 0xea, 0xc6, 0xb5, 0x03, 0xc6, 0x0f, 0x19, 0xb7, 0xf7, 0x5d, 0xee, 0x29,
-	0xa0, 0xdd, 0xa9, 0xef, 0x7b, 0xc2, 0xad, 0xdb, 0x91, 0xeb, 0x07, 0xa1, 0x2b, 0x02, 0x16, 0xaa,
-	0x58, 0x63, 0xd9, 0x67, 0xcc, 0x6f, 0x7a, 0xb6, 0x1b, 0x05, 0xb6, 0x1b, 0x86, 0x4c, 0xc8, 0x4d,
-	0x4e, 0xbb, 0x7a, 0x41, 0x35, 0x16, 0x50, 0x3b, 0x4b, 0x4a, 0x63, 0x4f, 0xfe, 0xb2, 0xd5, 0x0f,
-	0xb5, 0x65, 0x1a, 0xa0, 0x7f, 0x11, 0x8b, 0x7e, 0xc2, 0x42, 0x2e, 0x02, 0xd1, 0x8e, 0x09, 0x1d,
-	0xef, 0x61, 0xdb, 0xe3, 0xc2, 0xfc, 0x08, 0x96, 0x4a, 0xf6, 0x78, 0xc4, 0x42, 0xee, 0xa1, 0x09,
-	0xf3, 0x07, 0x99, 0x75, 0x5d, 0xbb, 0xac, 0xad, 0x57, 0x9d, 0xdc, 0x9a, 0x79, 0x13, 0x16, 0x25,
-	0xc1, 0x6e, 0x8b, 0x45, 0x8c, 0xbb, 0x4d, 0x22, 0xc6, 0x37, 0x60, 0x2e, 0xa2, 0xa5, 0xbd, 0xa0,
-	0x21, 0x43, 0xa7, 0x1c, 0x48, 0x96, 0xee, 0x36, 0xcc, 0xcf, 0xe1, 0xb5, 0x42, 0x20, 0xa9, 0xbe,
-	0x0b, 0xb3, 0x09, 0x4c, 0x86, 0xcd, 0x6d, 0xea, 0x56, 0x3e, 0xa1, 0x56, 0x1a, 0x93, 0x22, 0xcd,
-	0x27, 0x95, 0x02, 0x1f, 0x4f, 0x9c, 0xec, 0xc0, 0x4b, 0xa9, 0x13, 0x2e, 0x5c, 0xd1, 0xe6, 0x92,
-	0x76, 0x61, 0xb3, 0xd6, 0x8f, 0xf6, 0x9e, 0x44, 0x39, 0x0b, 0x51, 0xee, 0x37, 0x5a, 0x30, 0xdd,
-	0x61, 0xc2, 0x6b, 0xe9, 0x95, 0x38, 0x0f, 0xdb, 0xfa, 0x1f, 0xbf, 0x6d, 0x2c, 0x52, 0xa2, 0x3f,
-	0x6e, 0x34, 0x5a, 0x1e, 0xe7, 0xf7, 0x44, 0x2b, 0x08, 0x7d, 0x47, 0xc1, 0xf0, 0x06, 0x54, 0x1b,
-	0x5e, 0xc4, 0x78, 0x20, 0x58, 0x4b, 0x9f, 0x1c, 0x12, 0xd3, 0x83, 0xe2, 0x1d, 0x80, 0x5e, 0x59,
-	0xe8, 0x53, 0x32, 0x05, 0xab, 0x16, 0x45, 0xc5, 0x35, 0x64, 0xa9, 0x62, 0xa3, 0x1a, 0xb2, 0x76,
-	0x5d, 0xdf, 0xa3, 0xc3, 0x3a, 0x99, 0x48, 0xf3, 0x57, 0x0d, 0x2e, 0x14, 0x53, 0x42, 0x39, 0xbe,
-	0x01, 0xd5, 0xe4, 0x70, 0x71, 0x36, 0x26, 0x07, 0x26, 0xb9, 0x07, 0xc5, 0x9d, 0x9c, 0xb5, 0x8a,
-	0xb4, 0xb6, 0x36, 0xd4, 0x9a, 0x12, 0xcd, 0x79, 0x3b, 0x80, 0x97, 0xa5, 0xb5, 0x2f, 0x99, 0xf0,
-	0x46, 0x2d, 0x99, 0x71, 0x2f, 0xc0, 0xbc, 0x05, 0xaf, 0x64, 0x44, 0xe8, 0xe8, 0xeb, 0x30, 0x15,
-	0xef, 0x52, 0x69, 0x2d, 0x16, 0x4f, 0x2d, 0xb1, 0x12, 0x61, 0x7e, 0x93, 0x09, 0xe7, 0x23, 0x9b,
-	0xbc, 0x53, 0x92, 0xa2, 0xe7, 0xb9, 0xbd, 0xc7, 0x1a, 0x60, 0x56, 0x9e, 0xec, 0x5f, 0x53, 0x39,
-	0x48, 0x6e, 0xad, 0xdc, 0xbf, 0x82, 0xbc, 0xb8, 0xdb, 0xda, 0x22, 0x2b, 0xbb, 0x6e, 0xcb, 0x3d,
-	0xcc, 0xa5, 0x42, 0x2e, 0xec, 0x89, 0xa3, 0xc8, 0xa3, 0xee, 0x00, 0x6a, 0xe9, 0xfe, 0x51, 0xe4,
-	0x99, 0x4f, 0x2b, 0xf0, 0x6a, 0x2e, 0x8e, 0xce, 0xf0, 0x29, 0x9c, 0xef, 0x30, 0x11, 0x84, 0xfe,
-	0x9e, 0x02, 0xd3, 0x5d, 0x2c, 0x97, 0x9c, 0x25, 0x08, 0x7d, 0x15, 0xbc, 0x5d, 0xd1, 0x35, 0x67,
-	0xbe, 0x93, 0x59, 0xc1, 0xcf, 0x60, 0x81, 0x1e, 0x4d, 0xc2, 0xa3, 0x8e, 0xf8, 0x7a, 0x91, 0xe7,
-	0xb6, 0x42, 0x65, 0x88, 0xce, 0x37, 0xb2, 0x4b, 0xb8, 0x0d, 0xf3, 0xc2, 0x6d, 0x36, 0x8f, 0x12,
-	0x9e, 0x49, 0xc9, 0x73, 0xa9, 0xc8, 0x73, 0x3f, 0xc6, 0x64, 0x58, 0xe6, 0x44, 0x6f, 0x01, 0x2d,
-	0x98, 0xa1, 0x68, 0xf5, 0x62, 0x2f, 0x9c, 0x79, 0x4f, 0x2a, 0x09, 0x84, 0x32, 0x43, 0xca, 0x0d,
-	0x99, 0x1b, 0xb9, 0xbe, 0x72, 0x5d, 0xa5, 0x32, 0x72, 0x57, 0x31, 0xef, 0x52, 0xa3, 0x4e, 0xf5,
-	0xe8, 0x32, 0xea, 0x70, 0x8e, 0x40, 0x74, 0x0d, 0x17, 0xfb, 0xa4, 0xcf, 0x49, 0x70, 0xe6, 0xa3,
-	0x3c, 0xd5, 0xff, 0xff, 0x36, 0x7e, 0xd6, 0xa8, 0xd9, 0xf7, 0x1c, 0xd0, 0x69, 0xae, 0xc3, 0x2c,
-	0xb9, 0x4c, 0x5e, 0x48, 0xdf, 0xe3, 0xa4, 0xc0, 0x17, 0xf7, 0x4e, 0xde, 0x87, 0x8b, 0xd2, 0x96,
-	0x2c, 0x14, 0xc7, 0xe3, 0xed, 0xa6, 0x18, 0x63, 0x1e, 0xea, 0x67, 0x63, 0xd3, 0x3b, 0x9a, 0x96,
-	0xa5, 0x46, 0x37, 0x54, 0x5e, 0x98, 0x14, 0xa3, 0x90, 0x9b, 0xff, 0x56, 0x61, 0x5a, 0xf2, 0xe1,
-	0x63, 0x0d, 0xe6, 0xb3, 0xe3, 0x1d, 0xd7, 0x8b, 0xe1, 0xfd, 0xbe, 0x0e, 0x8c, 0xab, 0x23, 0x20,
-	0x95, 0x45, 0x73, 0xe5, 0xdb, 0x3f, 0xff, 0xf9, 0xa9, 0x52, 0xc3, 0x65, 0xbb, 0xf0, 0x89, 0x92,
-	0xfd, 0x5a, 0xc0, 0xef, 0x35, 0x98, 0x4d, 0xe6, 0x0a, 0xae, 0x94, 0xb2, 0x17, 0x3e, 0x24, 0x8c,
-	0xb7, 0x86, 0xa0, 0x48, 0xdf, 0x96, 0xfa, 0x57, 0x71, 0xad, 0xa8, 0x9f, 0x0e, 0x2f, 0xfb, 0x38,
-	0x73, 0x01, 0x5d, 0xec, 0x42, 0x35, 0x9d, 0x8b, 0x38, 0x58, 0x24, 0x29, 0x70, 0x63, 0x75, 0x18,
-	0x8c, 0xcc, 0x5c, 0x91, 0x66, 0x2e, 0xe1, 0x52, 0x5f, 0x33, 0xf8, 0x83, 0x06, 0x53, 0x71, 0xaf,
-	0xc6, 0xcb, 0xa5, 0x9c, 0x99, 0xb9, 0x68, 0x5c, 0x19, 0x80, 0x20, 0xc1, 0x5b, 0x52, 0xf0, 0x26,
-	0x6e, 0x8d, 0x78, 0x7a, 0x5b, 0x0e, 0x08, 0xfb, 0x58, 0xce, 0xc9, 0x2e, 0x7e, 0xa7, 0xc1, 0xb4,
-	0x1c, 0x33, 0xd8, 0x5f, 0x2b, 0x4d, 0x82, 0x39, 0x08, 0x42, 0x7e, 0xb6, 0xa4, 0x1f, 0x1b, 0x37,
-	0xc6, 0xf2, 0x83, 0x8f, 0x60, 0x86, 0xba, 0x69, 0xb9, 0x48, 0x6e, 0xfe, 0x18, 0x6f, 0x0e, 0xc4,
-	0x90, 0x93, 0xb7, 0xa5, 0x93, 0x55, 0x5c, 0x39, 0xe3, 0x44, 0xe2, 0xec, 0xe3, 0xcc, 0x08, 0xeb,
-	0xe2, 0x53, 0x0d, 0xce, 0x51, 0x7f, 0xc0, 0x72, 0xfa, 0x7c, 0xbb, 0x36, 0x56, 0x06, 0x83, 0xc8,
-	0xc4, 0x6d, 0x69, 0xe2, 0x43, 0xfc, 0x60, 0xd4, 0x74, 0x24, 0xad, 0xc9, 0x3e, 0x4e, 0x1b, 0x78,
-	0x17, 0x7f, 0xd4, 0x60, 0x36, 0x69, 0x78, 0x38, 0x50, 0x98, 0x0f, 0x7e, 0x3c, 0xc5, 0xae, 0x69,
-	0xbe, 0x27, 0xfd, 0x6d, 0xe2, 0x3b, 0xe3, 0xfa, 0xc3, 0x5f, 0x34, 0x98, 0xcb, 0x74, 0x1f, 0x5c,
-	0x2b, 0x15, 0x3c, 0xdb, 0x0f, 0x8d, 0xf5, 0xe1, 0xc0, 0xe7, 0xad, 0x25, 0xd9, 0x00, 0xb7, 0x77,
-	0x7e, 0x3f, 0xa9, 0x69, 0xcf, 0x4e, 0x6a, 0xda, 0xdf, 0x27, 0x35, 0xed, 0xc9, 0x69, 0x6d, 0xe2,
-	0xd9, 0x69, 0x6d, 0xe2, 0xaf, 0xd3, 0xda, 0xc4, 0x57, 0x1b, 0x7e, 0x20, 0x1e, 0xb4, 0xf7, 0xad,
-	0x03, 0x76, 0x98, 0x50, 0x6e, 0x3c, 0x68, 0xef, 0xa7, 0xf4, 0x5f, 0x4b, 0x81, 0xb8, 0x20, 0x78,
-	0xfc, 0x3f, 0x6d, 0x46, 0xfe, 0x8b, 0xba, 0xfe, 0x5f, 0x00, 0x00, 0x00, 0xff, 0xff, 0x17, 0xab,
-	0xa6, 0x19, 0xf2, 0x0d, 0x00, 0x00,
+	// 1397 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x58, 0xcf, 0x6f, 0x13, 0x47,
+	0x14, 0x66, 0x4c, 0x02, 0xc9, 0x4b, 0x08, 0x61, 0x1a, 0xc0, 0x2c, 0xe0, 0x92, 0x6d, 0x0a, 0x01,
+	0xe1, 0x5d, 0x6c, 0x7e, 0x0a, 0x95, 0x96, 0xa6, 0x40, 0x8a, 0xd4, 0x56, 0xd4, 0x20, 0x0e, 0xbd,
+	0x58, 0x9b, 0x78, 0xb5, 0x58, 0x72, 0x76, 0x8c, 0x77, 0xbd, 0x6a, 0x94, 0x5a, 0x48, 0x95, 0x2a,
+	0x95, 0x4a, 0x95, 0xa8, 0xaa, 0xaa, 0x2a, 0x7f, 0x40, 0x2f, 0xbd, 0xf4, 0x00, 0x87, 0xde, 0x7a,
+	0xec, 0x11, 0xd1, 0x4b, 0x8f, 0x55, 0xd2, 0x3f, 0xa4, 0xda, 0x99, 0x37, 0xfb, 0xcb, 0xbb, 0x6b,
+	0x9b, 0xba, 0x55, 0x6f, 0xf1, 0xec, 0xf7, 0xde, 0xfb, 0xe6, 0x9b, 0x37, 0x33, 0xdf, 0x04, 0x14,
+	0xc3, 0x65, 0x1b, 0xcc, 0x36, 0x75, 0x8b, 0x79, 0xba, 0x57, 0xd1, 0x1f, 0x76, 0xcd, 0xce, 0xa6,
+	0xd6, 0xee, 0x30, 0x97, 0xd1, 0x39, 0xfc, 0xa6, 0x59, 0xcc, 0xd3, 0xbc, 0x8a, 0x72, 0x66, 0x9d,
+	0x39, 0x1b, 0xcc, 0xd1, 0xd7, 0x0c, 0xc7, 0x14, 0x40, 0xdd, 0xab, 0xac, 0x99, 0xae, 0x51, 0xd1,
+	0xdb, 0x86, 0xd5, 0xb4, 0x0d, 0xb7, 0xc9, 0x6c, 0x11, 0xab, 0x1c, 0xb3, 0x18, 0xb3, 0x5a, 0xa6,
+	0x6e, 0xb4, 0x9b, 0xba, 0x61, 0xdb, 0xcc, 0xe5, 0x1f, 0x1d, 0xfc, 0x5a, 0x4c, 0x54, 0xf5, 0x0b,
+	0x88, 0x2f, 0x47, 0x44, 0x8d, 0x3a, 0xff, 0xa5, 0x8b, 0x1f, 0xe2, 0x93, 0xaa, 0x40, 0xf1, 0x63,
+	0xbf, 0xe8, 0x7b, 0xcc, 0x76, 0xdc, 0xa6, 0xdb, 0xf5, 0x13, 0xd6, 0xcc, 0x87, 0x5d, 0xd3, 0x71,
+	0xd5, 0x77, 0xe0, 0x48, 0xca, 0x37, 0xa7, 0xcd, 0x6c, 0xc7, 0xa4, 0x2a, 0xcc, 0xae, 0x47, 0xc6,
+	0x8b, 0xe4, 0x04, 0x59, 0x9e, 0xae, 0xc5, 0xc6, 0xd4, 0xcb, 0xb0, 0xc0, 0x13, 0xdc, 0xe9, 0xb0,
+	0x36, 0x73, 0x8c, 0x16, 0x26, 0xa6, 0xaf, 0xc3, 0x4c, 0x1b, 0x87, 0xea, 0xcd, 0x06, 0x0f, 0x9d,
+	0xa8, 0x81, 0x1c, 0xba, 0xdd, 0x50, 0x3f, 0x84, 0x83, 0x89, 0x40, 0xac, 0x7a, 0x01, 0xa6, 0x24,
+	0x8c, 0x87, 0xcd, 0x54, 0x8b, 0x5a, 0x5c, 0x50, 0x2d, 0x88, 0x09, 0x90, 0xea, 0x93, 0x42, 0x22,
+	0x9f, 0x23, 0x99, 0xac, 0xc2, 0xfe, 0x80, 0x89, 0xe3, 0x1a, 0x6e, 0xd7, 0xe1, 0x69, 0xe7, 0xaa,
+	0xa5, 0xac, 0xb4, 0x77, 0x39, 0xaa, 0x36, 0xd7, 0x8e, 0xfd, 0xa6, 0x1a, 0x4c, 0x7a, 0xcc, 0x35,
+	0x3b, 0xc5, 0x82, 0xaf, 0xc3, 0x4a, 0xf1, 0xe5, 0xb3, 0xf2, 0x02, 0x0a, 0xfd, 0x6e, 0xa3, 0xd1,
+	0x31, 0x1d, 0xe7, 0xae, 0xdb, 0x69, 0xda, 0x56, 0x4d, 0xc0, 0xe8, 0x25, 0x98, 0x6e, 0x98, 0x6d,
+	0xe6, 0x34, 0x5d, 0xd6, 0x29, 0xee, 0x1e, 0x10, 0x13, 0x42, 0xe9, 0x2d, 0x80, 0xb0, 0x2d, 0x8a,
+	0x13, 0x5c, 0x82, 0x93, 0x1a, 0x46, 0xf9, 0x3d, 0xa4, 0x89, 0x66, 0xc3, 0x1e, 0xd2, 0xee, 0x18,
+	0x96, 0x89, 0x93, 0xad, 0x45, 0x22, 0xd5, 0x1f, 0x08, 0x1c, 0x4a, 0x4a, 0x82, 0x1a, 0x5f, 0x82,
+	0x69, 0x39, 0x39, 0x5f, 0x8d, 0xdd, 0xb9, 0x22, 0x87, 0x50, 0xba, 0x1a, 0xa3, 0x56, 0xe0, 0xd4,
+	0x4e, 0x0d, 0xa4, 0x26, 0x8a, 0xc6, 0xb8, 0xad, 0xc3, 0x3c, 0xa7, 0x76, 0x9f, 0xb9, 0xe6, 0xb0,
+	0x2d, 0x33, 0xea, 0x02, 0xa8, 0xd7, 0xe0, 0x40, 0xa4, 0x08, 0x4e, 0x7d, 0x19, 0x26, 0xfc, 0xaf,
+	0xd8, 0x5a, 0x0b, 0xc9, 0x59, 0x73, 0x2c, 0x47, 0xa8, 0x9f, 0x45, 0xc2, 0x9d, 0xa1, 0x49, 0xde,
+	0x4a, 0x91, 0xe8, 0x55, 0x56, 0xef, 0x31, 0x01, 0x1a, 0x2d, 0x8f, 0xf4, 0xcf, 0x08, 0x0d, 0xe4,
+	0xaa, 0xa5, 0xf3, 0x17, 0x90, 0xf1, 0xad, 0xd6, 0x45, 0xa4, 0x72, 0xc7, 0xe8, 0x18, 0x1b, 0x31,
+	0x29, 0xf8, 0x40, 0xdd, 0xdd, 0x6c, 0x9b, 0x78, 0x3a, 0x80, 0x18, 0xba, 0xb7, 0xd9, 0x36, 0xd5,
+	0xa7, 0x05, 0x78, 0x2d, 0x16, 0x87, 0x73, 0xb8, 0x09, 0xfb, 0x3c, 0xe6, 0x36, 0x6d, 0xab, 0x2e,
+	0xc0, 0xb8, 0x16, 0xc7, 0x52, 0xe6, 0xd2, 0xb4, 0x2d, 0x11, 0xbc, 0x52, 0x28, 0x92, 0xda, 0xac,
+	0x17, 0x19, 0xa1, 0xef, 0xc3, 0x1c, 0x6e, 0x1a, 0x99, 0x47, 0x4c, 0xf1, 0x78, 0x32, 0xcf, 0x0d,
+	0x81, 0x8a, 0x24, 0xda, 0xd7, 0x88, 0x0e, 0xd1, 0x15, 0x98, 0x75, 0x8d, 0x56, 0x6b, 0x53, 0xe6,
+	0xd9, 0xcd, 0xf3, 0x1c, 0x4d, 0xe6, 0xb9, 0xe7, 0x63, 0x22, 0x59, 0x66, 0xdc, 0x70, 0x80, 0x6a,
+	0xb0, 0x07, 0xa3, 0xc5, 0x8e, 0x3d, 0xd4, 0xb7, 0x9f, 0x84, 0x08, 0x88, 0x52, 0x6d, 0xd4, 0x06,
+	0xc9, 0x0d, 0xdd, 0x5f, 0xb1, 0x53, 0xa5, 0x30, 0xf4, 0xa9, 0xa2, 0xde, 0xc6, 0x83, 0x3a, 0xa8,
+	0x87, 0x8b, 0x51, 0x81, 0xbd, 0x08, 0xc2, 0x65, 0x38, 0x9c, 0x21, 0x5f, 0x4d, 0xe2, 0xd4, 0x47,
+	0xf1, 0x54, 0xff, 0xfd, 0xde, 0xf8, 0x8e, 0xe0, 0x61, 0x1f, 0x32, 0xc0, 0xd9, 0x9c, 0x87, 0x29,
+	0x64, 0x29, 0x77, 0x48, 0xe6, 0x74, 0x02, 0xe0, 0xf8, 0xf6, 0xc9, 0x55, 0x38, 0xcc, 0x69, 0xf1,
+	0x46, 0xa9, 0x99, 0x4e, 0xb7, 0xe5, 0x8e, 0x70, 0x1f, 0x16, 0xfb, 0x63, 0x83, 0x35, 0x9a, 0xe4,
+	0xad, 0x86, 0x2b, 0x94, 0xde, 0x98, 0x18, 0x23, 0x90, 0x6a, 0x03, 0xd7, 0x68, 0x95, 0x79, 0x66,
+	0xc7, 0x66, 0x1d, 0xc9, 0xe3, 0x03, 0x98, 0xb7, 0x70, 0xa8, 0x6e, 0x88, 0x5e, 0x11, 0x3b, 0x77,
+	0x65, 0xf1, 0xe5, 0xb3, 0xf2, 0x71, 0x99, 0x58, 0x86, 0xc5, 0xdb, 0x69, 0xbf, 0x15, 0x1f, 0x0e,
+	0x2e, 0xf1, 0xb0, 0x4a, 0x78, 0x89, 0x4b, 0x6c, 0xd6, 0x25, 0x1e, 0xc4, 0x04, 0x48, 0xb5, 0x9e,
+	0x48, 0x17, 0x74, 0x56, 0xbc, 0x71, 0xc8, 0x3f, 0xbf, 0x12, 0x23, 0x15, 0xc2, 0x2b, 0x51, 0xf2,
+	0xc8, 0xbc, 0x12, 0x03, 0xca, 0x21, 0x74, 0x7c, 0xcd, 0xf3, 0x0b, 0x81, 0xc5, 0x08, 0x37, 0xc3,
+	0x5e, 0x37, 0x6f, 0x98, 0x2d, 0xd3, 0x12, 0x06, 0xf0, 0x5f, 0x59, 0xbf, 0xb1, 0x6d, 0xc8, 0xe7,
+	0x04, 0xd4, 0x3c, 0xee, 0xa8, 0xf1, 0x2d, 0x98, 0x69, 0x84, 0xc3, 0xa8, 0xf2, 0x52, 0xba, 0xca,
+	0xf1, 0x1c, 0xb5, 0x68, 0xe0, 0xf8, 0x34, 0x6f, 0xc2, 0x89, 0x4c, 0xda, 0x52, 0xf1, 0x9b, 0x70,
+	0x00, 0x6b, 0xf7, 0x49, 0x9e, 0x7d, 0xf0, 0xce, 0x07, 0x21, 0x72, 0xab, 0x7c, 0x94, 0xb3, 0xba,
+	0x81, 0x40, 0xa7, 0xb3, 0x56, 0xb7, 0x7f, 0xeb, 0x3d, 0x27, 0x70, 0x3c, 0xd6, 0xca, 0xf7, 0x8d,
+	0xd6, 0xdd, 0x07, 0x46, 0xc7, 0xfc, 0x9f, 0xb7, 0xca, 0x4f, 0x04, 0x4a, 0x59, 0xbc, 0x51, 0x85,
+	0xeb, 0x00, 0x9e, 0x6f, 0xd6, 0xf9, 0x28, 0x76, 0xc9, 0x62, 0xd6, 0x5e, 0x0c, 0xc3, 0xa7, 0x3d,
+	0xf9, 0xe7, 0xd8, 0x1a, 0xa4, 0xfa, 0xf3, 0x3c, 0x4c, 0x72, 0xb6, 0xf4, 0x31, 0x81, 0xd9, 0xe8,
+	0x2b, 0x89, 0x2e, 0x27, 0x19, 0x65, 0x3d, 0xb2, 0x94, 0xd3, 0x43, 0x20, 0x45, 0x6d, 0x75, 0xe9,
+	0xf3, 0xdf, 0xff, 0xfa, 0xb6, 0x50, 0xa2, 0xc7, 0xf4, 0xc4, 0x4b, 0x2f, 0xfa, 0xe8, 0xa2, 0x5f,
+	0x12, 0x98, 0x92, 0xf6, 0x9c, 0x2e, 0xa5, 0x66, 0x4f, 0xbc, 0xc7, 0x94, 0x37, 0x07, 0xa0, 0xb0,
+	0xbe, 0xce, 0xeb, 0x9f, 0xa6, 0xa7, 0x92, 0xf5, 0x83, 0x37, 0x80, 0xbe, 0x15, 0xb9, 0xc7, 0x7a,
+	0xb4, 0x07, 0xd3, 0xc1, 0xf3, 0x82, 0xe6, 0x17, 0x91, 0x8d, 0xa9, 0x9c, 0x1c, 0x04, 0x43, 0x32,
+	0x8b, 0x9c, 0xcc, 0x51, 0x7a, 0x24, 0x93, 0x0c, 0xfd, 0x8a, 0xc0, 0x84, 0x6f, 0x79, 0xe9, 0x89,
+	0xd4, 0x9c, 0x91, 0xe7, 0x85, 0xb2, 0x98, 0x83, 0xc0, 0x82, 0xd7, 0x78, 0xc1, 0xcb, 0xf4, 0xe2,
+	0x90, 0xb3, 0xd7, 0xb9, 0xcf, 0xd6, 0xb7, 0xf8, 0x73, 0xa3, 0x47, 0xbf, 0x20, 0x30, 0xc9, 0xdd,
+	0x3a, 0xcd, 0xae, 0x15, 0x88, 0xa0, 0xe6, 0x41, 0x90, 0xcf, 0x45, 0xce, 0x47, 0xa7, 0xe5, 0x91,
+	0xf8, 0xd0, 0x47, 0xb0, 0x07, 0x4d, 0x69, 0x7a, 0x91, 0x98, 0x8d, 0x57, 0xde, 0xc8, 0xc5, 0x20,
+	0x93, 0xb3, 0x9c, 0xc9, 0x49, 0xba, 0xd4, 0xc7, 0x84, 0xe3, 0xf4, 0xad, 0xc8, 0x4b, 0xa0, 0x47,
+	0x9f, 0x12, 0xd8, 0x8b, 0x36, 0x8b, 0xa6, 0xa7, 0x8f, 0xbb, 0x5e, 0x65, 0x29, 0x1f, 0x84, 0x24,
+	0x6e, 0x70, 0x12, 0x6f, 0xd3, 0xb7, 0x86, 0x95, 0x43, 0x3a, 0x3c, 0x7d, 0x2b, 0xf0, 0xc1, 0x3d,
+	0xfa, 0x0d, 0x81, 0x29, 0xe9, 0x1b, 0x69, 0x6e, 0x61, 0x27, 0x7f, 0xf3, 0x24, 0xcd, 0xa7, 0x7a,
+	0x85, 0xf3, 0xab, 0xd2, 0x73, 0xa3, 0xf2, 0xa3, 0xdf, 0x13, 0x98, 0x89, 0x98, 0x38, 0x7a, 0x2a,
+	0xb5, 0x60, 0xbf, 0xad, 0x54, 0x96, 0x07, 0x03, 0x5f, 0xb5, 0x97, 0xb8, 0x8f, 0xa4, 0x5f, 0x13,
+	0x98, 0x92, 0x47, 0x6d, 0x86, 0x5a, 0x09, 0x8b, 0x99, 0xa1, 0x56, 0xd2, 0x22, 0xaa, 0x17, 0x38,
+	0x21, 0x8d, 0x9e, 0xd5, 0xfb, 0xff, 0xa9, 0x25, 0xbc, 0x95, 0xbe, 0x95, 0xbc, 0xbf, 0xf8, 0x79,
+	0x13, 0x78, 0x37, 0x9a, 0x5f, 0x69, 0xc0, 0x79, 0xd3, 0x67, 0x01, 0xb3, 0xcf, 0x9b, 0xd0, 0xed,
+	0xfd, 0x4a, 0xe0, 0x60, 0xaa, 0xc7, 0xa1, 0x95, 0x9c, 0x22, 0xe9, 0x5e, 0x4e, 0xa9, 0x8e, 0x12,
+	0x82, 0x1c, 0xaf, 0x73, 0x8e, 0x57, 0xe9, 0x95, 0x51, 0x54, 0xd3, 0xa3, 0xe6, 0xe9, 0x19, 0x81,
+	0x85, 0xb4, 0x1a, 0xf4, 0xdc, 0xd0, 0x74, 0xe4, 0x04, 0x2a, 0x23, 0x44, 0x20, 0xff, 0xcb, 0x9c,
+	0x7f, 0x85, 0xea, 0x49, 0xfe, 0x11, 0x8a, 0xfe, 0x76, 0x4d, 0x18, 0xae, 0x1e, 0xfd, 0x91, 0xc0,
+	0x81, 0xbe, 0x3b, 0x9f, 0x96, 0x73, 0x97, 0x36, 0x69, 0x89, 0x14, 0x6d, 0x58, 0x38, 0xb2, 0xad,
+	0x72, 0xb6, 0x67, 0xe9, 0x99, 0x24, 0x5b, 0x4f, 0x98, 0x93, 0x14, 0xad, 0x57, 0x56, 0x7f, 0xdb,
+	0x2e, 0x91, 0x17, 0xdb, 0x25, 0xf2, 0xe7, 0x76, 0x89, 0x3c, 0xd9, 0x29, 0xed, 0x7a, 0xb1, 0x53,
+	0xda, 0xf5, 0xc7, 0x4e, 0x69, 0xd7, 0x27, 0x65, 0xab, 0xe9, 0x3e, 0xe8, 0xae, 0x69, 0xeb, 0x6c,
+	0x43, 0xe6, 0x2b, 0x3f, 0xe8, 0xae, 0x05, 0xb9, 0x3f, 0xe5, 0xd9, 0xfd, 0x23, 0xd4, 0xd1, 0xbd,
+	0xca, 0xda, 0x1e, 0xfe, 0xef, 0xdb, 0xf3, 0x7f, 0x07, 0x00, 0x00, 0xff, 0xff, 0x9e, 0x0d, 0x21,
+	0xc8, 0x6b, 0x16, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -1097,6 +1635,16 @@ type QueryClient interface {
 	Deposits(ctx context.Context, in *QueryDepositsRequest, opts ...grpc.CallOption) (*QueryDepositsResponse, error)
 	// TallyResult queries the tally of a proposal vote.
 	TallyResult(ctx context.Context, in *QueryTallyResultRequest, opts ...grpc.CallOption) (*QueryTallyResultResponse, error)
+	// Governor queries governor information based on governor address.
+	Governor(ctx context.Context, in *QueryGovernorRequest, opts ...grpc.CallOption) (*QueryGovernorResponse, error)
+	// Governors queries all governors.
+	Governors(ctx context.Context, in *QueryGovernorsRequest, opts ...grpc.CallOption) (*QueryGovernorsResponse, error)
+	// GovernanceDelegations queries all delegations of a governor.
+	GovernanceDelegations(ctx context.Context, in *QueryGovernanceDelegationsRequest, opts ...grpc.CallOption) (*QueryGovernanceDelegationsResponse, error)
+	// GovernanceDelegation queries a delegation
+	GovernanceDelegation(ctx context.Context, in *QueryGovernanceDelegationRequest, opts ...grpc.CallOption) (*QueryGovernanceDelegationResponse, error)
+	// GovernorValShares queries all governor virtual validator shares resulting from all governance delegations.
+	GovernorValShares(ctx context.Context, in *QueryGovernorValSharesRequest, opts ...grpc.CallOption) (*QueryGovernorValSharesResponse, error)
 }
 
 type queryClient struct {
@@ -1188,6 +1736,51 @@ func (c *queryClient) TallyResult(ctx context.Context, in *QueryTallyResultReque
 	return out, nil
 }
 
+func (c *queryClient) Governor(ctx context.Context, in *QueryGovernorRequest, opts ...grpc.CallOption) (*QueryGovernorResponse, error) {
+	out := new(QueryGovernorResponse)
+	err := c.cc.Invoke(ctx, "/atomone.gov.v1.Query/Governor", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) Governors(ctx context.Context, in *QueryGovernorsRequest, opts ...grpc.CallOption) (*QueryGovernorsResponse, error) {
+	out := new(QueryGovernorsResponse)
+	err := c.cc.Invoke(ctx, "/atomone.gov.v1.Query/Governors", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) GovernanceDelegations(ctx context.Context, in *QueryGovernanceDelegationsRequest, opts ...grpc.CallOption) (*QueryGovernanceDelegationsResponse, error) {
+	out := new(QueryGovernanceDelegationsResponse)
+	err := c.cc.Invoke(ctx, "/atomone.gov.v1.Query/GovernanceDelegations", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) GovernanceDelegation(ctx context.Context, in *QueryGovernanceDelegationRequest, opts ...grpc.CallOption) (*QueryGovernanceDelegationResponse, error) {
+	out := new(QueryGovernanceDelegationResponse)
+	err := c.cc.Invoke(ctx, "/atomone.gov.v1.Query/GovernanceDelegation", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) GovernorValShares(ctx context.Context, in *QueryGovernorValSharesRequest, opts ...grpc.CallOption) (*QueryGovernorValSharesResponse, error) {
+	out := new(QueryGovernorValSharesResponse)
+	err := c.cc.Invoke(ctx, "/atomone.gov.v1.Query/GovernorValShares", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	// Constitution queries the chain's constitution.
@@ -1208,6 +1801,16 @@ type QueryServer interface {
 	Deposits(context.Context, *QueryDepositsRequest) (*QueryDepositsResponse, error)
 	// TallyResult queries the tally of a proposal vote.
 	TallyResult(context.Context, *QueryTallyResultRequest) (*QueryTallyResultResponse, error)
+	// Governor queries governor information based on governor address.
+	Governor(context.Context, *QueryGovernorRequest) (*QueryGovernorResponse, error)
+	// Governors queries all governors.
+	Governors(context.Context, *QueryGovernorsRequest) (*QueryGovernorsResponse, error)
+	// GovernanceDelegations queries all delegations of a governor.
+	GovernanceDelegations(context.Context, *QueryGovernanceDelegationsRequest) (*QueryGovernanceDelegationsResponse, error)
+	// GovernanceDelegation queries a delegation
+	GovernanceDelegation(context.Context, *QueryGovernanceDelegationRequest) (*QueryGovernanceDelegationResponse, error)
+	// GovernorValShares queries all governor virtual validator shares resulting from all governance delegations.
+	GovernorValShares(context.Context, *QueryGovernorValSharesRequest) (*QueryGovernorValSharesResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -1240,6 +1843,21 @@ func (*UnimplementedQueryServer) Deposits(ctx context.Context, req *QueryDeposit
 }
 func (*UnimplementedQueryServer) TallyResult(ctx context.Context, req *QueryTallyResultRequest) (*QueryTallyResultResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TallyResult not implemented")
+}
+func (*UnimplementedQueryServer) Governor(ctx context.Context, req *QueryGovernorRequest) (*QueryGovernorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Governor not implemented")
+}
+func (*UnimplementedQueryServer) Governors(ctx context.Context, req *QueryGovernorsRequest) (*QueryGovernorsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Governors not implemented")
+}
+func (*UnimplementedQueryServer) GovernanceDelegations(ctx context.Context, req *QueryGovernanceDelegationsRequest) (*QueryGovernanceDelegationsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GovernanceDelegations not implemented")
+}
+func (*UnimplementedQueryServer) GovernanceDelegation(ctx context.Context, req *QueryGovernanceDelegationRequest) (*QueryGovernanceDelegationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GovernanceDelegation not implemented")
+}
+func (*UnimplementedQueryServer) GovernorValShares(ctx context.Context, req *QueryGovernorValSharesRequest) (*QueryGovernorValSharesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GovernorValShares not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -1408,6 +2026,96 @@ func _Query_TallyResult_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_Governor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGovernorRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Governor(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/atomone.gov.v1.Query/Governor",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Governor(ctx, req.(*QueryGovernorRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_Governors_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGovernorsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Governors(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/atomone.gov.v1.Query/Governors",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Governors(ctx, req.(*QueryGovernorsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_GovernanceDelegations_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGovernanceDelegationsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).GovernanceDelegations(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/atomone.gov.v1.Query/GovernanceDelegations",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).GovernanceDelegations(ctx, req.(*QueryGovernanceDelegationsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_GovernanceDelegation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGovernanceDelegationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).GovernanceDelegation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/atomone.gov.v1.Query/GovernanceDelegation",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).GovernanceDelegation(ctx, req.(*QueryGovernanceDelegationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_GovernorValShares_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGovernorValSharesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).GovernorValShares(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/atomone.gov.v1.Query/GovernorValShares",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).GovernorValShares(ctx, req.(*QueryGovernorValSharesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "atomone.gov.v1.Query",
 	HandlerType: (*QueryServer)(nil),
@@ -1447,6 +2155,26 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "TallyResult",
 			Handler:    _Query_TallyResult_Handler,
+		},
+		{
+			MethodName: "Governor",
+			Handler:    _Query_Governor_Handler,
+		},
+		{
+			MethodName: "Governors",
+			Handler:    _Query_Governors_Handler,
+		},
+		{
+			MethodName: "GovernanceDelegations",
+			Handler:    _Query_GovernanceDelegations_Handler,
+		},
+		{
+			MethodName: "GovernanceDelegation",
+			Handler:    _Query_GovernanceDelegation_Handler,
+		},
+		{
+			MethodName: "GovernorValShares",
+			Handler:    _Query_GovernorValShares_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -2154,6 +2882,397 @@ func (m *QueryTallyResultResponse) MarshalToSizedBuffer(dAtA []byte) (int, error
 	return len(dAtA) - i, nil
 }
 
+func (m *QueryGovernorRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGovernorRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGovernorRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.GovernorAddress) > 0 {
+		i -= len(m.GovernorAddress)
+		copy(dAtA[i:], m.GovernorAddress)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.GovernorAddress)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryGovernorResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGovernorResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGovernorResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Governor != nil {
+		{
+			size, err := m.Governor.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryGovernorsRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGovernorsRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGovernorsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryGovernorsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGovernorsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGovernorsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Governors) > 0 {
+		for iNdEx := len(m.Governors) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Governors[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryGovernanceDelegationsRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGovernanceDelegationsRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGovernanceDelegationsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.GovernorAddress) > 0 {
+		i -= len(m.GovernorAddress)
+		copy(dAtA[i:], m.GovernorAddress)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.GovernorAddress)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryGovernanceDelegationsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGovernanceDelegationsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGovernanceDelegationsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Delegations) > 0 {
+		for iNdEx := len(m.Delegations) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Delegations[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryGovernanceDelegationRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGovernanceDelegationRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGovernanceDelegationRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.DelegatorAddress) > 0 {
+		i -= len(m.DelegatorAddress)
+		copy(dAtA[i:], m.DelegatorAddress)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.DelegatorAddress)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryGovernanceDelegationResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGovernanceDelegationResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGovernanceDelegationResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.GovernorAddress) > 0 {
+		i -= len(m.GovernorAddress)
+		copy(dAtA[i:], m.GovernorAddress)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.GovernorAddress)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryGovernorValSharesRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGovernorValSharesRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGovernorValSharesRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.GovernorAddress) > 0 {
+		i -= len(m.GovernorAddress)
+		copy(dAtA[i:], m.GovernorAddress)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.GovernorAddress)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryGovernorValSharesResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGovernorValSharesResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGovernorValSharesResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.ValShares) > 0 {
+		for iNdEx := len(m.ValShares) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.ValShares[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	offset -= sovQuery(v)
 	base := offset
@@ -2441,6 +3560,162 @@ func (m *QueryTallyResultResponse) Size() (n int) {
 	_ = l
 	if m.Tally != nil {
 		l = m.Tally.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryGovernorRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.GovernorAddress)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryGovernorResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Governor != nil {
+		l = m.Governor.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryGovernorsRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryGovernorsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Governors) > 0 {
+		for _, e := range m.Governors {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryGovernanceDelegationsRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.GovernorAddress)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryGovernanceDelegationsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Delegations) > 0 {
+		for _, e := range m.Delegations {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryGovernanceDelegationRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.DelegatorAddress)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryGovernanceDelegationResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.GovernorAddress)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryGovernorValSharesRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.GovernorAddress)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryGovernorValSharesResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.ValShares) > 0 {
+		for _, e := range m.ValShares {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
 		n += 1 + l + sovQuery(uint64(l))
 	}
 	return n
@@ -4259,6 +5534,1020 @@ func (m *QueryTallyResultResponse) Unmarshal(dAtA []byte) error {
 				m.Tally = &TallyResult{}
 			}
 			if err := m.Tally.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGovernorRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGovernorRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGovernorRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GovernorAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.GovernorAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGovernorResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGovernorResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGovernorResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Governor", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Governor == nil {
+				m.Governor = &Governor{}
+			}
+			if err := m.Governor.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGovernorsRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGovernorsRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGovernorsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageRequest{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGovernorsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGovernorsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGovernorsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Governors", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Governors = append(m.Governors, &Governor{})
+			if err := m.Governors[len(m.Governors)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageResponse{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGovernanceDelegationsRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGovernanceDelegationsRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGovernanceDelegationsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GovernorAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.GovernorAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageRequest{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGovernanceDelegationsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGovernanceDelegationsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGovernanceDelegationsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Delegations", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Delegations = append(m.Delegations, &GovernanceDelegation{})
+			if err := m.Delegations[len(m.Delegations)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageResponse{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGovernanceDelegationRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGovernanceDelegationRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGovernanceDelegationRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DelegatorAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DelegatorAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGovernanceDelegationResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGovernanceDelegationResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGovernanceDelegationResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GovernorAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.GovernorAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGovernorValSharesRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGovernorValSharesRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGovernorValSharesRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GovernorAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.GovernorAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageRequest{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGovernorValSharesResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGovernorValSharesResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGovernorValSharesResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ValShares", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ValShares = append(m.ValShares, &GovernorValShares{})
+			if err := m.ValShares[len(m.ValShares)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageResponse{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
