@@ -4,6 +4,7 @@ syntax = "proto3";
 package atomone.gov.v1;
 
 import "atomone/gov/v1/gov.proto";
+import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/atomone-hub/atomone/x/gov/types/v1";
 
@@ -34,4 +35,6 @@ message GenesisState {
   //
   // Since: cosmos-sdk 0.48
   string constitution = 9;
+  // governance participation EMA
+  string participation_ema = 10 [(cosmos_proto.scalar) = "cosmos.Dec"];
 }

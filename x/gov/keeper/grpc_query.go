@@ -181,7 +181,7 @@ func (q Keeper) Params(c context.Context, req *v1.QueryParamsRequest) (*v1.Query
 		response.VotingParams = &votingParams
 
 	case v1.ParamTallying:
-		tallyParams := v1.NewTallyParams(params.Quorum, params.Threshold)
+		tallyParams := v1.NewTallyParams(q.GetQuorum(ctx).String(), params.Threshold)
 		response.TallyParams = &tallyParams
 
 	default:
@@ -284,10 +284,18 @@ func (q Keeper) TallyResult(c context.Context, req *v1.QueryTallyResultRequest) 
 
 	default:
 		// proposal is in voting period
-		_, _, tallyResult = q.Tally(ctx, proposal)
+		_, _, _, tallyResult = q.Tally(ctx, proposal)
 	}
 
 	return &v1.QueryTallyResultResponse{Tally: &tallyResult}, nil
+}
+
+// Quorum returns the current quorum
+func (q Keeper) Quorum(c context.Context, _ *v1.QueryQuorumRequest) (*v1.QueryQuorumResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+	quorum := q.GetQuorum(ctx)
+
+	return &v1.QueryQuorumResponse{Quorum: quorum.String()}, nil
 }
 
 var _ v1beta1.QueryServer = legacyQueryServer{}
@@ -403,7 +411,7 @@ func (q legacyQueryServer) Params(c context.Context, req *v1beta1.QueryParamsReq
 	}
 
 	if resp.TallyParams != nil {
-		quorum, err := sdk.NewDecFromStr(resp.TallyParams.Quorum)
+		quorumRes, err := q.keeper.Quorum(c, &v1.QueryQuorumRequest{})
 		if err != nil {
 			return nil, err
 		}
@@ -411,7 +419,7 @@ func (q legacyQueryServer) Params(c context.Context, req *v1beta1.QueryParamsReq
 		if err != nil {
 			return nil, err
 		}
-
+		quorum := sdk.MustNewDecFromStr(quorumRes.Quorum)
 		response.TallyParams = v1beta1.NewTallyParams(quorum, threshold, sdk.ZeroDec())
 	}
 

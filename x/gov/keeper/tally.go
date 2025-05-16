@@ -13,7 +13,7 @@ import (
 
 // Tally iterates over the votes and updates the tally of a proposal based on the voting power of the
 // voters
-func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, burnDeposits bool, tallyResults v1.TallyResult) {
+func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, burnDeposits bool, participation math.LegacyDec, tallyResults v1.TallyResult) {
 	// fetch all the bonded validators
 	currValidators := keeper.getBondedValidatorsByAddress(ctx)
 	totalVotingPower, results := keeper.tallyVotes(ctx, proposal, currValidators, true)
@@ -24,30 +24,30 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 	// If there is no staked coins, the proposal fails
 	totalBonded := keeper.sk.TotalBondedTokens(ctx)
 	if totalBonded.IsZero() {
-		return false, false, tallyResults
+		return false, false, sdk.ZeroDec(), tallyResults
 	}
 
 	// If there is not enough quorum of votes, the proposal fails
 	percentVoting := totalVotingPower.Quo(math.LegacyNewDecFromInt(totalBonded))
 	quorum, threshold, err := keeper.getQuorumAndThreshold(ctx, proposal)
 	if err != nil {
-		return false, false, tallyResults
+		return false, false, percentVoting, tallyResults
 	}
 	if percentVoting.LT(quorum) {
-		return false, params.BurnVoteQuorum, tallyResults
+		return false, params.BurnVoteQuorum, percentVoting, tallyResults
 	}
 
 	// If no one votes (everyone abstains), proposal fails
 	if totalVotingPower.Sub(results[v1.OptionAbstain]).Equal(math.LegacyZeroDec()) {
-		return false, false, tallyResults
+		return false, false, percentVoting, tallyResults
 	}
 
 	if results[v1.OptionYes].Quo(totalVotingPower.Sub(results[v1.OptionAbstain])).GT(threshold) {
-		return true, false, tallyResults
+		return true, false, percentVoting, tallyResults
 	}
 
 	// If more than 1/2 of non-abstaining voters vote No, proposal fails
-	return false, false, tallyResults
+	return false, false, percentVoting, tallyResults
 }
 
 // HasReachedQuorum returns whether or not a proposal has reached quorum
@@ -175,10 +175,7 @@ func (keeper Keeper) tallyVotes(
 // appropriate quorum and threshold.
 func (keeper Keeper) getQuorumAndThreshold(ctx sdk.Context, proposal v1.Proposal) (sdk.Dec, sdk.Dec, error) {
 	params := keeper.GetParams(ctx)
-	quorum, err := sdk.NewDecFromStr(params.Quorum)
-	if err != nil {
-		return sdk.Dec{}, sdk.Dec{}, fmt.Errorf("parsing params.Quorum: %w", err)
-	}
+	quorum := keeper.GetQuorum(ctx)
 	threshold, err := sdk.NewDecFromStr(params.Threshold)
 	if err != nil {
 		return sdk.Dec{}, sdk.Dec{}, fmt.Errorf("parsing params.Threshold: %w", err)
