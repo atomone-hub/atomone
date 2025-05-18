@@ -23,11 +23,11 @@ func TestLearningRate(t *testing.T) {
 		// Randomly generate alpha and beta.
 		prevLearningRate := state.LearningRate
 
-		// Randomly generate the block utilization.
-		blockUtilization := rapid.Uint64Range(0, maxBlockGas).Draw(t, "gas")
+		// Randomly generate the block gas.
+		blockGas := rapid.Uint64Range(0, maxBlockGas).Draw(t, "gas")
 
 		// Update the fee market.
-		if err := state.Update(blockUtilization, maxBlockGas); err != nil {
+		if err := state.Update(blockGas, maxBlockGas); err != nil {
 			t.Fatalf("block update errors: %v", err)
 		}
 
@@ -49,11 +49,11 @@ func TestGasPrice(t *testing.T) {
 		prevBaseGasPrice := state.BaseGasPrice.Mul(math.LegacyNewDec(11)).Quo(math.LegacyNewDec(10))
 		state.BaseGasPrice = prevBaseGasPrice
 
-		// Randomly generate the block utilization.
-		blockUtilization := rapid.Uint64Range(0, maxBlockGas).Draw(t, "gas")
+		// Randomly generate the block gas.
+		blockGas := rapid.Uint64Range(0, maxBlockGas).Draw(t, "gas")
 
 		// Update the fee market.
-		if err := state.Update(blockUtilization, maxBlockGas); err != nil {
+		if err := state.Update(blockGas, maxBlockGas); err != nil {
 			t.Fatalf("block update errors: %v", err)
 		}
 
@@ -66,9 +66,9 @@ func TestGasPrice(t *testing.T) {
 		require.True(t, params.MinBaseGasPrice.LTE(state.BaseGasPrice))
 
 		switch {
-		case blockUtilization > types.GetTargetBlockUtilization(maxBlockGas):
+		case blockGas > types.GetTargetBlockGas(maxBlockGas):
 			require.True(t, state.BaseGasPrice.GTE(prevBaseGasPrice))
-		case blockUtilization < types.GetTargetBlockUtilization(maxBlockGas):
+		case blockGas < types.GetTargetBlockGas(maxBlockGas):
 			require.True(t, state.BaseGasPrice.LTE(prevBaseGasPrice))
 		default:
 			require.Equal(t, state.BaseGasPrice, prevBaseGasPrice)
@@ -88,12 +88,12 @@ func CreateRandomParams(t *rapid.T) (types.Params, uint64) {
 	g := rapid.Uint64Range(10, 50).Draw(t, "gamma")
 	gamma := math.LegacyNewDec(int64(g)).Quo(math.LegacyNewDec(100))
 
-	maxBlockUtilization := rapid.Uint64Range(2, 30_000_000).Draw(t, "max_block_utilization")
+	maxBlockGas := rapid.Uint64Range(2, 30_000_000).Draw(t, "max_block_gas")
 
 	params := types.DefaultParams()
 	params.Alpha = alpha
 	params.Beta = beta
 	params.Gamma = gamma
 
-	return params, maxBlockUtilization
+	return params, maxBlockGas
 }

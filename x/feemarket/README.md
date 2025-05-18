@@ -38,7 +38,7 @@ branch) and includes changes and adaptations to suit the AtomOne project.
     - [MinBaseGasPrice](#minbasegasprice)
     - [MinLearningRate](#minlearningrate)
     - [MaxLearningRate](#maxlearningrate)
-    - [MaxBlockUtilization](#maxblockutilization)
+    - [MaxBlockGas](#maxblockgas)
     - [Window](#window-1)
     - [FeeDenom](#feedenom)
     - [Enabled](#enabled)
@@ -252,9 +252,9 @@ MinLearningRate is the lower bound for the learning rate.
 
 MaxLearningRate is the upper bound for the learning rate.
 
-### MaxBlockUtilization
+### MaxBlockGas
 
-MaxBlockUtilization is the maximum block utilization. Once this has been surpassed,
+MaxBlockGas is the maximum block gas. Once this has been surpassed,
 no more transactions will be added to the current block.
 
 ### Window
@@ -331,8 +331,8 @@ message Params {
     (gogoproto.nullable) = false
   ];
 
-  // MaxBlockUtilization is the maximum block utilization.
-  uint64 max_block_utilization = 8;
+  // MaxBlockGas is the maximum block gas.
+  uint64 max_block_gas = 8;
 
   // Window defines the window size for calculating an adaptive learning rate
   // over a moving window of blocks.
