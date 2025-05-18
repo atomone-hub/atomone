@@ -110,7 +110,7 @@ func TestUpdateFeeMarket(t *testing.T) {
 		state := types.DefaultState()
 		params := types.DefaultParams()
 
-		// Reaching the target block size means that we expect this to not
+		// Reaching the target block gas means that we expect this to not
 		// increase.
 		err := state.Update(types.GetTargetBlockGas(testutil.MaxBlockGas), testutil.MaxBlockGas)
 		require.NoError(err)
@@ -136,7 +136,7 @@ func TestUpdateFeeMarket(t *testing.T) {
 		params := types.DefaultParams()
 
 		state.BaseGasPrice = state.BaseGasPrice.Mul(math.LegacyNewDec(2))
-		// Reaching the target block size means that we expect this to not
+		// Reaching the target block gas means that we expect this to not
 		// increase.
 		err := state.Update(types.GetTargetBlockGas(testutil.MaxBlockGas), testutil.MaxBlockGas)
 		require.NoError(err)
@@ -161,7 +161,7 @@ func TestUpdateFeeMarket(t *testing.T) {
 		state := types.DefaultState()
 		params := types.DefaultParams()
 
-		// Reaching the target block size means that we expect this to not
+		// Reaching the target block gas means that we expect this to not
 		// increase.
 		err := state.Update(testutil.MaxBlockGas, testutil.MaxBlockGas)
 		require.NoError(err)
@@ -190,7 +190,7 @@ func TestUpdateFeeMarket(t *testing.T) {
 		params := types.DefaultParams()
 
 		state.BaseGasPrice = state.BaseGasPrice.Mul(math.LegacyNewDec(2))
-		// Reaching the target block size means that we expect this to not
+		// Reaching the target block gas means that we expect this to not
 		// increase.
 		err := state.Update(testutil.MaxBlockGas, testutil.MaxBlockGas)
 		require.NoError(err)
@@ -397,7 +397,7 @@ func TestUpdateFeeMarket(t *testing.T) {
 		state := types.DefaultAIMDState()
 		params := types.DefaultAIMDParams()
 
-		// Reaching the target block size means that we expect this to not
+		// Reaching the target block gas means that we expect this to not
 		// increase.
 		for i := 0; i < len(state.Window); i++ {
 			state.Window[i] = types.GetTargetBlockGas(testutil.MaxBlockGas)
@@ -426,7 +426,7 @@ func TestUpdateFeeMarket(t *testing.T) {
 		state.LearningRate = math.LegacyMustNewDecFromStr("0.125")
 		params := types.DefaultAIMDParams()
 
-		// Reaching the target block size means that we expect this to not
+		// Reaching the target block gas means that we expect this to not
 		// increase.
 		for i := 0; i < len(state.Window); i++ {
 			state.Window[i] = types.GetTargetBlockGas(testutil.MaxBlockGas)

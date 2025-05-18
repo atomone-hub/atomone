@@ -38,7 +38,6 @@ branch) and includes changes and adaptations to suit the AtomOne project.
     - [MinBaseGasPrice](#minbasegasprice)
     - [MinLearningRate](#minlearningrate)
     - [MaxLearningRate](#maxlearningrate)
-    - [MaxBlockGas](#maxblockgas)
     - [Window](#window-1)
     - [FeeDenom](#feedenom)
     - [Enabled](#enabled)
@@ -83,7 +82,7 @@ The `x/feemarket` module keeps state of the following primary objects:
 
 1. Current base-fee
 2. Current learning rate
-3. Moving window of block utilization
+3. Moving window of block gas
 
 In addition, the `x/feemarket` module keeps the following indexes to manage the
 aforementioned state:
@@ -101,17 +100,17 @@ LearningRate is the current learning rate.
 
 ### Window
 
-Window contains a list of the last blocks' utilization values. This is used
+Window contains a list of the last blocks' gas values. This is used
 to calculate the next base fee. This stores the number of units of gas
 consumed per block.
 
 ### Index
 
-Index is the index of the current block in the block utilization window.
+Index is the index of the current block in the block gas window.
 
 ```protobuf
 // State is utilized to track the current state of the fee market. This includes
-// the current base fee, learning rate, and block utilization within the
+// the current base fee, learning rate, and block gas within the
 // specified AIMD window.
 message State {
   // BaseGasPrice is the current base fee. This is denominated in the fee per gas
@@ -129,12 +128,12 @@ message State {
     (gogoproto.nullable) = false
   ];
 
-  // Window contains a list of the last blocks' utilization values. This is used
+  // Window contains a list of the last blocks' gas values. This is used
   // to calculate the next base fee. This stores the number of units of gas
   // consumed per block.
   repeated uint64 window = 3;
 
-  // Index is the index of the current block in the block utilization window.
+  // Index is the index of the current block in the block gas window.
   uint64 index = 4;
 }
 ```
@@ -252,11 +251,6 @@ MinLearningRate is the lower bound for the learning rate.
 
 MaxLearningRate is the upper bound for the learning rate.
 
-### MaxBlockGas
-
-MaxBlockGas is the maximum block gas. Once this has been surpassed,
-no more transactions will be added to the current block.
-
 ### Window
 
 Window defines the window size for calculating an adaptive learning rate
@@ -331,9 +325,6 @@ message Params {
     (gogoproto.nullable) = false
   ];
 
-  // MaxBlockGas is the maximum block gas.
-  uint64 max_block_gas = 8;
-
   // Window defines the window size for calculating an adaptive learning rate
   // over a moving window of blocks.
   uint64 window = 9;
@@ -382,7 +373,6 @@ alpha: "0.000000000000000000"
 beta: "1.000000000000000000"
 enabled: true
 fee_denom: uatone
-max_block_utilization: "30000000"
 max_learning_rate: "0.125000000000000000"
 min_base_gas_price: "1.000000000000000000"
 min_learning_rate: "0.125000000000000000"
@@ -486,7 +476,6 @@ Example Output:
     "minBaseGasPrice": "1000000",
     "minLearningRate": "125000000000000000",
     "maxLearningRate": "125000000000000000",
-    "maxBlockUtilization": "30000000",
     "window": "1",
     "feeDenom": "uatone",
     "enabled": true

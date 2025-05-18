@@ -75,7 +75,7 @@ func TestAIMDGasPrice(t *testing.T) {
 
 		params, maxBlockGas := CreateRandomAIMDParams(t)
 
-		// Randomly generate the block utilization.
+		// Randomly generate the block gas.
 		numBlocks := rapid.Uint64Range(0, uint64(window)*10).Draw(t, "num_blocks")
 		gasGen := rapid.Uint64Range(0, maxBlockGas)
 
@@ -89,8 +89,8 @@ func TestAIMDGasPrice(t *testing.T) {
 			}
 
 			var total uint64
-			for _, utilization := range state.Window {
-				total += utilization
+			for _, gas := range state.Window {
+				total += gas
 			}
 
 			// Update the learning rate.
