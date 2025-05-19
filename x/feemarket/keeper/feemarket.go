@@ -26,27 +26,31 @@ func (k *Keeper) UpdateFeeMarket(ctx sdk.Context) error {
 		return nil
 	}
 
+	consensusParams, err := k.consensusParamsKeeper.Get(ctx)
+	if err != nil {
+		return err
+	}
+	maxBlockGas := uint64(consensusParams.Block.MaxGas)
+
 	state, err := k.GetState(ctx)
 	if err != nil {
 		return err
 	}
 
-	// Update the learning rate based on the block utilization seen in the
+	// Update the learning rate based on the block gas seen in the
 	// current block. This is the AIMD learning rate adjustment algorithm.
-	newLR := state.UpdateLearningRate(
-		params,
-	)
+	newLR := state.UpdateLearningRate(params, maxBlockGas)
 
 	// Update the base gas price based with the new learning rate.
-	newBaseGasPrice := state.UpdateBaseGasPrice(k.Logger(ctx), params)
+	newBaseGasPrice := state.UpdateBaseGasPrice(k.Logger(ctx), params, maxBlockGas)
 
 	k.Logger(ctx).Info(
 		"updated the fee market",
 		"height", ctx.BlockHeight(),
 		"new_base_gas_price", newBaseGasPrice,
 		"new_learning_rate", newLR,
-		"average_block_utilization", state.GetAverageUtilization(params),
-		"net_block_utilization", state.GetNetUtilization(params),
+		"average_block_gas", state.GetAverageGas(maxBlockGas),
+		"net_block_gas", state.GetNetGas(maxBlockGas),
 	)
 
 	// Increment the height of the state and set the new state.

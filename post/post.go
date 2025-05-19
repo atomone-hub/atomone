@@ -11,7 +11,8 @@ import (
 
 // PostHandlerOptions are the options required for constructing a FeeMarket PostHandler.
 type HandlerOptions struct {
-	FeemarketKeeper feemarketpost.FeeMarketKeeper
+	FeemarketKeeper       feemarketpost.FeeMarketKeeper
+	ConsensusParamsKeeper feemarketpost.ConsensusParamsKeeper
 }
 
 // NewPostHandler returns a PostHandler chain with the fee deduct decorator.
@@ -23,6 +24,7 @@ func NewPostHandler(options HandlerOptions) (sdk.PostHandler, error) {
 	postDecorators := []sdk.PostDecorator{
 		feemarketpost.NewFeemarketStateUpdateDecorator(
 			options.FeemarketKeeper,
+			options.ConsensusParamsKeeper,
 		),
 	}
 

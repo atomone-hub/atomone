@@ -13,7 +13,6 @@ func NewParams(
 	alpha math.LegacyDec,
 	beta math.LegacyDec,
 	gamma math.LegacyDec,
-	maxBlockSize uint64,
 	minBaseGasPrice math.LegacyDec,
 	minLearingRate math.LegacyDec,
 	maxLearningRate math.LegacyDec,
@@ -21,16 +20,15 @@ func NewParams(
 	enabled bool,
 ) Params {
 	return Params{
-		Alpha:               alpha,
-		Beta:                beta,
-		Gamma:               gamma,
-		MinBaseGasPrice:     minBaseGasPrice,
-		MinLearningRate:     minLearingRate,
-		MaxLearningRate:     maxLearningRate,
-		MaxBlockUtilization: maxBlockSize,
-		Window:              window,
-		FeeDenom:            feeDenom,
-		Enabled:             enabled,
+		Alpha:           alpha,
+		Beta:            beta,
+		Gamma:           gamma,
+		MinBaseGasPrice: minBaseGasPrice,
+		MinLearningRate: minLearingRate,
+		MaxLearningRate: maxLearningRate,
+		Window:          window,
+		FeeDenom:        feeDenom,
+		Enabled:         enabled,
 	}
 }
 
@@ -60,10 +58,6 @@ func (p *Params) ValidateBasic() error {
 		return fmt.Errorf("min learning rate cannot be negative or nil")
 	}
 
-	if p.MaxBlockUtilization < 2 {
-		return fmt.Errorf("max block utilization cannot be less than 2")
-	}
-
 	if p.MaxLearningRate.IsNil() || p.MaxLearningRate.IsNegative() {
 		return fmt.Errorf("max learning rate cannot be negative or nil")
 	}
@@ -77,9 +71,4 @@ func (p *Params) ValidateBasic() error {
 	}
 
 	return nil
-}
-
-// TargetBlockUtilization returns 0.5 * MaxBlockUtilization.
-func (p *Params) TargetBlockUtilization() uint64 {
-	return p.MaxBlockUtilization / 2
 }
