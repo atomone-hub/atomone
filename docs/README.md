@@ -36,4 +36,4 @@ localnet.
 9. Run `make localnet-restart` (/!\ not `localnet-start` which would delete all
    the chain data). Block production should restart.
 10. Check that the upgrade procedure has been executed properly.
-
+11. Restart the node to ensure it continues producing blocks after the upgrade.
