@@ -164,6 +164,8 @@ message QuorumCheckQueueEntry {
   uint64 quorum_checks_done = 3;
 }
 
+// Quorum
+
 // DepositParams defines the params for deposits on governance proposals.
 message DepositParams {
   // Minimum deposit for a proposal to enter voting period.
@@ -226,7 +228,7 @@ message Params {
 
   //  Minimum percentage of total stake needed to vote for a result to be
   //  considered valid. Default value: 0.25.
-  string quorum = 4 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  string quorum = 4 [(cosmos_proto.scalar) = "cosmos.Dec", deprecated = true];
 
   //  Minimum proportion of Yes votes for proposal to pass. Default value: 2/3.
   string threshold = 5 [(cosmos_proto.scalar) = "cosmos.Dec"];
@@ -272,4 +274,10 @@ message Params {
   // Number of times a proposal should be checked for quorum after the quorum timeout
   // has elapsed. Used to compute the amount of time in between quorum checks.
   uint64 quorum_check_count = 22;
+
+  // Maximum achievable quorum
+  string max_quorum = 23 [(cosmos_proto.scalar) = "cosmos.Dec"];
+
+  // Minimum achievable quorum
+  string min_quorum = 24 [(cosmos_proto.scalar) = "cosmos.Dec"];
 }
