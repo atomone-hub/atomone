@@ -14,10 +14,10 @@ import (
 	// unnamed import of statik for swagger UI support
 	_ "github.com/atomone-hub/atomone/client/docs/statik"
 
+	"cosmossdk.io/log"
 	dbm "github.com/cometbft/cometbft-db"
 	abci "github.com/cometbft/cometbft/abci/types"
 	tmjson "github.com/cometbft/cometbft/libs/json"
-	"github.com/cometbft/cometbft/libs/log"
 
 	ibctesting "github.com/cosmos/ibc-go/v10/testing"
 

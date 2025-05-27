@@ -76,7 +76,6 @@ func SimulateMsgMintPhoton(
 			TxGen:           moduletestutil.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
 			Msg:             msg,
-			MsgType:         TypeMsgMintPhoton,
 			Context:         ctx,
 			SimAccount:      toAddress,
 			AccountKeeper:   ak,

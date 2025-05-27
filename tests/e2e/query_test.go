@@ -312,7 +312,7 @@ func (s *IntegrationTestSuite) queryPhotonConversionRate(endpoint string) math.L
 	var resp photontypes.QueryConversionRateResponse
 	err = cdc.UnmarshalJSON(body, &resp)
 	s.Require().NoError(err)
-	return sdk.MustNewDecFromStr(resp.ConversionRate)
+	return math.LegacyMustNewDecFromStr(resp.ConversionRate)
 }
 
 func (s *IntegrationTestSuite) queryPhotonParams(endpoint string) photontypes.QueryParamsResponse {

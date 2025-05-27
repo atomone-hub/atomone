@@ -7,8 +7,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
-
 	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 
@@ -26,7 +24,7 @@ import (
 func TestImportExportQueues_ErrorUnconsistentState(t *testing.T) {
 	suite := createTestSuite(t)
 	app := suite.App
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false)
 	require.Panics(t, func() {
 		gov.InitGenesis(ctx, suite.AccountKeeper, suite.BankKeeper, suite.GovKeeper, &v1.GenesisState{
 			Deposits: v1.Deposits{
@@ -234,7 +232,7 @@ func TestInitGenesis(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			suite := createTestSuite(t)
 			app := suite.App
-			ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+			ctx := app.BaseApp.NewContext(false)
 			if tt.moduleBalance.IsAllPositive() {
 				err := suite.BankKeeper.MintCoins(ctx, minttypes.ModuleName, tt.moduleBalance)
 				require.NoError(t, err)

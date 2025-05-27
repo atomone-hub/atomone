@@ -64,7 +64,7 @@ func NewWeightedVoteOption(option VoteOption, weight math.LegacyDec) *WeightedVo
 
 // IsValid returns true if the sub vote is valid and false otherwise.
 func (w *WeightedVoteOption) IsValid() bool {
-	weight, err := sdk.NewDecFromStr(w.Weight)
+	weight, err := math.LegacyNewDecFromStr(w.Weight)
 	if err != nil {
 		return false
 	}
@@ -83,7 +83,7 @@ func NewNonSplitVoteOption(option VoteOption) WeightedVoteOptions {
 
 // ValidWeightedVoteOption returns true if the sub vote is valid and false otherwise.
 func ValidWeightedVoteOption(option WeightedVoteOption) bool {
-	weight, err := sdk.NewDecFromStr(option.Weight)
+	weight, err := math.LegacyNewDecFromStr(option.Weight)
 	if err != nil || !weight.IsPositive() || weight.GT(math.LegacyNewDec(1)) {
 		return false
 	}
@@ -124,7 +124,7 @@ func WeightedVoteOptionsFromString(str string) (WeightedVoteOptions, error) {
 		if len(fields) < 2 {
 			return options, fmt.Errorf("weight field does not exist for %s option", fields[0])
 		}
-		weight, err := sdk.NewDecFromStr(fields[1])
+		weight, err := math.LegacyNewDecFromStr(fields[1])
 		if err != nil {
 			return options, err
 		}

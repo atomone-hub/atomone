@@ -209,18 +209,18 @@ func ValidProposalStatus(status ProposalStatus) bool {
 func ValidateAbstract(c Content) error {
 	title := c.GetTitle()
 	if len(strings.TrimSpace(title)) == 0 {
-		return sdkerrors.Wrap(types.ErrInvalidProposalContent, "proposal title cannot be blank") //nolint:staticcheck
+		return types.ErrInvalidProposalContent.Wrap("proposal title cannot be blank") //nolint:staticcheck
 	}
 	if len(title) > MaxTitleLength {
-		return sdkerrors.Wrapf(types.ErrInvalidProposalContent, "proposal title is longer than max length of %d", MaxTitleLength) //nolint:staticcheck
+		return types.ErrInvalidProposalContent.Wrapf("proposal title is longer than max length of %d", MaxTitleLength) //nolint:staticcheck
 	}
 
 	description := c.GetDescription()
 	if len(description) == 0 {
-		return sdkerrors.Wrap(types.ErrInvalidProposalContent, "proposal description cannot be blank") //nolint:staticcheck
+		return types.ErrInvalidProposalContent.Wrap("proposal description cannot be blank") //nolint:staticcheck
 	}
 	if len(description) > MaxDescriptionLength {
-		return sdkerrors.Wrapf(types.ErrInvalidProposalContent, "proposal description is longer than max length of %d", MaxDescriptionLength) //nolint:staticcheck
+		return types.ErrInvalidProposalContent.Wrapf("proposal description is longer than max length of %d", MaxDescriptionLength) //nolint:staticcheck
 	}
 
 	return nil
@@ -269,6 +269,6 @@ func ProposalHandler(_ sdk.Context, c Content) error {
 		return nil
 
 	default:
-		return sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unrecognized gov proposal type: %s", c.ProposalType()) //nolint:staticcheck
+		return sdkerrors.ErrUnknownRequest.Wrapf("unrecognized gov proposal type: %s", c.ProposalType()) //nolint:staticcheck
 	}
 }

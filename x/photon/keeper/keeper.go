@@ -3,7 +3,7 @@ package keeper
 import (
 	"fmt"
 
-	"github.com/cometbft/cometbft/libs/log"
+	"cosmossdk.io/log"
 
 	"cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
@@ -51,7 +51,7 @@ func (k Keeper) conversionRate(_ sdk.Context, bondDenomSupply, uphotonSupply mat
 	remainMintableUphotons := math.LegacyNewDec(types.MaxSupply).Sub(uphotonSupply)
 	if remainMintableUphotons.IsNegative() {
 		// If for any reason the max supply is exceeded, avoid returning a negative number
-		return sdk.ZeroDec()
+		return math.LegacyZeroDec()
 	}
 	return remainMintableUphotons.Quo(bondDenomSupply)
 }

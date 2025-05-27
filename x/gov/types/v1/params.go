@@ -31,16 +31,16 @@ func init() {
 var (
 	minVotingPeriod, _                    = time.ParseDuration(MinVotingPeriod)
 	DefaultMinDepositTokens               = math.NewInt(10000000)
-	DefaultQuorum                         = sdk.NewDecWithPrec(25, 2)
-	DefaultThreshold                      = sdk.NewDecWithPrec(667, 3)
-	DefaultConstitutionAmendmentQuorum    = sdk.NewDecWithPrec(25, 2)
-	DefaultConstitutionAmendmentThreshold = sdk.NewDecWithPrec(9, 1)
-	DefaultLawQuorum                      = sdk.NewDecWithPrec(25, 2)
-	DefaultLawThreshold                   = sdk.NewDecWithPrec(9, 1)
-	DefaultMinInitialDepositRatio         = sdk.ZeroDec()
-	DefaultBurnProposalPrevote            = false                    // set to false to replicate behavior of when this change was made (0.47)
-	DefaultBurnVoteQuorom                 = false                    // set to false to  replicate behavior of when this change was made (0.47)
-	DefaultMinDepositRatio                = sdk.NewDecWithPrec(1, 2) // NOTE: backport from v50
+	DefaultQuorum                         = math.LegacyNewDecWithPrec(25, 2)
+	DefaultThreshold                      = math.LegacyNewDecWithPrec(667, 3)
+	DefaultConstitutionAmendmentQuorum    = math.LegacyNewDecWithPrec(25, 2)
+	DefaultConstitutionAmendmentThreshold = math.LegacyNewDecWithPrec(9, 1)
+	DefaultLawQuorum                      = math.LegacyNewDecWithPrec(25, 2)
+	DefaultLawThreshold                   = math.LegacyNewDecWithPrec(9, 1)
+	DefaultMinInitialDepositRatio         = math.LegacyZeroDec()
+	DefaultBurnProposalPrevote            = false                           // set to false to replicate behavior of when this change was made (0.47)
+	DefaultBurnVoteQuorom                 = false                           // set to false to  replicate behavior of when this change was made (0.47)
+	DefaultMinDepositRatio                = math.LegacyNewDecWithPrec(1, 2) // NOTE: backport from v50
 
 	DefaultQuorumTimeout            time.Duration = DefaultVotingPeriod - (time.Hour * 24 * 1) // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
 	DefaultMaxVotingPeriodExtension time.Duration = DefaultVotingPeriod - DefaultQuorumTimeout // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
@@ -133,7 +133,7 @@ func (p Params) ValidateBasic() error {
 		return fmt.Errorf("maximum deposit period must be positive: %d", p.MaxDepositPeriod)
 	}
 
-	quorum, err := sdk.NewDecFromStr(p.Quorum)
+	quorum, err := math.LegacyNewDecFromStr(p.Quorum)
 	if err != nil {
 		return fmt.Errorf("invalid quorum string: %w", err)
 	}
@@ -144,7 +144,7 @@ func (p Params) ValidateBasic() error {
 		return fmt.Errorf("quorum too large: %s", quorum)
 	}
 
-	threshold, err := sdk.NewDecFromStr(p.Threshold)
+	threshold, err := math.LegacyNewDecFromStr(p.Threshold)
 	if err != nil {
 		return fmt.Errorf("invalid threshold string: %w", err)
 	}
@@ -155,7 +155,7 @@ func (p Params) ValidateBasic() error {
 		return fmt.Errorf("vote threshold too large: %s", threshold)
 	}
 
-	amendmentQuorum, err := sdk.NewDecFromStr(p.ConstitutionAmendmentQuorum)
+	amendmentQuorum, err := math.LegacyNewDecFromStr(p.ConstitutionAmendmentQuorum)
 	if err != nil {
 		return fmt.Errorf("invalid constitution amendment quorum string: %w", err)
 	}
@@ -169,7 +169,7 @@ func (p Params) ValidateBasic() error {
 		return fmt.Errorf("constitution amendment quorum must be greater than or equal to governance quorum: %s", amendmentQuorum)
 	}
 
-	amendmentThreshold, err := sdk.NewDecFromStr(p.ConstitutionAmendmentThreshold)
+	amendmentThreshold, err := math.LegacyNewDecFromStr(p.ConstitutionAmendmentThreshold)
 	if err != nil {
 		return fmt.Errorf("invalid constitution amendment threshold string: %w", err)
 	}
@@ -183,7 +183,7 @@ func (p Params) ValidateBasic() error {
 		return fmt.Errorf("constitution amendment threshold must be greater than or equal to governance threshold: %s", amendmentThreshold)
 	}
 
-	lawQuorum, err := sdk.NewDecFromStr(p.LawQuorum)
+	lawQuorum, err := math.LegacyNewDecFromStr(p.LawQuorum)
 	if err != nil {
 		return fmt.Errorf("invalid law quorum string: %w", err)
 	}
@@ -200,7 +200,7 @@ func (p Params) ValidateBasic() error {
 		return fmt.Errorf("law quorum must be less than or equal to constitution amendment quorum: %s", lawQuorum)
 	}
 
-	lawThreshold, err := sdk.NewDecFromStr(p.LawThreshold)
+	lawThreshold, err := math.LegacyNewDecFromStr(p.LawThreshold)
 	if err != nil {
 		return fmt.Errorf("invalid law threshold string: %w", err)
 	}

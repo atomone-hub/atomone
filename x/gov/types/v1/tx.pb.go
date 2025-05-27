@@ -1282,6 +1282,7 @@ func _Msg_ProposeConstitutionAmendment_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+var Msg_serviceDesc = _Msg_serviceDesc
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "atomone.gov.v1.Msg",
 	HandlerType: (*MsgServer)(nil),

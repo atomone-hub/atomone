@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/cometbft/cometbft/libs/log"
+	"cosmossdk.io/log"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
@@ -28,7 +28,7 @@ func setupMocks(t *testing.T) mocks {
 	t.Helper()
 	ctrl := gomock.NewController(t)
 	return mocks{
-		ctx:          sdk.NewContext(nil, tmproto.Header{}, false, log.TestingLogger()),
+		ctx:          sdk.NewContext(nil, tmproto.Header{}, false, log.NewNopLogger()),
 		PhotonKeeper: NewMockPhotonKeeper(ctrl),
 	}
 }

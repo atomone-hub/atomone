@@ -25,7 +25,7 @@ func (s *IntegrationTestSuite) testStaking() {
 
 		delegatorAddress, _ := s.chainA.genesisAccounts[2].keyInfo.GetAddress()
 
-		existingDelegation := sdk.ZeroDec()
+		existingDelegation := math.LegacyZeroDec()
 		res, err := queryDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
 		if err == nil {
 			existingDelegation = res.GetDelegationResponse().GetDelegation().GetShares()
@@ -44,7 +44,7 @@ func (s *IntegrationTestSuite) testStaking() {
 				amt := res.GetDelegationResponse().GetDelegation().GetShares()
 				s.Require().NoError(err)
 
-				return amt.Equal(existingDelegation.Add(sdk.NewDecFromInt(delegationAmount)))
+				return amt.Equal(existingDelegation.Add(math.LegacyNewDecFromInt(delegationAmount)))
 			},
 			20*time.Second,
 			time.Second,
@@ -63,7 +63,7 @@ func (s *IntegrationTestSuite) testStaking() {
 				amt := res.GetDelegationResponse().GetDelegation().GetShares()
 				s.Require().NoError(err)
 
-				return amt.Equal(sdk.NewDecFromInt(redelegationAmount))
+				return amt.Equal(math.LegacyNewDecFromInt(redelegationAmount))
 			},
 			20*time.Second,
 			time.Second,
@@ -133,7 +133,7 @@ func (s *IntegrationTestSuite) testStaking() {
 				s.Require().Error(err)
 
 				// expect to get the delegation back
-				return amt.Equal(sdk.NewDecFromInt(currDelegationAmount))
+				return amt.Equal(math.LegacyNewDecFromInt(currDelegationAmount))
 			},
 			20*time.Second,
 			time.Second,

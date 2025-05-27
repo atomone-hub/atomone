@@ -60,12 +60,12 @@ func GenVotingParamsVotingPeriod(r *rand.Rand) time.Duration {
 
 // GenTallyParamsQuorum returns randomized TallyParamsQuorum
 func GenTallyParamsQuorum(r *rand.Rand) math.LegacyDec {
-	return sdk.NewDecWithPrec(int64(simulation.RandIntBetween(r, 200, 400)), 3)
+	return math.LegacyNewDecWithPrec(int64(simulation.RandIntBetween(r, 200, 400)), 3)
 }
 
 // GenTallyParamsThreshold returns randomized TallyParamsThreshold
 func GenTallyParamsThreshold(r *rand.Rand) math.LegacyDec {
-	return sdk.NewDecWithPrec(int64(simulation.RandIntBetween(r, 550, 700)), 3)
+	return math.LegacyNewDecWithPrec(int64(simulation.RandIntBetween(r, 550, 700)), 3)
 }
 
 // GenMinDepositRatio returns randomized DepositMinRatio
@@ -76,13 +76,13 @@ func GenMinDepositRatio(r *rand.Rand) math.LegacyDec {
 // GenTallyParamsQuorum returns randomized TallyParamsQuorum
 func GenTallyParamsConstitutionalQuorum(r *rand.Rand, minDec math.LegacyDec) math.LegacyDec {
 	min := int(minDec.Mul(math.LegacyNewDec(1000)).RoundInt64())
-	return sdk.NewDecWithPrec(int64(simulation.RandIntBetween(r, min, 600)), 3)
+	return math.LegacyNewDecWithPrec(int64(simulation.RandIntBetween(r, min, 600)), 3)
 }
 
 // GenTallyParamsThreshold returns randomized TallyParamsThreshold
 func GenTallyParamsConstitutionalThreshold(r *rand.Rand, minDec math.LegacyDec) math.LegacyDec {
 	min := int(minDec.Mul(math.LegacyNewDec(1000)).RoundInt64())
-	return sdk.NewDecWithPrec(int64(simulation.RandIntBetween(r, min, 950)), 3)
+	return math.LegacyNewDecWithPrec(int64(simulation.RandIntBetween(r, min, 950)), 3)
 }
 
 // GenQuorumTimeout returns a randomized QuorumTimeout between 0 and votingPeriod

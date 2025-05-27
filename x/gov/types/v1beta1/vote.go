@@ -111,7 +111,7 @@ func WeightedVoteOptionsFromString(str string) (WeightedVoteOptions, error) {
 		if len(fields) < 2 {
 			return options, fmt.Errorf("weight field does not exist for %s option", fields[0])
 		}
-		weight, err := sdk.NewDecFromStr(fields[1])
+		weight, err := math.LegacyNewDecFromStr(fields[1])
 		if err != nil {
 			return options, err
 		}

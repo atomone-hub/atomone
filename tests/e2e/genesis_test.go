@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	"cosmossdk.io/math"
 	tmtypes "github.com/cometbft/cometbft/types"
 
 	icagen "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/genesis/types"
@@ -176,12 +177,12 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 	appState[minttypes.ModuleName] = mintGenStateBz
 
 	// Refactor to separate method
-	quorum, _ := sdk.NewDecFromStr("0.000000000000000001")
-	threshold, _ := sdk.NewDecFromStr("0.000000000000000001")
-	lawQuorum, _ := sdk.NewDecFromStr("0.000000000000000001")
-	lawThreshold, _ := sdk.NewDecFromStr("0.000000000000000001")
-	amendmentsQuorum, _ := sdk.NewDecFromStr("0.000000000000000001")
-	amendmentsThreshold, _ := sdk.NewDecFromStr("0.000000000000000001")
+	quorum, _ := math.LegacyNewDecFromStr("0.000000000000000001")
+	threshold, _ := math.LegacyNewDecFromStr("0.000000000000000001")
+	lawQuorum, _ := math.LegacyNewDecFromStr("0.000000000000000001")
+	lawThreshold, _ := math.LegacyNewDecFromStr("0.000000000000000001")
+	amendmentsQuorum, _ := math.LegacyNewDecFromStr("0.000000000000000001")
+	amendmentsThreshold, _ := math.LegacyNewDecFromStr("0.000000000000000001")
 
 	maxDepositPeriod := 10 * time.Minute
 	votingPeriod := 15 * time.Second
@@ -192,7 +193,7 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 			votingPeriod,
 			quorum.String(), threshold.String(),
 			amendmentsQuorum.String(), amendmentsThreshold.String(), lawQuorum.String(), lawThreshold.String(),
-			sdk.ZeroDec().String(),
+			math.LegacyZeroDec().String(),
 			false, false, govv1.DefaultMinDepositRatio.String(),
 			govv1.DefaultQuorumTimeout, govv1.DefaultMaxVotingPeriodExtension, govv1.DefaultQuorumCheckCount,
 		),

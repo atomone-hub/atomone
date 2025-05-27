@@ -7,8 +7,6 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
-	authzcodec "github.com/cosmos/cosmos-sdk/x/authz/codec"
-	groupcodec "github.com/cosmos/cosmos-sdk/x/group/codec"
 	paramsproposal "github.com/cosmos/cosmos-sdk/x/params/types/proposal"
 
 	govcodec "github.com/atomone-hub/atomone/x/gov/codec"
@@ -60,7 +58,5 @@ func RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 func init() {
 	// Register all Amino interfaces and concrete types on the authz  and gov Amino codec so that this can later be
 	// used to properly serialize MsgGrant, MsgExec and MsgSubmitProposal instances
-	RegisterLegacyAminoCodec(authzcodec.Amino)
 	RegisterLegacyAminoCodec(govcodec.Amino)
-	RegisterLegacyAminoCodec(groupcodec.Amino)
 }

@@ -89,8 +89,8 @@ func (g GovVoteDecorator) ValidateVoteMsgs(ctx sdk.Context, msgs []sdk.Msg) erro
 			if err != nil {
 				panic(err) // shouldn't happen
 			}
-			validator, found := g.stakingKeeper.GetValidator(ctx, validatorAddr)
-			if found {
+			validator, err := g.stakingKeeper.GetValidator(ctx, validatorAddr)
+			if err == nil {
 				shares := delegation.Shares
 				tokens := validator.TokensFromSharesTruncated(shares)
 				stakedTokens = stakedTokens.Add(tokens)

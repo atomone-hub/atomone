@@ -28,12 +28,14 @@ func TestVoteSpamDecoratorGovV1Beta1(t *testing.T) {
 	stakingKeeper := atomoneApp.StakingKeeper
 
 	// Get validator
-	valAddr1 := stakingKeeper.GetAllValidators(ctx)[0].GetOperator()
+	valAddrs, err := stakingKeeper.GetAllValidators(ctx)
+	require.NoError(t, err)
+	valAddr1 := valAddrs[0].GetOperator()
 
 	// Create one more validator
 	pk := ed25519.GenPrivKeyFromSecret([]byte{uint8(13)}).PubKey()
 	validator2, err := stakingtypes.NewValidator(
-		sdk.ValAddress(pk.Address()),
+		sdk.ValAddress(pk.Address()).String(),
 		pk,
 		stakingtypes.Description{},
 	)

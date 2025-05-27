@@ -72,7 +72,7 @@ func (s *IntegrationTestSuite) testDelayedVestingAccount(api string) {
 				amt := res.GetDelegationResponse().GetDelegation().GetShares()
 				s.Require().NoError(err)
 
-				return amt.Equal(sdk.NewDecFromInt(vestingDelegationAmount.Amount))
+				return amt.Equal(math.LegacyNewDecFromInt(vestingDelegationAmount.Amount))
 			},
 			20*time.Second,
 			time.Second,
@@ -139,7 +139,7 @@ func (s *IntegrationTestSuite) testContinuousVestingAccount(api string) {
 				amt := res.GetDelegationResponse().GetDelegation().GetShares()
 				s.Require().NoError(err)
 
-				return amt.Equal(sdk.NewDecFromInt(vestingDelegationAmount.Amount))
+				return amt.Equal(math.LegacyNewDecFromInt(vestingDelegationAmount.Amount))
 			},
 			20*time.Second,
 			time.Second,
@@ -273,7 +273,7 @@ func (s *IntegrationTestSuite) testPeriodicVestingAccount(api string) { //nolint
 				amt := res.GetDelegationResponse().GetDelegation().GetShares()
 				s.Require().NoError(err)
 
-				return amt.Equal(sdk.NewDecFromInt(vestingDelegationAmount.Amount))
+				return amt.Equal(math.LegacyNewDecFromInt(vestingDelegationAmount.Amount))
 			},
 			20*time.Second,
 			time.Second,

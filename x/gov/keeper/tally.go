@@ -160,7 +160,7 @@ func (keeper Keeper) tallyVotes(
 		votingPower := sharesAfterDeductions.MulInt(val.BondedTokens).Quo(val.DelegatorShares)
 
 		for _, option := range val.Vote {
-			weight, _ := sdk.NewDecFromStr(option.Weight)
+			weight, _ := math.LegacyNewDecFromStr(option.Weight)
 			subPower := votingPower.Mul(weight)
 			results[option.Option] = results[option.Option].Add(subPower)
 		}
@@ -175,11 +175,11 @@ func (keeper Keeper) tallyVotes(
 // appropriate quorum and threshold.
 func (keeper Keeper) getQuorumAndThreshold(ctx sdk.Context, proposal v1.Proposal) (math.LegacyDec, math.LegacyDec, error) {
 	params := keeper.GetParams(ctx)
-	quorum, err := sdk.NewDecFromStr(params.Quorum)
+	quorum, err := math.LegacyNewDecFromStr(params.Quorum)
 	if err != nil {
 		return math.LegacyDec{}, math.LegacyDec{}, fmt.Errorf("parsing params.Quorum: %w", err)
 	}
-	threshold, err := sdk.NewDecFromStr(params.Threshold)
+	threshold, err := math.LegacyNewDecFromStr(params.Threshold)
 	if err != nil {
 		return math.LegacyDec{}, math.LegacyDec{}, fmt.Errorf("parsing params.Threshold: %w", err)
 	}
@@ -193,14 +193,14 @@ func (keeper Keeper) getQuorumAndThreshold(ctx sdk.Context, proposal v1.Proposal
 				// quorum and threshold accordingly
 				switch sdkMsg.(type) {
 				case *v1.MsgProposeConstitutionAmendment:
-					q, err := sdk.NewDecFromStr(params.ConstitutionAmendmentQuorum)
+					q, err := math.LegacyNewDecFromStr(params.ConstitutionAmendmentQuorum)
 					if err != nil {
 						return math.LegacyDec{}, math.LegacyDec{}, fmt.Errorf("parsing params.ConstitutionAmendmentQuorum: %w", err)
 					}
 					if quorum.LT(q) {
 						quorum = q
 					}
-					t, err := sdk.NewDecFromStr(params.ConstitutionAmendmentThreshold)
+					t, err := math.LegacyNewDecFromStr(params.ConstitutionAmendmentThreshold)
 					if err != nil {
 						return math.LegacyDec{}, math.LegacyDec{}, fmt.Errorf("parsing params.ConstitutionAmendmentThreshold: %w", err)
 					}
@@ -208,14 +208,14 @@ func (keeper Keeper) getQuorumAndThreshold(ctx sdk.Context, proposal v1.Proposal
 						threshold = t
 					}
 				case *v1.MsgProposeLaw:
-					q, err := sdk.NewDecFromStr(params.LawQuorum)
+					q, err := math.LegacyNewDecFromStr(params.LawQuorum)
 					if err != nil {
 						return math.LegacyDec{}, math.LegacyDec{}, fmt.Errorf("parsing params.LawQuorum: %w", err)
 					}
 					if quorum.LT(q) {
 						quorum = q
 					}
-					t, err := sdk.NewDecFromStr(params.LawThreshold)
+					t, err := math.LegacyNewDecFromStr(params.LawThreshold)
 					if err != nil {
 						return math.LegacyDec{}, math.LegacyDec{}, fmt.Errorf("parsing params.LawThreshold: %w", err)
 					}

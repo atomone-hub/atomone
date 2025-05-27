@@ -1,10 +1,11 @@
 package simulation
 
 import (
-	"math"
+	stdmath "math"
 	"math/rand"
 	"time"
 
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
@@ -245,7 +246,7 @@ func simulateMsgSubmitProposal(ak types.AccountKeeper, bk types.BankKeeper, k *k
 		// 2) Schedule operations for votes
 		// 2.1) first pick a number of people to vote.
 		curNumVotesState = numVotesTransitionMatrix.NextState(r, curNumVotesState)
-		numVotes := int(math.Ceil(float64(len(accs)) * statePercentageArray[curNumVotesState]))
+		numVotes := int(stdmath.Ceil(float64(len(accs)) * statePercentageArray[curNumVotesState]))
 
 		// 2.2) select who votes and when
 		whoVotes := r.Perm(len(accs))
@@ -454,7 +455,7 @@ func randomDeposit(
 
 	minDepositAmount := minDeposit[denomIndex].Amount
 
-	minDepositRatio, err := sdk.NewDecFromStr(params.GetMinDepositRatio())
+	minDepositRatio, err := math.LegacyNewDecFromStr(params.GetMinDepositRatio())
 	if err != nil {
 		return nil, false, err
 	}
@@ -463,12 +464,12 @@ func randomDeposit(
 
 	minAmount := math.ZeroInt()
 	if useMinAmount {
-		minDepositPercent, err := sdk.NewDecFromStr(params.MinInitialDepositRatio)
+		minDepositPercent, err := math.LegacyNewDecFromStr(params.MinInitialDepositRatio)
 		if err != nil {
 			return nil, false, err
 		}
 
-		minAmount = sdk.NewDecFromInt(minDepositAmount).Mul(minDepositPercent).TruncateInt()
+		minAmount = math.LegacyNewDecFromInt(minDepositAmount).Mul(minDepositPercent).TruncateInt()
 	}
 
 	amount, err := simtypes.RandPositiveInt(r, minDepositAmount.Sub(minAmount))
@@ -536,19 +537,19 @@ func randomWeightedVotingOptions(r *rand.Rand) v1.WeightedVoteOptions {
 	if w1 > 0 {
 		weightedVoteOptions = append(weightedVoteOptions, &v1.WeightedVoteOption{
 			Option: v1.OptionYes,
-			Weight: sdk.NewDecWithPrec(int64(w1), 2).String(),
+			Weight: math.LegacyNewDecWithPrec(int64(w1), 2).String(),
 		})
 	}
 	if w2 > 0 {
 		weightedVoteOptions = append(weightedVoteOptions, &v1.WeightedVoteOption{
 			Option: v1.OptionAbstain,
-			Weight: sdk.NewDecWithPrec(int64(w2), 2).String(),
+			Weight: math.LegacyNewDecWithPrec(int64(w2), 2).String(),
 		})
 	}
 	if w3 > 0 {
 		weightedVoteOptions = append(weightedVoteOptions, &v1.WeightedVoteOption{
 			Option: v1.OptionNo,
-			Weight: sdk.NewDecWithPrec(int64(w3), 2).String(),
+			Weight: math.LegacyNewDecWithPrec(int64(w3), 2).String(),
 		})
 	}
 	return weightedVoteOptions

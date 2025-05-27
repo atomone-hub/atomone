@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	sdkerrors "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors1 "github.com/cosmos/cosmos-sdk/types/errors"
@@ -128,7 +129,7 @@ func (keeper Keeper) AddDeposit(ctx sdk.Context, proposalID uint64, depositorAdd
 	// NOTE: backported from v50
 	// v47 does not have expedited proposals so we always use params.MinDeposit
 	minDepositAmount := params.MinDeposit
-	minDepositRatio, err := sdk.NewDecFromStr(params.GetMinDepositRatio())
+	minDepositRatio, err := math.LegacyNewDecFromStr(params.GetMinDepositRatio())
 	if err != nil {
 		return false, err
 	}
@@ -234,7 +235,7 @@ func (keeper Keeper) validateInitialDeposit(ctx sdk.Context, initialDeposit sdk.
 	}
 
 	params := keeper.GetParams(ctx)
-	minInitialDepositRatio, err := sdk.NewDecFromStr(params.MinInitialDepositRatio)
+	minInitialDepositRatio, err := math.LegacyNewDecFromStr(params.MinInitialDepositRatio)
 	if err != nil {
 		return err
 	}
@@ -243,7 +244,7 @@ func (keeper Keeper) validateInitialDeposit(ctx sdk.Context, initialDeposit sdk.
 	}
 	minDepositCoins := params.MinDeposit
 	for i := range minDepositCoins {
-		minDepositCoins[i].Amount = sdk.NewDecFromInt(minDepositCoins[i].Amount).Mul(minInitialDepositRatio).RoundInt()
+		minDepositCoins[i].Amount = math.LegacyNewDecFromInt(minDepositCoins[i].Amount).Mul(minInitialDepositRatio).RoundInt()
 	}
 	if !initialDeposit.IsAllGTE(minDepositCoins) {
 		return sdkerrors.Wrapf(types.ErrMinDepositTooSmall, "was (%s), need (%s)", initialDeposit, minDepositCoins)
