@@ -1,8 +1,8 @@
 package atomone
 
 import (
-	ibckeeper "github.com/cosmos/ibc-go/v7/modules/core/keeper"
-	ibctestingtypes "github.com/cosmos/ibc-go/v7/testing/types"
+	ibckeeper "github.com/cosmos/ibc-go/v10/modules/core/keeper"
+	ibctestingtypes "github.com/cosmos/ibc-go/v10/testing/types"
 
 	capabilitykeeper "github.com/cosmos/cosmos-sdk/x/capability/keeper"
 )

@@ -17,7 +17,6 @@ import (
 	tmtime "github.com/cometbft/cometbft/types/time"
 
 	"cosmossdk.io/math"
-	"cosmossdk.io/simapp"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -28,7 +27,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/server"
 	srvconfig "github.com/cosmos/cosmos-sdk/server/config"
 	"github.com/cosmos/cosmos-sdk/testutil"
-	"github.com/cosmos/cosmos-sdk/testutil/network"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -491,43 +489,43 @@ func writeFile(name string, dir string, contents []byte) error {
 
 // startTestnet starts an in-process testnet
 func startTestnet(cmd *cobra.Command, args startArgs) error {
-	networkConfig := network.DefaultConfig(simapp.NewTestNetworkFixture)
+	// networkConfig := network.DefaultConfig(simapp.NewTestNetworkFixture)
 
-	// Default networkConfig.ChainID is random, and we should only override it if chainID provided
-	// is non-empty
-	if args.chainID != "" {
-		networkConfig.ChainID = args.chainID
-	}
-	networkConfig.SigningAlgo = args.algo
-	networkConfig.MinGasPrices = args.minGasPrices
-	networkConfig.NumValidators = args.numValidators
-	networkConfig.EnableTMLogging = args.enableLogging
-	networkConfig.RPCAddress = args.rpcAddress
-	networkConfig.APIAddress = args.apiAddress
-	networkConfig.GRPCAddress = args.grpcAddress
-	networkConfig.PrintMnemonic = args.printMnemonic
-	networkLogger := network.NewCLILogger(cmd)
+	// // Default networkConfig.ChainID is random, and we should only override it if chainID provided
+	// // is non-empty
+	// if args.chainID != "" {
+	// 	networkConfig.ChainID = args.chainID
+	// }
+	// networkConfig.SigningAlgo = args.algo
+	// networkConfig.MinGasPrices = args.minGasPrices
+	// networkConfig.NumValidators = args.numValidators
+	// networkConfig.EnableTMLogging = args.enableLogging
+	// networkConfig.RPCAddress = args.rpcAddress
+	// networkConfig.APIAddress = args.apiAddress
+	// networkConfig.GRPCAddress = args.grpcAddress
+	// networkConfig.PrintMnemonic = args.printMnemonic
+	// networkLogger := network.NewCLILogger(cmd)
 
-	baseDir := fmt.Sprintf("%s/%s", args.outputDir, networkConfig.ChainID)
-	if _, err := os.Stat(baseDir); !os.IsNotExist(err) {
-		return fmt.Errorf(
-			"testnests directory already exists for chain-id '%s': %s, please remove or select a new --chain-id",
-			networkConfig.ChainID, baseDir)
-	}
+	// baseDir := fmt.Sprintf("%s/%s", args.outputDir, networkConfig.ChainID)
+	// if _, err := os.Stat(baseDir); !os.IsNotExist(err) {
+	// 	return fmt.Errorf(
+	// 		"testnests directory already exists for chain-id '%s': %s, please remove or select a new --chain-id",
+	// 		networkConfig.ChainID, baseDir)
+	// }
 
-	testnet, err := network.New(networkLogger, baseDir, networkConfig)
-	if err != nil {
-		return err
-	}
+	// testnet, err := network.New(networkLogger, baseDir, networkConfig)
+	// if err != nil {
+	// 	return err
+	// }
 
-	if _, err := testnet.WaitForHeight(1); err != nil {
-		return err
-	}
-	cmd.Println("press the Enter Key to terminate")
-	if _, err := fmt.Scanln(); err != nil { // wait for Enter Key
-		return err
-	}
-	testnet.Cleanup()
+	// if _, err := testnet.WaitForHeight(1); err != nil {
+	// 	return err
+	// }
+	// cmd.Println("press the Enter Key to terminate")
+	// if _, err := fmt.Scanln(); err != nil { // wait for Enter Key
+	// 	return err
+	// }
+	// testnet.Cleanup()
 
 	return nil
 }

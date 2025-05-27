@@ -1,7 +1,7 @@
 package v2
 
 import (
-	store "github.com/cosmos/cosmos-sdk/store/types"
+	store "cosmossdk.io/store/types"
 	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
 
 	"github.com/atomone-hub/atomone/app/upgrades"

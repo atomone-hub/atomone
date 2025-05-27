@@ -3,21 +3,20 @@ module github.com/atomone-hub/atomone
 go 1.22.10
 
 require (
-	cosmossdk.io/api v0.3.1
-	cosmossdk.io/core v0.5.1
+	cosmossdk.io/api v0.9.2
+	cosmossdk.io/core v0.11.3
 	cosmossdk.io/depinject v1.0.0-alpha.4
 	cosmossdk.io/errors v1.0.1
-	cosmossdk.io/math v1.4.0
-	cosmossdk.io/simapp v0.0.0-20230602123434-616841b9704d
+	cosmossdk.io/math v1.5.3
 	cosmossdk.io/tools/rosetta v0.2.1
 	github.com/chzyer/readline v1.5.1
-	github.com/cometbft/cometbft v0.37.15
+	github.com/cometbft/cometbft v0.38.17
 	github.com/cometbft/cometbft-db v0.10.0
 	github.com/cosmos/cosmos-proto v1.0.0-beta.5
-	github.com/cosmos/cosmos-sdk v0.47.17
+	github.com/cosmos/cosmos-sdk v0.50.13
 	github.com/cosmos/go-bip39 v1.0.0
 	github.com/cosmos/gogoproto v1.7.0
-	github.com/cosmos/ibc-go/v7 v7.10.0
+	github.com/cosmos/ibc-go/v10 v10.2.0
 	github.com/golang/mock v1.6.0
 	github.com/golang/protobuf v1.5.4
 	github.com/google/gofuzz v1.2.0
@@ -222,10 +221,6 @@ replace (
 
 	// following versions might cause unexpected behavior
 	github.com/syndtr/goleveldb => github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7
-
-	// stick with compatible version or x/exp in v0.47.x line
-	// x/exp had a breaking change in further commits
-	golang.org/x/exp => golang.org/x/exp v0.0.0-20230711153332-06a737ee72cb
 
 	// replace broken cosmos-sdk dep
 	nhooyr.io/websocket => github.com/coder/websocket v1.8.6

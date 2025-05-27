@@ -8,10 +8,10 @@ import (
 	"strings"
 	"time"
 
+	upgradetypes "cosmossdk.io/x/upgrade/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	govtypesv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
