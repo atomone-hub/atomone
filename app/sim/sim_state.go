@@ -102,7 +102,7 @@ func AppStateFn(encConfig params.EncodingConfig, simManager *module.SimulationMa
 			panic(err)
 		}
 		// compute not bonded balance
-		notBondedTokens := sdk.ZeroInt()
+		notBondedTokens := math.ZeroInt()
 		for _, val := range stakingState.Validators {
 			if val.Status != stakingtypes.Unbonded {
 				continue

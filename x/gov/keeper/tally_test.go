@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
@@ -100,7 +101,7 @@ func (s *tallyFixture) delegate(delegator sdk.AccAddress, validator sdk.ValAddre
 	}
 	for i := 0; i < len(s.validators); i++ {
 		if s.validators[i].OperatorAddress == validator.String() {
-			s.validators[i], delegation.Shares = s.validators[i].AddTokensFromDel(sdk.NewInt(m))
+			s.validators[i], delegation.Shares = s.validators[i].AddTokensFromDel(math.NewInt(m))
 			break
 		}
 	}

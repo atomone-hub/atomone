@@ -1,13 +1,13 @@
 package v1beta1
 
 import (
-	authzcodec "cosmossdk.io/x/authz/codec"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/codec/legacy"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
+	authzcodec "github.com/cosmos/cosmos-sdk/x/authz/codec"
 	groupcodec "github.com/cosmos/cosmos-sdk/x/group/codec"
 	paramsproposal "github.com/cosmos/cosmos-sdk/x/params/types/proposal"
 

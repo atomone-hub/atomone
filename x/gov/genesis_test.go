@@ -9,6 +9,7 @@ import (
 
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 
+	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -35,7 +36,7 @@ func TestImportExportQueues_ErrorUnconsistentState(t *testing.T) {
 					Amount: sdk.Coins{
 						sdk.NewCoin(
 							"stake",
-							sdk.NewInt(1234),
+							math.NewInt(1234),
 						),
 					},
 				},

@@ -31,7 +31,7 @@ func (s *IntegrationTestSuite) testStaking() {
 			existingDelegation = res.GetDelegationResponse().GetDelegation().GetShares()
 		}
 
-		delegationAmount := sdk.NewInt(500000000)
+		delegationAmount := math.NewInt(500000000)
 		delegation := sdk.NewCoin(uatoneDenom, delegationAmount) // 500 atom
 
 		// Alice delegate uatone to Validator A
@@ -50,7 +50,7 @@ func (s *IntegrationTestSuite) testStaking() {
 			time.Second,
 		)
 
-		redelegationAmount := delegationAmount.Quo(sdk.NewInt(2))
+		redelegationAmount := delegationAmount.Quo(math.NewInt(2))
 		redelegation := sdk.NewCoin(uatoneDenom, redelegationAmount) // 250 atom
 
 		// Alice re-delegate half of her uatone delegation from Validator A to Validator B

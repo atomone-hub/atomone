@@ -3,6 +3,7 @@ package types
 import (
 	"testing"
 
+	"cosmossdk.io/math"
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -30,7 +31,7 @@ func TestMsgMintPhoton_ValidateBasic(t *testing.T) {
 				ToAddress: sdk.AccAddress("test1").String(),
 				Amount: sdk.Coin{
 					Denom:  appparams.BondDenom,
-					Amount: sdk.NewInt(-1),
+					Amount: math.NewInt(-1),
 				},
 			},
 			err: sdkerrors.ErrInvalidCoins,
@@ -41,7 +42,7 @@ func TestMsgMintPhoton_ValidateBasic(t *testing.T) {
 				ToAddress: sdk.AccAddress("test1").String(),
 				Amount: sdk.Coin{
 					Denom:  appparams.BondDenom,
-					Amount: sdk.NewInt(0),
+					Amount: math.NewInt(0),
 				},
 			},
 			err: sdkerrors.ErrInvalidCoins,

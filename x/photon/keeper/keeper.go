@@ -5,6 +5,7 @@ import (
 
 	"github.com/cometbft/cometbft/libs/log"
 
+	"cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -46,8 +47,8 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 
 // conversionRate returns the conversion rate for converting bond denom to
 // photon.
-func (k Keeper) conversionRate(_ sdk.Context, bondDenomSupply, uphotonSupply sdk.Dec) sdk.Dec {
-	remainMintableUphotons := sdk.NewDec(types.MaxSupply).Sub(uphotonSupply)
+func (k Keeper) conversionRate(_ sdk.Context, bondDenomSupply, uphotonSupply math.LegacyDec) math.LegacyDec {
+	remainMintableUphotons := math.LegacyNewDec(types.MaxSupply).Sub(uphotonSupply)
 	if remainMintableUphotons.IsNegative() {
 		// If for any reason the max supply is exceeded, avoid returning a negative number
 		return sdk.ZeroDec()

@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strings"
 
+	"cosmossdk.io/math"
 	evidencetypes "cosmossdk.io/x/evidence/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -305,7 +306,7 @@ func (s *IntegrationTestSuite) queryConstitution(endpoint string) govtypesv1.Que
 	return res
 }
 
-func (s *IntegrationTestSuite) queryPhotonConversionRate(endpoint string) sdk.Dec {
+func (s *IntegrationTestSuite) queryPhotonConversionRate(endpoint string) math.LegacyDec {
 	body, err := httpGet(fmt.Sprintf("%s/atomone/photon/v1/conversion_rate", endpoint))
 	s.Require().NoError(err)
 	var resp photontypes.QueryConversionRateResponse

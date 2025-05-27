@@ -3,6 +3,7 @@ package v1_test
 import (
 	"testing"
 
+	"cosmossdk.io/math"
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -45,7 +46,7 @@ func TestValidateGenesis(t *testing.T) {
 				params1 := params
 				params1.MinDeposit = sdk.Coins{{
 					Denom:  sdk.DefaultBondDenom,
-					Amount: sdk.NewInt(-100),
+					Amount: math.NewInt(-100),
 				}}
 
 				return v1.NewGenesisState(v1.DefaultStartingProposalID, params1)

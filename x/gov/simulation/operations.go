@@ -461,7 +461,7 @@ func randomDeposit(
 
 	threshold := minDepositAmount.ToLegacyDec().Mul(minDepositRatio).TruncateInt()
 
-	minAmount := sdk.ZeroInt()
+	minAmount := math.ZeroInt()
 	if useMinAmount {
 		minDepositPercent, err := sdk.NewDecFromStr(params.MinInitialDepositRatio)
 		if err != nil {

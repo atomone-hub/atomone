@@ -30,7 +30,7 @@ func init() {
 // Default governance params
 var (
 	minVotingPeriod, _                    = time.ParseDuration(MinVotingPeriod)
-	DefaultMinDepositTokens               = sdk.NewInt(10000000)
+	DefaultMinDepositTokens               = math.NewInt(10000000)
 	DefaultQuorum                         = sdk.NewDecWithPrec(25, 2)
 	DefaultThreshold                      = sdk.NewDecWithPrec(667, 3)
 	DefaultConstitutionAmendmentQuorum    = sdk.NewDecWithPrec(25, 2)

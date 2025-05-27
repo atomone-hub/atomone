@@ -58,7 +58,7 @@ func (v Votes) String() string {
 	return out
 }
 
-func NewWeightedVoteOption(option VoteOption, weight sdk.Dec) *WeightedVoteOption {
+func NewWeightedVoteOption(option VoteOption, weight math.LegacyDec) *WeightedVoteOption {
 	return &WeightedVoteOption{Option: option, Weight: weight.String()}
 }
 

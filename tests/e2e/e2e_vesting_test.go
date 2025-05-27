@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"time"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -32,13 +33,13 @@ type (
 
 var (
 	genesisVestingKeys  = []string{continuousVestingKey, delayedVestingKey, lockedVestingKey, periodicVestingKey}
-	vestingAmountVested = sdk.NewCoin(uatoneDenom, sdk.NewInt(99900000000))
+	vestingAmountVested = sdk.NewCoin(uatoneDenom, math.NewInt(99900000000))
 	vestingAmount       = sdk.NewCoins(
 		sdk.NewInt64Coin(uatoneDenom, 350_000),
 		sdk.NewInt64Coin(uphotonDenom, 10_000_000_000),
 	)
 	vestingBalance          = sdk.NewCoins(vestingAmountVested).Add(vestingAmount...)
-	vestingDelegationAmount = sdk.NewCoin(uatoneDenom, sdk.NewInt(500000000))
+	vestingDelegationAmount = sdk.NewCoin(uatoneDenom, math.NewInt(500000000))
 )
 
 func (s *IntegrationTestSuite) testDelayedVestingAccount(api string) {
@@ -218,7 +219,7 @@ func (s *IntegrationTestSuite) testPeriodicVestingAccount(api string) { //nolint
 		balance, err := getSpecificBalance(api, periodicVestingAddr, uatoneDenom)
 		s.Require().NoError(err)
 
-		expectedBalance := sdk.NewCoin(uatoneDenom, sdk.NewInt(0))
+		expectedBalance := sdk.NewCoin(uatoneDenom, math.NewInt(0))
 		for _, period := range acc.VestingPeriods {
 			// _, coin := ante.Find(period.Amount, uatoneDenom)
 			_, coin := period.Amount.Find(uatoneDenom)

@@ -28,6 +28,7 @@ import (
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	tmjson "github.com/cometbft/cometbft/libs/json"
 
+	"cosmossdk.io/math"
 	evidencetypes "cosmossdk.io/x/evidence/types"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
@@ -317,15 +318,15 @@ func (s *IntegrationTestSuite) addGenesisVestingAndJailedAccounts(
 	)
 	s.Require().NoError(err)
 	val.Jailed = true
-	val.Tokens = sdk.NewInt(slashingShares)
-	val.DelegatorShares = sdk.NewDec(slashingShares)
+	val.Tokens = math.NewInt(slashingShares)
+	val.DelegatorShares = math.LegacyNewDec(slashingShares)
 	stakingGenState.Validators = append(stakingGenState.Validators, val)
 
 	// add jailed validator delegations
 	stakingGenState.Delegations = append(stakingGenState.Delegations, stakingtypes.Delegation{
 		DelegatorAddress: jailedValAcc.String(),
 		ValidatorAddress: jailedValAddr.String(),
-		Shares:           sdk.NewDec(slashingShares),
+		Shares:           math.LegacyNewDec(slashingShares),
 	})
 
 	appGenState[stakingtypes.ModuleName], err = cdc.MarshalJSON(stakingGenState)
@@ -388,7 +389,7 @@ func (s *IntegrationTestSuite) addGenesisVestingAndJailedAccounts(
 	}
 	stakingModuleBalances := banktypes.Balance{
 		Address: authtypes.NewModuleAddress(stakingtypes.NotBondedPoolName).String(),
-		Coins:   sdk.NewCoins(sdk.NewCoin(uatoneDenom, sdk.NewInt(slashingShares))),
+		Coins:   sdk.NewCoins(sdk.NewCoin(uatoneDenom, math.NewInt(slashingShares))),
 	}
 	bankGenState.Balances = append(
 		bankGenState.Balances,

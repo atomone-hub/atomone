@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"testing"
 
+	"cosmossdk.io/math"
 	"github.com/stretchr/testify/require"
 
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
@@ -20,7 +21,7 @@ func TestDeposits(t *testing.T) {
 	govKeeper, mocks, _, ctx := setupGovKeeper(t)
 	bankKeeper, stakingKeeper := mocks.bankKeeper, mocks.stakingKeeper
 	trackMockBalances(bankKeeper)
-	TestAddrs := simtestutil.AddTestAddrsIncremental(bankKeeper, stakingKeeper, ctx, 2, sdk.NewInt(10000000))
+	TestAddrs := simtestutil.AddTestAddrsIncremental(bankKeeper, stakingKeeper, ctx, 2, math.NewInt(10000000))
 
 	tp := TestProposal
 	proposal, err := govKeeper.SubmitProposal(ctx, tp, "", "title", "description", TestAddrs[0])
@@ -127,69 +128,69 @@ func TestValidateInitialDeposit(t *testing.T) {
 		expectError bool
 	}{
 		"min deposit * initial percent == initial deposit: success": {
-			minDeposit:               sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(baseDepositTestAmount))),
+			minDeposit:               sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(baseDepositTestAmount))),
 			minInitialDepositPercent: baseDepositTestPercent,
-			initialDeposit:           sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(baseDepositTestAmount*baseDepositTestPercent/100))),
+			initialDeposit:           sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(baseDepositTestAmount*baseDepositTestPercent/100))),
 		},
 		"min deposit * initial percent < initial deposit: success": {
-			minDeposit:               sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(baseDepositTestAmount))),
+			minDeposit:               sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(baseDepositTestAmount))),
 			minInitialDepositPercent: baseDepositTestPercent,
-			initialDeposit:           sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(baseDepositTestAmount*baseDepositTestPercent/100+1))),
+			initialDeposit:           sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(baseDepositTestAmount*baseDepositTestPercent/100+1))),
 		},
 		"min deposit * initial percent > initial deposit: error": {
-			minDeposit:               sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(baseDepositTestAmount))),
+			minDeposit:               sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(baseDepositTestAmount))),
 			minInitialDepositPercent: baseDepositTestPercent,
-			initialDeposit:           sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(baseDepositTestAmount*baseDepositTestPercent/100-1))),
+			initialDeposit:           sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(baseDepositTestAmount*baseDepositTestPercent/100-1))),
 
 			expectError: true,
 		},
 		"min deposit * initial percent == initial deposit (non-base values and denom): success": {
-			minDeposit:               sdk.NewCoins(sdk.NewCoin("uosmo", sdk.NewInt(56912))),
+			minDeposit:               sdk.NewCoins(sdk.NewCoin("uosmo", math.NewInt(56912))),
 			minInitialDepositPercent: 50,
-			initialDeposit:           sdk.NewCoins(sdk.NewCoin("uosmo", sdk.NewInt(56912/2+10))),
+			initialDeposit:           sdk.NewCoins(sdk.NewCoin("uosmo", math.NewInt(56912/2+10))),
 		},
 		"min deposit * initial percent == initial deposit but different denoms: error": {
-			minDeposit:               sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(baseDepositTestAmount))),
+			minDeposit:               sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(baseDepositTestAmount))),
 			minInitialDepositPercent: baseDepositTestPercent,
-			initialDeposit:           sdk.NewCoins(sdk.NewCoin("uosmo", sdk.NewInt(baseDepositTestAmount*baseDepositTestPercent/100))),
+			initialDeposit:           sdk.NewCoins(sdk.NewCoin("uosmo", math.NewInt(baseDepositTestAmount*baseDepositTestPercent/100))),
 
 			expectError: true,
 		},
 		"min deposit * initial percent == initial deposit (multiple coins): success": {
 			minDeposit: sdk.NewCoins(
-				sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(baseDepositTestAmount)),
-				sdk.NewCoin("uosmo", sdk.NewInt(baseDepositTestAmount*2))),
+				sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(baseDepositTestAmount)),
+				sdk.NewCoin("uosmo", math.NewInt(baseDepositTestAmount*2))),
 			minInitialDepositPercent: baseDepositTestPercent,
 			initialDeposit: sdk.NewCoins(
-				sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(baseDepositTestAmount*baseDepositTestPercent/100)),
-				sdk.NewCoin("uosmo", sdk.NewInt(baseDepositTestAmount*2*baseDepositTestPercent/100)),
+				sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(baseDepositTestAmount*baseDepositTestPercent/100)),
+				sdk.NewCoin("uosmo", math.NewInt(baseDepositTestAmount*2*baseDepositTestPercent/100)),
 			),
 		},
 		"min deposit * initial percent > initial deposit (multiple coins): error": {
 			minDeposit: sdk.NewCoins(
-				sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(baseDepositTestAmount)),
-				sdk.NewCoin("uosmo", sdk.NewInt(baseDepositTestAmount*2))),
+				sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(baseDepositTestAmount)),
+				sdk.NewCoin("uosmo", math.NewInt(baseDepositTestAmount*2))),
 			minInitialDepositPercent: baseDepositTestPercent,
 			initialDeposit: sdk.NewCoins(
-				sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(baseDepositTestAmount*baseDepositTestPercent/100)),
-				sdk.NewCoin("uosmo", sdk.NewInt(baseDepositTestAmount*2*baseDepositTestPercent/100-1)),
+				sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(baseDepositTestAmount*baseDepositTestPercent/100)),
+				sdk.NewCoin("uosmo", math.NewInt(baseDepositTestAmount*2*baseDepositTestPercent/100-1)),
 			),
 
 			expectError: true,
 		},
 		"min deposit * initial percent < initial deposit (multiple coins - coin not required by min deposit): success": {
 			minDeposit: sdk.NewCoins(
-				sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(baseDepositTestAmount))),
+				sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(baseDepositTestAmount))),
 			minInitialDepositPercent: baseDepositTestPercent,
 			initialDeposit: sdk.NewCoins(
-				sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(baseDepositTestAmount*baseDepositTestPercent/100)),
-				sdk.NewCoin("uosmo", sdk.NewInt(baseDepositTestAmount*baseDepositTestPercent/100-1)),
+				sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(baseDepositTestAmount*baseDepositTestPercent/100)),
+				sdk.NewCoin("uosmo", math.NewInt(baseDepositTestAmount*baseDepositTestPercent/100-1)),
 			),
 		},
 		"0 initial percent: success": {
-			minDeposit:               sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(baseDepositTestAmount))),
+			minDeposit:               sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(baseDepositTestAmount))),
 			minInitialDepositPercent: 0,
-			initialDeposit:           sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(baseDepositTestAmount*baseDepositTestPercent/100))),
+			initialDeposit:           sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(baseDepositTestAmount*baseDepositTestPercent/100))),
 		},
 	}
 
@@ -199,7 +200,7 @@ func TestValidateInitialDeposit(t *testing.T) {
 
 			params := v1.DefaultParams()
 			params.MinDeposit = tc.minDeposit
-			params.MinInitialDepositRatio = sdk.NewDec(tc.minInitialDepositPercent).Quo(sdk.NewDec(100)).String()
+			params.MinInitialDepositRatio = math.LegacyNewDec(tc.minInitialDepositPercent).Quo(math.LegacyNewDec(100)).String()
 
 			govKeeper.SetParams(ctx, params)
 
@@ -269,11 +270,11 @@ func TestDepositAmount(t *testing.T) {
 			bankKeeper, stakingKeeper := mocks.bankKeeper, mocks.stakingKeeper
 			trackMockBalances(bankKeeper)
 
-			testAddrs := simtestutil.AddTestAddrsIncremental(bankKeeper, stakingKeeper, ctx, 2, sdk.NewInt(1000000000000000))
+			testAddrs := simtestutil.AddTestAddrsIncremental(bankKeeper, stakingKeeper, ctx, 2, math.NewInt(1000000000000000))
 
 			params := v1.DefaultParams()
 			params.MinDepositRatio = tc.minDepositRatio
-			params.MinDeposit = sdk.NewCoins(params.MinDeposit...).Add(sdk.NewCoin("zcoin", sdk.NewInt(10000))) // coins must be sorted by denom
+			params.MinDeposit = sdk.NewCoins(params.MinDeposit...).Add(sdk.NewCoin("zcoin", math.NewInt(10000))) // coins must be sorted by denom
 			err := govKeeper.SetParams(ctx, params)
 			require.NoError(t, err)
 

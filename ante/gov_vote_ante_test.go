@@ -61,37 +61,37 @@ func TestVoteSpamDecoratorGovV1Beta1(t *testing.T) {
 	}{
 		{
 			name:       "delegate 0 atone",
-			bondAmt:    sdk.ZeroInt(),
+			bondAmt:    math.ZeroInt(),
 			validators: []sdk.ValAddress{valAddr1},
 			expectPass: false,
 		},
 		{
 			name:       "delegate 0.1 atone",
-			bondAmt:    sdk.NewInt(100000),
+			bondAmt:    math.NewInt(100000),
 			validators: []sdk.ValAddress{valAddr1},
 			expectPass: false,
 		},
 		{
 			name:       "delegate 1 atone",
-			bondAmt:    sdk.NewInt(1000000),
+			bondAmt:    math.NewInt(1000000),
 			validators: []sdk.ValAddress{valAddr1},
 			expectPass: true,
 		},
 		{
 			name:       "delegate 1 atom to two validators",
-			bondAmt:    sdk.NewInt(1000000),
+			bondAmt:    math.NewInt(1000000),
 			validators: []sdk.ValAddress{valAddr1, valAddr2},
 			expectPass: true,
 		},
 		{
 			name:       "delegate 0.9 atom to two validators",
-			bondAmt:    sdk.NewInt(900000),
+			bondAmt:    math.NewInt(900000),
 			validators: []sdk.ValAddress{valAddr1, valAddr2},
 			expectPass: false,
 		},
 		{
 			name:       "delegate 10 atone",
-			bondAmt:    sdk.NewInt(10000000),
+			bondAmt:    math.NewInt(10000000),
 			validators: []sdk.ValAddress{valAddr1},
 			expectPass: true,
 		},
@@ -107,7 +107,7 @@ func TestVoteSpamDecoratorGovV1Beta1(t *testing.T) {
 
 		// Delegate tokens
 		if !tc.bondAmt.IsZero() {
-			amt := tc.bondAmt.Quo(sdk.NewInt(int64(len(tc.validators))))
+			amt := tc.bondAmt.Quo(math.NewInt(int64(len(tc.validators))))
 			for _, valAddr := range tc.validators {
 				val, found := stakingKeeper.GetValidator(ctx, valAddr)
 				require.True(t, found)
@@ -175,37 +175,37 @@ func TestVoteSpamDecoratorGovV1(t *testing.T) {
 	}{
 		{
 			name:       "delegate 0 atone",
-			bondAmt:    sdk.ZeroInt(),
+			bondAmt:    math.ZeroInt(),
 			validators: []sdk.ValAddress{valAddr1},
 			expectPass: false,
 		},
 		{
 			name:       "delegate 0.1 atone",
-			bondAmt:    sdk.NewInt(100000),
+			bondAmt:    math.NewInt(100000),
 			validators: []sdk.ValAddress{valAddr1},
 			expectPass: false,
 		},
 		{
 			name:       "delegate 1 atone",
-			bondAmt:    sdk.NewInt(1000000),
+			bondAmt:    math.NewInt(1000000),
 			validators: []sdk.ValAddress{valAddr1},
 			expectPass: true,
 		},
 		{
 			name:       "delegate 1 atom to two validators",
-			bondAmt:    sdk.NewInt(1000000),
+			bondAmt:    math.NewInt(1000000),
 			validators: []sdk.ValAddress{valAddr1, valAddr2},
 			expectPass: true,
 		},
 		{
 			name:       "delegate 0.9 atom to two validators",
-			bondAmt:    sdk.NewInt(900000),
+			bondAmt:    math.NewInt(900000),
 			validators: []sdk.ValAddress{valAddr1, valAddr2},
 			expectPass: false,
 		},
 		{
 			name:       "delegate 10 atone",
-			bondAmt:    sdk.NewInt(10000000),
+			bondAmt:    math.NewInt(10000000),
 			validators: []sdk.ValAddress{valAddr1},
 			expectPass: true,
 		},
@@ -221,7 +221,7 @@ func TestVoteSpamDecoratorGovV1(t *testing.T) {
 
 		// Delegate tokens
 		if !tc.bondAmt.IsZero() {
-			amt := tc.bondAmt.Quo(sdk.NewInt(int64(len(tc.validators))))
+			amt := tc.bondAmt.Quo(math.NewInt(int64(len(tc.validators))))
 			for _, valAddr := range tc.validators {
 				val, found := stakingKeeper.GetValidator(ctx, valAddr)
 				require.True(t, found)

@@ -8,7 +8,6 @@ import (
 	"path/filepath"
 
 	tmcfg "github.com/cometbft/cometbft/config"
-	tmos "github.com/cometbft/cometbft/libs/os"
 	"github.com/cometbft/cometbft/p2p"
 	"github.com/cometbft/cometbft/privval"
 
@@ -119,13 +118,13 @@ func (v *validator) createConsensusKey() error {
 	config.Moniker = v.moniker
 
 	pvKeyFile := config.PrivValidatorKeyFile()
-	if err := tmos.EnsureDir(filepath.Dir(pvKeyFile), 0o777); err != nil {
-		return err
+	if err := os.MkdirAll(filepath.Dir(pvKeyFile), 0o777); err != nil {
+		return fmt.Errorf("could not create directory %q: %w", filepath.Dir(pvKeyFile), err)
 	}
 
 	pvStateFile := config.PrivValidatorStateFile()
-	if err := tmos.EnsureDir(filepath.Dir(pvStateFile), 0o777); err != nil {
-		return err
+	if err := os.MkdirAll(filepath.Dir(pvStateFile), 0o777); err != nil {
+		return fmt.Errorf("could not create directory %q: %w", filepath.Dir(pvStateFile), err)
 	}
 
 	filePV := privval.LoadOrGenFilePV(pvKeyFile, pvStateFile)

@@ -49,8 +49,8 @@ func GenDepositParamsMinDeposit(r *rand.Rand) sdk.Coins {
 }
 
 // GenDepositMinInitialRatio returns randomized DepositMinInitialRatio
-func GenDepositMinInitialDepositRatio(r *rand.Rand) sdk.Dec {
-	return sdk.NewDec(int64(simulation.RandIntBetween(r, 0, 99))).Quo(sdk.NewDec(100))
+func GenDepositMinInitialDepositRatio(r *rand.Rand) math.LegacyDec {
+	return math.LegacyNewDec(int64(simulation.RandIntBetween(r, 0, 99))).Quo(math.LegacyNewDec(100))
 }
 
 // GenVotingParamsVotingPeriod returns randomized VotingParamsVotingPeriod
@@ -74,14 +74,14 @@ func GenMinDepositRatio(r *rand.Rand) math.LegacyDec {
 }
 
 // GenTallyParamsQuorum returns randomized TallyParamsQuorum
-func GenTallyParamsConstitutionalQuorum(r *rand.Rand, minDec sdk.Dec) math.LegacyDec {
-	min := int(minDec.Mul(sdk.NewDec(1000)).RoundInt64())
+func GenTallyParamsConstitutionalQuorum(r *rand.Rand, minDec math.LegacyDec) math.LegacyDec {
+	min := int(minDec.Mul(math.LegacyNewDec(1000)).RoundInt64())
 	return sdk.NewDecWithPrec(int64(simulation.RandIntBetween(r, min, 600)), 3)
 }
 
 // GenTallyParamsThreshold returns randomized TallyParamsThreshold
-func GenTallyParamsConstitutionalThreshold(r *rand.Rand, minDec sdk.Dec) math.LegacyDec {
-	min := int(minDec.Mul(sdk.NewDec(1000)).RoundInt64())
+func GenTallyParamsConstitutionalThreshold(r *rand.Rand, minDec math.LegacyDec) math.LegacyDec {
+	min := int(minDec.Mul(math.LegacyNewDec(1000)).RoundInt64())
 	return sdk.NewDecWithPrec(int64(simulation.RandIntBetween(r, min, 950)), 3)
 }
 
@@ -117,7 +117,7 @@ func RandomizedGenState(simState *module.SimulationState) {
 		func(r *rand.Rand) { depositPeriod = GenDepositParamsDepositPeriod(r) },
 	)
 
-	var minInitialDepositRatio sdk.Dec
+	var minInitialDepositRatio math.LegacyDec
 	simState.AppParams.GetOrGenerate(
 		simState.Cdc, DepositMinInitialRatio, &minInitialDepositRatio, simState.Rand,
 		func(r *rand.Rand) { minInitialDepositRatio = GenDepositMinInitialDepositRatio(r) },
@@ -129,13 +129,13 @@ func RandomizedGenState(simState *module.SimulationState) {
 		func(r *rand.Rand) { votingPeriod = GenVotingParamsVotingPeriod(r) },
 	)
 
-	var quorum sdk.Dec
+	var quorum math.LegacyDec
 	simState.AppParams.GetOrGenerate(
 		simState.Cdc, TallyParamsQuorum, &quorum, simState.Rand,
 		func(r *rand.Rand) { quorum = GenTallyParamsQuorum(r) },
 	)
 
-	var threshold sdk.Dec
+	var threshold math.LegacyDec
 	simState.AppParams.GetOrGenerate(
 		simState.Cdc, TallyParamsThreshold, &threshold, simState.Rand,
 		func(r *rand.Rand) { threshold = GenTallyParamsThreshold(r) },
@@ -144,25 +144,25 @@ func RandomizedGenState(simState *module.SimulationState) {
 	var minDepositRatio math.LegacyDec
 	simState.AppParams.GetOrGenerate(simState.Cdc, MinDepositRatio, &minDepositRatio, simState.Rand, func(r *rand.Rand) { minDepositRatio = GenMinDepositRatio(r) })
 
-	var lawQuorum sdk.Dec
+	var lawQuorum math.LegacyDec
 	simState.AppParams.GetOrGenerate(
 		simState.Cdc, TallyParamsLawQuorum, &lawQuorum, simState.Rand,
 		func(r *rand.Rand) { lawQuorum = GenTallyParamsConstitutionalQuorum(r, quorum) },
 	)
 
-	var lawThreshold sdk.Dec
+	var lawThreshold math.LegacyDec
 	simState.AppParams.GetOrGenerate(
 		simState.Cdc, TallyParamsLawThreshold, &lawThreshold, simState.Rand,
 		func(r *rand.Rand) { lawThreshold = GenTallyParamsConstitutionalThreshold(r, threshold) },
 	)
 
-	var amendmentsQuorum sdk.Dec
+	var amendmentsQuorum math.LegacyDec
 	simState.AppParams.GetOrGenerate(
 		simState.Cdc, TallyParamsConstitutionAmendmentQuorum, &amendmentsQuorum, simState.Rand,
 		func(r *rand.Rand) { amendmentsQuorum = GenTallyParamsConstitutionalQuorum(r, lawQuorum) },
 	)
 
-	var amendmentsThreshold sdk.Dec
+	var amendmentsThreshold math.LegacyDec
 	simState.AppParams.GetOrGenerate(
 		simState.Cdc, TallyParamsConstitutionAmendmentThreshold, &amendmentsThreshold, simState.Rand,
 		func(r *rand.Rand) { amendmentsThreshold = GenTallyParamsConstitutionalThreshold(r, lawThreshold) },
