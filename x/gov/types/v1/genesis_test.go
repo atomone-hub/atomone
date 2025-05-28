@@ -29,13 +29,13 @@ func TestValidateGenesis(t *testing.T) {
 		{
 			name: "valid",
 			genesisState: func() *v1.GenesisState {
-				return v1.NewGenesisState(v1.DefaultStartingProposalID, params)
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, v1.DefaultParticipationEma, params)
 			},
 		},
 		{
 			name: "invalid StartingProposalId",
 			genesisState: func() *v1.GenesisState {
-				return v1.NewGenesisState(0, params)
+				return v1.NewGenesisState(0, v1.DefaultParticipationEma, params)
 			},
 			expErrMsg: "starting proposal id must be greater than 0",
 		},
@@ -48,7 +48,7 @@ func TestValidateGenesis(t *testing.T) {
 					Amount: sdk.NewInt(-100),
 				}}
 
-				return v1.NewGenesisState(v1.DefaultStartingProposalID, params1)
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, v1.DefaultParticipationEma, params1)
 			},
 			expErrMsg: "invalid minimum deposit",
 		},
@@ -58,7 +58,7 @@ func TestValidateGenesis(t *testing.T) {
 				params1 := params
 				params1.MaxDepositPeriod = nil
 
-				return v1.NewGenesisState(v1.DefaultStartingProposalID, params1)
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, v1.DefaultParticipationEma, params1)
 			},
 			expErrMsg: "maximum deposit period must not be nil",
 		},
@@ -68,7 +68,7 @@ func TestValidateGenesis(t *testing.T) {
 				params1 := params
 				params1.Quorum = "2"
 
-				return v1.NewGenesisState(v1.DefaultStartingProposalID, params1)
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, v1.DefaultParticipationEma, params1)
 			},
 			expErrMsg: "quorum too large",
 		},
@@ -78,7 +78,7 @@ func TestValidateGenesis(t *testing.T) {
 				params1 := params
 				params1.Threshold = "2"
 
-				return v1.NewGenesisState(v1.DefaultStartingProposalID, params1)
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, v1.DefaultParticipationEma, params1)
 			},
 			expErrMsg: "vote threshold too large",
 		},
@@ -88,7 +88,7 @@ func TestValidateGenesis(t *testing.T) {
 				params1 := params
 				params1.ConstitutionAmendmentQuorum = "2"
 
-				return v1.NewGenesisState(v1.DefaultStartingProposalID, params1)
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, v1.DefaultParticipationEma, params1)
 			},
 			expErrMsg: "constitution amendment quorum too large",
 		},
@@ -98,7 +98,7 @@ func TestValidateGenesis(t *testing.T) {
 				params1 := params
 				params1.ConstitutionAmendmentThreshold = "-1"
 
-				return v1.NewGenesisState(v1.DefaultStartingProposalID, params1)
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, v1.DefaultParticipationEma, params1)
 			},
 			expErrMsg: "constitution amendment threshold must be positive",
 		},
@@ -108,7 +108,7 @@ func TestValidateGenesis(t *testing.T) {
 				params1 := params
 				params1.LawQuorum = "2"
 
-				return v1.NewGenesisState(v1.DefaultStartingProposalID, params1)
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, v1.DefaultParticipationEma, params1)
 			},
 			expErrMsg: "law quorum too large",
 		},
@@ -118,14 +118,14 @@ func TestValidateGenesis(t *testing.T) {
 				params1 := params
 				params1.LawThreshold = "-2"
 
-				return v1.NewGenesisState(v1.DefaultStartingProposalID, params1)
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, v1.DefaultParticipationEma, params1)
 			},
 			expErrMsg: "law threshold must be positive",
 		},
 		{
 			name: "duplicate proposals",
 			genesisState: func() *v1.GenesisState {
-				state := v1.NewGenesisState(v1.DefaultStartingProposalID, params)
+				state := v1.NewGenesisState(v1.DefaultStartingProposalID, v1.DefaultParticipationEma, params)
 				state.Proposals = append(state.Proposals, &v1.Proposal{Id: 1})
 				state.Proposals = append(state.Proposals, &v1.Proposal{Id: 1})
 
@@ -136,7 +136,7 @@ func TestValidateGenesis(t *testing.T) {
 		{
 			name: "duplicate votes",
 			genesisState: func() *v1.GenesisState {
-				state := v1.NewGenesisState(v1.DefaultStartingProposalID, params)
+				state := v1.NewGenesisState(v1.DefaultStartingProposalID, v1.DefaultParticipationEma, params)
 				state.Proposals = append(state.Proposals, &v1.Proposal{Id: 1})
 				state.Votes = append(state.Votes,
 					&v1.Vote{
@@ -155,7 +155,7 @@ func TestValidateGenesis(t *testing.T) {
 		{
 			name: "duplicate deposits",
 			genesisState: func() *v1.GenesisState {
-				state := v1.NewGenesisState(v1.DefaultStartingProposalID, params)
+				state := v1.NewGenesisState(v1.DefaultStartingProposalID, v1.DefaultParticipationEma, params)
 				state.Proposals = append(state.Proposals, &v1.Proposal{Id: 1})
 				state.Deposits = append(state.Deposits,
 					&v1.Deposit{
@@ -174,7 +174,7 @@ func TestValidateGenesis(t *testing.T) {
 		{
 			name: "non-existent proposal id in votes",
 			genesisState: func() *v1.GenesisState {
-				state := v1.NewGenesisState(v1.DefaultStartingProposalID, params)
+				state := v1.NewGenesisState(v1.DefaultStartingProposalID, v1.DefaultParticipationEma, params)
 				state.Votes = append(state.Votes,
 					&v1.Vote{
 						ProposalId: 1,
@@ -188,7 +188,7 @@ func TestValidateGenesis(t *testing.T) {
 		{
 			name: "non-existent proposal id in deposits",
 			genesisState: func() *v1.GenesisState {
-				state := v1.NewGenesisState(v1.DefaultStartingProposalID, params)
+				state := v1.NewGenesisState(v1.DefaultStartingProposalID, v1.DefaultParticipationEma, params)
 				state.Deposits = append(state.Deposits,
 					&v1.Deposit{
 						ProposalId: 1,

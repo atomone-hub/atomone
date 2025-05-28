@@ -45,6 +45,8 @@ var (
 	DefaultQuorumTimeout            time.Duration = DefaultVotingPeriod - (time.Hour * 24 * 1) // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
 	DefaultMaxVotingPeriodExtension time.Duration = DefaultVotingPeriod - DefaultQuorumTimeout // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
 	DefaultQuorumCheckCount         uint64        = 0                                          // disabled by default (0 means no check)
+	DefaultMaxQuorum                              = sdk.NewDecWithPrec(80, 2)
+	DefaultMinQuorum                              = sdk.NewDecWithPrec(20, 2)
 )
 
 // Deprecated: NewDepositParams creates a new DepositParams object
@@ -76,6 +78,7 @@ func NewParams(
 	quorum, threshold, constitutionAmendmentQuorum, constitutionAmendmentThreshold, lawQuorum, lawThreshold, minInitialDepositRatio string,
 	burnProposalDeposit, burnVoteQuorum bool, minDepositRatio string,
 	quorumTimeout, maxVotingPeriodExtension time.Duration, quorumCheckCount uint64,
+	maxQuorum string, minQuorum string,
 ) Params {
 	return Params{
 		MinDeposit:                     minDeposit,
@@ -94,6 +97,8 @@ func NewParams(
 		QuorumTimeout:                  &quorumTimeout,
 		MaxVotingPeriodExtension:       &maxVotingPeriodExtension,
 		QuorumCheckCount:               quorumCheckCount,
+		MaxQuorum:                      maxQuorum,
+		MinQuorum:                      minQuorum,
 	}
 }
 
@@ -116,6 +121,8 @@ func DefaultParams() Params {
 		DefaultQuorumTimeout,
 		DefaultMaxVotingPeriodExtension,
 		DefaultQuorumCheckCount,
+		DefaultMaxQuorum.String(),
+		DefaultMinQuorum.String(),
 	)
 }
 

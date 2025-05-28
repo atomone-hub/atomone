@@ -13,6 +13,7 @@ import (
 const (
 	// DefaultStartingProposalID is 1
 	DefaultStartingProposalID uint64 = 1
+	DefaultParticipationEma   string = "0.25"
 
 	StatusNil           = ProposalStatus_PROPOSAL_STATUS_UNSPECIFIED
 	StatusDepositPeriod = ProposalStatus_PROPOSAL_STATUS_DEPOSIT_PERIOD

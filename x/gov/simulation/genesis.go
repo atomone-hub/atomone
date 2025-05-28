@@ -36,6 +36,8 @@ const (
 	QuorumTimeout            = "quorum_timeout"
 	MaxVotingPeriodExtension = "max_voting_period_extension"
 	QuorumCheckCount         = "quorum_check_count"
+	MinQuorum                = "min_quorum"
+	MaxQuorum                = "max_quorum"
 )
 
 // GenDepositParamsDepositPeriod returns randomized DepositParamsDepositPeriod
@@ -101,9 +103,20 @@ func GenQuorumCheckCount(r *rand.Rand) uint64 {
 	return uint64(simulation.RandIntBetween(r, 0, 30))
 }
 
+// GenMinQuorum returns a randomized MinQuorum between 0.15 and 0.25
+func GenMinQuorum(r *rand.Rand) math.LegacyDec {
+	return sdk.NewDecWithPrec(int64(simulation.RandIntBetween(r, 15, 25)), 2)
+}
+
+// GenMaxQuorum returns a randomized MinQuorum between 0.75 and 0.85
+func GenMaxQuorum(r *rand.Rand) math.LegacyDec {
+	return sdk.NewDecWithPrec(int64(simulation.RandIntBetween(r, 75, 85)), 2)
+}
+
 // RandomizedGenState generates a random GenesisState for gov
 func RandomizedGenState(simState *module.SimulationState) {
 	startingProposalID := uint64(simState.Rand.Intn(100))
+	startingParticipationEma := "0.25"
 
 	var minDeposit sdk.Coins
 	simState.AppParams.GetOrGenerate(
@@ -179,9 +192,16 @@ func RandomizedGenState(simState *module.SimulationState) {
 	var quorumCheckCount uint64
 	simState.AppParams.GetOrGenerate(simState.Cdc, QuorumCheckCount, &quorumCheckCount, simState.Rand, func(r *rand.Rand) { quorumCheckCount = GenQuorumCheckCount(r) })
 
+	var minQuorum sdk.Dec
+	simState.AppParams.GetOrGenerate(simState.Cdc, MinQuorum, &minQuorum, simState.Rand, func(r *rand.Rand) { minQuorum = GenMinQuorum(r) })
+
+	var maxQuorum sdk.Dec
+	simState.AppParams.GetOrGenerate(simState.Cdc, MaxQuorum, &maxQuorum, simState.Rand, func(r *rand.Rand) { maxQuorum = GenMaxQuorum(r) })
+
 	govGenesis := v1.NewGenesisState(
 		startingProposalID,
-		v1.NewParams(minDeposit, depositPeriod, votingPeriod, quorum.String(), threshold.String(), amendmentsQuorum.String(), amendmentsThreshold.String(), lawQuorum.String(), lawThreshold.String(), minInitialDepositRatio.String(), simState.Rand.Intn(2) == 0, simState.Rand.Intn(2) == 0, minDepositRatio.String(), quorumTimout, maxVotingPeriodExtension, quorumCheckCount),
+		startingParticipationEma,
+		v1.NewParams(minDeposit, depositPeriod, votingPeriod, quorum.String(), threshold.String(), amendmentsQuorum.String(), amendmentsThreshold.String(), lawQuorum.String(), lawThreshold.String(), minInitialDepositRatio.String(), simState.Rand.Intn(2) == 0, simState.Rand.Intn(2) == 0, minDepositRatio.String(), quorumTimout, maxVotingPeriodExtension, quorumCheckCount, maxQuorum.String(), minQuorum.String()),
 	)
 
 	bz, err := json.MarshalIndent(&govGenesis, "", " ")

@@ -3,6 +3,7 @@ package gov
 import (
 	"fmt"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/atomone-hub/atomone/x/gov/keeper"
@@ -17,6 +18,7 @@ func InitGenesis(ctx sdk.Context, ak types.AccountKeeper, bk types.BankKeeper, k
 		panic(fmt.Sprintf("%s module params has not been set", types.ModuleName))
 	}
 	k.SetConstitution(ctx, data.Constitution)
+	k.SetParticipationEMA(ctx, math.LegacyMustNewDecFromStr(data.ParticipationEma))
 
 	// check if the deposits pool account exists
 	moduleAcc := k.GetGovernanceAccount(ctx)
@@ -82,6 +84,7 @@ func InitGenesis(ctx sdk.Context, ak types.AccountKeeper, bk types.BankKeeper, k
 // ExportGenesis - output genesis parameters
 func ExportGenesis(ctx sdk.Context, k *keeper.Keeper) *v1.GenesisState {
 	startingProposalID, _ := k.GetProposalID(ctx)
+	participationEma := k.GetParticipationEMA(ctx).String()
 	proposals := k.GetProposals(ctx)
 	params := k.GetParams(ctx)
 	constitution := k.GetConstitution(ctx)
@@ -103,5 +106,6 @@ func ExportGenesis(ctx sdk.Context, k *keeper.Keeper) *v1.GenesisState {
 		Proposals:          proposals,
 		Params:             &params,
 		Constitution:       constitution,
+		ParticipationEma:   participationEma,
 	}
 }
