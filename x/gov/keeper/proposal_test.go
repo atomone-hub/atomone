@@ -56,6 +56,7 @@ func (suite *KeeperTestSuite) TestActivateVotingPeriod() {
 	params.MaxVotingPeriodExtension = &maxVotingPeriodExtension
 	err := suite.govKeeper.SetParams(suite.ctx, params)
 	suite.Require().NoError(err)
+	currentProposalNumber := suite.govKeeper.GetActiveProposalsNumber(suite.ctx)
 
 	tp := TestProposal
 	proposal, err := suite.govKeeper.SubmitProposal(suite.ctx, tp, "", "test", "summary", sdk.AccAddress("cosmos1ghekyjucln7y67ntx7cf27m9dpuxxemn4c8g4r"))
@@ -65,6 +66,8 @@ func (suite *KeeperTestSuite) TestActivateVotingPeriod() {
 
 	suite.govKeeper.ActivateVotingPeriod(suite.ctx, proposal)
 
+	suite.Require().Equal(currentProposalNumber+1, suite.govKeeper.GetActiveProposalsNumber(suite.ctx),
+		"active proposal number not incremented after proposal activation")
 	proposal, ok := suite.govKeeper.GetProposal(suite.ctx, proposal.Id)
 	suite.Require().True(ok)
 	suite.Require().True(proposal.VotingStartTime.Equal(suite.ctx.BlockHeader().Time))
@@ -162,28 +165,8 @@ func (suite *KeeperTestSuite) TestSubmitProposal() {
 
 func (suite *KeeperTestSuite) TestGetProposalsFiltered() {
 	proposalID := uint64(1)
-	status := []v1.ProposalStatus{v1.StatusDepositPeriod, v1.StatusVotingPeriod}
 
 	addr1 := sdk.AccAddress("foo_________________")
-
-	for _, s := range status {
-		for i := 0; i < 50; i++ {
-			p, err := v1.NewProposal(TestProposal, proposalID, time.Now(), time.Now(), "", "title", "summary", sdk.AccAddress("cosmos1ghekyjucln7y67ntx7cf27m9dpuxxemn4c8g4r"))
-			suite.Require().NoError(err)
-
-			p.Status = s
-
-			if i%2 == 0 {
-				d := v1.NewDeposit(proposalID, addr1, nil)
-				v := v1.NewVote(proposalID, addr1, v1.NewNonSplitVoteOption(v1.OptionYes), "")
-				suite.govKeeper.SetDeposit(suite.ctx, d)
-				suite.govKeeper.SetVote(suite.ctx, v)
-			}
-
-			suite.govKeeper.SetProposal(suite.ctx, p)
-			proposalID++
-		}
-	}
 
 	testCases := []struct {
 		params             v1.QueryProposalsParams
@@ -205,6 +188,26 @@ func (suite *KeeperTestSuite) TestGetProposalsFiltered() {
 
 	for i, tc := range testCases {
 		suite.Run(fmt.Sprintf("Test Case %d", i), func() {
+			status := []v1.ProposalStatus{v1.StatusDepositPeriod, v1.StatusVotingPeriod}
+			for _, s := range status {
+				for i := 0; i < 50; i++ {
+					p, err := v1.NewProposal(TestProposal, proposalID, time.Now(), time.Now(), "", "title", "summary", sdk.AccAddress("cosmos1ghekyjucln7y67ntx7cf27m9dpuxxemn4c8g4r"))
+					suite.Require().NoError(err)
+
+					p.Status = s
+
+					if i%2 == 0 {
+						d := v1.NewDeposit(proposalID, addr1, nil)
+						v := v1.NewVote(proposalID, addr1, v1.NewNonSplitVoteOption(v1.OptionYes), "")
+						suite.govKeeper.SetDeposit(suite.ctx, d)
+						suite.govKeeper.SetVote(suite.ctx, v)
+					}
+
+					suite.govKeeper.SetProposal(suite.ctx, p)
+					proposalID++
+				}
+			}
+
 			proposals := suite.govKeeper.GetProposalsFiltered(suite.ctx, tc.params)
 			suite.Require().Len(proposals, tc.expectedNumResults)
 
