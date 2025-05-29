@@ -290,7 +290,7 @@ func (s *IntegrationTestSuite) testGovParamChange() {
 		submitGovFlags := []string{configFile(proposalParamChangeFilename)}
 		depositGovFlags := []string{strconv.Itoa(proposalCounter), depositAmount.String()}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
-		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "atomone.feemarket.v1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote")
+		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "atomone.feemarket.v1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
 
 		newParams := s.queryFeemarketParams(chainAAPIEndpoint)
 		s.Require().Equal(newParams.Params.Alpha, oldAlpha.Add(sdk.NewDec(1)))
