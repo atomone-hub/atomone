@@ -4,8 +4,9 @@
 
 > **Definitions:**
 >
-> * **`Target Block Size`**: This is the target block gas consumption.
-> * **`Max Block Size`**: This is the maximum block gas consumption.
+> * **`Target Block Gas`**: This is the target block gas consumption.
+> * **`Max Block Gas`**: This is the maximum block gas consumption, fetched
+>   from the `x/consensus` module.
 
 This plugin implements the AIMD (Additive Increase Multiplicative Decrease)
 EIP-1559 fee market as described in this
@@ -21,7 +22,7 @@ effectively hard-coded to be 12.5%, which means that between any two blocks the
 base fee can maximally increase by 12.5% or decrease by 12.5%. Additionally,
 AIMD EIP-1559 differs from Ethereum's EIP-1559 by considering a configured time
 window (number of blocks) to consider when calculating and comparing target
-block utilization and current block utilization.
+block gas and current block gas.
 
 ## Parameters
 
@@ -46,21 +47,21 @@ currentBaseGasPrice := previousBaseGasPrice * (1 + 0.125 * (currentBlockSize - t
 AIMD EIP-1559 introduces a few new parameters to the EIP-1559 fee market:
 
 * **`Alpha`**: This is the amount we additively increase the learning rate when
-  the target utilization is less than the current utilization i.e. the block was
-  more full than the target size. This must be a value that is greater than `0.0`.
+  the target gas is less than the current gas i.e. the block was
+  more full than the target gas. This must be a value that is greater than `0.0`.
 * **`Beta`**: This is the amount we multiplicatively decrease the learning rate
-  when the target utilization is greater than the current utilization i.e. the
-  block was less full than the target size. This must be a value that is greater
+  when the target gas is greater than the current gas i.e. the
+  block was less full than the target gas. This must be a value that is greater
   than `0.0`.
 * **`Window`**: This is the number of blocks we look back to compute the current
-  utilization. This must be a value that is greater than `0`. Instead of only
-  utilizing the previous block's utilization, we now consider the utilization of
+  gas. This must be a value that is greater than `0`. Instead of only
+  utilizing the previous block's gas, we now consider the gas of
   the previous `Window` blocks.
 * **`Gamma`**: This determines whether you are additively increase or
   multiplicatively decreasing the learning rate based on the target and current
-  block utilization. This must be a value that is between `[0, 1]`. For example,
+  block gas. This must be a value that is between `[0, 1]`. For example,
   if `Gamma = 0.25`, then we multiplicatively decrease the learning rate if the
-  average ratio of current block size to max block size over some window of
+  average ratio of current block gas to max block gas over some window of
   blocks is within `(0.25, 0.75)` and additively increase it if outside that range.
 * **`MaxLearningRate`**: This is the maximum learning rate that can be applied
   to the base fee. This must be a value that is between `[0, 1]`.
@@ -71,8 +72,8 @@ The calculation for the updated base fee for the next block is as follows:
 
 ```golang
 
-// sumBlockSizesInWindow returns the sum of the block sizes in the window.
-blockConsumption := sumBlockSizesInWindow(window) / (window * maxBlockSize)
+// sumBlockGasInWindow returns the sum of the block gas in the window.
+blockConsumption := sumBlockGasInWindow(window) / (window * maxBlockGas)
 
 if blockConsumption <= gamma || blockConsumption >= 1 - gamma {
     // MAX_LEARNING_RATE is a constant that is configured by the chain developer
@@ -82,14 +83,14 @@ if blockConsumption <= gamma || blockConsumption >= 1 - gamma {
     newLearningRate := max(MinLearningRate, beta * currentLearningRate)
 }
 
-newBaseGasPrice := currentBaseGasPrice * (1 + newLearningRate * (currentBlockSize - targetBlockSize) / targetBlockSize) 
+newBaseGasPrice := currentBaseGasPrice * (1 + newLearningRate * (currentBlockGas - targetBlockGas) / targetBlockGas) 
 ```
 
-The expected behavior is the following: when the current block size is close to
-the `targetBlockSize` (in other words, when `blockConsumption` is in the
+The expected behavior is the following: when the current block gas is close to
+the `targetBlockGas` (in other words, when `blockConsumption` is in the
 `gamma` range), then the base gas price is close to the right value, so the
 algorithm reduces the learning rate to reduce the size of the oscillations. By
-contrast, if the current block size is too small or too high
+contrast, if the current block gas is too small or too high
 (`blockConsumption` is out of `gamma` range), then the base fee is apparently
 far away from its equilibrium value, and the algorithm increases the learning
 rate.
@@ -98,8 +99,8 @@ rate.
 
 > **Assume the following parameters:**
 >
-> * `TargetBlockSize = 50`
-> * `MaxBlockSize = 100`
+> * `TargetBlockGas = 50`
+> * `MaxBlockGas = 100`
 > * `Window = 1`
 > * `Alpha = 0.025`
 > * `Beta = 0.95`
@@ -115,7 +116,7 @@ In this example, we expect the learning rate to additively increase and the base
 fee to decrease.
 
 ```golang
-blockConsumption := sumBlockSizesInWindow(1) / (1 * 100) == 0
+blockConsumption := sumBlockGasInWindow(1) / (1 * 100) == 0
 newLearningRate := min(1.0, 0.025 + 0.125) == 0.15
 newBaseGasPrice := 10 * (1 + 0.15 * (0 - 50) / 50) == 8.5
 ```
@@ -128,20 +129,20 @@ In this example, we expect the learning rate to additively increase and the base
 fee to increase.
 
 ```golang
-blockConsumption := sumBlockSizesInWindow(1) / (1 * 100) == 1
+blockConsumption := sumBlockGasInWindow(1) / (1 * 100) == 1
 newLearningRate := min(1.0, 0.025 + 0.125) == 0.15
 newBaseGasPrice := 10 * (1 + 0.15 * ((100 - 50) / 50)) == 11.5
 ```
 
 As we can see, the base fee increased by 1.5 and the learning rate increases.
 
-### Block is at Target Utilization
+### Block is at Target Gas
 
 In this example, we expect the learning rate to multiplicatively decrease and the
 base fee to remain the same.
 
 ```golang
-blockConsumption := sumBlockSizesInWindow(1) / (1 * 100) == 0.5
+blockConsumption := sumBlockGasInWindow(1) / (1 * 100) == 0.5
 newLearningRate := max(0.0125, 0.95 * 0.125) == 0.11875
 newBaseGasPrice := 10 * (1 + 0.11875 * (50 - 50) / 50) == 10
 ```

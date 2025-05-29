@@ -10,12 +10,14 @@ import (
 // Call next PostHandler if fees successfully deducted.
 // CONTRACT: Tx must implement FeeTx interface
 type FeemarketStateUpdateDecorator struct {
-	feemarketKeeper FeeMarketKeeper
+	feemarketKeeper       FeeMarketKeeper
+	consensusParamsKeeper ConsensusParamsKeeper
 }
 
-func NewFeemarketStateUpdateDecorator(fmk FeeMarketKeeper) FeemarketStateUpdateDecorator {
+func NewFeemarketStateUpdateDecorator(fmk FeeMarketKeeper, cpk ConsensusParamsKeeper) FeemarketStateUpdateDecorator {
 	return FeemarketStateUpdateDecorator{
-		feemarketKeeper: fmk,
+		feemarketKeeper:       fmk,
+		consensusParamsKeeper: cpk,
 	}
 }
 
@@ -61,7 +63,13 @@ func (dfd FeemarketStateUpdateDecorator) PostHandle(ctx sdk.Context, tx sdk.Tx, 
 		"gas consumed", gas,
 	)
 
-	err = state.Update(gas, params)
+	consensusParams, err := dfd.consensusParamsKeeper.Get(ctx)
+	if err != nil {
+		return ctx, errorsmod.Wrapf(err, "unable to get consensus params")
+	}
+	maxBlockGas := uint64(consensusParams.Block.MaxGas)
+
+	err = state.Update(gas, maxBlockGas)
 	if err != nil {
 		return ctx, errorsmod.Wrapf(err, "unable to update fee market state")
 	}

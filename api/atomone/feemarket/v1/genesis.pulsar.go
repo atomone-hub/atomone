@@ -1302,7 +1302,7 @@ func (x *GenesisState) GetState() *State {
 }
 
 // State is utilized to track the current state of the fee market. This includes
-// the current base fee, learning rate, and block utilization within the
+// the current base fee, learning rate, and block gas within the
 // specified AIMD window.
 type State struct {
 	state         protoimpl.MessageState
@@ -1314,11 +1314,11 @@ type State struct {
 	BaseGasPrice string `protobuf:"bytes,1,opt,name=base_gas_price,json=baseGasPrice,proto3" json:"base_gas_price,omitempty"`
 	// LearningRate is the current learning rate.
 	LearningRate string `protobuf:"bytes,2,opt,name=learning_rate,json=learningRate,proto3" json:"learning_rate,omitempty"`
-	// Window contains a list of the last blocks' utilization values. This is used
+	// Window contains a list of the last blocks' gas values. This is used
 	// to calculate the next base fee. This stores the number of units of gas
 	// consumed per block.
 	Window []uint64 `protobuf:"varint,3,rep,packed,name=window,proto3" json:"window,omitempty"`
-	// Index is the index of the current block in the block utilization window.
+	// Index is the index of the current block in the block gas window.
 	Index uint64 `protobuf:"varint,4,opt,name=index,proto3" json:"index,omitempty"`
 }
 

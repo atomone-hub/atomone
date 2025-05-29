@@ -18,21 +18,21 @@ import (
 func TestLearningRate(t *testing.T) {
 	rapid.Check(t, func(t *rapid.T) {
 		state := types.DefaultState()
-		params := CreateRandomParams(t)
+		params, maxBlockGas := CreateRandomParams(t)
 
 		// Randomly generate alpha and beta.
 		prevLearningRate := state.LearningRate
 
-		// Randomly generate the block utilization.
-		blockUtilization := rapid.Uint64Range(0, params.MaxBlockUtilization).Draw(t, "gas")
+		// Randomly generate the block gas.
+		blockGas := rapid.Uint64Range(0, maxBlockGas).Draw(t, "gas")
 
 		// Update the fee market.
-		if err := state.Update(blockUtilization, params); err != nil {
+		if err := state.Update(blockGas, maxBlockGas); err != nil {
 			t.Fatalf("block update errors: %v", err)
 		}
 
 		// Update the learning rate.
-		lr := state.UpdateLearningRate(params)
+		lr := state.UpdateLearningRate(params, maxBlockGas)
 		require.Equal(t, types.DefaultMinLearningRate, lr)
 		require.Equal(t, prevLearningRate, state.LearningRate)
 	})
@@ -43,32 +43,32 @@ func TestLearningRate(t *testing.T) {
 func TestGasPrice(t *testing.T) {
 	rapid.Check(t, func(t *rapid.T) {
 		state := types.DefaultState()
-		params := CreateRandomParams(t)
+		params, maxBlockGas := CreateRandomParams(t)
 
 		// Update the current base fee to be 10% higher than the minimum base fee.
 		prevBaseGasPrice := state.BaseGasPrice.Mul(math.LegacyNewDec(11)).Quo(math.LegacyNewDec(10))
 		state.BaseGasPrice = prevBaseGasPrice
 
-		// Randomly generate the block utilization.
-		blockUtilization := rapid.Uint64Range(0, params.MaxBlockUtilization).Draw(t, "gas")
+		// Randomly generate the block gas.
+		blockGas := rapid.Uint64Range(0, maxBlockGas).Draw(t, "gas")
 
 		// Update the fee market.
-		if err := state.Update(blockUtilization, params); err != nil {
+		if err := state.Update(blockGas, maxBlockGas); err != nil {
 			t.Fatalf("block update errors: %v", err)
 		}
 
 		// Update the learning rate.
-		state.UpdateLearningRate(params)
+		state.UpdateLearningRate(params, maxBlockGas)
 		// Update the base fee.
-		state.UpdateBaseGasPrice(log.NewNopLogger(), params)
+		state.UpdateBaseGasPrice(log.NewNopLogger(), params, maxBlockGas)
 
 		// Ensure that the minimum base fee is always less than the base fee.
 		require.True(t, params.MinBaseGasPrice.LTE(state.BaseGasPrice))
 
 		switch {
-		case blockUtilization > params.TargetBlockUtilization():
+		case blockGas > types.GetTargetBlockGas(maxBlockGas):
 			require.True(t, state.BaseGasPrice.GTE(prevBaseGasPrice))
-		case blockUtilization < params.TargetBlockUtilization():
+		case blockGas < types.GetTargetBlockGas(maxBlockGas):
 			require.True(t, state.BaseGasPrice.LTE(prevBaseGasPrice))
 		default:
 			require.Equal(t, state.BaseGasPrice, prevBaseGasPrice)
@@ -78,7 +78,7 @@ func TestGasPrice(t *testing.T) {
 
 // CreateRandomParams returns a random set of parameters for the default
 // EIP-1559 fee market implementation.
-func CreateRandomParams(t *rapid.T) types.Params {
+func CreateRandomParams(t *rapid.T) (types.Params, uint64) {
 	a := rapid.Uint64Range(1, 1000).Draw(t, "alpha")
 	alpha := math.LegacyNewDec(int64(a)).Quo(math.LegacyNewDec(1000))
 
@@ -88,13 +88,12 @@ func CreateRandomParams(t *rapid.T) types.Params {
 	g := rapid.Uint64Range(10, 50).Draw(t, "gamma")
 	gamma := math.LegacyNewDec(int64(g)).Quo(math.LegacyNewDec(100))
 
-	maxBlockUtilization := rapid.Uint64Range(2, 30_000_000).Draw(t, "max_block_utilization")
+	maxBlockGas := rapid.Uint64Range(2, 30_000_000).Draw(t, "max_block_gas")
 
 	params := types.DefaultParams()
 	params.Alpha = alpha
 	params.Beta = beta
 	params.Gamma = gamma
-	params.MaxBlockUtilization = maxBlockUtilization
 
-	return params
+	return params, maxBlockGas
 }

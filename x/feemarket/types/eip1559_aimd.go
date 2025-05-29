@@ -18,20 +18,15 @@ var (
 
 	// DefaultAIMDBeta is the default beta value for the learning rate
 	// calculation. This value determines how much we want to multiplicatively
-	// decrease the learning rate when the target utilization is not met.
+	// decrease the learning rate when the target gas is not met.
 	DefaultAIMDBeta = math.LegacyMustNewDecFromStr("0.95")
 
 	// DefaultAIMDGamma is the default threshold for determining whether
 	// to increase or decrease the learning rate. In this case, we increase
-	// the learning rate if the block utilization within the window is greater
+	// the learning rate if the block gas within the window is greater
 	// than 0.75 or less than 0.25. Otherwise, we multiplicatively decrease
 	// the learning rate.
 	DefaultAIMDGamma = math.LegacyMustNewDecFromStr("0.25")
-
-	// DefaultAIMDMaxBlockSize is the default maximum block utilization.
-	// This is the default on Ethereum. This denominated in units of gas
-	// consumed in a block.
-	DefaultAIMDMaxBlockSize uint64 = 30_000_000
 
 	// DefaultAIMDMinBaseGasPrice is the default minimum base gas price.
 	DefaultAIMDMinBaseGasPrice = DefaultMinBaseGasPrice
@@ -48,7 +43,7 @@ var (
 
 // DefaultAIMDParams returns a default set of parameters that implements
 // the AIMD EIP-1559 fee market implementation. These parameters allow for
-// the learning rate to be dynamically adjusted based on the block utilization
+// the learning rate to be dynamically adjusted based on the block gas
 // within the window.
 func DefaultAIMDParams() Params {
 	return NewParams(
@@ -56,7 +51,6 @@ func DefaultAIMDParams() Params {
 		DefaultAIMDAlpha,
 		DefaultAIMDBeta,
 		DefaultAIMDGamma,
-		DefaultAIMDMaxBlockSize,
 		DefaultAIMDMinBaseGasPrice,
 		DefaultAIMDMinLearningRate,
 		DefaultAIMDMaxLearningRate,
@@ -67,8 +61,8 @@ func DefaultAIMDParams() Params {
 
 // DefaultAIMDState returns the default state for the AIMD EIP-1559 fee market
 // implementation. This implementation uses a sliding window to track the
-// block utilization and dynamically adjusts the learning rate based on the
-// utilization within the window.
+// block gas and dynamically adjusts the learning rate based on the
+// gas within the window.
 func DefaultAIMDState() State {
 	return NewState(
 		DefaultAIMDWindow,

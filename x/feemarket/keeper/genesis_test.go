@@ -3,12 +3,13 @@ package keeper_test
 import (
 	"testing"
 
+	"github.com/atomone-hub/atomone/x/feemarket/testutil"
 	"github.com/atomone-hub/atomone/x/feemarket/types"
 	"github.com/stretchr/testify/require"
 )
 
 func TestInitGenesis(t *testing.T) {
-	k, ctx := setupKeeper(t)
+	k, _, ctx := testutil.SetupKeeper(t, 0)
 	t.Run("default genesis should not panic", func(t *testing.T) {
 		require.NotPanics(t, func() {
 			k.InitGenesis(ctx, *types.DefaultGenesisState())
@@ -40,7 +41,7 @@ func TestInitGenesis(t *testing.T) {
 }
 
 func TestExportGenesis(t *testing.T) {
-	k, ctx := setupKeeper(t)
+	k, _, ctx := testutil.SetupKeeper(t, 0)
 	t.Run("export genesis should not panic for default eip-1559", func(t *testing.T) {
 		gs := types.DefaultGenesisState()
 		k.InitGenesis(ctx, *gs)
