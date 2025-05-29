@@ -34,8 +34,7 @@ func (keeper Keeper) IncrementActiveProposalsNumber(ctx sdk.Context) {
 	activeProposalsNumber := keeper.GetActiveProposalsNumber(ctx) + 1
 	keeper.SetActiveProposalsNumber(ctx, activeProposalsNumber)
 
-	currMinDeposit := keeper.GetMinDeposit(ctx)
-	keeper.SetLastMinDeposit(ctx, currMinDeposit, ctx.BlockTime())
+	keeper.UpdateMinDeposit(ctx, false)
 }
 
 // DecrementActiveProposalsNumber decrements the number of active proposals by one
@@ -47,9 +46,6 @@ func (keeper Keeper) DecrementActiveProposalsNumber(ctx sdk.Context) {
 	} else {
 		panic("number of active proposals should never be negative")
 	}
-
-	currMinDeposit := keeper.GetMinDeposit(ctx)
-	keeper.SetLastMinDeposit(ctx, currMinDeposit, ctx.BlockTime())
 }
 
 // SetLastMinDeposit updates the last min deposit and last min deposit time.
@@ -78,69 +74,75 @@ func (keeper Keeper) GetLastMinDeposit(ctx sdk.Context) (sdk.Coins, time.Time) {
 
 // GetMinDeposit returns the (dynamic) minimum deposit currently required for a proposal
 func (keeper Keeper) GetMinDeposit(ctx sdk.Context) sdk.Coins {
-	params := keeper.GetParams(ctx)
-	minDepositFloor := sdk.Coins(params.MinDepositThrottler.FloorValue)
-	tick := params.MinDepositThrottler.UpdatePeriod
-	targetActiveProposals := math.NewIntFromUint64(params.MinDepositThrottler.TargetActiveProposals)
-	k := params.MinDepositThrottler.SensitivityTargetDistance
-	var a sdk.Dec
+	minDeposit, _ := keeper.GetLastMinDeposit(ctx)
 
-	numActiveProposals := math.NewIntFromUint64(keeper.GetActiveProposalsNumber(ctx))
-	lastMinDeposit, lastMinDepositTime := keeper.GetLastMinDeposit(ctx)
-	// get number of ticks passed since last update
-	ticksPassed := ctx.BlockTime().Sub(lastMinDepositTime).Nanoseconds() / tick.Nanoseconds()
-
-	if numActiveProposals.GT(targetActiveProposals) {
-		a = sdk.MustNewDecFromStr(params.MinDepositThrottler.IncreaseRatio)
-	} else {
-		a = sdk.MustNewDecFromStr(params.MinDepositThrottler.DecreaseRatio)
+	if minDeposit.Empty() {
+		// ValidateBasic prevents an empty FloorValue
+		// (and thus an empty deposit), if LastMinDeposit is empty
+		// it means it was never set, so we return the floor value
+		return keeper.GetParams(ctx).MinDepositThrottler.GetFloorValue()
 	}
 
-	distance := numActiveProposals.Sub(targetActiveProposals)
-	percChange := math.LegacyOneDec()
-	if !distance.IsZero() {
+	return minDeposit
+}
+
+// UpdateMinDeposit updates the minimum deposit required for a proposal
+func (keeper Keeper) UpdateMinDeposit(ctx sdk.Context, checkElapsedTime bool) {
+	logger := keeper.Logger(ctx)
+
+	params := keeper.GetParams(ctx)
+	tick := params.MinDepositThrottler.UpdatePeriod
+	lastMinDeposit, lastMinDepositTime := keeper.GetLastMinDeposit(ctx)
+	if checkElapsedTime && ctx.BlockTime().Sub(lastMinDepositTime).Nanoseconds() < tick.Nanoseconds() {
+		return
+	}
+
+	minDepositFloor := sdk.Coins(params.MinDepositThrottler.FloorValue)
+	targetActiveProposals := math.NewIntFromUint64(params.MinDepositThrottler.TargetActiveProposals)
+	k := params.MinDepositThrottler.DecreaseSensitivityTargetDistance
+	var alpha math.LegacyDec
+
+	numActiveProposals := math.NewIntFromUint64(keeper.GetActiveProposalsNumber(ctx))
+	if numActiveProposals.GTE(targetActiveProposals) {
+		if checkElapsedTime {
+			// no time-based increases
+			return
+		}
+		alpha = sdk.MustNewDecFromStr(params.MinDepositThrottler.IncreaseRatio)
+	} else {
+		distance := numActiveProposals.Sub(targetActiveProposals)
+		if !checkElapsedTime {
+			// decreases can only happen due to time-based updates
+			// and if the number of active proposals is below the target
+			return
+		}
+		alpha = sdk.MustNewDecFromStr(params.MinDepositThrottler.DecreaseRatio)
+		// ApproxRoot is here being called on a relatively small positive
+		// integer (when distance < 0, ApproxRoot will return
+		// `|distance|.ApproxRoot(k) * -1`) with a value of k expected to also
+		// be relatively small (<= 100).
+		// This is a safe operation and should not error.
 		b, err := distance.ToLegacyDec().ApproxRoot(k)
 		if err != nil {
 			// in case of error bypass the sensitivity, i.e. assume k = 1
 			b = distance.ToLegacyDec()
+			logger.Error("failed to calculate ApproxRoot for min deposit",
+				"error", err,
+				"distance", distance.String(),
+				"k", k,
+				"fallback", "using k=1")
 		}
-		c := a.Mul(b)
-		percChange = percChange.Add(c)
+		alpha = alpha.Mul(b)
 	}
-	if ticksPassed != 0 {
-		percChange = percChange.Power(uint64(ticksPassed))
-	}
+	percChange := math.LegacyOneDec().Add(alpha)
+	newMinDeposit := v1.GetNewMinDeposit(minDepositFloor, lastMinDeposit, percChange)
+	keeper.SetLastMinDeposit(ctx, newMinDeposit, ctx.BlockTime())
 
-	minDeposit := sdk.Coins{}
-	minDepositFloorDenomsSeen := make(map[string]bool)
-	for _, lastMinDepositCoin := range lastMinDeposit {
-		minDepositFloorCoinAmt := minDepositFloor.AmountOf(lastMinDepositCoin.Denom)
-		if minDepositFloorCoinAmt.IsZero() {
-			// minDepositFloor was changed and this coin was removed,
-			// reflect this also in the current min deposit, i.e. remove
-			// this coin
-			continue
-		}
-		minDepositFloorDenomsSeen[lastMinDepositCoin.Denom] = true
-		minDepositCoinAmt := lastMinDepositCoin.Amount.ToLegacyDec().Mul(percChange).TruncateInt()
-		if minDepositCoinAmt.LT(minDepositFloorCoinAmt) {
-			minDeposit = append(minDeposit, sdk.NewCoin(lastMinDepositCoin.Denom, minDepositFloorCoinAmt))
-		} else {
-			minDeposit = append(minDeposit, sdk.NewCoin(lastMinDepositCoin.Denom, minDepositCoinAmt))
-		}
-	}
-
-	// make sure any new denoms in minDepositFloor are added to minDeposit
-	for _, minDepositFloorCoin := range minDepositFloor {
-		if _, seen := minDepositFloorDenomsSeen[minDepositFloorCoin.Denom]; !seen {
-			minDepositCoinAmt := minDepositFloorCoin.Amount.ToLegacyDec().Mul(percChange).TruncateInt()
-			if minDepositCoinAmt.LT(minDepositFloorCoin.Amount) {
-				minDeposit = append(minDeposit, minDepositFloorCoin)
-			} else {
-				minDeposit = append(minDeposit, sdk.NewCoin(minDepositFloorCoin.Denom, minDepositCoinAmt))
-			}
-		}
-	}
-
-	return minDeposit
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeMinDepositChange,
+			sdk.NewAttribute(types.AttributeKeyNewMinDeposit, newMinDeposit.String()),
+			sdk.NewAttribute(types.AttributeKeyLastMinDeposit, lastMinDeposit.String()),
+		),
+	)
 }
