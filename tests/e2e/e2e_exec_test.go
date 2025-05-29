@@ -715,8 +715,8 @@ func (s *IntegrationTestSuite) executeAtomoneTxCommand(ctx context.Context, c *c
 	endpoint := fmt.Sprintf("http://%s", s.valResources[c.id][valIdx].GetHostPort("1317/tcp"))
 	height, err := queryAtomOneTx(endpoint, txResp.TxHash, nil)
 	if err != nil {
-		s.Require().FailNowf("Failed query of Tx height", "stdout: %s, stderr: %s",
-			string(stdOut), string(stdErr))
+		s.Require().FailNowf("Failed query of Tx height", "err: %s, stdout: %s, stderr: %s",
+			err, string(stdOut), string(stdErr))
 	}
 	return height
 }
@@ -782,7 +782,7 @@ func (s *IntegrationTestSuite) expectErrExecValidation(chain *chain, valIdx int,
 				_, err := queryAtomOneTx(endpoint, txResp.TxHash, nil)
 				if isErrNotFound(err) {
 					// tx not processed yet, continue
-					return !expectErr
+					return false
 				}
 				gotErr := err != nil
 				return gotErr == expectErr
