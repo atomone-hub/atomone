@@ -8,6 +8,7 @@ import (
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
 	"github.com/atomone-hub/atomone/app/keepers"
+	photonkeeper "github.com/atomone-hub/atomone/x/photon/keeper"
 )
 
 // CreateUpgradeHandler returns a upgrade handler for AtomOne v2
@@ -26,11 +27,28 @@ func CreateUpgradeHandler(
 		if err != nil {
 			return vm, err
 		}
+		// Set photon.params.txFeeExceptions to '*' to allow transactions to use
+		// any fee. This is a temporary measure to give users time to migrate to
+		// the new fee model.
+		if err := setPhotonTxFeeExceptions(ctx, keepers.PhotonKeeper); err != nil {
+			return vm, err
+		}
 		// Add the photon denom metadata to the bank module store
 		setPhotonDenomMetadata(ctx, keepers.BankKeeper)
 		ctx.Logger().Info("Upgrade complete")
 		return vm, nil
 	}
+}
+
+func setPhotonTxFeeExceptions(ctx sdk.Context, k *photonkeeper.Keeper) error {
+	ctx.Logger().Info("Setting photon.params.txFeeExceptions to '*'...")
+	params := k.GetParams(ctx)
+	params.TxFeeExceptions = []string{"*"}
+	if err := k.SetParams(ctx, params); err != nil {
+		return err
+	}
+	ctx.Logger().Info("photon.params.txFeeExceptions to '*' set")
+	return nil
 }
 
 func setPhotonDenomMetadata(ctx sdk.Context, bk bankkeeper.Keeper) {

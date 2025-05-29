@@ -18,7 +18,7 @@
 
 ## v2.0.0
 
-*Release date*
+*May 1st, 2025*
 
 ### BUG FIXES
 
@@ -26,6 +26,8 @@
 - Fix vuln GO-2024-3279 [#60](https://github.com/atomone-hub/atomone/pull/60)
 - Fix vuln GO-2024-3112 and GO-2024-2951 [#62](https://github.com/atomone-hub/atomone/pull/62)
 - Fix vuln GHSA-8wcc-m6j2-qxvm [#67](https://github.com/atomone-hub/atomone/pull/67)
+- (x/gov): Fix proposal converter from v1 to v1beta1 when proposal has no
+  messages [#102](https://github.com/atomone-hub/atomone/pull/102)
 
 ### FEATURES
 
@@ -36,10 +38,14 @@
 ### DEPENDENCIES
 
 - Upgrade CometBFT to v0.37.15 to fix securities issues (ASA-2025-001, ASA-2025-002) [#78](https://github.com/atomone-hub/atomone/pull/78)
-
+- Remove `x/crisis` [#93](https://github.com/atomone-hub/atomone/pull/93)
+- Upgrade ibc-go to v7.10.0 to fix ASA-2025-004 and ISA-2025-001 [#84](https://github.com/atomone-hub/atomone/pull/84) [#85](https://github.com/atomone-hub/atomone/pull/85) [#98](https://github.com/atomone-hub/atomone/pull/98)
+- Upgrade Cosmos SDK to v0.47.17 [#98](https://github.com/atomone-hub/atomone/pull/98)
+  
 ### IMPROVEMENTS
 
 - (x/gov): override MinVotingPeriod with ldflags [#63](https://github.com/atomone-hub/atomone/pull/63)
+- (CLI): backport `tx simulate` from cosmos-sdk v0.50.x and remove unused/misleading flags from `tx broadcast` [#109](https://github.com/atomone-hub/atomone/pull/109)
 
 ## v1.0.0
 

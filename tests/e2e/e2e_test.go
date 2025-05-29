@@ -67,6 +67,7 @@ func (s *IntegrationTestSuite) TestIBC() {
 	if !runIBCTest {
 		s.T().Skip()
 	}
+	s.ensureIBCSetup()
 
 	s.testIBCTokenTransfer()
 }
