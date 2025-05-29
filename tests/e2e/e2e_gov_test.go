@@ -133,6 +133,8 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 		sendAmount := sdk.NewInt64Coin(uatoneDenom, 10_000_000) // 10atone
 		s.writeGovCommunitySpendProposal(s.chainA, sendAmount, recipient)
 
+		beforeSenderBalance, err := getSpecificBalance(chainAAPIEndpoint, sender, uatoneDenom)
+		s.Require().NoError(err)
 		beforeRecipientBalance, err := getSpecificBalance(chainAAPIEndpoint, recipient, uatoneDenom)
 		s.Require().NoError(err)
 
@@ -141,14 +143,73 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 		submitGovFlags := []string{configFile(proposalCommunitySpendFilename)}
 		depositGovFlags := []string{strconv.Itoa(proposalCounter), depositAmount.String()}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
-		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "CommunityPoolSpend", submitGovFlags, depositGovFlags, voteGovFlags, "vote")
+		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "CommunityPoolSpend", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
 
+		// Check that sender is refunded with the proposal deposit
+		s.Require().Eventually(
+			func() bool {
+				afterSenderBalance, err := getSpecificBalance(chainAAPIEndpoint, sender, uatoneDenom)
+				s.Require().NoError(err)
+
+				return afterSenderBalance.IsEqual(beforeSenderBalance)
+			},
+			10*time.Second,
+			time.Second,
+		)
+		// Check that recipient received the community pool spend
 		s.Require().Eventually(
 			func() bool {
 				afterRecipientBalance, err := getSpecificBalance(chainAAPIEndpoint, recipient, uatoneDenom)
 				s.Require().NoError(err)
 
 				return afterRecipientBalance.Sub(sendAmount).IsEqual(beforeRecipientBalance)
+			},
+			10*time.Second,
+			time.Second,
+		)
+	})
+	s.Run("community pool spend with number of no votes exceeds threshold", func() {
+		s.fundCommunityPool()
+		chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
+		senderAddress, _ := s.chainA.validators[0].keyInfo.GetAddress()
+		sender := senderAddress.String()
+		recipientAddress, _ := s.chainA.validators[1].keyInfo.GetAddress()
+		recipient := recipientAddress.String()
+		sendAmount := sdk.NewInt64Coin(uatoneDenom, 10_000_000) // 10atone
+		s.writeGovCommunitySpendProposal(s.chainA, sendAmount, recipient)
+
+		beforeSenderBalance, err := getSpecificBalance(chainAAPIEndpoint, sender, uatoneDenom)
+		s.Require().NoError(err)
+		beforeRecipientBalance, err := getSpecificBalance(chainAAPIEndpoint, recipient, uatoneDenom)
+		s.Require().NoError(err)
+
+		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
+		proposalCounter++
+		submitGovFlags := []string{configFile(proposalCommunitySpendFilename)}
+		depositGovFlags := []string{strconv.Itoa(proposalCounter), depositAmount.String()}
+		voteGovFlags := []string{strconv.Itoa(proposalCounter), "no"}
+		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "CommunityPoolSpend", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusRejected)
+
+		// Check that sender is not refunded with the proposal deposit
+		s.Require().Eventually(
+			func() bool {
+				afterSenderBalance, err := getSpecificBalance(chainAAPIEndpoint, sender, uatoneDenom)
+				s.Require().NoError(err)
+
+				return afterSenderBalance.Add(depositAmount).Add(initialDepositAmount).
+					IsEqual(beforeSenderBalance)
+			},
+			10*time.Second,
+			time.Second,
+		)
+		// Check that recipient didnt receive the community pool spend since the
+		// proposal was rejected
+		s.Require().Eventually(
+			func() bool {
+				afterRecipientBalance, err := getSpecificBalance(chainAAPIEndpoint, recipient, uatoneDenom)
+				s.Require().NoError(err)
+
+				return afterRecipientBalance.IsEqual(beforeRecipientBalance)
 			},
 			10*time.Second,
 			time.Second,
@@ -174,7 +235,7 @@ func (s *IntegrationTestSuite) testGovParamChange() {
 		submitGovFlags := []string{configFile(proposalParamChangeFilename)}
 		depositGovFlags := []string{strconv.Itoa(proposalCounter), depositAmount.String()}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
-		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "cosmos.staking.v1beta1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote")
+		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "cosmos.staking.v1beta1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
 
 		newParams := s.queryStakingParams(chainAAPIEndpoint)
 		s.Assert().NotEqual(oldMaxValidator, newParams.Params.MaxValidators)
@@ -197,7 +258,7 @@ func (s *IntegrationTestSuite) testGovParamChange() {
 		submitGovFlags := []string{configFile(proposalParamChangeFilename)}
 		depositGovFlags := []string{strconv.Itoa(proposalCounter), depositAmount.String()}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
-		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "atomone.photon.v1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote")
+		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "atomone.photon.v1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
 
 		newParams := s.queryPhotonParams(chainAAPIEndpoint)
 		s.Assert().True(newParams.Params.MintDisabled, "expected photon param mint disabled to be true")
@@ -208,7 +269,7 @@ func (s *IntegrationTestSuite) testGovParamChange() {
 		depositGovFlags = []string{strconv.Itoa(proposalCounter), depositAmount.String()}
 		voteGovFlags = []string{strconv.Itoa(proposalCounter), "yes"}
 		s.writePhotonParamChangeProposal(s.chainA, params.Params)
-		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "atomone.photon.v1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote")
+		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "atomone.photon.v1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
 
 		newParams = s.queryPhotonParams(chainAAPIEndpoint)
 		s.Require().False(newParams.Params.MintDisabled, "expected photon param mint disabled to be false")
@@ -251,7 +312,7 @@ func (s *IntegrationTestSuite) testGovConstitutionAmendment() {
 		submitGovFlags := []string{configFile(proposalConstitutionAmendmentFilename)}
 		depositGovFlags := []string{strconv.Itoa(proposalCounter), depositAmount.String()}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
-		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "gov/MsgSubmitProposal", submitGovFlags, depositGovFlags, voteGovFlags, "vote")
+		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "gov/MsgSubmitProposal", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
 
 		s.Require().Eventually(
 			func() bool {
@@ -282,14 +343,14 @@ func (s *IntegrationTestSuite) submitLegacyGovProposal(chainAAPIEndpoint, sender
 // Instead, the deposit is added to the "deposit" field of the proposal JSON (usually stored as a file)
 // you can use `atomoned tx gov draft-proposal` to create a proposal file that you can use
 // min initial deposit of 100uatone is required in e2e tests, otherwise the proposal would be dropped
-func (s *IntegrationTestSuite) submitGovProposal(chainAAPIEndpoint, sender string, proposalID int, proposalType string, submitFlags []string, depositFlags []string, voteFlags []string, voteCommand string) {
+func (s *IntegrationTestSuite) submitGovProposal(chainAAPIEndpoint, sender string, proposalID int, proposalType string, submitFlags []string, depositFlags []string, voteFlags []string, voteCommand string, expectedStatusAfterVote govtypesv1beta1.ProposalStatus) {
 	s.T().Logf("Submitting Gov Proposal: %s", proposalType)
 	sflags := submitFlags
 	s.submitGovCommand(chainAAPIEndpoint, sender, proposalID, "submit-proposal", sflags, govtypesv1beta1.StatusDepositPeriod)
 	s.T().Logf("Depositing Gov Proposal: %s", proposalType)
 	s.submitGovCommand(chainAAPIEndpoint, sender, proposalID, "deposit", depositFlags, govtypesv1beta1.StatusVotingPeriod)
 	s.T().Logf("Voting Gov Proposal: %s", proposalType)
-	s.submitGovCommand(chainAAPIEndpoint, sender, proposalID, voteCommand, voteFlags, govtypesv1beta1.StatusPassed)
+	s.submitGovCommand(chainAAPIEndpoint, sender, proposalID, voteCommand, voteFlags, expectedStatusAfterVote)
 }
 
 func (s *IntegrationTestSuite) verifyChainHaltedAtUpgradeHeight(c *chain, valIdx int, upgradeHeight int64) {

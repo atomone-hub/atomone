@@ -19,3 +19,12 @@ following venues:
 We will respond within 3 business days to all received reports. 
 
 Thank you for helping to keep our ecosystem safe!
+
+## Security Audits
+
+- March 2025: The security firm Zellic conducted a source code audit of the AtomOne daemon and 
+published a [report](docs/AtomOne%20-%20Zellic%20Audit%20Report.pdf) on March 11, 2025. Zellic has 
+independently published this report 
+[here](https://github.com/Zellic/publications/blob/master/AtomOne%20-%20Zellic%20Audit%20Report.pdf) 
+with a SHA-256 hash of 60625f148263829921f7b8cc4a065290b197ddb869ba821f7dc4cfe4a4f96ff1.
+The audit scope was the whole codebase with a specific focus on the new `x/photon` module and the [dynamic deposit proposal](https://github.com/atomone-hub/atomone/pull/69) from the `x/gov/` module.

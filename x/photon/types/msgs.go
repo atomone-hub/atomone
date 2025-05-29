@@ -6,6 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
+	"github.com/atomone-hub/atomone/app/params"
 	"github.com/atomone-hub/atomone/x/gov/types"
 )
 
@@ -46,6 +47,10 @@ func (msg *MsgMintPhoton) ValidateBasic() error {
 	}
 	if !msg.Amount.IsPositive() {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidCoins, "coin to burn must be positive")
+	}
+	// Ensure burned amount denom is bond denom
+	if msg.Amount.Denom != params.BondDenom {
+		return errorsmod.Wrapf(ErrBurnInvalidDenom, "invalid denom %s", msg.Amount.Denom)
 	}
 	return nil
 }

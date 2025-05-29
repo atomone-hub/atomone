@@ -10,6 +10,7 @@ import (
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 
+	"github.com/atomone-hub/atomone/app/params"
 	"github.com/atomone-hub/atomone/x/photon/keeper"
 	"github.com/atomone-hub/atomone/x/photon/types"
 )
@@ -62,7 +63,7 @@ func SimulateMsgMintPhoton(
 		if len(spendable) == 0 {
 			return simtypes.NoOpMsg(types.ModuleName, TypeMsgMintPhoton, "no spendable coins"), nil, nil
 		}
-		bondDenom := sk.BondDenom(ctx)
+		bondDenom := params.BondDenom
 		ok, amount := spendable.Find(bondDenom)
 		if !ok {
 			return simtypes.NoOpMsg(types.ModuleName, TypeMsgMintPhoton, "no bond denom in spendable coins"), nil, nil

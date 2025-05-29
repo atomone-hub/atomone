@@ -2,6 +2,7 @@ package v1_test
 
 import (
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/require"
 
@@ -40,17 +41,205 @@ func TestValidateGenesis(t *testing.T) {
 			expErrMsg: "starting proposal id must be greater than 0",
 		},
 		{
-			name: "invalid min deposit",
+			name: "min deposit throttler is nil",
 			genesisState: func() *v1.GenesisState {
 				params1 := params
-				params1.MinDeposit = sdk.Coins{{
+				params1.MinDepositThrottler = nil
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, params1)
+			},
+			expErrMsg: "min deposit throttler must not be nil",
+		},
+		{
+			name: "invalid min deposit throttler floor",
+			genesisState: func() *v1.GenesisState {
+				params1 := params
+				minDepositThrottler1 := *params.MinDepositThrottler
+				minDepositThrottler1.FloorValue = sdk.Coins{{
 					Denom:  sdk.DefaultBondDenom,
 					Amount: sdk.NewInt(-100),
 				}}
+				params1.MinDepositThrottler = &minDepositThrottler1
 
 				return v1.NewGenesisState(v1.DefaultStartingProposalID, params1)
 			},
-			expErrMsg: "invalid minimum deposit",
+			expErrMsg: "invalid minimum deposit floor",
+		},
+		{
+			name: "min deposit throttler update period is nil",
+			genesisState: func() *v1.GenesisState {
+				params1 := params
+				mdt := *params.MinDepositThrottler
+				mdt.UpdatePeriod = nil
+				params1.MinDepositThrottler = &mdt
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, params1)
+			},
+			expErrMsg: "minimum deposit update period must not be nil",
+		},
+		{
+			name: "min deposit throttler update period is 0",
+			genesisState: func() *v1.GenesisState {
+				params1 := params
+				mdt := *params.MinDepositThrottler
+				d := time.Duration(0)
+				mdt.UpdatePeriod = &d
+				params1.MinDepositThrottler = &mdt
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, params1)
+			},
+			expErrMsg: "minimum deposit update period must be positive: 0s",
+		},
+		{
+			name: "min deposit throttler update period is greater than voting period",
+			genesisState: func() *v1.GenesisState {
+				params1 := params
+				mdt := *params.MinDepositThrottler
+				d := *params.VotingPeriod + 1
+				mdt.UpdatePeriod = &d
+				params1.MinDepositThrottler = &mdt
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, params1)
+			},
+			expErrMsg: "minimum deposit update period must be less than or equal to the voting period: 504h0m0.000000001s",
+		},
+		{
+			name: "min deposit throttler sensitivity target distance is 0",
+			genesisState: func() *v1.GenesisState {
+				params1 := params
+				mdt := *params.MinDepositThrottler
+				mdt.DecreaseSensitivityTargetDistance = 0
+				params1.MinDepositThrottler = &mdt
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, params1)
+			},
+			expErrMsg: "minimum deposit sensitivity target distance must be positive: 0",
+		},
+		{
+			name: "invalid min deposit throttler increase ratio",
+			genesisState: func() *v1.GenesisState {
+				params1 := params
+				mdt := *params.MinDepositThrottler
+				mdt.IncreaseRatio = ""
+				params1.MinDepositThrottler = &mdt
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, params1)
+			},
+			expErrMsg: "invalid minimum deposit increase ratio: decimal string cannot be empty",
+		},
+		{
+			name: "min deposit throttler increase ratio is 0",
+			genesisState: func() *v1.GenesisState {
+				params1 := params
+				mdt := *params.MinDepositThrottler
+				mdt.IncreaseRatio = "0"
+				params1.MinDepositThrottler = &mdt
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, params1)
+			},
+			expErrMsg: "minimum deposit increase ratio must be positive: 0.000000000000000000",
+		},
+		{
+			name: "min deposit throttler increase ratio is 1",
+			genesisState: func() *v1.GenesisState {
+				params1 := params
+				mdt := *params.MinDepositThrottler
+				mdt.IncreaseRatio = "1"
+				params1.MinDepositThrottler = &mdt
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, params1)
+			},
+			expErrMsg: "minimum deposit increase ratio too large: 1.000000000000000000",
+		},
+		{
+			name: "invalid min deposit throttler decrease ratio",
+			genesisState: func() *v1.GenesisState {
+				params1 := params
+				mdt := *params.MinDepositThrottler
+				mdt.DecreaseRatio = ""
+				params1.MinDepositThrottler = &mdt
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, params1)
+			},
+			expErrMsg: "invalid minimum deposit decrease ratio: decimal string cannot be empty",
+		},
+		{
+			name: "min deposit throttler decrease ratio is 0",
+			genesisState: func() *v1.GenesisState {
+				params1 := params
+				mdt := *params.MinDepositThrottler
+				mdt.DecreaseRatio = "0"
+				params1.MinDepositThrottler = &mdt
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, params1)
+			},
+			expErrMsg: "minimum deposit decrease ratio must be positive: 0.000000000000000000",
+		},
+		{
+			name: "min deposit throttler decrease ratio is 1",
+			genesisState: func() *v1.GenesisState {
+				params1 := params
+				mdt := *params.MinDepositThrottler
+				mdt.DecreaseRatio = "1"
+				params1.MinDepositThrottler = &mdt
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, params1)
+			},
+			expErrMsg: "minimum deposit decrease ratio too large: 1.000000000000000000",
+		},
+		{
+			name: "min deposit is deprecated",
+			genesisState: func() *v1.GenesisState {
+				params1 := params
+				params1.MinDeposit = sdk.NewCoins(sdk.NewInt64Coin("xxx", 1))
+
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, params1)
+			},
+			expErrMsg: "manually setting min deposit is deprecated in favor of a dynamic min deposit",
+		},
+		{
+			name: "quorum timeout is nil",
+			genesisState: func() *v1.GenesisState {
+				params1 := params
+				params1.QuorumCheckCount = 1
+				params1.QuorumTimeout = nil
+
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, params1)
+			},
+			expErrMsg: "quorum timeout must not be nil",
+		},
+		{
+			name: "quorum timeout is negative",
+			genesisState: func() *v1.GenesisState {
+				params1 := params
+				params1.QuorumCheckCount = 1
+				d := time.Duration(-1)
+				params1.QuorumTimeout = &d
+
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, params1)
+			},
+			expErrMsg: "quorum timeout must be 0 or greater: -1ns",
+		},
+		{
+			name: "quorum timeout is equal to voting period",
+			genesisState: func() *v1.GenesisState {
+				params1 := params
+				params1.QuorumCheckCount = 1
+				params1.QuorumTimeout = params.VotingPeriod
+
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, params1)
+			},
+			expErrMsg: "quorum timeout 504h0m0s must be strictly less than the voting period 504h0m0s",
+		},
+		{
+			name: "max voting period extension is nil",
+			genesisState: func() *v1.GenesisState {
+				params1 := params
+				params1.QuorumCheckCount = 1
+				params1.MaxVotingPeriodExtension = nil
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, params1)
+			},
+			expErrMsg: "max voting period extension must not be nil",
+		},
+		{
+			name: "max voting period extension less than voting period - quorum time out",
+			genesisState: func() *v1.GenesisState {
+				params1 := params
+				params1.QuorumCheckCount = 1
+				d := time.Duration(-1)
+				params1.MaxVotingPeriodExtension = &d
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, params1)
+			},
+			expErrMsg: "max voting period extension -1ns must be greater than or equal to the difference between the voting period 504h0m0s and the quorum timeout 480h0m0s",
 		},
 		{
 			name: "invalid max deposit period",

@@ -12,13 +12,17 @@
 
 ### FEATURES
 
+- Add the feemarket module and use the EIP-15559 AIMD algorithm [#114](https://github.com/atomone-hub/atomone/pull/114)
+- Make `x/gov` proposals deposits dynamic [#69](https://github.com/atomone-hub/atomone/pull/69)
+- Burn proposals deposit if percentage of no votes > `params.BurnDepositNoThreshold` when tallying [#90](https://github.com/atomone-hub/atomone/pull/90)
+
 ### STATE BREAKING
 
 ### IMPROVEMENTS
 
 ## v2.0.0
 
-*Apr 4th, 2025*
+*May 1st, 2025*
 
 ### BUG FIXES
 
@@ -32,7 +36,6 @@
 ### FEATURES
 
 - Add the photon module and use photon as the only fee denom [#57](https://github.com/atomone-hub/atomone/pull/57)
-- Add the feemarket module and use the EIP-15559 AIMD algorithm [#114](https://github.com/atomone-hub/atomone/pull/114)
 
 ### DEPENDENCIES
 

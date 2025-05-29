@@ -204,13 +204,21 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 
 	govGenState := govv1.NewGenesisState(1,
 		govv1.NewParams(
-			sdk.NewCoins(depositAmount), maxDepositPeriod,
+			// sdk.NewCoins(sdk.NewCoin(denom, depositAmount.Amount)),
+			maxDepositPeriod,
 			votingPeriod,
 			quorum.String(), threshold.String(),
 			amendmentsQuorum.String(), amendmentsThreshold.String(), lawQuorum.String(), lawThreshold.String(),
-			sdk.ZeroDec().String(),
+			// sdk.ZeroDec().String(),
 			false, false, govv1.DefaultMinDepositRatio.String(),
 			govv1.DefaultQuorumTimeout, govv1.DefaultMaxVotingPeriodExtension, govv1.DefaultQuorumCheckCount,
+			sdk.NewCoins(sdk.NewCoin(denom, depositAmount.Amount)), govv1.DefaultMinDepositUpdatePeriod,
+			govv1.DefaultMinDepositDecreaseSensitivityTargetDistance,
+			govv1.DefaultMinDepositIncreaseRatio.String(), govv1.DefaultMinDepositDecreaseRatio.String(),
+			govv1.DefaultTargetActiveProposals, sdk.NewCoins(sdk.NewCoin(denom, initialDepositAmount.Amount)), govv1.DefaultMinInitialDepositUpdatePeriod,
+			govv1.DefaultMinInitialDepositDecreaseSensitivityTargetDistance, govv1.DefaultMinInitialDepositIncreaseRatio.String(),
+			govv1.DefaultMinInitialDepositDecreaseRatio.String(), govv1.DefaultTargetProposalsInDepositPeriod,
+			govv1.DefaultBurnDepositNoThreshold.String(),
 		),
 	)
 	govGenState.Constitution = "This is a test constitution"
