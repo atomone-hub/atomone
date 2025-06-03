@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"cosmossdk.io/log"
-	db "github.com/cometbft/cometbft-db"
+	dbm "github.com/cosmos/cosmos-db"
 
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
@@ -25,7 +25,7 @@ func TestAtomOneApp_BlockedModuleAccountAddrs(t *testing.T) {
 	encConfig := atomone.RegisterEncodingConfig()
 	app := atomone.NewAtomOneApp(
 		log.NewNopLogger(),
-		db.NewMemDB(),
+		dbm.NewMemDB(),
 		nil,
 		true,
 		map[int64]bool{},
