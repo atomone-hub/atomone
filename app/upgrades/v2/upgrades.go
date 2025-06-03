@@ -1,6 +1,8 @@
 package v2
 
 import (
+	"context"
+
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
@@ -19,8 +21,10 @@ func CreateUpgradeHandler(
 	configurator module.Configurator,
 	keepers *keepers.AppKeepers,
 ) upgradetypes.UpgradeHandler {
-	return func(ctx sdk.Context, plan upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
-		ctx.Logger().Info("Starting module migrations...")
+	return func(ctx context.Context, plan upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
+		sdkCtx := sdk.UnwrapSDKContext(ctx)
+
+		sdkCtx.Logger().Info("Starting module migrations...")
 		// RunMigrations will detect the add of the photon module, will initiate
 		// its genesis and will fill the versionMap with its consensus version.
 		vm, err := mm.RunMigrations(ctx, configurator, vm)
@@ -30,12 +34,12 @@ func CreateUpgradeHandler(
 		// Set photon.params.txFeeExceptions to '*' to allow transactions to use
 		// any fee. This is a temporary measure to give users time to migrate to
 		// the new fee model.
-		if err := setPhotonTxFeeExceptions(ctx, keepers.PhotonKeeper); err != nil {
+		if err := setPhotonTxFeeExceptions(sdkCtx, keepers.PhotonKeeper); err != nil {
 			return vm, err
 		}
 		// Add the photon denom metadata to the bank module store
-		setPhotonDenomMetadata(ctx, keepers.BankKeeper)
-		ctx.Logger().Info("Upgrade complete")
+		setPhotonDenomMetadata(sdkCtx, keepers.BankKeeper)
+		sdkCtx.Logger().Info("Upgrade complete")
 		return vm, nil
 	}
 }

@@ -30,12 +30,12 @@ func GenTxFeeExceptions(r *rand.Rand) []string {
 func RandomizedGenState(simState *module.SimulationState) {
 	var mintDisabled bool
 	simState.AppParams.GetOrGenerate(
-		simState.Cdc, MintDisabled, &mintDisabled, simState.Rand,
+		MintDisabled, &mintDisabled, simState.Rand,
 		func(r *rand.Rand) { mintDisabled = GenMintDisabled(r) },
 	)
 	var txFeeExceptions []string
 	simState.AppParams.GetOrGenerate(
-		simState.Cdc, TxFeeExceptions, &txFeeExceptions, simState.Rand,
+		TxFeeExceptions, &txFeeExceptions, simState.Rand,
 		func(r *rand.Rand) { txFeeExceptions = GenTxFeeExceptions(r) },
 	)
 

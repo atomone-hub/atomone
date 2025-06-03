@@ -2,7 +2,9 @@ package atomone
 
 import (
 	"encoding/json"
+	"errors"
 
+	"cosmossdk.io/collections"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
@@ -72,7 +74,12 @@ func (app *AtomOneApp) prepForZeroHeightGenesis(ctx sdk.Context, jailAllowedAddr
 
 	// withdraw all validator commission
 	app.StakingKeeper.IterateValidators(ctx, func(_ int64, val stakingtypes.ValidatorI) (stop bool) {
-		_, err := app.DistrKeeper.WithdrawValidatorCommission(ctx, val.GetOperator())
+		valBz, err := app.StakingKeeper.ValidatorAddressCodec().StringToBytes(val.GetOperator())
+		if err != nil {
+			panic(err)
+		}
+
+		_, err = app.DistrKeeper.WithdrawValidatorCommission(ctx, valBz)
 		if err != nil {
 			app.Logger().Error(err.Error(), "ValOperatorAddress", val.GetOperator())
 		}
@@ -80,7 +87,10 @@ func (app *AtomOneApp) prepForZeroHeightGenesis(ctx sdk.Context, jailAllowedAddr
 	})
 
 	// withdraw all delegator rewards
-	dels := app.StakingKeeper.GetAllDelegations(ctx)
+	dels, err := app.StakingKeeper.GetAllDelegations(ctx)
+	if err != nil {
+		panic(err)
+	}
 	for _, delegation := range dels {
 		valAddr, err := sdk.ValAddressFromBech32(delegation.ValidatorAddress)
 		if err != nil {
@@ -125,13 +135,22 @@ func (app *AtomOneApp) prepForZeroHeightGenesis(ctx sdk.Context, jailAllowedAddr
 
 	// reinitialize all validators
 	app.StakingKeeper.IterateValidators(ctx, func(_ int64, val stakingtypes.ValidatorI) (stop bool) {
+		valBz, err := app.StakingKeeper.ValidatorAddressCodec().StringToBytes(val.GetOperator())
+		if err != nil {
+			panic(err)
+		}
+
 		// donate any unwithdrawn outstanding reward fraction tokens to the community pool
-		scraps := app.DistrKeeper.GetValidatorOutstandingRewardsCoins(ctx, val.GetOperator())
+		scraps, err := app.DistrKeeper.GetValidatorOutstandingRewardsCoins(ctx, sdk.ValAddress(valBz))
+		if err != nil {
+			panic(err)
+		}
+
 		feePool := app.DistrKeeper.GetFeePool(ctx)
 		feePool.CommunityPool = feePool.CommunityPool.Add(scraps...)
 		app.DistrKeeper.SetFeePool(ctx, feePool)
 
-		if err := app.DistrKeeper.Hooks().AfterValidatorCreated(ctx, val.GetOperator()); err != nil {
+		if err := app.DistrKeeper.Hooks().AfterValidatorCreated(ctx, valBz); err != nil {
 			panic(err)
 		}
 		return false
@@ -190,9 +209,11 @@ func (app *AtomOneApp) prepForZeroHeightGenesis(ctx sdk.Context, jailAllowedAddr
 		defer iter.Close()
 		for ; iter.Valid(); iter.Next() {
 			addr := sdk.ValAddress(stakingtypes.AddressFromValidatorsKey(iter.Key()))
-			validator, found := app.StakingKeeper.GetValidator(ctx, addr)
-			if !found {
+			validator, err := app.StakingKeeper.GetValidator(ctx, addr)
+			if errors.Is(err, collections.ErrNotFound) {
 				panic("expected validator, not found")
+			} else if err != nil {
+				panic(err)
 			}
 
 			validator.UnbondingHeight = 0
@@ -205,7 +226,7 @@ func (app *AtomOneApp) prepForZeroHeightGenesis(ctx sdk.Context, jailAllowedAddr
 		}
 	}()
 
-	_, err := app.StakingKeeper.ApplyAndReturnValidatorSetUpdates(ctx)
+	_, err = app.StakingKeeper.ApplyAndReturnValidatorSetUpdates(ctx)
 	if err != nil {
 		panic(err)
 	}
