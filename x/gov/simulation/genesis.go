@@ -107,77 +107,77 @@ func RandomizedGenState(simState *module.SimulationState) {
 
 	var minDeposit sdk.Coins
 	simState.AppParams.GetOrGenerate(
-		simState.Cdc, DepositParamsMinDeposit, &minDeposit, simState.Rand,
+		DepositParamsMinDeposit, &minDeposit, simState.Rand,
 		func(r *rand.Rand) { minDeposit = GenDepositParamsMinDeposit(r) },
 	)
 
 	var depositPeriod time.Duration
 	simState.AppParams.GetOrGenerate(
-		simState.Cdc, DepositParamsDepositPeriod, &depositPeriod, simState.Rand,
+		DepositParamsDepositPeriod, &depositPeriod, simState.Rand,
 		func(r *rand.Rand) { depositPeriod = GenDepositParamsDepositPeriod(r) },
 	)
 
 	var minInitialDepositRatio math.LegacyDec
 	simState.AppParams.GetOrGenerate(
-		simState.Cdc, DepositMinInitialRatio, &minInitialDepositRatio, simState.Rand,
+		DepositMinInitialRatio, &minInitialDepositRatio, simState.Rand,
 		func(r *rand.Rand) { minInitialDepositRatio = GenDepositMinInitialDepositRatio(r) },
 	)
 
 	var votingPeriod time.Duration
 	simState.AppParams.GetOrGenerate(
-		simState.Cdc, VotingParamsVotingPeriod, &votingPeriod, simState.Rand,
+		VotingParamsVotingPeriod, &votingPeriod, simState.Rand,
 		func(r *rand.Rand) { votingPeriod = GenVotingParamsVotingPeriod(r) },
 	)
 
 	var quorum math.LegacyDec
 	simState.AppParams.GetOrGenerate(
-		simState.Cdc, TallyParamsQuorum, &quorum, simState.Rand,
+		TallyParamsQuorum, &quorum, simState.Rand,
 		func(r *rand.Rand) { quorum = GenTallyParamsQuorum(r) },
 	)
 
 	var threshold math.LegacyDec
 	simState.AppParams.GetOrGenerate(
-		simState.Cdc, TallyParamsThreshold, &threshold, simState.Rand,
+		TallyParamsThreshold, &threshold, simState.Rand,
 		func(r *rand.Rand) { threshold = GenTallyParamsThreshold(r) },
 	)
 
 	var minDepositRatio math.LegacyDec
-	simState.AppParams.GetOrGenerate(simState.Cdc, MinDepositRatio, &minDepositRatio, simState.Rand, func(r *rand.Rand) { minDepositRatio = GenMinDepositRatio(r) })
+	simState.AppParams.GetOrGenerate(MinDepositRatio, &minDepositRatio, simState.Rand, func(r *rand.Rand) { minDepositRatio = GenMinDepositRatio(r) })
 
 	var lawQuorum math.LegacyDec
 	simState.AppParams.GetOrGenerate(
-		simState.Cdc, TallyParamsLawQuorum, &lawQuorum, simState.Rand,
+		TallyParamsLawQuorum, &lawQuorum, simState.Rand,
 		func(r *rand.Rand) { lawQuorum = GenTallyParamsConstitutionalQuorum(r, quorum) },
 	)
 
 	var lawThreshold math.LegacyDec
 	simState.AppParams.GetOrGenerate(
-		simState.Cdc, TallyParamsLawThreshold, &lawThreshold, simState.Rand,
+		TallyParamsLawThreshold, &lawThreshold, simState.Rand,
 		func(r *rand.Rand) { lawThreshold = GenTallyParamsConstitutionalThreshold(r, threshold) },
 	)
 
 	var amendmentsQuorum math.LegacyDec
 	simState.AppParams.GetOrGenerate(
-		simState.Cdc, TallyParamsConstitutionAmendmentQuorum, &amendmentsQuorum, simState.Rand,
+		TallyParamsConstitutionAmendmentQuorum, &amendmentsQuorum, simState.Rand,
 		func(r *rand.Rand) { amendmentsQuorum = GenTallyParamsConstitutionalQuorum(r, lawQuorum) },
 	)
 
 	var amendmentsThreshold math.LegacyDec
 	simState.AppParams.GetOrGenerate(
-		simState.Cdc, TallyParamsConstitutionAmendmentThreshold, &amendmentsThreshold, simState.Rand,
+		TallyParamsConstitutionAmendmentThreshold, &amendmentsThreshold, simState.Rand,
 		func(r *rand.Rand) { amendmentsThreshold = GenTallyParamsConstitutionalThreshold(r, lawThreshold) },
 	)
 
 	var quorumTimout time.Duration
-	simState.AppParams.GetOrGenerate(simState.Cdc, QuorumTimeout, &quorumTimout, simState.Rand, func(r *rand.Rand) { quorumTimout = GenQuorumTimeout(r, votingPeriod) })
+	simState.AppParams.GetOrGenerate(QuorumTimeout, &quorumTimout, simState.Rand, func(r *rand.Rand) { quorumTimout = GenQuorumTimeout(r, votingPeriod) })
 
 	var maxVotingPeriodExtension time.Duration
-	simState.AppParams.GetOrGenerate(simState.Cdc, MaxVotingPeriodExtension, &maxVotingPeriodExtension, simState.Rand, func(r *rand.Rand) {
+	simState.AppParams.GetOrGenerate(MaxVotingPeriodExtension, &maxVotingPeriodExtension, simState.Rand, func(r *rand.Rand) {
 		maxVotingPeriodExtension = GenMaxVotingPeriodExtension(r, votingPeriod, quorumTimout)
 	})
 
 	var quorumCheckCount uint64
-	simState.AppParams.GetOrGenerate(simState.Cdc, QuorumCheckCount, &quorumCheckCount, simState.Rand, func(r *rand.Rand) { quorumCheckCount = GenQuorumCheckCount(r) })
+	simState.AppParams.GetOrGenerate(QuorumCheckCount, &quorumCheckCount, simState.Rand, func(r *rand.Rand) { quorumCheckCount = GenQuorumCheckCount(r) })
 
 	govGenesis := v1.NewGenesisState(
 		startingProposalID,

@@ -98,7 +98,7 @@ func (keeper Keeper) HasReachedQuorum(ctx sdk.Context, proposal v1.Proposal) (qu
 func (keeper Keeper) getBondedValidatorsByAddress(ctx sdk.Context) map[string]stakingtypes.ValidatorI {
 	vals := make(map[string]stakingtypes.ValidatorI)
 	keeper.sk.IterateBondedValidatorsByPower(ctx, func(index int64, validator stakingtypes.ValidatorI) (stop bool) {
-		vals[validator.GetOperator().String()] = validator
+		vals[validator.GetOperator()] = validator
 		return false
 	})
 	return vals
@@ -124,7 +124,7 @@ func (keeper Keeper) tallyVotes(
 		voter := sdk.MustAccAddressFromBech32(vote.Voter)
 		// iterate over all delegations from voter, deduct from any delegated-to validators
 		keeper.sk.IterateDelegations(ctx, voter, func(index int64, delegation stakingtypes.DelegationI) (stop bool) {
-			valAddrStr := delegation.GetValidatorAddr().String()
+			valAddrStr := delegation.GetValidatorAddr()
 
 			if val, ok := currValidators[valAddrStr]; ok {
 				// delegation shares * bonded / total shares

@@ -34,7 +34,7 @@ func WeightedOperations(appParams simtypes.AppParams, cdc codec.JSONCodec,
 	ak types.AccountKeeper, bk types.BankKeeper, sk types.StakingKeeper, k keeper.Keeper,
 ) simulation.WeightedOperations {
 	var weightMsgMintPhoton int
-	appParams.GetOrGenerate(cdc, OpWeightMsgMintPhoton, &weightMsgMintPhoton, nil,
+	appParams.GetOrGenerate(OpWeightMsgMintPhoton, &weightMsgMintPhoton, nil,
 		func(_ *rand.Rand) {
 			weightMsgMintPhoton = DefaultWeightMsgMintPhoton
 		},

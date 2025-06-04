@@ -32,7 +32,11 @@ func (k msgServer) MintPhoton(goCtx context.Context, msg *types.MsgMintPhoton) (
 	}
 
 	// Ensure burned amount denom is bond denom
-	bondDenom := k.stakingKeeper.BondDenom(ctx)
+	bondDenom, err := k.stakingKeeper.BondDenom(ctx)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get bond denom")
+	}
+
 	if msg.Amount.Denom != bondDenom {
 		return nil, types.ErrBurnInvalidDenom
 	}

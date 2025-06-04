@@ -3,6 +3,8 @@
 package testutil
 
 import (
+	context "context"
+
 	math "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -31,6 +33,6 @@ type BankKeeper interface {
 type StakingKeeper interface {
 	types.StakingKeeper
 
-	BondDenom(ctx sdk.Context) string
-	TokensFromConsensusPower(ctx sdk.Context, power int64) math.Int
+	BondDenom(ctx context.Context) (string, error)
+	TokensFromConsensusPower(ctx context.Context, power int64) math.Int
 }

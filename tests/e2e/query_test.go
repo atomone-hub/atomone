@@ -249,7 +249,7 @@ func queryValidator(endpoint, address string) (stakingtypes.Validator, error) {
 	return res.Validator, nil
 }
 
-func queryValidators(endpoint string) (stakingtypes.Validators, error) {
+func queryValidators(endpoint string) ([]stakingtypes.Validator, error) {
 	var res stakingtypes.QueryValidatorsResponse
 	body, err := httpGet(fmt.Sprintf("%s/cosmos/staking/v1beta1/validators", endpoint))
 	if err != nil {

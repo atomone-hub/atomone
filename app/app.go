@@ -44,6 +44,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	ibckeeper "github.com/cosmos/ibc-go/v10/modules/core/keeper"
 
 	atomoneante "github.com/atomone-hub/atomone/ante"
 	"github.com/atomone-hub/atomone/app/keepers"
@@ -423,6 +424,11 @@ func (app *AtomOneApp) GetBaseApp() *baseapp.BaseApp {
 // GetTxConfig implements the TestingApp interface.
 func (app *AtomOneApp) GetTxConfig() client.TxConfig {
 	return app.txConfig
+}
+
+// GetIBCKeeper implements the TestingApp interface.
+func (app *AtomOneApp) GetIBCKeeper() *ibckeeper.Keeper {
+	return app.IBCKeeper
 }
 
 // EmptyAppOptions is a stub implementing AppOptions

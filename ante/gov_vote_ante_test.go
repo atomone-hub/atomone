@@ -101,9 +101,10 @@ func TestVoteSpamDecoratorGovV1Beta1(t *testing.T) {
 
 	for _, tc := range tests {
 		// Unbond all tokens for this delegator
-		delegations := stakingKeeper.GetAllDelegatorDelegations(ctx, delegator)
+		delegations, err := stakingKeeper.GetAllDelegatorDelegations(ctx, delegator)
+		require.NoError(t, err)
 		for _, del := range delegations {
-			_, err := stakingKeeper.Undelegate(ctx, delegator, del.GetValidatorAddr(), del.GetShares())
+			_, _, err = stakingKeeper.Undelegate(ctx, delegator, del.GetValidatorAddr(), del.GetShares())
 			require.NoError(t, err)
 		}
 
@@ -111,9 +112,9 @@ func TestVoteSpamDecoratorGovV1Beta1(t *testing.T) {
 		if !tc.bondAmt.IsZero() {
 			amt := tc.bondAmt.Quo(math.NewInt(int64(len(tc.validators))))
 			for _, valAddr := range tc.validators {
-				val, found := stakingKeeper.GetValidator(ctx, valAddr)
-				require.True(t, found)
-				_, err := stakingKeeper.Delegate(ctx, delegator, amt, stakingtypes.Unbonded, val, true)
+				val, err := stakingKeeper.GetValidator(ctx, valAddr)
+				require.NoError(t, err)
+				_, err = stakingKeeper.Delegate(ctx, delegator, amt, stakingtypes.Unbonded, val, true)
 				require.NoError(t, err)
 			}
 		}
@@ -215,9 +216,11 @@ func TestVoteSpamDecoratorGovV1(t *testing.T) {
 
 	for _, tc := range tests {
 		// Unbond all tokens for this delegator
-		delegations := stakingKeeper.GetAllDelegatorDelegations(ctx, delegator)
+		delegations, err := stakingKeeper.GetAllDelegatorDelegations(ctx, delegator)
+		require.NoError(t, err)
+
 		for _, del := range delegations {
-			_, err := stakingKeeper.Undelegate(ctx, delegator, del.GetValidatorAddr(), del.GetShares())
+			_, _, err := stakingKeeper.Undelegate(ctx, delegator, del.GetValidatorAddr(), del.GetShares())
 			require.NoError(t, err)
 		}
 
@@ -225,9 +228,9 @@ func TestVoteSpamDecoratorGovV1(t *testing.T) {
 		if !tc.bondAmt.IsZero() {
 			amt := tc.bondAmt.Quo(math.NewInt(int64(len(tc.validators))))
 			for _, valAddr := range tc.validators {
-				val, found := stakingKeeper.GetValidator(ctx, valAddr)
-				require.True(t, found)
-				_, err := stakingKeeper.Delegate(ctx, delegator, amt, stakingtypes.Unbonded, val, true)
+				val, err := stakingKeeper.GetValidator(ctx, valAddr)
+				require.NoError(t, err)
+				_, err = stakingKeeper.Delegate(ctx, delegator, amt, stakingtypes.Unbonded, val, true)
 				require.NoError(t, err)
 			}
 		}

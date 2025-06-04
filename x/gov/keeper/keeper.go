@@ -32,7 +32,7 @@ type Keeper struct {
 	storeKey storetypes.StoreKey
 
 	// The codec for binary encoding/decoding.
-	cdc codec.BinaryCodec
+	cdc codec.Codec
 
 	// Legacy Proposal router
 	legacyRouter v1beta1.Router
@@ -242,21 +242,21 @@ func (keeper Keeper) IterateQuorumCheckQueue(ctx sdk.Context, endTime time.Time,
 }
 
 // ActiveProposalQueueIterator returns an sdk.Iterator for all the proposals in the Active Queue that expire by endTime
-func (keeper Keeper) ActiveProposalQueueIterator(ctx sdk.Context, endTime time.Time) sdk.Iterator {
+func (keeper Keeper) ActiveProposalQueueIterator(ctx sdk.Context, endTime time.Time) storetypes.Iterator {
 	store := ctx.KVStore(keeper.storeKey)
-	return store.Iterator(types.ActiveProposalQueuePrefix, sdk.PrefixEndBytes(types.ActiveProposalByTimeKey(endTime)))
+	return store.Iterator(types.ActiveProposalQueuePrefix, storetypes.PrefixEndBytes(types.ActiveProposalByTimeKey(endTime)))
 }
 
 // InactiveProposalQueueIterator returns an sdk.Iterator for all the proposals in the Inactive Queue that expire by endTime
-func (keeper Keeper) InactiveProposalQueueIterator(ctx sdk.Context, endTime time.Time) sdk.Iterator {
+func (keeper Keeper) InactiveProposalQueueIterator(ctx sdk.Context, endTime time.Time) storetypes.Iterator {
 	store := ctx.KVStore(keeper.storeKey)
-	return store.Iterator(types.InactiveProposalQueuePrefix, sdk.PrefixEndBytes(types.InactiveProposalByTimeKey(endTime)))
+	return store.Iterator(types.InactiveProposalQueuePrefix, storetypes.PrefixEndBytes(types.InactiveProposalByTimeKey(endTime)))
 }
 
 // QuorumCheckQueueIterator returns an sdk.Iterator for all the proposals in the QuorumCheck Queue that expire by endTime
-func (keeper Keeper) QuorumCheckQueueIterator(ctx sdk.Context, endTime time.Time) sdk.Iterator {
+func (keeper Keeper) QuorumCheckQueueIterator(ctx sdk.Context, endTime time.Time) storetypes.Iterator {
 	store := ctx.KVStore(keeper.storeKey)
-	return store.Iterator(types.QuorumCheckQueuePrefix, sdk.PrefixEndBytes(types.QuorumCheckByTimeKey(endTime)))
+	return store.Iterator(types.QuorumCheckQueuePrefix, storetypes.PrefixEndBytes(types.QuorumCheckByTimeKey(endTime)))
 }
 
 // assertMetadataLength returns an error if given metadata length
