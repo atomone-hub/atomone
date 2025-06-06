@@ -355,8 +355,7 @@ func RandomizedGenState(simState *module.SimulationState) {
 
 	govGenesis := v1.NewGenesisState(
 		startingProposalID, startingParticipationEma,
-		v1.NewParams(depositPeriod, votingPeriod, quorum.String(), threshold.String(), amendmentsQuorum.String(),
-			amendmentsThreshold.String(), lawQuorum.String(), lawThreshold.String(), // minInitialDepositRatio.String(),
+		v1.NewParams(depositPeriod, votingPeriod, threshold.String(), amendmentsThreshold.String(), lawThreshold.String(),
 			simState.Rand.Intn(2) == 0, simState.Rand.Intn(2) == 0, minDepositRatio.String(), quorumTimout,
 			maxVotingPeriodExtension, quorumCheckCount, minDepositFloor, minDepositUpdatePeriod,
 			minDepositSensitivityTargetDistance, minDepositIncreaseRatio.String(), minDepositDecreaseRatio.String(),
@@ -364,6 +363,8 @@ func RandomizedGenState(simState *module.SimulationState) {
 			minInitialDepositSensitivityTargetDistance, minInitialDepositIncreaseRatio.String(),
 			minInitialDepositDecreaseRatio.String(), minInitialDepositTargetProposals,
 			burnDepositNoThreshold.String(), maxQuorum.String(), minQuorum.String(),
+			maxQuorum.String(), minQuorum.String(), // NOTE: use same quorum values for constitution amendments proposals
+			maxQuorum.String(), minQuorum.String(), // NOTE: use same quorum values for law proposals
 		),
 	)
 

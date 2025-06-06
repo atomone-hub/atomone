@@ -46,11 +46,14 @@ func TestRandomizedGenState(t *testing.T) {
 	simState.Cdc.MustUnmarshalJSON(simState.GenState[types.ModuleName], &govGenesis)
 
 	const (
-		tallyQuorum            = "0.294000000000000000"
+		tallyMinQuorum         = "0.220000000000000000"
+		tallyMaxQuorum         = "0.760000000000000000"
 		tallyThreshold         = "0.611000000000000000"
-		amendmentQuorum        = "0.568000000000000000"
+		amendmentMinQuorum     = "0.220000000000000000"
+		amendmentMaxQuorum     = "0.760000000000000000"
 		amendmentThreshold     = "0.933000000000000000"
-		lawQuorum              = "0.540000000000000000"
+		lawMinQuorum           = "0.220000000000000000"
+		lawMaxQuorum           = "0.760000000000000000"
 		lawThreshold           = "0.931000000000000000"
 		burnDepositNoThreshold = "0.758000000000000000"
 	)
@@ -63,11 +66,14 @@ func TestRandomizedGenState(t *testing.T) {
 	require.Equal(t, []sdk.Coin{}, govGenesis.Params.MinDeposit)
 	require.Equal(t, "52h44m19s", govGenesis.Params.MaxDepositPeriod.String())
 	require.Equal(t, float64(278770), govGenesis.Params.VotingPeriod.Seconds())
-	require.Equal(t, tallyQuorum, govGenesis.Params.Quorum)
+	require.Equal(t, tallyMinQuorum, govGenesis.Params.MinQuorum)
+	require.Equal(t, tallyMaxQuorum, govGenesis.Params.MaxQuorum)
 	require.Equal(t, tallyThreshold, govGenesis.Params.Threshold)
-	require.Equal(t, amendmentQuorum, govGenesis.Params.ConstitutionAmendmentQuorum)
+	require.Equal(t, amendmentMinQuorum, govGenesis.Params.MinConstitutionAmendmentQuorum)
+	require.Equal(t, amendmentMaxQuorum, govGenesis.Params.MaxConstitutionAmendmentQuorum)
 	require.Equal(t, amendmentThreshold, govGenesis.Params.ConstitutionAmendmentThreshold)
-	require.Equal(t, lawQuorum, govGenesis.Params.LawQuorum)
+	require.Equal(t, lawMinQuorum, govGenesis.Params.MinLawQuorum)
+	require.Equal(t, lawMaxQuorum, govGenesis.Params.MaxLawQuorum)
 	require.Equal(t, lawThreshold, govGenesis.Params.LawThreshold)
 	require.Equal(t, "", govGenesis.Params.MinInitialDepositRatio)
 	require.Equal(t, "26h19m52s", govGenesis.Params.QuorumTimeout.String())

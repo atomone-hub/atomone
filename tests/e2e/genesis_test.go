@@ -176,14 +176,15 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 	appState[minttypes.ModuleName] = mintGenStateBz
 
 	// Refactor to separate method
-	quorum, _ := sdk.NewDecFromStr("0.000000000000000001")
-	threshold, _ := sdk.NewDecFromStr("0.000000000000000001")
-	lawQuorum, _ := sdk.NewDecFromStr("0.000000000000000001")
-	lawThreshold, _ := sdk.NewDecFromStr("0.000000000000000001")
-	amendmentsQuorum, _ := sdk.NewDecFromStr("0.000000000000000001")
-	amendmentsThreshold, _ := sdk.NewDecFromStr("0.000000000000000001")
-	minQuorum, _ := sdk.NewDecFromStr("0.2")
-	maxQuorum, _ := sdk.NewDecFromStr("0.8")
+	threshold := "0.000000000000000001"
+	lawThreshold := "0.000000000000000001"
+	amendmentsThreshold := "0.000000000000000001"
+	minQuorum := "0.2"
+	maxQuorum := "0.8"
+	minConstitutionAmendmentQuorum := "0.2"
+	maxConstitutionAmendmentQuorum := "0.8"
+	minLawQuorum := "0.2"
+	maxLawQuorum := "0.8"
 
 	maxDepositPeriod := 10 * time.Minute
 	votingPeriod := 15 * time.Second
@@ -194,8 +195,7 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 			// sdk.NewCoins(sdk.NewCoin(denom, depositAmount.Amount)),
 			maxDepositPeriod,
 			votingPeriod,
-			quorum.String(), threshold.String(),
-			amendmentsQuorum.String(), amendmentsThreshold.String(), lawQuorum.String(), lawThreshold.String(),
+			threshold, amendmentsThreshold, lawThreshold,
 			// sdk.ZeroDec().String(),
 			false, false, govv1.DefaultMinDepositRatio.String(),
 			govv1.DefaultQuorumTimeout, govv1.DefaultMaxVotingPeriodExtension, govv1.DefaultQuorumCheckCount,
@@ -206,7 +206,9 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 			govv1.DefaultMinInitialDepositDecreaseSensitivityTargetDistance, govv1.DefaultMinInitialDepositIncreaseRatio.String(),
 			govv1.DefaultMinInitialDepositDecreaseRatio.String(), govv1.DefaultTargetProposalsInDepositPeriod,
 			govv1.DefaultBurnDepositNoThreshold.String(),
-			maxQuorum.String(), minQuorum.String(),
+			maxQuorum, minQuorum,
+			maxConstitutionAmendmentQuorum, minConstitutionAmendmentQuorum,
+			maxLawQuorum, minLawQuorum,
 		),
 	)
 	govGenState.Constitution = "This is a test constitution"

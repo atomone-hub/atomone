@@ -252,14 +252,24 @@ func TestValidateGenesis(t *testing.T) {
 			expErrMsg: "maximum deposit period must not be nil",
 		},
 		{
-			name: "invalid quorum",
+			name: "invalid min quorum",
 			genesisState: func() *v1.GenesisState {
 				params1 := params
-				params1.Quorum = "2"
+				params1.MinQuorum = "2"
 
 				return v1.NewGenesisState(v1.DefaultStartingProposalID, v1.DefaultParticipationEma, params1)
 			},
-			expErrMsg: "quorum too large",
+			expErrMsg: "minQuorum too large",
+		},
+		{
+			name: "invalid max quorum",
+			genesisState: func() *v1.GenesisState {
+				params1 := params
+				params1.MaxQuorum = "2"
+
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, v1.DefaultParticipationEma, params1)
+			},
+			expErrMsg: "maxQuorum too large",
 		},
 		{
 			name: "invalid threshold",
@@ -272,14 +282,24 @@ func TestValidateGenesis(t *testing.T) {
 			expErrMsg: "vote threshold too large",
 		},
 		{
-			name: "invalid constitution amendment quorum",
+			name: "invalid min constitution amendment quorum",
 			genesisState: func() *v1.GenesisState {
 				params1 := params
-				params1.ConstitutionAmendmentQuorum = "2"
+				params1.MinConstitutionAmendmentQuorum = "2"
 
 				return v1.NewGenesisState(v1.DefaultStartingProposalID, v1.DefaultParticipationEma, params1)
 			},
-			expErrMsg: "constitution amendment quorum too large",
+			expErrMsg: "minConstitutionAmendmentQuorum too large",
+		},
+		{
+			name: "invalid max constitution amendment quorum",
+			genesisState: func() *v1.GenesisState {
+				params1 := params
+				params1.MaxConstitutionAmendmentQuorum = "2"
+
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, v1.DefaultParticipationEma, params1)
+			},
+			expErrMsg: "maxConstitutionAmendmentQuorum too large",
 		},
 		{
 			name: "invalid constitution amendment threshold",
@@ -292,14 +312,24 @@ func TestValidateGenesis(t *testing.T) {
 			expErrMsg: "constitution amendment threshold must be positive",
 		},
 		{
-			name: "invalid law quorum",
+			name: "invalid min law quorum",
 			genesisState: func() *v1.GenesisState {
 				params1 := params
-				params1.LawQuorum = "2"
+				params1.MinLawQuorum = "2"
 
 				return v1.NewGenesisState(v1.DefaultStartingProposalID, v1.DefaultParticipationEma, params1)
 			},
-			expErrMsg: "law quorum too large",
+			expErrMsg: "minLawQuorum too large",
+		},
+		{
+			name: "invalid max law quorum",
+			genesisState: func() *v1.GenesisState {
+				params1 := params
+				params1.MaxLawQuorum = "2"
+
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, v1.DefaultParticipationEma, params1)
+			},
+			expErrMsg: "maxLawQuorum too large",
 		},
 		{
 			name: "invalid law threshold",
