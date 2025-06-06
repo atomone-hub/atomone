@@ -50,7 +50,8 @@ import (
 	"github.com/atomone-hub/atomone/app/keepers"
 	"github.com/atomone-hub/atomone/app/params"
 	"github.com/atomone-hub/atomone/app/upgrades"
-	v2 "github.com/atomone-hub/atomone/app/upgrades/v2"
+	v3 "github.com/atomone-hub/atomone/app/upgrades/v3"
+	atomonepost "github.com/atomone-hub/atomone/post"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 )
 
@@ -58,7 +59,7 @@ var (
 	// DefaultNodeHome default home directories for the application daemon
 	DefaultNodeHome string
 
-	Upgrades = []upgrades.Upgrade{v2.Upgrade}
+	Upgrades = []upgrades.Upgrade{v3.Upgrade}
 )
 
 var (
@@ -221,14 +222,25 @@ func NewAtomOneApp(
 			StakingKeeper: app.StakingKeeper,
 			PhotonKeeper:  app.PhotonKeeper,
 			// If TxFeeChecker is nil the default ante TxFeeChecker is used
-			TxFeeChecker: nil,
+			TxFeeChecker:    nil,
+			FeemarketKeeper: app.FeemarketKeeper,
 		},
 	)
 	if err != nil {
 		panic(fmt.Errorf("failed to create AnteHandler: %s", err))
 	}
 
+	postHandlerOptions := atomonepost.HandlerOptions{
+		FeemarketKeeper:       app.FeemarketKeeper,
+		ConsensusParamsKeeper: &app.ConsensusParamsKeeper,
+	}
+	postHandler, err := atomonepost.NewPostHandler(postHandlerOptions)
+	if err != nil {
+		panic(err)
+	}
+
 	app.SetAnteHandler(anteHandler)
+	app.SetPostHandler(postHandler)
 	app.SetInitChainer(app.InitChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetEndBlocker(app.EndBlocker)

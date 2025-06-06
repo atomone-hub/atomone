@@ -160,7 +160,6 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.initGenesis(s.chainA, vestingMnemonic, jailedValMnemonic)
 	s.initValidatorConfigs(s.chainA)
 	s.runValidators(s.chainA, 0)
-
 }
 
 func (s *IntegrationTestSuite) SetupIBCSuite() {
@@ -435,6 +434,10 @@ func (s *IntegrationTestSuite) initGenesis(c *chain, vestingMnemonic, jailedValM
 	genFilePath := config.GenesisFile()
 	appGenState, genDoc, err := genutiltypes.GenesisStateFromGenFile(genFilePath)
 	s.Require().NoError(err)
+
+	// set custom max gas per block in genesis consensus params,
+	// required for feemarket tests
+	genDoc.ConsensusParams.Block.MaxGas = 50_000_000 // 50M gas per block
 
 	appGenState = s.addGenesisVestingAndJailedAccounts(
 		c,
