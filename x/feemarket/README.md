@@ -36,6 +36,7 @@ branch) and includes changes and adaptations to suit the AtomOne project.
     - [Beta](#beta)
     - [Gamma](#gamma)
     - [MinBaseGasPrice](#minbasegasprice)
+    - [TargetBlockUtilization](#targetblockutilization)
     - [MinLearningRate](#minlearningrate)
     - [MaxLearningRate](#maxlearningrate)
     - [Window](#window-1)
@@ -243,6 +244,11 @@ learning rate by Beta.
 MinBaseGasPrice determines the initial gas price of the module and the global
 minimum for the network. This is denominated in fee per gas unit in the `FeeDenom`.
 
+### TargetBlockUtilization
+
+TargetBlockUtilization is the target block utilization expressed as a percentage
+of the block gas limit.
+
 ### MinLearningRate
 
 MinLearningRate is the lower bound for the learning rate.
@@ -311,15 +317,24 @@ message Params {
     (gogoproto.nullable) = false
   ];
 
+  // TargetBlockUtilization is the target block utilization expressed as a
+  // decimal value between 0 and 1. It is the target percentage utilization
+  // of the block in relation to the consensus_params.block.max_gas parameter.
+  string target_block_utilization = 6 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+
   // MinLearningRate is the lower bound for the learning rate.
-  string min_learning_rate = 6 [
+  string min_learning_rate = 7 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
 
   // MaxLearningRate is the upper bound for the learning rate.
-  string max_learning_rate = 7 [
+  string max_learning_rate = 8 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
@@ -373,10 +388,11 @@ alpha: "0.000000000000000000"
 beta: "1.000000000000000000"
 enabled: true
 fee_denom: uatone
+gamma: "0.000000000000000000"
 max_learning_rate: "0.125000000000000000"
 min_base_gas_price: "1.000000000000000000"
 min_learning_rate: "0.125000000000000000"
-gamma: "0.000000000000000000"
+target_block_utilization: "0.500000000000000000"
 window: "1"
 ```
 
@@ -476,6 +492,7 @@ Example Output:
     "minBaseGasPrice": "1000000",
     "minLearningRate": "125000000000000000",
     "maxLearningRate": "125000000000000000",
+    "targetBlockUtilization": "500000000000000000",
     "window": "1",
     "feeDenom": "uatone",
     "enabled": true
