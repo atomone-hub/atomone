@@ -238,6 +238,62 @@ func (m *Deposit) GetAmount() []types.Coin {
 	return nil
 }
 
+// LastMinDeposit is a record of the last time the minimum deposit
+// was updated in the store, both its value and a timestamp
+type LastMinDeposit struct {
+	// value is the value of the minimum deposit
+	Value []types.Coin `protobuf:"bytes,1,rep,name=value,proto3" json:"value"`
+	// time is the time the minimum deposit was last updated
+	Time *time.Time `protobuf:"bytes,2,opt,name=time,proto3,stdtime" json:"time,omitempty"`
+}
+
+func (m *LastMinDeposit) Reset()         { *m = LastMinDeposit{} }
+func (m *LastMinDeposit) String() string { return proto.CompactTextString(m) }
+func (*LastMinDeposit) ProtoMessage()    {}
+func (*LastMinDeposit) Descriptor() ([]byte, []int) {
+	return fileDescriptor_ecf0f9950ff6986c, []int{2}
+}
+func (m *LastMinDeposit) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *LastMinDeposit) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_LastMinDeposit.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *LastMinDeposit) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LastMinDeposit.Merge(m, src)
+}
+func (m *LastMinDeposit) XXX_Size() int {
+	return m.Size()
+}
+func (m *LastMinDeposit) XXX_DiscardUnknown() {
+	xxx_messageInfo_LastMinDeposit.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_LastMinDeposit proto.InternalMessageInfo
+
+func (m *LastMinDeposit) GetValue() []types.Coin {
+	if m != nil {
+		return m.Value
+	}
+	return nil
+}
+
+func (m *LastMinDeposit) GetTime() *time.Time {
+	if m != nil {
+		return m.Time
+	}
+	return nil
+}
+
 // Proposal defines the core field members of a governance proposal.
 type Proposal struct {
 	// id defines the unique id of the proposal.
@@ -280,7 +336,7 @@ func (m *Proposal) Reset()         { *m = Proposal{} }
 func (m *Proposal) String() string { return proto.CompactTextString(m) }
 func (*Proposal) ProtoMessage()    {}
 func (*Proposal) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ecf0f9950ff6986c, []int{2}
+	return fileDescriptor_ecf0f9950ff6986c, []int{3}
 }
 func (m *Proposal) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -414,7 +470,7 @@ func (m *TallyResult) Reset()         { *m = TallyResult{} }
 func (m *TallyResult) String() string { return proto.CompactTextString(m) }
 func (*TallyResult) ProtoMessage()    {}
 func (*TallyResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ecf0f9950ff6986c, []int{3}
+	return fileDescriptor_ecf0f9950ff6986c, []int{4}
 }
 func (m *TallyResult) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -481,7 +537,7 @@ func (m *Vote) Reset()         { *m = Vote{} }
 func (m *Vote) String() string { return proto.CompactTextString(m) }
 func (*Vote) ProtoMessage()    {}
 func (*Vote) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ecf0f9950ff6986c, []int{4}
+	return fileDescriptor_ecf0f9950ff6986c, []int{5}
 }
 func (m *Vote) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -555,7 +611,7 @@ func (m *QuorumCheckQueueEntry) Reset()         { *m = QuorumCheckQueueEntry{} }
 func (m *QuorumCheckQueueEntry) String() string { return proto.CompactTextString(m) }
 func (*QuorumCheckQueueEntry) ProtoMessage()    {}
 func (*QuorumCheckQueueEntry) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ecf0f9950ff6986c, []int{5}
+	return fileDescriptor_ecf0f9950ff6986c, []int{6}
 }
 func (m *QuorumCheckQueueEntry) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -618,7 +674,7 @@ func (m *DepositParams) Reset()         { *m = DepositParams{} }
 func (m *DepositParams) String() string { return proto.CompactTextString(m) }
 func (*DepositParams) ProtoMessage()    {}
 func (*DepositParams) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ecf0f9950ff6986c, []int{6}
+	return fileDescriptor_ecf0f9950ff6986c, []int{7}
 }
 func (m *DepositParams) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -671,7 +727,7 @@ func (m *VotingParams) Reset()         { *m = VotingParams{} }
 func (m *VotingParams) String() string { return proto.CompactTextString(m) }
 func (*VotingParams) ProtoMessage()    {}
 func (*VotingParams) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ecf0f9950ff6986c, []int{7}
+	return fileDescriptor_ecf0f9950ff6986c, []int{8}
 }
 func (m *VotingParams) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -728,7 +784,7 @@ func (m *TallyParams) Reset()         { *m = TallyParams{} }
 func (m *TallyParams) String() string { return proto.CompactTextString(m) }
 func (*TallyParams) ProtoMessage()    {}
 func (*TallyParams) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ecf0f9950ff6986c, []int{8}
+	return fileDescriptor_ecf0f9950ff6986c, []int{9}
 }
 func (m *TallyParams) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -799,12 +855,209 @@ func (m *TallyParams) GetLawThreshold() string {
 	return ""
 }
 
+type MinDepositThrottler struct {
+	// Floor value for the minimum deposit required for a proposal to enter the voting period.
+	FloorValue []types.Coin `protobuf:"bytes,1,rep,name=floor_value,json=floorValue,proto3" json:"floor_value"`
+	// Duration that dictates after how long the dynamic minimum deposit should be recalculated
+	// for time-based decreases.
+	UpdatePeriod *time.Duration `protobuf:"bytes,2,opt,name=update_period,json=updatePeriod,proto3,stdduration" json:"update_period,omitempty"`
+	// The number of active proposals the dynamic minimum deposit should target.
+	TargetActiveProposals uint64 `protobuf:"varint,3,opt,name=target_active_proposals,json=targetActiveProposals,proto3" json:"target_active_proposals,omitempty"`
+	// The ratio of increase for the minimum deposit when the number of active proposals
+	// is at or above the target.
+	IncreaseRatio string `protobuf:"bytes,4,opt,name=increase_ratio,json=increaseRatio,proto3" json:"increase_ratio,omitempty"`
+	// The ratio of decrease for the minimum deposit when the number of active proposals
+	// is 1 less than the target.
+	DecreaseRatio string `protobuf:"bytes,5,opt,name=decrease_ratio,json=decreaseRatio,proto3" json:"decrease_ratio,omitempty"`
+	// A positive integer representing the sensitivity of dynamic minimum deposit
+	// decreases to the distance from the target number of active proposals.
+	// The higher the number, the lower the sensitivity. A value of 1 represents the
+	// highest sensitivity.
+	DecreaseSensitivityTargetDistance uint64 `protobuf:"varint,6,opt,name=decrease_sensitivity_target_distance,json=decreaseSensitivityTargetDistance,proto3" json:"decrease_sensitivity_target_distance,omitempty"`
+}
+
+func (m *MinDepositThrottler) Reset()         { *m = MinDepositThrottler{} }
+func (m *MinDepositThrottler) String() string { return proto.CompactTextString(m) }
+func (*MinDepositThrottler) ProtoMessage()    {}
+func (*MinDepositThrottler) Descriptor() ([]byte, []int) {
+	return fileDescriptor_ecf0f9950ff6986c, []int{10}
+}
+func (m *MinDepositThrottler) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MinDepositThrottler) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MinDepositThrottler.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MinDepositThrottler) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MinDepositThrottler.Merge(m, src)
+}
+func (m *MinDepositThrottler) XXX_Size() int {
+	return m.Size()
+}
+func (m *MinDepositThrottler) XXX_DiscardUnknown() {
+	xxx_messageInfo_MinDepositThrottler.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MinDepositThrottler proto.InternalMessageInfo
+
+func (m *MinDepositThrottler) GetFloorValue() []types.Coin {
+	if m != nil {
+		return m.FloorValue
+	}
+	return nil
+}
+
+func (m *MinDepositThrottler) GetUpdatePeriod() *time.Duration {
+	if m != nil {
+		return m.UpdatePeriod
+	}
+	return nil
+}
+
+func (m *MinDepositThrottler) GetTargetActiveProposals() uint64 {
+	if m != nil {
+		return m.TargetActiveProposals
+	}
+	return 0
+}
+
+func (m *MinDepositThrottler) GetIncreaseRatio() string {
+	if m != nil {
+		return m.IncreaseRatio
+	}
+	return ""
+}
+
+func (m *MinDepositThrottler) GetDecreaseRatio() string {
+	if m != nil {
+		return m.DecreaseRatio
+	}
+	return ""
+}
+
+func (m *MinDepositThrottler) GetDecreaseSensitivityTargetDistance() uint64 {
+	if m != nil {
+		return m.DecreaseSensitivityTargetDistance
+	}
+	return 0
+}
+
+type MinInitialDepositThrottler struct {
+	// Floor value for the minimum initial deposit required for a proposal to enter the deposit period.
+	FloorValue []types.Coin `protobuf:"bytes,1,rep,name=floor_value,json=floorValue,proto3" json:"floor_value"`
+	// Duration that dictates after how long the dynamic minimum deposit should be recalculated
+	// for time-based decreases.
+	UpdatePeriod *time.Duration `protobuf:"bytes,2,opt,name=update_period,json=updatePeriod,proto3,stdduration" json:"update_period,omitempty"`
+	// The number of proposals in deposit period the dynamic minimum initial deposit should target.
+	TargetProposals uint64 `protobuf:"varint,3,opt,name=target_proposals,json=targetProposals,proto3" json:"target_proposals,omitempty"`
+	// The ratio of increase for the minimum initial deposit when the number of proposals
+	// in deposit period is at or above the target.
+	IncreaseRatio string `protobuf:"bytes,4,opt,name=increase_ratio,json=increaseRatio,proto3" json:"increase_ratio,omitempty"`
+	// The ratio of decrease for the minimum initial deposit when the number of proposals
+	// in deposit period is 1 less than the target.
+	DecreaseRatio string `protobuf:"bytes,5,opt,name=decrease_ratio,json=decreaseRatio,proto3" json:"decrease_ratio,omitempty"`
+	// A positive integer representing the sensitivity of dynamic minimum initial
+	// deposit decreases to the distance from the target number of proposals
+	// in deposit period. The higher the number, the lower the sensitivity. A value
+	// of 1 represents the highest sensitivity.
+	DecreaseSensitivityTargetDistance uint64 `protobuf:"varint,6,opt,name=decrease_sensitivity_target_distance,json=decreaseSensitivityTargetDistance,proto3" json:"decrease_sensitivity_target_distance,omitempty"`
+}
+
+func (m *MinInitialDepositThrottler) Reset()         { *m = MinInitialDepositThrottler{} }
+func (m *MinInitialDepositThrottler) String() string { return proto.CompactTextString(m) }
+func (*MinInitialDepositThrottler) ProtoMessage()    {}
+func (*MinInitialDepositThrottler) Descriptor() ([]byte, []int) {
+	return fileDescriptor_ecf0f9950ff6986c, []int{11}
+}
+func (m *MinInitialDepositThrottler) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MinInitialDepositThrottler) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MinInitialDepositThrottler.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MinInitialDepositThrottler) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MinInitialDepositThrottler.Merge(m, src)
+}
+func (m *MinInitialDepositThrottler) XXX_Size() int {
+	return m.Size()
+}
+func (m *MinInitialDepositThrottler) XXX_DiscardUnknown() {
+	xxx_messageInfo_MinInitialDepositThrottler.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MinInitialDepositThrottler proto.InternalMessageInfo
+
+func (m *MinInitialDepositThrottler) GetFloorValue() []types.Coin {
+	if m != nil {
+		return m.FloorValue
+	}
+	return nil
+}
+
+func (m *MinInitialDepositThrottler) GetUpdatePeriod() *time.Duration {
+	if m != nil {
+		return m.UpdatePeriod
+	}
+	return nil
+}
+
+func (m *MinInitialDepositThrottler) GetTargetProposals() uint64 {
+	if m != nil {
+		return m.TargetProposals
+	}
+	return 0
+}
+
+func (m *MinInitialDepositThrottler) GetIncreaseRatio() string {
+	if m != nil {
+		return m.IncreaseRatio
+	}
+	return ""
+}
+
+func (m *MinInitialDepositThrottler) GetDecreaseRatio() string {
+	if m != nil {
+		return m.DecreaseRatio
+	}
+	return ""
+}
+
+func (m *MinInitialDepositThrottler) GetDecreaseSensitivityTargetDistance() uint64 {
+	if m != nil {
+		return m.DecreaseSensitivityTargetDistance
+	}
+	return 0
+}
+
 // Params defines the parameters for the x/gov module.
 //
 // Since: cosmos-sdk 0.47
 type Params struct {
 	// Minimum deposit for a proposal to enter voting period.
-	MinDeposit []types.Coin `protobuf:"bytes,1,rep,name=min_deposit,json=minDeposit,proto3" json:"min_deposit"`
+	// Deprecated: a dynamic system now determines the minimum deposit,
+	// see the other params inside the min_deposit_throttler field.
+	// While setting this value returns an error, when queried it is set to the
+	// value of the current minimum deposit value as determined by the dynamic
+	// system for backward compatibility.
+	MinDeposit []types.Coin `protobuf:"bytes,1,rep,name=min_deposit,json=minDeposit,proto3" json:"min_deposit"` // Deprecated: Do not use.
 	// Maximum period for Atom holders to deposit on a proposal. Initial value: 2
 	// months.
 	MaxDepositPeriod *time.Duration `protobuf:"bytes,2,opt,name=max_deposit_period,json=maxDepositPeriod,proto3,stdduration" json:"max_deposit_period,omitempty"`
@@ -816,7 +1069,7 @@ type Params struct {
 	// Minimum proportion of Yes votes for proposal to pass. Default value: 2/3.
 	Threshold string `protobuf:"bytes,5,opt,name=threshold,proto3" json:"threshold,omitempty"`
 	// The ratio representing the proportion of the deposit value that must be paid at proposal submission.
-	MinInitialDepositRatio string `protobuf:"bytes,7,opt,name=min_initial_deposit_ratio,json=minInitialDepositRatio,proto3" json:"min_initial_deposit_ratio,omitempty"`
+	MinInitialDepositRatio string `protobuf:"bytes,7,opt,name=min_initial_deposit_ratio,json=minInitialDepositRatio,proto3" json:"min_initial_deposit_ratio,omitempty"` // Deprecated: Do not use.
 	// burn deposits if a proposal does not meet quorum
 	BurnVoteQuorum bool `protobuf:"varint,13,opt,name=burn_vote_quorum,json=burnVoteQuorum,proto3" json:"burn_vote_quorum,omitempty"`
 	// burn deposits if the proposal does not enter voting period
@@ -845,18 +1098,22 @@ type Params struct {
 	MaxVotingPeriodExtension *time.Duration `protobuf:"bytes,21,opt,name=max_voting_period_extension,json=maxVotingPeriodExtension,proto3,stdduration" json:"max_voting_period_extension,omitempty"`
 	// Number of times a proposal should be checked for quorum after the quorum timeout
 	// has elapsed. Used to compute the amount of time in between quorum checks.
-	QuorumCheckCount uint64 `protobuf:"varint,22,opt,name=quorum_check_count,json=quorumCheckCount,proto3" json:"quorum_check_count,omitempty"`
+	QuorumCheckCount           uint64                      `protobuf:"varint,22,opt,name=quorum_check_count,json=quorumCheckCount,proto3" json:"quorum_check_count,omitempty"`
+	MinDepositThrottler        *MinDepositThrottler        `protobuf:"bytes,23,opt,name=min_deposit_throttler,json=minDepositThrottler,proto3" json:"min_deposit_throttler,omitempty"`
+	MinInitialDepositThrottler *MinInitialDepositThrottler `protobuf:"bytes,24,opt,name=min_initial_deposit_throttler,json=minInitialDepositThrottler,proto3" json:"min_initial_deposit_throttler,omitempty"`
+	// Minimum proportion of No Votes for a proposal deposit to be burnt.
+	BurnDepositNoThreshold string `protobuf:"bytes,25,opt,name=burn_deposit_no_threshold,json=burnDepositNoThreshold,proto3" json:"burn_deposit_no_threshold,omitempty"`
 	// Maximum achievable quorum
-	MaxQuorum string `protobuf:"bytes,23,opt,name=max_quorum,json=maxQuorum,proto3" json:"max_quorum,omitempty"`
+	MaxQuorum string `protobuf:"bytes,26,opt,name=max_quorum,json=maxQuorum,proto3" json:"max_quorum,omitempty"`
 	// Minimum achievable quorum
-	MinQuorum string `protobuf:"bytes,24,opt,name=min_quorum,json=minQuorum,proto3" json:"min_quorum,omitempty"`
+	MinQuorum string `protobuf:"bytes,27,opt,name=min_quorum,json=minQuorum,proto3" json:"min_quorum,omitempty"`
 }
 
 func (m *Params) Reset()         { *m = Params{} }
 func (m *Params) String() string { return proto.CompactTextString(m) }
 func (*Params) ProtoMessage()    {}
 func (*Params) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ecf0f9950ff6986c, []int{9}
+	return fileDescriptor_ecf0f9950ff6986c, []int{12}
 }
 func (m *Params) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -885,6 +1142,7 @@ func (m *Params) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Params proto.InternalMessageInfo
 
+// Deprecated: Do not use.
 func (m *Params) GetMinDeposit() []types.Coin {
 	if m != nil {
 		return m.MinDeposit
@@ -921,6 +1179,7 @@ func (m *Params) GetThreshold() string {
 	return ""
 }
 
+// Deprecated: Do not use.
 func (m *Params) GetMinInitialDepositRatio() string {
 	if m != nil {
 		return m.MinInitialDepositRatio
@@ -998,6 +1257,27 @@ func (m *Params) GetQuorumCheckCount() uint64 {
 	return 0
 }
 
+func (m *Params) GetMinDepositThrottler() *MinDepositThrottler {
+	if m != nil {
+		return m.MinDepositThrottler
+	}
+	return nil
+}
+
+func (m *Params) GetMinInitialDepositThrottler() *MinInitialDepositThrottler {
+	if m != nil {
+		return m.MinInitialDepositThrottler
+	}
+	return nil
+}
+
+func (m *Params) GetBurnDepositNoThreshold() string {
+	if m != nil {
+		return m.BurnDepositNoThreshold
+	}
+	return ""
+}
+
 func (m *Params) GetMaxQuorum() string {
 	if m != nil {
 		return m.MaxQuorum
@@ -1017,6 +1297,7 @@ func init() {
 	proto.RegisterEnum("atomone.gov.v1.ProposalStatus", ProposalStatus_name, ProposalStatus_value)
 	proto.RegisterType((*WeightedVoteOption)(nil), "atomone.gov.v1.WeightedVoteOption")
 	proto.RegisterType((*Deposit)(nil), "atomone.gov.v1.Deposit")
+	proto.RegisterType((*LastMinDeposit)(nil), "atomone.gov.v1.LastMinDeposit")
 	proto.RegisterType((*Proposal)(nil), "atomone.gov.v1.Proposal")
 	proto.RegisterType((*TallyResult)(nil), "atomone.gov.v1.TallyResult")
 	proto.RegisterType((*Vote)(nil), "atomone.gov.v1.Vote")
@@ -1024,106 +1305,125 @@ func init() {
 	proto.RegisterType((*DepositParams)(nil), "atomone.gov.v1.DepositParams")
 	proto.RegisterType((*VotingParams)(nil), "atomone.gov.v1.VotingParams")
 	proto.RegisterType((*TallyParams)(nil), "atomone.gov.v1.TallyParams")
+	proto.RegisterType((*MinDepositThrottler)(nil), "atomone.gov.v1.MinDepositThrottler")
+	proto.RegisterType((*MinInitialDepositThrottler)(nil), "atomone.gov.v1.MinInitialDepositThrottler")
 	proto.RegisterType((*Params)(nil), "atomone.gov.v1.Params")
 }
 
 func init() { proto.RegisterFile("atomone/gov/v1/gov.proto", fileDescriptor_ecf0f9950ff6986c) }
 
 var fileDescriptor_ecf0f9950ff6986c = []byte{
-	// 1480 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x57, 0xbf, 0x6f, 0x1b, 0xc7,
-	0x12, 0xd6, 0xf1, 0x97, 0xa8, 0x91, 0x44, 0x9d, 0x56, 0xb2, 0x7d, 0x92, 0x2c, 0x4a, 0x8f, 0x78,
-	0x30, 0xf4, 0xfc, 0x2c, 0x32, 0x92, 0x03, 0x17, 0x81, 0x1b, 0x4a, 0xa4, 0x1d, 0x1a, 0x8e, 0x48,
-	0x1f, 0x69, 0x25, 0x4e, 0x91, 0xc3, 0x92, 0x5c, 0x53, 0x07, 0xf3, 0x76, 0xe9, 0xbb, 0x3d, 0x49,
-	0xfc, 0x2f, 0x5c, 0x06, 0xa9, 0x52, 0xa6, 0x4c, 0x61, 0x20, 0x7f, 0x40, 0x10, 0xc0, 0x55, 0x60,
-	0xb8, 0x4a, 0x1a, 0x27, 0xb0, 0x8b, 0x00, 0xee, 0x93, 0x3a, 0xd8, 0xbd, 0x3d, 0xfe, 0x12, 0x05,
-	0xca, 0x46, 0xd2, 0x48, 0x77, 0x3b, 0xdf, 0x37, 0x33, 0x3b, 0xf3, 0xcd, 0x2e, 0x0f, 0x0c, 0xcc,
-	0x99, 0xc3, 0x28, 0xc9, 0xb5, 0xd8, 0x71, 0xee, 0x78, 0x47, 0xfc, 0xcb, 0x76, 0x5c, 0xc6, 0x19,
-	0x4a, 0x29, 0x4b, 0x56, 0x2c, 0x1d, 0xef, 0xac, 0xa6, 0x1b, 0xcc, 0x73, 0x98, 0x97, 0xab, 0x63,
-	0x8f, 0xe4, 0x8e, 0x77, 0xea, 0x84, 0xe3, 0x9d, 0x5c, 0x83, 0xd9, 0x34, 0xc0, 0xaf, 0x2e, 0xb7,
-	0x58, 0x8b, 0xc9, 0xc7, 0x9c, 0x78, 0x52, 0xab, 0x1b, 0x2d, 0xc6, 0x5a, 0x6d, 0x92, 0x93, 0x6f,
-	0x75, 0xff, 0x71, 0x8e, 0xdb, 0x0e, 0xf1, 0x38, 0x76, 0x3a, 0x0a, 0xb0, 0x32, 0x0a, 0xc0, 0xb4,
-	0xab, 0x4c, 0xe9, 0x51, 0x53, 0xd3, 0x77, 0x31, 0xb7, 0x59, 0x18, 0x71, 0x25, 0xc8, 0xc8, 0x0a,
-	0x82, 0x06, 0x2f, 0xca, 0xb4, 0x88, 0x1d, 0x9b, 0xb2, 0x9c, 0xfc, 0x1b, 0x2c, 0x65, 0x3a, 0x80,
-	0x3e, 0x27, 0x76, 0xeb, 0x88, 0x93, 0xe6, 0x21, 0xe3, 0xa4, 0xdc, 0x11, 0x9e, 0xd0, 0x2e, 0x24,
-	0x98, 0x7c, 0x32, 0xb4, 0x4d, 0x6d, 0x2b, 0xb5, 0xbb, 0x9a, 0x1d, 0xde, 0x76, 0xb6, 0x8f, 0x35,
-	0x15, 0x12, 0x5d, 0x83, 0xc4, 0x89, 0xf4, 0x64, 0x44, 0x36, 0xb5, 0xad, 0x99, 0xbd, 0xd4, 0xab,
-	0xe7, 0xdb, 0xa0, 0xc2, 0x17, 0x48, 0xc3, 0x54, 0xd6, 0xcc, 0xb7, 0x1a, 0x4c, 0x17, 0x48, 0x87,
-	0x79, 0x36, 0x47, 0x1b, 0x30, 0xdb, 0x71, 0x59, 0x87, 0x79, 0xb8, 0x6d, 0xd9, 0x4d, 0x19, 0x2c,
-	0x66, 0x42, 0xb8, 0x54, 0x6a, 0xa2, 0x5b, 0x30, 0xd3, 0x0c, 0xb0, 0xcc, 0x55, 0x7e, 0x8d, 0x57,
-	0xcf, 0xb7, 0x97, 0x95, 0xdf, 0x7c, 0xb3, 0xe9, 0x12, 0xcf, 0xab, 0x72, 0xd7, 0xa6, 0x2d, 0xb3,
-	0x0f, 0x45, 0xb7, 0x21, 0x81, 0x1d, 0xe6, 0x53, 0x6e, 0x44, 0x37, 0xa3, 0x5b, 0xb3, 0xbb, 0x2b,
-	0x59, 0xc5, 0x10, 0x7d, 0xca, 0xaa, 0x3e, 0x65, 0xf7, 0x99, 0x4d, 0xf7, 0x66, 0x5e, 0xbc, 0xde,
-	0x98, 0xfa, 0xee, 0x8f, 0xef, 0xaf, 0x6b, 0xa6, 0xe2, 0x64, 0x7e, 0x8c, 0x43, 0xb2, 0xa2, 0x92,
-	0x40, 0x29, 0x88, 0xf4, 0x52, 0x8b, 0xd8, 0x4d, 0xf4, 0x11, 0x24, 0x1d, 0xe2, 0x79, 0xb8, 0x45,
-	0x3c, 0x23, 0x22, 0x9d, 0x2f, 0x67, 0x83, 0x96, 0x64, 0xc3, 0x96, 0x64, 0xf3, 0xb4, 0x6b, 0xf6,
-	0x50, 0xe8, 0x16, 0x24, 0x3c, 0x8e, 0xb9, 0xef, 0x19, 0x51, 0x59, 0xcd, 0xf4, 0x68, 0x35, 0xc3,
-	0x58, 0x55, 0x89, 0x32, 0x15, 0x1a, 0x95, 0x00, 0x3d, 0xb6, 0x29, 0x6e, 0x5b, 0x1c, 0xb7, 0xdb,
-	0x5d, 0xcb, 0x25, 0x9e, 0xdf, 0xe6, 0x46, 0x6c, 0x53, 0xdb, 0x9a, 0xdd, 0x5d, 0x1b, 0xf5, 0x51,
-	0x13, 0x18, 0x53, 0x42, 0x4c, 0x5d, 0xd2, 0x06, 0x56, 0x50, 0x1e, 0x66, 0x3d, 0xbf, 0xee, 0xd8,
-	0xdc, 0x12, 0x4a, 0x33, 0xe2, 0xd2, 0xc7, 0xea, 0x99, 0xbc, 0x6b, 0xa1, 0x0c, 0xf7, 0x62, 0xcf,
-	0x7e, 0xdb, 0xd0, 0x4c, 0x08, 0x48, 0x62, 0x19, 0xdd, 0x03, 0x5d, 0xd5, 0xd7, 0x22, 0xb4, 0x19,
-	0xf8, 0x49, 0x5c, 0xd0, 0x4f, 0x4a, 0x31, 0x8b, 0xb4, 0x29, 0x7d, 0x95, 0x60, 0x9e, 0x33, 0x8e,
-	0xdb, 0x96, 0x5a, 0x37, 0xa6, 0xdf, 0xa3, 0x4b, 0x73, 0x92, 0x1a, 0x4a, 0xe8, 0x3e, 0x2c, 0x1e,
-	0x33, 0x6e, 0xd3, 0x96, 0xe5, 0x71, 0xec, 0xaa, 0xfd, 0x25, 0x2f, 0x98, 0xd7, 0x42, 0x40, 0xad,
-	0x0a, 0xa6, 0x4c, 0xec, 0x53, 0x50, 0x4b, 0xfd, 0x3d, 0xce, 0x5c, 0xd0, 0xd7, 0x7c, 0x40, 0x0c,
-	0xb7, 0xb8, 0x2a, 0x64, 0xc2, 0x71, 0x13, 0x73, 0x6c, 0x80, 0x10, 0xae, 0xd9, 0x7b, 0x47, 0xcb,
-	0x10, 0xe7, 0x36, 0x6f, 0x13, 0x63, 0x56, 0x1a, 0x82, 0x17, 0x64, 0xc0, 0xb4, 0xe7, 0x3b, 0x0e,
-	0x76, 0xbb, 0xc6, 0x9c, 0x5c, 0x0f, 0x5f, 0xd1, 0xc7, 0x90, 0x0c, 0x66, 0x82, 0xb8, 0xc6, 0xfc,
-	0x84, 0x21, 0xe8, 0x21, 0x33, 0xdf, 0x68, 0x30, 0x3b, 0xa8, 0x81, 0xff, 0xc3, 0x4c, 0x97, 0x78,
-	0x56, 0x43, 0x8e, 0x85, 0x76, 0x66, 0x46, 0x4b, 0x94, 0x9b, 0xc9, 0x2e, 0xf1, 0xf6, 0x85, 0x1d,
-	0xdd, 0x84, 0x79, 0x5c, 0xf7, 0x38, 0xb6, 0xa9, 0x22, 0x44, 0xc6, 0x12, 0xe6, 0x14, 0x28, 0x20,
-	0xfd, 0x0f, 0x92, 0x94, 0x29, 0x7c, 0x74, 0x2c, 0x7e, 0x9a, 0x32, 0x09, 0xcd, 0xfc, 0xa0, 0x41,
-	0x4c, 0x1c, 0x22, 0x93, 0x8f, 0x80, 0x2c, 0xc4, 0x8f, 0x19, 0x27, 0x93, 0xc7, 0x3f, 0x80, 0xa1,
-	0xdb, 0x30, 0x1d, 0x9c, 0x48, 0x9e, 0x11, 0x93, 0xaa, 0xca, 0x8c, 0x8e, 0xca, 0xd9, 0x03, 0xcf,
-	0x0c, 0x29, 0x43, 0x6d, 0x8b, 0x0f, 0xb7, 0xed, 0x5e, 0x2c, 0x19, 0xd5, 0x63, 0x99, 0x9f, 0x34,
-	0xb8, 0xf4, 0xc0, 0x67, 0xae, 0xef, 0xec, 0x1f, 0x91, 0xc6, 0x93, 0x07, 0x3e, 0xf1, 0x49, 0x91,
-	0x72, 0xb7, 0x8b, 0x2a, 0xb0, 0xf4, 0x54, 0x1a, 0xa4, 0x70, 0x98, 0xaf, 0xc4, 0xa8, 0x5d, 0x50,
-	0x40, 0x8b, 0x01, 0xb9, 0x16, 0x70, 0xa5, 0x88, 0x6e, 0x00, 0x52, 0x1e, 0x1b, 0x22, 0xd6, 0x40,
-	0x2b, 0x62, 0xa6, 0xfe, 0xb4, 0x9f, 0x44, 0x50, 0xfe, 0x11, 0xb4, 0x67, 0x35, 0x19, 0x25, 0xb2,
-	0x11, 0xc3, 0x68, 0xaf, 0xc0, 0x28, 0xc9, 0xfc, 0xaa, 0xc1, 0xbc, 0x1a, 0xa2, 0x0a, 0x76, 0xb1,
-	0xe3, 0xa1, 0x47, 0x30, 0xeb, 0xd8, 0xb4, 0x37, 0x93, 0xda, 0xa4, 0x99, 0x5c, 0x17, 0x33, 0xf9,
-	0xee, 0xf5, 0xc6, 0xa5, 0x01, 0xd6, 0x0d, 0xe6, 0xd8, 0x9c, 0x38, 0x1d, 0xde, 0x35, 0xc1, 0xb1,
-	0x69, 0x38, 0xa5, 0x0e, 0x20, 0x07, 0x9f, 0x86, 0x20, 0xab, 0x43, 0x5c, 0x9b, 0x35, 0xe5, 0x46,
-	0x44, 0x84, 0xd1, 0xca, 0x14, 0xd4, 0x8d, 0xb6, 0xf7, 0xdf, 0x77, 0xaf, 0x37, 0xae, 0x9e, 0x25,
-	0xf6, 0x83, 0x7c, 0x2d, 0x0a, 0xa7, 0x3b, 0xf8, 0x34, 0xdc, 0x89, 0xb4, 0x67, 0x6a, 0x30, 0x77,
-	0x28, 0xa7, 0x51, 0xed, 0xac, 0x00, 0x6a, 0x3a, 0xc3, 0xc8, 0xda, 0xa4, 0xc8, 0x31, 0xe9, 0x79,
-	0x2e, 0x60, 0x29, 0xaf, 0x7f, 0x46, 0xd4, 0x40, 0x29, 0xaf, 0xd7, 0x20, 0x11, 0x54, 0x75, 0xcc,
-	0x34, 0xc9, 0x1b, 0x2f, 0xb0, 0xa2, 0x1b, 0x30, 0xc3, 0x8f, 0x5c, 0xe2, 0x1d, 0xb1, 0x76, 0xf3,
-	0x9c, 0xcb, 0xb1, 0x0f, 0x40, 0x26, 0xac, 0x37, 0x18, 0xf5, 0xb8, 0xcd, 0x7d, 0x91, 0x89, 0x85,
-	0x1d, 0x42, 0x9b, 0x0e, 0xa1, 0xdc, 0x52, 0xc1, 0xa2, 0x63, 0x3d, 0xac, 0x0d, 0x92, 0xf2, 0x21,
-	0x27, 0x10, 0x2a, 0xfa, 0x02, 0x36, 0xcf, 0xf1, 0xd9, 0x4f, 0x2c, 0x36, 0xd6, 0x6d, 0x7a, 0xac,
-	0xdb, 0x5a, 0x2f, 0xdb, 0x6d, 0x80, 0x36, 0x3e, 0x09, 0x53, 0x8b, 0x8f, 0xdf, 0x5c, 0x1b, 0x9f,
-	0xa8, 0x44, 0x6e, 0xc2, 0xbc, 0x80, 0xf7, 0xa3, 0x26, 0xc6, 0x32, 0xe6, 0xda, 0xf8, 0xa4, 0x17,
-	0x23, 0xf3, 0x57, 0x12, 0x12, 0xaa, 0xe4, 0xc5, 0xf7, 0x94, 0xe8, 0xc0, 0xb5, 0x31, 0x28, 0xc7,
-	0xcf, 0x3e, 0x4c, 0x8e, 0xb1, 0xf1, 0x72, 0x3b, 0x2b, 0xaf, 0xe8, 0x07, 0xc8, 0x0b, 0x6d, 0xf5,
-	0xe4, 0x14, 0xb4, 0x42, 0x1f, 0x2e, 0x8a, 0xa1, 0x8d, 0x17, 0x54, 0x7c, 0x92, 0xa0, 0x4a, 0xb0,
-	0x22, 0x6a, 0x66, 0x53, 0x9b, 0xdb, 0xfd, 0x2b, 0xd7, 0x92, 0x99, 0x18, 0xd3, 0x63, 0xd9, 0x97,
-	0x1d, 0x9b, 0x96, 0x02, 0xbc, 0xda, 0xa9, 0x29, 0xd0, 0x68, 0x0b, 0xf4, 0xba, 0xef, 0x52, 0x4b,
-	0x9c, 0xb4, 0x61, 0xcf, 0xc5, 0x85, 0x94, 0x34, 0x53, 0x62, 0x5d, 0x1c, 0xa8, 0xaa, 0xd1, 0x79,
-	0x58, 0x97, 0xc8, 0xde, 0xd9, 0xde, 0xab, 0xb5, 0x4b, 0x04, 0xdb, 0x48, 0x49, 0xda, 0xaa, 0x00,
-	0x85, 0x3f, 0x7f, 0xc2, 0xa2, 0x06, 0x08, 0xf4, 0x09, 0x2c, 0x0e, 0xf4, 0x5a, 0xe5, 0xbb, 0x30,
-	0x36, 0xdf, 0x85, 0x7e, 0x6f, 0x83, 0x44, 0x27, 0x0e, 0x91, 0xfe, 0xef, 0x0c, 0xd1, 0xe2, 0x3f,
-	0x30, 0x44, 0xe8, 0xbd, 0x87, 0x68, 0x69, 0xf2, 0x10, 0xa1, 0x3b, 0x90, 0x1a, 0xbe, 0x9c, 0x8c,
-	0xe5, 0x8b, 0x89, 0x74, 0x7e, 0xe8, 0x5a, 0x42, 0x5f, 0xc1, 0x9a, 0x18, 0x9d, 0x21, 0xbd, 0x5b,
-	0xe4, 0x94, 0x13, 0xea, 0x89, 0xef, 0x85, 0x4b, 0x17, 0x73, 0x6a, 0x38, 0xf8, 0xf4, 0x70, 0x40,
-	0xfc, 0xc5, 0xd0, 0xc1, 0x39, 0x57, 0xde, 0xe5, 0x73, 0xae, 0xbc, 0x6d, 0x00, 0x91, 0x8d, 0xaa,
-	0xdc, 0x95, 0xf1, 0x95, 0x73, 0xf0, 0xa9, 0xaa, 0x9c, 0x80, 0xdb, 0x34, 0x84, 0x1b, 0xe7, 0xc0,
-	0x6d, 0x1a, 0xc0, 0xaf, 0x3f, 0x01, 0x18, 0xf8, 0x28, 0x5a, 0x83, 0x2b, 0x87, 0xe5, 0x5a, 0xd1,
-	0x2a, 0x57, 0x6a, 0xa5, 0xf2, 0x81, 0xf5, 0xf0, 0xa0, 0x5a, 0x29, 0xee, 0x97, 0xee, 0x94, 0x8a,
-	0x05, 0x7d, 0x0a, 0x2d, 0xc1, 0xc2, 0xa0, 0xf1, 0x51, 0xb1, 0xaa, 0x6b, 0xe8, 0x0a, 0x2c, 0x0d,
-	0x2e, 0xe6, 0xf7, 0xaa, 0xb5, 0x7c, 0xe9, 0x40, 0x8f, 0x20, 0x04, 0xa9, 0x41, 0xc3, 0x41, 0x59,
-	0x8f, 0x5e, 0xff, 0x59, 0x83, 0xd4, 0xf0, 0x87, 0x00, 0xda, 0x80, 0xb5, 0x8a, 0x59, 0xae, 0x94,
-	0xab, 0xf9, 0xfb, 0x56, 0xb5, 0x96, 0xaf, 0x3d, 0xac, 0x8e, 0x44, 0xcd, 0x40, 0x7a, 0x14, 0x50,
-	0x28, 0x56, 0xca, 0xd5, 0x52, 0xcd, 0xaa, 0x14, 0xcd, 0x52, 0xb9, 0xa0, 0x6b, 0xe8, 0x3f, 0xb0,
-	0x3e, 0x8a, 0x39, 0x2c, 0xd7, 0x4a, 0x07, 0x77, 0x43, 0x48, 0x04, 0xad, 0xc2, 0xe5, 0x51, 0x48,
-	0x25, 0x5f, 0xad, 0x16, 0x0b, 0x7a, 0x14, 0x5d, 0x05, 0x63, 0xd4, 0x66, 0x16, 0xef, 0x15, 0xf7,
-	0x6b, 0xc5, 0x82, 0x1e, 0x1b, 0xc7, 0xbc, 0x93, 0x2f, 0xdd, 0x2f, 0x16, 0xf4, 0xf8, 0xde, 0xdd,
-	0x17, 0x6f, 0xd2, 0xda, 0xcb, 0x37, 0x69, 0xed, 0xf7, 0x37, 0x69, 0xed, 0xd9, 0xdb, 0xf4, 0xd4,
-	0xcb, 0xb7, 0xe9, 0xa9, 0x5f, 0xde, 0xa6, 0xa7, 0xbe, 0xdc, 0x6e, 0xd9, 0xfc, 0xc8, 0xaf, 0x67,
-	0x1b, 0xcc, 0xc9, 0xa9, 0xdf, 0x66, 0xdb, 0x47, 0x7e, 0x3d, 0x7c, 0xce, 0x9d, 0xca, 0xef, 0x6e,
-	0xde, 0xed, 0x10, 0x4f, 0x7c, 0x53, 0x27, 0xa4, 0x8a, 0x6e, 0xfe, 0x1d, 0x00, 0x00, 0xff, 0xff,
-	0xc0, 0x8a, 0xea, 0xeb, 0x96, 0x0f, 0x00, 0x00,
+	// 1752 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xdc, 0x58, 0xcd, 0x6f, 0x1b, 0xc7,
+	0x15, 0xd7, 0x8a, 0x1f, 0x92, 0x1e, 0x45, 0x6a, 0x35, 0x92, 0xed, 0x15, 0x15, 0x51, 0x0e, 0x1b,
+	0x04, 0x8a, 0x6b, 0x91, 0x95, 0x9d, 0xfa, 0x10, 0xe4, 0x42, 0x89, 0xb4, 0x4b, 0xd7, 0x16, 0x99,
+	0x25, 0xa3, 0x34, 0x3d, 0x74, 0x31, 0xe4, 0x8e, 0xa9, 0x45, 0xb8, 0x3b, 0xcc, 0xce, 0x2c, 0x2d,
+	0x5e, 0x7b, 0x2f, 0x10, 0xa0, 0x97, 0xb6, 0xa7, 0x1e, 0x7b, 0xec, 0x21, 0x40, 0xff, 0x80, 0xa2,
+	0x40, 0x4e, 0x45, 0x90, 0x53, 0x7b, 0x71, 0x0b, 0xfb, 0x50, 0x20, 0xf7, 0xde, 0x8b, 0x9d, 0x99,
+	0xe5, 0x97, 0x96, 0x90, 0x14, 0xb4, 0x40, 0x91, 0x8b, 0xcd, 0x9d, 0xf7, 0xfb, 0xbd, 0xf7, 0xe6,
+	0x7d, 0x0e, 0x04, 0x06, 0xe6, 0xd4, 0xa5, 0x1e, 0x29, 0xf7, 0xe8, 0xb0, 0x3c, 0x3c, 0x0a, 0xff,
+	0x2b, 0x0d, 0x7c, 0xca, 0x29, 0xca, 0x29, 0x49, 0x29, 0x3c, 0x1a, 0x1e, 0xe5, 0x0b, 0x5d, 0xca,
+	0x5c, 0xca, 0xca, 0x1d, 0xcc, 0x48, 0x79, 0x78, 0xd4, 0x21, 0x1c, 0x1f, 0x95, 0xbb, 0xd4, 0xf1,
+	0x24, 0x3e, 0xbf, 0xdd, 0xa3, 0x3d, 0x2a, 0x7e, 0x96, 0xc3, 0x5f, 0xea, 0x74, 0xbf, 0x47, 0x69,
+	0xaf, 0x4f, 0xca, 0xe2, 0xab, 0x13, 0xbc, 0x28, 0x73, 0xc7, 0x25, 0x8c, 0x63, 0x77, 0xa0, 0x00,
+	0x3b, 0xf3, 0x00, 0xec, 0x8d, 0x94, 0xa8, 0x30, 0x2f, 0xb2, 0x03, 0x1f, 0x73, 0x87, 0x46, 0x16,
+	0x77, 0xa4, 0x47, 0x96, 0x34, 0x2a, 0x3f, 0x94, 0x68, 0x13, 0xbb, 0x8e, 0x47, 0xcb, 0xe2, 0x5f,
+	0x79, 0x54, 0x1c, 0x00, 0xfa, 0x84, 0x38, 0xbd, 0x73, 0x4e, 0xec, 0x33, 0xca, 0x49, 0x63, 0x10,
+	0x6a, 0x42, 0x0f, 0x20, 0x4d, 0xc5, 0x2f, 0x43, 0xbb, 0xab, 0x1d, 0xe4, 0x1e, 0xe4, 0x4b, 0xb3,
+	0xd7, 0x2e, 0x4d, 0xb0, 0xa6, 0x42, 0xa2, 0x77, 0x21, 0xfd, 0x52, 0x68, 0x32, 0x96, 0xef, 0x6a,
+	0x07, 0x6b, 0xc7, 0xb9, 0x6f, 0xbe, 0x3c, 0x04, 0x65, 0xbe, 0x4a, 0xba, 0xa6, 0x92, 0x16, 0x7f,
+	0xaf, 0xc1, 0x4a, 0x95, 0x0c, 0x28, 0x73, 0x38, 0xda, 0x87, 0xcc, 0xc0, 0xa7, 0x03, 0xca, 0x70,
+	0xdf, 0x72, 0x6c, 0x61, 0x2c, 0x69, 0x42, 0x74, 0x54, 0xb7, 0xd1, 0x23, 0x58, 0xb3, 0x25, 0x96,
+	0xfa, 0x4a, 0xaf, 0xf1, 0xcd, 0x97, 0x87, 0xdb, 0x4a, 0x6f, 0xc5, 0xb6, 0x7d, 0xc2, 0x58, 0x8b,
+	0xfb, 0x8e, 0xd7, 0x33, 0x27, 0x50, 0xf4, 0x21, 0xa4, 0xb1, 0x4b, 0x03, 0x8f, 0x1b, 0x89, 0xbb,
+	0x89, 0x83, 0xcc, 0x83, 0x9d, 0x92, 0x62, 0x84, 0x79, 0x2a, 0xa9, 0x3c, 0x95, 0x4e, 0xa8, 0xe3,
+	0x1d, 0xaf, 0x7d, 0xf5, 0x6a, 0x7f, 0xe9, 0x0f, 0xff, 0xfa, 0xe3, 0x3d, 0xcd, 0x54, 0x9c, 0xe2,
+	0x2f, 0x35, 0xc8, 0x3d, 0xc3, 0x8c, 0x3f, 0x77, 0xbc, 0xc8, 0xd3, 0x0f, 0x20, 0x35, 0xc4, 0xfd,
+	0x80, 0x18, 0xda, 0x0d, 0xf4, 0x49, 0x0a, 0x7a, 0x1f, 0x92, 0x61, 0x7e, 0x85, 0xff, 0x99, 0x07,
+	0xf9, 0x92, 0x4c, 0x60, 0x29, 0x4a, 0x60, 0xa9, 0x1d, 0x25, 0xff, 0x38, 0xf9, 0xc5, 0x3f, 0xf6,
+	0x35, 0x53, 0xa0, 0x8b, 0x7f, 0x4e, 0xc1, 0x6a, 0x53, 0x45, 0x02, 0xe5, 0x60, 0x79, 0x1c, 0x9f,
+	0x65, 0xc7, 0x46, 0x3f, 0x82, 0x55, 0x97, 0x30, 0x86, 0x7b, 0x84, 0x19, 0xcb, 0xc2, 0xa3, 0xed,
+	0x4b, 0x6a, 0x2b, 0xde, 0xc8, 0x1c, 0xa3, 0xd0, 0x23, 0x48, 0x33, 0x8e, 0x79, 0xc0, 0x8c, 0x84,
+	0x48, 0x69, 0x61, 0x3e, 0xa5, 0x91, 0xad, 0x96, 0x40, 0x99, 0x0a, 0x8d, 0xea, 0x80, 0x5e, 0x38,
+	0x1e, 0xee, 0x5b, 0x1c, 0xf7, 0xfb, 0x23, 0xcb, 0x27, 0x2c, 0xe8, 0x73, 0x23, 0x29, 0xae, 0xb2,
+	0x3b, 0xaf, 0xa3, 0x1d, 0x62, 0x4c, 0x01, 0x31, 0x75, 0x41, 0x9b, 0x3a, 0x41, 0x15, 0xc8, 0xb0,
+	0xa0, 0xe3, 0x3a, 0xdc, 0x12, 0xe1, 0x48, 0x5d, 0x33, 0x1c, 0x20, 0x49, 0xe1, 0x31, 0x7a, 0x0a,
+	0xba, 0x4a, 0xb2, 0x45, 0x3c, 0x5b, 0xea, 0x49, 0x5f, 0x53, 0x4f, 0x4e, 0x31, 0x6b, 0x9e, 0x2d,
+	0x74, 0xd5, 0x21, 0xcb, 0x29, 0xc7, 0x7d, 0x4b, 0x9d, 0x1b, 0x2b, 0x37, 0x48, 0xed, 0xba, 0xa0,
+	0x46, 0xd5, 0xf1, 0x0c, 0x36, 0x87, 0x94, 0x3b, 0x5e, 0xcf, 0x62, 0x1c, 0xfb, 0xea, 0x7e, 0xab,
+	0xd7, 0xf4, 0x6b, 0x43, 0x52, 0x5b, 0x21, 0x53, 0x38, 0xf6, 0x13, 0x50, 0x47, 0x93, 0x3b, 0xae,
+	0x5d, 0x53, 0x57, 0x56, 0x12, 0xa3, 0x2b, 0xe6, 0xc3, 0x32, 0xe1, 0xd8, 0xc6, 0x1c, 0x1b, 0x10,
+	0x76, 0x8f, 0x39, 0xfe, 0x46, 0xdb, 0x90, 0xe2, 0x0e, 0xef, 0x13, 0x23, 0x23, 0x04, 0xf2, 0x03,
+	0x19, 0xb0, 0xc2, 0x02, 0xd7, 0xc5, 0xfe, 0xc8, 0x58, 0x17, 0xe7, 0xd1, 0x27, 0x7a, 0x1f, 0x56,
+	0x65, 0x63, 0x12, 0xdf, 0xc8, 0x5e, 0xd1, 0x89, 0x63, 0x64, 0xf1, 0x77, 0x1a, 0x64, 0xa6, 0x6b,
+	0xe0, 0x87, 0xb0, 0x36, 0x22, 0xcc, 0xea, 0x8a, 0xde, 0xd4, 0x2e, 0x0d, 0x8a, 0xba, 0xc7, 0xcd,
+	0xd5, 0x11, 0x61, 0x27, 0xa1, 0x1c, 0x3d, 0x84, 0x2c, 0xee, 0x30, 0x8e, 0x1d, 0x4f, 0x11, 0x96,
+	0x63, 0x09, 0xeb, 0x0a, 0x24, 0x49, 0xef, 0xc1, 0xaa, 0x47, 0x15, 0x3e, 0x11, 0x8b, 0x5f, 0xf1,
+	0xa8, 0x80, 0x16, 0xff, 0xa4, 0x41, 0x32, 0x9c, 0x64, 0x57, 0xcf, 0xa1, 0x12, 0xa4, 0x86, 0x94,
+	0x93, 0xab, 0x67, 0x90, 0x84, 0xa1, 0x0f, 0x61, 0x45, 0x8e, 0x45, 0x66, 0x24, 0x45, 0x55, 0x15,
+	0xe7, 0x5b, 0xe5, 0xf2, 0xd4, 0x35, 0x23, 0xca, 0x4c, 0xda, 0x52, 0xb3, 0x69, 0x7b, 0x9a, 0x5c,
+	0x4d, 0xe8, 0xc9, 0xe2, 0x5f, 0x34, 0xb8, 0xf5, 0x51, 0x40, 0xfd, 0xc0, 0x3d, 0x39, 0x27, 0xdd,
+	0xcf, 0x3e, 0x0a, 0x48, 0x40, 0x6a, 0x1e, 0xf7, 0x47, 0xa8, 0x09, 0x5b, 0x9f, 0x0b, 0x81, 0x28,
+	0x1c, 0x1a, 0xa8, 0x62, 0xd4, 0xae, 0x59, 0x40, 0x9b, 0x92, 0xdc, 0x96, 0x5c, 0x51, 0x44, 0xf7,
+	0x01, 0x29, 0x8d, 0xdd, 0xd0, 0xd6, 0x54, 0x2a, 0x92, 0xa6, 0xfe, 0xf9, 0xc4, 0x09, 0x19, 0xfe,
+	0x39, 0x34, 0xb3, 0x6c, 0xea, 0x11, 0x91, 0x88, 0x59, 0x34, 0xab, 0x52, 0x8f, 0x14, 0xff, 0xae,
+	0x41, 0x56, 0x35, 0x51, 0x13, 0xfb, 0xd8, 0x65, 0xe8, 0x53, 0xc8, 0xb8, 0x8e, 0x37, 0xee, 0xc9,
+	0x2b, 0xc7, 0xed, 0x5e, 0xd8, 0x93, 0xdf, 0xbe, 0xda, 0xbf, 0x35, 0xc5, 0xba, 0x4f, 0x5d, 0x87,
+	0x13, 0x77, 0xc0, 0x47, 0x26, 0xb8, 0x93, 0x19, 0xee, 0x02, 0x72, 0xf1, 0x45, 0x04, 0xb2, 0x06,
+	0xc4, 0x77, 0xa8, 0xad, 0xa6, 0xf2, 0xce, 0xa5, 0xc8, 0x54, 0xd5, 0x5a, 0x3d, 0x7e, 0xe7, 0xdb,
+	0x57, 0xfb, 0x6f, 0x5d, 0x26, 0x4e, 0x8c, 0xfc, 0x26, 0x0c, 0x9c, 0xee, 0xe2, 0x8b, 0xe8, 0x26,
+	0x42, 0x5e, 0x6c, 0xc3, 0xfa, 0x99, 0xe8, 0x46, 0x75, 0xb3, 0x2a, 0xa8, 0xee, 0x8c, 0x2c, 0x6b,
+	0x57, 0x59, 0x4e, 0x0a, 0xcd, 0xeb, 0x92, 0xa5, 0xb4, 0xfe, 0x7b, 0x59, 0x35, 0x94, 0xd2, 0xfa,
+	0x2e, 0xa4, 0x65, 0x54, 0x63, 0xba, 0x49, 0xac, 0x5d, 0x29, 0x45, 0xf7, 0x61, 0x8d, 0x9f, 0xfb,
+	0x84, 0x9d, 0xd3, 0xbe, 0xbd, 0x60, 0x43, 0x4f, 0x00, 0xc8, 0x84, 0xbd, 0x2e, 0xf5, 0x18, 0x77,
+	0x78, 0x10, 0x7a, 0x62, 0x61, 0x97, 0x78, 0xb6, 0x4b, 0x3c, 0x6e, 0x29, 0x63, 0x89, 0x58, 0x0d,
+	0xbb, 0xd3, 0xa4, 0x4a, 0xc4, 0x91, 0x85, 0x8a, 0x7e, 0x06, 0x77, 0x17, 0xe8, 0x9c, 0x38, 0x96,
+	0x8c, 0x55, 0x5b, 0x88, 0x55, 0xdb, 0x1e, 0x7b, 0x7b, 0x08, 0xd0, 0xc7, 0x2f, 0x23, 0xd7, 0x52,
+	0xf1, 0x97, 0xeb, 0xe3, 0x97, 0xca, 0x91, 0x87, 0x90, 0x0d, 0xe1, 0x13, 0xab, 0xe9, 0x58, 0xc6,
+	0x7a, 0x1f, 0xbf, 0x1c, 0xdb, 0x28, 0xfe, 0x36, 0x01, 0x5b, 0x93, 0xf7, 0x40, 0xfb, 0xdc, 0xa7,
+	0x9c, 0xf7, 0x89, 0x8f, 0x6a, 0x90, 0x79, 0xd1, 0xa7, 0xd4, 0xb7, 0x6e, 0xfe, 0x3c, 0x00, 0x41,
+	0x3c, 0x13, 0x6f, 0x84, 0x2a, 0x64, 0x83, 0x81, 0x8d, 0x39, 0xb9, 0x76, 0x59, 0xaa, 0xe2, 0x90,
+	0x2c, 0x59, 0x1c, 0xe8, 0x11, 0xdc, 0xe1, 0xd8, 0xef, 0x11, 0x6e, 0xe1, 0x2e, 0x77, 0x86, 0xc4,
+	0x8a, 0x46, 0x18, 0x53, 0x1d, 0x78, 0x4b, 0x8a, 0x2b, 0x42, 0x1a, 0x6d, 0x7c, 0x86, 0x7e, 0x0c,
+	0x39, 0xc7, 0xeb, 0xfa, 0x04, 0x33, 0x62, 0x09, 0xf5, 0x0b, 0x12, 0x91, 0x8d, 0x50, 0x66, 0x08,
+	0x0a, 0x69, 0x36, 0x99, 0xa1, 0xc5, 0xc7, 0x3e, 0x1b, 0xa1, 0x24, 0xad, 0x01, 0xef, 0x8c, 0x69,
+	0x8c, 0x78, 0xcc, 0xe1, 0xce, 0xd0, 0xe1, 0x23, 0x4b, 0xb9, 0x6e, 0x3b, 0x8c, 0x63, 0xaf, 0x2b,
+	0x17, 0x7b, 0xd2, 0x7c, 0x3b, 0xc2, 0xb6, 0x26, 0xd0, 0xb6, 0x40, 0x56, 0x15, 0xb0, 0xf8, 0xeb,
+	0x04, 0xe4, 0x9f, 0x3b, 0x5e, 0xdd, 0x73, 0xb8, 0x33, 0x5e, 0xca, 0xff, 0xa7, 0x29, 0x7a, 0x0f,
+	0x74, 0x75, 0xcf, 0xf9, 0xdc, 0x6c, 0xc8, 0xf3, 0xef, 0x4d, 0x56, 0x7e, 0x95, 0x81, 0xb4, 0x1a,
+	0x52, 0x4f, 0x6e, 0x38, 0xd4, 0x33, 0xe3, 0x0c, 0x18, 0xda, 0xcc, 0x08, 0x7f, 0xfe, 0xdd, 0x46,
+	0x78, 0x32, 0x7e, 0x44, 0x5f, 0x1e, 0xc9, 0x89, 0xef, 0x30, 0x92, 0xd1, 0xc1, 0x78, 0x04, 0xcb,
+	0xfc, 0xe8, 0xb3, 0x81, 0x36, 0xb4, 0xf8, 0x21, 0x9c, 0xba, 0x6a, 0x08, 0xff, 0x14, 0x76, 0xc2,
+	0xa8, 0x39, 0xb2, 0xac, 0xc7, 0x97, 0x96, 0x39, 0x5d, 0x59, 0x60, 0xea, 0xb6, 0x3b, 0xdf, 0x08,
+	0x32, 0xbd, 0x07, 0xa0, 0x77, 0x02, 0xdf, 0xb3, 0xc2, 0xf7, 0x49, 0x34, 0x29, 0xc3, 0x67, 0xdc,
+	0xaa, 0x99, 0x0b, 0xcf, 0xc3, 0x67, 0x88, 0x1a, 0x8f, 0x15, 0xd8, 0x13, 0xc8, 0xf1, 0x8b, 0x68,
+	0x1c, 0x6d, 0x9f, 0x84, 0x6c, 0x23, 0x27, 0x68, 0xf9, 0x10, 0x14, 0x15, 0x6b, 0x14, 0x56, 0x89,
+	0x40, 0x1f, 0xc0, 0xe6, 0x54, 0xbe, 0x95, 0xc7, 0x1b, 0xb1, 0xf7, 0xdd, 0x98, 0x64, 0x57, 0x3a,
+	0x7a, 0xe5, 0xea, 0xd1, 0xff, 0x37, 0xab, 0x67, 0xf3, 0xbf, 0xb0, 0x7a, 0xd0, 0x8d, 0x57, 0xcf,
+	0xd6, 0xd5, 0xab, 0x07, 0x3d, 0x86, 0xdc, 0xec, 0x93, 0xce, 0xd8, 0xbe, 0x5e, 0x99, 0x66, 0x67,
+	0x1e, 0x73, 0xe8, 0x17, 0xb0, 0x1b, 0x36, 0xcf, 0x4c, 0xc5, 0x5b, 0xe4, 0x82, 0x87, 0x1d, 0x4c,
+	0x3d, 0xe3, 0xd6, 0xf5, 0x94, 0x1a, 0x2e, 0xbe, 0x38, 0x9b, 0x2a, 0xff, 0x5a, 0xa4, 0x60, 0xc1,
+	0x43, 0xf1, 0xf6, 0x82, 0x87, 0xe2, 0x27, 0x30, 0xfd, 0x64, 0x0b, 0x43, 0x22, 0xc7, 0xb5, 0x71,
+	0x47, 0xf8, 0xf1, 0x83, 0xf9, 0x07, 0x73, 0xcc, 0xf2, 0x35, 0xb7, 0xdc, 0x98, 0x8d, 0xec, 0xc2,
+	0x5e, 0x5c, 0xdb, 0x4c, 0x0c, 0x18, 0xc2, 0xc0, 0xbd, 0x18, 0x03, 0x0b, 0x36, 0x88, 0x99, 0x77,
+	0x17, 0x6f, 0x97, 0x3a, 0xec, 0x88, 0x76, 0x89, 0xec, 0x78, 0x74, 0x2a, 0xbd, 0x3b, 0xb1, 0xe9,
+	0xbd, 0x1d, 0x12, 0x94, 0xa2, 0x53, 0x3a, 0x53, 0x4c, 0x61, 0x82, 0x54, 0x31, 0xe5, 0xe3, 0x8b,
+	0xc9, 0xc5, 0x17, 0xaa, 0x98, 0x42, 0xb8, 0xe3, 0x45, 0xf0, 0xdd, 0x05, 0x70, 0xc7, 0x93, 0xf0,
+	0x7b, 0x9f, 0x01, 0x4c, 0xfd, 0x89, 0x67, 0x17, 0xee, 0x9c, 0x35, 0xda, 0x35, 0xab, 0xd1, 0x6c,
+	0xd7, 0x1b, 0xa7, 0xd6, 0xc7, 0xa7, 0xad, 0x66, 0xed, 0xa4, 0xfe, 0xb8, 0x5e, 0xab, 0xea, 0x4b,
+	0x68, 0x0b, 0x36, 0xa6, 0x85, 0x9f, 0xd6, 0x5a, 0xba, 0x86, 0xee, 0xc0, 0xd6, 0xf4, 0x61, 0xe5,
+	0xb8, 0xd5, 0xae, 0xd4, 0x4f, 0xf5, 0x65, 0x84, 0x20, 0x37, 0x2d, 0x38, 0x6d, 0xe8, 0x89, 0x7b,
+	0x7f, 0xd5, 0x20, 0x37, 0xfb, 0x17, 0x05, 0xb4, 0x0f, 0xbb, 0x4d, 0xb3, 0xd1, 0x6c, 0xb4, 0x2a,
+	0xcf, 0xac, 0x56, 0xbb, 0xd2, 0xfe, 0xb8, 0x35, 0x67, 0xb5, 0x08, 0x85, 0x79, 0x40, 0xb5, 0xd6,
+	0x6c, 0xb4, 0xea, 0x6d, 0xab, 0x59, 0x33, 0xeb, 0x8d, 0xaa, 0xae, 0xa1, 0xb7, 0x61, 0x6f, 0x1e,
+	0x73, 0xd6, 0x68, 0xd7, 0x4f, 0x9f, 0x44, 0x90, 0x65, 0x94, 0x87, 0xdb, 0xf3, 0x90, 0x66, 0xa5,
+	0xd5, 0xaa, 0x55, 0xf5, 0x04, 0x7a, 0x0b, 0x8c, 0x79, 0x99, 0x59, 0x7b, 0x5a, 0x3b, 0x69, 0xd7,
+	0xaa, 0x7a, 0x32, 0x8e, 0xf9, 0xb8, 0x52, 0x7f, 0x56, 0xab, 0xea, 0xa9, 0xe3, 0x27, 0x5f, 0xbd,
+	0x2e, 0x68, 0x5f, 0xbf, 0x2e, 0x68, 0xff, 0x7c, 0x5d, 0xd0, 0xbe, 0x78, 0x53, 0x58, 0xfa, 0xfa,
+	0x4d, 0x61, 0xe9, 0x6f, 0x6f, 0x0a, 0x4b, 0x3f, 0x3f, 0xec, 0x39, 0xfc, 0x3c, 0xe8, 0x94, 0xba,
+	0xd4, 0x2d, 0xab, 0x92, 0x3a, 0x3c, 0x0f, 0x3a, 0xd1, 0xef, 0xf2, 0x85, 0xf8, 0x2b, 0x22, 0x1f,
+	0x0d, 0x08, 0x2b, 0x0f, 0x8f, 0x3a, 0x69, 0xd1, 0x58, 0x0f, 0xff, 0x13, 0x00, 0x00, 0xff, 0xff,
+	0x11, 0x6e, 0xc3, 0x25, 0x64, 0x14, 0x00, 0x00,
 }
 
 func (m *WeightedVoteOption) Marshal() (dAtA []byte, err error) {
@@ -1210,6 +1510,53 @@ func (m *Deposit) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *LastMinDeposit) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *LastMinDeposit) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *LastMinDeposit) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Time != nil {
+		n1, err1 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(*m.Time, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(*m.Time):])
+		if err1 != nil {
+			return 0, err1
+		}
+		i -= n1
+		i = encodeVarintGov(dAtA, i, uint64(n1))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Value) > 0 {
+		for iNdEx := len(m.Value) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Value[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintGov(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
 func (m *Proposal) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -1259,22 +1606,22 @@ func (m *Proposal) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		dAtA[i] = 0x52
 	}
 	if m.VotingEndTime != nil {
-		n1, err1 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(*m.VotingEndTime, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(*m.VotingEndTime):])
-		if err1 != nil {
-			return 0, err1
-		}
-		i -= n1
-		i = encodeVarintGov(dAtA, i, uint64(n1))
-		i--
-		dAtA[i] = 0x4a
-	}
-	if m.VotingStartTime != nil {
-		n2, err2 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(*m.VotingStartTime, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(*m.VotingStartTime):])
+		n2, err2 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(*m.VotingEndTime, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(*m.VotingEndTime):])
 		if err2 != nil {
 			return 0, err2
 		}
 		i -= n2
 		i = encodeVarintGov(dAtA, i, uint64(n2))
+		i--
+		dAtA[i] = 0x4a
+	}
+	if m.VotingStartTime != nil {
+		n3, err3 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(*m.VotingStartTime, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(*m.VotingStartTime):])
+		if err3 != nil {
+			return 0, err3
+		}
+		i -= n3
+		i = encodeVarintGov(dAtA, i, uint64(n3))
 		i--
 		dAtA[i] = 0x42
 	}
@@ -1293,22 +1640,22 @@ func (m *Proposal) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		}
 	}
 	if m.DepositEndTime != nil {
-		n3, err3 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(*m.DepositEndTime, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(*m.DepositEndTime):])
-		if err3 != nil {
-			return 0, err3
-		}
-		i -= n3
-		i = encodeVarintGov(dAtA, i, uint64(n3))
-		i--
-		dAtA[i] = 0x32
-	}
-	if m.SubmitTime != nil {
-		n4, err4 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(*m.SubmitTime, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(*m.SubmitTime):])
+		n4, err4 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(*m.DepositEndTime, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(*m.DepositEndTime):])
 		if err4 != nil {
 			return 0, err4
 		}
 		i -= n4
 		i = encodeVarintGov(dAtA, i, uint64(n4))
+		i--
+		dAtA[i] = 0x32
+	}
+	if m.SubmitTime != nil {
+		n5, err5 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(*m.SubmitTime, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(*m.SubmitTime):])
+		if err5 != nil {
+			return 0, err5
+		}
+		i -= n5
+		i = encodeVarintGov(dAtA, i, uint64(n5))
 		i--
 		dAtA[i] = 0x2a
 	}
@@ -1482,12 +1829,12 @@ func (m *QuorumCheckQueueEntry) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		dAtA[i] = 0x10
 	}
 	if m.QuorumTimeoutTime != nil {
-		n6, err6 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(*m.QuorumTimeoutTime, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(*m.QuorumTimeoutTime):])
-		if err6 != nil {
-			return 0, err6
+		n7, err7 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(*m.QuorumTimeoutTime, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(*m.QuorumTimeoutTime):])
+		if err7 != nil {
+			return 0, err7
 		}
-		i -= n6
-		i = encodeVarintGov(dAtA, i, uint64(n6))
+		i -= n7
+		i = encodeVarintGov(dAtA, i, uint64(n7))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1515,12 +1862,12 @@ func (m *DepositParams) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	var l int
 	_ = l
 	if m.MaxDepositPeriod != nil {
-		n7, err7 := github_com_cosmos_gogoproto_types.StdDurationMarshalTo(*m.MaxDepositPeriod, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdDuration(*m.MaxDepositPeriod):])
-		if err7 != nil {
-			return 0, err7
+		n8, err8 := github_com_cosmos_gogoproto_types.StdDurationMarshalTo(*m.MaxDepositPeriod, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdDuration(*m.MaxDepositPeriod):])
+		if err8 != nil {
+			return 0, err8
 		}
-		i -= n7
-		i = encodeVarintGov(dAtA, i, uint64(n7))
+		i -= n8
+		i = encodeVarintGov(dAtA, i, uint64(n8))
 		i--
 		dAtA[i] = 0x12
 	}
@@ -1562,12 +1909,12 @@ func (m *VotingParams) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	var l int
 	_ = l
 	if m.VotingPeriod != nil {
-		n8, err8 := github_com_cosmos_gogoproto_types.StdDurationMarshalTo(*m.VotingPeriod, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdDuration(*m.VotingPeriod):])
-		if err8 != nil {
-			return 0, err8
+		n9, err9 := github_com_cosmos_gogoproto_types.StdDurationMarshalTo(*m.VotingPeriod, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdDuration(*m.VotingPeriod):])
+		if err9 != nil {
+			return 0, err9
 		}
-		i -= n8
-		i = encodeVarintGov(dAtA, i, uint64(n8))
+		i -= n9
+		i = encodeVarintGov(dAtA, i, uint64(n9))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1639,6 +1986,148 @@ func (m *TallyParams) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *MinDepositThrottler) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MinDepositThrottler) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MinDepositThrottler) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.DecreaseSensitivityTargetDistance != 0 {
+		i = encodeVarintGov(dAtA, i, uint64(m.DecreaseSensitivityTargetDistance))
+		i--
+		dAtA[i] = 0x30
+	}
+	if len(m.DecreaseRatio) > 0 {
+		i -= len(m.DecreaseRatio)
+		copy(dAtA[i:], m.DecreaseRatio)
+		i = encodeVarintGov(dAtA, i, uint64(len(m.DecreaseRatio)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.IncreaseRatio) > 0 {
+		i -= len(m.IncreaseRatio)
+		copy(dAtA[i:], m.IncreaseRatio)
+		i = encodeVarintGov(dAtA, i, uint64(len(m.IncreaseRatio)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if m.TargetActiveProposals != 0 {
+		i = encodeVarintGov(dAtA, i, uint64(m.TargetActiveProposals))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.UpdatePeriod != nil {
+		n10, err10 := github_com_cosmos_gogoproto_types.StdDurationMarshalTo(*m.UpdatePeriod, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdDuration(*m.UpdatePeriod):])
+		if err10 != nil {
+			return 0, err10
+		}
+		i -= n10
+		i = encodeVarintGov(dAtA, i, uint64(n10))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.FloorValue) > 0 {
+		for iNdEx := len(m.FloorValue) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.FloorValue[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintGov(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MinInitialDepositThrottler) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MinInitialDepositThrottler) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MinInitialDepositThrottler) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.DecreaseSensitivityTargetDistance != 0 {
+		i = encodeVarintGov(dAtA, i, uint64(m.DecreaseSensitivityTargetDistance))
+		i--
+		dAtA[i] = 0x30
+	}
+	if len(m.DecreaseRatio) > 0 {
+		i -= len(m.DecreaseRatio)
+		copy(dAtA[i:], m.DecreaseRatio)
+		i = encodeVarintGov(dAtA, i, uint64(len(m.DecreaseRatio)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.IncreaseRatio) > 0 {
+		i -= len(m.IncreaseRatio)
+		copy(dAtA[i:], m.IncreaseRatio)
+		i = encodeVarintGov(dAtA, i, uint64(len(m.IncreaseRatio)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if m.TargetProposals != 0 {
+		i = encodeVarintGov(dAtA, i, uint64(m.TargetProposals))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.UpdatePeriod != nil {
+		n11, err11 := github_com_cosmos_gogoproto_types.StdDurationMarshalTo(*m.UpdatePeriod, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdDuration(*m.UpdatePeriod):])
+		if err11 != nil {
+			return 0, err11
+		}
+		i -= n11
+		i = encodeVarintGov(dAtA, i, uint64(n11))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.FloorValue) > 0 {
+		for iNdEx := len(m.FloorValue) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.FloorValue[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintGov(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
 func (m *Params) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -1666,12 +2155,49 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x1
 		i--
-		dAtA[i] = 0xc2
+		dAtA[i] = 0xda
 	}
 	if len(m.MaxQuorum) > 0 {
 		i -= len(m.MaxQuorum)
 		copy(dAtA[i:], m.MaxQuorum)
 		i = encodeVarintGov(dAtA, i, uint64(len(m.MaxQuorum)))
+		i--
+		dAtA[i] = 0x1
+		i--
+		dAtA[i] = 0xd2
+	}
+	if len(m.BurnDepositNoThreshold) > 0 {
+		i -= len(m.BurnDepositNoThreshold)
+		copy(dAtA[i:], m.BurnDepositNoThreshold)
+		i = encodeVarintGov(dAtA, i, uint64(len(m.BurnDepositNoThreshold)))
+		i--
+		dAtA[i] = 0x1
+		i--
+		dAtA[i] = 0xca
+	}
+	if m.MinInitialDepositThrottler != nil {
+		{
+			size, err := m.MinInitialDepositThrottler.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintGov(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1
+		i--
+		dAtA[i] = 0xc2
+	}
+	if m.MinDepositThrottler != nil {
+		{
+			size, err := m.MinDepositThrottler.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintGov(dAtA, i, uint64(size))
+		}
 		i--
 		dAtA[i] = 0x1
 		i--
@@ -1685,24 +2211,24 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		dAtA[i] = 0xb0
 	}
 	if m.MaxVotingPeriodExtension != nil {
-		n9, err9 := github_com_cosmos_gogoproto_types.StdDurationMarshalTo(*m.MaxVotingPeriodExtension, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdDuration(*m.MaxVotingPeriodExtension):])
-		if err9 != nil {
-			return 0, err9
+		n14, err14 := github_com_cosmos_gogoproto_types.StdDurationMarshalTo(*m.MaxVotingPeriodExtension, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdDuration(*m.MaxVotingPeriodExtension):])
+		if err14 != nil {
+			return 0, err14
 		}
-		i -= n9
-		i = encodeVarintGov(dAtA, i, uint64(n9))
+		i -= n14
+		i = encodeVarintGov(dAtA, i, uint64(n14))
 		i--
 		dAtA[i] = 0x1
 		i--
 		dAtA[i] = 0xaa
 	}
 	if m.QuorumTimeout != nil {
-		n10, err10 := github_com_cosmos_gogoproto_types.StdDurationMarshalTo(*m.QuorumTimeout, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdDuration(*m.QuorumTimeout):])
-		if err10 != nil {
-			return 0, err10
+		n15, err15 := github_com_cosmos_gogoproto_types.StdDurationMarshalTo(*m.QuorumTimeout, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdDuration(*m.QuorumTimeout):])
+		if err15 != nil {
+			return 0, err15
 		}
-		i -= n10
-		i = encodeVarintGov(dAtA, i, uint64(n10))
+		i -= n15
+		i = encodeVarintGov(dAtA, i, uint64(n15))
 		i--
 		dAtA[i] = 0x1
 		i--
@@ -1793,22 +2319,22 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		dAtA[i] = 0x22
 	}
 	if m.VotingPeriod != nil {
-		n11, err11 := github_com_cosmos_gogoproto_types.StdDurationMarshalTo(*m.VotingPeriod, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdDuration(*m.VotingPeriod):])
-		if err11 != nil {
-			return 0, err11
+		n16, err16 := github_com_cosmos_gogoproto_types.StdDurationMarshalTo(*m.VotingPeriod, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdDuration(*m.VotingPeriod):])
+		if err16 != nil {
+			return 0, err16
 		}
-		i -= n11
-		i = encodeVarintGov(dAtA, i, uint64(n11))
+		i -= n16
+		i = encodeVarintGov(dAtA, i, uint64(n16))
 		i--
 		dAtA[i] = 0x1a
 	}
 	if m.MaxDepositPeriod != nil {
-		n12, err12 := github_com_cosmos_gogoproto_types.StdDurationMarshalTo(*m.MaxDepositPeriod, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdDuration(*m.MaxDepositPeriod):])
-		if err12 != nil {
-			return 0, err12
+		n17, err17 := github_com_cosmos_gogoproto_types.StdDurationMarshalTo(*m.MaxDepositPeriod, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdDuration(*m.MaxDepositPeriod):])
+		if err17 != nil {
+			return 0, err17
 		}
-		i -= n12
-		i = encodeVarintGov(dAtA, i, uint64(n12))
+		i -= n17
+		i = encodeVarintGov(dAtA, i, uint64(n17))
 		i--
 		dAtA[i] = 0x12
 	}
@@ -1874,6 +2400,25 @@ func (m *Deposit) Size() (n int) {
 			l = e.Size()
 			n += 1 + l + sovGov(uint64(l))
 		}
+	}
+	return n
+}
+
+func (m *LastMinDeposit) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Value) > 0 {
+		for _, e := range m.Value {
+			l = e.Size()
+			n += 1 + l + sovGov(uint64(l))
+		}
+	}
+	if m.Time != nil {
+		l = github_com_cosmos_gogoproto_types.SizeOfStdTime(*m.Time)
+		n += 1 + l + sovGov(uint64(l))
 	}
 	return n
 }
@@ -2072,6 +2617,72 @@ func (m *TallyParams) Size() (n int) {
 	return n
 }
 
+func (m *MinDepositThrottler) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.FloorValue) > 0 {
+		for _, e := range m.FloorValue {
+			l = e.Size()
+			n += 1 + l + sovGov(uint64(l))
+		}
+	}
+	if m.UpdatePeriod != nil {
+		l = github_com_cosmos_gogoproto_types.SizeOfStdDuration(*m.UpdatePeriod)
+		n += 1 + l + sovGov(uint64(l))
+	}
+	if m.TargetActiveProposals != 0 {
+		n += 1 + sovGov(uint64(m.TargetActiveProposals))
+	}
+	l = len(m.IncreaseRatio)
+	if l > 0 {
+		n += 1 + l + sovGov(uint64(l))
+	}
+	l = len(m.DecreaseRatio)
+	if l > 0 {
+		n += 1 + l + sovGov(uint64(l))
+	}
+	if m.DecreaseSensitivityTargetDistance != 0 {
+		n += 1 + sovGov(uint64(m.DecreaseSensitivityTargetDistance))
+	}
+	return n
+}
+
+func (m *MinInitialDepositThrottler) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.FloorValue) > 0 {
+		for _, e := range m.FloorValue {
+			l = e.Size()
+			n += 1 + l + sovGov(uint64(l))
+		}
+	}
+	if m.UpdatePeriod != nil {
+		l = github_com_cosmos_gogoproto_types.SizeOfStdDuration(*m.UpdatePeriod)
+		n += 1 + l + sovGov(uint64(l))
+	}
+	if m.TargetProposals != 0 {
+		n += 1 + sovGov(uint64(m.TargetProposals))
+	}
+	l = len(m.IncreaseRatio)
+	if l > 0 {
+		n += 1 + l + sovGov(uint64(l))
+	}
+	l = len(m.DecreaseRatio)
+	if l > 0 {
+		n += 1 + l + sovGov(uint64(l))
+	}
+	if m.DecreaseSensitivityTargetDistance != 0 {
+		n += 1 + sovGov(uint64(m.DecreaseSensitivityTargetDistance))
+	}
+	return n
+}
+
 func (m *Params) Size() (n int) {
 	if m == nil {
 		return 0
@@ -2140,6 +2751,18 @@ func (m *Params) Size() (n int) {
 	}
 	if m.QuorumCheckCount != 0 {
 		n += 2 + sovGov(uint64(m.QuorumCheckCount))
+	}
+	if m.MinDepositThrottler != nil {
+		l = m.MinDepositThrottler.Size()
+		n += 2 + l + sovGov(uint64(l))
+	}
+	if m.MinInitialDepositThrottler != nil {
+		l = m.MinInitialDepositThrottler.Size()
+		n += 2 + l + sovGov(uint64(l))
+	}
+	l = len(m.BurnDepositNoThreshold)
+	if l > 0 {
+		n += 2 + l + sovGov(uint64(l))
 	}
 	l = len(m.MaxQuorum)
 	if l > 0 {
@@ -2370,6 +2993,126 @@ func (m *Deposit) Unmarshal(dAtA []byte) error {
 			}
 			m.Amount = append(m.Amount, types.Coin{})
 			if err := m.Amount[len(m.Amount)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGov(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGov
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *LastMinDeposit) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGov
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: LastMinDeposit: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: LastMinDeposit: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Value", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGov
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGov
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGov
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Value = append(m.Value, types.Coin{})
+			if err := m.Value[len(m.Value)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Time", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGov
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGov
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGov
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Time == nil {
+				m.Time = new(time.Time)
+			}
+			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(m.Time, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -3743,6 +4486,450 @@ func (m *TallyParams) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+func (m *MinDepositThrottler) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGov
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MinDepositThrottler: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MinDepositThrottler: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field FloorValue", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGov
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGov
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGov
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.FloorValue = append(m.FloorValue, types.Coin{})
+			if err := m.FloorValue[len(m.FloorValue)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field UpdatePeriod", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGov
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGov
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGov
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.UpdatePeriod == nil {
+				m.UpdatePeriod = new(time.Duration)
+			}
+			if err := github_com_cosmos_gogoproto_types.StdDurationUnmarshal(m.UpdatePeriod, dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TargetActiveProposals", wireType)
+			}
+			m.TargetActiveProposals = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGov
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.TargetActiveProposals |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field IncreaseRatio", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGov
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGov
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGov
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.IncreaseRatio = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DecreaseRatio", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGov
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGov
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGov
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DecreaseRatio = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DecreaseSensitivityTargetDistance", wireType)
+			}
+			m.DecreaseSensitivityTargetDistance = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGov
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.DecreaseSensitivityTargetDistance |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGov(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGov
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MinInitialDepositThrottler) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGov
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MinInitialDepositThrottler: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MinInitialDepositThrottler: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field FloorValue", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGov
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGov
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGov
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.FloorValue = append(m.FloorValue, types.Coin{})
+			if err := m.FloorValue[len(m.FloorValue)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field UpdatePeriod", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGov
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGov
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGov
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.UpdatePeriod == nil {
+				m.UpdatePeriod = new(time.Duration)
+			}
+			if err := github_com_cosmos_gogoproto_types.StdDurationUnmarshal(m.UpdatePeriod, dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TargetProposals", wireType)
+			}
+			m.TargetProposals = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGov
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.TargetProposals |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field IncreaseRatio", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGov
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGov
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGov
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.IncreaseRatio = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DecreaseRatio", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGov
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGov
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGov
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DecreaseRatio = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DecreaseSensitivityTargetDistance", wireType)
+			}
+			m.DecreaseSensitivityTargetDistance = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGov
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.DecreaseSensitivityTargetDistance |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGov(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGov
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
 func (m *Params) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -4267,6 +5454,110 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			}
 		case 23:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MinDepositThrottler", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGov
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGov
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGov
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.MinDepositThrottler == nil {
+				m.MinDepositThrottler = &MinDepositThrottler{}
+			}
+			if err := m.MinDepositThrottler.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 24:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MinInitialDepositThrottler", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGov
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGov
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGov
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.MinInitialDepositThrottler == nil {
+				m.MinInitialDepositThrottler = &MinInitialDepositThrottler{}
+			}
+			if err := m.MinInitialDepositThrottler.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 25:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BurnDepositNoThreshold", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGov
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGov
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGov
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.BurnDepositNoThreshold = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 26:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MaxQuorum", wireType)
 			}
 			var stringLen uint64
@@ -4297,7 +5588,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			}
 			m.MaxQuorum = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 24:
+		case 27:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MinQuorum", wireType)
 			}

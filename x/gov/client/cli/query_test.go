@@ -406,3 +406,63 @@ func (s *CLITestSuite) TestCmdGetConstitution() {
 		})
 	}
 }
+
+func (s *CLITestSuite) TestCmdQueryMinDeposit() {
+	testCases := []struct {
+		name         string
+		args         []string
+		expCmdOutput string
+	}{
+		{
+			"query min deposit",
+			[]string{},
+			"",
+		},
+		{
+			"query min deposit (json output)",
+			[]string{
+				fmt.Sprintf("--%s=json", flags.FlagOutput),
+			},
+			"--output=json",
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+		s.Run(tc.name, func() {
+			cmd := cli.GetCmdQueryMinDeposit()
+			cmd.SetArgs(tc.args)
+			s.Require().Contains(fmt.Sprint(cmd), strings.TrimSpace(tc.expCmdOutput))
+		})
+	}
+}
+
+func (s *CLITestSuite) TestCmdQueryMinInitialDeposit() {
+	testCases := []struct {
+		name         string
+		args         []string
+		expCmdOutput string
+	}{
+		{
+			"query min initial deposit",
+			[]string{},
+			"",
+		},
+		{
+			"query min initial deposit (json output)",
+			[]string{
+				fmt.Sprintf("--%s=json", flags.FlagOutput),
+			},
+			"--output=json",
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+		s.Run(tc.name, func() {
+			cmd := cli.GetCmdQueryMinInitialDeposit()
+			cmd.SetArgs(tc.args)
+			s.Require().Contains(fmt.Sprint(cmd), strings.TrimSpace(tc.expCmdOutput))
+		})
+	}
+}

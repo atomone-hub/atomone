@@ -40,6 +40,8 @@ func GetQueryCmd() *cobra.Command {
 		GetCmdQueryDeposits(),
 		GetCmdQueryTally(),
 		GetCmdConstitution(),
+		GetCmdQueryMinDeposit(),
+		GetCmdQueryMinInitialDeposit(),
 	)
 
 	return govQueryCmd
@@ -673,6 +675,70 @@ func GetCmdConstitution() *cobra.Command {
 			queryClient := v1.NewQueryClient(clientCtx)
 
 			resp, err := queryClient.Constitution(cmd.Context(), &v1.QueryConstitutionRequest{})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(resp)
+		},
+	}
+}
+
+// GetCmdQueryMinDeposit implements the query min deposit command.
+func GetCmdQueryMinDeposit() *cobra.Command {
+	return &cobra.Command{
+		Use:   "min-deposit",
+		Args:  cobra.ExactArgs(0),
+		Short: "Query the minimum deposit currently needed for a proposal to enter voting period",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query the minimum deposit needed for a proposal to enter voting period.
+
+Example:
+$ %s query gov min-deposit
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := v1.NewQueryClient(clientCtx)
+
+			resp, err := queryClient.MinDeposit(cmd.Context(), &v1.QueryMinDepositRequest{})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(resp)
+		},
+	}
+}
+
+// GetCmdQueryMinInitialDeposit implements the query min initial deposit command.
+func GetCmdQueryMinInitialDeposit() *cobra.Command {
+	return &cobra.Command{
+		Use:   "min-initial-deposit",
+		Args:  cobra.ExactArgs(0),
+		Short: "Query the minimum initial deposit needed for a proposal to enter deposit period",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query the minimum initial deposit needed for a proposal to enter deposit period.
+
+Example:
+$ %s query gov min-initial-deposit
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := v1.NewQueryClient(clientCtx)
+
+			resp, err := queryClient.MinInitialDeposit(cmd.Context(), &v1.QueryMinInitialDepositRequest{})
 			if err != nil {
 				return err
 			}

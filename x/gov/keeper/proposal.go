@@ -96,6 +96,8 @@ func (keeper Keeper) SubmitProposal(ctx sdk.Context, messages []sdk.Msg, metadat
 	keeper.InsertInactiveProposalQueue(ctx, proposalID, *proposal.DepositEndTime)
 	keeper.SetProposalID(ctx, proposalID+1)
 
+	keeper.IncrementInactiveProposalsNumber(ctx)
+
 	// called right after a proposal is submitted
 	keeper.Hooks().AfterProposalSubmission(ctx, proposalID)
 
@@ -285,6 +287,7 @@ func (keeper Keeper) ActivateVotingPeriod(ctx sdk.Context, proposal v1.Proposal)
 	keeper.SetProposal(ctx, proposal)
 
 	keeper.RemoveFromInactiveProposalQueue(ctx, proposal.Id, *proposal.DepositEndTime)
+	keeper.DecrementInactiveProposalsNumber(ctx)
 	keeper.InsertActiveProposalQueue(ctx, proposal.Id, *proposal.VotingEndTime)
 	if params.QuorumCheckCount > 0 {
 		// add proposal to quorum check queue
@@ -293,6 +296,7 @@ func (keeper Keeper) ActivateVotingPeriod(ctx sdk.Context, proposal v1.Proposal)
 			v1.NewQuorumCheckQueueEntry(quorumTimeoutTime, params.QuorumCheckCount),
 		)
 	}
+	keeper.IncrementActiveProposalsNumber(ctx)
 }
 
 // MarshalProposal marshals the proposal and returns binary encoded bytes.

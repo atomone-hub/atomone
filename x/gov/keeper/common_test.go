@@ -137,6 +137,7 @@ func setupGovKeeper(t *testing.T, expectations ...func(sdk.Context, mocks)) (
 	govRouter.AddRoute(types.RouterKey, v1beta1.ProposalHandler)
 	govKeeper.SetLegacyRouter(govRouter)
 	govKeeper.SetParams(ctx, v1.DefaultParams())
+	govKeeper.SetParticipationEMA(ctx, math.LegacyMustNewDecFromStr(v1.DefaultParticipationEma))
 
 	// Register all handlers for the MegServiceRouter.
 	msr.SetInterfaceRegistry(encCfg.InterfaceRegistry)

@@ -35,6 +35,13 @@ message GenesisState {
   //
   // Since: cosmos-sdk 0.48
   string constitution = 9;
+  
+  // last updated value for the dynamic min deposit
+  LastMinDeposit last_min_deposit = 10;
+
+  // last updated value for the dynamic min initial deposit
+  LastMinDeposit last_min_initial_deposit = 11;
+  
   // governance participation EMA
-  string participation_ema = 10 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  string participation_ema = 12 [(cosmos_proto.scalar) = "cosmos.Dec"];
 }

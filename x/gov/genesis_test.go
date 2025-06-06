@@ -26,6 +26,15 @@ func TestImportExportQueues_ErrorUnconsistentState(t *testing.T) {
 	suite := createTestSuite(t)
 	app := suite.App
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	expectedGenState := v1.DefaultGenesisState()
+	expectedGenState.LastMinDeposit = &v1.LastMinDeposit{
+		Value: sdk.NewCoins(expectedGenState.Params.MinDepositThrottler.FloorValue...),
+		Time:  &time.Time{},
+	}
+	expectedGenState.LastMinInitialDeposit = &v1.LastMinDeposit{
+		Value: expectedGenState.Params.MinInitialDepositThrottler.FloorValue,
+		Time:  &time.Time{},
+	}
 	require.Panics(t, func() {
 		gov.InitGenesis(ctx, suite.AccountKeeper, suite.BankKeeper, suite.GovKeeper, &v1.GenesisState{
 			Deposits: v1.Deposits{
@@ -44,20 +53,30 @@ func TestImportExportQueues_ErrorUnconsistentState(t *testing.T) {
 	})
 	gov.InitGenesis(ctx, suite.AccountKeeper, suite.BankKeeper, suite.GovKeeper, v1.DefaultGenesisState())
 	genState := gov.ExportGenesis(ctx, suite.GovKeeper)
-	require.Equal(t, genState, v1.DefaultGenesisState())
+	require.Equal(t, genState, expectedGenState)
 }
 
 func TestInitGenesis(t *testing.T) {
 	var (
 		testAddrs = simtestutil.CreateRandomAccounts(2)
 		params    = &v1.Params{
-			MinDeposit: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdkmath.NewInt(42))),
+			MinDepositThrottler: &v1.MinDepositThrottler{
+				FloorValue: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdkmath.NewInt(42))),
+			},
+			MinInitialDepositThrottler: &v1.MinInitialDepositThrottler{
+				FloorValue: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdkmath.NewInt(42))),
+			},
 		}
 		quorumTimeout                = time.Hour * 20
 		paramsWithQuorumCheckEnabled = &v1.Params{
-			MinDeposit:       sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdkmath.NewInt(42))),
 			QuorumCheckCount: 10,
 			QuorumTimeout:    &quorumTimeout,
+			MinDepositThrottler: &v1.MinDepositThrottler{
+				FloorValue: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdkmath.NewInt(42))),
+			},
+			MinInitialDepositThrottler: &v1.MinInitialDepositThrottler{
+				FloorValue: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdkmath.NewInt(42))),
+			},
 		}
 
 		depositAmount = sdk.Coins{
@@ -90,6 +109,7 @@ func TestInitGenesis(t *testing.T) {
 				Options:    v1.NewNonSplitVoteOption(v1.OptionNo),
 			},
 		}
+		utcTime         = time.Now().UTC()
 		depositEndTime  = time.Now().Add(time.Hour * 8)
 		votingStartTime = time.Now()
 		votingEndTime   = time.Now().Add(time.Hour * 24)
@@ -156,20 +176,62 @@ func TestInitGenesis(t *testing.T) {
 		{
 			name: "ok: genesis with only params",
 			genesis: v1.GenesisState{
-				Params: params,
+				Params:           params,
+				ParticipationEma: v1.DefaultParticipationEma,
 			},
 			assert: func(t *testing.T, ctx sdk.Context, s suite) {
 				t.Helper()
 				p := s.GovKeeper.GetParams(ctx)
 				assert.Equal(t, *params, p)
+				lmdCoins, lmdTime := s.GovKeeper.GetLastMinDeposit(ctx)
+				assert.EqualValues(t, p.MinDepositThrottler.FloorValue, lmdCoins)
+				assert.Equal(t, ctx.BlockTime(), lmdTime)
+				lmidCoins, lmidTime := s.GovKeeper.GetLastMinInitialDeposit(ctx)
+				assert.EqualValues(t, p.MinInitialDepositThrottler.FloorValue, lmidCoins)
+				assert.Equal(t, ctx.BlockTime(), lmidTime)
+			},
+		},
+		{
+			name: "ok: genesis with last min deposit",
+			genesis: v1.GenesisState{
+				Params:           params,
+				ParticipationEma: v1.DefaultParticipationEma,
+				LastMinDeposit: &v1.LastMinDeposit{
+					Value: sdk.NewCoins(sdk.NewInt64Coin("xxx", 1)),
+					Time:  &utcTime,
+				},
+			},
+			assert: func(t *testing.T, ctx sdk.Context, s suite) {
+				t.Helper()
+				lmdCoins, lmdTime := s.GovKeeper.GetLastMinDeposit(ctx)
+				assert.EqualValues(t, sdk.NewCoins(sdk.NewInt64Coin("xxx", 1)), lmdCoins)
+				assert.Equal(t, utcTime, lmdTime)
+			},
+		},
+		{
+			name: "ok: genesis with last min initial deposit",
+			genesis: v1.GenesisState{
+				Params:           params,
+				ParticipationEma: v1.DefaultParticipationEma,
+				LastMinInitialDeposit: &v1.LastMinDeposit{
+					Value: sdk.NewCoins(sdk.NewInt64Coin("xxx", 1)),
+					Time:  &utcTime,
+				},
+			},
+			assert: func(t *testing.T, ctx sdk.Context, s suite) {
+				t.Helper()
+				lmidCoins, lmidTime := s.GovKeeper.GetLastMinInitialDeposit(ctx)
+				assert.EqualValues(t, sdk.NewCoins(sdk.NewInt64Coin("xxx", 1)), lmidCoins)
+				assert.Equal(t, utcTime, lmidTime)
 			},
 		},
 		{
 			name:          "fail: genesis with deposits but module balance is not equal to total deposits",
 			moduleBalance: depositAmount,
 			genesis: v1.GenesisState{
-				Params:   params,
-				Deposits: deposits,
+				Params:           params,
+				ParticipationEma: v1.DefaultParticipationEma,
+				Deposits:         deposits,
 			},
 			requirePanic: true,
 		},
@@ -177,8 +239,9 @@ func TestInitGenesis(t *testing.T) {
 			name:          "ok: genesis with deposits and module balance is equal to total deposits",
 			moduleBalance: depositAmount.MulInt(sdkmath.NewInt(2)), // *2 because there's 2 deposits
 			genesis: v1.GenesisState{
-				Params:   params,
-				Deposits: deposits,
+				Params:           params,
+				ParticipationEma: v1.DefaultParticipationEma,
+				Deposits:         deposits,
 			},
 			assert: func(t *testing.T, ctx sdk.Context, s suite) {
 				t.Helper()
@@ -191,8 +254,9 @@ func TestInitGenesis(t *testing.T) {
 		{
 			name: "ok: genesis with votes",
 			genesis: v1.GenesisState{
-				Params: params,
-				Votes:  votes,
+				Params:           params,
+				ParticipationEma: v1.DefaultParticipationEma,
+				Votes:            votes,
 			},
 			assert: func(t *testing.T, ctx sdk.Context, s suite) {
 				t.Helper()
@@ -205,8 +269,9 @@ func TestInitGenesis(t *testing.T) {
 		{
 			name: "ok: genesis with proposals",
 			genesis: v1.GenesisState{
-				Params:    params,
-				Proposals: proposals,
+				Params:           params,
+				ParticipationEma: v1.DefaultParticipationEma,
+				Proposals:        proposals,
 			},
 			assert: func(t *testing.T, ctx sdk.Context, s suite) {
 				t.Helper()
@@ -218,8 +283,9 @@ func TestInitGenesis(t *testing.T) {
 		{
 			name: "ok: genesis with proposals and quorum check enabled",
 			genesis: v1.GenesisState{
-				Params:    paramsWithQuorumCheckEnabled,
-				Proposals: proposals,
+				Params:           paramsWithQuorumCheckEnabled,
+				ParticipationEma: v1.DefaultParticipationEma,
+				Proposals:        proposals,
 			},
 			assert: func(t *testing.T, ctx sdk.Context, s suite) {
 				t.Helper()
