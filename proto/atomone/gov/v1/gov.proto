@@ -175,8 +175,6 @@ message QuorumCheckQueueEntry {
   uint64 quorum_checks_done = 3;
 }
 
-// Quorum
-
 // DepositParams defines the params for deposits on governance proposals.
 message DepositParams {
   // Minimum deposit for a proposal to enter voting period.
