@@ -60,7 +60,7 @@ func (s *State) UpdateBaseGasPrice(logger log.Logger, params Params, maxBlockGas
 	}()
 	// Calculate the new base gasPrice with the learning rate adjustment.
 	currentBlockGas := math.LegacyNewDecFromInt(math.NewIntFromUint64(s.Window[s.Index]))
-	targetBlockGas := math.LegacyNewDecFromInt(math.NewIntFromUint64(GetTargetBlockGas(maxBlockGas)))
+	targetBlockGas := math.LegacyNewDecFromInt(math.NewIntFromUint64(GetTargetBlockGas(maxBlockGas, params)))
 	avgGas := (currentBlockGas.Sub(targetBlockGas)).Quo(targetBlockGas)
 
 	// Truncate the learning rate adjustment to an integer.
@@ -126,10 +126,10 @@ func (s *State) UpdateLearningRate(params Params, maxBlockGas uint64) (lr math.L
 }
 
 // GetNetGas returns the net gas of the block window.
-func (s *State) GetNetGas(maxBlockGas uint64) math.Int {
+func (s *State) GetNetGas(maxBlockGas uint64, params Params) math.Int {
 	net := math.NewInt(0)
 
-	targetGas := math.NewIntFromUint64(GetTargetBlockGas(maxBlockGas))
+	targetGas := math.NewIntFromUint64(GetTargetBlockGas(maxBlockGas, params))
 	for _, gas := range s.Window {
 		diff := math.NewIntFromUint64(gas).Sub(targetGas)
 		net = net.Add(diff)
@@ -171,6 +171,7 @@ func (s *State) ValidateBasic() error {
 	return nil
 }
 
-func GetTargetBlockGas(maxBlockGas uint64) uint64 {
-	return maxBlockGas / 2
+func GetTargetBlockGas(maxBlockGas uint64, params Params) uint64 {
+	targetBlockUtilization := params.TargetBlockUtilization
+	return uint64(math.LegacyNewDecFromInt(math.NewIntFromUint64(maxBlockGas)).Mul(targetBlockUtilization).TruncateInt().Int64())
 }

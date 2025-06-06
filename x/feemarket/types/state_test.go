@@ -138,7 +138,7 @@ func TestState_UpdateBaseGasPrice(t *testing.T) {
 		params := types.DefaultParams()
 		state.BaseGasPrice = math.LegacyMustNewDecFromStr("1000")
 		params.MinBaseGasPrice = math.LegacyMustNewDecFromStr("125")
-		state.Window[0] = types.GetTargetBlockGas(testutil.MaxBlockGas)
+		state.Window[0] = types.GetTargetBlockGas(testutil.MaxBlockGas, params)
 
 		newBaseGasPrice := state.UpdateBaseGasPrice(log.NewNopLogger(), params, testutil.MaxBlockGas)
 
@@ -183,7 +183,7 @@ func TestState_UpdateBaseGasPrice(t *testing.T) {
 		params.MinBaseGasPrice = math.LegacyMustNewDecFromStr("125")
 		state.LearningRate = math.LegacyMustNewDecFromStr("0.125")
 		for i := 0; i < len(state.Window); i++ {
-			state.Window[i] = types.GetTargetBlockGas(testutil.MaxBlockGas)
+			state.Window[i] = types.GetTargetBlockGas(testutil.MaxBlockGas, params)
 		}
 		state.UpdateLearningRate(params, testutil.MaxBlockGas)
 
@@ -246,7 +246,7 @@ func TestState_UpdateBaseGasPrice(t *testing.T) {
 		params.Window = 1
 
 		// 1/4th of the window is full.
-		state.Window[0] = types.GetTargetBlockGas(testutil.MaxBlockGas) / 2
+		state.Window[0] = types.GetTargetBlockGas(testutil.MaxBlockGas, params) / 2
 
 		prevLR := state.LearningRate
 		lr := state.UpdateLearningRate(params, testutil.MaxBlockGas)
@@ -303,7 +303,7 @@ func TestState_UpdateLearningRate(t *testing.T) {
 		state := types.DefaultState()
 		params := types.DefaultParams()
 
-		state.Window[0] = types.GetTargetBlockGas(testutil.MaxBlockGas)
+		state.Window[0] = types.GetTargetBlockGas(testutil.MaxBlockGas, params)
 
 		state.UpdateLearningRate(params, testutil.MaxBlockGas)
 		expectedLearningRate := math.LegacyMustNewDecFromStr("0.125")
@@ -335,7 +335,7 @@ func TestState_UpdateLearningRate(t *testing.T) {
 	t.Run("between target and max with default eip-1559", func(t *testing.T) {
 		state := types.DefaultState()
 		params := types.DefaultParams()
-		state.Window[0] = types.GetTargetBlockGas(testutil.MaxBlockGas) + 50000
+		state.Window[0] = types.GetTargetBlockGas(testutil.MaxBlockGas, params) + 50000
 
 		state.UpdateLearningRate(params, testutil.MaxBlockGas)
 
@@ -371,7 +371,7 @@ func TestState_UpdateLearningRate(t *testing.T) {
 		state.LearningRate = defaultLR
 		params := types.DefaultAIMDParams()
 		for i := 0; i < len(state.Window); i++ {
-			state.Window[i] = types.GetTargetBlockGas(testutil.MaxBlockGas)
+			state.Window[i] = types.GetTargetBlockGas(testutil.MaxBlockGas, params)
 		}
 
 		state.UpdateLearningRate(params, testutil.MaxBlockGas)
@@ -423,7 +423,7 @@ func TestState_UpdateLearningRate(t *testing.T) {
 			if i%2 == 0 {
 				state.Window[i] = testutil.MaxBlockGas
 			} else {
-				state.Window[i] = types.GetTargetBlockGas(testutil.MaxBlockGas) + 1
+				state.Window[i] = types.GetTargetBlockGas(testutil.MaxBlockGas, params) + 1
 			}
 		}
 
@@ -437,58 +437,64 @@ func TestState_UpdateLearningRate(t *testing.T) {
 func TestState_GetNetGas(t *testing.T) {
 	t.Run("empty block with default eip-1559", func(t *testing.T) {
 		state := types.DefaultState()
+		params := types.DefaultParams()
 
-		netGas := state.GetNetGas(testutil.MaxBlockGas)
-		expectedGas := math.NewInt(0).Sub(math.NewIntFromUint64(types.GetTargetBlockGas(testutil.MaxBlockGas)))
+		netGas := state.GetNetGas(testutil.MaxBlockGas, params)
+		expectedGas := math.NewInt(0).Sub(math.NewIntFromUint64(types.GetTargetBlockGas(testutil.MaxBlockGas, params)))
 		require.True(t, expectedGas.Equal(netGas))
 	})
 
 	t.Run("target block with default eip-1559", func(t *testing.T) {
 		state := types.DefaultState()
+		params := types.DefaultParams()
 
-		state.Window[0] = types.GetTargetBlockGas(testutil.MaxBlockGas)
+		state.Window[0] = types.GetTargetBlockGas(testutil.MaxBlockGas, params)
 
-		netGas := state.GetNetGas(testutil.MaxBlockGas)
+		netGas := state.GetNetGas(testutil.MaxBlockGas, params)
 		expectedGas := math.NewInt(0)
 		require.True(t, expectedGas.Equal(netGas))
 	})
 
 	t.Run("full block with default eip-1559", func(t *testing.T) {
 		state := types.DefaultState()
+		params := types.DefaultParams()
 
 		state.Window[0] = testutil.MaxBlockGas
 
-		netGas := state.GetNetGas(testutil.MaxBlockGas)
-		expectedGas := math.NewIntFromUint64(testutil.MaxBlockGas - types.GetTargetBlockGas(testutil.MaxBlockGas))
+		netGas := state.GetNetGas(testutil.MaxBlockGas, params)
+		expectedGas := math.NewIntFromUint64(testutil.MaxBlockGas - types.GetTargetBlockGas(testutil.MaxBlockGas, params))
 		require.True(t, expectedGas.Equal(netGas))
 	})
 
 	t.Run("empty block with default aimd eip-1559", func(t *testing.T) {
 		state := types.DefaultAIMDState()
+		params := types.DefaultAIMDParams()
 
-		netGas := state.GetNetGas(testutil.MaxBlockGas)
+		netGas := state.GetNetGas(testutil.MaxBlockGas, params)
 
 		multiple := math.NewIntFromUint64(uint64(len(state.Window)))
-		expectedGas := math.NewInt(0).Sub(math.NewIntFromUint64(types.GetTargetBlockGas(testutil.MaxBlockGas))).Mul(multiple)
+		expectedGas := math.NewInt(0).Sub(math.NewIntFromUint64(types.GetTargetBlockGas(testutil.MaxBlockGas, params))).Mul(multiple)
 		require.True(t, expectedGas.Equal(netGas))
 	})
 
 	t.Run("full blocks with default aimd eip-1559", func(t *testing.T) {
 		state := types.DefaultAIMDState()
+		params := types.DefaultAIMDParams()
 
 		for i := 0; i < len(state.Window); i++ {
 			state.Window[i] = testutil.MaxBlockGas
 		}
 
-		netGas := state.GetNetGas(testutil.MaxBlockGas)
+		netGas := state.GetNetGas(testutil.MaxBlockGas, params)
 
 		multiple := math.NewIntFromUint64(uint64(len(state.Window)))
-		expectedGas := math.NewIntFromUint64(testutil.MaxBlockGas).Sub(math.NewIntFromUint64(types.GetTargetBlockGas(testutil.MaxBlockGas))).Mul(multiple)
+		expectedGas := math.NewIntFromUint64(testutil.MaxBlockGas).Sub(math.NewIntFromUint64(types.GetTargetBlockGas(testutil.MaxBlockGas, params))).Mul(multiple)
 		require.True(t, expectedGas.Equal(netGas))
 	})
 
 	t.Run("varying blocks with default aimd eip-1559", func(t *testing.T) {
 		state := types.DefaultAIMDState()
+		params := types.DefaultAIMDParams()
 
 		for i := 0; i < len(state.Window); i++ {
 			if i%2 == 0 {
@@ -498,7 +504,7 @@ func TestState_GetNetGas(t *testing.T) {
 			}
 		}
 
-		netGas := state.GetNetGas(testutil.MaxBlockGas)
+		netGas := state.GetNetGas(testutil.MaxBlockGas, params)
 		expectedGas := math.ZeroInt()
 		require.True(t, expectedGas.Equal(netGas))
 	})
@@ -511,19 +517,20 @@ func TestState_GetNetGas(t *testing.T) {
 			if i%2 == 0 {
 				state.Window[i] = testutil.MaxBlockGas
 			} else {
-				state.Window[i] = types.GetTargetBlockGas(testutil.MaxBlockGas)
+				state.Window[i] = types.GetTargetBlockGas(testutil.MaxBlockGas, params)
 			}
 		}
 
-		netGas := state.GetNetGas(testutil.MaxBlockGas)
+		netGas := state.GetNetGas(testutil.MaxBlockGas, params)
 		first := math.NewIntFromUint64(testutil.MaxBlockGas).Mul(math.NewIntFromUint64(params.Window / 2))
-		second := math.NewIntFromUint64(types.GetTargetBlockGas(testutil.MaxBlockGas)).Mul(math.NewIntFromUint64(params.Window / 2))
-		expectedGas := first.Add(second).Sub(math.NewIntFromUint64(types.GetTargetBlockGas(testutil.MaxBlockGas)).Mul(math.NewIntFromUint64(params.Window)))
+		second := math.NewIntFromUint64(types.GetTargetBlockGas(testutil.MaxBlockGas, params)).Mul(math.NewIntFromUint64(params.Window / 2))
+		expectedGas := first.Add(second).Sub(math.NewIntFromUint64(types.GetTargetBlockGas(testutil.MaxBlockGas, params)).Mul(math.NewIntFromUint64(params.Window)))
 		require.True(t, expectedGas.Equal(netGas))
 	})
 
 	t.Run("state with 4 entries in window with different updates", func(t *testing.T) {
 		state := types.DefaultAIMDState()
+		params := types.DefaultAIMDParams()
 		state.Window = make([]uint64, 4)
 
 		maxBlockGas := uint64(200)
@@ -533,13 +540,14 @@ func TestState_GetNetGas(t *testing.T) {
 		state.Window[2] = 0
 		state.Window[3] = 50
 
-		netGas := state.GetNetGas(maxBlockGas)
+		netGas := state.GetNetGas(maxBlockGas, params)
 		expectedGas := math.NewIntFromUint64(50).Mul(math.NewInt(-1))
 		require.True(t, expectedGas.Equal(netGas))
 	})
 
 	t.Run("state with 4 entries in window with monotonically increasing updates", func(t *testing.T) {
 		state := types.DefaultAIMDState()
+		params := types.DefaultAIMDParams()
 		state.Window = make([]uint64, 4)
 
 		maxBlockGas := uint64(200)
@@ -549,7 +557,7 @@ func TestState_GetNetGas(t *testing.T) {
 		state.Window[2] = 50
 		state.Window[3] = 75
 
-		netGas := state.GetNetGas(maxBlockGas)
+		netGas := state.GetNetGas(maxBlockGas, params)
 		expectedGas := math.NewIntFromUint64(250).Mul(math.NewInt(-1))
 		require.True(t, expectedGas.Equal(netGas))
 	})
@@ -566,8 +574,9 @@ func TestState_GetAverageGas(t *testing.T) {
 
 	t.Run("target block with default eip-1559", func(t *testing.T) {
 		state := types.DefaultState()
+		params := types.DefaultParams()
 
-		state.Window[0] = types.GetTargetBlockGas(testutil.MaxBlockGas)
+		state.Window[0] = types.GetTargetBlockGas(testutil.MaxBlockGas, params)
 
 		avgGas := state.GetAverageGas(testutil.MaxBlockGas)
 		expectedGas := math.LegacyMustNewDecFromStr("0.5")
@@ -594,9 +603,10 @@ func TestState_GetAverageGas(t *testing.T) {
 
 	t.Run("target block with default aimd eip-1559", func(t *testing.T) {
 		state := types.DefaultAIMDState()
+		params := types.DefaultAIMDParams()
 
 		for i := 0; i < len(state.Window); i++ {
-			state.Window[i] = types.GetTargetBlockGas(testutil.MaxBlockGas)
+			state.Window[i] = types.GetTargetBlockGas(testutil.MaxBlockGas, params)
 		}
 
 		avgGas := state.GetAverageGas(testutil.MaxBlockGas)
@@ -634,12 +644,13 @@ func TestState_GetAverageGas(t *testing.T) {
 
 	t.Run("exceeds target rate with default aimd eip-1559", func(t *testing.T) {
 		state := types.DefaultAIMDState()
+		params := types.DefaultAIMDParams()
 
 		for i := 0; i < len(state.Window); i++ {
 			if i%2 == 0 {
 				state.Window[i] = testutil.MaxBlockGas
 			} else {
-				state.Window[i] = types.GetTargetBlockGas(testutil.MaxBlockGas)
+				state.Window[i] = types.GetTargetBlockGas(testutil.MaxBlockGas, params)
 			}
 		}
 

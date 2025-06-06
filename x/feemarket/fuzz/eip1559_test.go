@@ -66,9 +66,9 @@ func TestGasPrice(t *testing.T) {
 		require.True(t, params.MinBaseGasPrice.LTE(state.BaseGasPrice))
 
 		switch {
-		case blockGas > types.GetTargetBlockGas(maxBlockGas):
+		case blockGas > types.GetTargetBlockGas(maxBlockGas, params):
 			require.True(t, state.BaseGasPrice.GTE(prevBaseGasPrice))
-		case blockGas < types.GetTargetBlockGas(maxBlockGas):
+		case blockGas < types.GetTargetBlockGas(maxBlockGas, params):
 			require.True(t, state.BaseGasPrice.LTE(prevBaseGasPrice))
 		default:
 			require.Equal(t, state.BaseGasPrice, prevBaseGasPrice)

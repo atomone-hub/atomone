@@ -160,7 +160,6 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.initGenesis(s.chainA, vestingMnemonic, jailedValMnemonic)
 	s.initValidatorConfigs(s.chainA)
 	s.runValidators(s.chainA, 0)
-
 }
 
 func (s *IntegrationTestSuite) SetupIBCSuite() {

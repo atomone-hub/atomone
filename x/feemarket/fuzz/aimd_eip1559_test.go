@@ -107,7 +107,7 @@ func TestAIMDGasPrice(t *testing.T) {
 
 				// Calculate the new base gasPrice with the learning rate adjustment.
 				currentBlockGas := math.LegacyNewDecFromInt(math.NewIntFromUint64(state.Window[state.Index]))
-				targetBlockGas := math.LegacyNewDecFromInt(math.NewIntFromUint64(types.GetTargetBlockGas(maxBlockGas)))
+				targetBlockGas := math.LegacyNewDecFromInt(math.NewIntFromUint64(types.GetTargetBlockGas(maxBlockGas, params)))
 				avgGas := (currentBlockGas.Sub(targetBlockGas)).Quo(targetBlockGas)
 
 				// Truncate the learning rate adjustment to an integer.
@@ -156,6 +156,7 @@ func CreateRandomAIMDParams(t *rapid.T) (types.Params, uint64) {
 	params.Alpha = alpha
 	params.Beta = beta
 	params.Gamma = gamma
+	params.TargetBlockUtilization = math.LegacyNewDecFromInt(math.NewIntFromUint64(targetBlockGas)).Quo(math.LegacyNewDecFromInt(math.NewIntFromUint64(maxBlockGas)))
 
 	return params, maxBlockGas
 }

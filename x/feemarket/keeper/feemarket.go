@@ -50,7 +50,7 @@ func (k *Keeper) UpdateFeeMarket(ctx sdk.Context) error {
 		"new_base_gas_price", newBaseGasPrice,
 		"new_learning_rate", newLR,
 		"average_block_gas", state.GetAverageGas(maxBlockGas),
-		"net_block_gas", state.GetNetGas(maxBlockGas),
+		"net_block_gas", state.GetNetGas(maxBlockGas, params),
 	)
 
 	// Increment the height of the state and set the new state.

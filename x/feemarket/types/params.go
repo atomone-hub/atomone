@@ -14,21 +14,23 @@ func NewParams(
 	beta math.LegacyDec,
 	gamma math.LegacyDec,
 	minBaseGasPrice math.LegacyDec,
+	targetBlockUtilization math.LegacyDec,
 	minLearingRate math.LegacyDec,
 	maxLearningRate math.LegacyDec,
 	feeDenom string,
 	enabled bool,
 ) Params {
 	return Params{
-		Alpha:           alpha,
-		Beta:            beta,
-		Gamma:           gamma,
-		MinBaseGasPrice: minBaseGasPrice,
-		MinLearningRate: minLearingRate,
-		MaxLearningRate: maxLearningRate,
-		Window:          window,
-		FeeDenom:        feeDenom,
-		Enabled:         enabled,
+		Alpha:                  alpha,
+		Beta:                   beta,
+		Gamma:                  gamma,
+		MinBaseGasPrice:        minBaseGasPrice,
+		TargetBlockUtilization: targetBlockUtilization,
+		MinLearningRate:        minLearingRate,
+		MaxLearningRate:        maxLearningRate,
+		Window:                 window,
+		FeeDenom:               feeDenom,
+		Enabled:                enabled,
 	}
 }
 
@@ -52,6 +54,10 @@ func (p *Params) ValidateBasic() error {
 
 	if p.MinBaseGasPrice.IsNil() || !p.MinBaseGasPrice.GTE(math.LegacyZeroDec()) {
 		return fmt.Errorf("min base gas price cannot be nil and must be greater than or equal to zero")
+	}
+
+	if p.TargetBlockUtilization.IsNil() || p.TargetBlockUtilization.IsNegative() || p.TargetBlockUtilization.GT(math.LegacyOneDec()) {
+		return fmt.Errorf("target block utilization must be between [0, 1]")
 	}
 
 	if p.MaxLearningRate.IsNil() || p.MinLearningRate.IsNegative() {

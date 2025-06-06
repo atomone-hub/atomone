@@ -33,7 +33,6 @@ func httpGetWithHeader(endpoint string, header httpHeaders) ([]byte, error) {
 
 func httpGetWithHeader_(endpoint string, attempt int, headers httpHeaders) ([]byte, error) {
 	req, err := http.NewRequest("GET", endpoint, nil)
-
 	if err != nil {
 		return nil, fmt.Errorf("failed to create the http request")
 	}

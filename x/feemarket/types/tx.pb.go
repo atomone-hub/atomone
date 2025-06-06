@@ -31,8 +31,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// MsgParams defines the Msg/Params request type. It contains the
-// new parameters for the feemarket module.
+// MsgUpdateParams defines the sdk.Msg/UpdateParams request type. It contains
+// the new parameters for the feemarket module.
 type MsgUpdateParams struct {
 	// Authority defines the authority that is updating the feemarket module
 	// parameters.
@@ -88,7 +88,8 @@ func (m *MsgUpdateParams) GetParams() Params {
 	return Params{}
 }
 
-// MsgParamsResponse defines the Msg/Params response type.
+// MsgUpdateParamsResponse defines the response structure for executing a
+// MsgUpdateParams message.
 type MsgUpdateParamsResponse struct {
 }
 

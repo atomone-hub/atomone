@@ -31,6 +31,9 @@ var (
 	// DefaultAIMDMinBaseGasPrice is the default minimum base gas price.
 	DefaultAIMDMinBaseGasPrice = DefaultMinBaseGasPrice
 
+	// DefaultAIMDTargetBlockUtilization is the default target block utilization.
+	DefaultAIMDTargetBlockUtilization = math.LegacyMustNewDecFromStr("0.5")
+
 	// DefaultAIMDMinLearningRate is the default minimum learning rate.
 	DefaultAIMDMinLearningRate = math.LegacyMustNewDecFromStr("0.01")
 
@@ -52,6 +55,7 @@ func DefaultAIMDParams() Params {
 		DefaultAIMDBeta,
 		DefaultAIMDGamma,
 		DefaultAIMDMinBaseGasPrice,
+		DefaultAIMDTargetBlockUtilization,
 		DefaultAIMDMinLearningRate,
 		DefaultAIMDMaxLearningRate,
 		DefaultAIMDFeeDenom,

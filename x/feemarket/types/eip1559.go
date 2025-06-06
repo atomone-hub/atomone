@@ -28,6 +28,9 @@ var (
 	// DefaultMinBaseGasPrice is the default minimum base gas price.
 	DefaultMinBaseGasPrice = math.LegacyMustNewDecFromStr("0.01")
 
+	// DefaultTargetBlockUtilization is the default target block utilization.
+	DefaultTargetBlockUtilization = math.LegacyMustNewDecFromStr("0.5")
+
 	// DefaultMinLearningRate is not used in the base EIP-1559 implementation.
 	DefaultMinLearningRate = math.LegacyMustNewDecFromStr("0.125")
 
@@ -48,6 +51,7 @@ func DefaultParams() Params {
 		DefaultBeta,
 		DefaultGamma,
 		DefaultMinBaseGasPrice,
+		DefaultTargetBlockUtilization,
 		DefaultMinLearningRate,
 		DefaultMaxLearningRate,
 		DefaultFeeDenom,

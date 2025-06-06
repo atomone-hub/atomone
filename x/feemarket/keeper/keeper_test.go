@@ -54,14 +54,15 @@ func TestParams(t *testing.T) {
 
 	t.Run("set and get custom params", func(t *testing.T) {
 		params := types.Params{
-			Alpha:           math.LegacyMustNewDecFromStr("0.1"),
-			Beta:            math.LegacyMustNewDecFromStr("0.1"),
-			Gamma:           math.LegacyMustNewDecFromStr("0.1"),
-			MinBaseGasPrice: math.LegacyNewDec(10),
-			MinLearningRate: math.LegacyMustNewDecFromStr("0.1"),
-			MaxLearningRate: math.LegacyMustNewDecFromStr("0.1"),
-			Window:          1,
-			Enabled:         true,
+			Alpha:                  math.LegacyMustNewDecFromStr("0.1"),
+			Beta:                   math.LegacyMustNewDecFromStr("0.1"),
+			Gamma:                  math.LegacyMustNewDecFromStr("0.1"),
+			MinBaseGasPrice:        math.LegacyNewDec(10),
+			TargetBlockUtilization: math.LegacyMustNewDecFromStr("0.1"),
+			MinLearningRate:        math.LegacyMustNewDecFromStr("0.1"),
+			MaxLearningRate:        math.LegacyMustNewDecFromStr("0.1"),
+			Window:                 1,
+			Enabled:                true,
 		}
 
 		err := k.SetParams(ctx, params)

@@ -155,6 +155,44 @@ func TestParams(t *testing.T) {
 			expectedErr: true,
 		},
 		{
+			name: "target block utilization is nil",
+			p: types.Params{
+				Window:          1,
+				Alpha:           math.LegacyMustNewDecFromStr("0.1"),
+				Beta:            math.LegacyMustNewDecFromStr("0.1"),
+				Gamma:           math.LegacyMustNewDecFromStr("0.1"),
+				MinBaseGasPrice: math.LegacyMustNewDecFromStr("1.0"),
+				FeeDenom:        types.DefaultFeeDenom,
+			},
+			expectedErr: true,
+		},
+		{
+			name: "target block utilization is negative",
+			p: types.Params{
+				Window:                 1,
+				Alpha:                  math.LegacyMustNewDecFromStr("0.1"),
+				Beta:                   math.LegacyMustNewDecFromStr("0.1"),
+				Gamma:                  math.LegacyMustNewDecFromStr("0.1"),
+				MinBaseGasPrice:        math.LegacyMustNewDecFromStr("1.0"),
+				TargetBlockUtilization: math.LegacyMustNewDecFromStr("-0.1"),
+				FeeDenom:               types.DefaultFeeDenom,
+			},
+			expectedErr: true,
+		},
+		{
+			name: "target block utilization is greater than 1",
+			p: types.Params{
+				Window:                 1,
+				Alpha:                  math.LegacyMustNewDecFromStr("0.1"),
+				Beta:                   math.LegacyMustNewDecFromStr("0.1"),
+				Gamma:                  math.LegacyMustNewDecFromStr("0.1"),
+				MinBaseGasPrice:        math.LegacyMustNewDecFromStr("1.0"),
+				TargetBlockUtilization: math.LegacyMustNewDecFromStr("1.1"),
+				FeeDenom:               types.DefaultFeeDenom,
+			},
+			expectedErr: true,
+		},
+		{
 			name: "min learning rate is nil",
 			p: types.Params{
 				Window:          1,
