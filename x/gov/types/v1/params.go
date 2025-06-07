@@ -39,8 +39,14 @@ func init() {
 var (
 	minVotingPeriod, _                    = time.ParseDuration(MinVotingPeriod)
 	DefaultMinDepositTokens               = sdk.NewInt(10000000)
+	DefaultMaxQuorum                      = sdk.NewDecWithPrec(80, 2)
+	DefaultMinQuorum                      = sdk.NewDecWithPrec(20, 2)
 	DefaultThreshold                      = sdk.NewDecWithPrec(667, 3)
+	DefaultMaxConstitutionAmendmentQuorum = sdk.NewDecWithPrec(80, 2)
+	DefaultMinConstitutionAmendmentQuorum = sdk.NewDecWithPrec(20, 2)
 	DefaultConstitutionAmendmentThreshold = sdk.NewDecWithPrec(9, 1)
+	DefaultMaxLawQuorum                   = sdk.NewDecWithPrec(80, 2)
+	DefaultMinLawQuorum                   = sdk.NewDecWithPrec(20, 2)
 	DefaultLawThreshold                   = sdk.NewDecWithPrec(9, 1)
 	// DefaultMinInitialDepositRatio         = sdk.ZeroDec()
 	DefaultBurnProposalPrevote = false                    // set to false to replicate behavior of when this change was made (0.47)
@@ -50,12 +56,6 @@ var (
 	DefaultQuorumTimeout                                      time.Duration = DefaultVotingPeriod - (time.Hour * 24 * 1) // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
 	DefaultMaxVotingPeriodExtension                           time.Duration = DefaultVotingPeriod - DefaultQuorumTimeout // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
 	DefaultQuorumCheckCount                                   uint64        = 0                                          // disabled by default (0 means no check)
-	DefaultMaxQuorum                                                        = sdk.NewDecWithPrec(80, 2)
-	DefaultMinQuorum                                                        = sdk.NewDecWithPrec(20, 2)
-	DefaultMaxLawQuorum                                                     = sdk.NewDecWithPrec(80, 2)
-	DefaultMinLawQuorum                                                     = sdk.NewDecWithPrec(20, 2)
-	DefaultMaxConstitutionAmendmentQuorum                                   = sdk.NewDecWithPrec(80, 2)
-	DefaultMinConstitutionAmendmentQuorum                                   = sdk.NewDecWithPrec(20, 2)
 	DefaultMinDepositFloor                                    sdk.Coins     = sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, DefaultMinDepositTokens))
 	DefaultMinDepositUpdatePeriod                             time.Duration = time.Hour * 24 * 7
 	DefaultMinDepositDecreaseSensitivityTargetDistance        uint64        = 2
