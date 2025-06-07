@@ -891,10 +891,10 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 			expErrMsg: "maximum deposit period must be positive",
 		},
 		{
-			name: "invalid quorum",
+			name: "invalid min quorum",
 			input: func() *v1.MsgUpdateParams {
 				params1 := params
-				params1.Quorum = "abc"
+				params1.MinQuorum = "abc"
 
 				return &v1.MsgUpdateParams{
 					Authority: authority,
@@ -902,13 +902,13 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 				}
 			},
 			expErr:    true,
-			expErrMsg: "invalid quorum string",
+			expErrMsg: "invalid minQuorum string",
 		},
 		{
-			name: "negative quorum",
+			name: "empty min quorum",
 			input: func() *v1.MsgUpdateParams {
 				params1 := params
-				params1.Quorum = "-0.1"
+				params1.MinQuorum = ""
 
 				return &v1.MsgUpdateParams{
 					Authority: authority,
@@ -916,13 +916,13 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 				}
 			},
 			expErr:    true,
-			expErrMsg: "quorum must be positive",
+			expErrMsg: "invalid minQuorum string",
 		},
 		{
-			name: "quorum > 1",
+			name: "negative min quorum",
 			input: func() *v1.MsgUpdateParams {
 				params1 := params
-				params1.Quorum = "2"
+				params1.MinQuorum = "-0.1"
 
 				return &v1.MsgUpdateParams{
 					Authority: authority,
@@ -930,7 +930,77 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 				}
 			},
 			expErr:    true,
-			expErrMsg: "quorum too large",
+			expErrMsg: "minQuorum must be positive",
+		},
+		{
+			name: "min quorum > 1",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.MinQuorum = "2"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "minQuorum too large",
+		},
+		{
+			name: "invalid max quorum",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.MaxQuorum = "abc"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "invalid maxQuorum string",
+		},
+		{
+			name: "empty max quorum",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.MaxQuorum = ""
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "invalid maxQuorum string",
+		},
+		{
+			name: "negative max quorum",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.MaxQuorum = "-0.1"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "maxQuorum must be positive",
+		},
+		{
+			name: "max quorum > 1",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.MaxQuorum = "2"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "maxQuorum too large",
 		},
 		{
 			name: "empty threshold",
@@ -989,10 +1059,10 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 			expErrMsg: "vote threshold too large",
 		},
 		{
-			name: "negative constitution amendment quorum",
+			name: "invalid min constitution amendment quorum",
 			input: func() *v1.MsgUpdateParams {
 				params1 := params
-				params1.ConstitutionAmendmentQuorum = "-0.1"
+				params1.MinConstitutionAmendmentQuorum = "abc"
 
 				return &v1.MsgUpdateParams{
 					Authority: authority,
@@ -1000,13 +1070,13 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 				}
 			},
 			expErr:    true,
-			expErrMsg: "constitution amendment quorum must be positive",
+			expErrMsg: "invalid minConstitutionAmendmentQuorum string",
 		},
 		{
-			name: "constitution amendments quorum > 1",
+			name: "empty min constitution amendment quorum",
 			input: func() *v1.MsgUpdateParams {
 				params1 := params
-				params1.ConstitutionAmendmentQuorum = "2"
+				params1.MinConstitutionAmendmentQuorum = ""
 
 				return &v1.MsgUpdateParams{
 					Authority: authority,
@@ -1014,10 +1084,94 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 				}
 			},
 			expErr:    true,
-			expErrMsg: "constitution amendment quorum too large",
+			expErrMsg: "invalid minConstitutionAmendmentQuorum string",
 		},
 		{
-			name: "empty constitution amendment threshold",
+			name: "negative min constitution amendment quorum",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.MinConstitutionAmendmentQuorum = "-0.1"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "minConstitutionAmendmentQuorum must be positive",
+		},
+		{
+			name: "min constitution amendments quorum > 1",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.MinConstitutionAmendmentQuorum = "2"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "minConstitutionAmendmentQuorum too large",
+		},
+		{
+			name: "invalid max constitution amendment quorum",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.MaxConstitutionAmendmentQuorum = "abc"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "invalid maxConstitutionAmendmentQuorum string",
+		},
+		{
+			name: "empty max constitution amendment quorum",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.MaxConstitutionAmendmentQuorum = ""
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "invalid maxConstitutionAmendmentQuorum string",
+		},
+		{
+			name: "negative max constitution amendment quorum",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.MaxConstitutionAmendmentQuorum = "-0.1"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "maxConstitutionAmendmentQuorum must be positive",
+		},
+		{
+			name: "max constitution amendments quorum > 1",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.MaxConstitutionAmendmentQuorum = "2"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "maxConstitutionAmendmentQuorum too large",
+		},
+		{
+			name: "empty min constitution amendment threshold",
 			input: func() *v1.MsgUpdateParams {
 				params1 := params
 				params1.ConstitutionAmendmentThreshold = ""
@@ -1059,10 +1213,10 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 			expErrMsg: "constitution amendment threshold too large",
 		},
 		{
-			name: "negative law quorum",
+			name: "invalid min law quorum",
 			input: func() *v1.MsgUpdateParams {
 				params1 := params
-				params1.LawQuorum = "-0.1"
+				params1.MinLawQuorum = "abc"
 
 				return &v1.MsgUpdateParams{
 					Authority: authority,
@@ -1070,13 +1224,13 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 				}
 			},
 			expErr:    true,
-			expErrMsg: "law quorum must be positive",
+			expErrMsg: "invalid minLawQuorum string",
 		},
 		{
-			name: "law quorum > 1",
+			name: "empty min law quorum",
 			input: func() *v1.MsgUpdateParams {
 				params1 := params
-				params1.LawQuorum = "2"
+				params1.MinLawQuorum = ""
 
 				return &v1.MsgUpdateParams{
 					Authority: authority,
@@ -1084,7 +1238,92 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 				}
 			},
 			expErr:    true,
-			expErrMsg: "law quorum too large",
+			expErrMsg: "invalid minLawQuorum string",
+		},
+		{
+			name: "negative min law quorum",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.MinLawQuorum = "-0.1"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "minLawQuorum must be positive",
+		},
+		{
+			name: "min law quorum > 1",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.MinLawQuorum = "2"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "minLawQuorum too large",
+		},
+
+		{
+			name: "invalid max law quorum",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.MaxLawQuorum = "abc"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "invalid maxLawQuorum string",
+		},
+		{
+			name: "empty max law quorum",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.MaxLawQuorum = ""
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "invalid maxLawQuorum string",
+		},
+		{
+			name: "negative max law quorum",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.MaxLawQuorum = "-0.1"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "maxLawQuorum must be positive",
+		},
+		{
+			name: "max law quorum > 1",
+			input: func() *v1.MsgUpdateParams {
+				params1 := params
+				params1.MaxLawQuorum = "2"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params1,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "maxLawQuorum too large",
 		},
 		{
 			name: "negative law threshold",

@@ -184,6 +184,7 @@ func (keeper Keeper) getQuorumAndThreshold(ctx sdk.Context, proposal v1.Proposal
 	quorum := keeper.GetQuorum(ctx)
 	threshold := sdk.MustNewDecFromStr(params.Threshold)
 
+	// FIXME wrong comment, we're not checking against ExecLegacyContent
 	// Check if a proposal message is an ExecLegacyContent message
 	if len(proposal.Messages) > 0 {
 		var sdkMsg sdk.Msg
