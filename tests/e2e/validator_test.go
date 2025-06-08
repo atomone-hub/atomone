@@ -8,7 +8,6 @@ import (
 	"path"
 	"path/filepath"
 
-	signingv1beta1 "cosmossdk.io/api/cosmos/tx/signing/v1beta1"
 	tmcfg "github.com/cometbft/cometbft/config"
 	"github.com/cometbft/cometbft/p2p"
 	"github.com/cometbft/cometbft/privval"
@@ -86,7 +85,7 @@ func (v *validator) init() error {
 	}
 
 	genDoc.ChainID = v.chain.id
-	genDoc.Validators = nil
+	genDoc.Consensus.Validators = nil
 	genDoc.AppState = appState
 
 	if err = genutil.ExportGenesisFile(genDoc, config.GenesisFile()); err != nil {
@@ -294,14 +293,15 @@ func (v *validator) signMsg(msgs ...sdk.Msg) (*sdktx.Tx, error) {
 		return nil, err
 	}
 
-	bytesToSign, err := encodingConfig.TxConfig.SignModeHandler().GetSignBytes(
+	bytesToSign, err := authsigning.GetSignBytesAdapter(
 		context.TODO(),
-		signingv1beta1.SignMode_SIGN_MODE_DIRECT,
+		encodingConfig.TxConfig.SignModeHandler(),
+		txsigning.SignMode_SIGN_MODE_DIRECT,
 		signerData,
 		txBuilder.GetTx(),
 	)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error getting sign bytes: %w", err)
 	}
 
 	sigBytes, err := v.privateKey.Sign(bytesToSign)
