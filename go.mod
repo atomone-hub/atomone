@@ -4,7 +4,7 @@ go 1.24.1
 
 replace (
 	cosmossdk.io/x/feegrant => cosmossdk.io/x/feegrant v0.1.1
-	github.com/cosmos/cosmos-sdk => github.com/cosmos/cosmos-sdk v0.50.13
+	github.com/cosmos/cosmos-sdk => github.com/cosmos/cosmos-sdk v0.50.13-0.20250409215204-371eb7e0de11
 	github.com/cosmos/ibc-go/v10 => github.com/cosmos/ibc-go/v10 v10.2.0
 )
 
