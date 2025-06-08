@@ -46,7 +46,6 @@ func BenchmarkFullAppSimulation(b *testing.B) {
 		db,
 		nil,
 		true,
-		map[int64]bool{},
 		appOptions,
 		interBlockCacheOpt(),
 		baseapp.SetChainID(AppChainID),

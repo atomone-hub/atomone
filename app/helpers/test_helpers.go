@@ -130,7 +130,6 @@ func setup() (*atomoneapp.AtomOneApp, atomoneapp.GenesisState) {
 		db,
 		nil,
 		true,
-		map[int64]bool{},
 		appOptions,
 	)
 	return atomoneApp, atomoneApp.DefaultGenesis()

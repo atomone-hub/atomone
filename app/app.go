@@ -16,7 +16,6 @@ import (
 
 	"cosmossdk.io/log"
 	abci "github.com/cometbft/cometbft/abci/types"
-	tmjson "github.com/cometbft/cometbft/libs/json"
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/gogoproto/proto"
 
@@ -114,7 +113,6 @@ func NewAtomOneApp(
 	db dbm.DB,
 	traceStore io.Writer,
 	loadLatest bool,
-	skipUpgradeHeights map[int64]bool,
 	appOpts servertypes.AppOptions,
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) *AtomOneApp {
@@ -167,6 +165,12 @@ func NewAtomOneApp(
 	moduleAccountAddresses := app.ModuleAccountAddrs()
 
 	// Setup keepers
+	// get skipUpgradeHeights from the app options
+	skipUpgradeHeights := map[int64]bool{}
+	for _, h := range cast.ToIntSlice(appOpts.Get(server.FlagUnsafeSkipUpgrades)) {
+		skipUpgradeHeights[int64(h)] = true
+	}
+
 	app.AppKeepers = keepers.NewAppKeeper(
 		appCodec,
 		bApp,
@@ -316,12 +320,11 @@ func (app *AtomOneApp) EndBlocker(ctx sdk.Context) (sdk.EndBlock, error) {
 // InitChainer application update at chain initialization
 func (app *AtomOneApp) InitChainer(ctx sdk.Context, req *abci.RequestInitChain) (*abci.ResponseInitChain, error) {
 	var genesisState GenesisState
-	if err := tmjson.Unmarshal(req.AppStateBytes, &genesisState); err != nil {
-		return nil, err
+	if err := json.Unmarshal(req.AppStateBytes, &genesisState); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal genesis state: %w", err)
 	}
 
 	app.UpgradeKeeper.SetModuleVersionMap(ctx, app.mm.GetVersionMap())
-
 	return app.mm.InitGenesis(ctx, app.appCodec, genesisState)
 }
 

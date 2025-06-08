@@ -27,7 +27,6 @@ func TestAtomOneApp_BlockedModuleAccountAddrs(t *testing.T) {
 		dbm.NewMemDB(),
 		nil,
 		true,
-		map[int64]bool{},
 		EmptyAppOptions{},
 	)
 

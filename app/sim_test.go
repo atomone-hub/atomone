@@ -88,7 +88,6 @@ func TestAppStateDeterminism(t *testing.T) {
 				db,
 				nil,
 				true,
-				map[int64]bool{},
 				appOptions,
 				interBlockCacheOpt(),
 				baseapp.SetChainID(AppChainID),

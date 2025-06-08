@@ -14,7 +14,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/atomone-hub/atomone/cmd/atomoned/cmd"
 	"github.com/ory/dockertest/v3"
 	"github.com/stretchr/testify/assert"
 
@@ -113,8 +112,6 @@ type AddressResponse struct {
 }
 
 func TestIntegrationTestSuite(t *testing.T) {
-	// Setup bech32 prefix
-	cmd.InitSDKConfig()
 	suite.Run(t, new(IntegrationTestSuite))
 }
 
