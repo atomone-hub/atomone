@@ -312,7 +312,7 @@ func (s *IntegrationTestSuite) addGenesisVestingAndJailedAccounts(
 
 	jailedValAddr := sdk.ValAddress(jailedValAcc)
 	val, err := stakingtypes.NewValidator(
-		jailedValAddr,
+		jailedValAddr.String(),
 		pubKey,
 		stakingtypes.NewDescription("jailed", "", "", "", ""),
 	)
@@ -339,12 +339,15 @@ func (s *IntegrationTestSuite) addGenesisVestingAndJailedAccounts(
 	// add continuous vesting account to the genesis
 	baseVestingContinuousAccount := authtypes.NewBaseAccount(
 		continuousVestingAcc, nil, 0, 0)
+	bva, err := authvesting.NewBaseVestingAccount(
+		baseVestingContinuousAccount,
+		sdk.NewCoins(vestingAmountVested),
+		time.Now().Add(time.Duration(rand.Intn(80)+150)*time.Second).Unix(),
+	)
+	s.Require().NoError(err)
+
 	vestingContinuousGenAccount := authvesting.NewContinuousVestingAccountRaw(
-		authvesting.NewBaseVestingAccount(
-			baseVestingContinuousAccount,
-			sdk.NewCoins(vestingAmountVested),
-			time.Now().Add(time.Duration(rand.Intn(80)+150)*time.Second).Unix(),
-		),
+		bva,
 		time.Now().Add(time.Duration(rand.Intn(40)+90)*time.Second).Unix(),
 	)
 	s.Require().NoError(vestingContinuousGenAccount.Validate())
@@ -352,13 +355,14 @@ func (s *IntegrationTestSuite) addGenesisVestingAndJailedAccounts(
 	// add delayed vesting account to the genesis
 	baseVestingDelayedAccount := authtypes.NewBaseAccount(
 		delayedVestingAcc, nil, 0, 0)
-	vestingDelayedGenAccount := authvesting.NewDelayedVestingAccountRaw(
-		authvesting.NewBaseVestingAccount(
-			baseVestingDelayedAccount,
-			sdk.NewCoins(vestingAmountVested),
-			time.Now().Add(time.Duration(rand.Intn(40)+90)*time.Second).Unix(),
-		),
+	bva, err = authvesting.NewBaseVestingAccount(
+		baseVestingDelayedAccount,
+		sdk.NewCoins(vestingAmountVested),
+		time.Now().Add(time.Duration(rand.Intn(40)+90)*time.Second).Unix(),
 	)
+	s.Require().NoError(err)
+
+	vestingDelayedGenAccount := authvesting.NewDelayedVestingAccountRaw(bva)
 	s.Require().NoError(vestingDelayedGenAccount.Validate())
 
 	// unpack and append accounts

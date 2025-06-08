@@ -7,8 +7,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	"github.com/atomone-hub/atomone/x/photon/types"
+	sdkgovtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 )
 
 type msgServer struct {
@@ -102,7 +102,7 @@ func (k msgServer) MintPhoton(goCtx context.Context, msg *types.MsgMintPhoton) (
 // UpdateParams implements the MsgServer.UpdateParams method.
 func (k msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
 	if k.authority != msg.Authority {
-		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
+		return nil, errors.Wrapf(sdkgovtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)

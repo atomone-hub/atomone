@@ -12,6 +12,7 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	sdkgovtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	"github.com/atomone-hub/atomone/x/gov/codec"
 	"github.com/atomone-hub/atomone/x/gov/types"
@@ -107,10 +108,10 @@ func (m MsgSubmitProposal) ValidateBasic() error {
 
 	content := m.GetContent()
 	if content == nil {
-		return types.ErrInvalidProposalContent.Wrap("missing content") //nolint:staticcheck
+		return sdkgovtypes.ErrInvalidProposalContent.Wrap("missing content") //nolint:staticcheck
 	}
 	if !IsValidProposalType(content.ProposalType()) {
-		return types.ErrInvalidProposalType.Wrap(content.ProposalType()) //nolint:staticcheck
+		return sdkgovtypes.ErrInvalidProposalType.Wrap(content.ProposalType()) //nolint:staticcheck
 	}
 	if err := content.ValidateBasic(); err != nil {
 		return err
@@ -208,7 +209,7 @@ func (msg MsgVote) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid voter address: %s", err)
 	}
 	if !ValidVoteOption(msg.Option) {
-		return types.ErrInvalidVote.Wrap(msg.Option.String()) //nolint:staticcheck
+		return sdkgovtypes.ErrInvalidVote.Wrap(msg.Option.String()) //nolint:staticcheck
 	}
 
 	return nil
@@ -258,21 +259,21 @@ func (msg MsgVoteWeighted) ValidateBasic() error {
 	usedOptions := make(map[VoteOption]bool)
 	for _, option := range msg.Options {
 		if !ValidWeightedVoteOption(option) {
-			return types.ErrInvalidVote.Wrap(option.String()) //nolint:staticcheck
+			return sdkgovtypes.ErrInvalidVote.Wrap(option.String()) //nolint:staticcheck
 		}
 		totalWeight = totalWeight.Add(option.Weight)
 		if usedOptions[option.Option] {
-			return types.ErrInvalidVote.Wrap("Duplicated vote option") //nolint:staticcheck
+			return sdkgovtypes.ErrInvalidVote.Wrap("Duplicated vote option") //nolint:staticcheck
 		}
 		usedOptions[option.Option] = true
 	}
 
 	if totalWeight.GT(math.LegacyNewDec(1)) {
-		return types.ErrInvalidVote.Wrap("Total weight overflow 1.00") //nolint:staticcheck
+		return sdkgovtypes.ErrInvalidVote.Wrap("Total weight overflow 1.00") //nolint:staticcheck
 	}
 
 	if totalWeight.LT(math.LegacyNewDec(1)) {
-		return types.ErrInvalidVote.Wrap("Total weight lower than 1.00") //nolint:staticcheck
+		return sdkgovtypes.ErrInvalidVote.Wrap("Total weight lower than 1.00") //nolint:staticcheck
 	}
 
 	return nil

@@ -7,6 +7,7 @@ import (
 	storetypes "cosmossdk.io/store/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkgovtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	"github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
@@ -17,7 +18,7 @@ func (keeper Keeper) AddVote(ctx sdk.Context, proposalID uint64, voterAddr sdk.A
 	// Check if proposal is in voting period.
 	store := ctx.KVStore(keeper.storeKey)
 	if !store.Has(types.VotingPeriodProposalKey(proposalID)) {
-		return sdkerrors.Wrapf(types.ErrInactiveProposal, "%d", proposalID)
+		return sdkerrors.Wrapf(sdkgovtypes.ErrInactiveProposal, "%d", proposalID)
 	}
 
 	err := keeper.assertMetadataLength(metadata)
@@ -27,7 +28,7 @@ func (keeper Keeper) AddVote(ctx sdk.Context, proposalID uint64, voterAddr sdk.A
 
 	for _, option := range options {
 		if !v1.ValidWeightedVoteOption(*option) {
-			return sdkerrors.Wrap(types.ErrInvalidVote, option.String())
+			return sdkerrors.Wrap(sdkgovtypes.ErrInvalidVote, option.String())
 		}
 	}
 

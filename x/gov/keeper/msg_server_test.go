@@ -11,9 +11,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
+	sdkgovtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 )
 
 func (suite *KeeperTestSuite) TestSubmitProposalReq() {
@@ -1342,7 +1342,7 @@ func (suite *KeeperTestSuite) TestProposeConstitutionAmendment() {
 				"@@ -1 +1 @@\n-Hello  World\n+Hi  World",
 			),
 			expErr:    true,
-			expErrMsg: govtypes.ErrInvalidSigner.Error(),
+			expErrMsg: sdkgovtypes.ErrInvalidSigner.Error(),
 		},
 	}
 

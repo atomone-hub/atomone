@@ -10,6 +10,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors1 "github.com/cosmos/cosmos-sdk/types/errors"
+	sdkgovtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	"github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
@@ -121,7 +122,7 @@ func (keeper Keeper) AddDeposit(ctx sdk.Context, proposalID uint64, depositorAdd
 
 	// Check if proposal is still depositable
 	if (proposal.Status != v1.StatusDepositPeriod) && (proposal.Status != v1.StatusVotingPeriod) {
-		return false, sdkerrors.Wrapf(types.ErrInactiveProposal, "%d", proposalID)
+		return false, sdkerrors.Wrapf(sdkgovtypes.ErrInactiveProposal, "%d", proposalID)
 	}
 
 	// Check coins to be deposited match the proposal's deposit params
@@ -162,7 +163,7 @@ func (keeper Keeper) AddDeposit(ctx sdk.Context, proposalID uint64, depositorAdd
 
 		// the threshold must be met with at least one denom, if not, return the list of minimum deposits
 		if !depositThresholdMet {
-			return false, sdkerrors.Wrapf(types.ErrMinDepositTooSmall, "received %s but need at least one of the following: %s", depositAmount, strings.Join(thresholds, ","))
+			return false, sdkerrors.Wrapf(sdkgovtypes.ErrMinDepositTooSmall, "received %s but need at least one of the following: %s", depositAmount, strings.Join(thresholds, ","))
 		}
 	}
 
@@ -248,7 +249,7 @@ func (keeper Keeper) validateInitialDeposit(ctx sdk.Context, initialDeposit sdk.
 		minDepositCoins[i].Amount = math.LegacyNewDecFromInt(minDepositCoins[i].Amount).Mul(minInitialDepositRatio).RoundInt()
 	}
 	if !initialDeposit.IsAllGTE(minDepositCoins) {
-		return sdkerrors.Wrapf(types.ErrMinDepositTooSmall, "was (%s), need (%s)", initialDeposit, minDepositCoins)
+		return sdkerrors.Wrapf(sdkgovtypes.ErrMinDepositTooSmall, "was (%s), need (%s)", initialDeposit, minDepositCoins)
 	}
 	return nil
 }

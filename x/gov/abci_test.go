@@ -8,7 +8,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	abci "github.com/cometbft/cometbft/abci/types"
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 
 	"cosmossdk.io/math"
 
@@ -16,7 +15,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/cosmos/cosmos-sdk/x/staking"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
@@ -32,8 +30,8 @@ func TestTickExpiredDepositPeriod(t *testing.T) {
 	ctx := app.BaseApp.NewContext(false)
 	addrs := simtestutil.AddTestAddrs(suite.BankKeeper, suite.StakingKeeper, ctx, 10, valTokens)
 
-	header := tmproto.Header{Height: app.LastBlockHeight() + 1}
-	app.BeginBlock(abci.RequestBeginBlock{Header: header})
+	_, err := app.FinalizeBlock(&abci.RequestFinalizeBlock{Height: app.LastBlockHeight() + 1})
+	require.NoError(t, err)
 
 	govMsgSvr := keeper.NewMsgServerImpl(suite.GovKeeper)
 
@@ -88,8 +86,8 @@ func TestTickMultipleExpiredDepositPeriod(t *testing.T) {
 	ctx := app.BaseApp.NewContext(false)
 	addrs := simtestutil.AddTestAddrs(suite.BankKeeper, suite.StakingKeeper, ctx, 10, valTokens)
 
-	header := tmproto.Header{Height: app.LastBlockHeight() + 1}
-	app.BeginBlock(abci.RequestBeginBlock{Header: header})
+	_, err := app.FinalizeBlock(&abci.RequestFinalizeBlock{Height: app.LastBlockHeight() + 1})
+	require.NoError(t, err)
 
 	govMsgSvr := keeper.NewMsgServerImpl(suite.GovKeeper)
 
@@ -172,8 +170,8 @@ func TestTickPassedDepositPeriod(t *testing.T) {
 	ctx := app.BaseApp.NewContext(false)
 	addrs := simtestutil.AddTestAddrs(suite.BankKeeper, suite.StakingKeeper, ctx, 10, valTokens)
 
-	header := tmproto.Header{Height: app.LastBlockHeight() + 1}
-	app.BeginBlock(abci.RequestBeginBlock{Header: header})
+	_, err := app.FinalizeBlock(&abci.RequestFinalizeBlock{Height: app.LastBlockHeight() + 1})
+	require.NoError(t, err)
 
 	govMsgSvr := keeper.NewMsgServerImpl(suite.GovKeeper)
 
@@ -231,8 +229,8 @@ func TestTickPassedVotingPeriod(t *testing.T) {
 
 	SortAddresses(addrs)
 
-	header := tmproto.Header{Height: app.LastBlockHeight() + 1}
-	app.BeginBlock(abci.RequestBeginBlock{Header: header})
+	_, err := app.FinalizeBlock(&abci.RequestFinalizeBlock{Height: app.LastBlockHeight() + 1})
+	require.NoError(t, err)
 
 	govMsgSvr := keeper.NewMsgServerImpl(suite.GovKeeper)
 
@@ -301,13 +299,14 @@ func TestProposalPassedEndblocker(t *testing.T) {
 	govMsgSvr := keeper.NewMsgServerImpl(suite.GovKeeper)
 	stakingMsgSvr := stakingkeeper.NewMsgServerImpl(suite.StakingKeeper)
 
-	header := tmproto.Header{Height: app.LastBlockHeight() + 1}
-	app.BeginBlock(abci.RequestBeginBlock{Header: header})
+	_, err := app.FinalizeBlock(&abci.RequestFinalizeBlock{Height: app.LastBlockHeight() + 1})
+	require.NoError(t, err)
 
 	valAddr := sdk.ValAddress(addrs[0])
 
 	createValidators(t, stakingMsgSvr, ctx, []sdk.ValAddress{valAddr}, []int64{10})
-	staking.EndBlocker(ctx, suite.StakingKeeper)
+	_, err = suite.StakingKeeper.EndBlocker(ctx)
+	require.NoError(t, err)
 
 	macc := suite.GovKeeper.GetGovernanceAccount(ctx)
 	require.NotNil(t, macc)
@@ -328,7 +327,7 @@ func TestProposalPassedEndblocker(t *testing.T) {
 	moduleAccCoins := suite.BankKeeper.GetAllBalances(ctx, macc.GetAddress())
 
 	deposits := initialModuleAccCoins.Add(proposal.TotalDeposit...).Add(proposalCoins...)
-	require.True(t, moduleAccCoins.IsEqual(deposits))
+	require.True(t, moduleAccCoins.Equal(deposits))
 
 	err = suite.GovKeeper.AddVote(ctx, proposal.Id, addrs[0], v1.NewNonSplitVoteOption(v1.OptionYes), "")
 	require.NoError(t, err)
@@ -341,7 +340,7 @@ func TestProposalPassedEndblocker(t *testing.T) {
 
 	macc = suite.GovKeeper.GetGovernanceAccount(ctx)
 	require.NotNil(t, macc)
-	require.True(t, suite.BankKeeper.GetAllBalances(ctx, macc.GetAddress()).IsEqual(initialModuleAccCoins))
+	require.True(t, suite.BankKeeper.GetAllBalances(ctx, macc.GetAddress()).Equal(initialModuleAccCoins))
 }
 
 func TestEndBlockerProposalHandlerFailed(t *testing.T) {
@@ -353,13 +352,14 @@ func TestEndBlockerProposalHandlerFailed(t *testing.T) {
 	SortAddresses(addrs)
 
 	stakingMsgSvr := stakingkeeper.NewMsgServerImpl(suite.StakingKeeper)
-	header := tmproto.Header{Height: app.LastBlockHeight() + 1}
-	app.BeginBlock(abci.RequestBeginBlock{Header: header})
+	_, err := app.FinalizeBlock(&abci.RequestFinalizeBlock{Height: app.LastBlockHeight() + 1})
+	require.NoError(t, err)
 
 	valAddr := sdk.ValAddress(addrs[0])
 
 	createValidators(t, stakingMsgSvr, ctx, []sdk.ValAddress{valAddr}, []int64{10})
-	staking.EndBlocker(ctx, suite.StakingKeeper)
+	_, err = suite.StakingKeeper.EndBlocker(ctx)
+	require.NoError(t, err)
 
 	msg := banktypes.NewMsgSend(authtypes.NewModuleAddress(types.ModuleName), addrs[0], sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(100000))))
 	proposal, err := suite.GovKeeper.SubmitProposal(ctx, []sdk.Msg{msg}, "", "Bank Msg Send", "send message", addrs[0])
@@ -469,7 +469,9 @@ func TestEndBlockerQuorumCheck(t *testing.T) {
 			valAddr := sdk.ValAddress(addrs[0])
 			stakingMsgSvr := stakingkeeper.NewMsgServerImpl(suite.StakingKeeper)
 			createValidators(t, stakingMsgSvr, ctx, []sdk.ValAddress{valAddr}, []int64{10})
-			staking.EndBlocker(ctx, suite.StakingKeeper)
+			_, err = suite.StakingKeeper.EndBlocker(ctx)
+			require.NoError(t, err)
+
 			// Create a proposal
 			govMsgSvr := keeper.NewMsgServerImpl(suite.GovKeeper)
 			deposit := v1.DefaultMinDepositTokens.ToLegacyDec().Mul(v1.DefaultMinDepositRatio)
@@ -529,7 +531,7 @@ func createValidators(t *testing.T, stakingMsgSvr stakingtypes.MsgServer, ctx sd
 	for i := 0; i < len(addrs); i++ {
 		valTokens := sdk.TokensFromConsensusPower(powerAmt[i], sdk.DefaultPowerReduction)
 		valCreateMsg, err := stakingtypes.NewMsgCreateValidator(
-			addrs[i], pubkeys[i], sdk.NewCoin(sdk.DefaultBondDenom, valTokens),
+			addrs[i].String(), pubkeys[i], sdk.NewCoin(sdk.DefaultBondDenom, valTokens),
 			TestDescription, TestCommissionRates, math.OneInt(),
 		)
 		require.NoError(t, err)

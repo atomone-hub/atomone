@@ -25,7 +25,7 @@ func (s *IntegrationTestSuite) testEvidenceQueries() {
 			s.Require().NoError(err)
 			eq, ok := exportedEvidence.(*evidencetypes.Equivocation)
 			s.Require().True(ok)
-			s.execQueryEvidence(chain, valIdx, eq.Hash().String())
+			s.execQueryEvidence(chain, valIdx, string(eq.Hash())) // TODO: check this string conversion was good
 		}
 	})
 }
