@@ -18,7 +18,7 @@ service Msg {
   rpc MintPhoton(MsgMintPhoton) returns (MsgMintPhotonResponse);
 
   // UpdateParams defines a governance operation for updating the x/photon
-	// module parameters. The authority is defined in the keeper.
+  // module parameters. The authority is defined in the keeper.
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
 }
 
@@ -63,4 +63,3 @@ message MsgUpdateParams {
 // MsgUpdateParamsResponse defines the response structure for executing a
 // MsgUpdateParams message.
 message MsgUpdateParamsResponse {}
-
