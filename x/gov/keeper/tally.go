@@ -184,8 +184,8 @@ func (keeper Keeper) getQuorumAndThreshold(ctx sdk.Context, proposal v1.Proposal
 	quorum := keeper.GetQuorum(ctx)
 	threshold := sdk.MustNewDecFromStr(params.Threshold)
 
-	// FIXME wrong comment, we're not checking against ExecLegacyContent
-	// Check if a proposal message is an ExecLegacyContent message
+	// Check if a proposal message is a MsgProposeLaw or a
+	// MsgProposeConstitutionAmendment which affects quorum and threshold.
 	if len(proposal.Messages) > 0 {
 		var sdkMsg sdk.Msg
 		for _, msg := range proposal.Messages {
@@ -194,7 +194,7 @@ func (keeper Keeper) getQuorumAndThreshold(ctx sdk.Context, proposal v1.Proposal
 				// quorum and threshold accordingly
 				switch sdkMsg.(type) {
 				case *v1.MsgProposeConstitutionAmendment:
-					q := sdk.MustNewDecFromStr(params.ConstitutionAmendmentQuorum)
+					q := keeper.GetConstitutionAmendmentQuorum(ctx)
 					if quorum.LT(q) {
 						quorum = q
 					}
@@ -203,7 +203,7 @@ func (keeper Keeper) getQuorumAndThreshold(ctx sdk.Context, proposal v1.Proposal
 						threshold = t
 					}
 				case *v1.MsgProposeLaw:
-					q := sdk.MustNewDecFromStr(params.LawQuorum)
+					q := keeper.GetLawQuorum(ctx)
 					if quorum.LT(q) {
 						quorum = q
 					}

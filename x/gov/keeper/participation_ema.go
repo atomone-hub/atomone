@@ -35,13 +35,36 @@ func (k Keeper) UpdateParticipationEMA(ctx sdk.Context, participation math.Legac
 	k.SetParticipationEMA(ctx, new_participationEma)
 }
 
-// GetQuorum returns the dynamic quorum for governance proposals calculated based on the participation EMA
-func (k Keeper) GetQuorum(ctx sdk.Context) (quorum math.LegacyDec) {
-	participationEma := k.GetParticipationEMA(ctx)
+// GetQuorum returns the dynamic quorum for governance proposals calculated
+// based on the participation EMA
+func (k Keeper) GetQuorum(ctx sdk.Context) math.LegacyDec {
 	params := k.GetParams(ctx)
 	minQuorum := math.LegacyMustNewDecFromStr(params.MinQuorum)
 	maxQuorum := math.LegacyMustNewDecFromStr(params.MaxQuorum)
+	return k.getQuorum(ctx, minQuorum, maxQuorum)
+}
+
+// GetConstitutionAmendmentQuorum returns the dynamic quorum for constitution
+// amendment governance proposals calculated based on the participation EMA
+func (k Keeper) GetConstitutionAmendmentQuorum(ctx sdk.Context) math.LegacyDec {
+	params := k.GetParams(ctx)
+	minQuorum := math.LegacyMustNewDecFromStr(params.MinConstitutionAmendmentQuorum)
+	maxQuorum := math.LegacyMustNewDecFromStr(params.MaxConstitutionAmendmentQuorum)
+	return k.getQuorum(ctx, minQuorum, maxQuorum)
+}
+
+// GetLawQuorum returns the dynamic quorum for law governance proposals
+// calculated based on the participation EMA
+func (k Keeper) GetLawQuorum(ctx sdk.Context) math.LegacyDec {
+	params := k.GetParams(ctx)
+	minQuorum := math.LegacyMustNewDecFromStr(params.MinLawQuorum)
+	maxQuorum := math.LegacyMustNewDecFromStr(params.MaxLawQuorum)
+	return k.getQuorum(ctx, minQuorum, maxQuorum)
+}
+
+// GetQuorum returns the dynamic quorum for governance proposals calculated based on the participation EMA
+func (k Keeper) getQuorum(ctx sdk.Context, minQuorum, maxQuorum sdk.Dec) math.LegacyDec {
+	participationEma := k.GetParticipationEMA(ctx)
 	// quorum = min_quorum + (max_quorum - min_quorum) * participationEma
-	quorum = minQuorum.Add(maxQuorum.Sub(minQuorum).Mul(participationEma))
-	return quorum
+	return minQuorum.Add(maxQuorum.Sub(minQuorum).Mul(participationEma))
 }
