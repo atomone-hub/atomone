@@ -20,13 +20,12 @@ import (
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	"github.com/cosmos/cosmos-sdk/server"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/module"
 	sdktx "github.com/cosmos/cosmos-sdk/types/tx"
 	txsigning "github.com/cosmos/cosmos-sdk/types/tx/signing"
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-
-	atomone "github.com/atomone-hub/atomone/app"
 )
 
 //
@@ -79,7 +78,10 @@ func (v *validator) init() error {
 		return err
 	}
 
-	appState, err := json.MarshalIndent(atomone.ModuleBasics.DefaultGenesis(cdc), "", " ")
+	/* TODO */
+	basicManager := module.NewBasicManager()
+
+	appState, err := json.MarshalIndent(basicManager.DefaultGenesis(cdc), "", " ")
 	if err != nil {
 		return fmt.Errorf("failed to JSON encode app genesis state: %w", err)
 	}

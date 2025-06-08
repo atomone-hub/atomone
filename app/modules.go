@@ -1,13 +1,10 @@
 package atomone
 
 import (
-	ica "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts"
 	icatypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/types"
-	"github.com/cosmos/ibc-go/v10/modules/apps/transfer"
 	ibctransfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
 	ibc "github.com/cosmos/ibc-go/v10/modules/core"
 	ibcexported "github.com/cosmos/ibc-go/v10/modules/core/exported"
-	ibctm "github.com/cosmos/ibc-go/v10/modules/light-clients/07-tendermint"
 
 	"cosmossdk.io/x/evidence"
 	evidencetypes "cosmossdk.io/x/evidence/types"
@@ -15,6 +12,8 @@ import (
 	feegrantmodule "cosmossdk.io/x/feegrant/module"
 	"cosmossdk.io/x/upgrade"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	authsims "github.com/cosmos/cosmos-sdk/x/auth/simulation"
@@ -40,9 +39,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	atomoneappparams "github.com/atomone-hub/atomone/app/params"
 	"github.com/atomone-hub/atomone/x/gov"
-	govclient "github.com/atomone-hub/atomone/x/gov/client"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	"github.com/atomone-hub/atomone/x/photon"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
@@ -60,52 +57,17 @@ var maccPerms = map[string][]string{
 	photontypes.ModuleName:         {authtypes.Minter, authtypes.Burner},
 }
 
-// ModuleBasics defines the module BasicManager is in charge of setting up basic,
-// non-dependant module elements, such as codec registration
-// and genesis verification.
-var ModuleBasics = module.NewBasicManager(
-	auth.AppModuleBasic{},
-	genutil.NewAppModuleBasic(genutiltypes.DefaultMessageValidator),
-	bank.AppModuleBasic{},
-	staking.AppModuleBasic{},
-	mint.AppModuleBasic{},
-	distr.AppModuleBasic{},
-	gov.NewAppModuleBasic(
-		[]govclient.ProposalHandler{
-			paramsChangeProposalHandler,
-			upgradeProposalHandler,
-			cancelUpgradeProposalHandler,
-			updateIBCClientProposalHandler,
-			upgradeIBCProposalHandler,
-		},
-	),
-	sdkparams.AppModuleBasic{},
-	slashing.AppModuleBasic{},
-	photon.AppModuleBasic{},
-	feegrantmodule.AppModuleBasic{},
-	authzmodule.AppModuleBasic{},
-	ibc.AppModuleBasic{},
-	ibctm.AppModuleBasic{},
-	upgrade.AppModuleBasic{},
-	evidence.AppModuleBasic{},
-	transfer.AppModuleBasic{},
-	vesting.AppModuleBasic{},
-	ica.AppModuleBasic{},
-	consensus.AppModuleBasic{},
-)
-
 func appModules(
 	app *AtomOneApp,
-	encodingConfig atomoneappparams.EncodingConfig,
+	appCodec codec.Codec,
+	txConfig client.TxConfig,
 ) []module.AppModule {
-	appCodec := encodingConfig.Marshaler
-
 	return []module.AppModule{
 		genutil.NewAppModule(
 			app.AccountKeeper,
 			app.StakingKeeper,
 			app.BaseApp,
-			encodingConfig.TxConfig,
+			txConfig,
 		),
 		auth.NewAppModule(appCodec, app.AccountKeeper, nil, app.GetSubspace(authtypes.ModuleName)),
 		vesting.NewAppModule(app.AccountKeeper, app.BankKeeper),
@@ -132,10 +94,8 @@ func appModules(
 // define the order of the modules for deterministic simulations
 func simulationModules(
 	app *AtomOneApp,
-	encodingConfig atomoneappparams.EncodingConfig,
+	appCodec codec.Codec,
 ) []module.AppModuleSimulation {
-	appCodec := encodingConfig.Marshaler
-
 	return []module.AppModuleSimulation{
 		auth.NewAppModule(appCodec, app.AccountKeeper, authsims.RandomGenesisAccounts, app.GetSubspace(authtypes.ModuleName)),
 		bank.NewAppModule(appCodec, app.BankKeeper, app.AccountKeeper, app.GetSubspace(banktypes.ModuleName)),

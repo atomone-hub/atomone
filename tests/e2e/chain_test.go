@@ -64,7 +64,7 @@ func init() {
 	ibctransfertypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 	photontypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 
-	cdc = encodingConfig.Marshaler
+	cdc = encodingConfig.Codec
 	txConfig = encodingConfig.TxConfig
 }
 

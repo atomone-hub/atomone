@@ -33,6 +33,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/server"
 	serverconfig "github.com/cosmos/cosmos-sdk/server/config"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
+	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
+	"github.com/cosmos/cosmos-sdk/types/module"
 	authcmd "github.com/cosmos/cosmos-sdk/x/auth/client/cli"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
@@ -45,9 +47,24 @@ import (
 // NewRootCmd creates a new root command for simd. It is called once in the
 // main function.
 func NewRootCmd() (*cobra.Command, params.EncodingConfig) {
-	encodingConfig := atomone.RegisterEncodingConfig()
+	// we "pre"-instantiate the application for getting the injected/configured encoding configuration
+	tempApp := atomone.NewAtomOneApp(
+		log.NewNopLogger(),
+		dbm.NewMemDB(),
+		nil,
+		true,
+		map[int64]bool{},
+		simtestutil.NewAppOptionsWithFlagHome(atomone.DefaultNodeHome),
+	)
+	encodingConfig := params.EncodingConfig{
+		InterfaceRegistry: tempApp.InterfaceRegistry(),
+		Codec:             tempApp.AppCodec(),
+		TxConfig:          tempApp.TxConfig(),
+		Amino:             tempApp.LegacyAmino(),
+	}
+
 	initClientCtx := client.Context{}.
-		WithCodec(encodingConfig.Marshaler).
+		WithCodec(encodingConfig.Codec).
 		WithInterfaceRegistry(encodingConfig.InterfaceRegistry).
 		WithTxConfig(encodingConfig.TxConfig).
 		WithLegacyAmino(encodingConfig.Amino).
@@ -84,7 +101,7 @@ func NewRootCmd() (*cobra.Command, params.EncodingConfig) {
 		},
 	}
 
-	initRootCmd(rootCmd, encodingConfig)
+	initRootCmd(rootCmd, tempApp.BasicModuleManager(), encodingConfig)
 
 	return rootCmd, encodingConfig
 }
@@ -121,27 +138,29 @@ func initAppConfig() (string, interface{}) {
 	return defaultAppTemplate, customAppConfig
 }
 
-func initRootCmd(rootCmd *cobra.Command, encodingConfig params.EncodingConfig) {
+func initRootCmd(
+	rootCmd *cobra.Command,
+	basicManager module.BasicManager,
+	encodingConfig params.EncodingConfig,
+) {
 	InitSDKConfig()
 
-	ac := appCreator{encodingConfig}
-
 	rootCmd.AddCommand(
-		genutilcli.InitCmd(atomone.ModuleBasics, atomone.DefaultNodeHome),
+		genutilcli.InitCmd(basicManager, atomone.DefaultNodeHome),
 		tmcli.NewCompletionCmd(rootCmd, true),
-		NewTestnetCmd(atomone.ModuleBasics, banktypes.GenesisBalancesIterator{}),
+		NewTestnetCmd(basicManager, banktypes.GenesisBalancesIterator{}),
 		addDebugCommands(debug.Cmd()),
 		confixcmd.ConfigCommand(),
-		pruning.Cmd(ac.newApp, atomone.DefaultNodeHome),
-		snapshot.Cmd(ac.newApp),
+		pruning.Cmd(newApp, atomone.DefaultNodeHome),
+		snapshot.Cmd(newApp),
 	)
 
-	server.AddCommands(rootCmd, atomone.DefaultNodeHome, ac.newApp, ac.appExport, addModuleInitFlags)
+	server.AddCommands(rootCmd, atomone.DefaultNodeHome, newApp, appExport, addModuleInitFlags)
 
 	// add keybase, auxiliary RPC, query, and tx child commands
 	rootCmd.AddCommand(
 		server.StatusCommand(),
-		genesisCommand(encodingConfig),
+		genesisCommand(basicManager, encodingConfig),
 		queryCommand(),
 		txCommand(),
 		keys.Commands(),
@@ -152,8 +171,8 @@ func addModuleInitFlags(startCmd *cobra.Command) {
 }
 
 // genesisCommand builds genesis-related `simd genesis` command. Users may provide application specific commands as a parameter
-func genesisCommand(encodingConfig params.EncodingConfig, cmds ...*cobra.Command) *cobra.Command {
-	cmd := genutilcli.GenesisCoreCommand(encodingConfig.TxConfig, atomone.ModuleBasics, atomone.DefaultNodeHome)
+func genesisCommand(basicManager module.BasicManager, encodingConfig params.EncodingConfig, cmds ...*cobra.Command) *cobra.Command {
+	cmd := genutilcli.GenesisCoreCommand(encodingConfig.TxConfig, basicManager, atomone.DefaultNodeHome)
 
 	for _, subCmd := range cmds {
 		cmd.AddCommand(subCmd)
@@ -179,7 +198,6 @@ func queryCommand() *cobra.Command {
 		authcmd.QueryTxCmd(),
 	)
 
-	atomone.ModuleBasics.AddQueryCommands(cmd)
 	cmd.PersistentFlags().String(flags.FlagChainID, "", "The network chain ID")
 
 	return cmd
@@ -207,17 +225,12 @@ func txCommand() *cobra.Command {
 		authcmd.GetDecodeCommand(),
 	)
 
-	atomone.ModuleBasics.AddTxCommands(cmd)
 	cmd.PersistentFlags().String(flags.FlagChainID, "", "The network chain ID")
 
 	return cmd
 }
 
-type appCreator struct {
-	encCfg params.EncodingConfig
-}
-
-func (a appCreator) newApp(
+func newApp(
 	logger log.Logger,
 	db dbm.DB,
 	traceStore io.Writer,
@@ -286,14 +299,12 @@ func (a appCreator) newApp(
 		traceStore,
 		true,
 		skipUpgradeHeights,
-		cast.ToString(appOpts.Get(flags.FlagHome)),
-		a.encCfg,
 		appOpts,
 		baseappOptions...,
 	)
 }
 
-func (a appCreator) appExport(
+func appExport(
 	logger log.Logger,
 	db dbm.DB,
 	traceStore io.Writer,
@@ -303,13 +314,6 @@ func (a appCreator) appExport(
 	appOpts servertypes.AppOptions,
 	modulesToExport []string,
 ) (servertypes.ExportedApp, error) {
-	var atomoneApp *atomone.AtomOneApp
-
-	homePath, ok := appOpts.Get(flags.FlagHome).(string)
-	if !ok || homePath == "" {
-		return servertypes.ExportedApp{}, errors.New("application home is not set")
-	}
-
 	// InvCheckPeriod
 	viperAppOpts, ok := appOpts.(*viper.Viper)
 	if !ok {
@@ -324,14 +328,12 @@ func (a appCreator) appExport(
 		loadLatest = true
 	}
 
-	atomoneApp = atomone.NewAtomOneApp(
+	atomoneApp := atomone.NewAtomOneApp(
 		logger,
 		db,
 		traceStore,
 		loadLatest,
 		map[int64]bool{},
-		homePath,
-		a.encCfg,
 		appOpts,
 	)
 

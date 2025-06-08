@@ -25,14 +25,13 @@ import (
 
 	"github.com/atomone-hub/atomone/ante"
 	atomone "github.com/atomone-hub/atomone/app"
-	"github.com/atomone-hub/atomone/app/sim"
 )
 
 // AppChainID hardcoded chainID for simulation
 const AppChainID = "atomone-app"
 
 func init() {
-	sim.GetSimulatorFlags()
+	simcli.GetSimulatorFlags()
 }
 
 // interBlockCacheOpt returns a BaseApp option function that sets the persistent
@@ -44,11 +43,11 @@ func interBlockCacheOpt() func(*baseapp.BaseApp) {
 // TODO: Make another test for the fuzzer itself, which just has noOp txs
 // and doesn't depend on the application.
 func TestAppStateDeterminism(t *testing.T) {
-	if !sim.FlagEnabledValue {
+	if !simcli.FlagEnabledValue {
 		t.Skip("skipping application simulation")
 	}
 
-	config := sim.NewConfigFromFlags()
+	config := simcli.NewConfigFromFlags()
 	config.InitialBlockHeight = 1
 	config.ExportParamsPath = ""
 	config.OnOperation = false
@@ -66,7 +65,7 @@ func TestAppStateDeterminism(t *testing.T) {
 	appHashList := make([]json.RawMessage, numTimesToRunPerSeed)
 	appOptions := make(simtestutil.AppOptionsMap, 0)
 	appOptions[flags.FlagHome] = atomone.DefaultNodeHome
-	appOptions[server.FlagInvCheckPeriod] = sim.FlagPeriodValue
+	appOptions[server.FlagInvCheckPeriod] = simcli.FlagPeriodValue
 
 	for i := 0; i < numSeeds; i++ {
 		if config.Seed == simcli.DefaultSeedValue {
@@ -77,22 +76,19 @@ func TestAppStateDeterminism(t *testing.T) {
 
 		for j := 0; j < numTimesToRunPerSeed; j++ {
 			var logger log.Logger
-			if sim.FlagVerboseValue {
+			if simcli.FlagVerboseValue {
 				logger = log.NewTestLogger(t)
 			} else {
 				logger = log.NewNopLogger()
 			}
 
 			db := dbm.NewMemDB()
-			encConfig := atomone.RegisterEncodingConfig()
 			app := atomone.NewAtomOneApp(
 				logger,
 				db,
 				nil,
 				true,
 				map[int64]bool{},
-				atomone.DefaultNodeHome,
-				encConfig,
 				appOptions,
 				interBlockCacheOpt(),
 				baseapp.SetChainID(AppChainID),
@@ -113,7 +109,7 @@ func TestAppStateDeterminism(t *testing.T) {
 				t,
 				os.Stdout,
 				app.BaseApp,
-				simtestutil.AppStateFn(app.AppCodec(), app.SimulationManager(), atomone.NewDefaultGenesisState(encConfig)),
+				simtestutil.AppStateFn(app.AppCodec(), app.SimulationManager(), app.DefaultGenesis()),
 				simulation2.RandomAccounts, // Replace with own random account function if using keys other than secp256k1
 				simtestutil.SimulationOperations(app, app.AppCodec(), config),
 				blockedAddresses,
@@ -123,7 +119,7 @@ func TestAppStateDeterminism(t *testing.T) {
 			require.NoError(t, err)
 
 			if config.Commit {
-				sim.PrintStats(db)
+				simtestutil.PrintStats(db)
 			}
 
 			appHash := app.LastCommitID().Hash

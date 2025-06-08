@@ -125,19 +125,15 @@ func setup() (*atomoneapp.AtomOneApp, atomoneapp.GenesisState) {
 	appOptions[server.FlagInvCheckPeriod] = 5
 	appOptions[server.FlagMinGasPrices] = "0uatone"
 
-	encConfig := atomoneapp.RegisterEncodingConfig()
-
 	atomoneApp := atomoneapp.NewAtomOneApp(
 		log.NewNopLogger(),
 		db,
 		nil,
 		true,
 		map[int64]bool{},
-		atomoneapp.DefaultNodeHome,
-		encConfig,
 		appOptions,
 	)
-	return atomoneApp, atomoneapp.NewDefaultGenesisState(encConfig)
+	return atomoneApp, atomoneApp.DefaultGenesis()
 }
 
 func genesisStateWithValSet(t *testing.T,

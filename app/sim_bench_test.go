@@ -14,7 +14,6 @@ import (
 	simcli "github.com/cosmos/cosmos-sdk/x/simulation/client/cli"
 
 	atomone "github.com/atomone-hub/atomone/app"
-	"github.com/atomone-hub/atomone/app/sim"
 )
 
 // Profile with:
@@ -42,16 +41,12 @@ func BenchmarkFullAppSimulation(b *testing.B) {
 	appOptions := make(simtestutil.AppOptionsMap, 0)
 	appOptions[server.FlagInvCheckPeriod] = simcli.FlagPeriodValue
 
-	encConfig := atomone.RegisterEncodingConfig()
-
 	app := atomone.NewAtomOneApp(
 		logger,
 		db,
 		nil,
 		true,
 		map[int64]bool{},
-		atomone.DefaultNodeHome,
-		encConfig,
 		appOptions,
 		interBlockCacheOpt(),
 		baseapp.SetChainID(AppChainID),
@@ -62,16 +57,16 @@ func BenchmarkFullAppSimulation(b *testing.B) {
 		b,
 		os.Stdout,
 		app.BaseApp,
-		sim.AppStateFn(encConfig, app.SimulationManager()),
+		simtestutil.AppStateFn(app.AppCodec(), app.SimulationManager(), app.DefaultGenesis()),
 		simulation2.RandomAccounts, // Replace with own random account function if using keys other than secp256k1
-		sim.SimulationOperations(app, app.AppCodec(), config),
+		simtestutil.SimulationOperations(app, app.AppCodec(), config),
 		app.ModuleAccountAddrs(),
 		config,
 		app.AppCodec(),
 	)
 
 	// export state and simParams before the simulation error is checked
-	if err = sim.CheckExportSimulation(app, config, simParams); err != nil {
+	if err = simtestutil.CheckExportSimulation(app, config, simParams); err != nil {
 		b.Fatal(err)
 	}
 
@@ -80,6 +75,6 @@ func BenchmarkFullAppSimulation(b *testing.B) {
 	}
 
 	if config.Commit {
-		sim.PrintStats(db)
+		simtestutil.PrintStats(db)
 	}
 }

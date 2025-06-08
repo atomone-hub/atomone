@@ -49,7 +49,7 @@ func TestConversionRateQuery(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			k, m, ctx := testutil.SetupPhotonKeeper(t)
-			m.StakingKeeper.EXPECT().BondDenom(ctx).Return(appparams.BondDenom)
+			m.StakingKeeper.EXPECT().BondDenom(ctx).Return(appparams.BondDenom, nil)
 			m.BankKeeper.EXPECT().GetSupply(ctx, appparams.BondDenom).
 				Return(sdk.NewInt64Coin(appparams.BondDenom, tt.uatoneSupply))
 			m.BankKeeper.EXPECT().GetSupply(ctx, types.Denom).

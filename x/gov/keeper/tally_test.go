@@ -54,8 +54,8 @@ func newTallyFixture(t *testing.T, ctx sdk.Context, proposal v1.Proposal,
 		mocks:    mocks,
 	}
 	mocks.stakingKeeper.EXPECT().TotalBondedTokens(gomock.Any()).
-		DoAndReturn(func(_ context.Context) sdkmath.Int {
-			return sdkmath.NewInt(s.totalBonded)
+		DoAndReturn(func(_ context.Context) (sdkmath.Int, error) {
+			return sdkmath.NewInt(s.totalBonded), nil
 		}).MaxTimes(1)
 	// Mocks a bunch of validators
 	for i := 0; i < len(valAddrs); i++ {

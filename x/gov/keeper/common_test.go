@@ -89,10 +89,10 @@ func mockDefaultExpectations(ctx sdk.Context, m mocks) {
 		return sdk.TokensFromConsensusPower(power, math.NewIntFromUint64(1000000))
 	}).AnyTimes()
 
-	m.stakingKeeper.EXPECT().BondDenom(ctx).Return("stake").AnyTimes()
+	m.stakingKeeper.EXPECT().BondDenom(ctx).Return("stake", nil).AnyTimes()
 	m.stakingKeeper.EXPECT().IterateBondedValidatorsByPower(gomock.Any(), gomock.Any()).AnyTimes()
 	m.stakingKeeper.EXPECT().IterateDelegations(gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes()
-	m.stakingKeeper.EXPECT().TotalBondedTokens(gomock.Any()).Return(math.NewInt(10000000)).AnyTimes()
+	m.stakingKeeper.EXPECT().TotalBondedTokens(gomock.Any()).Return(math.NewInt(10000000), nil).AnyTimes()
 }
 
 // setupGovKeeper creates a govKeeper as well as all its dependencies.

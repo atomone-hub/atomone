@@ -1,11 +1,11 @@
 package atomone
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
-	"path/filepath"
 
 	"github.com/gorilla/mux"
 	"github.com/rakyll/statik/fs"
@@ -18,18 +18,22 @@ import (
 	abci "github.com/cometbft/cometbft/abci/types"
 	tmjson "github.com/cometbft/cometbft/libs/json"
 	dbm "github.com/cosmos/cosmos-db"
+	"github.com/cosmos/gogoproto/proto"
 
 	ibctesting "github.com/cosmos/ibc-go/v10/testing"
 
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
 
+	clienthelpers "cosmossdk.io/client/v2/helpers"
+	"cosmossdk.io/x/tx/signing"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/grpc/cmtservice"
 	nodeservice "github.com/cosmos/cosmos-sdk/client/grpc/node"
 	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/codec/address"
 	"github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	runtimeservices "github.com/cosmos/cosmos-sdk/runtime/services"
@@ -37,21 +41,26 @@ import (
 	"github.com/cosmos/cosmos-sdk/server/api"
 	"github.com/cosmos/cosmos-sdk/server/config"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
+	"github.com/cosmos/cosmos-sdk/std"
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
+	"github.com/cosmos/cosmos-sdk/x/auth/tx"
 	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/cosmos/cosmos-sdk/x/genutil"
+	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	ibckeeper "github.com/cosmos/ibc-go/v10/modules/core/keeper"
 
 	atomoneante "github.com/atomone-hub/atomone/ante"
 	"github.com/atomone-hub/atomone/app/keepers"
-	"github.com/atomone-hub/atomone/app/params"
 	"github.com/atomone-hub/atomone/app/upgrades"
 	v2 "github.com/atomone-hub/atomone/app/upgrades/v2"
 	v3 "github.com/atomone-hub/atomone/app/upgrades/v3"
+	"github.com/atomone-hub/atomone/x/gov"
+	govclient "github.com/atomone-hub/atomone/x/gov/client"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 )
 
@@ -83,19 +92,20 @@ type AtomOneApp struct { //nolint: revive
 	invCheckPeriod uint
 
 	// the module manager
-	mm *module.Manager
+	mm  *module.Manager
+	bmm module.BasicManager
+
 	// simulation manager
 	sm           *module.SimulationManager
 	configurator module.Configurator
 }
 
 func init() {
-	userHomeDir, err := os.UserHomeDir()
+	var err error
+	DefaultNodeHome, err = clienthelpers.GetNodeHomeDirectory(".atomone")
 	if err != nil {
 		panic(err)
 	}
-
-	DefaultNodeHome = filepath.Join(userHomeDir, ".atomone")
 }
 
 // NewAtomOneApp returns a reference to an initialized AtomOne.
@@ -105,15 +115,30 @@ func NewAtomOneApp(
 	traceStore io.Writer,
 	loadLatest bool,
 	skipUpgradeHeights map[int64]bool,
-	homePath string,
-	encodingConfig params.EncodingConfig,
 	appOpts servertypes.AppOptions,
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) *AtomOneApp {
-	appCodec := encodingConfig.Marshaler
-	legacyAmino := encodingConfig.Amino
-	interfaceRegistry := encodingConfig.InterfaceRegistry
-	txConfig := encodingConfig.TxConfig
+	interfaceRegistry, _ := types.NewInterfaceRegistryWithOptions(types.InterfaceRegistryOptions{
+		ProtoFiles: proto.HybridResolver,
+		SigningOptions: signing.Options{
+			AddressCodec: address.Bech32Codec{
+				Bech32Prefix: sdk.GetConfig().GetBech32AccountAddrPrefix(),
+			},
+			ValidatorAddressCodec: address.Bech32Codec{
+				Bech32Prefix: sdk.GetConfig().GetBech32ValidatorAddrPrefix(),
+			},
+		},
+	})
+	appCodec := codec.NewProtoCodec(interfaceRegistry)
+	legacyAmino := codec.NewLegacyAmino()
+	txConfig := tx.NewTxConfig(appCodec, tx.DefaultSignModes)
+
+	if err := interfaceRegistry.SigningContext().Validate(); err != nil {
+		panic(err)
+	}
+
+	std.RegisterLegacyAminoCodec(legacyAmino)
+	std.RegisterInterfaces(interfaceRegistry)
 
 	// App Opts
 	invCheckPeriod := cast.ToUint(appOpts.Get(server.FlagInvCheckPeriod))
@@ -150,7 +175,7 @@ func NewAtomOneApp(
 		moduleAccountAddresses,
 		app.BlockedModuleAccountAddrs(moduleAccountAddresses),
 		skipUpgradeHeights,
-		homePath,
+		DefaultNodeHome,
 		invCheckPeriod,
 		logger,
 		appOpts,
@@ -158,7 +183,7 @@ func NewAtomOneApp(
 
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
-	app.mm = module.NewManager(appModules(app, encodingConfig)...)
+	app.mm = module.NewManager(appModules(app, appCodec, txConfig)...)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
 	// there is nothing left over in the validator fee pool, so as to keep the
@@ -178,8 +203,26 @@ func NewAtomOneApp(
 	// can do so safely.
 	app.mm.SetOrderInitGenesis(orderInitBlockers()...)
 
-	// Uncomment if you want to set a custom migration order here.
-	// app.mm.SetOrderMigrations(custom order)
+	// BasicModuleManager defines the module BasicManager is in charge of setting up basic,
+	// non-dependant module elements, such as codec registration and genesis verification.
+	// By default it is composed of all the module from the module manager.
+	// Additionally, app module basics can be overwritten by passing them as argument.
+	app.bmm = module.NewBasicManagerFromManager(
+		app.mm,
+		map[string]module.AppModuleBasic{
+			genutiltypes.ModuleName: genutil.NewAppModuleBasic(genutiltypes.DefaultMessageValidator),
+			govtypes.ModuleName: gov.NewAppModuleBasic(
+				[]govclient.ProposalHandler{
+					paramsChangeProposalHandler,
+					upgradeProposalHandler,
+					cancelUpgradeProposalHandler,
+					updateIBCClientProposalHandler,
+					upgradeIBCProposalHandler,
+				},
+			),
+		})
+	app.bmm.RegisterLegacyAminoCodec(legacyAmino)
+	app.bmm.RegisterInterfaces(interfaceRegistry)
 
 	app.configurator = module.NewConfigurator(app.appCodec, app.MsgServiceRouter(), app.GRPCQueryRouter())
 	app.mm.RegisterServices(app.configurator)
@@ -199,7 +242,7 @@ func NewAtomOneApp(
 	//
 	// NOTE: this is not required apps that don't use the simulator for fuzz testing
 	// transactions
-	app.sm = module.NewSimulationManager(simulationModules(app, encodingConfig)...)
+	app.sm = module.NewSimulationManager(simulationModules(app, appCodec)...)
 
 	app.sm.RegisterStoreDecoders()
 
@@ -214,7 +257,7 @@ func NewAtomOneApp(
 				AccountKeeper:   app.AccountKeeper,
 				BankKeeper:      app.BankKeeper,
 				FeegrantKeeper:  app.FeeGrantKeeper,
-				SignModeHandler: encodingConfig.TxConfig.SignModeHandler(),
+				SignModeHandler: txConfig.SignModeHandler(),
 				SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
 			},
 			Codec:         appCodec,
@@ -249,6 +292,16 @@ func NewAtomOneApp(
 
 // Name returns the name of the App
 func (app *AtomOneApp) Name() string { return app.BaseApp.Name() }
+
+// DefaultGenesis returns a default genesis from the registered AppModuleBasic's.
+func (a *AtomOneApp) DefaultGenesis() map[string]json.RawMessage {
+	return a.bmm.DefaultGenesis(a.appCodec)
+}
+
+// BasicModuleManager returns the BasicModuleManager of the app.
+func (app *AtomOneApp) BasicModuleManager() module.BasicManager {
+	return app.bmm
+}
 
 // BeginBlocker application updates every begin block
 func (app *AtomOneApp) BeginBlocker(ctx sdk.Context) (sdk.BeginBlock, error) {
@@ -317,6 +370,11 @@ func (app *AtomOneApp) InterfaceRegistry() types.InterfaceRegistry {
 	return app.interfaceRegistry
 }
 
+// TxConfig returns AtomOne's TxConfig
+func (app *AtomOneApp) TxConfig() client.TxConfig {
+	return app.txConfig
+}
+
 // SimulationManager implements the SimulationApp interface
 func (app *AtomOneApp) SimulationManager() *module.SimulationManager {
 	return app.sm
@@ -332,7 +390,7 @@ func (app *AtomOneApp) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.AP
 	cmtservice.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
 
 	// Register legacy and grpc-gateway routes for all modules.
-	ModuleBasics.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
+	app.bmm.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
 
 	// Register nodeservice grpc-gateway routes.
 	nodeservice.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)

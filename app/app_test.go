@@ -22,15 +22,12 @@ func (ao EmptyAppOptions) Get(_ string) interface{} {
 }
 
 func TestAtomOneApp_BlockedModuleAccountAddrs(t *testing.T) {
-	encConfig := atomone.RegisterEncodingConfig()
 	app := atomone.NewAtomOneApp(
 		log.NewNopLogger(),
 		dbm.NewMemDB(),
 		nil,
 		true,
 		map[int64]bool{},
-		atomone.DefaultNodeHome,
-		encConfig,
 		EmptyAppOptions{},
 	)
 

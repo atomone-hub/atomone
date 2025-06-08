@@ -233,7 +233,7 @@ func (keeper Keeper) RefundAndDeleteDeposits(ctx sdk.Context, proposalID uint64)
 // the deposit parameters. Returns nil on success, error otherwise.
 func (keeper Keeper) validateInitialDeposit(ctx sdk.Context, initialDeposit sdk.Coins) error {
 	if !initialDeposit.IsValid() || initialDeposit.IsAnyNegative() {
-		return sdkerrors.Wrapf(sdkerrors1.ErrInvalidCoins, initialDeposit.String())
+		return sdkerrors.Wrap(sdkerrors1.ErrInvalidCoins, initialDeposit.String())
 	}
 
 	params := keeper.GetParams(ctx)
