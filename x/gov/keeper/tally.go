@@ -184,7 +184,7 @@ func (keeper Keeper) getQuorumAndThreshold(ctx sdk.Context, proposal v1.Proposal
 	quorum := keeper.GetQuorum(ctx)
 	threshold := sdk.MustNewDecFromStr(params.Threshold)
 
-	// Check if a proposal message is a MsgProposeLaw or a
+	// Check if a proposal messages contains a MsgProposeLaw or a
 	// MsgProposeConstitutionAmendment which affects quorum and threshold.
 	if len(proposal.Messages) > 0 {
 		var sdkMsg sdk.Msg
