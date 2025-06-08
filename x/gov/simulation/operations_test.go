@@ -16,7 +16,6 @@ import (
 	_ "github.com/cosmos/cosmos-sdk/x/staking"
 
 	abci "github.com/cometbft/cometbft/abci/types"
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/runtime"
@@ -141,7 +140,7 @@ func TestSimulateMsgSubmitProposal(t *testing.T) {
 	accounts := getTestingAccounts(t, r, suite.AccountKeeper, suite.BankKeeper, suite.StakingKeeper, ctx, 3)
 
 	// begin a new block
-	app.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{Height: app.LastBlockHeight() + 1, AppHash: app.LastCommitID().Hash}})
+	app.FinalizeBlock(&abci.RequestFinalizeBlock{Height: app.LastBlockHeight() + 1, Hash: app.LastCommitID().Hash})
 
 	// execute operation
 	op := simulation.SimulateMsgSubmitProposal(suite.AccountKeeper, suite.BankKeeper, suite.GovKeeper, MockWeightedProposals{3}.MsgSimulatorFn())
@@ -171,7 +170,7 @@ func TestSimulateMsgSubmitLegacyProposal(t *testing.T) {
 	accounts := getTestingAccounts(t, r, suite.AccountKeeper, suite.BankKeeper, suite.StakingKeeper, ctx, 3)
 
 	// begin a new block
-	app.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{Height: app.LastBlockHeight() + 1, AppHash: app.LastCommitID().Hash}})
+	app.FinalizeBlock(&abci.RequestFinalizeBlock{Height: app.LastBlockHeight() + 1, Hash: app.LastCommitID().Hash})
 
 	// execute operation
 	op := simulation.SimulateMsgSubmitLegacyProposal(suite.AccountKeeper, suite.BankKeeper, suite.GovKeeper, MockWeightedProposals{3}.ContentSimulatorFn())
@@ -219,7 +218,7 @@ func TestSimulateMsgDeposit(t *testing.T) {
 	suite.GovKeeper.SetProposal(ctx, proposal)
 
 	// begin a new block
-	app.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{Height: app.LastBlockHeight() + 1, AppHash: app.LastCommitID().Hash, Time: blockTime}})
+	app.FinalizeBlock(&abci.RequestFinalizeBlock{Height: app.LastBlockHeight() + 1, Hash: app.LastCommitID().Hash, Time: blockTime})
 
 	// execute operation
 	op := simulation.SimulateMsgDeposit(suite.AccountKeeper, suite.BankKeeper, suite.GovKeeper)
@@ -266,7 +265,7 @@ func TestSimulateMsgVote(t *testing.T) {
 	suite.GovKeeper.ActivateVotingPeriod(ctx, proposal)
 
 	// begin a new block
-	app.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{Height: app.LastBlockHeight() + 1, AppHash: app.LastCommitID().Hash, Time: blockTime}})
+	app.FinalizeBlock(&abci.RequestFinalizeBlock{Height: app.LastBlockHeight() + 1, Hash: app.LastCommitID().Hash, Time: blockTime})
 
 	// execute operation
 	op := simulation.SimulateMsgVote(suite.AccountKeeper, suite.BankKeeper, suite.GovKeeper)
@@ -310,7 +309,7 @@ func TestSimulateMsgVoteWeighted(t *testing.T) {
 	suite.GovKeeper.ActivateVotingPeriod(ctx, proposal)
 
 	// begin a new block
-	app.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{Height: app.LastBlockHeight() + 1, AppHash: app.LastCommitID().Hash, Time: blockTime}})
+	app.FinalizeBlock(&abci.RequestFinalizeBlock{Height: app.LastBlockHeight() + 1, Hash: app.LastCommitID().Hash, Time: blockTime})
 
 	// execute operation
 	op := simulation.SimulateMsgVoteWeighted(suite.AccountKeeper, suite.BankKeeper, suite.GovKeeper)

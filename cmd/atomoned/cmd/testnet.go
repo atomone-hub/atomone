@@ -323,7 +323,7 @@ func initTestnetFiles(
 			WithKeybase(kb).
 			WithTxConfig(clientCtx.TxConfig)
 
-		if err := tx.Sign(txFactory, nodeDirName, txBuilder, true); err != nil {
+		if err := tx.Sign(clientCtx.CmdContext, txFactory, nodeDirName, txBuilder, true); err != nil {
 			return err
 		}
 
@@ -423,12 +423,13 @@ func collectGenFiles(
 		nodeID, valPubKey := nodeIDs[i], valPubKeys[i]
 		initCfg := genutiltypes.NewInitConfig(chainID, gentxsDir, nodeID, valPubKey)
 
-		genDoc, err := types.GenesisDocFromFile(nodeConfig.GenesisFile())
+		genFile := nodeConfig.GenesisFile()
+		appGenesis, err := genutiltypes.AppGenesisFromFile(genFile)
 		if err != nil {
 			return err
 		}
 
-		nodeAppState, err := genutil.GenAppStateFromConfig(clientCtx.Codec, clientCtx.TxConfig, nodeConfig, initCfg, *genDoc, genBalIterator, genutiltypes.DefaultMessageValidator)
+		nodeAppState, err := genutil.GenAppStateFromConfig(clientCtx.Codec, clientCtx.TxConfig, nodeConfig, initCfg, appGenesis, genBalIterator, genutiltypes.DefaultMessageValidator, clientCtx.InterfaceRegistry.SigningContext().AddressCodec())
 		if err != nil {
 			return err
 		}
@@ -437,8 +438,6 @@ func collectGenFiles(
 			// set the canonical application state (they should not differ)
 			appState = nodeAppState
 		}
-
-		genFile := nodeConfig.GenesisFile()
 
 		// overwrite each validator's genesis file to have a canonical genesis time
 		if err := genutil.ExportGenesisFileWithTime(genFile, chainID, nil, appState, genTime); err != nil {

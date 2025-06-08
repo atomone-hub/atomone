@@ -22,7 +22,11 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 	tallyResults = v1.NewTallyResultFromMap(results)
 
 	// If there is no staked coins, the proposal fails
-	totalBonded := keeper.sk.TotalBondedTokens(ctx)
+	totalBonded, err := keeper.sk.TotalBondedTokens(ctx)
+	if err != nil {
+		return false, false, tallyResults
+	}
+
 	if totalBonded.IsZero() {
 		return false, false, tallyResults
 	}
@@ -54,7 +58,11 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 // this is just a stripped down version of the Tally function above
 func (keeper Keeper) HasReachedQuorum(ctx sdk.Context, proposal v1.Proposal) (quorumPassed bool, err error) {
 	// If there is no staked coins, the proposal has not reached quorum
-	totalBonded := keeper.sk.TotalBondedTokens(ctx)
+	totalBonded, err := keeper.sk.TotalBondedTokens(ctx)
+	if err != nil {
+		return false, fmt.Errorf("failed to get total bonded tokens: %w", err)
+	}
+
 	if totalBonded.IsZero() {
 		return false, nil
 	}

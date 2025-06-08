@@ -127,7 +127,7 @@ func TestVoteSpamDecoratorGovV1Beta1(t *testing.T) {
 		)
 
 		// Validate vote message
-		err := decorator.ValidateVoteMsgs(ctx, []sdk.Msg{msg})
+		err = decorator.ValidateVoteMsgs(ctx, []sdk.Msg{msg})
 		if tc.expectPass {
 			require.NoError(t, err, "expected %v to pass", tc.name)
 		} else {
@@ -244,7 +244,7 @@ func TestVoteSpamDecoratorGovV1(t *testing.T) {
 		)
 
 		// Validate vote message
-		err := decorator.ValidateVoteMsgs(ctx, []sdk.Msg{msg})
+		err = decorator.ValidateVoteMsgs(ctx, []sdk.Msg{msg})
 		if tc.expectPass {
 			require.NoError(t, err, "expected %v to pass", tc.name)
 		} else {

@@ -99,22 +99,22 @@ func SetupWithGenesisValSet(t *testing.T, valSet *tmtypes.ValidatorSet, genAccs 
 	require.NoError(t, err)
 
 	// init chain will set the validator set and initialize the genesis accounts
-	atomoneApp.InitChain(
+	_, err = atomoneApp.InitChain(
 		&abci.RequestInitChain{
 			Validators:      []abci.ValidatorUpdate{},
 			ConsensusParams: DefaultConsensusParams,
 			AppStateBytes:   stateBytes,
 		},
 	)
+	require.NoError(t, err)
 
-	// commit genesis changes
-	atomoneApp.Commit()
-	atomoneApp.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{
+	require.NoError(t, err)
+	_, err = atomoneApp.FinalizeBlock(&abci.RequestFinalizeBlock{
 		Height:             atomoneApp.LastBlockHeight() + 1,
-		AppHash:            atomoneApp.LastCommitID().Hash,
-		ValidatorsHash:     valSet.Hash(),
+		Hash:               atomoneApp.LastCommitID().Hash,
 		NextValidatorsHash: valSet.Hash(),
-	}})
+	})
+	require.NoError(t, err)
 
 	return atomoneApp
 }
