@@ -6,7 +6,7 @@
 
 ## Status
 
-DRAFT
+Implemented (https://github.com/atomone-hub/atomone/pull/135)
 
 ## Abstract
 
@@ -19,7 +19,7 @@ The quorum is dynamically adjusted after each vote based on the actual
 participation. The new quorum is updated using an exponential moving average
 [^1] of vote participation, meaning that the current vote’s participation is
 weighted more heavily then previous vote participations. The exponential moving
-average allows the quorum to react quickly to changes in participation. 
+average allows the quorum to react quickly to changes in participation.
 
 The proposed mechanism is comparable to the `quorum adjustement mechanism` used
 in Tezos [^2].
@@ -28,10 +28,10 @@ in Tezos [^2].
 
 At the time of writing, the `x/gov` module on AtomOne uses a `Quorum` parameter
 set to `0.25`. Since AtomOne has removed delegation-based voting [^3] in favor
-of *direct voting* for most type of proposals, lower participation **with
+of *direct voting* for most type of proposals, lower participation with
 respect to the total voting power is to be expected. The mechanism proposed in
 this ADR allows to find the proper quorum threshold based on actual
-participation. 
+participation.
 
 Dynamic quorum works in tandem with the deposit auto-throttler
 ([ADR-003](https://github.com/atomone-hub/atomone/blob/main/docs/architecture/adr-003-governance-proposal-deposit-auto-throttler.md))
