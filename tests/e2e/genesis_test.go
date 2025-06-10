@@ -20,6 +20,7 @@ import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
+	feemarkettypes "github.com/atomone-hub/atomone/x/feemarket/types"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	govv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 )
@@ -53,6 +54,9 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 	config := serverCtx.Config
 	config.SetRoot(path)
 	config.Moniker = moniker
+
+	//-----------------------------------------
+	// Modifying auth genesis
 
 	coins, err := sdk.ParseCoinsNormalized(amountStr)
 	if err != nil {
@@ -106,6 +110,9 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 	}
 	appState[authtypes.ModuleName] = authGenStateBz
 
+	//-----------------------------------------
+	// Modifying bank genesis
+
 	bankGenState := banktypes.GetGenesisStateFromAppState(cdc, appState)
 	bankGenState.Balances = append(bankGenState.Balances, balances...)
 	bankGenState.Balances = banktypes.SanitizeGenesisBalances(bankGenState.Balances)
@@ -115,6 +122,9 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 		return fmt.Errorf("failed to marshal bank genesis state: %w", err)
 	}
 	appState[banktypes.ModuleName] = bankGenStateBz
+
+	//-----------------------------------------
+	// Modifying interchain accounts genesis
 
 	// add ica host allowed msg types
 	var icaGenesisState icagen.GenesisState
@@ -158,6 +168,9 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 	}
 	appState[icatypes.ModuleName] = icaGenesisStateBz
 
+	//-----------------------------------------
+	// Modifying staking genesis
+
 	stakingGenState := stakingtypes.GetGenesisStateFromAppState(cdc, appState)
 	stakingGenState.Params.BondDenom = denom
 	stakingGenStateBz, err := cdc.MarshalJSON(stakingGenState)
@@ -175,6 +188,9 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 	}
 	appState[minttypes.ModuleName] = mintGenStateBz
 
+	//-----------------------------------------
+	// Modifying gov genesis
+
 	// Refactor to separate method
 	quorum, _ := math.LegacyNewDecFromStr("0.000000000000000001")
 	threshold, _ := math.LegacyNewDecFromStr("0.000000000000000001")
@@ -188,13 +204,21 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 
 	govGenState := govv1.NewGenesisState(1,
 		govv1.NewParams(
-			sdk.NewCoins(depositAmount), maxDepositPeriod,
+			// sdk.NewCoins(sdk.NewCoin(denom, depositAmount.Amount)),
+			maxDepositPeriod,
 			votingPeriod,
 			quorum.String(), threshold.String(),
 			amendmentsQuorum.String(), amendmentsThreshold.String(), lawQuorum.String(), lawThreshold.String(),
-			math.LegacyZeroDec().String(),
+			// math.LegacyZeroDec().String(),
 			false, false, govv1.DefaultMinDepositRatio.String(),
 			govv1.DefaultQuorumTimeout, govv1.DefaultMaxVotingPeriodExtension, govv1.DefaultQuorumCheckCount,
+			sdk.NewCoins(sdk.NewCoin(denom, depositAmount.Amount)), govv1.DefaultMinDepositUpdatePeriod,
+			govv1.DefaultMinDepositDecreaseSensitivityTargetDistance,
+			govv1.DefaultMinDepositIncreaseRatio.String(), govv1.DefaultMinDepositDecreaseRatio.String(),
+			govv1.DefaultTargetActiveProposals, sdk.NewCoins(sdk.NewCoin(denom, initialDepositAmount.Amount)), govv1.DefaultMinInitialDepositUpdatePeriod,
+			govv1.DefaultMinInitialDepositDecreaseSensitivityTargetDistance, govv1.DefaultMinInitialDepositIncreaseRatio.String(),
+			govv1.DefaultMinInitialDepositDecreaseRatio.String(), govv1.DefaultTargetProposalsInDepositPeriod,
+			govv1.DefaultBurnDepositNoThreshold.String(),
 		),
 	)
 	govGenState.Constitution = "This is a test constitution"
@@ -203,6 +227,22 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 		return fmt.Errorf("failed to marshal gov genesis state: %w", err)
 	}
 	appState[govtypes.ModuleName] = govGenStateBz
+
+	//-----------------------------------------
+	// Modifying feemarket genesis
+
+	feemarketGenState := feemarkettypes.GetGenesisStateFromAppState(cdc, appState)
+	baseGasPrice := math.LegacyMustNewDecFromStr("0.00001")
+	feemarketGenState.Params.MinBaseGasPrice = baseGasPrice
+	feemarketGenState.State.BaseGasPrice = baseGasPrice
+	feemarketGenStateBz, err := cdc.MarshalJSON(&feemarketGenState)
+	if err != nil {
+		return fmt.Errorf("failed to marshal feemarket genesis state: %w", err)
+	}
+	appState[feemarkettypes.ModuleName] = feemarketGenStateBz
+
+	//-----------------------------------------
+	// Record final genesis
 
 	appStateJSON, err := json.Marshal(appState)
 	if err != nil {

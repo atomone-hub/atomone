@@ -25,6 +25,7 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	atomoneparams "github.com/atomone-hub/atomone/app/params"
+	feemarkettypes "github.com/atomone-hub/atomone/x/feemarket/types"
 	govv1types "github.com/atomone-hub/atomone/x/gov/types/v1"
 	govv1beta1types "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
@@ -63,6 +64,7 @@ func init() {
 	distribtypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 	ibctransfertypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 	photontypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
+	feemarkettypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 
 	cdc = encodingConfig.Codec
 	txConfig = encodingConfig.TxConfig

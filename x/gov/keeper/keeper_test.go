@@ -40,6 +40,10 @@ func (suite *KeeperTestSuite) SetupSuite() {
 	suite.reset()
 }
 
+func (suite *KeeperTestSuite) SetupSubTest() {
+	suite.reset()
+}
+
 func (suite *KeeperTestSuite) reset() {
 	govKeeper, mocks, encCfg, ctx := setupGovKeeper(suite.T())
 	acctKeeper, bankKeeper, stakingKeeper := mocks.acctKeeper, mocks.bankKeeper, mocks.stakingKeeper

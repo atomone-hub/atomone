@@ -16,7 +16,6 @@ import (
 
 	abci "github.com/cometbft/cometbft/abci/types"
 
-	modulev1 "cosmossdk.io/api/cosmos/gov/module/v1"
 	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/depinject"
 
@@ -31,6 +30,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
+	modulev1 "github.com/atomone-hub/atomone/api/atomone/gov/module/v1"
 	govclient "github.com/atomone-hub/atomone/x/gov/client"
 	"github.com/atomone-hub/atomone/x/gov/client/cli"
 	"github.com/atomone-hub/atomone/x/gov/keeper"
@@ -40,7 +40,7 @@ import (
 	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 )
 
-const ConsensusVersion = 4
+const ConsensusVersion = 5
 
 var (
 	_ module.AppModuleBasic      = AppModuleBasic{}
@@ -286,7 +286,9 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 	v1.RegisterQueryServer(cfg.QueryServer(), am.keeper)
 
 	m := keeper.NewMigrator(am.keeper, am.legacySubspace)
-	_ = m
+	if err := cfg.RegisterMigration(govtypes.ModuleName, 4, m.Migrate4to5); err != nil {
+		panic(fmt.Sprintf("failed to migrate x/gov from version 4 to version 5: %v", err))
+	}
 }
 
 // InitGenesis performs genesis initialization for the gov module. It returns

@@ -33,38 +33,50 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 
 	// If there is not enough quorum of votes, the proposal fails
 	percentVoting := totalVotingPower.Quo(math.LegacyNewDecFromInt(totalBonded))
-	quorum, threshold, err := keeper.getQuorumAndThreshold(ctx, proposal)
-	if err != nil {
-		return false, false, tallyResults
-	}
+	quorum, threshold := keeper.getQuorumAndThreshold(ctx, proposal)
 	if percentVoting.LT(quorum) {
 		return false, params.BurnVoteQuorum, tallyResults
 	}
 
+	// Compute non-abstaining voting power, aka active voting power
+	activeVotingPower := totalVotingPower.Sub(results[v1.OptionAbstain])
+
 	// If no one votes (everyone abstains), proposal fails
-	if totalVotingPower.Sub(results[v1.OptionAbstain]).Equal(math.LegacyZeroDec()) {
+	if activeVotingPower.IsZero() {
 		return false, false, tallyResults
 	}
 
-	if results[v1.OptionYes].Quo(totalVotingPower.Sub(results[v1.OptionAbstain])).GT(threshold) {
+	// If more than `threshold` of non-abstaining voters vote Yes, proposal passes.
+	yesPercent := results[v1.OptionYes].Quo(activeVotingPower)
+	if yesPercent.GT(threshold) {
 		return true, false, tallyResults
 	}
 
-	// If more than 1/2 of non-abstaining voters vote No, proposal fails
+	// If more than `burnDepositNoThreshold` of non-abstaining voters vote No,
+	// proposal is rejected and deposit is burned.
+	burnDepositNoThreshold := math.LegacyMustNewDecFromStr(params.BurnDepositNoThreshold)
+	noPercent := results[v1.OptionNo].Quo(activeVotingPower)
+	if noPercent.GT(burnDepositNoThreshold) {
+		return false, true, tallyResults
+	}
+
+	// If less than `burnDepositNoThreshold` of non-abstaining voters vote No,
+	// proposal is rejected but deposit is not burned.
 	return false, false, tallyResults
 }
 
 // HasReachedQuorum returns whether or not a proposal has reached quorum
 // this is just a stripped down version of the Tally function above
-func (keeper Keeper) HasReachedQuorum(ctx sdk.Context, proposal v1.Proposal) (quorumPassed bool, err error) {
+func (keeper Keeper) HasReachedQuorum(ctx sdk.Context, proposal v1.Proposal) bool {
 	// If there is no staked coins, the proposal has not reached quorum
 	totalBonded, err := keeper.sk.TotalBondedTokens(ctx)
 	if err != nil {
-		return false, fmt.Errorf("failed to get total bonded tokens: %w", err)
+		keeper.Logger(ctx).Error(fmt.Sprintf("error getting total bonded tokens: %s", err.Error()))
+		return false
 	}
 
 	if totalBonded.IsZero() {
-		return false, nil
+		return false
 	}
 
 	/* DISABLED on AtomOne - no possible increase of computation speed by
@@ -94,11 +106,8 @@ func (keeper Keeper) HasReachedQuorum(ctx sdk.Context, proposal v1.Proposal) (qu
 
 	// check and return whether or not the proposal has reached quorum
 	percentVoting := totalVotingPower.Quo(math.LegacyNewDecFromInt(totalBonded))
-	quorum, _, err := keeper.getQuorumAndThreshold(ctx, proposal)
-	if err != nil {
-		return false, err
-	}
-	return percentVoting.GTE(quorum), nil
+	quorum, _ := keeper.getQuorumAndThreshold(ctx, proposal)
+	return percentVoting.GTE(quorum)
 }
 
 // getBondedValidatorsByAddress fetches all the bonded validators and return
@@ -181,16 +190,10 @@ func (keeper Keeper) tallyVotes(
 
 // getQuorumAndThreshold iterates over the proposal's messages to returns the
 // appropriate quorum and threshold.
-func (keeper Keeper) getQuorumAndThreshold(ctx sdk.Context, proposal v1.Proposal) (math.LegacyDec, math.LegacyDec, error) {
+func (keeper Keeper) getQuorumAndThreshold(ctx sdk.Context, proposal v1.Proposal) (math.LegacyDec, math.LegacyDec) {
 	params := keeper.GetParams(ctx)
-	quorum, err := math.LegacyNewDecFromStr(params.Quorum)
-	if err != nil {
-		return math.LegacyDec{}, math.LegacyDec{}, fmt.Errorf("parsing params.Quorum: %w", err)
-	}
-	threshold, err := math.LegacyNewDecFromStr(params.Threshold)
-	if err != nil {
-		return math.LegacyDec{}, math.LegacyDec{}, fmt.Errorf("parsing params.Threshold: %w", err)
-	}
+	quorum := math.LegacyMustNewDecFromStr(params.Quorum)
+	threshold := math.LegacyMustNewDecFromStr(params.Threshold)
 
 	// Check if a proposal message is an ExecLegacyContent message
 	if len(proposal.Messages) > 0 {
@@ -201,32 +204,20 @@ func (keeper Keeper) getQuorumAndThreshold(ctx sdk.Context, proposal v1.Proposal
 				// quorum and threshold accordingly
 				switch sdkMsg.(type) {
 				case *v1.MsgProposeConstitutionAmendment:
-					q, err := math.LegacyNewDecFromStr(params.ConstitutionAmendmentQuorum)
-					if err != nil {
-						return math.LegacyDec{}, math.LegacyDec{}, fmt.Errorf("parsing params.ConstitutionAmendmentQuorum: %w", err)
-					}
+					q := math.LegacyMustNewDecFromStr(params.ConstitutionAmendmentQuorum)
 					if quorum.LT(q) {
 						quorum = q
 					}
-					t, err := math.LegacyNewDecFromStr(params.ConstitutionAmendmentThreshold)
-					if err != nil {
-						return math.LegacyDec{}, math.LegacyDec{}, fmt.Errorf("parsing params.ConstitutionAmendmentThreshold: %w", err)
-					}
+					t := math.LegacyMustNewDecFromStr(params.ConstitutionAmendmentThreshold)
 					if threshold.LT(t) {
 						threshold = t
 					}
 				case *v1.MsgProposeLaw:
-					q, err := math.LegacyNewDecFromStr(params.LawQuorum)
-					if err != nil {
-						return math.LegacyDec{}, math.LegacyDec{}, fmt.Errorf("parsing params.LawQuorum: %w", err)
-					}
+					q := math.LegacyMustNewDecFromStr(params.LawQuorum)
 					if quorum.LT(q) {
 						quorum = q
 					}
-					t, err := math.LegacyNewDecFromStr(params.LawThreshold)
-					if err != nil {
-						return math.LegacyDec{}, math.LegacyDec{}, fmt.Errorf("parsing params.LawThreshold: %w", err)
-					}
+					t := math.LegacyMustNewDecFromStr(params.LawThreshold)
 					if threshold.LT(t) {
 						threshold = t
 					}
@@ -234,5 +225,5 @@ func (keeper Keeper) getQuorumAndThreshold(ctx sdk.Context, proposal v1.Proposal
 			}
 		}
 	}
-	return quorum, threshold, nil
+	return quorum, threshold
 }

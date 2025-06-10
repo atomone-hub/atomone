@@ -1,7 +1,6 @@
 # Nakamoto Bonus Demo
 
-The `NakamotoBonus.ipynb` demo showcases the effect of assigning the block reward in a proportional and in a uniform way. The user is able to change using a widget the amount of the reward that is assigned proportionally vs uniformly and see how this affects the way reward is split across validators. The chart at the bottom shows the return per stake (RPS) - amount of reward gained by a delegator per unit of stake - expected by the delegators across the different validators.
-
+The `NakamotoBonus.ipynb` demo showcases the effect of assigning the block reward in a proportional and in a uniform way. The user is able to change using a widget the state of the delegations on the network and amount of the reward that is assigned proportionally vs uniformly and see how this affects the way reward is split across validators. 
 It can be seen that, increasing the amount of reward that is assigned uniformly - i.e. the Nakamoto Bonus - increases the incentive of delegators to delegate on validators having less voting power.
 
 ## Requirements
