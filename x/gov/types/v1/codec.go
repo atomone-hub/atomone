@@ -1,21 +1,11 @@
 package v1
 
 import (
-	evidencetypes "cosmossdk.io/x/evidence/types"
-	upgradetypes "cosmossdk.io/x/upgrade/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/codec/legacy"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	consensustypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
-	distributiontypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
-	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-
-	govcodec "github.com/atomone-hub/atomone/x/gov/codec"
 )
 
 // RegisterLegacyAminoCodec registers all the necessary types and interfaces for the
@@ -45,21 +35,4 @@ func RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
-}
-
-func init() {
-	// Register all Amino interfaces and concrete types on the authz and gov Amino codec so that this can later be
-	// used to properly serialize MsgGrant, MsgExec and MsgSubmitProposal instances
-	RegisterLegacyAminoCodec(govcodec.Amino)
-
-	// Need to add registration in the atomone gov amino for all modules that
-	// register their amino types in the legacy gov module.
-	banktypes.RegisterLegacyAminoCodec(govcodec.Amino)
-	consensustypes.RegisterLegacyAminoCodec(govcodec.Amino)
-	distributiontypes.RegisterLegacyAminoCodec(govcodec.Amino)
-	evidencetypes.RegisterLegacyAminoCodec(govcodec.Amino)
-	minttypes.RegisterLegacyAminoCodec(govcodec.Amino)
-	slashingtypes.RegisterLegacyAminoCodec(govcodec.Amino)
-	stakingtypes.RegisterLegacyAminoCodec(govcodec.Amino)
-	upgradetypes.RegisterLegacyAminoCodec(govcodec.Amino)
 }

@@ -8,6 +8,8 @@ import (
 
 	"cosmossdk.io/math"
 
+	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -67,7 +69,9 @@ func TestMsgSubmitProposal(t *testing.T) {
 func TestMsgDepositGetSignBytes(t *testing.T) {
 	addr := sdk.AccAddress("addr1")
 	msg := NewMsgDeposit(addr, 0, coinsPos)
-	res := msg.GetSignBytes()
+	pc := codec.NewProtoCodec(types.NewInterfaceRegistry())
+	res, err := pc.MarshalAminoJSON(msg)
+	require.NoError(t, err)
 
 	expected := `{"type":"atomone/MsgDeposit","value":{"amount":[{"amount":"1000","denom":"stake"}],"depositor":"cosmos1v9jxgu33kfsgr5","proposal_id":"0"}}`
 	require.Equal(t, expected, string(res))
@@ -171,11 +175,10 @@ func TestMsgVoteWeighted(t *testing.T) {
 func TestMsgSubmitProposal_GetSignBytes(t *testing.T) {
 	msg, err := NewMsgSubmitProposal(NewTextProposal("test", "abcd"), sdk.NewCoins(), sdk.AccAddress{})
 	require.NoError(t, err)
-	var bz []byte
-	require.NotPanics(t, func() {
-		bz = msg.GetSignBytes()
-	})
+	pc := codec.NewProtoCodec(types.NewInterfaceRegistry())
+	bz, err := pc.MarshalAminoJSON(msg)
+	require.NoError(t, err)
 	require.Equal(t,
-		`{"type":"atomone/MsgSubmitProposal","value":{"content":{"type":"atomone/TextProposal","value":{"description":"abcd","title":"test"}},"initial_deposit":[]}}`,
+		`{"type":"atomone/MsgSubmitProposal","value":{"content":{"type":"atomone/TextProposal","value":{"description":"abcd","title":"test"}},"initial_deposit":null}}`,
 		string(bz))
 }

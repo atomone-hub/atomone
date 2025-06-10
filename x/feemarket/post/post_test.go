@@ -67,7 +67,7 @@ func TestPostHandle(t *testing.T) {
 			name: "ok: state updated",
 			setup: func(m mocks) {
 				m.ConsensusParamsKeeper.EXPECT().Get(m.ctx).
-					Return(&tmproto.ConsensusParams{
+					Return(tmproto.ConsensusParams{
 						Block: &tmproto.BlockParams{MaxGas: testutil.MaxBlockGas},
 					}, nil)
 				m.FeeMarketKeeper.EXPECT().GetParams(m.ctx).
@@ -89,7 +89,7 @@ func TestPostHandle(t *testing.T) {
 			simulate: true,
 			setup: func(m mocks) {
 				m.ConsensusParamsKeeper.EXPECT().Get(m.ctx).
-					Return(&tmproto.ConsensusParams{
+					Return(tmproto.ConsensusParams{
 						Block: &tmproto.BlockParams{MaxGas: testutil.MaxBlockGas},
 					}, nil)
 				m.FeeMarketKeeper.EXPECT().GetParams(m.ctx).

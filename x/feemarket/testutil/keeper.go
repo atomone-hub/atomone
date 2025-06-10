@@ -57,7 +57,7 @@ func SetupKeeper(t *testing.T, maxBlockGas uint64) (*keeper.Keeper, Mocks, sdk.C
 		maxBlockGas = MaxBlockGas
 	}
 	m.ConsensusParamsKeeper.EXPECT().Get(ctx).
-		Return(&tmproto.ConsensusParams{
+		Return(tmproto.ConsensusParams{
 			Block: &tmproto.BlockParams{MaxGas: int64(maxBlockGas)},
 		}, nil).MaxTimes(1)
 

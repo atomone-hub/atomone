@@ -11,7 +11,6 @@ import (
 	sdktx "github.com/cosmos/cosmos-sdk/types/tx"
 	sdkgovtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
-	"github.com/atomone-hub/atomone/x/gov/codec"
 	"github.com/atomone-hub/atomone/x/gov/types"
 	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 )
@@ -60,12 +59,6 @@ func (m *MsgSubmitProposal) SetMsgs(msgs []sdk.Msg) error {
 	return nil
 }
 
-// Route implements the sdk.Msg interface.
-func (m MsgSubmitProposal) Route() string { return types.RouterKey }
-
-// Type implements the sdk.Msg interface.
-func (m MsgSubmitProposal) Type() string { return sdk.MsgTypeURL(&m) }
-
 // ValidateBasic implements the sdk.Msg interface.
 func (m MsgSubmitProposal) ValidateBasic() error {
 	if m.Title == "" {
@@ -109,18 +102,6 @@ func (m MsgSubmitProposal) ValidateBasic() error {
 	return nil
 }
 
-// GetSignBytes returns the message bytes to sign over.
-func (m MsgSubmitProposal) GetSignBytes() []byte {
-	bz := codec.ModuleCdc.MustMarshalJSON(&m)
-	return sdk.MustSortJSON(bz)
-}
-
-// GetSigners returns the expected signers for a MsgSubmitProposal.
-func (m MsgSubmitProposal) GetSigners() []sdk.AccAddress {
-	proposer, _ := sdk.AccAddressFromBech32(m.Proposer)
-	return []sdk.AccAddress{proposer}
-}
-
 // UnpackInterfaces implements UnpackInterfacesMessage.UnpackInterfaces
 func (m MsgSubmitProposal) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
 	return sdktx.UnpackInterfaces(unpacker, m.Messages)
@@ -132,12 +113,6 @@ func (m MsgSubmitProposal) UnpackInterfaces(unpacker codectypes.AnyUnpacker) err
 func NewMsgDeposit(depositor sdk.AccAddress, proposalID uint64, amount sdk.Coins) *MsgDeposit {
 	return &MsgDeposit{proposalID, depositor.String(), amount}
 }
-
-// Route implements the sdk.Msg interface.
-func (msg MsgDeposit) Route() string { return types.RouterKey }
-
-// Type implements the sdk.Msg interface.
-func (msg MsgDeposit) Type() string { return sdk.MsgTypeURL(&msg) }
 
 // ValidateBasic implements the sdk.Msg interface.
 func (msg MsgDeposit) ValidateBasic() error {
@@ -155,30 +130,12 @@ func (msg MsgDeposit) ValidateBasic() error {
 	return nil
 }
 
-// GetSignBytes returns the message bytes to sign over.
-func (msg MsgDeposit) GetSignBytes() []byte {
-	bz := codec.ModuleCdc.MustMarshalJSON(&msg)
-	return sdk.MustSortJSON(bz)
-}
-
-// GetSigners returns the expected signers for a MsgDeposit.
-func (msg MsgDeposit) GetSigners() []sdk.AccAddress {
-	depositor, _ := sdk.AccAddressFromBech32(msg.Depositor)
-	return []sdk.AccAddress{depositor}
-}
-
 // NewMsgVote creates a message to cast a vote on an active proposal
 //
 //nolint:interfacer
 func NewMsgVote(voter sdk.AccAddress, proposalID uint64, option VoteOption, metadata string) *MsgVote {
 	return &MsgVote{proposalID, voter.String(), option, metadata}
 }
-
-// Route implements the sdk.Msg interface.
-func (msg MsgVote) Route() string { return types.RouterKey }
-
-// Type implements the sdk.Msg interface.
-func (msg MsgVote) Type() string { return sdk.MsgTypeURL(&msg) }
 
 // ValidateBasic implements the sdk.Msg interface.
 func (msg MsgVote) ValidateBasic() error {
@@ -190,18 +147,6 @@ func (msg MsgVote) ValidateBasic() error {
 	}
 
 	return nil
-}
-
-// GetSignBytes returns the message bytes to sign over.
-func (msg MsgVote) GetSignBytes() []byte {
-	bz := codec.ModuleCdc.MustMarshalJSON(&msg)
-	return sdk.MustSortJSON(bz)
-}
-
-// GetSigners returns the expected signers for a MsgVote.
-func (msg MsgVote) GetSigners() []sdk.AccAddress {
-	voter, _ := sdk.AccAddressFromBech32(msg.Voter)
-	return []sdk.AccAddress{voter}
 }
 
 // NewMsgVoteWeighted creates a message to cast a vote on an active proposal
@@ -254,18 +199,6 @@ func (msg MsgVoteWeighted) ValidateBasic() error {
 	return nil
 }
 
-// GetSignBytes returns the message bytes to sign over.
-func (msg MsgVoteWeighted) GetSignBytes() []byte {
-	bz := codec.ModuleCdc.MustMarshalJSON(&msg)
-	return sdk.MustSortJSON(bz)
-}
-
-// GetSigners returns the expected signers for a MsgVoteWeighted.
-func (msg MsgVoteWeighted) GetSigners() []sdk.AccAddress {
-	voter, _ := sdk.AccAddressFromBech32(msg.Voter)
-	return []sdk.AccAddress{voter}
-}
-
 // NewMsgExecLegacyContent creates a new MsgExecLegacyContent instance
 //
 //nolint:interfacer
@@ -274,12 +207,6 @@ func NewMsgExecLegacyContent(content *codectypes.Any, authority string) *MsgExec
 		Content:   content,
 		Authority: authority,
 	}
-}
-
-// GetSigners returns the expected signers for a MsgExecLegacyContent.
-func (c MsgExecLegacyContent) GetSigners() []sdk.AccAddress {
-	authority, _ := sdk.AccAddressFromBech32(c.Authority)
-	return []sdk.AccAddress{authority}
 }
 
 // ValidateBasic implements the sdk.Msg interface.
@@ -298,12 +225,6 @@ func (c MsgExecLegacyContent) UnpackInterfaces(unpacker codectypes.AnyUnpacker) 
 	return unpacker.UnpackAny(c.Content, &content)
 }
 
-// Route implements the sdk.Msg interface.
-func (msg MsgUpdateParams) Route() string { return types.RouterKey }
-
-// Type implements the sdk.Msg interface.
-func (msg MsgUpdateParams) Type() string { return sdk.MsgTypeURL(&msg) }
-
 // ValidateBasic implements the sdk.Msg interface.
 func (msg MsgUpdateParams) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Authority); err != nil {
@@ -313,30 +234,12 @@ func (msg MsgUpdateParams) ValidateBasic() error {
 	return msg.Params.ValidateBasic()
 }
 
-// GetSignBytes returns the message bytes to sign over.
-func (msg MsgUpdateParams) GetSignBytes() []byte {
-	bz := codec.ModuleCdc.MustMarshalJSON(&msg)
-	return sdk.MustSortJSON(bz)
-}
-
-// GetSigners returns the expected signers for a MsgUpdateParams.
-func (msg MsgUpdateParams) GetSigners() []sdk.AccAddress {
-	authority, _ := sdk.AccAddressFromBech32(msg.Authority)
-	return []sdk.AccAddress{authority}
-}
-
 func NewMsgProposeConstitutionAmendment(authority sdk.AccAddress, amendment string) *MsgProposeConstitutionAmendment {
 	return &MsgProposeConstitutionAmendment{
 		Authority: authority.String(),
 		Amendment: amendment,
 	}
 }
-
-// Route implements the sdk.Msg interface.
-func (msg MsgProposeConstitutionAmendment) Route() string { return types.RouterKey }
-
-// Type implements the sdk.Msg interface.
-func (msg MsgProposeConstitutionAmendment) Type() string { return sdk.MsgTypeURL(&msg) }
 
 // ValidateBasic implements the sdk.Msg interface.
 func (msg MsgProposeConstitutionAmendment) ValidateBasic() error {
@@ -356,24 +259,6 @@ func (msg MsgProposeConstitutionAmendment) ValidateBasic() error {
 	return nil
 }
 
-// GetSignBytes returns the message bytes to sign over.
-func (msg MsgProposeConstitutionAmendment) GetSignBytes() []byte {
-	bz := codec.ModuleCdc.MustMarshalJSON(&msg)
-	return sdk.MustSortJSON(bz)
-}
-
-// GetSigners returns the expected signers for a MsgProposeConstitutionAmendment.
-func (msg MsgProposeConstitutionAmendment) GetSigners() []sdk.AccAddress {
-	authority, _ := sdk.AccAddressFromBech32(msg.Authority)
-	return []sdk.AccAddress{authority}
-}
-
-// Route implements the sdk.Msg interface.
-func (msg MsgProposeLaw) Route() string { return types.RouterKey }
-
-// Type implements the sdk.Msg interface.
-func (msg MsgProposeLaw) Type() string { return sdk.MsgTypeURL(&msg) }
-
 // ValidateBasic implements the sdk.Msg interface.
 func (msg MsgProposeLaw) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Authority); err != nil {
@@ -381,16 +266,4 @@ func (msg MsgProposeLaw) ValidateBasic() error {
 	}
 
 	return nil
-}
-
-// GetSignBytes returns the message bytes to sign over.
-func (msg MsgProposeLaw) GetSignBytes() []byte {
-	bz := codec.ModuleCdc.MustMarshalJSON(&msg)
-	return sdk.MustSortJSON(bz)
-}
-
-// GetSigners returns the expected signers for a MsgProposeLaw.
-func (msg MsgProposeLaw) GetSigners() []sdk.AccAddress {
-	authority, _ := sdk.AccAddressFromBech32(msg.Authority)
-	return []sdk.AccAddress{authority}
 }
