@@ -39,14 +39,14 @@ func init() {
 var (
 	minVotingPeriod, _                    = time.ParseDuration(MinVotingPeriod)
 	DefaultMinDepositTokens               = sdk.NewInt(10000000)
-	DefaultMaxQuorum                      = sdk.NewDecWithPrec(80, 2)
-	DefaultMinQuorum                      = sdk.NewDecWithPrec(20, 2)
+	DefaultMaxQuorum                      = sdk.NewDecWithPrec(50, 2)
+	DefaultMinQuorum                      = sdk.NewDecWithPrec(10, 2)
 	DefaultThreshold                      = sdk.NewDecWithPrec(667, 3)
-	DefaultMaxConstitutionAmendmentQuorum = sdk.NewDecWithPrec(80, 2)
-	DefaultMinConstitutionAmendmentQuorum = sdk.NewDecWithPrec(20, 2)
+	DefaultMaxConstitutionAmendmentQuorum = DefaultMaxQuorum
+	DefaultMinConstitutionAmendmentQuorum = DefaultMinQuorum
 	DefaultConstitutionAmendmentThreshold = sdk.NewDecWithPrec(9, 1)
-	DefaultMaxLawQuorum                   = sdk.NewDecWithPrec(80, 2)
-	DefaultMinLawQuorum                   = sdk.NewDecWithPrec(20, 2)
+	DefaultMaxLawQuorum                   = DefaultMaxQuorum
+	DefaultMinLawQuorum                   = DefaultMinQuorum
 	DefaultLawThreshold                   = sdk.NewDecWithPrec(9, 1)
 	// DefaultMinInitialDepositRatio         = sdk.ZeroDec()
 	DefaultBurnProposalPrevote = false                    // set to false to replicate behavior of when this change was made (0.47)
