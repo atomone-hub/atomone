@@ -57,7 +57,7 @@ import (
 	"github.com/atomone-hub/atomone/app/keepers"
 	"github.com/atomone-hub/atomone/app/upgrades"
 	v2 "github.com/atomone-hub/atomone/app/upgrades/v2"
-	v3 "github.com/atomone-hub/atomone/app/upgrades/v3"
+	v4 "github.com/atomone-hub/atomone/app/upgrades/v4"
 	"github.com/atomone-hub/atomone/x/gov"
 	govclient "github.com/atomone-hub/atomone/x/gov/client"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
@@ -67,7 +67,7 @@ var (
 	// DefaultNodeHome default home directories for the application daemon
 	DefaultNodeHome string
 
-	Upgrades = []upgrades.Upgrade{v2.Upgrade, v3.Upgrade}
+	Upgrades = []upgrades.Upgrade{v2.Upgrade, v4.Upgrade}
 )
 
 var (

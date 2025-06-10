@@ -1,4 +1,4 @@
-package v3
+package v4
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 )
 
-// CreateUpgradeHandler returns a upgrade handler for AtomOne v3
+// CreateUpgradeHandler returns a upgrade handler for AtomOne v4
 // This versions contains the upgrade to Cosmos SDK v0.50 and IBC v10
 func CreateUpgradeHandler(
 	mm *module.Manager,
