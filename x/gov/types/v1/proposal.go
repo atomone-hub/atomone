@@ -23,6 +23,28 @@ const (
 	StatusFailed        = ProposalStatus_PROPOSAL_STATUS_FAILED
 )
 
+// ProposalKinds is a bitmask representing which messages are listed in a
+// proposal.
+type ProposalKinds int
+
+const (
+	ProposalKindAny                   = 1 << iota // 0b001
+	ProposalKindLaw                               // 0b010
+	ProposalKindConstitutionAmendment             // 0b100
+)
+
+func (pk ProposalKinds) HasKindAny() bool {
+	return pk&ProposalKindAny != 0
+}
+
+func (pk ProposalKinds) HasKindConstitutionAmendment() bool {
+	return pk&ProposalKindConstitutionAmendment != 0
+}
+
+func (pk ProposalKinds) HasKindLaw() bool {
+	return pk&ProposalKindLaw != 0
+}
+
 // NewProposal creates a new Proposal instance
 func NewProposal(messages []sdk.Msg, id uint64, submitTime, depositEndTime time.Time, metadata, title, summary string, proposer sdk.AccAddress) (Proposal, error) {
 	msgs, err := sdktx.SetMsgs(messages)
@@ -65,10 +87,10 @@ var _ types.UnpackInterfacesMessage = Proposals{}
 
 // String implements stringer interface
 func (p Proposals) String() string {
-	out := "ID - (Status) [Type] Title\n"
+	out := "ID - (Status) - Title\n"
 	for _, prop := range p {
-		out += fmt.Sprintf("%d - %s\n",
-			prop.Id, prop.Status)
+		out += fmt.Sprintf("%d - (%s) - %s\n",
+			prop.Id, prop.Status, prop.Title)
 	}
 	return strings.TrimSpace(out)
 }

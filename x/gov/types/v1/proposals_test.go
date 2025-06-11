@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -42,4 +43,49 @@ func TestNestedAnys(t *testing.T) {
 	require.NoError(t, err)
 
 	require.Equal(t, "TODO Fix panic here", proposal.String())
+}
+
+func TestProposalKinds(t *testing.T) {
+	tests := []struct {
+		name                        string
+		kinds                       v1.ProposalKinds
+		expectedAny                 bool
+		expectedConstitutionAmdment bool
+		expectedLaw                 bool
+	}{
+		{
+			name:  "kinds 0",
+			kinds: 0,
+		},
+		{
+			name:        "kinds any",
+			kinds:       v1.ProposalKindAny,
+			expectedAny: true,
+		},
+		{
+			name:        "kinds law",
+			kinds:       v1.ProposalKindLaw,
+			expectedLaw: true,
+		},
+		{
+			name:                        "kinds constitution",
+			kinds:                       v1.ProposalKindConstitutionAmendment,
+			expectedConstitutionAmdment: true,
+		},
+		{
+			name:                        "kinds all",
+			kinds:                       v1.ProposalKindAny | v1.ProposalKindLaw | v1.ProposalKindConstitutionAmendment,
+			expectedAny:                 true,
+			expectedLaw:                 true,
+			expectedConstitutionAmdment: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert := assert.New(t)
+			assert.Equal(tt.expectedAny, tt.kinds.HasKindAny())
+			assert.Equal(tt.expectedConstitutionAmdment, tt.kinds.HasKindConstitutionAmendment())
+			assert.Equal(tt.expectedLaw, tt.kinds.HasKindLaw())
+		})
+	}
 }

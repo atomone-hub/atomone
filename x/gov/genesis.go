@@ -19,11 +19,24 @@ func InitGenesis(ctx sdk.Context, ak types.AccountKeeper, bk types.BankKeeper, k
 		panic(fmt.Sprintf("%s module params has not been set", types.ModuleName))
 	}
 	k.SetConstitution(ctx, data.Constitution)
+
 	participationEma, err := math.LegacyNewDecFromStr(data.ParticipationEma)
 	if err != nil {
 		panic(fmt.Sprintf("invalid value for participationEma %s: %v", data.ParticipationEma, err))
 	}
 	k.SetParticipationEMA(ctx, participationEma)
+
+	constitutionAmendmentparticipationEma, err := math.LegacyNewDecFromStr(data.ConstitutionAmendmentParticipationEma)
+	if err != nil {
+		panic(fmt.Sprintf("invalid value for constitutionAmendmentparticipationEma %s: %v", data.ConstitutionAmendmentParticipationEma, err))
+	}
+	k.SetConstitutionAmendmentParticipationEMA(ctx, constitutionAmendmentparticipationEma)
+
+	lawParticipationEma, err := math.LegacyNewDecFromStr(data.LawParticipationEma)
+	if err != nil {
+		panic(fmt.Sprintf("invalid value for lawParticipationEma %s: %v", data.LawParticipationEma, err))
+	}
+	k.SetLawParticipationEMA(ctx, lawParticipationEma)
 
 	// check if the deposits pool account exists
 	moduleAcc := k.GetGovernanceAccount(ctx)
@@ -98,6 +111,8 @@ func InitGenesis(ctx sdk.Context, ak types.AccountKeeper, bk types.BankKeeper, k
 func ExportGenesis(ctx sdk.Context, k *keeper.Keeper) *v1.GenesisState {
 	startingProposalID, _ := k.GetProposalID(ctx)
 	participationEma := k.GetParticipationEMA(ctx).String()
+	constitutionAmendmentParticipationEma := k.GetConstitutionAmendmentParticipationEMA(ctx).String()
+	lawParticipationEma := k.GetLawParticipationEMA(ctx).String()
 	proposals := k.GetProposals(ctx)
 	params := k.GetParams(ctx)
 	constitution := k.GetConstitution(ctx)
@@ -124,14 +139,16 @@ func ExportGenesis(ctx sdk.Context, k *keeper.Keeper) *v1.GenesisState {
 	}
 
 	return &v1.GenesisState{
-		StartingProposalId:    startingProposalID,
-		Deposits:              proposalsDeposits,
-		Votes:                 proposalsVotes,
-		Proposals:             proposals,
-		Params:                &params,
-		Constitution:          constitution,
-		LastMinDeposit:        &lastMinDeposit,
-		LastMinInitialDeposit: &lastMinInitialDeposit,
-		ParticipationEma:      participationEma,
+		StartingProposalId:                    startingProposalID,
+		Deposits:                              proposalsDeposits,
+		Votes:                                 proposalsVotes,
+		Proposals:                             proposals,
+		Params:                                &params,
+		Constitution:                          constitution,
+		LastMinDeposit:                        &lastMinDeposit,
+		LastMinInitialDeposit:                 &lastMinInitialDeposit,
+		ParticipationEma:                      participationEma,
+		ConstitutionAmendmentParticipationEma: constitutionAmendmentParticipationEma,
+		LawParticipationEma:                   lawParticipationEma,
 	}
 }

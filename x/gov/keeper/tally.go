@@ -177,43 +177,22 @@ func (keeper Keeper) tallyVotes(
 	return totalVotingPower, results
 }
 
-// getQuorumAndThreshold iterates over the proposal's messages to returns the
-// appropriate quorum and threshold.
-func (keeper Keeper) getQuorumAndThreshold(ctx sdk.Context, proposal v1.Proposal) (sdk.Dec, sdk.Dec) {
+// getQuorumAndThreshold returns the appropriate quorum and threshold according
+// to proposal kind.
+func (keeper Keeper) getQuorumAndThreshold(ctx sdk.Context, proposal v1.Proposal) (quorum sdk.Dec, threshold sdk.Dec) {
 	params := keeper.GetParams(ctx)
-	quorum := keeper.GetQuorum(ctx)
-	threshold := sdk.MustNewDecFromStr(params.Threshold)
-
-	// Check if a proposal messages contains a MsgProposeLaw or a
-	// MsgProposeConstitutionAmendment which affects quorum and threshold.
-	if len(proposal.Messages) > 0 {
-		var sdkMsg sdk.Msg
-		for _, msg := range proposal.Messages {
-			if err := keeper.cdc.UnpackAny(msg, &sdkMsg); err == nil {
-				// Check if proposal is a law or constitution amendment and adjust the
-				// quorum and threshold accordingly
-				switch sdkMsg.(type) {
-				case *v1.MsgProposeConstitutionAmendment:
-					q := keeper.GetConstitutionAmendmentQuorum(ctx)
-					if quorum.LT(q) {
-						quorum = q
-					}
-					t := sdk.MustNewDecFromStr(params.ConstitutionAmendmentThreshold)
-					if threshold.LT(t) {
-						threshold = t
-					}
-				case *v1.MsgProposeLaw:
-					q := keeper.GetLawQuorum(ctx)
-					if quorum.LT(q) {
-						quorum = q
-					}
-					t := sdk.MustNewDecFromStr(params.LawThreshold)
-					if threshold.LT(t) {
-						threshold = t
-					}
-				}
-			}
-		}
+	kinds := keeper.ProposalKinds(proposal)
+	if kinds.HasKindConstitutionAmendment() {
+		quorum = keeper.GetConstitutionAmendmentQuorum(ctx)
+		threshold = sdk.MustNewDecFromStr(params.ConstitutionAmendmentThreshold)
+		return
 	}
-	return quorum, threshold
+	if kinds.HasKindLaw() {
+		quorum = keeper.GetLawQuorum(ctx)
+		threshold = sdk.MustNewDecFromStr(params.LawThreshold)
+		return
+	}
+	quorum = keeper.GetQuorum(ctx)
+	threshold = sdk.MustNewDecFromStr(params.Threshold)
+	return
 }

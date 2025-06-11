@@ -198,7 +198,7 @@ func EndBlocker(ctx sdk.Context, keeper *keeper.Keeper) {
 		keeper.SetProposal(ctx, proposal)
 		keeper.RemoveFromActiveProposalQueue(ctx, proposal.Id, *proposal.VotingEndTime)
 		keeper.DecrementActiveProposalsNumber(ctx)
-		keeper.UpdateParticipationEMA(ctx, participation)
+		keeper.UpdateParticipationEMA(ctx, proposal, participation)
 
 		// when proposal become active
 		keeper.Hooks().AfterProposalVotingPeriodEnded(ctx, proposal.Id)

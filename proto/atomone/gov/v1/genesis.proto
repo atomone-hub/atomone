@@ -44,4 +44,10 @@ message GenesisState {
   
   // governance participation EMA
   string participation_ema = 12 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  
+  // governance participation EMA for constitution amendment proposals.
+  string constitution_amendment_participation_ema = 13 [(cosmos_proto.scalar) = "cosmos.Dec"];
+
+  // governance participation EMA for law proposals.
+  string law_participation_ema = 14 [(cosmos_proto.scalar) = "cosmos.Dec"];
 }

@@ -354,7 +354,7 @@ func RandomizedGenState(simState *module.SimulationState) {
 	simState.AppParams.GetOrGenerate(simState.Cdc, MaxQuorum, &maxQuorum, simState.Rand, func(r *rand.Rand) { maxQuorum = GenMaxQuorum(r) })
 
 	govGenesis := v1.NewGenesisState(
-		startingProposalID, startingParticipationEma,
+		startingProposalID, startingParticipationEma, startingParticipationEma, startingParticipationEma,
 		v1.NewParams(depositPeriod, votingPeriod, threshold.String(), amendmentsThreshold.String(), lawThreshold.String(),
 			simState.Rand.Intn(2) == 0, simState.Rand.Intn(2) == 0, minDepositRatio.String(), quorumTimout,
 			maxVotingPeriodExtension, quorumCheckCount, minDepositFloor, minDepositUpdatePeriod,

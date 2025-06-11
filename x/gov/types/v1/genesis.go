@@ -10,11 +10,15 @@ import (
 )
 
 // NewGenesisState creates a new genesis state for the governance module
-func NewGenesisState(startingProposalID uint64, participationEma string, params Params) *GenesisState {
+func NewGenesisState(startingProposalID uint64, participationEma,
+	constitutionParticipationEma, lawParticipationEma string, params Params,
+) *GenesisState {
 	return &GenesisState{
-		StartingProposalId: startingProposalID,
-		ParticipationEma:   participationEma,
-		Params:             &params,
+		StartingProposalId:                    startingProposalID,
+		ParticipationEma:                      participationEma,
+		ConstitutionAmendmentParticipationEma: constitutionParticipationEma,
+		LawParticipationEma:                   lawParticipationEma,
+		Params:                                &params,
 	}
 }
 
@@ -22,6 +26,8 @@ func NewGenesisState(startingProposalID uint64, participationEma string, params 
 func DefaultGenesisState() *GenesisState {
 	return NewGenesisState(
 		DefaultStartingProposalID,
+		DefaultParticipationEma,
+		DefaultParticipationEma,
 		DefaultParticipationEma,
 		DefaultParams(),
 	)

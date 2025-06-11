@@ -53,6 +53,8 @@ func initGovDynamicQuorum(ctx sdk.Context, govKeeper *govkeeper.Keeper) error {
 	// NOTE(tb): Disregarding whales' votes, the current participation is less than 12%
 	initParticipationEma := sdk.NewDecWithPrec(12, 2)
 	govKeeper.SetParticipationEMA(ctx, initParticipationEma)
+	govKeeper.SetConstitutionAmendmentParticipationEMA(ctx, initParticipationEma)
+	govKeeper.SetLawParticipationEMA(ctx, initParticipationEma)
 	ctx.Logger().Info("Gov module initialized for dynamic quorum")
 	return nil
 }
