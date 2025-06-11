@@ -337,5 +337,5 @@ func (k Keeper) ProposalKinds(p v1.Proposal) v1.ProposalKinds {
 			}
 		}
 	}
-	return v1.ProposalKinds(kinds)
+	return kinds
 }

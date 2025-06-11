@@ -197,6 +197,7 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 	amendmentsThreshold := "0.000000000000000001"
 	minQuorum := "0.2"
 	maxQuorum := "0.8"
+	participationEma := "0.25"
 	minConstitutionAmendmentQuorum := "0.2"
 	maxConstitutionAmendmentQuorum := "0.8"
 	minLawQuorum := "0.2"
@@ -206,7 +207,7 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 	votingPeriod := 15 * time.Second
 
 	govGenState := govv1.NewGenesisState(1,
-		"0.25",
+		participationEma, participationEma, participationEma,
 		govv1.NewParams(
 			// sdk.NewCoins(sdk.NewCoin(denom, depositAmount.Amount)),
 			maxDepositPeriod,
