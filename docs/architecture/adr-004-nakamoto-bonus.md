@@ -20,7 +20,7 @@ At the time of writing, the AtomOne chain suffers from a concentration of delega
 The chain reward is distributed across validators using an even distribution weighted by stake. This means that the reward a validator `j` receives after validating block `i` can be computed as follows:
 
 $$
-r_{ji} = \frac {x_{ji}}{S_i} * R_i.
+r_{ji} = \frac {x_{ji}}{S_i} \times R_i
 $$
 
 Where:
@@ -34,7 +34,7 @@ Where:
 Additionally, the reward obtained by a validator is further divided using a even distribution weighted by delegation across the delegators. Hence, the reward received by delegator $k$, that delegated his stake to validator $j$ for block $i$ can be computed as:
 
 $$
-rd_{ki} = \frac {d_{ki}}{x_{ji}} * r_{ji}.
+rd_{ki} = \frac {d_{ki}}{x_{ji}} \times r_{ji}
 $$
 
 
@@ -72,7 +72,7 @@ This means, that from the point of view of a delegator, the decision on which va
 In this ADR, we propose to split the reward in two components, proportional reward (PR) and Nakamoto Bonus (NB) such that:
 
 $$
-R_i = PR_i + NB_i.
+R_i = PR_i + NB_i
 $$
 
 Where:
@@ -80,7 +80,7 @@ Where:
 - $PR_i$ is the proportional reward for block $i$.
 - $NB_i$ is the Nakamoto Bonus for block $i$.
 
-Moreover, we define a new parameter $\eta : 0 \le eta \le 1$ that specifies how NB is computed from the reward: $NB_i = R_i * \eta$.
+Moreover, we define a new parameter $\eta \in [0,1]$ that specifies how NB is computed from the reward: $NB_i = R_i \times \eta$.
 Increasing $\eta$ increases NB, and decreasing it, decreases NB.
 
 The reward obtained by a validator $j$ at block $i$ is computed as:
