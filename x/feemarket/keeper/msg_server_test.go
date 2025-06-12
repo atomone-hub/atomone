@@ -3,12 +3,13 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/atomone-hub/atomone/x/feemarket/testutil"
-	"github.com/atomone-hub/atomone/x/feemarket/types"
 	"github.com/stretchr/testify/require"
 
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+
+	"github.com/atomone-hub/atomone/x/feemarket/testutil"
+	"github.com/atomone-hub/atomone/x/feemarket/types"
+	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 )
 
 func TestMsgUpdateParams(t *testing.T) {

@@ -19,12 +19,12 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	modulev1 "github.com/atomone-hub/atomone/api/atomone/feemarket/module/v1"
 	"github.com/atomone-hub/atomone/x/feemarket/client/cli"
 	"github.com/atomone-hub/atomone/x/feemarket/keeper"
 	"github.com/atomone-hub/atomone/x/feemarket/types"
+	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 )
 
 // ConsensusVersion is the x/feemarket module's consensus version identifier.
