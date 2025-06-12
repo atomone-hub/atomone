@@ -80,10 +80,17 @@ func NewDepositParams(minDeposit sdk.Coins, maxDepositPeriod *time.Duration) Dep
 }
 
 // Deprecated: NewTallyParams creates a new TallyParams object
-func NewTallyParams(quorum, threshold string) TallyParams {
+func NewTallyParams(quorum, threshold,
+	constitutionAmendmentQuorum, constitutionAmendmentThreshold,
+	lawQuorum, lawThreshold string,
+) TallyParams {
 	return TallyParams{
-		Quorum:    quorum,
-		Threshold: threshold,
+		Quorum:                         quorum,
+		Threshold:                      threshold,
+		ConstitutionAmendmentQuorum:    constitutionAmendmentQuorum,
+		ConstitutionAmendmentThreshold: constitutionAmendmentThreshold,
+		LawQuorum:                      lawQuorum,
+		LawThreshold:                   lawThreshold,
 	}
 }
 
@@ -201,6 +208,15 @@ func (p Params) ValidateBasic() error {
 	//    after all this value is not used anymore in the codebase
 	if len(p.MinDeposit) > 0 {
 		return fmt.Errorf("manually setting min deposit is deprecated in favor of a dynamic min deposit")
+	}
+	if len(p.Quorum) > 0 {
+		return fmt.Errorf("manually setting quorum is deprecated in favor of a dynamic quorum")
+	}
+	if len(p.ConstitutionAmendmentQuorum) > 0 {
+		return fmt.Errorf("manually setting constitutionAmendmentQuorum is deprecated in favor of a dynamic quorum")
+	}
+	if len(p.LawQuorum) > 0 {
+		return fmt.Errorf("manually setting lawQuorum is deprecated in favor of a dynamic quorum")
 	}
 
 	if p.MaxDepositPeriod == nil {

@@ -254,4 +254,11 @@ message QueryQuorumRequest {}
 message QueryQuorumResponse {
   // quorum defines the requested quorum.
   string quorum = 1 [ (cosmos_proto.scalar) = "cosmos.Dec" ];
+
+  // constitution_amendment_quorum defines the requested quorum for
+  // constitution amendment proposals.
+  string constitution_amendment_quorum = 2 [ (cosmos_proto.scalar) = "cosmos.Dec" ];
+
+  // law_quorum defines the requested quorum for law proposals.
+  string law_quorum = 3 [ (cosmos_proto.scalar) = "cosmos.Dec" ];
 }

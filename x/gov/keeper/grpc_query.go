@@ -167,7 +167,11 @@ func (q Keeper) Params(c context.Context, req *v1.QueryParamsRequest) (*v1.Query
 
 	ctx := sdk.UnwrapSDKContext(c)
 	params := q.GetParams(ctx)
+	// NOTE: feed deprecated parameters with dynamic values for backward compat
 	params.MinDeposit = q.GetMinDeposit(ctx)
+	params.Quorum = q.GetQuorum(ctx).String()
+	params.ConstitutionAmendmentQuorum = q.GetConstitutionAmendmentQuorum(ctx).String()
+	params.LawQuorum = q.GetLawQuorum(ctx).String()
 
 	response := &v1.QueryParamsResponse{}
 
@@ -182,7 +186,11 @@ func (q Keeper) Params(c context.Context, req *v1.QueryParamsRequest) (*v1.Query
 		response.VotingParams = &votingParams
 
 	case v1.ParamTallying:
-		tallyParams := v1.NewTallyParams(q.GetQuorum(ctx).String(), params.Threshold)
+		tallyParams := v1.NewTallyParams(
+			params.Quorum, params.Threshold,
+			params.ConstitutionAmendmentQuorum, params.ConstitutionAmendmentThreshold,
+			params.LawQuorum, params.LawThreshold,
+		)
 		response.TallyParams = &tallyParams
 
 	default:
@@ -310,9 +318,11 @@ func (q Keeper) MinInitialDeposit(c context.Context, req *v1.QueryMinInitialDepo
 // Quorum returns the current quorum
 func (q Keeper) Quorum(c context.Context, _ *v1.QueryQuorumRequest) (*v1.QueryQuorumResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	quorum := q.GetQuorum(ctx)
-
-	return &v1.QueryQuorumResponse{Quorum: quorum.String()}, nil
+	return &v1.QueryQuorumResponse{
+		Quorum:                      q.GetQuorum(ctx).String(),
+		ConstitutionAmendmentQuorum: q.GetConstitutionAmendmentQuorum(ctx).String(),
+		LawQuorum:                   q.GetLawQuorum(ctx).String(),
+	}, nil
 }
 
 var _ v1beta1.QueryServer = legacyQueryServer{}

@@ -1067,7 +1067,12 @@ type Params struct {
 	// Duration of the voting period.
 	VotingPeriod *time.Duration `protobuf:"bytes,3,opt,name=voting_period,json=votingPeriod,proto3,stdduration" json:"voting_period,omitempty"`
 	// Minimum percentage of total stake needed to vote for a result to be
-	// considered valid. Default value: 0.25.
+	// considered valid. 
+	// Deprecated: a dynamic system now determines the quorum, see ADR-005 for
+	// implementation details.
+	// While setting this value returns an error, when queried it is set to the
+	// value of the current quorum value as determined by the dynamic system for
+	// backward compatibility.
 	Quorum string `protobuf:"bytes,4,opt,name=quorum,proto3" json:"quorum,omitempty"` // Deprecated: Do not use.
 	// Minimum proportion of Yes votes for proposal to pass. Default value: 2/3.
 	Threshold string `protobuf:"bytes,5,opt,name=threshold,proto3" json:"threshold,omitempty"`
@@ -1086,10 +1091,20 @@ type Params struct {
 	// NOTE: backported from v50 (https://github.com/cosmos/cosmos-sdk/pull/18146)
 	MinDepositRatio string `protobuf:"bytes,15,opt,name=min_deposit_ratio,json=minDepositRatio,proto3" json:"min_deposit_ratio,omitempty"`
 	// quorum for constitution amendment proposals
+	// Deprecated: a dynamic system now determines the quorum, see ADR-005 for
+	// implementation details.
+	// While setting this value returns an error, when queried it is set to the
+	// value of the current quorum value as determined by the dynamic system for
+	// backward compatibility.
 	ConstitutionAmendmentQuorum string `protobuf:"bytes,16,opt,name=constitution_amendment_quorum,json=constitutionAmendmentQuorum,proto3" json:"constitution_amendment_quorum,omitempty"` // Deprecated: Do not use.
 	// Minimum proportion of Yes votes for a Constitution Amendment proposal to pass. Default value: 0.9.
 	ConstitutionAmendmentThreshold string `protobuf:"bytes,17,opt,name=constitution_amendment_threshold,json=constitutionAmendmentThreshold,proto3" json:"constitution_amendment_threshold,omitempty"`
 	// quorum for law proposals
+	// Deprecated: a dynamic system now determines the quorum, see ADR-005 for
+	// implementation details.
+	// While setting this value returns an error, when queried it is set to the
+	// value of the current quorum value as determined by the dynamic system for
+	// backward compatibility.
 	LawQuorum string `protobuf:"bytes,18,opt,name=law_quorum,json=lawQuorum,proto3" json:"law_quorum,omitempty"` // Deprecated: Do not use.
 	// Minimum proportion of Yes votes for a Law proposal to pass. Default value: 0.9.
 	LawThreshold string `protobuf:"bytes,19,opt,name=law_threshold,json=lawThreshold,proto3" json:"law_threshold,omitempty"`

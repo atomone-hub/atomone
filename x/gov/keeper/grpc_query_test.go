@@ -847,6 +847,9 @@ func (suite *KeeperTestSuite) TestGRPCQueryParams() {
 
 	params := v1.DefaultParams()
 	params.MinDeposit = params.MinDepositThrottler.FloorValue
+	params.Quorum = "0.300000000000000000"
+	params.ConstitutionAmendmentQuorum = "0.300000000000000000"
+	params.LawQuorum = "0.300000000000000000"
 
 	var (
 		req    *v1.QueryParamsRequest
@@ -896,7 +899,11 @@ func (suite *KeeperTestSuite) TestGRPCQueryParams() {
 			"tally params request",
 			func(suite *KeeperTestSuite) {
 				req = &v1.QueryParamsRequest{ParamsType: v1.ParamTallying}
-				tallyParams := v1.NewTallyParams("0.300000000000000000", params.Threshold)
+				tallyParams := v1.NewTallyParams(
+					"0.300000000000000000", params.Threshold,
+					"0.300000000000000000", params.ConstitutionAmendmentThreshold,
+					"0.300000000000000000", params.LawThreshold,
+				)
 				expRes = &v1.QueryParamsResponse{
 					TallyParams: &tallyParams,
 					Params:      &params,

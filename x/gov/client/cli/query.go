@@ -555,7 +555,11 @@ $ %s query gov params
 				return err
 			}
 
-			tp := v1.NewTallyParams(quorumRes.Quorum, res.Params.Threshold)
+			tp := v1.NewTallyParams(
+				quorumRes.Quorum, res.Params.Threshold,
+				quorumRes.ConstitutionAmendmentQuorum, res.Params.ConstitutionAmendmentThreshold,
+				quorumRes.LawQuorum, res.Params.LawThreshold,
+			)
 			res.TallyParams = &tp
 
 			return clientCtx.PrintProto(res)
