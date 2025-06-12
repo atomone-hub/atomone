@@ -317,8 +317,8 @@ func (keeper Keeper) UnmarshalProposal(bz []byte, proposal *v1.Proposal) error {
 	return nil
 }
 
-// ProposalKinds returns a v1.ProposalKinds useful to determine which messages
-// are included in a proposal.
+// ProposalKinds returns a v1.ProposalKinds useful to determine which kind of
+// messages are included in a proposal.
 func (k Keeper) ProposalKinds(p v1.Proposal) v1.ProposalKinds {
 	if len(p.Messages) == 0 {
 		return v1.ProposalKindAny
