@@ -38,10 +38,8 @@ import (
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	mintkeeper "github.com/cosmos/cosmos-sdk/x/mint/keeper"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	"github.com/cosmos/cosmos-sdk/x/params"
 	paramskeeper "github.com/cosmos/cosmos-sdk/x/params/keeper"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	paramproposal "github.com/cosmos/cosmos-sdk/x/params/types/proposal"
 	slashingkeeper "github.com/cosmos/cosmos-sdk/x/slashing/keeper"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
@@ -247,17 +245,8 @@ func NewAppKeeper(
 		authorityStr,
 	)
 
-	// Register the proposal types
-	// Deprecated: Avoid adding new handlers, instead use the new proposal flow
-	// by granting the governance module the right to execute the message.
-	// See: https://docs.cosmos.network/main/modules/gov#proposal-messages
-	govRouter := govv1beta1.NewRouter()
-	govRouter.
-		AddRoute(govtypes.RouterKey, govv1beta1.ProposalHandler).
-		AddRoute(paramproposal.RouterKey, govv1beta1.WrapSDKHandler(params.NewParamChangeProposalHandler(appKeepers.ParamsKeeper)))
-
 	// Set legacy router for backwards compatibility with gov v1beta1
-	appKeepers.GovKeeper.SetLegacyRouter(govRouter)
+	appKeepers.GovKeeper.SetLegacyRouter(govv1beta1.NewRouter())
 
 	evidenceKeeper := evidencekeeper.NewKeeper(
 		appCodec,

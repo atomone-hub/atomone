@@ -11,7 +11,6 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkgovtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	"github.com/atomone-hub/atomone/x/gov/client/testutil"
 	"github.com/atomone-hub/atomone/x/gov/types"
@@ -149,11 +148,11 @@ func (suite *KeeperTestSuite) TestSubmitProposal() {
 		{&v1beta1.TextProposal{Title: "title", Description: ""}, govAcct, "", nil},
 		{&v1beta1.TextProposal{Title: "title", Description: strings.Repeat("1234567890", 1000)}, govAcct, "", nil},
 		// error when metadata is too long (>10000)
-		{&tp, govAcct, strings.Repeat("a", 100001), sdkgovtypes.ErrMetadataTooLong},
+		{&tp, govAcct, strings.Repeat("a", 100001), types.ErrMetadataTooLong},
 		// error when signer is not gov acct
-		{&tp, randomAddr.String(), "", sdkgovtypes.ErrInvalidSigner},
+		{&tp, randomAddr.String(), "", types.ErrInvalidSigner},
 		// error only when invalid route
-		{&invalidProposalRoute{}, govAcct, "", sdkgovtypes.ErrNoProposalHandlerExists},
+		{&invalidProposalRoute{}, govAcct, "", types.ErrNoProposalHandlerExists},
 	}
 
 	for i, tc := range testCases {

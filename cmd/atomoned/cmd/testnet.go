@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 
+	atomone "github.com/atomone-hub/atomone/app"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
@@ -16,8 +17,12 @@ import (
 	"github.com/cometbft/cometbft/types"
 	tmtime "github.com/cometbft/cometbft/types/time"
 
+	"cosmossdk.io/log"
 	"cosmossdk.io/math"
+	pruningtypes "cosmossdk.io/store/pruning/types"
 
+	dbm "github.com/cosmos/cosmos-db"
+	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
@@ -26,9 +31,13 @@ import (
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	"github.com/cosmos/cosmos-sdk/server"
 	srvconfig "github.com/cosmos/cosmos-sdk/server/config"
+	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	"github.com/cosmos/cosmos-sdk/testutil"
+	"github.com/cosmos/cosmos-sdk/testutil/network"
+	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
@@ -122,7 +131,7 @@ or a similar setup where each node has a manually configurable IP address.
 Note, strict routability for addresses is turned off in the config file.
 
 Example:
-	simd testnet init-files --v 4 --output-dir ./.testnets --starting-ip-address 192.168.10.2
+	atomeoned testnet init-files --v 4 --output-dir ./.testnets --starting-ip-address 192.168.10.2
 	`,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -167,7 +176,7 @@ and generate "v" directories, populated with necessary validator configuration f
 (private validator, genesis, config, etc.).
 
 Example:
-	simd testnet --v 4 --output-dir ./.testnets
+	atomoned testnet --v 4 --output-dir ./.testnets
 	`,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			args := startArgs{}
@@ -212,13 +221,13 @@ func initTestnetFiles(
 	nodeIDs := make([]string, args.numValidators)
 	valPubKeys := make([]cryptotypes.PubKey, args.numValidators)
 
-	simappConfig := srvconfig.DefaultConfig()
-	simappConfig.MinGasPrices = args.minGasPrices
-	simappConfig.API.Enable = true
-	simappConfig.Telemetry.Enabled = true
-	simappConfig.Telemetry.PrometheusRetentionTime = 60
-	simappConfig.Telemetry.EnableHostnameLabel = false
-	simappConfig.Telemetry.GlobalLabels = [][]string{{"chain_id", args.chainID}}
+	atomoneConfig := srvconfig.DefaultConfig()
+	atomoneConfig.MinGasPrices = args.minGasPrices
+	atomoneConfig.API.Enable = true
+	atomoneConfig.Telemetry.Enabled = true
+	atomoneConfig.Telemetry.PrometheusRetentionTime = 60
+	atomoneConfig.Telemetry.EnableHostnameLabel = false
+	atomoneConfig.Telemetry.GlobalLabels = [][]string{{"chain_id", args.chainID}}
 
 	var (
 		genAccounts []authtypes.GenesisAccount
@@ -336,7 +345,7 @@ func initTestnetFiles(
 			return err
 		}
 
-		srvconfig.WriteConfigFile(filepath.Join(nodeDir, "config", "app.toml"), simappConfig)
+		srvconfig.WriteConfigFile(filepath.Join(nodeDir, "config", "app.toml"), atomoneConfig)
 	}
 
 	if err := initGenFiles(clientCtx, mbm, args.chainID, genAccounts, genBalances, genFiles, args.numValidators); err != nil {
@@ -488,43 +497,73 @@ func writeFile(name string, dir string, contents []byte) error {
 
 // startTestnet starts an in-process testnet
 func startTestnet(cmd *cobra.Command, args startArgs) error {
-	// networkConfig := network.DefaultConfig(simapp.NewTestNetworkFixture)
+	networkConfig := network.DefaultConfig(NewTestNetworkFixture)
 
-	// // Default networkConfig.ChainID is random, and we should only override it if chainID provided
-	// // is non-empty
-	// if args.chainID != "" {
-	// 	networkConfig.ChainID = args.chainID
-	// }
-	// networkConfig.SigningAlgo = args.algo
-	// networkConfig.MinGasPrices = args.minGasPrices
-	// networkConfig.NumValidators = args.numValidators
-	// networkConfig.EnableTMLogging = args.enableLogging
-	// networkConfig.RPCAddress = args.rpcAddress
-	// networkConfig.APIAddress = args.apiAddress
-	// networkConfig.GRPCAddress = args.grpcAddress
-	// networkConfig.PrintMnemonic = args.printMnemonic
-	// networkLogger := network.NewCLILogger(cmd)
+	// Default networkConfig.ChainID is random, and we should only override it if chainID provided
+	// is non-empty
+	if args.chainID != "" {
+		networkConfig.ChainID = args.chainID
+	}
+	networkConfig.SigningAlgo = args.algo
+	networkConfig.MinGasPrices = args.minGasPrices
+	networkConfig.NumValidators = args.numValidators
+	networkConfig.RPCAddress = args.rpcAddress
+	networkConfig.APIAddress = args.apiAddress
+	networkConfig.GRPCAddress = args.grpcAddress
+	networkConfig.PrintMnemonic = args.printMnemonic
+	networkLogger := network.NewCLILogger(cmd)
 
-	// baseDir := fmt.Sprintf("%s/%s", args.outputDir, networkConfig.ChainID)
-	// if _, err := os.Stat(baseDir); !os.IsNotExist(err) {
-	// 	return fmt.Errorf(
-	// 		"testnests directory already exists for chain-id '%s': %s, please remove or select a new --chain-id",
-	// 		networkConfig.ChainID, baseDir)
-	// }
+	baseDir := fmt.Sprintf("%s/%s", args.outputDir, networkConfig.ChainID)
+	if _, err := os.Stat(baseDir); !os.IsNotExist(err) {
+		return fmt.Errorf(
+			"testnests directory already exists for chain-id '%s': %s, please remove or select a new --chain-id",
+			networkConfig.ChainID, baseDir)
+	}
 
-	// testnet, err := network.New(networkLogger, baseDir, networkConfig)
-	// if err != nil {
-	// 	return err
-	// }
+	testnet, err := network.New(networkLogger, baseDir, networkConfig)
+	if err != nil {
+		return err
+	}
 
-	// if _, err := testnet.WaitForHeight(1); err != nil {
-	// 	return err
-	// }
-	// cmd.Println("press the Enter Key to terminate")
-	// if _, err := fmt.Scanln(); err != nil { // wait for Enter Key
-	// 	return err
-	// }
-	// testnet.Cleanup()
+	if _, err := testnet.WaitForHeight(1); err != nil {
+		return err
+	}
+	cmd.Println("press the Enter Key to terminate")
+	if _, err := fmt.Scanln(); err != nil { // wait for Enter Key
+		return err
+	}
+	testnet.Cleanup()
 
 	return nil
+}
+
+func NewTestNetworkFixture() network.TestFixture {
+	dir, err := os.MkdirTemp("", atomone.DefaultNodeHome)
+	if err != nil {
+		panic(fmt.Sprintf("failed creating temporary directory: %v", err))
+	}
+	defer os.RemoveAll(dir)
+
+	app := atomone.NewAtomOneApp(log.NewNopLogger(), dbm.NewMemDB(), nil, true, simtestutil.NewAppOptionsWithFlagHome(dir))
+
+	appCtr := func(val network.ValidatorI) servertypes.Application {
+		return atomone.NewAtomOneApp(
+			val.GetCtx().Logger, dbm.NewMemDB(), nil, true,
+			simtestutil.NewAppOptionsWithFlagHome(val.GetCtx().Config.RootDir),
+			baseapp.SetPruning(pruningtypes.NewPruningOptionsFromString(val.GetAppConfig().Pruning)),
+			baseapp.SetMinGasPrices(val.GetAppConfig().MinGasPrices),
+			baseapp.SetChainID(val.GetCtx().Viper.GetString(flags.FlagChainID)),
+		)
+	}
+
+	return network.TestFixture{
+		AppConstructor: appCtr,
+		GenesisState:   app.DefaultGenesis(),
+		EncodingConfig: moduletestutil.TestEncodingConfig{
+			InterfaceRegistry: app.InterfaceRegistry(),
+			Codec:             app.AppCodec(),
+			TxConfig:          app.TxConfig(),
+			Amino:             app.LegacyAmino(),
+		},
+	}
 }

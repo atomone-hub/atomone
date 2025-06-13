@@ -11,7 +11,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	sdkgovtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	"github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
@@ -264,7 +263,7 @@ func (keeper Keeper) QuorumCheckQueueIterator(ctx sdk.Context, endTime time.Time
 // is greater than a pre-defined MaxMetadataLen.
 func (keeper Keeper) assertMetadataLength(metadata string) error {
 	if metadata != "" && uint64(len(metadata)) > keeper.config.MaxMetadataLen {
-		return sdkgovtypes.ErrMetadataTooLong.Wrapf("got metadata with length %d", len(metadata))
+		return types.ErrMetadataTooLong.Wrapf("got metadata with length %d", len(metadata))
 	}
 	return nil
 }
