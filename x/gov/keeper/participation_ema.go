@@ -83,8 +83,8 @@ func (k Keeper) updateParticipationEMAByKey(ctx sdk.Context, key []byte, partici
 func (k Keeper) GetQuorum(ctx sdk.Context) math.LegacyDec {
 	params := k.GetParams(ctx)
 	participation := k.GetParticipationEMA(ctx)
-	minQuorum := math.LegacyMustNewDecFromStr(params.MinQuorum)
-	maxQuorum := math.LegacyMustNewDecFromStr(params.MaxQuorum)
+	minQuorum := math.LegacyMustNewDecFromStr(params.QuorumRange.Min)
+	maxQuorum := math.LegacyMustNewDecFromStr(params.QuorumRange.Max)
 	return computeQuorum(participation, minQuorum, maxQuorum)
 }
 
@@ -93,8 +93,8 @@ func (k Keeper) GetQuorum(ctx sdk.Context) math.LegacyDec {
 func (k Keeper) GetConstitutionAmendmentQuorum(ctx sdk.Context) math.LegacyDec {
 	params := k.GetParams(ctx)
 	participation := k.GetConstitutionAmendmentParticipationEMA(ctx)
-	minQuorum := math.LegacyMustNewDecFromStr(params.MinConstitutionAmendmentQuorum)
-	maxQuorum := math.LegacyMustNewDecFromStr(params.MaxConstitutionAmendmentQuorum)
+	minQuorum := math.LegacyMustNewDecFromStr(params.ConstitutionAmendmentQuorumRange.Min)
+	maxQuorum := math.LegacyMustNewDecFromStr(params.ConstitutionAmendmentQuorumRange.Max)
 	return computeQuorum(participation, minQuorum, maxQuorum)
 }
 
@@ -103,8 +103,8 @@ func (k Keeper) GetConstitutionAmendmentQuorum(ctx sdk.Context) math.LegacyDec {
 func (k Keeper) GetLawQuorum(ctx sdk.Context) math.LegacyDec {
 	params := k.GetParams(ctx)
 	participation := k.GetLawParticipationEMA(ctx)
-	minQuorum := math.LegacyMustNewDecFromStr(params.MinLawQuorum)
-	maxQuorum := math.LegacyMustNewDecFromStr(params.MaxLawQuorum)
+	minQuorum := math.LegacyMustNewDecFromStr(params.LawQuorumRange.Min)
+	maxQuorum := math.LegacyMustNewDecFromStr(params.LawQuorumRange.Max)
 	return computeQuorum(participation, minQuorum, maxQuorum)
 }
 

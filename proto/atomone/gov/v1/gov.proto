@@ -350,21 +350,20 @@ message Params {
   // Minimum proportion of No Votes for a proposal deposit to be burnt.
   string burn_deposit_no_threshold = 25 [(cosmos_proto.scalar) = "cosmos.Dec"];
 
+  // Achievable quorum
+  QuorumRange quorum_range = 26 [(cosmos_proto.scalar) = "cosmos.Dec"];
+
+  // Achievable quorum for constitution amendment proposals
+  QuorumRange constitution_amendment_quorum_range = 27 [(cosmos_proto.scalar) = "cosmos.Dec"];
+
+  // Achievable quorum for law proposals
+  QuorumRange law_quorum_range = 28 [(cosmos_proto.scalar) = "cosmos.Dec"];
+}
+
+message QuorumRange {
   // Maximum achievable quorum
-  string max_quorum = 26 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  string max = 1 [(cosmos_proto.scalar) = "cosmos.Dec"];
 
   // Minimum achievable quorum
-  string min_quorum = 27 [(cosmos_proto.scalar) = "cosmos.Dec"];
-
-  // Maximum achievable quorum for constitution amendment proposals
-  string max_constitution_amendment_quorum = 28 [(cosmos_proto.scalar) = "cosmos.Dec"];
-
-  // Minimum achievable quorum for constitution amendment proposals
-  string min_constitution_amendment_quorum = 29 [(cosmos_proto.scalar) = "cosmos.Dec"];
-
-  // Maximum achievable quorum for law proposals
-  string max_law_quorum = 30 [(cosmos_proto.scalar) = "cosmos.Dec"];
-
-  // Minimum achievable quorum for law proposals
-  string min_law_quorum = 31 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  string min = 2 [(cosmos_proto.scalar) = "cosmos.Dec"];
 }

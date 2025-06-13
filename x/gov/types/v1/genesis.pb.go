@@ -55,10 +55,16 @@ type GenesisState struct {
 	// last updated value for the dynamic min initial deposit
 	LastMinInitialDeposit *LastMinDeposit `protobuf:"bytes,11,opt,name=last_min_initial_deposit,json=lastMinInitialDeposit,proto3" json:"last_min_initial_deposit,omitempty"`
 	// governance participation EMA
+	// If unset or set to 0, the quorum for the next proposal will be set to the
+	// params.MinQuorum value.
 	ParticipationEma string `protobuf:"bytes,12,opt,name=participation_ema,json=participationEma,proto3" json:"participation_ema,omitempty"`
 	// governance participation EMA for constitution amendment proposals.
+	// If unset or set to 0, the quorum for the next constitution amendment
+	// proposal will be set to the params.MinConstitutionAmendmentQuorum value.
 	ConstitutionAmendmentParticipationEma string `protobuf:"bytes,13,opt,name=constitution_amendment_participation_ema,json=constitutionAmendmentParticipationEma,proto3" json:"constitution_amendment_participation_ema,omitempty"`
 	// governance participation EMA for law proposals.
+	// If unset or set to 0, the quorum for the next law proposal will be set to
+	// the params.LawMinQuorum value.
 	LawParticipationEma string `protobuf:"bytes,14,opt,name=law_participation_ema,json=lawParticipationEma,proto3" json:"law_participation_ema,omitempty"`
 }
 

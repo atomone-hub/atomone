@@ -41,12 +41,9 @@ func initGovDynamicQuorum(ctx sdk.Context, govKeeper *govkeeper.Keeper) error {
 	ctx.Logger().Info("Initializing gov module for dynamic quorum...")
 	params := govKeeper.GetParams(ctx)
 	defaultParams := v1.DefaultParams()
-	params.MinQuorum = defaultParams.MinQuorum
-	params.MaxQuorum = defaultParams.MaxQuorum
-	params.MinConstitutionAmendmentQuorum = defaultParams.MinConstitutionAmendmentQuorum
-	params.MaxConstitutionAmendmentQuorum = defaultParams.MaxConstitutionAmendmentQuorum
-	params.MinLawQuorum = defaultParams.MinLawQuorum
-	params.MaxLawQuorum = defaultParams.MaxLawQuorum
+	params.QuorumRange = defaultParams.QuorumRange
+	params.ConstitutionAmendmentQuorumRange = defaultParams.ConstitutionAmendmentQuorumRange
+	params.LawQuorumRange = defaultParams.LawQuorumRange
 	if err := govKeeper.SetParams(ctx, params); err != nil {
 		return fmt.Errorf("set gov params: %w", err)
 	}

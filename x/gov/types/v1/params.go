@@ -149,13 +149,18 @@ func NewParams(
 			TargetProposals:                   targetProposalsInDepositPeriod,
 		},
 		BurnDepositNoThreshold: burnDepositNoThreshold,
-
-		MaxQuorum:                      maxQuorum,
-		MinQuorum:                      minQuorum,
-		MaxConstitutionAmendmentQuorum: maxConstitutionAmendmentQuorum,
-		MinConstitutionAmendmentQuorum: minConstitutionAmendmentQuorum,
-		MaxLawQuorum:                   maxLawQuorum,
-		MinLawQuorum:                   minLawQuorum,
+		QuorumRange: &QuorumRange{
+			Max: maxQuorum,
+			Min: minQuorum,
+		},
+		ConstitutionAmendmentQuorumRange: &QuorumRange{
+			Max: maxConstitutionAmendmentQuorum,
+			Min: minConstitutionAmendmentQuorum,
+		},
+		LawQuorumRange: &QuorumRange{
+			Max: maxLawQuorum,
+			Min: minLawQuorum,
+		},
 	}
 }
 
@@ -228,12 +233,12 @@ func (p Params) ValidateBasic() error {
 	}
 
 	for label, q := range map[string]string{
-		"minQuorum":                      p.MinQuorum,
-		"maxQuorum":                      p.MaxQuorum,
-		"minConstitutionAmendmentQuorum": p.MinConstitutionAmendmentQuorum,
-		"maxConstitutionAmendmentQuorum": p.MaxConstitutionAmendmentQuorum,
-		"minLawQuorum":                   p.MinLawQuorum,
-		"maxLawQuorum":                   p.MaxLawQuorum,
+		"quorumRange.min":                      p.QuorumRange.Min,
+		"quorumRange.max":                      p.QuorumRange.Max,
+		"constitutionAmendmentQuorumRange.min": p.ConstitutionAmendmentQuorumRange.Min,
+		"constitutionAmendmentQuorumRange.max": p.ConstitutionAmendmentQuorumRange.Max,
+		"lawQuorumRange.min":                   p.LawQuorumRange.Min,
+		"lawQuorumRange.max":                   p.LawQuorumRange.Max,
 	} {
 		quorum, err := sdk.NewDecFromStr(q)
 		if err != nil {
