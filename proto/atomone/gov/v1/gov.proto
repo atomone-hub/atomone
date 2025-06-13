@@ -201,19 +201,19 @@ message VotingParams {
 message TallyParams {
   // Minimum percentage of total stake needed to vote for a result to be
   // considered valid.
-  string quorum = 1 [ (cosmos_proto.scalar) = "cosmos.Dec" ];
+  string quorum = 1 [ (cosmos_proto.scalar) = "cosmos.Dec", deprecated = true];
 
   // Minimum proportion of Yes votes for proposal to pass. Default value: 2/3.
   string threshold = 2 [(cosmos_proto.scalar) = "cosmos.Dec"];
 
   // quorum for constitution amendment proposals
-  string constitution_amendment_quorum = 3 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  string constitution_amendment_quorum = 3 [(cosmos_proto.scalar) = "cosmos.Dec", deprecated = true];
 
   // Minimum proportion of Yes votes for a Constitution Amendment proposal to pass. Default value: 0.9.
   string constitution_amendment_threshold = 4 [(cosmos_proto.scalar) = "cosmos.Dec"];
 
   // quorum for law proposals
-  string law_quorum = 5 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  string law_quorum = 5 [(cosmos_proto.scalar) = "cosmos.Dec", deprecated = true];
 
   // Minimum proportion of Yes votes for a Law proposal to pass. Default value: 0.9.
   string law_threshold = 6 [(cosmos_proto.scalar) = "cosmos.Dec"];
@@ -296,7 +296,7 @@ message Params {
 
   //  Minimum percentage of total stake needed to vote for a result to be
   //  considered valid. Default value: 0.25.
-  string quorum = 4 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  string quorum = 4 [(cosmos_proto.scalar) = "cosmos.Dec", deprecated = true];
 
   //  Minimum proportion of Yes votes for proposal to pass. Default value: 2/3.
   string threshold = 5 [(cosmos_proto.scalar) = "cosmos.Dec"];
@@ -320,13 +320,13 @@ message Params {
   string min_deposit_ratio = 15 [ (cosmos_proto.scalar) = "cosmos.Dec" ];
 
   // quorum for constitution amendment proposals
-  string constitution_amendment_quorum = 16 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  string constitution_amendment_quorum = 16 [(cosmos_proto.scalar) = "cosmos.Dec", deprecated = true];
 
   // Minimum proportion of Yes votes for a Constitution Amendment proposal to pass. Default value: 0.9.
   string constitution_amendment_threshold = 17 [(cosmos_proto.scalar) = "cosmos.Dec"];
 
   // quorum for law proposals
-  string law_quorum = 18 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  string law_quorum = 18 [(cosmos_proto.scalar) = "cosmos.Dec", deprecated = true];
 
   // Minimum proportion of Yes votes for a Law proposal to pass. Default value: 0.9.
   string law_threshold = 19 [(cosmos_proto.scalar) = "cosmos.Dec"];
@@ -349,4 +349,21 @@ message Params {
 
   // Minimum proportion of No Votes for a proposal deposit to be burnt.
   string burn_deposit_no_threshold = 25 [(cosmos_proto.scalar) = "cosmos.Dec"];
+
+  // Achievable quorum
+  QuorumRange quorum_range = 26 [(cosmos_proto.scalar) = "cosmos.Dec"];
+
+  // Achievable quorum for constitution amendment proposals
+  QuorumRange constitution_amendment_quorum_range = 27 [(cosmos_proto.scalar) = "cosmos.Dec"];
+
+  // Achievable quorum for law proposals
+  QuorumRange law_quorum_range = 28 [(cosmos_proto.scalar) = "cosmos.Dec"];
+}
+
+message QuorumRange {
+  // Maximum achievable quorum
+  string max = 1 [(cosmos_proto.scalar) = "cosmos.Dec"];
+
+  // Minimum achievable quorum
+  string min = 2 [(cosmos_proto.scalar) = "cosmos.Dec"];
 }

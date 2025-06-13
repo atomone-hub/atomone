@@ -1,5 +1,9 @@
 # ADR 004: Nakamoto Bonus 
 
+## Changelog
+
+- 19 May 2025: Initial version
+
 ## Status
 
 DRAFT

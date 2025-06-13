@@ -176,7 +176,10 @@ func TestInitGenesis(t *testing.T) {
 		{
 			name: "ok: genesis with only params",
 			genesis: v1.GenesisState{
-				Params: params,
+				Params:                                params,
+				ParticipationEma:                      v1.DefaultParticipationEma,
+				ConstitutionAmendmentParticipationEma: v1.DefaultParticipationEma,
+				LawParticipationEma:                   v1.DefaultParticipationEma,
 			},
 			assert: func(t *testing.T, ctx sdk.Context, s suite) {
 				t.Helper()
@@ -188,12 +191,18 @@ func TestInitGenesis(t *testing.T) {
 				lmidCoins, lmidTime := s.GovKeeper.GetLastMinInitialDeposit(ctx)
 				assert.EqualValues(t, p.MinInitialDepositThrottler.FloorValue, lmidCoins)
 				assert.Equal(t, ctx.BlockTime(), lmidTime)
+				assert.Equal(t, v1.DefaultParticipationEma, s.GovKeeper.GetParticipationEMA(ctx).String())
+				assert.Equal(t, v1.DefaultParticipationEma, s.GovKeeper.GetConstitutionAmendmentParticipationEMA(ctx).String())
+				assert.Equal(t, v1.DefaultParticipationEma, s.GovKeeper.GetLawParticipationEMA(ctx).String())
 			},
 		},
 		{
 			name: "ok: genesis with last min deposit",
 			genesis: v1.GenesisState{
-				Params: params,
+				Params:                                params,
+				ParticipationEma:                      v1.DefaultParticipationEma,
+				ConstitutionAmendmentParticipationEma: v1.DefaultParticipationEma,
+				LawParticipationEma:                   v1.DefaultParticipationEma,
 				LastMinDeposit: &v1.LastMinDeposit{
 					Value: sdk.NewCoins(sdk.NewInt64Coin("xxx", 1)),
 					Time:  &utcTime,
@@ -209,7 +218,10 @@ func TestInitGenesis(t *testing.T) {
 		{
 			name: "ok: genesis with last min initial deposit",
 			genesis: v1.GenesisState{
-				Params: params,
+				Params:                                params,
+				ParticipationEma:                      v1.DefaultParticipationEma,
+				ConstitutionAmendmentParticipationEma: v1.DefaultParticipationEma,
+				LawParticipationEma:                   v1.DefaultParticipationEma,
 				LastMinInitialDeposit: &v1.LastMinDeposit{
 					Value: sdk.NewCoins(sdk.NewInt64Coin("xxx", 1)),
 					Time:  &utcTime,
@@ -226,8 +238,11 @@ func TestInitGenesis(t *testing.T) {
 			name:          "fail: genesis with deposits but module balance is not equal to total deposits",
 			moduleBalance: depositAmount,
 			genesis: v1.GenesisState{
-				Params:   params,
-				Deposits: deposits,
+				Params:                                params,
+				ParticipationEma:                      v1.DefaultParticipationEma,
+				ConstitutionAmendmentParticipationEma: v1.DefaultParticipationEma,
+				LawParticipationEma:                   v1.DefaultParticipationEma,
+				Deposits:                              deposits,
 			},
 			requirePanic: true,
 		},
@@ -235,8 +250,11 @@ func TestInitGenesis(t *testing.T) {
 			name:          "ok: genesis with deposits and module balance is equal to total deposits",
 			moduleBalance: depositAmount.MulInt(sdkmath.NewInt(2)), // *2 because there's 2 deposits
 			genesis: v1.GenesisState{
-				Params:   params,
-				Deposits: deposits,
+				Params:                                params,
+				ParticipationEma:                      v1.DefaultParticipationEma,
+				ConstitutionAmendmentParticipationEma: v1.DefaultParticipationEma,
+				LawParticipationEma:                   v1.DefaultParticipationEma,
+				Deposits:                              deposits,
 			},
 			assert: func(t *testing.T, ctx sdk.Context, s suite) {
 				t.Helper()
@@ -249,8 +267,11 @@ func TestInitGenesis(t *testing.T) {
 		{
 			name: "ok: genesis with votes",
 			genesis: v1.GenesisState{
-				Params: params,
-				Votes:  votes,
+				Params:                                params,
+				ParticipationEma:                      v1.DefaultParticipationEma,
+				ConstitutionAmendmentParticipationEma: v1.DefaultParticipationEma,
+				LawParticipationEma:                   v1.DefaultParticipationEma,
+				Votes:                                 votes,
 			},
 			assert: func(t *testing.T, ctx sdk.Context, s suite) {
 				t.Helper()
@@ -263,8 +284,11 @@ func TestInitGenesis(t *testing.T) {
 		{
 			name: "ok: genesis with proposals",
 			genesis: v1.GenesisState{
-				Params:    params,
-				Proposals: proposals,
+				Params:                                params,
+				ParticipationEma:                      v1.DefaultParticipationEma,
+				ConstitutionAmendmentParticipationEma: v1.DefaultParticipationEma,
+				LawParticipationEma:                   v1.DefaultParticipationEma,
+				Proposals:                             proposals,
 			},
 			assert: func(t *testing.T, ctx sdk.Context, s suite) {
 				t.Helper()
@@ -276,8 +300,11 @@ func TestInitGenesis(t *testing.T) {
 		{
 			name: "ok: genesis with proposals and quorum check enabled",
 			genesis: v1.GenesisState{
-				Params:    paramsWithQuorumCheckEnabled,
-				Proposals: proposals,
+				Params:                                paramsWithQuorumCheckEnabled,
+				ParticipationEma:                      v1.DefaultParticipationEma,
+				ConstitutionAmendmentParticipationEma: v1.DefaultParticipationEma,
+				LawParticipationEma:                   v1.DefaultParticipationEma,
+				Proposals:                             proposals,
 			},
 			assert: func(t *testing.T, ctx sdk.Context, s suite) {
 				t.Helper()

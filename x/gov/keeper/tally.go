@@ -11,7 +11,7 @@ import (
 
 // Tally iterates over the votes and updates the tally of a proposal based on the voting power of the
 // voters
-func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, burnDeposits bool, tallyResults v1.TallyResult) {
+func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, burnDeposits bool, participation math.LegacyDec, tallyResults v1.TallyResult) {
 	// fetch all the bonded validators
 	currValidators := keeper.getBondedValidatorsByAddress(ctx)
 	totalVotingPower, results := keeper.tallyVotes(ctx, proposal, currValidators, true)
@@ -22,14 +22,14 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 	// If there is no staked coins, the proposal fails
 	totalBonded := keeper.sk.TotalBondedTokens(ctx)
 	if totalBonded.IsZero() {
-		return false, false, tallyResults
+		return false, false, sdk.ZeroDec(), tallyResults
 	}
 
 	// If there is not enough quorum of votes, the proposal fails
 	percentVoting := totalVotingPower.Quo(math.LegacyNewDecFromInt(totalBonded))
 	quorum, threshold := keeper.getQuorumAndThreshold(ctx, proposal)
 	if percentVoting.LT(quorum) {
-		return false, params.BurnVoteQuorum, tallyResults
+		return false, params.BurnVoteQuorum, percentVoting, tallyResults
 	}
 
 	// Compute non-abstaining voting power, aka active voting power
@@ -37,13 +37,13 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 
 	// If no one votes (everyone abstains), proposal fails
 	if activeVotingPower.IsZero() {
-		return false, false, tallyResults
+		return false, false, percentVoting, tallyResults
 	}
 
 	// If more than `threshold` of non-abstaining voters vote Yes, proposal passes.
 	yesPercent := results[v1.OptionYes].Quo(activeVotingPower)
 	if yesPercent.GT(threshold) {
-		return true, false, tallyResults
+		return true, false, percentVoting, tallyResults
 	}
 
 	// If more than `burnDepositNoThreshold` of non-abstaining voters vote No,
@@ -51,12 +51,12 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 	burnDepositNoThreshold := sdk.MustNewDecFromStr(params.BurnDepositNoThreshold)
 	noPercent := results[v1.OptionNo].Quo(activeVotingPower)
 	if noPercent.GT(burnDepositNoThreshold) {
-		return false, true, tallyResults
+		return false, true, percentVoting, tallyResults
 	}
 
 	// If less than `burnDepositNoThreshold` of non-abstaining voters vote No,
 	// proposal is rejected but deposit is not burned.
-	return false, false, tallyResults
+	return false, false, percentVoting, tallyResults
 }
 
 // HasReachedQuorum returns whether or not a proposal has reached quorum
@@ -177,42 +177,22 @@ func (keeper Keeper) tallyVotes(
 	return totalVotingPower, results
 }
 
-// getQuorumAndThreshold iterates over the proposal's messages to returns the
-// appropriate quorum and threshold.
-func (keeper Keeper) getQuorumAndThreshold(ctx sdk.Context, proposal v1.Proposal) (sdk.Dec, sdk.Dec) {
+// getQuorumAndThreshold returns the appropriate quorum and threshold according
+// to proposal kind.
+func (keeper Keeper) getQuorumAndThreshold(ctx sdk.Context, proposal v1.Proposal) (quorum sdk.Dec, threshold sdk.Dec) {
 	params := keeper.GetParams(ctx)
-	quorum := sdk.MustNewDecFromStr(params.Quorum)
-	threshold := sdk.MustNewDecFromStr(params.Threshold)
-
-	// Check if a proposal message is an ExecLegacyContent message
-	if len(proposal.Messages) > 0 {
-		var sdkMsg sdk.Msg
-		for _, msg := range proposal.Messages {
-			if err := keeper.cdc.UnpackAny(msg, &sdkMsg); err == nil {
-				// Check if proposal is a law or constitution amendment and adjust the
-				// quorum and threshold accordingly
-				switch sdkMsg.(type) {
-				case *v1.MsgProposeConstitutionAmendment:
-					q := sdk.MustNewDecFromStr(params.ConstitutionAmendmentQuorum)
-					if quorum.LT(q) {
-						quorum = q
-					}
-					t := sdk.MustNewDecFromStr(params.ConstitutionAmendmentThreshold)
-					if threshold.LT(t) {
-						threshold = t
-					}
-				case *v1.MsgProposeLaw:
-					q := sdk.MustNewDecFromStr(params.LawQuorum)
-					if quorum.LT(q) {
-						quorum = q
-					}
-					t := sdk.MustNewDecFromStr(params.LawThreshold)
-					if threshold.LT(t) {
-						threshold = t
-					}
-				}
-			}
-		}
+	kinds := keeper.ProposalKinds(proposal)
+	if kinds.HasKindConstitutionAmendment() {
+		quorum = keeper.GetConstitutionAmendmentQuorum(ctx)
+		threshold = sdk.MustNewDecFromStr(params.ConstitutionAmendmentThreshold)
+		return
 	}
-	return quorum, threshold
+	if kinds.HasKindLaw() {
+		quorum = keeper.GetLawQuorum(ctx)
+		threshold = sdk.MustNewDecFromStr(params.LawThreshold)
+		return
+	}
+	quorum = keeper.GetQuorum(ctx)
+	threshold = sdk.MustNewDecFromStr(params.Threshold)
+	return
 }
