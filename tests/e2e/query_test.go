@@ -178,6 +178,16 @@ func queryGovProposal(endpoint string, proposalID int) (govtypesv1beta1.QueryPro
 	return govProposalResp, nil
 }
 
+func (s *IntegrationTestSuite) queryGovQuorum(endpoint string) govtypesv1.QueryQuorumResponse {
+	path := fmt.Sprintf("%s/atomone/gov/v1/quorum", endpoint)
+	body, err := httpGet(path)
+	s.Require().NoError(err)
+	var res govtypesv1.QueryQuorumResponse
+	err = cdc.UnmarshalJSON(body, &res)
+	s.Require().NoError(err)
+	return res
+}
+
 func queryAccount(endpoint, address string) (acc authtypes.AccountI, err error) {
 	var res authtypes.QueryAccountResponse
 	resp, err := http.Get(fmt.Sprintf("%s/cosmos/auth/v1beta1/accounts/%s", endpoint, address))

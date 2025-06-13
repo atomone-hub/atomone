@@ -126,6 +126,8 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 	s.Run("community pool spend", func() {
 		s.fundCommunityPool()
 		chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
+		quorumRes := s.queryGovQuorum(chainAAPIEndpoint)
+		fmt.Println("QUORUM", quorumRes)
 		senderAddress, _ := s.chainA.validators[0].keyInfo.GetAddress()
 		sender := senderAddress.String()
 		recipientAddress, _ := s.chainA.validators[1].keyInfo.GetAddress()
@@ -167,6 +169,8 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 			10*time.Second,
 			time.Second,
 		)
+		quorumRes = s.queryGovQuorum(chainAAPIEndpoint)
+		fmt.Println("QUORUM2", quorumRes)
 	})
 	s.Run("community pool spend with number of no votes exceeds threshold", func() {
 		s.fundCommunityPool()
