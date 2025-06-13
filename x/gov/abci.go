@@ -1,6 +1,7 @@
 package gov
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -14,7 +15,9 @@ import (
 )
 
 // EndBlocker called every block, process inflation, update validator set.
-func EndBlocker(ctx sdk.Context, keeper *keeper.Keeper) {
+func EndBlocker(goCtx context.Context, keeper *keeper.Keeper) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
 	defer telemetry.ModuleMeasureSince(types.ModuleName, time.Now(), telemetry.MetricKeyEndBlocker)
 
 	logger := keeper.Logger(ctx)

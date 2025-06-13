@@ -1,6 +1,8 @@
 package post
 
 import (
+	"context"
+
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -16,5 +18,5 @@ type FeeMarketKeeper interface {
 }
 
 type ConsensusParamsKeeper interface {
-	Get(sdk.Context) (*tmproto.ConsensusParams, error)
+	Get(context.Context) (tmproto.ConsensusParams, error)
 }

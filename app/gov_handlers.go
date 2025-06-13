@@ -10,9 +10,11 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
-	ibcclienttypes "github.com/cosmos/ibc-go/v7/modules/core/02-client/types"
-	ibcexported "github.com/cosmos/ibc-go/v7/modules/core/exported"
+	ibcclienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
+	ibcexported "github.com/cosmos/ibc-go/v10/modules/core/exported"
 
+	"cosmossdk.io/x/upgrade/plan"
+	upgradetypes "cosmossdk.io/x/upgrade/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -20,8 +22,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/version"
 	paramscutils "github.com/cosmos/cosmos-sdk/x/params/client/utils"
 	paramproposal "github.com/cosmos/cosmos-sdk/x/params/types/proposal"
-	"github.com/cosmos/cosmos-sdk/x/upgrade/plan"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
 	govclient "github.com/atomone-hub/atomone/x/gov/client"
 	govcli "github.com/atomone-hub/atomone/x/gov/client/cli"

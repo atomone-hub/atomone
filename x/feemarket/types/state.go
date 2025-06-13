@@ -3,7 +3,7 @@ package types
 import (
 	fmt "fmt"
 
-	"github.com/cometbft/cometbft/libs/log"
+	"cosmossdk.io/log"
 
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"

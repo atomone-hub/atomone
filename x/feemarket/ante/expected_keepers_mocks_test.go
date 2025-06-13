@@ -5,11 +5,11 @@
 package ante_test
 
 import (
+	context "context"
 	reflect "reflect"
 
 	types "github.com/atomone-hub/atomone/x/feemarket/types"
 	types0 "github.com/cosmos/cosmos-sdk/types"
-	types1 "github.com/cosmos/cosmos-sdk/x/auth/types"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -90,10 +90,10 @@ func (m *MockAccountKeeper) EXPECT() *MockAccountKeeperMockRecorder {
 }
 
 // GetAccount mocks base method.
-func (m *MockAccountKeeper) GetAccount(ctx types0.Context, addr types0.AccAddress) types1.AccountI {
+func (m *MockAccountKeeper) GetAccount(ctx context.Context, addr types0.AccAddress) types0.AccountI {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAccount", ctx, addr)
-	ret0, _ := ret[0].(types1.AccountI)
+	ret0, _ := ret[0].(types0.AccountI)
 	return ret0
 }
 
@@ -127,7 +127,7 @@ func (m *MockFeeGrantKeeper) EXPECT() *MockFeeGrantKeeperMockRecorder {
 }
 
 // UseGrantedFees mocks base method.
-func (m *MockFeeGrantKeeper) UseGrantedFees(ctx types0.Context, granter, grantee types0.AccAddress, fee types0.Coins, msgs []types0.Msg) error {
+func (m *MockFeeGrantKeeper) UseGrantedFees(ctx context.Context, granter, grantee types0.AccAddress, fee types0.Coins, msgs []types0.Msg) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UseGrantedFees", ctx, granter, grantee, fee, msgs)
 	ret0, _ := ret[0].(error)
@@ -164,7 +164,7 @@ func (m *MockBankKeeper) EXPECT() *MockBankKeeperMockRecorder {
 }
 
 // SendCoinsFromAccountToModule mocks base method.
-func (m *MockBankKeeper) SendCoinsFromAccountToModule(ctx types0.Context, senderAddr types0.AccAddress, recipientModule string, amt types0.Coins) error {
+func (m *MockBankKeeper) SendCoinsFromAccountToModule(ctx context.Context, senderAddr types0.AccAddress, recipientModule string, amt types0.Coins) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SendCoinsFromAccountToModule", ctx, senderAddr, recipientModule, amt)
 	ret0, _ := ret[0].(error)

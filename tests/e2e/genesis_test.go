@@ -6,10 +6,10 @@ import (
 	"os"
 	"time"
 
-	tmtypes "github.com/cometbft/cometbft/types"
+	"cosmossdk.io/math"
 
-	icagen "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/genesis/types"
-	icatypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/types"
+	icagen "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/genesis/types"
+	icatypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/types"
 
 	"github.com/cosmos/cosmos-sdk/server"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -25,25 +25,25 @@ import (
 	govv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 )
 
-func getGenDoc(path string) (*tmtypes.GenesisDoc, error) {
+func getGenDoc(path string) (*genutiltypes.AppGenesis, error) {
 	serverCtx := server.NewDefaultContext()
 	config := serverCtx.Config
 	config.SetRoot(path)
 
 	genFile := config.GenesisFile()
-	doc := &tmtypes.GenesisDoc{}
 
 	if _, err := os.Stat(genFile); err != nil {
 		if !os.IsNotExist(err) {
 			return nil, err
 		}
-	} else {
-		var err error
 
-		doc, err = tmtypes.GenesisDocFromFile(genFile)
-		if err != nil {
-			return nil, fmt.Errorf("failed to read genesis doc from file: %w", err)
-		}
+		return &genutiltypes.AppGenesis{}, nil
+	}
+
+	var err error
+	doc, err := genutiltypes.AppGenesisFromFile(genFile)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read genesis doc from file: %w", err)
 	}
 
 	return doc, nil
@@ -192,12 +192,12 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 	// Modifying gov genesis
 
 	// Refactor to separate method
-	quorum, _ := sdk.NewDecFromStr("0.000000000000000001")
-	threshold, _ := sdk.NewDecFromStr("0.000000000000000001")
-	lawQuorum, _ := sdk.NewDecFromStr("0.000000000000000001")
-	lawThreshold, _ := sdk.NewDecFromStr("0.000000000000000001")
-	amendmentsQuorum, _ := sdk.NewDecFromStr("0.000000000000000001")
-	amendmentsThreshold, _ := sdk.NewDecFromStr("0.000000000000000001")
+	quorum, _ := math.LegacyNewDecFromStr("0.000000000000000001")
+	threshold, _ := math.LegacyNewDecFromStr("0.000000000000000001")
+	lawQuorum, _ := math.LegacyNewDecFromStr("0.000000000000000001")
+	lawThreshold, _ := math.LegacyNewDecFromStr("0.000000000000000001")
+	amendmentsQuorum, _ := math.LegacyNewDecFromStr("0.000000000000000001")
+	amendmentsThreshold, _ := math.LegacyNewDecFromStr("0.000000000000000001")
 
 	maxDepositPeriod := 10 * time.Minute
 	votingPeriod := 15 * time.Second
@@ -209,7 +209,7 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 			votingPeriod,
 			quorum.String(), threshold.String(),
 			amendmentsQuorum.String(), amendmentsThreshold.String(), lawQuorum.String(), lawThreshold.String(),
-			// sdk.ZeroDec().String(),
+			// math.LegacyZeroDec().String(),
 			false, false, govv1.DefaultMinDepositRatio.String(),
 			govv1.DefaultQuorumTimeout, govv1.DefaultMaxVotingPeriodExtension, govv1.DefaultQuorumCheckCount,
 			sdk.NewCoins(sdk.NewCoin(denom, depositAmount.Amount)), govv1.DefaultMinDepositUpdatePeriod,
@@ -232,7 +232,7 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 	// Modifying feemarket genesis
 
 	feemarketGenState := feemarkettypes.GetGenesisStateFromAppState(cdc, appState)
-	baseGasPrice := sdk.MustNewDecFromStr("0.00001")
+	baseGasPrice := math.LegacyMustNewDecFromStr("0.00001")
 	feemarketGenState.Params.MinBaseGasPrice = baseGasPrice
 	feemarketGenState.State.BaseGasPrice = baseGasPrice
 	feemarketGenStateBz, err := cdc.MarshalJSON(&feemarketGenState)

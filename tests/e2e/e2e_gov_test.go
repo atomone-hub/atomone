@@ -8,10 +8,11 @@ import (
 	"strings"
 	"time"
 
+	"cosmossdk.io/math"
+	upgradetypes "cosmossdk.io/x/upgrade/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
 	feemarkettypes "github.com/atomone-hub/atomone/x/feemarket/types"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
@@ -282,7 +283,7 @@ func (s *IntegrationTestSuite) testGovParamChange() {
 		params := s.queryFeemarketParams(chainAAPIEndpoint)
 
 		oldAlpha := params.Params.Alpha
-		params.Params.Alpha = oldAlpha.Add(sdk.NewDec(1))
+		params.Params.Alpha = oldAlpha.Add(math.LegacyNewDec(1))
 
 		s.writeFeemarketParamChangeProposal(s.chainA, params.Params)
 		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
@@ -293,7 +294,7 @@ func (s *IntegrationTestSuite) testGovParamChange() {
 		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "atomone.feemarket.v1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
 
 		newParams := s.queryFeemarketParams(chainAAPIEndpoint)
-		s.Require().Equal(newParams.Params.Alpha, oldAlpha.Add(sdk.NewDec(1)))
+		s.Require().Equal(newParams.Params.Alpha, oldAlpha.Add(math.LegacyNewDec(1)))
 	})
 }
 
