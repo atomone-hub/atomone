@@ -12,10 +12,12 @@ import (
 	"cosmossdk.io/math"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/testutil"
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
+	sdktx "github.com/cosmos/cosmos-sdk/types/tx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
@@ -34,6 +36,15 @@ var (
 	TestAmendmentProposal = getTestConstitutionAmendmentProposal()
 	TestLawProposal       = getTestLawProposal()
 )
+
+// Handy wrapper around sdktx.SetMsgs w/o error return.
+func setMsgs(t *testing.T, msgs []sdk.Msg) []*codectypes.Any {
+	anys, err := sdktx.SetMsgs(msgs)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return anys
+}
 
 // getTestProposal creates and returns a test proposal message.
 func getTestProposal() []sdk.Msg {
@@ -137,6 +148,9 @@ func setupGovKeeper(t *testing.T, expectations ...func(sdk.Context, mocks)) (
 	govRouter.AddRoute(types.RouterKey, v1beta1.ProposalHandler)
 	govKeeper.SetLegacyRouter(govRouter)
 	govKeeper.SetParams(ctx, v1.DefaultParams())
+	govKeeper.SetParticipationEMA(ctx, math.LegacyMustNewDecFromStr(v1.DefaultParticipationEma))
+	govKeeper.SetConstitutionAmendmentParticipationEMA(ctx, math.LegacyMustNewDecFromStr(v1.DefaultParticipationEma))
+	govKeeper.SetLawParticipationEMA(ctx, math.LegacyMustNewDecFromStr(v1.DefaultParticipationEma))
 
 	// Register all handlers for the MegServiceRouter.
 	msr.SetInterfaceRegistry(encCfg.InterfaceRegistry)

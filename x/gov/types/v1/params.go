@@ -39,11 +39,14 @@ func init() {
 var (
 	minVotingPeriod, _                    = time.ParseDuration(MinVotingPeriod)
 	DefaultMinDepositTokens               = sdk.NewInt(10000000)
-	DefaultQuorum                         = sdk.NewDecWithPrec(25, 2)
+	DefaultMaxQuorum                      = sdk.NewDecWithPrec(50, 2)
+	DefaultMinQuorum                      = sdk.NewDecWithPrec(10, 2)
 	DefaultThreshold                      = sdk.NewDecWithPrec(667, 3)
-	DefaultConstitutionAmendmentQuorum    = sdk.NewDecWithPrec(25, 2)
+	DefaultMaxConstitutionAmendmentQuorum = DefaultMaxQuorum
+	DefaultMinConstitutionAmendmentQuorum = DefaultMinQuorum
 	DefaultConstitutionAmendmentThreshold = sdk.NewDecWithPrec(9, 1)
-	DefaultLawQuorum                      = sdk.NewDecWithPrec(25, 2)
+	DefaultMaxLawQuorum                   = DefaultMaxQuorum
+	DefaultMinLawQuorum                   = DefaultMinQuorum
 	DefaultLawThreshold                   = sdk.NewDecWithPrec(9, 1)
 	// DefaultMinInitialDepositRatio         = sdk.ZeroDec()
 	DefaultBurnProposalPrevote = false                    // set to false to replicate behavior of when this change was made (0.47)
@@ -77,10 +80,17 @@ func NewDepositParams(minDeposit sdk.Coins, maxDepositPeriod *time.Duration) Dep
 }
 
 // Deprecated: NewTallyParams creates a new TallyParams object
-func NewTallyParams(quorum, threshold string) TallyParams {
+func NewTallyParams(quorum, threshold,
+	constitutionAmendmentQuorum, constitutionAmendmentThreshold,
+	lawQuorum, lawThreshold string,
+) TallyParams {
 	return TallyParams{
-		Quorum:    quorum,
-		Threshold: threshold,
+		Quorum:                         quorum,
+		Threshold:                      threshold,
+		ConstitutionAmendmentQuorum:    constitutionAmendmentQuorum,
+		ConstitutionAmendmentThreshold: constitutionAmendmentThreshold,
+		LawQuorum:                      lawQuorum,
+		LawThreshold:                   lawThreshold,
 	}
 }
 
@@ -95,7 +105,7 @@ func NewVotingParams(votingPeriod *time.Duration) VotingParams {
 func NewParams(
 	// minDeposit sdk.Coins, // Deprecated in favor of dynamic min deposit
 	maxDepositPeriod, votingPeriod time.Duration,
-	quorum, threshold, constitutionAmendmentQuorum, constitutionAmendmentThreshold, lawQuorum, lawThreshold string,
+	threshold, constitutionAmendmentThreshold, lawThreshold string,
 	// minInitialDepositRatio string, // Deprecated in favor of dynamic min initial deposit
 	burnProposalDeposit, burnVoteQuorum bool, minDepositRatio string,
 	quorumTimeout, maxVotingPeriodExtension time.Duration, quorumCheckCount uint64,
@@ -104,16 +114,16 @@ func NewParams(
 	minInitialDepositFloor sdk.Coins, minInitialDepositUpdatePeriod time.Duration, minInitialDepositDecreaseSensitivityTargetDistance uint64,
 	minInitialDepositIncreaseRatio, minInitialDepositDecreaseRatio string, targetProposalsInDepositPeriod uint64,
 	burnDepositNoThreshold string,
+	maxQuorum string, minQuorum string,
+	maxConstitutionAmendmentQuorum string, minConstitutionAmendmentQuorum string,
+	maxLawQuorum string, minLawQuorum string,
 ) Params {
 	return Params{
 		// MinDeposit:                     minDeposit, // Deprecated in favor of dynamic min deposit
 		MaxDepositPeriod:               &maxDepositPeriod,
 		VotingPeriod:                   &votingPeriod,
-		Quorum:                         quorum,
 		Threshold:                      threshold,
-		ConstitutionAmendmentQuorum:    constitutionAmendmentQuorum,
 		ConstitutionAmendmentThreshold: constitutionAmendmentThreshold,
-		LawQuorum:                      lawQuorum,
 		LawThreshold:                   lawThreshold,
 		// MinInitialDepositRatio:         minInitialDepositRatio, // Deprecated in favor of dynamic min deposit
 		BurnProposalDepositPrevote: burnProposalDeposit,
@@ -139,6 +149,18 @@ func NewParams(
 			TargetProposals:                   targetProposalsInDepositPeriod,
 		},
 		BurnDepositNoThreshold: burnDepositNoThreshold,
+		QuorumRange: &QuorumRange{
+			Max: maxQuorum,
+			Min: minQuorum,
+		},
+		ConstitutionAmendmentQuorumRange: &QuorumRange{
+			Max: maxConstitutionAmendmentQuorum,
+			Min: minConstitutionAmendmentQuorum,
+		},
+		LawQuorumRange: &QuorumRange{
+			Max: maxLawQuorum,
+			Min: minLawQuorum,
+		},
 	}
 }
 
@@ -148,11 +170,8 @@ func DefaultParams() Params {
 		// sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, DefaultMinDepositTokens)),
 		DefaultDepositPeriod,
 		DefaultVotingPeriod,
-		DefaultQuorum.String(),
 		DefaultThreshold.String(),
-		DefaultConstitutionAmendmentQuorum.String(),
 		DefaultConstitutionAmendmentThreshold.String(),
-		DefaultLawQuorum.String(),
 		DefaultLawThreshold.String(),
 		// DefaultMinInitialDepositRatio.String(),
 		DefaultBurnProposalPrevote,
@@ -174,6 +193,12 @@ func DefaultParams() Params {
 		DefaultMinInitialDepositDecreaseRatio.String(),
 		DefaultTargetProposalsInDepositPeriod,
 		DefaultBurnDepositNoThreshold.String(),
+		DefaultMaxQuorum.String(),
+		DefaultMinQuorum.String(),
+		DefaultMaxConstitutionAmendmentQuorum.String(),
+		DefaultMinConstitutionAmendmentQuorum.String(),
+		DefaultMaxLawQuorum.String(),
+		DefaultMinLawQuorum.String(),
 	)
 }
 
@@ -189,6 +214,15 @@ func (p Params) ValidateBasic() error {
 	if len(p.MinDeposit) > 0 {
 		return fmt.Errorf("manually setting min deposit is deprecated in favor of a dynamic min deposit")
 	}
+	if len(p.Quorum) > 0 {
+		return fmt.Errorf("manually setting quorum is deprecated in favor of a dynamic quorum")
+	}
+	if len(p.ConstitutionAmendmentQuorum) > 0 {
+		return fmt.Errorf("manually setting constitutionAmendmentQuorum is deprecated in favor of a dynamic quorum")
+	}
+	if len(p.LawQuorum) > 0 {
+		return fmt.Errorf("manually setting lawQuorum is deprecated in favor of a dynamic quorum")
+	}
 
 	if p.MaxDepositPeriod == nil {
 		return fmt.Errorf("maximum deposit period must not be nil: %d", p.MaxDepositPeriod)
@@ -198,15 +232,24 @@ func (p Params) ValidateBasic() error {
 		return fmt.Errorf("maximum deposit period must be positive: %d", p.MaxDepositPeriod)
 	}
 
-	quorum, err := sdk.NewDecFromStr(p.Quorum)
-	if err != nil {
-		return fmt.Errorf("invalid quorum string: %w", err)
-	}
-	if quorum.IsNegative() {
-		return fmt.Errorf("quorum must be positive: %s", quorum)
-	}
-	if quorum.GT(math.LegacyOneDec()) {
-		return fmt.Errorf("quorum too large: %s", quorum)
+	for label, q := range map[string]string{
+		"quorumRange.min":                      p.QuorumRange.Min,
+		"quorumRange.max":                      p.QuorumRange.Max,
+		"constitutionAmendmentQuorumRange.min": p.ConstitutionAmendmentQuorumRange.Min,
+		"constitutionAmendmentQuorumRange.max": p.ConstitutionAmendmentQuorumRange.Max,
+		"lawQuorumRange.min":                   p.LawQuorumRange.Min,
+		"lawQuorumRange.max":                   p.LawQuorumRange.Max,
+	} {
+		quorum, err := sdk.NewDecFromStr(q)
+		if err != nil {
+			return fmt.Errorf("invalid %s string: %w", label, err)
+		}
+		if quorum.IsNegative() {
+			return fmt.Errorf("%s must be positive: %s", label, quorum)
+		}
+		if quorum.GT(math.LegacyOneDec()) {
+			return fmt.Errorf("%s too large: %s", label, quorum)
+		}
 	}
 
 	threshold, err := sdk.NewDecFromStr(p.Threshold)
@@ -218,20 +261,6 @@ func (p Params) ValidateBasic() error {
 	}
 	if threshold.GT(math.LegacyOneDec()) {
 		return fmt.Errorf("vote threshold too large: %s", threshold)
-	}
-
-	amendmentQuorum, err := sdk.NewDecFromStr(p.ConstitutionAmendmentQuorum)
-	if err != nil {
-		return fmt.Errorf("invalid constitution amendment quorum string: %w", err)
-	}
-	if amendmentQuorum.IsNegative() {
-		return fmt.Errorf("constitution amendment quorum must be positive: %s", amendmentQuorum)
-	}
-	if amendmentQuorum.GT(math.LegacyOneDec()) {
-		return fmt.Errorf("constitution amendment quorum too large: %s", amendmentQuorum)
-	}
-	if amendmentQuorum.LT(quorum) {
-		return fmt.Errorf("constitution amendment quorum must be greater than or equal to governance quorum: %s", amendmentQuorum)
 	}
 
 	amendmentThreshold, err := sdk.NewDecFromStr(p.ConstitutionAmendmentThreshold)
@@ -246,23 +275,6 @@ func (p Params) ValidateBasic() error {
 	}
 	if amendmentThreshold.LT(threshold) {
 		return fmt.Errorf("constitution amendment threshold must be greater than or equal to governance threshold: %s", amendmentThreshold)
-	}
-
-	lawQuorum, err := sdk.NewDecFromStr(p.LawQuorum)
-	if err != nil {
-		return fmt.Errorf("invalid law quorum string: %w", err)
-	}
-	if lawQuorum.IsNegative() {
-		return fmt.Errorf("law quorum must be positive: %s", lawQuorum)
-	}
-	if lawQuorum.GT(math.LegacyOneDec()) {
-		return fmt.Errorf("law quorum too large: %s", lawQuorum)
-	}
-	if lawQuorum.LT(quorum) {
-		return fmt.Errorf("law quorum must be greater than or equal to governance quorum: %s", lawQuorum)
-	}
-	if lawQuorum.GT(amendmentQuorum) {
-		return fmt.Errorf("law quorum must be less than or equal to constitution amendment quorum: %s", lawQuorum)
 	}
 
 	lawThreshold, err := sdk.NewDecFromStr(p.LawThreshold)

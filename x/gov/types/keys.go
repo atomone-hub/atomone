@@ -59,6 +59,11 @@ var (
 
 	// KeyConstitution is the key string used to store the chain's constitution
 	KeyConstitution = []byte{0x40}
+
+	// KeyParticipationEMA is the key string used to store the governance participation EMA
+	KeyParticipationEMA                      = []byte{0x50}
+	KeyConstitutionAmendmentParticipationEMA = []byte{0x60}
+	KeyLawParticipationEMA                   = []byte{0x70}
 )
 
 var lenTime = len(sdk.FormatTimeBytes(time.Now()))
