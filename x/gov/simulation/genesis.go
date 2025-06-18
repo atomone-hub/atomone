@@ -24,11 +24,8 @@ const (
 	DepositParamsDepositPeriod = "deposit_params_deposit_period"
 	// DepositMinInitialRatio                                  = "deposit_params_min_initial_ratio"
 	VotingParamsVotingPeriod                                = "voting_params_voting_period"
-	TallyParamsQuorum                                       = "tally_params_quorum"
 	TallyParamsThreshold                                    = "tally_params_threshold"
-	TallyParamsConstitutionAmendmentQuorum                  = "tally_params_constitution_amendment_quorum"
 	TallyParamsConstitutionAmendmentThreshold               = "tally_params_constitution_amendment_threshold"
-	TallyParamsLawQuorum                                    = "tally_params_law_quorum"
 	TallyParamsLawThreshold                                 = "tally_params_law_threshold"
 	DepositParamsMinDepositFloor                            = "deposit_params_min_deposit_floor"
 	DepositParamsMinDepositUpdatePeriod                     = "deposit_params_min_deposit_update_period"
@@ -42,13 +39,17 @@ const (
 	DepositParamsMinInitialDepositIncreaseRatio             = "deposit_params_min_initial_deposit_increase_ratio"
 	DepositParamsMinInitialDepositDecreaseRatio             = "deposit_params_min_initial_deposit_decrease_ratio"
 	DepositParamsMinInitialDepositTargetProposals           = "deposit_params_min_initial_deposit_target_proposals"
-
-	// NOTE: backport from v50
-	MinDepositRatio          = "min_deposit_ratio"
-	QuorumTimeout            = "quorum_timeout"
-	MaxVotingPeriodExtension = "max_voting_period_extension"
-	QuorumCheckCount         = "quorum_check_count"
-	BurnDepositNoThreshold   = "burn_deposit_no_threshold"
+	MinDepositRatio                                         = "min_deposit_ratio" // NOTE: backport from v50
+	QuorumTimeout                                           = "quorum_timeout"
+	MaxVotingPeriodExtension                                = "max_voting_period_extension"
+	QuorumCheckCount                                        = "quorum_check_count"
+	BurnDepositNoThreshold                                  = "burn_deposit_no_threshold"
+	MinQuorum                                               = "min_quorum"
+	MaxQuorum                                               = "max_quorum"
+	MinConstitutionAmendmentQuorum                          = "min_constitution_amendment_quorum"
+	MaxConstitutionAmendmentQuorum                          = "max_constitution_amendment_quorum"
+	MinLawQuorum                                            = "min_law_quorum"
+	MaxLawQuorum                                            = "max_law_quorum"
 )
 
 // GenDepositParamsDepositPeriod returns randomized DepositParamsDepositPeriod
@@ -71,11 +72,6 @@ func GenVotingParamsVotingPeriod(r *rand.Rand) time.Duration {
 	return time.Duration(simulation.RandIntBetween(r, 1, 2*60*60*24*2)) * time.Second
 }
 
-// GenTallyParamsQuorum returns randomized TallyParamsQuorum
-func GenTallyParamsQuorum(r *rand.Rand) math.LegacyDec {
-	return math.LegacyNewDecWithPrec(int64(simulation.RandIntBetween(r, 200, 400)), 3)
-}
-
 // GenTallyParamsThreshold returns randomized TallyParamsThreshold
 func GenTallyParamsThreshold(r *rand.Rand) math.LegacyDec {
 	return math.LegacyNewDecWithPrec(int64(simulation.RandIntBetween(r, 550, 700)), 3)
@@ -84,12 +80,6 @@ func GenTallyParamsThreshold(r *rand.Rand) math.LegacyDec {
 // GenMinDepositRatio returns randomized DepositMinRatio
 func GenMinDepositRatio(r *rand.Rand) math.LegacyDec {
 	return math.LegacyMustNewDecFromStr("0.01")
-}
-
-// GenTallyParamsQuorum returns randomized TallyParamsConstitutionQuorum
-func GenTallyParamsConstitutionalQuorum(r *rand.Rand, minDec math.LegacyDec) math.LegacyDec {
-	min := int(minDec.Mul(math.LegacyNewDec(1000)).RoundInt64())
-	return math.LegacyNewDecWithPrec(int64(simulation.RandIntBetween(r, min, 600)), 3)
 }
 
 // GenTallyParamsThreshold returns randomized TallyParamsConstitutionalThreshold
@@ -112,6 +102,16 @@ func GenMaxVotingPeriodExtension(r *rand.Rand, votingPeriod, quorumTimout time.D
 // GenQuorumCheckCount returns a randomized QuorumCheckCount between 0 and 30
 func GenQuorumCheckCount(r *rand.Rand) uint64 {
 	return uint64(simulation.RandIntBetween(r, 0, 30))
+}
+
+// GenMinQuorum returns a randomized MinQuorum between 0.15 and 0.25
+func GenMinQuorum(r *rand.Rand) math.LegacyDec {
+	return math.LegacyNewDecWithPrec(int64(simulation.RandIntBetween(r, 15, 25)), 2)
+}
+
+// GenMaxQuorum returns a randomized MinQuorum between 0.75 and 0.85
+func GenMaxQuorum(r *rand.Rand) math.LegacyDec {
+	return math.LegacyNewDecWithPrec(int64(simulation.RandIntBetween(r, 75, 85)), 2)
 }
 
 // GenDepositParamsMinDepositUpdatePeriod returns randomized DepositParamsMinDepositUpdatePeriod
@@ -161,6 +161,7 @@ func GenBurnDepositNoThreshold(r *rand.Rand) math.LegacyDec {
 // RandomizedGenState generates a random GenesisState for gov
 func RandomizedGenState(simState *module.SimulationState) {
 	startingProposalID := uint64(simState.Rand.Intn(100))
+	startingParticipationEma := "0.25"
 
 	// var minDeposit sdk.Coins
 	// simState.AppParams.GetOrGenerate(
@@ -186,12 +187,6 @@ func RandomizedGenState(simState *module.SimulationState) {
 		func(r *rand.Rand) { votingPeriod = GenVotingParamsVotingPeriod(r) },
 	)
 
-	var quorum math.LegacyDec
-	simState.AppParams.GetOrGenerate(
-		TallyParamsQuorum, &quorum, simState.Rand,
-		func(r *rand.Rand) { quorum = GenTallyParamsQuorum(r) },
-	)
-
 	var threshold math.LegacyDec
 	simState.AppParams.GetOrGenerate(
 		TallyParamsThreshold, &threshold, simState.Rand,
@@ -201,22 +196,10 @@ func RandomizedGenState(simState *module.SimulationState) {
 	var minDepositRatio math.LegacyDec
 	simState.AppParams.GetOrGenerate(MinDepositRatio, &minDepositRatio, simState.Rand, func(r *rand.Rand) { minDepositRatio = GenMinDepositRatio(r) })
 
-	var lawQuorum math.LegacyDec
-	simState.AppParams.GetOrGenerate(
-		TallyParamsLawQuorum, &lawQuorum, simState.Rand,
-		func(r *rand.Rand) { lawQuorum = GenTallyParamsConstitutionalQuorum(r, quorum) },
-	)
-
 	var lawThreshold math.LegacyDec
 	simState.AppParams.GetOrGenerate(
 		TallyParamsLawThreshold, &lawThreshold, simState.Rand,
 		func(r *rand.Rand) { lawThreshold = GenTallyParamsConstitutionalThreshold(r, threshold) },
-	)
-
-	var amendmentsQuorum math.LegacyDec
-	simState.AppParams.GetOrGenerate(
-		TallyParamsConstitutionAmendmentQuorum, &amendmentsQuorum, simState.Rand,
-		func(r *rand.Rand) { amendmentsQuorum = GenTallyParamsConstitutionalQuorum(r, lawQuorum) },
 	)
 
 	var amendmentsThreshold math.LegacyDec
@@ -337,17 +320,36 @@ func RandomizedGenState(simState *module.SimulationState) {
 		func(r *rand.Rand) { burnDepositNoThreshold = GenBurnDepositNoThreshold(r) },
 	)
 
+	var minQuorum math.LegacyDec
+	simState.AppParams.GetOrGenerate(MinQuorum, &minQuorum, simState.Rand, func(r *rand.Rand) { minQuorum = GenMinQuorum(r) })
+
+	var maxQuorum math.LegacyDec
+	simState.AppParams.GetOrGenerate(MaxQuorum, &maxQuorum, simState.Rand, func(r *rand.Rand) { maxQuorum = GenMaxQuorum(r) })
+
+	var minConstitutionAmendmentQuorum math.LegacyDec
+	simState.AppParams.GetOrGenerate(MinConstitutionAmendmentQuorum, &minConstitutionAmendmentQuorum, simState.Rand, func(r *rand.Rand) { minConstitutionAmendmentQuorum = GenMinQuorum(r) })
+
+	var maxConstitutionAmendmentQuorum math.LegacyDec
+	simState.AppParams.GetOrGenerate(MaxConstitutionAmendmentQuorum, &maxConstitutionAmendmentQuorum, simState.Rand, func(r *rand.Rand) { maxConstitutionAmendmentQuorum = GenMaxQuorum(r) })
+
+	var minLawQuorum math.LegacyDec
+	simState.AppParams.GetOrGenerate(MinLawQuorum, &minLawQuorum, simState.Rand, func(r *rand.Rand) { minLawQuorum = GenMinQuorum(r) })
+
+	var maxLawQuorum math.LegacyDec
+	simState.AppParams.GetOrGenerate(MaxLawQuorum, &maxLawQuorum, simState.Rand, func(r *rand.Rand) { maxLawQuorum = GenMaxQuorum(r) })
+
 	govGenesis := v1.NewGenesisState(
-		startingProposalID,
-		v1.NewParams(depositPeriod, votingPeriod, quorum.String(), threshold.String(), amendmentsQuorum.String(),
-			amendmentsThreshold.String(), lawQuorum.String(), lawThreshold.String(), // minInitialDepositRatio.String(),
+		startingProposalID, startingParticipationEma, startingParticipationEma, startingParticipationEma,
+		v1.NewParams(depositPeriod, votingPeriod, threshold.String(), amendmentsThreshold.String(), lawThreshold.String(),
 			simState.Rand.Intn(2) == 0, simState.Rand.Intn(2) == 0, minDepositRatio.String(), quorumTimout,
 			maxVotingPeriodExtension, quorumCheckCount, minDepositFloor, minDepositUpdatePeriod,
 			minDepositSensitivityTargetDistance, minDepositIncreaseRatio.String(), minDepositDecreaseRatio.String(),
 			targetActiveProposals, minInitialDepositFloor, minInitialDepositUpdatePeriod,
 			minInitialDepositSensitivityTargetDistance, minInitialDepositIncreaseRatio.String(),
 			minInitialDepositDecreaseRatio.String(), minInitialDepositTargetProposals,
-			burnDepositNoThreshold.String(),
+			burnDepositNoThreshold.String(), maxQuorum.String(), minQuorum.String(),
+			maxConstitutionAmendmentQuorum.String(), minConstitutionAmendmentQuorum.String(),
+			maxLawQuorum.String(), minQuorum.String(),
 		),
 	)
 

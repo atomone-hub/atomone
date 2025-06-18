@@ -192,24 +192,28 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 	// Modifying gov genesis
 
 	// Refactor to separate method
-	quorum, _ := math.LegacyNewDecFromStr("0.000000000000000001")
-	threshold, _ := math.LegacyNewDecFromStr("0.000000000000000001")
-	lawQuorum, _ := math.LegacyNewDecFromStr("0.000000000000000001")
-	lawThreshold, _ := math.LegacyNewDecFromStr("0.000000000000000001")
-	amendmentsQuorum, _ := math.LegacyNewDecFromStr("0.000000000000000001")
-	amendmentsThreshold, _ := math.LegacyNewDecFromStr("0.000000000000000001")
+	threshold := "0.000000000000000001"
+	lawThreshold := "0.000000000000000001"
+	amendmentsThreshold := "0.000000000000000001"
+	minQuorum := "0.2"
+	maxQuorum := "0.8"
+	participationEma := "0.25"
+	minConstitutionAmendmentQuorum := "0.2"
+	maxConstitutionAmendmentQuorum := "0.8"
+	minLawQuorum := "0.2"
+	maxLawQuorum := "0.8"
 
 	maxDepositPeriod := 10 * time.Minute
 	votingPeriod := 15 * time.Second
 
 	govGenState := govv1.NewGenesisState(1,
+		participationEma, participationEma, participationEma,
 		govv1.NewParams(
 			// sdk.NewCoins(sdk.NewCoin(denom, depositAmount.Amount)),
 			maxDepositPeriod,
 			votingPeriod,
-			quorum.String(), threshold.String(),
-			amendmentsQuorum.String(), amendmentsThreshold.String(), lawQuorum.String(), lawThreshold.String(),
-			// math.LegacyZeroDec().String(),
+			threshold, amendmentsThreshold, lawThreshold,
+			// sdk.ZeroDec().String(),
 			false, false, govv1.DefaultMinDepositRatio.String(),
 			govv1.DefaultQuorumTimeout, govv1.DefaultMaxVotingPeriodExtension, govv1.DefaultQuorumCheckCount,
 			sdk.NewCoins(sdk.NewCoin(denom, depositAmount.Amount)), govv1.DefaultMinDepositUpdatePeriod,
@@ -219,6 +223,9 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 			govv1.DefaultMinInitialDepositDecreaseSensitivityTargetDistance, govv1.DefaultMinInitialDepositIncreaseRatio.String(),
 			govv1.DefaultMinInitialDepositDecreaseRatio.String(), govv1.DefaultTargetProposalsInDepositPeriod,
 			govv1.DefaultBurnDepositNoThreshold.String(),
+			maxQuorum, minQuorum,
+			maxConstitutionAmendmentQuorum, minConstitutionAmendmentQuorum,
+			maxLawQuorum, minLawQuorum,
 		),
 	)
 	govGenState.Constitution = "This is a test constitution"

@@ -261,7 +261,8 @@ message TallyParams {
   bytes quorum = 1 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false,
-    (gogoproto.jsontag) = "quorum,omitempty"
+    (gogoproto.jsontag) = "quorum,omitempty",
+    deprecated = true
   ];
 
   // Minimum proportion of Yes votes for proposal to pass. Default value: 2/3.

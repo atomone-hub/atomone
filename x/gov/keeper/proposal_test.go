@@ -7,10 +7,12 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
 	"github.com/atomone-hub/atomone/x/gov/client/testutil"
 	"github.com/atomone-hub/atomone/x/gov/types"
@@ -228,4 +230,90 @@ func TestMigrateProposalMessages(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, "Test", content.GetTitle())
 	require.Equal(t, "description", content.GetDescription())
+}
+
+func TestProposalKinds(t *testing.T) {
+	tests := []struct {
+		name          string
+		proposal      v1.Proposal
+		expectedKinds v1.ProposalKinds
+	}{
+		{
+			name:          "no message",
+			proposal:      v1.Proposal{},
+			expectedKinds: v1.ProposalKindAny,
+		},
+		{
+			name: "Send message",
+			proposal: v1.Proposal{
+				Messages: setMsgs(t, []sdk.Msg{&banktypes.MsgSend{}}),
+			},
+			expectedKinds: v1.ProposalKindAny,
+		},
+		{
+			name: "Law message",
+			proposal: v1.Proposal{
+				Messages: setMsgs(t, []sdk.Msg{&v1.MsgProposeLaw{}}),
+			},
+			expectedKinds: v1.ProposalKindLaw,
+		},
+		{
+			name: "Law+Send messages",
+			proposal: v1.Proposal{
+				Messages: setMsgs(t, []sdk.Msg{
+					&v1.MsgProposeLaw{},
+					&banktypes.MsgSend{},
+				}),
+			},
+			expectedKinds: v1.ProposalKindLaw | v1.ProposalKindAny,
+		},
+		{
+			name: "ConstitutionAmendment message",
+			proposal: v1.Proposal{
+				Messages: setMsgs(t, []sdk.Msg{&v1.MsgProposeConstitutionAmendment{}}),
+			},
+			expectedKinds: v1.ProposalKindConstitutionAmendment,
+		},
+		{
+			name: "ConstitutionAmendment+Law messages",
+			proposal: v1.Proposal{
+				Messages: setMsgs(t, []sdk.Msg{
+					&v1.MsgProposeConstitutionAmendment{},
+					&v1.MsgProposeLaw{},
+				}),
+			},
+			expectedKinds: v1.ProposalKindConstitutionAmendment | v1.ProposalKindLaw,
+		},
+		{
+			name: "Law+ConstitutionAmendment messages",
+			proposal: v1.Proposal{
+				Messages: setMsgs(t, []sdk.Msg{
+					&v1.MsgProposeLaw{},
+					&v1.MsgProposeConstitutionAmendment{},
+				}),
+			},
+			expectedKinds: v1.ProposalKindConstitutionAmendment | v1.ProposalKindLaw,
+		},
+		{
+			name: "Law+ConstitutionAmendment+Send messages",
+			proposal: v1.Proposal{
+				Messages: setMsgs(t, []sdk.Msg{
+					&v1.MsgProposeLaw{},
+					&v1.MsgProposeConstitutionAmendment{},
+					&banktypes.MsgSend{},
+				}),
+			},
+			expectedKinds: v1.ProposalKindConstitutionAmendment | v1.ProposalKindLaw | v1.ProposalKindAny,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			k, _, _, _ := setupGovKeeper(t)
+			assert := assert.New(t)
+
+			kinds := k.ProposalKinds(tt.proposal)
+
+			assert.Equal(tt.expectedKinds, kinds)
+		})
+	}
 }

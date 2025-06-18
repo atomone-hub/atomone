@@ -550,7 +550,16 @@ $ %s query gov params
 			vp := v1.NewVotingParams(res.Params.VotingPeriod)
 			res.VotingParams = &vp
 
-			tp := v1.NewTallyParams(res.Params.Quorum, res.Params.Threshold)
+			quorumRes, err := queryClient.Quorum(ctx, &v1.QueryQuorumRequest{})
+			if err != nil {
+				return err
+			}
+
+			tp := v1.NewTallyParams(
+				quorumRes.Quorum, res.Params.Threshold,
+				quorumRes.ConstitutionAmendmentQuorum, res.Params.ConstitutionAmendmentThreshold,
+				quorumRes.LawQuorum, res.Params.LawThreshold,
+			)
 			res.TallyParams = &tp
 
 			return clientCtx.PrintProto(res)

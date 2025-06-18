@@ -2,12 +2,16 @@ package v3
 
 import (
 	"context"
+	"fmt"
 
+	"cosmossdk.io/math"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
 	"github.com/atomone-hub/atomone/app/keepers"
 
+	govkeeper "github.com/atomone-hub/atomone/x/gov/keeper"
+	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -27,7 +31,32 @@ func CreateUpgradeHandler(
 		if err != nil {
 			return vm, err
 		}
+		if err := initGovDynamicQuorum(sdkCtx, keepers.GovKeeper); err != nil {
+			return vm, err
+		}
 		sdkCtx.Logger().Info("Upgrade complete")
 		return vm, nil
 	}
+}
+
+// initGovDynamicQuorum initialized the gov module for the dynamic quorum
+// features, which means setting the new parameters min/max quorums and the
+// participation ema.
+func initGovDynamicQuorum(ctx sdk.Context, govKeeper *govkeeper.Keeper) error {
+	ctx.Logger().Info("Initializing gov module for dynamic quorum...")
+	params := govKeeper.GetParams(ctx)
+	defaultParams := v1.DefaultParams()
+	params.QuorumRange = defaultParams.QuorumRange
+	params.ConstitutionAmendmentQuorumRange = defaultParams.ConstitutionAmendmentQuorumRange
+	params.LawQuorumRange = defaultParams.LawQuorumRange
+	if err := govKeeper.SetParams(ctx, params); err != nil {
+		return fmt.Errorf("set gov params: %w", err)
+	}
+	// NOTE(tb): Disregarding whales' votes, the current participation is less than 12%
+	initParticipationEma := math.LegacyNewDecWithPrec(12, 2)
+	govKeeper.SetParticipationEMA(ctx, initParticipationEma)
+	govKeeper.SetConstitutionAmendmentParticipationEMA(ctx, initParticipationEma)
+	govKeeper.SetLawParticipationEMA(ctx, initParticipationEma)
+	ctx.Logger().Info("Gov module initialized for dynamic quorum")
+	return nil
 }
