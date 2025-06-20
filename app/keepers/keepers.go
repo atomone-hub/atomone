@@ -10,9 +10,13 @@ import (
 	"github.com/cosmos/ibc-go/v10/modules/apps/transfer"
 	ibctransferkeeper "github.com/cosmos/ibc-go/v10/modules/apps/transfer/keeper"
 	ibctransfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
+	transferv2 "github.com/cosmos/ibc-go/v10/modules/apps/transfer/v2"
 	porttypes "github.com/cosmos/ibc-go/v10/modules/core/05-port/types"
+	ibcapi "github.com/cosmos/ibc-go/v10/modules/core/api"
 	ibcexported "github.com/cosmos/ibc-go/v10/modules/core/exported"
 	ibckeeper "github.com/cosmos/ibc-go/v10/modules/core/keeper"
+	solomachine "github.com/cosmos/ibc-go/v10/modules/light-clients/06-solomachine"
+	ibctm "github.com/cosmos/ibc-go/v10/modules/light-clients/07-tendermint"
 
 	storetypes "cosmossdk.io/store/types"
 	evidencekeeper "cosmossdk.io/x/evidence/keeper"
@@ -83,8 +87,10 @@ type AppKeepers struct {
 	FeemarketKeeper       *feemarketkeeper.Keeper
 
 	// Modules
-	ICAModule      ica.AppModule
-	TransferModule transfer.AppModule
+	ICAModule         ica.AppModule
+	TransferModule    transfer.AppModule
+	TMClientModule    ibctm.AppModule
+	SoloMachineModule solomachine.AppModule
 }
 
 func NewAppKeeper(
@@ -297,7 +303,10 @@ func NewAppKeeper(
 	appKeepers.TransferModule = transfer.NewAppModule(appKeepers.TransferKeeper)
 
 	// create IBC module from bottom to top of stack
-	var transferStack porttypes.IBCModule = transfer.NewIBCModule(appKeepers.TransferKeeper)
+	var (
+		transferStack   porttypes.IBCModule = transfer.NewIBCModule(appKeepers.TransferKeeper)
+		transferStackV2 ibcapi.IBCModule    = transferv2.NewIBCModule(appKeepers.TransferKeeper)
+	)
 
 	// Add transfer stack to IBC Router
 
@@ -309,7 +318,24 @@ func NewAppKeeper(
 		AddRoute(icahosttypes.SubModuleName, icaHostStack).
 		AddRoute(ibctransfertypes.ModuleName, transferStack)
 
+	ibcv2Router := ibcapi.NewRouter().
+		AddRoute(ibctransfertypes.PortID, transferStackV2)
+
 	appKeepers.IBCKeeper.SetRouter(ibcRouter)
+	appKeepers.IBCKeeper.SetRouterV2(ibcv2Router)
+
+	// Light Clients
+	clientKeeper := appKeepers.IBCKeeper.ClientKeeper
+	storeProvider := clientKeeper.GetStoreProvider()
+
+	tmLightClientModule := ibctm.NewLightClientModule(appCodec, storeProvider)
+	appKeepers.IBCKeeper.ClientKeeper.AddRoute(ibctm.ModuleName, &tmLightClientModule)
+
+	smLightClientModule := solomachine.NewLightClientModule(appCodec, storeProvider)
+	appKeepers.IBCKeeper.ClientKeeper.AddRoute(solomachine.ModuleName, &smLightClientModule)
+
+	appKeepers.TMClientModule = ibctm.NewAppModule(tmLightClientModule)
+	appKeepers.SoloMachineModule = solomachine.NewAppModule(smLightClientModule)
 
 	return appKeepers
 }

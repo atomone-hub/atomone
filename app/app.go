@@ -39,11 +39,12 @@ import (
 	"github.com/cosmos/cosmos-sdk/server/config"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	"github.com/cosmos/cosmos-sdk/std"
-	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
+	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
+	authsims "github.com/cosmos/cosmos-sdk/x/auth/simulation"
 	"github.com/cosmos/cosmos-sdk/x/auth/tx"
 	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -238,14 +239,16 @@ func NewAtomOneApp(
 	}
 	reflectionv1.RegisterReflectionServiceServer(app.GRPCQueryRouter(), reflectionSvc)
 
-	// add test gRPC service for testing gRPC queries in isolation
-	testdata.RegisterQueryServer(app.GRPCQueryRouter(), testdata.QueryImpl{})
-
 	// create the simulation manager and define the order of the modules for deterministic simulations
-	//
-	// NOTE: this is not required apps that don't use the simulator for fuzz testing
-	// transactions
-	app.sm = module.NewSimulationManager(simulationModules(app, appCodec)...)
+	overrideSimulationModules := map[string]module.AppModuleSimulation{
+		authtypes.ModuleName: auth.NewAppModule(
+			app.appCodec,
+			app.AccountKeeper,
+			authsims.RandomGenesisAccounts,
+			nil,
+		),
+	}
+	app.sm = module.NewSimulationManagerFromAppModules(app.mm.Modules, overrideSimulationModules)
 
 	app.sm.RegisterStoreDecoders()
 
