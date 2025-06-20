@@ -6,8 +6,11 @@ import (
 
 	tmrand "github.com/cometbft/cometbft/libs/rand"
 
-	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
+	ibctransfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
 
+	evidencetypes "cosmossdk.io/x/evidence/types"
+	"cosmossdk.io/x/feegrant"
+	upgradetypes "cosmossdk.io/x/upgrade/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
@@ -17,12 +20,9 @@ import (
 	authvesting "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	distribtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
-	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
-	"github.com/cosmos/cosmos-sdk/x/feegrant"
 	paramsproptypes "github.com/cosmos/cosmos-sdk/x/params/types/proposal"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
 	atomoneparams "github.com/atomone-hub/atomone/app/params"
 	feemarkettypes "github.com/atomone-hub/atomone/x/feemarket/types"
@@ -66,7 +66,7 @@ func init() {
 	photontypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 	feemarkettypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 
-	cdc = encodingConfig.Marshaler
+	cdc = encodingConfig.Codec
 	txConfig = encodingConfig.TxConfig
 }
 
@@ -109,33 +109,6 @@ func (c *chain) createAndInitValidators(count int) error {
 
 		// create keys
 		if err := node.createKey("val"); err != nil {
-			return err
-		}
-		if err := node.createNodeKey(); err != nil {
-			return err
-		}
-		if err := node.createConsensusKey(); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (c *chain) createAndInitValidatorsWithMnemonics(count int, mnemonics []string) error { //nolint:unused // this is called during e2e tests
-	for i := 0; i < count; i++ {
-		// create node
-		node := c.createValidator(i)
-
-		// generate genesis files
-		if err := node.init(); err != nil {
-			return err
-		}
-
-		c.validators = append(c.validators, node)
-
-		// create keys
-		if err := node.createKeyFromMnemonic("val", mnemonics[i]); err != nil {
 			return err
 		}
 		if err := node.createNodeKey(); err != nil {

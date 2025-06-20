@@ -14,7 +14,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/atomone-hub/atomone/cmd/atomoned/cmd"
 	"github.com/ory/dockertest/v3"
 	"github.com/stretchr/testify/assert"
 
@@ -28,6 +27,8 @@ import (
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	tmjson "github.com/cometbft/cometbft/libs/json"
 
+	"cosmossdk.io/math"
+	evidencetypes "cosmossdk.io/x/evidence/types"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
@@ -37,7 +38,6 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	authvesting "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
@@ -112,8 +112,6 @@ type AddressResponse struct {
 }
 
 func TestIntegrationTestSuite(t *testing.T) {
-	// Setup bech32 prefix
-	cmd.InitSDKConfig()
 	suite.Run(t, new(IntegrationTestSuite))
 }
 
@@ -311,21 +309,21 @@ func (s *IntegrationTestSuite) addGenesisVestingAndJailedAccounts(
 
 	jailedValAddr := sdk.ValAddress(jailedValAcc)
 	val, err := stakingtypes.NewValidator(
-		jailedValAddr,
+		jailedValAddr.String(),
 		pubKey,
 		stakingtypes.NewDescription("jailed", "", "", "", ""),
 	)
 	s.Require().NoError(err)
 	val.Jailed = true
-	val.Tokens = sdk.NewInt(slashingShares)
-	val.DelegatorShares = sdk.NewDec(slashingShares)
+	val.Tokens = math.NewInt(slashingShares)
+	val.DelegatorShares = math.LegacyNewDec(slashingShares)
 	stakingGenState.Validators = append(stakingGenState.Validators, val)
 
 	// add jailed validator delegations
 	stakingGenState.Delegations = append(stakingGenState.Delegations, stakingtypes.Delegation{
 		DelegatorAddress: jailedValAcc.String(),
 		ValidatorAddress: jailedValAddr.String(),
-		Shares:           sdk.NewDec(slashingShares),
+		Shares:           math.LegacyNewDec(slashingShares),
 	})
 
 	appGenState[stakingtypes.ModuleName], err = cdc.MarshalJSON(stakingGenState)
@@ -338,12 +336,15 @@ func (s *IntegrationTestSuite) addGenesisVestingAndJailedAccounts(
 	// add continuous vesting account to the genesis
 	baseVestingContinuousAccount := authtypes.NewBaseAccount(
 		continuousVestingAcc, nil, 0, 0)
+	bva, err := authvesting.NewBaseVestingAccount(
+		baseVestingContinuousAccount,
+		sdk.NewCoins(vestingAmountVested),
+		time.Now().Add(time.Duration(rand.Intn(80)+150)*time.Second).Unix(),
+	)
+	s.Require().NoError(err)
+
 	vestingContinuousGenAccount := authvesting.NewContinuousVestingAccountRaw(
-		authvesting.NewBaseVestingAccount(
-			baseVestingContinuousAccount,
-			sdk.NewCoins(vestingAmountVested),
-			time.Now().Add(time.Duration(rand.Intn(80)+150)*time.Second).Unix(),
-		),
+		bva,
 		time.Now().Add(time.Duration(rand.Intn(40)+90)*time.Second).Unix(),
 	)
 	s.Require().NoError(vestingContinuousGenAccount.Validate())
@@ -351,13 +352,14 @@ func (s *IntegrationTestSuite) addGenesisVestingAndJailedAccounts(
 	// add delayed vesting account to the genesis
 	baseVestingDelayedAccount := authtypes.NewBaseAccount(
 		delayedVestingAcc, nil, 0, 0)
-	vestingDelayedGenAccount := authvesting.NewDelayedVestingAccountRaw(
-		authvesting.NewBaseVestingAccount(
-			baseVestingDelayedAccount,
-			sdk.NewCoins(vestingAmountVested),
-			time.Now().Add(time.Duration(rand.Intn(40)+90)*time.Second).Unix(),
-		),
+	bva, err = authvesting.NewBaseVestingAccount(
+		baseVestingDelayedAccount,
+		sdk.NewCoins(vestingAmountVested),
+		time.Now().Add(time.Duration(rand.Intn(40)+90)*time.Second).Unix(),
 	)
+	s.Require().NoError(err)
+
+	vestingDelayedGenAccount := authvesting.NewDelayedVestingAccountRaw(bva)
 	s.Require().NoError(vestingDelayedGenAccount.Validate())
 
 	// unpack and append accounts
@@ -388,7 +390,7 @@ func (s *IntegrationTestSuite) addGenesisVestingAndJailedAccounts(
 	}
 	stakingModuleBalances := banktypes.Balance{
 		Address: authtypes.NewModuleAddress(stakingtypes.NotBondedPoolName).String(),
-		Coins:   sdk.NewCoins(sdk.NewCoin(uatoneDenom, sdk.NewInt(slashingShares))),
+		Coins:   sdk.NewCoins(sdk.NewCoin(uatoneDenom, math.NewInt(slashingShares))),
 	}
 	bankGenState.Balances = append(
 		bankGenState.Balances,
@@ -437,7 +439,7 @@ func (s *IntegrationTestSuite) initGenesis(c *chain, vestingMnemonic, jailedValM
 
 	// set custom max gas per block in genesis consensus params,
 	// required for feemarket tests
-	genDoc.ConsensusParams.Block.MaxGas = 50_000_000 // 50M gas per block
+	genDoc.Consensus.Params.Block.MaxGas = 50_000_000 // 50M gas per block
 
 	appGenState = s.addGenesisVestingAndJailedAccounts(
 		c,

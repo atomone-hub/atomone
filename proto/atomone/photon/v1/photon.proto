@@ -1,8 +1,6 @@
 syntax = "proto3";
 package atomone.photon.v1;
 
-import "gogoproto/gogo.proto";
-
 option go_package = "github.com/atomone-hub/atomone/x/photon/types";
 
 // Params defines the parameters for the x/photon module.

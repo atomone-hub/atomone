@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"strings"
 
+	"cosmossdk.io/math"
+	evidencetypes "cosmossdk.io/x/evidence/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/tx"
@@ -14,7 +16,6 @@ import (
 	authvesting "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	disttypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
-	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	feemarkettypes "github.com/atomone-hub/atomone/x/feemarket/types"
@@ -249,7 +250,7 @@ func queryValidator(endpoint, address string) (stakingtypes.Validator, error) {
 	return res.Validator, nil
 }
 
-func queryValidators(endpoint string) (stakingtypes.Validators, error) {
+func queryValidators(endpoint string) ([]stakingtypes.Validator, error) {
 	var res stakingtypes.QueryValidatorsResponse
 	body, err := httpGet(fmt.Sprintf("%s/cosmos/staking/v1beta1/validators", endpoint))
 	if err != nil {
@@ -306,13 +307,13 @@ func (s *IntegrationTestSuite) queryConstitution(endpoint string) govtypesv1.Que
 	return res
 }
 
-func (s *IntegrationTestSuite) queryPhotonConversionRate(endpoint string) sdk.Dec {
+func (s *IntegrationTestSuite) queryPhotonConversionRate(endpoint string) math.LegacyDec {
 	body, err := httpGet(fmt.Sprintf("%s/atomone/photon/v1/conversion_rate", endpoint))
 	s.Require().NoError(err)
 	var resp photontypes.QueryConversionRateResponse
 	err = cdc.UnmarshalJSON(body, &resp)
 	s.Require().NoError(err)
-	return sdk.MustNewDecFromStr(resp.ConversionRate)
+	return math.LegacyMustNewDecFromStr(resp.ConversionRate)
 }
 
 func (s *IntegrationTestSuite) queryPhotonParams(endpoint string) photontypes.QueryParamsResponse {

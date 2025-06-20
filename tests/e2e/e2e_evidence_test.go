@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/cosmos/cosmos-sdk/x/evidence/exported"
-	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
+	"cosmossdk.io/x/evidence/exported"
+	evidencetypes "cosmossdk.io/x/evidence/types"
 )
 
 func (s *IntegrationTestSuite) testEvidenceQueries() {
@@ -25,7 +25,7 @@ func (s *IntegrationTestSuite) testEvidenceQueries() {
 			s.Require().NoError(err)
 			eq, ok := exportedEvidence.(*evidencetypes.Equivocation)
 			s.Require().True(ok)
-			s.execQueryEvidence(chain, valIdx, eq.Hash().String())
+			s.execQueryEvidence(chain, valIdx, string(eq.Hash())) // TODO: check this string conversion was good
 		}
 	})
 }

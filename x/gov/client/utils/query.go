@@ -48,7 +48,7 @@ func QueryVotesByTxQuery(clientCtx client.Context, params v1.QueryProposalVotesP
 	for len(votes) < totalLimit {
 		// Search for both (legacy) votes and weighted votes.
 		q := fmt.Sprintf("%s.%s='%d'", types.EventTypeProposalVote, types.AttributeKeyProposalID, params.ProposalID)
-		searchResult, err := authtx.QueryTxsByEvents(clientCtx, []string{q}, nextTxPage, defaultLimit, "")
+		searchResult, err := authtx.QueryTxsByEvents(clientCtx, nextTxPage, defaultLimit, q, "")
 		if err != nil {
 			return nil, err
 		}
@@ -110,7 +110,7 @@ func QueryVoteByTxQuery(clientCtx client.Context, params v1.QueryVoteParams) ([]
 	q1 := fmt.Sprintf("%s.%s='%d'", types.EventTypeProposalVote, types.AttributeKeyProposalID, params.ProposalID)
 	q2 := fmt.Sprintf("%s.%s='%s'", sdk.EventTypeMessage, sdk.AttributeKeySender, params.Voter.String())
 	q3 := fmt.Sprintf("%s.%s='%s'", sdk.EventTypeMessage, sdk.AttributeKeySender, params.Voter)
-	searchResult, err := authtx.QueryTxsByEvents(clientCtx, []string{fmt.Sprintf("%s AND (%s OR %s)", q1, q2, q3)}, defaultPage, defaultLimit, "")
+	searchResult, err := authtx.QueryTxsByEvents(clientCtx, defaultPage, defaultLimit, fmt.Sprintf("%s AND (%s OR %s)", q1, q2, q3), "")
 	if err != nil {
 		return nil, err
 	}
@@ -164,7 +164,7 @@ func QueryVoteByTxQuery(clientCtx client.Context, params v1.QueryVoteParams) ([]
 // QueryProposerByTxQuery will query for a proposer of a governance proposal by ID.
 func QueryProposerByTxQuery(clientCtx client.Context, proposalID uint64) (Proposer, error) {
 	q := fmt.Sprintf("%s.%s='%d'", types.EventTypeSubmitProposal, types.AttributeKeyProposalID, proposalID)
-	searchResult, err := authtx.QueryTxsByEvents(clientCtx, []string{q}, defaultPage, defaultLimit, "")
+	searchResult, err := authtx.QueryTxsByEvents(clientCtx, defaultPage, defaultLimit, q, "")
 	if err != nil {
 		return Proposer{}, err
 	}

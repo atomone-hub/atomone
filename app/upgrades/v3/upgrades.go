@@ -1,15 +1,18 @@
 package v3
 
 import (
+	"context"
 	"fmt"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"cosmossdk.io/math"
+	upgradetypes "cosmossdk.io/x/upgrade/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
 	"github.com/atomone-hub/atomone/app/keepers"
+
 	govkeeper "github.com/atomone-hub/atomone/x/gov/keeper"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // CreateUpgradeHandler returns a upgrade handler for AtomOne v3
@@ -18,18 +21,20 @@ func CreateUpgradeHandler(
 	configurator module.Configurator,
 	keepers *keepers.AppKeepers,
 ) upgradetypes.UpgradeHandler {
-	return func(ctx sdk.Context, plan upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
-		ctx.Logger().Info("Starting module migrations...")
+	return func(ctx context.Context, plan upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
+		sdkCtx := sdk.UnwrapSDKContext(ctx)
+
+		sdkCtx.Logger().Info("Starting module migrations...")
 		// RunMigrations will detect the add of the feemarket module, will initiate
 		// its genesis and will fill the versionMap with its consensus version.
 		vm, err := mm.RunMigrations(ctx, configurator, vm)
 		if err != nil {
 			return vm, err
 		}
-		if err := initGovDynamicQuorum(ctx, keepers.GovKeeper); err != nil {
+		if err := initGovDynamicQuorum(sdkCtx, keepers.GovKeeper); err != nil {
 			return vm, err
 		}
-		ctx.Logger().Info("Upgrade complete")
+		sdkCtx.Logger().Info("Upgrade complete")
 		return vm, nil
 	}
 }
@@ -48,7 +53,7 @@ func initGovDynamicQuorum(ctx sdk.Context, govKeeper *govkeeper.Keeper) error {
 		return fmt.Errorf("set gov params: %w", err)
 	}
 	// NOTE(tb): Disregarding whales' votes, the current participation is less than 12%
-	initParticipationEma := sdk.NewDecWithPrec(12, 2)
+	initParticipationEma := math.LegacyNewDecWithPrec(12, 2)
 	govKeeper.SetParticipationEMA(ctx, initParticipationEma)
 	govKeeper.SetConstitutionAmendmentParticipationEMA(ctx, initParticipationEma)
 	govKeeper.SetLawParticipationEMA(ctx, initParticipationEma)

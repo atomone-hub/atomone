@@ -2,8 +2,6 @@ package v1
 
 import (
 	"cosmossdk.io/math"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // NewTallyResult creates a new TallyResult instance
@@ -16,7 +14,7 @@ func NewTallyResult(yes, abstain, no math.Int) TallyResult {
 }
 
 // NewTallyResultFromMap creates a new TallyResult instance from a Option -> Dec map
-func NewTallyResultFromMap(results map[VoteOption]sdk.Dec) TallyResult {
+func NewTallyResultFromMap(results map[VoteOption]math.LegacyDec) TallyResult {
 	return NewTallyResult(
 		results[OptionYes].TruncateInt(),
 		results[OptionAbstain].TruncateInt(),

@@ -5,6 +5,7 @@
 package post_test
 
 import (
+	context "context"
 	reflect "reflect"
 
 	types "github.com/atomone-hub/atomone/x/feemarket/types"
@@ -119,10 +120,10 @@ func (m *MockConsensusParamsKeeper) EXPECT() *MockConsensusParamsKeeperMockRecor
 }
 
 // Get mocks base method.
-func (m *MockConsensusParamsKeeper) Get(arg0 types1.Context) (*types0.ConsensusParams, error) {
+func (m *MockConsensusParamsKeeper) Get(arg0 context.Context) (types0.ConsensusParams, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Get", arg0)
-	ret0, _ := ret[0].(*types0.ConsensusParams)
+	ret0, _ := ret[0].(types0.ConsensusParams)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

@@ -14,6 +14,8 @@ import (
 	_ "github.com/cosmos/cosmos-sdk/x/params"
 	_ "github.com/cosmos/cosmos-sdk/x/staking"
 
+	"cosmossdk.io/depinject"
+	sdklog "cosmossdk.io/log"
 	"cosmossdk.io/math"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
@@ -114,13 +116,16 @@ func createTestSuite(t *testing.T) suite {
 	res := suite{}
 
 	app, err := simtestutil.SetupWithConfiguration(
-		configurator.NewAppConfig(
-			configurator.ParamsModule(),
-			configurator.AuthModule(),
-			configurator.StakingModule(),
-			configurator.BankModule(),
-			govtestutil.GovModule(),
-			configurator.ConsensusModule(),
+		depinject.Configs(
+			configurator.NewAppConfig(
+				configurator.ParamsModule(),
+				configurator.AuthModule(),
+				configurator.StakingModule(),
+				configurator.BankModule(),
+				govtestutil.GovModule(),
+				configurator.ConsensusModule(),
+			),
+			depinject.Supply(sdklog.NewNopLogger()),
 		),
 		simtestutil.DefaultStartUpConfig(),
 		&res.AccountKeeper, &res.BankKeeper, &res.GovKeeper, &res.StakingKeeper,
