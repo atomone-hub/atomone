@@ -998,7 +998,7 @@ func (suite *KeeperTestSuite) TestLegacyGRPCQueryParams() {
 			"tally params request",
 			func(suite *KeeperTestSuite) {
 				req = &v1beta1.QueryParamsRequest{ParamsType: v1beta1.ParamTallying}
-				tallyParams := v1beta1.NewTallyParams(sdk.NewDecWithPrec(30, 2), v1beta1.DefaultThreshold, v1beta1.DefaultVetoThreshold)
+				tallyParams := v1beta1.NewTallyParams(math.LegacyNewDecWithPrec(30, 2), v1beta1.DefaultThreshold, v1beta1.DefaultVetoThreshold)
 				expRes = &v1beta1.QueryParamsResponse{
 					TallyParams: tallyParams,
 				}
