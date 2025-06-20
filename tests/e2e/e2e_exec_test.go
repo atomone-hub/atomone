@@ -344,7 +344,7 @@ func (s *IntegrationTestSuite) execBankSendBatch( //nolint:unused
 	sucessBankSendCount := 0
 
 	for i := range txs {
-		s.T().Logf(txs[i].log)
+		s.T().Log(txs[i].log)
 
 		s.execBankSend(c, valIdx, txs[i].from, txs[i].to, txs[i].amt, txs[i].expectErr)
 		if !txs[i].expectErr {
