@@ -221,8 +221,6 @@ func NewAtomOneApp(
 					paramsChangeProposalHandler,
 					upgradeProposalHandler,
 					cancelUpgradeProposalHandler,
-					updateIBCClientProposalHandler,
-					upgradeIBCProposalHandler,
 				},
 			),
 		})

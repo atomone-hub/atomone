@@ -8,11 +8,15 @@ import (
 	"path"
 	"path/filepath"
 
+	atomone "github.com/atomone-hub/atomone/app"
 	tmcfg "github.com/cometbft/cometbft/config"
 	"github.com/cometbft/cometbft/p2p"
 	"github.com/cometbft/cometbft/privval"
+	cmttypes "github.com/cometbft/cometbft/types"
 
+	"cosmossdk.io/log"
 	"cosmossdk.io/math"
+	dbm "github.com/cosmos/cosmos-db"
 	sdkcrypto "github.com/cosmos/cosmos-sdk/crypto"
 	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
@@ -20,11 +24,11 @@ import (
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	"github.com/cosmos/cosmos-sdk/server"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/module"
 	sdktx "github.com/cosmos/cosmos-sdk/types/tx"
 	txsigning "github.com/cosmos/cosmos-sdk/types/tx/signing"
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
+	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
@@ -78,16 +82,18 @@ func (v *validator) init() error {
 		return err
 	}
 
-	/* TODO */
-	basicManager := module.NewBasicManager()
+	tempApp := atomone.NewAtomOneApp(log.NewNopLogger(), dbm.NewMemDB(), nil, false, atomone.EmptyAppOptions{})
 
+	basicManager := tempApp.BasicModuleManager()
 	appState, err := json.MarshalIndent(basicManager.DefaultGenesis(cdc), "", " ")
 	if err != nil {
 		return fmt.Errorf("failed to JSON encode app genesis state: %w", err)
 	}
 
+	genDoc.Consensus = &genutiltypes.ConsensusGenesis{
+		Params: cmttypes.DefaultConsensusParams(),
+	}
 	genDoc.ChainID = v.chain.id
-	genDoc.Consensus.Validators = nil
 	genDoc.AppState = appState
 
 	if err = genutil.ExportGenesisFile(genDoc, config.GenesisFile()); err != nil {

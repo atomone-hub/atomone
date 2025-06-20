@@ -122,33 +122,6 @@ func (c *chain) createAndInitValidators(count int) error {
 	return nil
 }
 
-func (c *chain) createAndInitValidatorsWithMnemonics(count int, mnemonics []string) error { //nolint:unused // this is called during e2e tests
-	for i := 0; i < count; i++ {
-		// create node
-		node := c.createValidator(i)
-
-		// generate genesis files
-		if err := node.init(); err != nil {
-			return err
-		}
-
-		c.validators = append(c.validators, node)
-
-		// create keys
-		if err := node.createKeyFromMnemonic("val", mnemonics[i]); err != nil {
-			return err
-		}
-		if err := node.createNodeKey(); err != nil {
-			return err
-		}
-		if err := node.createConsensusKey(); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
 func (c *chain) createValidator(index int) *validator {
 	return &validator{
 		chain:   c,
