@@ -5,9 +5,9 @@ import (
 	"time"
 
 	"cosmossdk.io/math"
+	distrtypes "github.com/atomone-hub/atomone/x/distribution/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 )
 
 func (s *IntegrationTestSuite) testDistribution() {

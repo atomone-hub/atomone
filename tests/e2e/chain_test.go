@@ -19,12 +19,12 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	authvesting "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	distribtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	paramsproptypes "github.com/cosmos/cosmos-sdk/x/params/types/proposal"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	atomoneparams "github.com/atomone-hub/atomone/app/params"
+	distribtypes "github.com/atomone-hub/atomone/x/distribution/types"
 	feemarkettypes "github.com/atomone-hub/atomone/x/feemarket/types"
 	govv1types "github.com/atomone-hub/atomone/x/gov/types/v1"
 	govv1beta1types "github.com/atomone-hub/atomone/x/gov/types/v1beta1"

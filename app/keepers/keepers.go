@@ -38,8 +38,6 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	consensusparamkeeper "github.com/cosmos/cosmos-sdk/x/consensus/keeper"
 	consensusparamtypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
-	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
-	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	mintkeeper "github.com/cosmos/cosmos-sdk/x/mint/keeper"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	paramskeeper "github.com/cosmos/cosmos-sdk/x/params/keeper"
@@ -49,6 +47,8 @@ import (
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
+	distrkeeper "github.com/atomone-hub/atomone/x/distribution/keeper"
+	distrtypes "github.com/atomone-hub/atomone/x/distribution/types"
 	feemarketkeeper "github.com/atomone-hub/atomone/x/feemarket/keeper"
 	feemarkettypes "github.com/atomone-hub/atomone/x/feemarket/types"
 	govkeeper "github.com/atomone-hub/atomone/x/gov/keeper"
