@@ -92,6 +92,8 @@ The following parameters are added to the `x/gov` module:
 - `law_quorum_range` : struct containing `Min` and `Max` quorum values required to pass a law proposal.
 - `constitution_amendment_quorum_range` : struct containing `Min` and `Max` quorum values required to pass a constitution amendment proposal.
 
+The initial partecipation values for each quorum are imported from the genesis file.
+
 ### Querying the quorum value
 
 Given that `Quorum` is no longer a fixed parameter, a new query endpoint is
