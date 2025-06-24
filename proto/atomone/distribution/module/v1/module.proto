@@ -1,14 +1,12 @@
 syntax = "proto3";
 
-package cosmos.distribution.module.v1;
+package atomone.distribution.module.v1;
 
 import "cosmos/app/v1alpha1/module.proto";
 
 // Module is the config object of the distribution module.
 message Module {
-  option (cosmos.app.v1alpha1.module) = {
-    go_import: "github.com/atomone-hub/atomone/x/distribution"
-  };
+  option (cosmos.app.v1alpha1.module) = {go_import: "github.com/atomone-hub/atomone/x/distribution"};
 
   string fee_collector_name = 1;
 

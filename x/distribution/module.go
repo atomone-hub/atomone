@@ -23,7 +23,6 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/atomone-hub/atomone/x/distribution/client/cli"
-	"github.com/atomone-hub/atomone/x/distribution/exported"
 	"github.com/atomone-hub/atomone/x/distribution/keeper"
 	"github.com/atomone-hub/atomone/x/distribution/simulation"
 	"github.com/atomone-hub/atomone/x/distribution/types"
@@ -100,15 +99,15 @@ type AppModule struct {
 	accountKeeper types.AccountKeeper
 	bankKeeper    types.BankKeeper
 	stakingKeeper types.StakingKeeper
-
-	// legacySubspace is used solely for migration of x/params managed parameters
-	legacySubspace exported.Subspace
 }
 
 // NewAppModule creates a new AppModule object
 func NewAppModule(
-	cdc codec.Codec, keeper keeper.Keeper, accountKeeper types.AccountKeeper,
-	bankKeeper types.BankKeeper, stakingKeeper types.StakingKeeper, ss exported.Subspace,
+	cdc codec.Codec,
+	keeper keeper.Keeper,
+	accountKeeper types.AccountKeeper,
+	bankKeeper types.BankKeeper,
+	stakingKeeper types.StakingKeeper,
 ) AppModule {
 	return AppModule{
 		AppModuleBasic: AppModuleBasic{cdc: cdc, ac: accountKeeper.AddressCodec()},
@@ -116,7 +115,6 @@ func NewAppModule(
 		accountKeeper:  accountKeeper,
 		bankKeeper:     bankKeeper,
 		stakingKeeper:  stakingKeeper,
-		legacySubspace: ss,
 	}
 }
 
@@ -206,9 +204,6 @@ type ModuleInputs struct {
 	AccountKeeper types.AccountKeeper
 	BankKeeper    types.BankKeeper
 	StakingKeeper types.StakingKeeper
-
-	// LegacySubspace is used solely for migration of x/params managed parameters
-	LegacySubspace exported.Subspace `optional:"true"`
 }
 
 type ModuleOutputs struct {
@@ -241,7 +236,7 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		authority.String(),
 	)
 
-	m := NewAppModule(in.Cdc, k, in.AccountKeeper, in.BankKeeper, in.StakingKeeper, in.LegacySubspace)
+	m := NewAppModule(in.Cdc, k, in.AccountKeeper, in.BankKeeper, in.StakingKeeper)
 
 	return ModuleOutputs{
 		DistrKeeper: k,

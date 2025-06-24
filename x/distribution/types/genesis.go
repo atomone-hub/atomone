@@ -5,9 +5,16 @@ import (
 )
 
 func NewGenesisState(
-	params Params, fp FeePool, dwis []DelegatorWithdrawInfo, pp sdk.ConsAddress, r []ValidatorOutstandingRewardsRecord,
-	acc []ValidatorAccumulatedCommissionRecord, historical []ValidatorHistoricalRewardsRecord,
-	cur []ValidatorCurrentRewardsRecord, dels []DelegatorStartingInfoRecord, slashes []ValidatorSlashEventRecord,
+	params Params,
+	fp FeePool,
+	dwis []DelegatorWithdrawInfo,
+	pp sdk.ConsAddress,
+	r []ValidatorOutstandingRewardsRecord,
+	acc []ValidatorAccumulatedCommissionRecord,
+	historical []ValidatorHistoricalRewardsRecord,
+	cur []ValidatorCurrentRewardsRecord,
+	dels []DelegatorStartingInfoRecord,
+	slashes []ValidatorSlashEventRecord,
 ) *GenesisState {
 	return &GenesisState{
 		Params:                          params,
@@ -23,7 +30,7 @@ func NewGenesisState(
 	}
 }
 
-// get raw genesis raw message for testing
+// DefaultGenesisState get raw genesis raw message for testing
 func DefaultGenesisState() *GenesisState {
 	return &GenesisState{
 		FeePool:                         InitialFeePool(),
