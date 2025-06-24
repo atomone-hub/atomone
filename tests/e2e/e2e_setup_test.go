@@ -17,8 +17,6 @@ import (
 	"github.com/ory/dockertest/v3"
 	"github.com/stretchr/testify/assert"
 
-	// "github.com/cosmos/cosmos-sdk/crypto/hd"
-	// "github.com/cosmos/cosmos-sdk/crypto/keyring"
 	"github.com/ory/dockertest/v3/docker"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/suite"
@@ -29,6 +27,8 @@ import (
 
 	"cosmossdk.io/math"
 	evidencetypes "cosmossdk.io/x/evidence/types"
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
@@ -42,6 +42,7 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	appparams "github.com/atomone-hub/atomone/app/params"
+	_ "github.com/atomone-hub/atomone/cmd/atomoned/cmd"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
 )
@@ -100,6 +101,10 @@ type IntegrationTestSuite struct {
 	dkrNet         *dockertest.Network
 	hermesResource *dockertest.Resource
 
+	// chain config
+	cdc      codec.Codec
+	txConfig client.TxConfig
+
 	initializedForIBC bool
 	valResources      map[string][]*dockertest.Resource
 }
@@ -131,6 +136,8 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	var err error
 	s.chainA, err = newChain()
 	s.Require().NoError(err)
+	s.cdc = s.chainA.cdc
+	s.txConfig = s.chainA.txConfig
 
 	s.dkrPool, err = dockertest.NewPool("")
 	s.Require().NoError(err)
@@ -247,7 +254,7 @@ func (s *IntegrationTestSuite) initNodes(c *chain) {
 	}
 
 	s.Require().NoError(
-		modifyGenesis(val0ConfigDir, "", initBalanceStr, addrAll, uatoneDenom),
+		modifyGenesis(s.cdc, val0ConfigDir, "", initBalanceStr, addrAll, uatoneDenom),
 	)
 	// copy the genesis file to the remaining validators
 	for _, val := range c.validators[1:] {
@@ -268,13 +275,13 @@ func (s *IntegrationTestSuite) addGenesisVestingAndJailedAccounts(
 	appGenState map[string]json.RawMessage,
 ) map[string]json.RawMessage {
 	var (
-		authGenState    = authtypes.GetGenesisStateFromAppState(cdc, appGenState)
-		bankGenState    = banktypes.GetGenesisStateFromAppState(cdc, appGenState)
-		stakingGenState = stakingtypes.GetGenesisStateFromAppState(cdc, appGenState)
+		authGenState    = authtypes.GetGenesisStateFromAppState(s.cdc, appGenState)
+		bankGenState    = banktypes.GetGenesisStateFromAppState(s.cdc, appGenState)
+		stakingGenState = stakingtypes.GetGenesisStateFromAppState(s.cdc, appGenState)
 	)
 
 	// create genesis vesting accounts keys
-	kb, err := keyring.New(keyringAppName, keyring.BackendTest, valConfigDir, nil, cdc)
+	kb, err := keyring.New(keyringAppName, keyring.BackendTest, valConfigDir, nil, s.cdc)
 	s.Require().NoError(err)
 
 	keyringAlgos, _ := kb.SupportedAlgorithms()
@@ -326,7 +333,7 @@ func (s *IntegrationTestSuite) addGenesisVestingAndJailedAccounts(
 		Shares:           math.LegacyNewDec(slashingShares),
 	})
 
-	appGenState[stakingtypes.ModuleName], err = cdc.MarshalJSON(stakingGenState)
+	appGenState[stakingtypes.ModuleName], err = s.cdc.MarshalJSON(stakingGenState)
 	s.Require().NoError(err)
 
 	// add jailed account to the genesis
@@ -372,7 +379,7 @@ func (s *IntegrationTestSuite) addGenesisVestingAndJailedAccounts(
 	authGenState.Accounts = genAccs
 
 	// update auth module state
-	appGenState[authtypes.ModuleName], err = cdc.MarshalJSON(&authGenState)
+	appGenState[authtypes.ModuleName], err = s.cdc.MarshalJSON(&authGenState)
 	s.Require().NoError(err)
 
 	// update balances
@@ -417,7 +424,7 @@ func (s *IntegrationTestSuite) addGenesisVestingAndJailedAccounts(
 	})
 
 	// update bank module state
-	appGenState[banktypes.ModuleName], err = cdc.MarshalJSON(bankGenState)
+	appGenState[banktypes.ModuleName], err = s.cdc.MarshalJSON(bankGenState)
 	s.Require().NoError(err)
 
 	return appGenState
@@ -450,7 +457,7 @@ func (s *IntegrationTestSuite) initGenesis(c *chain, vestingMnemonic, jailedValM
 	)
 
 	var evidenceGenState evidencetypes.GenesisState
-	s.Require().NoError(cdc.UnmarshalJSON(appGenState[evidencetypes.ModuleName], &evidenceGenState))
+	s.Require().NoError(s.cdc.UnmarshalJSON(appGenState[evidencetypes.ModuleName], &evidenceGenState))
 
 	evidenceGenState.Evidence = make([]*codectypes.Any, numberOfEvidences)
 	for i := range evidenceGenState.Evidence {
@@ -465,11 +472,11 @@ func (s *IntegrationTestSuite) initGenesis(c *chain, vestingMnemonic, jailedValM
 		s.Require().NoError(err)
 	}
 
-	appGenState[evidencetypes.ModuleName], err = cdc.MarshalJSON(&evidenceGenState)
+	appGenState[evidencetypes.ModuleName], err = s.cdc.MarshalJSON(&evidenceGenState)
 	s.Require().NoError(err)
 
 	var genUtilGenState genutiltypes.GenesisState
-	s.Require().NoError(cdc.UnmarshalJSON(appGenState[genutiltypes.ModuleName], &genUtilGenState))
+	s.Require().NoError(s.cdc.UnmarshalJSON(appGenState[genutiltypes.ModuleName], &genUtilGenState))
 
 	// generate genesis txs
 	genTxs := make([]json.RawMessage, len(c.validators))
@@ -480,7 +487,7 @@ func (s *IntegrationTestSuite) initGenesis(c *chain, vestingMnemonic, jailedValM
 
 		s.Require().NoError(err)
 
-		txRaw, err := cdc.MarshalJSON(signedTx)
+		txRaw, err := s.cdc.MarshalJSON(signedTx)
 		s.Require().NoError(err)
 
 		genTxs[i] = txRaw
@@ -488,7 +495,7 @@ func (s *IntegrationTestSuite) initGenesis(c *chain, vestingMnemonic, jailedValM
 
 	genUtilGenState.GenTxs = genTxs
 
-	appGenState[genutiltypes.ModuleName], err = cdc.MarshalJSON(&genUtilGenState)
+	appGenState[genutiltypes.ModuleName], err = s.cdc.MarshalJSON(&genUtilGenState)
 	s.Require().NoError(err)
 
 	genDoc.AppState, err = json.MarshalIndent(appGenState, "", "  ")
@@ -500,7 +507,7 @@ func (s *IntegrationTestSuite) initGenesis(c *chain, vestingMnemonic, jailedValM
 	vestingPeriod, err := generateVestingPeriod()
 	s.Require().NoError(err)
 
-	rawTx, _, err := buildRawTx()
+	rawTx, _, err := buildRawTx(s.txConfig)
 	s.Require().NoError(err)
 
 	// write the updated genesis file to each validator.

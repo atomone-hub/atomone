@@ -31,13 +31,13 @@ func (s *IntegrationTestSuite) testBankTokenTransfer() {
 		// get balances of sender and recipient accounts
 		s.Require().Eventually(
 			func() bool {
-				beforeAliceUAtoneBalance, err = getSpecificBalance(chainEndpoint, alice.String(), uatoneDenom)
+				beforeAliceUAtoneBalance, err = s.getSpecificBalance(chainEndpoint, alice.String(), uatoneDenom)
 				s.Require().NoError(err)
 
-				beforeBobUAtoneBalance, err = getSpecificBalance(chainEndpoint, bob.String(), uatoneDenom)
+				beforeBobUAtoneBalance, err = s.getSpecificBalance(chainEndpoint, bob.String(), uatoneDenom)
 				s.Require().NoError(err)
 
-				beforeCharlieUAtoneBalance, err = getSpecificBalance(chainEndpoint, charlie.String(), uatoneDenom)
+				beforeCharlieUAtoneBalance, err = s.getSpecificBalance(chainEndpoint, charlie.String(), uatoneDenom)
 				s.Require().NoError(err)
 
 				return beforeAliceUAtoneBalance.IsValid() && beforeBobUAtoneBalance.IsValid() && beforeCharlieUAtoneBalance.IsValid()
@@ -52,10 +52,10 @@ func (s *IntegrationTestSuite) testBankTokenTransfer() {
 		// check that the transfer was successful
 		s.Require().Eventually(
 			func() bool {
-				afterAliceUAtoneBalance, err = getSpecificBalance(chainEndpoint, alice.String(), uatoneDenom)
+				afterAliceUAtoneBalance, err = s.getSpecificBalance(chainEndpoint, alice.String(), uatoneDenom)
 				s.Require().NoError(err)
 
-				afterBobUAtoneBalance, err = getSpecificBalance(chainEndpoint, bob.String(), uatoneDenom)
+				afterBobUAtoneBalance, err = s.getSpecificBalance(chainEndpoint, bob.String(), uatoneDenom)
 				s.Require().NoError(err)
 
 				decremented := beforeAliceUAtoneBalance.Sub(tokenAmount).IsEqual(afterAliceUAtoneBalance)
@@ -76,13 +76,13 @@ func (s *IntegrationTestSuite) testBankTokenTransfer() {
 
 		s.Require().Eventually(
 			func() bool {
-				afterAliceUAtoneBalance, err = getSpecificBalance(chainEndpoint, alice.String(), uatoneDenom)
+				afterAliceUAtoneBalance, err = s.getSpecificBalance(chainEndpoint, alice.String(), uatoneDenom)
 				s.Require().NoError(err)
 
-				afterBobUAtoneBalance, err = getSpecificBalance(chainEndpoint, bob.String(), uatoneDenom)
+				afterBobUAtoneBalance, err = s.getSpecificBalance(chainEndpoint, bob.String(), uatoneDenom)
 				s.Require().NoError(err)
 
-				afterCharlieUAtoneBalance, err = getSpecificBalance(chainEndpoint, charlie.String(), uatoneDenom)
+				afterCharlieUAtoneBalance, err = s.getSpecificBalance(chainEndpoint, charlie.String(), uatoneDenom)
 				s.Require().NoError(err)
 
 				// assert alice's account gets decremented the amount of tokens twice

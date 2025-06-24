@@ -8,15 +8,12 @@ import (
 	"path"
 	"path/filepath"
 
-	atomone "github.com/atomone-hub/atomone/app"
 	tmcfg "github.com/cometbft/cometbft/config"
 	"github.com/cometbft/cometbft/p2p"
 	"github.com/cometbft/cometbft/privval"
 	cmttypes "github.com/cometbft/cometbft/types"
 
-	"cosmossdk.io/log"
 	"cosmossdk.io/math"
-	dbm "github.com/cosmos/cosmos-db"
 	sdkcrypto "github.com/cosmos/cosmos-sdk/crypto"
 	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
@@ -82,10 +79,7 @@ func (v *validator) init() error {
 		return err
 	}
 
-	tempApp := atomone.NewAtomOneApp(log.NewNopLogger(), dbm.NewMemDB(), nil, false, atomone.EmptyAppOptions{})
-
-	basicManager := tempApp.BasicModuleManager()
-	appState, err := json.MarshalIndent(basicManager.DefaultGenesis(cdc), "", " ")
+	appState, err := json.MarshalIndent(v.chain.bm.DefaultGenesis(v.chain.cdc), "", " ")
 	if err != nil {
 		return fmt.Errorf("failed to JSON encode app genesis state: %w", err)
 	}
@@ -145,7 +139,7 @@ func (v *validator) createConsensusKey() error {
 
 func (v *validator) createKeyFromMnemonic(name, mnemonic string) error {
 	dir := v.configDir()
-	kb, err := keyring.New(keyringAppName, keyring.BackendTest, dir, nil, cdc)
+	kb, err := keyring.New(keyringAppName, keyring.BackendTest, dir, nil, v.chain.cdc)
 	if err != nil {
 		return err
 	}
@@ -180,7 +174,7 @@ func (v *validator) createKeyFromMnemonic(name, mnemonic string) error {
 
 func (c *chain) addAccountFromMnemonic(counts int) error {
 	val0ConfigDir := c.validators[0].configDir()
-	kb, err := keyring.New(keyringAppName, keyring.BackendTest, val0ConfigDir, nil, cdc)
+	kb, err := keyring.New(keyringAppName, keyring.BackendTest, val0ConfigDir, nil, c.cdc)
 	if err != nil {
 		return err
 	}
@@ -238,7 +232,7 @@ func (v *validator) buildCreateValidatorMsg(amount sdk.Coin) (sdk.Msg, error) {
 		MaxChangeRate: math.LegacyMustNewDecFromStr("0.01"),
 	}
 
-	valPubKey, err := cryptocodec.FromTmPubKeyInterface(v.consensusKey.PubKey)
+	valPubKey, err := cryptocodec.FromCmtPubKeyInterface(v.consensusKey.PubKey)
 	if err != nil {
 		return nil, err
 	}
@@ -259,7 +253,7 @@ func (v *validator) buildCreateValidatorMsg(amount sdk.Coin) (sdk.Msg, error) {
 }
 
 func (v *validator) signMsg(msgs ...sdk.Msg) (*sdktx.Tx, error) {
-	txBuilder := encodingConfig.TxConfig.NewTxBuilder()
+	txBuilder := v.chain.txConfig.NewTxBuilder()
 
 	if err := txBuilder.SetMsgs(msgs...); err != nil {
 		return nil, err
@@ -303,7 +297,7 @@ func (v *validator) signMsg(msgs ...sdk.Msg) (*sdktx.Tx, error) {
 
 	bytesToSign, err := authsigning.GetSignBytesAdapter(
 		context.TODO(),
-		encodingConfig.TxConfig.SignModeHandler(),
+		v.chain.txConfig.SignModeHandler(),
 		txsigning.SignMode_SIGN_MODE_DIRECT,
 		signerData,
 		txBuilder.GetTx(),
@@ -335,10 +329,10 @@ func (v *validator) signMsg(msgs ...sdk.Msg) (*sdktx.Tx, error) {
 	}
 
 	signedTx := txBuilder.GetTx()
-	bz, err := encodingConfig.TxConfig.TxEncoder()(signedTx)
+	bz, err := v.chain.txConfig.TxEncoder()(signedTx)
 	if err != nil {
 		return nil, err
 	}
 
-	return decodeTx(bz)
+	return decodeTx(v.chain.cdc, bz)
 }

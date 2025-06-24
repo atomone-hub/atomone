@@ -604,7 +604,7 @@ func (s *IntegrationTestSuite) getLatestBlockTime(c *chain, valIdx int) time.Tim
 // func (s *IntegrationTestSuite) verifyBalanceChange(endpoint string, expectedAmount sdk.Coin, recipientAddress string) {
 // 	s.Require().Eventually(
 // 		func() bool {
-// 			afterAtomBalance, err := getSpecificBalance(endpoint, recipientAddress, uatoneDenom)
+// 			afterAtomBalance, err := s.getSpecificBalance(endpoint, recipientAddress, uatoneDenom)
 // 			s.Require().NoError(err)
 
 // 			return afterAtomBalance.IsEqual(expectedAmount)
@@ -709,11 +709,11 @@ func (s *IntegrationTestSuite) executeAtomoneTxCommand(ctx context.Context, c *c
 			string(stdOut), string(stdErr))
 	}
 	var txResp sdk.TxResponse
-	if err := cdc.UnmarshalJSON(stdOut, &txResp); err != nil {
+	if err := s.cdc.UnmarshalJSON(stdOut, &txResp); err != nil {
 		return 0
 	}
 	endpoint := fmt.Sprintf("http://%s", s.valResources[c.id][valIdx].GetHostPort("1317/tcp"))
-	height, err := queryAtomOneTx(endpoint, txResp.TxHash, nil)
+	height, err := s.queryAtomOneTx(endpoint, txResp.TxHash, nil)
 	if err != nil {
 		s.Require().FailNowf("Failed query of Tx height", "err: %s, stdout: %s, stderr: %s",
 			err, string(stdOut), string(stdErr))
@@ -770,7 +770,7 @@ func (s *IntegrationTestSuite) executeHermesCommand(ctx context.Context, hermesC
 func (s *IntegrationTestSuite) expectErrExecValidation(chain *chain, valIdx int, expectErr bool) func([]byte, []byte) bool {
 	return func(stdOut []byte, stdErr []byte) bool {
 		var txResp sdk.TxResponse
-		err := cdc.UnmarshalJSON(stdOut, &txResp)
+		err := s.cdc.UnmarshalJSON(stdOut, &txResp)
 		if !expectErr {
 			s.Require().NoError(err, "stdOut='%s' stdErr='%s'", string(stdOut), string(stdErr))
 		}
@@ -779,7 +779,7 @@ func (s *IntegrationTestSuite) expectErrExecValidation(chain *chain, valIdx int,
 		// wait for the tx to be committed on chain
 		s.Require().Eventuallyf(
 			func() bool {
-				_, err := queryAtomOneTx(endpoint, txResp.TxHash, nil)
+				_, err := s.queryAtomOneTx(endpoint, txResp.TxHash, nil)
 				if isErrNotFound(err) {
 					// tx not processed yet, continue
 					return false
@@ -799,14 +799,14 @@ func (s *IntegrationTestSuite) expectErrExecValidation(chain *chain, valIdx int,
 func (s *IntegrationTestSuite) defaultExecValidation(chain *chain, valIdx int, msgResp codec.ProtoMarshaler) func([]byte, []byte) bool {
 	return func(stdOut []byte, stdErr []byte) bool {
 		var txResp sdk.TxResponse
-		if err := cdc.UnmarshalJSON(stdOut, &txResp); err != nil {
+		if err := s.cdc.UnmarshalJSON(stdOut, &txResp); err != nil {
 			return false
 		}
 		if strings.Contains(txResp.String(), "code: 0") || txResp.Code == 0 {
 			endpoint := fmt.Sprintf("http://%s", s.valResources[chain.id][valIdx].GetHostPort("1317/tcp"))
 			s.Require().Eventually(
 				func() bool {
-					_, err := queryAtomOneTx(endpoint, txResp.TxHash, msgResp)
+					_, err := s.queryAtomOneTx(endpoint, txResp.TxHash, msgResp)
 					if isErrNotFound(err) {
 						// tx not processed yet, continue
 						return false
