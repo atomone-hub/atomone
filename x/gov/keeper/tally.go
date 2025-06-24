@@ -24,6 +24,7 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 	// If there is no staked coins, the proposal fails
 	totalBonded, err := keeper.sk.TotalBondedTokens(ctx)
 	if err != nil {
+		// FIXME return err
 		return false, false, math.LegacyZeroDec(), tallyResults
 	}
 
@@ -71,6 +72,7 @@ func (keeper Keeper) HasReachedQuorum(ctx sdk.Context, proposal v1.Proposal) boo
 	// If there is no staked coins, the proposal has not reached quorum
 	totalBonded, err := keeper.sk.TotalBondedTokens(ctx)
 	if err != nil {
+		// FIXME return err
 		keeper.Logger(ctx).Error(fmt.Sprintf("error getting total bonded tokens: %s", err.Error()))
 		return false
 	}
