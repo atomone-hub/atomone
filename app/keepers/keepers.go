@@ -42,8 +42,10 @@ import (
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	mintkeeper "github.com/cosmos/cosmos-sdk/x/mint/keeper"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+	"github.com/cosmos/cosmos-sdk/x/params"
 	paramskeeper "github.com/cosmos/cosmos-sdk/x/params/keeper"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	paramproposal "github.com/cosmos/cosmos-sdk/x/params/types/proposal"
 	slashingkeeper "github.com/cosmos/cosmos-sdk/x/slashing/keeper"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
@@ -252,7 +254,12 @@ func NewAppKeeper(
 	)
 
 	// Set legacy router for backwards compatibility with gov v1beta1
-	appKeepers.GovKeeper.SetLegacyRouter(govv1beta1.NewRouter())
+	govRouter := govv1beta1.NewRouter()
+	govRouter.AddRoute(govtypes.RouterKey, govv1beta1.ProposalHandler).
+		AddRoute(paramproposal.RouterKey, func(ctx sdk.Context, content govv1beta1.Content) error {
+			return params.NewParamChangeProposalHandler(appKeepers.ParamsKeeper)(ctx, content)
+		})
+	appKeepers.GovKeeper.SetLegacyRouter(govRouter)
 
 	evidenceKeeper := evidencekeeper.NewKeeper(
 		appCodec,
