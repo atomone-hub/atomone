@@ -34,6 +34,7 @@ func GetQueryCmd() *cobra.Command {
 		GetCmdQueryVote(),
 		GetCmdQueryVotes(),
 		GetCmdQueryParams(),
+		GetCmdQueryQuorums(),
 		GetCmdQueryParam(),
 		GetCmdQueryProposer(),
 		GetCmdQueryDeposit(),
@@ -563,6 +564,46 @@ $ %s query gov params
 			res.TallyParams = &tp
 
 			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetCmdQueryQuorums implements the query quorums command.
+//
+//nolint:staticcheck // this function contains deprecated commands that we need.
+func GetCmdQueryQuorums() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "quorums",
+		Short: "Query the current state of the dynamic quorums",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query the current state of all the dynamic quorums.
+
+Example:
+$ %s query gov quorums
+`,
+				version.AppName,
+			),
+		),
+		Args: cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := v1.NewQueryClient(clientCtx)
+
+			// Query store for all 3 params
+			ctx := cmd.Context()
+
+			quorumRes, err := queryClient.Quorum(ctx, &v1.QueryQuorumRequest{})
+			if err != nil {
+				return err
+			}
+			return clientCtx.PrintProto(quorumRes)
 		},
 	}
 
