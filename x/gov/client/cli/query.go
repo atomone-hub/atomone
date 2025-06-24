@@ -574,7 +574,7 @@ $ %s query gov params
 
 // GetCmdQueryQuorums implements the query quorums command.
 //
-//nolint:staticcheck // this function contains deprecated commands that we need.
+
 func GetCmdQueryQuorums() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "quorums",
