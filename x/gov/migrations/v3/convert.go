@@ -3,8 +3,9 @@ package v3
 import (
 	"fmt"
 
-	"cosmossdk.io/math"
 	"github.com/golang/protobuf/proto"
+
+	"cosmossdk.io/math"
 
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/types"

@@ -5,8 +5,8 @@ import (
 	"strconv"
 
 	"cosmossdk.io/log"
-
 	storetypes "cosmossdk.io/store/types"
+
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 

@@ -18,8 +18,8 @@ import (
 
 	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/depinject"
-
 	store "cosmossdk.io/store/types"
+
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
