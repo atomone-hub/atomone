@@ -884,8 +884,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// MsgParams defines the Msg/Params request type. It contains the
-// new parameters for the feemarket module.
+// MsgUpdateParams defines the sdk.Msg/UpdateParams request type. It contains
+// the new parameters for the feemarket module.
 type MsgUpdateParams struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -932,7 +932,8 @@ func (x *MsgUpdateParams) GetParams() *Params {
 	return nil
 }
 
-// MsgParamsResponse defines the Msg/Params response type.
+// MsgUpdateParamsResponse defines the response structure for executing a
+// MsgUpdateParams message.
 type MsgUpdateParamsResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
