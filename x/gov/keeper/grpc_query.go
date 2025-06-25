@@ -315,8 +315,8 @@ func (q Keeper) MinInitialDeposit(c context.Context, req *v1.QueryMinInitialDepo
 	return &v1.QueryMinInitialDepositResponse{MinInitialDeposit: minInitialDeposit}, nil
 }
 
-// Quorum returns the current quorum
-func (q Keeper) Quorum(c context.Context, _ *v1.QueryQuorumRequest) (*v1.QueryQuorumResponse, error) {
+// Quorums returns the current quorums
+func (q Keeper) Quorums(c context.Context, _ *v1.QueryQuorumRequest) (*v1.QueryQuorumResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 	return &v1.QueryQuorumResponse{
 		Quorum:                      q.GetQuorum(ctx).String(),
@@ -438,7 +438,7 @@ func (q legacyQueryServer) Params(c context.Context, req *v1beta1.QueryParamsReq
 	}
 
 	if resp.TallyParams != nil {
-		quorumRes, err := q.keeper.Quorum(c, &v1.QueryQuorumRequest{})
+		quorumRes, err := q.keeper.Quorums(c, &v1.QueryQuorumRequest{})
 		if err != nil {
 			return nil, err
 		}
