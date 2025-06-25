@@ -8185,8 +8185,7 @@ func (*MsgProposeLawResponse) Descriptor() ([]byte, []int) {
 	return file_atomone_gov_v1_tx_proto_rawDescGZIP(), []int{13}
 }
 
-// MsgConstitutionAmendment is the Msg/ProposeConstitutionAmendment request
-// type.
+// MsgConstitutionAmendment is the Msg/ProposeConstitutionAmendment request type.
 type MsgProposeConstitutionAmendment struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -8195,8 +8194,7 @@ type MsgProposeConstitutionAmendment struct {
 	// authority is the address that controls the module (defaults to x/gov unless
 	// overwritten).
 	Authority string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
-	// amendment is the amendment to the constitution. It must be in valid GNU
-	// patch format.
+	// amendment is the amendment to the constitution. It must be in valid GNU patch format.
 	Amendment string `protobuf:"bytes,2,opt,name=amendment,proto3" json:"amendment,omitempty"`
 }
 
@@ -8234,8 +8232,8 @@ func (x *MsgProposeConstitutionAmendment) GetAmendment() string {
 	return ""
 }
 
-// MsgProposeConstitutionAmendmentResponse defines the response structure for
-// executing a MsgProposeConstitutionAmendment message.
+// MsgProposeConstitutionAmendmentResponse defines the response structure for executing a
+// MsgProposeConstitutionAmendment message.
 type MsgProposeConstitutionAmendmentResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

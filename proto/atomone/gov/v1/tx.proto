@@ -205,8 +205,7 @@ message MsgProposeLaw {
 // MsgProposeLaw message.
 message MsgProposeLawResponse {}
 
-// MsgConstitutionAmendment is the Msg/ProposeConstitutionAmendment request
-// type.
+// MsgConstitutionAmendment is the Msg/ProposeConstitutionAmendment request type.
 message MsgProposeConstitutionAmendment {
   option (cosmos.msg.v1.signer) = "authority";
   option (amino.name) = "atomone/x/gov/v1/MsgProposeAmendment";
@@ -215,11 +214,10 @@ message MsgProposeConstitutionAmendment {
   // overwritten).
   string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
-  // amendment is the amendment to the constitution. It must be in valid GNU
-  // patch format.
+  // amendment is the amendment to the constitution. It must be in valid GNU patch format.
   string amendment = 2;
 }
 
-// MsgProposeConstitutionAmendmentResponse defines the response structure for
-// executing a MsgProposeConstitutionAmendment message.
+// MsgProposeConstitutionAmendmentResponse defines the response structure for executing a
+// MsgProposeConstitutionAmendment message.
 message MsgProposeConstitutionAmendmentResponse {}

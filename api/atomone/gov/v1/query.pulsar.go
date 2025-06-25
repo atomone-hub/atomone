@@ -3,11 +3,9 @@ package govv1
 
 import (
 	v1beta1 "cosmossdk.io/api/cosmos/base/query/v1beta1"
-	v1beta11 "cosmossdk.io/api/cosmos/base/v1beta1"
 	fmt "fmt"
 	_ "github.com/cosmos/cosmos-proto"
 	runtime "github.com/cosmos/cosmos-proto/runtime"
-	_ "github.com/cosmos/gogoproto/gogoproto"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
@@ -8665,2610 +8663,6 @@ func (x *fastReflection_QueryTallyResultResponse) ProtoMethods() *protoiface.Met
 	}
 }
 
-var (
-	md_QueryMinDepositRequest protoreflect.MessageDescriptor
-)
-
-func init() {
-	file_atomone_gov_v1_query_proto_init()
-	md_QueryMinDepositRequest = File_atomone_gov_v1_query_proto.Messages().ByName("QueryMinDepositRequest")
-}
-
-var _ protoreflect.Message = (*fastReflection_QueryMinDepositRequest)(nil)
-
-type fastReflection_QueryMinDepositRequest QueryMinDepositRequest
-
-func (x *QueryMinDepositRequest) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_QueryMinDepositRequest)(x)
-}
-
-func (x *QueryMinDepositRequest) slowProtoReflect() protoreflect.Message {
-	mi := &file_atomone_gov_v1_query_proto_msgTypes[18]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-var _fastReflection_QueryMinDepositRequest_messageType fastReflection_QueryMinDepositRequest_messageType
-var _ protoreflect.MessageType = fastReflection_QueryMinDepositRequest_messageType{}
-
-type fastReflection_QueryMinDepositRequest_messageType struct{}
-
-func (x fastReflection_QueryMinDepositRequest_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_QueryMinDepositRequest)(nil)
-}
-func (x fastReflection_QueryMinDepositRequest_messageType) New() protoreflect.Message {
-	return new(fastReflection_QueryMinDepositRequest)
-}
-func (x fastReflection_QueryMinDepositRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_QueryMinDepositRequest
-}
-
-// Descriptor returns message descriptor, which contains only the protobuf
-// type information for the message.
-func (x *fastReflection_QueryMinDepositRequest) Descriptor() protoreflect.MessageDescriptor {
-	return md_QueryMinDepositRequest
-}
-
-// Type returns the message type, which encapsulates both Go and protobuf
-// type information. If the Go type information is not needed,
-// it is recommended that the message descriptor be used instead.
-func (x *fastReflection_QueryMinDepositRequest) Type() protoreflect.MessageType {
-	return _fastReflection_QueryMinDepositRequest_messageType
-}
-
-// New returns a newly allocated and mutable empty message.
-func (x *fastReflection_QueryMinDepositRequest) New() protoreflect.Message {
-	return new(fastReflection_QueryMinDepositRequest)
-}
-
-// Interface unwraps the message reflection interface and
-// returns the underlying ProtoMessage interface.
-func (x *fastReflection_QueryMinDepositRequest) Interface() protoreflect.ProtoMessage {
-	return (*QueryMinDepositRequest)(x)
-}
-
-// Range iterates over every populated field in an undefined order,
-// calling f for each field descriptor and value encountered.
-// Range returns immediately if f returns false.
-// While iterating, mutating operations may only be performed
-// on the current field descriptor.
-func (x *fastReflection_QueryMinDepositRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-}
-
-// Has reports whether a field is populated.
-//
-// Some fields have the property of nullability where it is possible to
-// distinguish between the default value of a field and whether the field
-// was explicitly populated with the default value. Singular message fields,
-// member fields of a oneof, and proto2 scalar fields are nullable. Such
-// fields are populated only if explicitly set.
-//
-// In other cases (aside from the nullable cases above),
-// a proto3 scalar field is populated if it contains a non-zero value, and
-// a repeated field is populated if it is non-empty.
-func (x *fastReflection_QueryMinDepositRequest) Has(fd protoreflect.FieldDescriptor) bool {
-	switch fd.FullName() {
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QueryMinDepositRequest"))
-		}
-		panic(fmt.Errorf("message atomone.gov.v1.QueryMinDepositRequest does not contain field %s", fd.FullName()))
-	}
-}
-
-// Clear clears the field such that a subsequent Has call reports false.
-//
-// Clearing an extension field clears both the extension type and value
-// associated with the given field number.
-//
-// Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryMinDepositRequest) Clear(fd protoreflect.FieldDescriptor) {
-	switch fd.FullName() {
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QueryMinDepositRequest"))
-		}
-		panic(fmt.Errorf("message atomone.gov.v1.QueryMinDepositRequest does not contain field %s", fd.FullName()))
-	}
-}
-
-// Get retrieves the value for a field.
-//
-// For unpopulated scalars, it returns the default value, where
-// the default value of a bytes scalar is guaranteed to be a copy.
-// For unpopulated composite types, it returns an empty, read-only view
-// of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_QueryMinDepositRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
-	switch descriptor.FullName() {
-	default:
-		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QueryMinDepositRequest"))
-		}
-		panic(fmt.Errorf("message atomone.gov.v1.QueryMinDepositRequest does not contain field %s", descriptor.FullName()))
-	}
-}
-
-// Set stores the value for a field.
-//
-// For a field belonging to a oneof, it implicitly clears any other field
-// that may be currently set within the same oneof.
-// For extension fields, it implicitly stores the provided ExtensionType.
-// When setting a composite type, it is unspecified whether the stored value
-// aliases the source's memory in any way. If the composite value is an
-// empty, read-only value, then it panics.
-//
-// Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryMinDepositRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
-	switch fd.FullName() {
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QueryMinDepositRequest"))
-		}
-		panic(fmt.Errorf("message atomone.gov.v1.QueryMinDepositRequest does not contain field %s", fd.FullName()))
-	}
-}
-
-// Mutable returns a mutable reference to a composite type.
-//
-// If the field is unpopulated, it may allocate a composite value.
-// For a field belonging to a oneof, it implicitly clears any other field
-// that may be currently set within the same oneof.
-// For extension fields, it implicitly stores the provided ExtensionType
-// if not already stored.
-// It panics if the field does not contain a composite type.
-//
-// Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryMinDepositRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
-	switch fd.FullName() {
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QueryMinDepositRequest"))
-		}
-		panic(fmt.Errorf("message atomone.gov.v1.QueryMinDepositRequest does not contain field %s", fd.FullName()))
-	}
-}
-
-// NewField returns a new value that is assignable to the field
-// for the given descriptor. For scalars, this returns the default value.
-// For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_QueryMinDepositRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
-	switch fd.FullName() {
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QueryMinDepositRequest"))
-		}
-		panic(fmt.Errorf("message atomone.gov.v1.QueryMinDepositRequest does not contain field %s", fd.FullName()))
-	}
-}
-
-// WhichOneof reports which field within the oneof is populated,
-// returning nil if none are populated.
-// It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_QueryMinDepositRequest) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
-	switch d.FullName() {
-	default:
-		panic(fmt.Errorf("%s is not a oneof field in atomone.gov.v1.QueryMinDepositRequest", d.FullName()))
-	}
-	panic("unreachable")
-}
-
-// GetUnknown retrieves the entire list of unknown fields.
-// The caller may only mutate the contents of the RawFields
-// if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_QueryMinDepositRequest) GetUnknown() protoreflect.RawFields {
-	return x.unknownFields
-}
-
-// SetUnknown stores an entire list of unknown fields.
-// The raw fields must be syntactically valid according to the wire format.
-// An implementation may panic if this is not the case.
-// Once stored, the caller must not mutate the content of the RawFields.
-// An empty RawFields may be passed to clear the fields.
-//
-// SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryMinDepositRequest) SetUnknown(fields protoreflect.RawFields) {
-	x.unknownFields = fields
-}
-
-// IsValid reports whether the message is valid.
-//
-// An invalid message is an empty, read-only value.
-//
-// An invalid message often corresponds to a nil pointer of the concrete
-// message type, but the details are implementation dependent.
-// Validity is not part of the protobuf data model, and may not
-// be preserved in marshaling or other operations.
-func (x *fastReflection_QueryMinDepositRequest) IsValid() bool {
-	return x != nil
-}
-
-// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
-// This method may return nil.
-//
-// The returned methods type is identical to
-// "google.golang.org/protobuf/runtime/protoiface".Methods.
-// Consult the protoiface package documentation for details.
-func (x *fastReflection_QueryMinDepositRequest) ProtoMethods() *protoiface.Methods {
-	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*QueryMinDepositRequest)
-		if x == nil {
-			return protoiface.SizeOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Size:              0,
-			}
-		}
-		options := runtime.SizeInputToOptions(input)
-		_ = options
-		var n int
-		var l int
-		_ = l
-		if x.unknownFields != nil {
-			n += len(x.unknownFields)
-		}
-		return protoiface.SizeOutput{
-			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-			Size:              n,
-		}
-	}
-
-	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*QueryMinDepositRequest)
-		if x == nil {
-			return protoiface.MarshalOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Buf:               input.Buf,
-			}, nil
-		}
-		options := runtime.MarshalInputToOptions(input)
-		_ = options
-		size := options.Size(x)
-		dAtA := make([]byte, size)
-		i := len(dAtA)
-		_ = i
-		var l int
-		_ = l
-		if x.unknownFields != nil {
-			i -= len(x.unknownFields)
-			copy(dAtA[i:], x.unknownFields)
-		}
-		if input.Buf != nil {
-			input.Buf = append(input.Buf, dAtA...)
-		} else {
-			input.Buf = dAtA
-		}
-		return protoiface.MarshalOutput{
-			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-			Buf:               input.Buf,
-		}, nil
-	}
-	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*QueryMinDepositRequest)
-		if x == nil {
-			return protoiface.UnmarshalOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Flags:             input.Flags,
-			}, nil
-		}
-		options := runtime.UnmarshalInputToOptions(input)
-		_ = options
-		dAtA := input.Buf
-		l := len(dAtA)
-		iNdEx := 0
-		for iNdEx < l {
-			preIndex := iNdEx
-			var wire uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-				}
-				if iNdEx >= l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				wire |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			fieldNum := int32(wire >> 3)
-			wireType := int(wire & 0x7)
-			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryMinDepositRequest: wiretype end group for non-group")
-			}
-			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryMinDepositRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-			}
-			switch fieldNum {
-			default:
-				iNdEx = preIndex
-				skippy, err := runtime.Skip(dAtA[iNdEx:])
-				if err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				if (skippy < 0) || (iNdEx+skippy) < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if (iNdEx + skippy) > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				if !options.DiscardUnknown {
-					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
-				}
-				iNdEx += skippy
-			}
-		}
-
-		if iNdEx > l {
-			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-		}
-		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
-	}
-	return &protoiface.Methods{
-		NoUnkeyedLiterals: struct{}{},
-		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
-		Size:              size,
-		Marshal:           marshal,
-		Unmarshal:         unmarshal,
-		Merge:             nil,
-		CheckInitialized:  nil,
-	}
-}
-
-var _ protoreflect.List = (*_QueryMinDepositResponse_1_list)(nil)
-
-type _QueryMinDepositResponse_1_list struct {
-	list *[]*v1beta11.Coin
-}
-
-func (x *_QueryMinDepositResponse_1_list) Len() int {
-	if x.list == nil {
-		return 0
-	}
-	return len(*x.list)
-}
-
-func (x *_QueryMinDepositResponse_1_list) Get(i int) protoreflect.Value {
-	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
-}
-
-func (x *_QueryMinDepositResponse_1_list) Set(i int, value protoreflect.Value) {
-	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*v1beta11.Coin)
-	(*x.list)[i] = concreteValue
-}
-
-func (x *_QueryMinDepositResponse_1_list) Append(value protoreflect.Value) {
-	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*v1beta11.Coin)
-	*x.list = append(*x.list, concreteValue)
-}
-
-func (x *_QueryMinDepositResponse_1_list) AppendMutable() protoreflect.Value {
-	v := new(v1beta11.Coin)
-	*x.list = append(*x.list, v)
-	return protoreflect.ValueOfMessage(v.ProtoReflect())
-}
-
-func (x *_QueryMinDepositResponse_1_list) Truncate(n int) {
-	for i := n; i < len(*x.list); i++ {
-		(*x.list)[i] = nil
-	}
-	*x.list = (*x.list)[:n]
-}
-
-func (x *_QueryMinDepositResponse_1_list) NewElement() protoreflect.Value {
-	v := new(v1beta11.Coin)
-	return protoreflect.ValueOfMessage(v.ProtoReflect())
-}
-
-func (x *_QueryMinDepositResponse_1_list) IsValid() bool {
-	return x.list != nil
-}
-
-var (
-	md_QueryMinDepositResponse             protoreflect.MessageDescriptor
-	fd_QueryMinDepositResponse_min_deposit protoreflect.FieldDescriptor
-)
-
-func init() {
-	file_atomone_gov_v1_query_proto_init()
-	md_QueryMinDepositResponse = File_atomone_gov_v1_query_proto.Messages().ByName("QueryMinDepositResponse")
-	fd_QueryMinDepositResponse_min_deposit = md_QueryMinDepositResponse.Fields().ByName("min_deposit")
-}
-
-var _ protoreflect.Message = (*fastReflection_QueryMinDepositResponse)(nil)
-
-type fastReflection_QueryMinDepositResponse QueryMinDepositResponse
-
-func (x *QueryMinDepositResponse) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_QueryMinDepositResponse)(x)
-}
-
-func (x *QueryMinDepositResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_atomone_gov_v1_query_proto_msgTypes[19]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-var _fastReflection_QueryMinDepositResponse_messageType fastReflection_QueryMinDepositResponse_messageType
-var _ protoreflect.MessageType = fastReflection_QueryMinDepositResponse_messageType{}
-
-type fastReflection_QueryMinDepositResponse_messageType struct{}
-
-func (x fastReflection_QueryMinDepositResponse_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_QueryMinDepositResponse)(nil)
-}
-func (x fastReflection_QueryMinDepositResponse_messageType) New() protoreflect.Message {
-	return new(fastReflection_QueryMinDepositResponse)
-}
-func (x fastReflection_QueryMinDepositResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_QueryMinDepositResponse
-}
-
-// Descriptor returns message descriptor, which contains only the protobuf
-// type information for the message.
-func (x *fastReflection_QueryMinDepositResponse) Descriptor() protoreflect.MessageDescriptor {
-	return md_QueryMinDepositResponse
-}
-
-// Type returns the message type, which encapsulates both Go and protobuf
-// type information. If the Go type information is not needed,
-// it is recommended that the message descriptor be used instead.
-func (x *fastReflection_QueryMinDepositResponse) Type() protoreflect.MessageType {
-	return _fastReflection_QueryMinDepositResponse_messageType
-}
-
-// New returns a newly allocated and mutable empty message.
-func (x *fastReflection_QueryMinDepositResponse) New() protoreflect.Message {
-	return new(fastReflection_QueryMinDepositResponse)
-}
-
-// Interface unwraps the message reflection interface and
-// returns the underlying ProtoMessage interface.
-func (x *fastReflection_QueryMinDepositResponse) Interface() protoreflect.ProtoMessage {
-	return (*QueryMinDepositResponse)(x)
-}
-
-// Range iterates over every populated field in an undefined order,
-// calling f for each field descriptor and value encountered.
-// Range returns immediately if f returns false.
-// While iterating, mutating operations may only be performed
-// on the current field descriptor.
-func (x *fastReflection_QueryMinDepositResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if len(x.MinDeposit) != 0 {
-		value := protoreflect.ValueOfList(&_QueryMinDepositResponse_1_list{list: &x.MinDeposit})
-		if !f(fd_QueryMinDepositResponse_min_deposit, value) {
-			return
-		}
-	}
-}
-
-// Has reports whether a field is populated.
-//
-// Some fields have the property of nullability where it is possible to
-// distinguish between the default value of a field and whether the field
-// was explicitly populated with the default value. Singular message fields,
-// member fields of a oneof, and proto2 scalar fields are nullable. Such
-// fields are populated only if explicitly set.
-//
-// In other cases (aside from the nullable cases above),
-// a proto3 scalar field is populated if it contains a non-zero value, and
-// a repeated field is populated if it is non-empty.
-func (x *fastReflection_QueryMinDepositResponse) Has(fd protoreflect.FieldDescriptor) bool {
-	switch fd.FullName() {
-	case "atomone.gov.v1.QueryMinDepositResponse.min_deposit":
-		return len(x.MinDeposit) != 0
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QueryMinDepositResponse"))
-		}
-		panic(fmt.Errorf("message atomone.gov.v1.QueryMinDepositResponse does not contain field %s", fd.FullName()))
-	}
-}
-
-// Clear clears the field such that a subsequent Has call reports false.
-//
-// Clearing an extension field clears both the extension type and value
-// associated with the given field number.
-//
-// Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryMinDepositResponse) Clear(fd protoreflect.FieldDescriptor) {
-	switch fd.FullName() {
-	case "atomone.gov.v1.QueryMinDepositResponse.min_deposit":
-		x.MinDeposit = nil
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QueryMinDepositResponse"))
-		}
-		panic(fmt.Errorf("message atomone.gov.v1.QueryMinDepositResponse does not contain field %s", fd.FullName()))
-	}
-}
-
-// Get retrieves the value for a field.
-//
-// For unpopulated scalars, it returns the default value, where
-// the default value of a bytes scalar is guaranteed to be a copy.
-// For unpopulated composite types, it returns an empty, read-only view
-// of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_QueryMinDepositResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
-	switch descriptor.FullName() {
-	case "atomone.gov.v1.QueryMinDepositResponse.min_deposit":
-		if len(x.MinDeposit) == 0 {
-			return protoreflect.ValueOfList(&_QueryMinDepositResponse_1_list{})
-		}
-		listValue := &_QueryMinDepositResponse_1_list{list: &x.MinDeposit}
-		return protoreflect.ValueOfList(listValue)
-	default:
-		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QueryMinDepositResponse"))
-		}
-		panic(fmt.Errorf("message atomone.gov.v1.QueryMinDepositResponse does not contain field %s", descriptor.FullName()))
-	}
-}
-
-// Set stores the value for a field.
-//
-// For a field belonging to a oneof, it implicitly clears any other field
-// that may be currently set within the same oneof.
-// For extension fields, it implicitly stores the provided ExtensionType.
-// When setting a composite type, it is unspecified whether the stored value
-// aliases the source's memory in any way. If the composite value is an
-// empty, read-only value, then it panics.
-//
-// Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryMinDepositResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
-	switch fd.FullName() {
-	case "atomone.gov.v1.QueryMinDepositResponse.min_deposit":
-		lv := value.List()
-		clv := lv.(*_QueryMinDepositResponse_1_list)
-		x.MinDeposit = *clv.list
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QueryMinDepositResponse"))
-		}
-		panic(fmt.Errorf("message atomone.gov.v1.QueryMinDepositResponse does not contain field %s", fd.FullName()))
-	}
-}
-
-// Mutable returns a mutable reference to a composite type.
-//
-// If the field is unpopulated, it may allocate a composite value.
-// For a field belonging to a oneof, it implicitly clears any other field
-// that may be currently set within the same oneof.
-// For extension fields, it implicitly stores the provided ExtensionType
-// if not already stored.
-// It panics if the field does not contain a composite type.
-//
-// Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryMinDepositResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
-	switch fd.FullName() {
-	case "atomone.gov.v1.QueryMinDepositResponse.min_deposit":
-		if x.MinDeposit == nil {
-			x.MinDeposit = []*v1beta11.Coin{}
-		}
-		value := &_QueryMinDepositResponse_1_list{list: &x.MinDeposit}
-		return protoreflect.ValueOfList(value)
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QueryMinDepositResponse"))
-		}
-		panic(fmt.Errorf("message atomone.gov.v1.QueryMinDepositResponse does not contain field %s", fd.FullName()))
-	}
-}
-
-// NewField returns a new value that is assignable to the field
-// for the given descriptor. For scalars, this returns the default value.
-// For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_QueryMinDepositResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
-	switch fd.FullName() {
-	case "atomone.gov.v1.QueryMinDepositResponse.min_deposit":
-		list := []*v1beta11.Coin{}
-		return protoreflect.ValueOfList(&_QueryMinDepositResponse_1_list{list: &list})
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QueryMinDepositResponse"))
-		}
-		panic(fmt.Errorf("message atomone.gov.v1.QueryMinDepositResponse does not contain field %s", fd.FullName()))
-	}
-}
-
-// WhichOneof reports which field within the oneof is populated,
-// returning nil if none are populated.
-// It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_QueryMinDepositResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
-	switch d.FullName() {
-	default:
-		panic(fmt.Errorf("%s is not a oneof field in atomone.gov.v1.QueryMinDepositResponse", d.FullName()))
-	}
-	panic("unreachable")
-}
-
-// GetUnknown retrieves the entire list of unknown fields.
-// The caller may only mutate the contents of the RawFields
-// if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_QueryMinDepositResponse) GetUnknown() protoreflect.RawFields {
-	return x.unknownFields
-}
-
-// SetUnknown stores an entire list of unknown fields.
-// The raw fields must be syntactically valid according to the wire format.
-// An implementation may panic if this is not the case.
-// Once stored, the caller must not mutate the content of the RawFields.
-// An empty RawFields may be passed to clear the fields.
-//
-// SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryMinDepositResponse) SetUnknown(fields protoreflect.RawFields) {
-	x.unknownFields = fields
-}
-
-// IsValid reports whether the message is valid.
-//
-// An invalid message is an empty, read-only value.
-//
-// An invalid message often corresponds to a nil pointer of the concrete
-// message type, but the details are implementation dependent.
-// Validity is not part of the protobuf data model, and may not
-// be preserved in marshaling or other operations.
-func (x *fastReflection_QueryMinDepositResponse) IsValid() bool {
-	return x != nil
-}
-
-// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
-// This method may return nil.
-//
-// The returned methods type is identical to
-// "google.golang.org/protobuf/runtime/protoiface".Methods.
-// Consult the protoiface package documentation for details.
-func (x *fastReflection_QueryMinDepositResponse) ProtoMethods() *protoiface.Methods {
-	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*QueryMinDepositResponse)
-		if x == nil {
-			return protoiface.SizeOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Size:              0,
-			}
-		}
-		options := runtime.SizeInputToOptions(input)
-		_ = options
-		var n int
-		var l int
-		_ = l
-		if len(x.MinDeposit) > 0 {
-			for _, e := range x.MinDeposit {
-				l = options.Size(e)
-				n += 1 + l + runtime.Sov(uint64(l))
-			}
-		}
-		if x.unknownFields != nil {
-			n += len(x.unknownFields)
-		}
-		return protoiface.SizeOutput{
-			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-			Size:              n,
-		}
-	}
-
-	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*QueryMinDepositResponse)
-		if x == nil {
-			return protoiface.MarshalOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Buf:               input.Buf,
-			}, nil
-		}
-		options := runtime.MarshalInputToOptions(input)
-		_ = options
-		size := options.Size(x)
-		dAtA := make([]byte, size)
-		i := len(dAtA)
-		_ = i
-		var l int
-		_ = l
-		if x.unknownFields != nil {
-			i -= len(x.unknownFields)
-			copy(dAtA[i:], x.unknownFields)
-		}
-		if len(x.MinDeposit) > 0 {
-			for iNdEx := len(x.MinDeposit) - 1; iNdEx >= 0; iNdEx-- {
-				encoded, err := options.Marshal(x.MinDeposit[iNdEx])
-				if err != nil {
-					return protoiface.MarshalOutput{
-						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-						Buf:               input.Buf,
-					}, err
-				}
-				i -= len(encoded)
-				copy(dAtA[i:], encoded)
-				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
-				i--
-				dAtA[i] = 0xa
-			}
-		}
-		if input.Buf != nil {
-			input.Buf = append(input.Buf, dAtA...)
-		} else {
-			input.Buf = dAtA
-		}
-		return protoiface.MarshalOutput{
-			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-			Buf:               input.Buf,
-		}, nil
-	}
-	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*QueryMinDepositResponse)
-		if x == nil {
-			return protoiface.UnmarshalOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Flags:             input.Flags,
-			}, nil
-		}
-		options := runtime.UnmarshalInputToOptions(input)
-		_ = options
-		dAtA := input.Buf
-		l := len(dAtA)
-		iNdEx := 0
-		for iNdEx < l {
-			preIndex := iNdEx
-			var wire uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-				}
-				if iNdEx >= l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				wire |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			fieldNum := int32(wire >> 3)
-			wireType := int(wire & 0x7)
-			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryMinDepositResponse: wiretype end group for non-group")
-			}
-			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryMinDepositResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-			}
-			switch fieldNum {
-			case 1:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MinDeposit", wireType)
-				}
-				var msglen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					msglen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if msglen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + msglen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.MinDeposit = append(x.MinDeposit, &v1beta11.Coin{})
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.MinDeposit[len(x.MinDeposit)-1]); err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				iNdEx = postIndex
-			default:
-				iNdEx = preIndex
-				skippy, err := runtime.Skip(dAtA[iNdEx:])
-				if err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				if (skippy < 0) || (iNdEx+skippy) < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if (iNdEx + skippy) > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				if !options.DiscardUnknown {
-					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
-				}
-				iNdEx += skippy
-			}
-		}
-
-		if iNdEx > l {
-			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-		}
-		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
-	}
-	return &protoiface.Methods{
-		NoUnkeyedLiterals: struct{}{},
-		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
-		Size:              size,
-		Marshal:           marshal,
-		Unmarshal:         unmarshal,
-		Merge:             nil,
-		CheckInitialized:  nil,
-	}
-}
-
-var (
-	md_QueryMinInitialDepositRequest protoreflect.MessageDescriptor
-)
-
-func init() {
-	file_atomone_gov_v1_query_proto_init()
-	md_QueryMinInitialDepositRequest = File_atomone_gov_v1_query_proto.Messages().ByName("QueryMinInitialDepositRequest")
-}
-
-var _ protoreflect.Message = (*fastReflection_QueryMinInitialDepositRequest)(nil)
-
-type fastReflection_QueryMinInitialDepositRequest QueryMinInitialDepositRequest
-
-func (x *QueryMinInitialDepositRequest) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_QueryMinInitialDepositRequest)(x)
-}
-
-func (x *QueryMinInitialDepositRequest) slowProtoReflect() protoreflect.Message {
-	mi := &file_atomone_gov_v1_query_proto_msgTypes[20]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-var _fastReflection_QueryMinInitialDepositRequest_messageType fastReflection_QueryMinInitialDepositRequest_messageType
-var _ protoreflect.MessageType = fastReflection_QueryMinInitialDepositRequest_messageType{}
-
-type fastReflection_QueryMinInitialDepositRequest_messageType struct{}
-
-func (x fastReflection_QueryMinInitialDepositRequest_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_QueryMinInitialDepositRequest)(nil)
-}
-func (x fastReflection_QueryMinInitialDepositRequest_messageType) New() protoreflect.Message {
-	return new(fastReflection_QueryMinInitialDepositRequest)
-}
-func (x fastReflection_QueryMinInitialDepositRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_QueryMinInitialDepositRequest
-}
-
-// Descriptor returns message descriptor, which contains only the protobuf
-// type information for the message.
-func (x *fastReflection_QueryMinInitialDepositRequest) Descriptor() protoreflect.MessageDescriptor {
-	return md_QueryMinInitialDepositRequest
-}
-
-// Type returns the message type, which encapsulates both Go and protobuf
-// type information. If the Go type information is not needed,
-// it is recommended that the message descriptor be used instead.
-func (x *fastReflection_QueryMinInitialDepositRequest) Type() protoreflect.MessageType {
-	return _fastReflection_QueryMinInitialDepositRequest_messageType
-}
-
-// New returns a newly allocated and mutable empty message.
-func (x *fastReflection_QueryMinInitialDepositRequest) New() protoreflect.Message {
-	return new(fastReflection_QueryMinInitialDepositRequest)
-}
-
-// Interface unwraps the message reflection interface and
-// returns the underlying ProtoMessage interface.
-func (x *fastReflection_QueryMinInitialDepositRequest) Interface() protoreflect.ProtoMessage {
-	return (*QueryMinInitialDepositRequest)(x)
-}
-
-// Range iterates over every populated field in an undefined order,
-// calling f for each field descriptor and value encountered.
-// Range returns immediately if f returns false.
-// While iterating, mutating operations may only be performed
-// on the current field descriptor.
-func (x *fastReflection_QueryMinInitialDepositRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-}
-
-// Has reports whether a field is populated.
-//
-// Some fields have the property of nullability where it is possible to
-// distinguish between the default value of a field and whether the field
-// was explicitly populated with the default value. Singular message fields,
-// member fields of a oneof, and proto2 scalar fields are nullable. Such
-// fields are populated only if explicitly set.
-//
-// In other cases (aside from the nullable cases above),
-// a proto3 scalar field is populated if it contains a non-zero value, and
-// a repeated field is populated if it is non-empty.
-func (x *fastReflection_QueryMinInitialDepositRequest) Has(fd protoreflect.FieldDescriptor) bool {
-	switch fd.FullName() {
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QueryMinInitialDepositRequest"))
-		}
-		panic(fmt.Errorf("message atomone.gov.v1.QueryMinInitialDepositRequest does not contain field %s", fd.FullName()))
-	}
-}
-
-// Clear clears the field such that a subsequent Has call reports false.
-//
-// Clearing an extension field clears both the extension type and value
-// associated with the given field number.
-//
-// Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryMinInitialDepositRequest) Clear(fd protoreflect.FieldDescriptor) {
-	switch fd.FullName() {
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QueryMinInitialDepositRequest"))
-		}
-		panic(fmt.Errorf("message atomone.gov.v1.QueryMinInitialDepositRequest does not contain field %s", fd.FullName()))
-	}
-}
-
-// Get retrieves the value for a field.
-//
-// For unpopulated scalars, it returns the default value, where
-// the default value of a bytes scalar is guaranteed to be a copy.
-// For unpopulated composite types, it returns an empty, read-only view
-// of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_QueryMinInitialDepositRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
-	switch descriptor.FullName() {
-	default:
-		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QueryMinInitialDepositRequest"))
-		}
-		panic(fmt.Errorf("message atomone.gov.v1.QueryMinInitialDepositRequest does not contain field %s", descriptor.FullName()))
-	}
-}
-
-// Set stores the value for a field.
-//
-// For a field belonging to a oneof, it implicitly clears any other field
-// that may be currently set within the same oneof.
-// For extension fields, it implicitly stores the provided ExtensionType.
-// When setting a composite type, it is unspecified whether the stored value
-// aliases the source's memory in any way. If the composite value is an
-// empty, read-only value, then it panics.
-//
-// Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryMinInitialDepositRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
-	switch fd.FullName() {
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QueryMinInitialDepositRequest"))
-		}
-		panic(fmt.Errorf("message atomone.gov.v1.QueryMinInitialDepositRequest does not contain field %s", fd.FullName()))
-	}
-}
-
-// Mutable returns a mutable reference to a composite type.
-//
-// If the field is unpopulated, it may allocate a composite value.
-// For a field belonging to a oneof, it implicitly clears any other field
-// that may be currently set within the same oneof.
-// For extension fields, it implicitly stores the provided ExtensionType
-// if not already stored.
-// It panics if the field does not contain a composite type.
-//
-// Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryMinInitialDepositRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
-	switch fd.FullName() {
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QueryMinInitialDepositRequest"))
-		}
-		panic(fmt.Errorf("message atomone.gov.v1.QueryMinInitialDepositRequest does not contain field %s", fd.FullName()))
-	}
-}
-
-// NewField returns a new value that is assignable to the field
-// for the given descriptor. For scalars, this returns the default value.
-// For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_QueryMinInitialDepositRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
-	switch fd.FullName() {
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QueryMinInitialDepositRequest"))
-		}
-		panic(fmt.Errorf("message atomone.gov.v1.QueryMinInitialDepositRequest does not contain field %s", fd.FullName()))
-	}
-}
-
-// WhichOneof reports which field within the oneof is populated,
-// returning nil if none are populated.
-// It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_QueryMinInitialDepositRequest) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
-	switch d.FullName() {
-	default:
-		panic(fmt.Errorf("%s is not a oneof field in atomone.gov.v1.QueryMinInitialDepositRequest", d.FullName()))
-	}
-	panic("unreachable")
-}
-
-// GetUnknown retrieves the entire list of unknown fields.
-// The caller may only mutate the contents of the RawFields
-// if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_QueryMinInitialDepositRequest) GetUnknown() protoreflect.RawFields {
-	return x.unknownFields
-}
-
-// SetUnknown stores an entire list of unknown fields.
-// The raw fields must be syntactically valid according to the wire format.
-// An implementation may panic if this is not the case.
-// Once stored, the caller must not mutate the content of the RawFields.
-// An empty RawFields may be passed to clear the fields.
-//
-// SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryMinInitialDepositRequest) SetUnknown(fields protoreflect.RawFields) {
-	x.unknownFields = fields
-}
-
-// IsValid reports whether the message is valid.
-//
-// An invalid message is an empty, read-only value.
-//
-// An invalid message often corresponds to a nil pointer of the concrete
-// message type, but the details are implementation dependent.
-// Validity is not part of the protobuf data model, and may not
-// be preserved in marshaling or other operations.
-func (x *fastReflection_QueryMinInitialDepositRequest) IsValid() bool {
-	return x != nil
-}
-
-// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
-// This method may return nil.
-//
-// The returned methods type is identical to
-// "google.golang.org/protobuf/runtime/protoiface".Methods.
-// Consult the protoiface package documentation for details.
-func (x *fastReflection_QueryMinInitialDepositRequest) ProtoMethods() *protoiface.Methods {
-	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*QueryMinInitialDepositRequest)
-		if x == nil {
-			return protoiface.SizeOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Size:              0,
-			}
-		}
-		options := runtime.SizeInputToOptions(input)
-		_ = options
-		var n int
-		var l int
-		_ = l
-		if x.unknownFields != nil {
-			n += len(x.unknownFields)
-		}
-		return protoiface.SizeOutput{
-			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-			Size:              n,
-		}
-	}
-
-	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*QueryMinInitialDepositRequest)
-		if x == nil {
-			return protoiface.MarshalOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Buf:               input.Buf,
-			}, nil
-		}
-		options := runtime.MarshalInputToOptions(input)
-		_ = options
-		size := options.Size(x)
-		dAtA := make([]byte, size)
-		i := len(dAtA)
-		_ = i
-		var l int
-		_ = l
-		if x.unknownFields != nil {
-			i -= len(x.unknownFields)
-			copy(dAtA[i:], x.unknownFields)
-		}
-		if input.Buf != nil {
-			input.Buf = append(input.Buf, dAtA...)
-		} else {
-			input.Buf = dAtA
-		}
-		return protoiface.MarshalOutput{
-			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-			Buf:               input.Buf,
-		}, nil
-	}
-	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*QueryMinInitialDepositRequest)
-		if x == nil {
-			return protoiface.UnmarshalOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Flags:             input.Flags,
-			}, nil
-		}
-		options := runtime.UnmarshalInputToOptions(input)
-		_ = options
-		dAtA := input.Buf
-		l := len(dAtA)
-		iNdEx := 0
-		for iNdEx < l {
-			preIndex := iNdEx
-			var wire uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-				}
-				if iNdEx >= l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				wire |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			fieldNum := int32(wire >> 3)
-			wireType := int(wire & 0x7)
-			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryMinInitialDepositRequest: wiretype end group for non-group")
-			}
-			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryMinInitialDepositRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-			}
-			switch fieldNum {
-			default:
-				iNdEx = preIndex
-				skippy, err := runtime.Skip(dAtA[iNdEx:])
-				if err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				if (skippy < 0) || (iNdEx+skippy) < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if (iNdEx + skippy) > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				if !options.DiscardUnknown {
-					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
-				}
-				iNdEx += skippy
-			}
-		}
-
-		if iNdEx > l {
-			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-		}
-		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
-	}
-	return &protoiface.Methods{
-		NoUnkeyedLiterals: struct{}{},
-		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
-		Size:              size,
-		Marshal:           marshal,
-		Unmarshal:         unmarshal,
-		Merge:             nil,
-		CheckInitialized:  nil,
-	}
-}
-
-var _ protoreflect.List = (*_QueryMinInitialDepositResponse_1_list)(nil)
-
-type _QueryMinInitialDepositResponse_1_list struct {
-	list *[]*v1beta11.Coin
-}
-
-func (x *_QueryMinInitialDepositResponse_1_list) Len() int {
-	if x.list == nil {
-		return 0
-	}
-	return len(*x.list)
-}
-
-func (x *_QueryMinInitialDepositResponse_1_list) Get(i int) protoreflect.Value {
-	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
-}
-
-func (x *_QueryMinInitialDepositResponse_1_list) Set(i int, value protoreflect.Value) {
-	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*v1beta11.Coin)
-	(*x.list)[i] = concreteValue
-}
-
-func (x *_QueryMinInitialDepositResponse_1_list) Append(value protoreflect.Value) {
-	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*v1beta11.Coin)
-	*x.list = append(*x.list, concreteValue)
-}
-
-func (x *_QueryMinInitialDepositResponse_1_list) AppendMutable() protoreflect.Value {
-	v := new(v1beta11.Coin)
-	*x.list = append(*x.list, v)
-	return protoreflect.ValueOfMessage(v.ProtoReflect())
-}
-
-func (x *_QueryMinInitialDepositResponse_1_list) Truncate(n int) {
-	for i := n; i < len(*x.list); i++ {
-		(*x.list)[i] = nil
-	}
-	*x.list = (*x.list)[:n]
-}
-
-func (x *_QueryMinInitialDepositResponse_1_list) NewElement() protoreflect.Value {
-	v := new(v1beta11.Coin)
-	return protoreflect.ValueOfMessage(v.ProtoReflect())
-}
-
-func (x *_QueryMinInitialDepositResponse_1_list) IsValid() bool {
-	return x.list != nil
-}
-
-var (
-	md_QueryMinInitialDepositResponse                     protoreflect.MessageDescriptor
-	fd_QueryMinInitialDepositResponse_min_initial_deposit protoreflect.FieldDescriptor
-)
-
-func init() {
-	file_atomone_gov_v1_query_proto_init()
-	md_QueryMinInitialDepositResponse = File_atomone_gov_v1_query_proto.Messages().ByName("QueryMinInitialDepositResponse")
-	fd_QueryMinInitialDepositResponse_min_initial_deposit = md_QueryMinInitialDepositResponse.Fields().ByName("min_initial_deposit")
-}
-
-var _ protoreflect.Message = (*fastReflection_QueryMinInitialDepositResponse)(nil)
-
-type fastReflection_QueryMinInitialDepositResponse QueryMinInitialDepositResponse
-
-func (x *QueryMinInitialDepositResponse) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_QueryMinInitialDepositResponse)(x)
-}
-
-func (x *QueryMinInitialDepositResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_atomone_gov_v1_query_proto_msgTypes[21]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-var _fastReflection_QueryMinInitialDepositResponse_messageType fastReflection_QueryMinInitialDepositResponse_messageType
-var _ protoreflect.MessageType = fastReflection_QueryMinInitialDepositResponse_messageType{}
-
-type fastReflection_QueryMinInitialDepositResponse_messageType struct{}
-
-func (x fastReflection_QueryMinInitialDepositResponse_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_QueryMinInitialDepositResponse)(nil)
-}
-func (x fastReflection_QueryMinInitialDepositResponse_messageType) New() protoreflect.Message {
-	return new(fastReflection_QueryMinInitialDepositResponse)
-}
-func (x fastReflection_QueryMinInitialDepositResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_QueryMinInitialDepositResponse
-}
-
-// Descriptor returns message descriptor, which contains only the protobuf
-// type information for the message.
-func (x *fastReflection_QueryMinInitialDepositResponse) Descriptor() protoreflect.MessageDescriptor {
-	return md_QueryMinInitialDepositResponse
-}
-
-// Type returns the message type, which encapsulates both Go and protobuf
-// type information. If the Go type information is not needed,
-// it is recommended that the message descriptor be used instead.
-func (x *fastReflection_QueryMinInitialDepositResponse) Type() protoreflect.MessageType {
-	return _fastReflection_QueryMinInitialDepositResponse_messageType
-}
-
-// New returns a newly allocated and mutable empty message.
-func (x *fastReflection_QueryMinInitialDepositResponse) New() protoreflect.Message {
-	return new(fastReflection_QueryMinInitialDepositResponse)
-}
-
-// Interface unwraps the message reflection interface and
-// returns the underlying ProtoMessage interface.
-func (x *fastReflection_QueryMinInitialDepositResponse) Interface() protoreflect.ProtoMessage {
-	return (*QueryMinInitialDepositResponse)(x)
-}
-
-// Range iterates over every populated field in an undefined order,
-// calling f for each field descriptor and value encountered.
-// Range returns immediately if f returns false.
-// While iterating, mutating operations may only be performed
-// on the current field descriptor.
-func (x *fastReflection_QueryMinInitialDepositResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if len(x.MinInitialDeposit) != 0 {
-		value := protoreflect.ValueOfList(&_QueryMinInitialDepositResponse_1_list{list: &x.MinInitialDeposit})
-		if !f(fd_QueryMinInitialDepositResponse_min_initial_deposit, value) {
-			return
-		}
-	}
-}
-
-// Has reports whether a field is populated.
-//
-// Some fields have the property of nullability where it is possible to
-// distinguish between the default value of a field and whether the field
-// was explicitly populated with the default value. Singular message fields,
-// member fields of a oneof, and proto2 scalar fields are nullable. Such
-// fields are populated only if explicitly set.
-//
-// In other cases (aside from the nullable cases above),
-// a proto3 scalar field is populated if it contains a non-zero value, and
-// a repeated field is populated if it is non-empty.
-func (x *fastReflection_QueryMinInitialDepositResponse) Has(fd protoreflect.FieldDescriptor) bool {
-	switch fd.FullName() {
-	case "atomone.gov.v1.QueryMinInitialDepositResponse.min_initial_deposit":
-		return len(x.MinInitialDeposit) != 0
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QueryMinInitialDepositResponse"))
-		}
-		panic(fmt.Errorf("message atomone.gov.v1.QueryMinInitialDepositResponse does not contain field %s", fd.FullName()))
-	}
-}
-
-// Clear clears the field such that a subsequent Has call reports false.
-//
-// Clearing an extension field clears both the extension type and value
-// associated with the given field number.
-//
-// Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryMinInitialDepositResponse) Clear(fd protoreflect.FieldDescriptor) {
-	switch fd.FullName() {
-	case "atomone.gov.v1.QueryMinInitialDepositResponse.min_initial_deposit":
-		x.MinInitialDeposit = nil
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QueryMinInitialDepositResponse"))
-		}
-		panic(fmt.Errorf("message atomone.gov.v1.QueryMinInitialDepositResponse does not contain field %s", fd.FullName()))
-	}
-}
-
-// Get retrieves the value for a field.
-//
-// For unpopulated scalars, it returns the default value, where
-// the default value of a bytes scalar is guaranteed to be a copy.
-// For unpopulated composite types, it returns an empty, read-only view
-// of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_QueryMinInitialDepositResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
-	switch descriptor.FullName() {
-	case "atomone.gov.v1.QueryMinInitialDepositResponse.min_initial_deposit":
-		if len(x.MinInitialDeposit) == 0 {
-			return protoreflect.ValueOfList(&_QueryMinInitialDepositResponse_1_list{})
-		}
-		listValue := &_QueryMinInitialDepositResponse_1_list{list: &x.MinInitialDeposit}
-		return protoreflect.ValueOfList(listValue)
-	default:
-		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QueryMinInitialDepositResponse"))
-		}
-		panic(fmt.Errorf("message atomone.gov.v1.QueryMinInitialDepositResponse does not contain field %s", descriptor.FullName()))
-	}
-}
-
-// Set stores the value for a field.
-//
-// For a field belonging to a oneof, it implicitly clears any other field
-// that may be currently set within the same oneof.
-// For extension fields, it implicitly stores the provided ExtensionType.
-// When setting a composite type, it is unspecified whether the stored value
-// aliases the source's memory in any way. If the composite value is an
-// empty, read-only value, then it panics.
-//
-// Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryMinInitialDepositResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
-	switch fd.FullName() {
-	case "atomone.gov.v1.QueryMinInitialDepositResponse.min_initial_deposit":
-		lv := value.List()
-		clv := lv.(*_QueryMinInitialDepositResponse_1_list)
-		x.MinInitialDeposit = *clv.list
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QueryMinInitialDepositResponse"))
-		}
-		panic(fmt.Errorf("message atomone.gov.v1.QueryMinInitialDepositResponse does not contain field %s", fd.FullName()))
-	}
-}
-
-// Mutable returns a mutable reference to a composite type.
-//
-// If the field is unpopulated, it may allocate a composite value.
-// For a field belonging to a oneof, it implicitly clears any other field
-// that may be currently set within the same oneof.
-// For extension fields, it implicitly stores the provided ExtensionType
-// if not already stored.
-// It panics if the field does not contain a composite type.
-//
-// Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryMinInitialDepositResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
-	switch fd.FullName() {
-	case "atomone.gov.v1.QueryMinInitialDepositResponse.min_initial_deposit":
-		if x.MinInitialDeposit == nil {
-			x.MinInitialDeposit = []*v1beta11.Coin{}
-		}
-		value := &_QueryMinInitialDepositResponse_1_list{list: &x.MinInitialDeposit}
-		return protoreflect.ValueOfList(value)
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QueryMinInitialDepositResponse"))
-		}
-		panic(fmt.Errorf("message atomone.gov.v1.QueryMinInitialDepositResponse does not contain field %s", fd.FullName()))
-	}
-}
-
-// NewField returns a new value that is assignable to the field
-// for the given descriptor. For scalars, this returns the default value.
-// For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_QueryMinInitialDepositResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
-	switch fd.FullName() {
-	case "atomone.gov.v1.QueryMinInitialDepositResponse.min_initial_deposit":
-		list := []*v1beta11.Coin{}
-		return protoreflect.ValueOfList(&_QueryMinInitialDepositResponse_1_list{list: &list})
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QueryMinInitialDepositResponse"))
-		}
-		panic(fmt.Errorf("message atomone.gov.v1.QueryMinInitialDepositResponse does not contain field %s", fd.FullName()))
-	}
-}
-
-// WhichOneof reports which field within the oneof is populated,
-// returning nil if none are populated.
-// It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_QueryMinInitialDepositResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
-	switch d.FullName() {
-	default:
-		panic(fmt.Errorf("%s is not a oneof field in atomone.gov.v1.QueryMinInitialDepositResponse", d.FullName()))
-	}
-	panic("unreachable")
-}
-
-// GetUnknown retrieves the entire list of unknown fields.
-// The caller may only mutate the contents of the RawFields
-// if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_QueryMinInitialDepositResponse) GetUnknown() protoreflect.RawFields {
-	return x.unknownFields
-}
-
-// SetUnknown stores an entire list of unknown fields.
-// The raw fields must be syntactically valid according to the wire format.
-// An implementation may panic if this is not the case.
-// Once stored, the caller must not mutate the content of the RawFields.
-// An empty RawFields may be passed to clear the fields.
-//
-// SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryMinInitialDepositResponse) SetUnknown(fields protoreflect.RawFields) {
-	x.unknownFields = fields
-}
-
-// IsValid reports whether the message is valid.
-//
-// An invalid message is an empty, read-only value.
-//
-// An invalid message often corresponds to a nil pointer of the concrete
-// message type, but the details are implementation dependent.
-// Validity is not part of the protobuf data model, and may not
-// be preserved in marshaling or other operations.
-func (x *fastReflection_QueryMinInitialDepositResponse) IsValid() bool {
-	return x != nil
-}
-
-// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
-// This method may return nil.
-//
-// The returned methods type is identical to
-// "google.golang.org/protobuf/runtime/protoiface".Methods.
-// Consult the protoiface package documentation for details.
-func (x *fastReflection_QueryMinInitialDepositResponse) ProtoMethods() *protoiface.Methods {
-	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*QueryMinInitialDepositResponse)
-		if x == nil {
-			return protoiface.SizeOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Size:              0,
-			}
-		}
-		options := runtime.SizeInputToOptions(input)
-		_ = options
-		var n int
-		var l int
-		_ = l
-		if len(x.MinInitialDeposit) > 0 {
-			for _, e := range x.MinInitialDeposit {
-				l = options.Size(e)
-				n += 1 + l + runtime.Sov(uint64(l))
-			}
-		}
-		if x.unknownFields != nil {
-			n += len(x.unknownFields)
-		}
-		return protoiface.SizeOutput{
-			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-			Size:              n,
-		}
-	}
-
-	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*QueryMinInitialDepositResponse)
-		if x == nil {
-			return protoiface.MarshalOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Buf:               input.Buf,
-			}, nil
-		}
-		options := runtime.MarshalInputToOptions(input)
-		_ = options
-		size := options.Size(x)
-		dAtA := make([]byte, size)
-		i := len(dAtA)
-		_ = i
-		var l int
-		_ = l
-		if x.unknownFields != nil {
-			i -= len(x.unknownFields)
-			copy(dAtA[i:], x.unknownFields)
-		}
-		if len(x.MinInitialDeposit) > 0 {
-			for iNdEx := len(x.MinInitialDeposit) - 1; iNdEx >= 0; iNdEx-- {
-				encoded, err := options.Marshal(x.MinInitialDeposit[iNdEx])
-				if err != nil {
-					return protoiface.MarshalOutput{
-						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-						Buf:               input.Buf,
-					}, err
-				}
-				i -= len(encoded)
-				copy(dAtA[i:], encoded)
-				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
-				i--
-				dAtA[i] = 0xa
-			}
-		}
-		if input.Buf != nil {
-			input.Buf = append(input.Buf, dAtA...)
-		} else {
-			input.Buf = dAtA
-		}
-		return protoiface.MarshalOutput{
-			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-			Buf:               input.Buf,
-		}, nil
-	}
-	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*QueryMinInitialDepositResponse)
-		if x == nil {
-			return protoiface.UnmarshalOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Flags:             input.Flags,
-			}, nil
-		}
-		options := runtime.UnmarshalInputToOptions(input)
-		_ = options
-		dAtA := input.Buf
-		l := len(dAtA)
-		iNdEx := 0
-		for iNdEx < l {
-			preIndex := iNdEx
-			var wire uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-				}
-				if iNdEx >= l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				wire |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			fieldNum := int32(wire >> 3)
-			wireType := int(wire & 0x7)
-			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryMinInitialDepositResponse: wiretype end group for non-group")
-			}
-			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryMinInitialDepositResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-			}
-			switch fieldNum {
-			case 1:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MinInitialDeposit", wireType)
-				}
-				var msglen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					msglen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if msglen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + msglen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.MinInitialDeposit = append(x.MinInitialDeposit, &v1beta11.Coin{})
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.MinInitialDeposit[len(x.MinInitialDeposit)-1]); err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				iNdEx = postIndex
-			default:
-				iNdEx = preIndex
-				skippy, err := runtime.Skip(dAtA[iNdEx:])
-				if err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				if (skippy < 0) || (iNdEx+skippy) < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if (iNdEx + skippy) > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				if !options.DiscardUnknown {
-					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
-				}
-				iNdEx += skippy
-			}
-		}
-
-		if iNdEx > l {
-			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-		}
-		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
-	}
-	return &protoiface.Methods{
-		NoUnkeyedLiterals: struct{}{},
-		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
-		Size:              size,
-		Marshal:           marshal,
-		Unmarshal:         unmarshal,
-		Merge:             nil,
-		CheckInitialized:  nil,
-	}
-}
-
-var (
-	md_QueryQuorumRequest protoreflect.MessageDescriptor
-)
-
-func init() {
-	file_atomone_gov_v1_query_proto_init()
-	md_QueryQuorumRequest = File_atomone_gov_v1_query_proto.Messages().ByName("QueryQuorumRequest")
-}
-
-var _ protoreflect.Message = (*fastReflection_QueryQuorumRequest)(nil)
-
-type fastReflection_QueryQuorumRequest QueryQuorumRequest
-
-func (x *QueryQuorumRequest) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_QueryQuorumRequest)(x)
-}
-
-func (x *QueryQuorumRequest) slowProtoReflect() protoreflect.Message {
-	mi := &file_atomone_gov_v1_query_proto_msgTypes[22]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-var _fastReflection_QueryQuorumRequest_messageType fastReflection_QueryQuorumRequest_messageType
-var _ protoreflect.MessageType = fastReflection_QueryQuorumRequest_messageType{}
-
-type fastReflection_QueryQuorumRequest_messageType struct{}
-
-func (x fastReflection_QueryQuorumRequest_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_QueryQuorumRequest)(nil)
-}
-func (x fastReflection_QueryQuorumRequest_messageType) New() protoreflect.Message {
-	return new(fastReflection_QueryQuorumRequest)
-}
-func (x fastReflection_QueryQuorumRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_QueryQuorumRequest
-}
-
-// Descriptor returns message descriptor, which contains only the protobuf
-// type information for the message.
-func (x *fastReflection_QueryQuorumRequest) Descriptor() protoreflect.MessageDescriptor {
-	return md_QueryQuorumRequest
-}
-
-// Type returns the message type, which encapsulates both Go and protobuf
-// type information. If the Go type information is not needed,
-// it is recommended that the message descriptor be used instead.
-func (x *fastReflection_QueryQuorumRequest) Type() protoreflect.MessageType {
-	return _fastReflection_QueryQuorumRequest_messageType
-}
-
-// New returns a newly allocated and mutable empty message.
-func (x *fastReflection_QueryQuorumRequest) New() protoreflect.Message {
-	return new(fastReflection_QueryQuorumRequest)
-}
-
-// Interface unwraps the message reflection interface and
-// returns the underlying ProtoMessage interface.
-func (x *fastReflection_QueryQuorumRequest) Interface() protoreflect.ProtoMessage {
-	return (*QueryQuorumRequest)(x)
-}
-
-// Range iterates over every populated field in an undefined order,
-// calling f for each field descriptor and value encountered.
-// Range returns immediately if f returns false.
-// While iterating, mutating operations may only be performed
-// on the current field descriptor.
-func (x *fastReflection_QueryQuorumRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-}
-
-// Has reports whether a field is populated.
-//
-// Some fields have the property of nullability where it is possible to
-// distinguish between the default value of a field and whether the field
-// was explicitly populated with the default value. Singular message fields,
-// member fields of a oneof, and proto2 scalar fields are nullable. Such
-// fields are populated only if explicitly set.
-//
-// In other cases (aside from the nullable cases above),
-// a proto3 scalar field is populated if it contains a non-zero value, and
-// a repeated field is populated if it is non-empty.
-func (x *fastReflection_QueryQuorumRequest) Has(fd protoreflect.FieldDescriptor) bool {
-	switch fd.FullName() {
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QueryQuorumRequest"))
-		}
-		panic(fmt.Errorf("message atomone.gov.v1.QueryQuorumRequest does not contain field %s", fd.FullName()))
-	}
-}
-
-// Clear clears the field such that a subsequent Has call reports false.
-//
-// Clearing an extension field clears both the extension type and value
-// associated with the given field number.
-//
-// Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryQuorumRequest) Clear(fd protoreflect.FieldDescriptor) {
-	switch fd.FullName() {
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QueryQuorumRequest"))
-		}
-		panic(fmt.Errorf("message atomone.gov.v1.QueryQuorumRequest does not contain field %s", fd.FullName()))
-	}
-}
-
-// Get retrieves the value for a field.
-//
-// For unpopulated scalars, it returns the default value, where
-// the default value of a bytes scalar is guaranteed to be a copy.
-// For unpopulated composite types, it returns an empty, read-only view
-// of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_QueryQuorumRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
-	switch descriptor.FullName() {
-	default:
-		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QueryQuorumRequest"))
-		}
-		panic(fmt.Errorf("message atomone.gov.v1.QueryQuorumRequest does not contain field %s", descriptor.FullName()))
-	}
-}
-
-// Set stores the value for a field.
-//
-// For a field belonging to a oneof, it implicitly clears any other field
-// that may be currently set within the same oneof.
-// For extension fields, it implicitly stores the provided ExtensionType.
-// When setting a composite type, it is unspecified whether the stored value
-// aliases the source's memory in any way. If the composite value is an
-// empty, read-only value, then it panics.
-//
-// Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryQuorumRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
-	switch fd.FullName() {
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QueryQuorumRequest"))
-		}
-		panic(fmt.Errorf("message atomone.gov.v1.QueryQuorumRequest does not contain field %s", fd.FullName()))
-	}
-}
-
-// Mutable returns a mutable reference to a composite type.
-//
-// If the field is unpopulated, it may allocate a composite value.
-// For a field belonging to a oneof, it implicitly clears any other field
-// that may be currently set within the same oneof.
-// For extension fields, it implicitly stores the provided ExtensionType
-// if not already stored.
-// It panics if the field does not contain a composite type.
-//
-// Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryQuorumRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
-	switch fd.FullName() {
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QueryQuorumRequest"))
-		}
-		panic(fmt.Errorf("message atomone.gov.v1.QueryQuorumRequest does not contain field %s", fd.FullName()))
-	}
-}
-
-// NewField returns a new value that is assignable to the field
-// for the given descriptor. For scalars, this returns the default value.
-// For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_QueryQuorumRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
-	switch fd.FullName() {
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QueryQuorumRequest"))
-		}
-		panic(fmt.Errorf("message atomone.gov.v1.QueryQuorumRequest does not contain field %s", fd.FullName()))
-	}
-}
-
-// WhichOneof reports which field within the oneof is populated,
-// returning nil if none are populated.
-// It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_QueryQuorumRequest) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
-	switch d.FullName() {
-	default:
-		panic(fmt.Errorf("%s is not a oneof field in atomone.gov.v1.QueryQuorumRequest", d.FullName()))
-	}
-	panic("unreachable")
-}
-
-// GetUnknown retrieves the entire list of unknown fields.
-// The caller may only mutate the contents of the RawFields
-// if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_QueryQuorumRequest) GetUnknown() protoreflect.RawFields {
-	return x.unknownFields
-}
-
-// SetUnknown stores an entire list of unknown fields.
-// The raw fields must be syntactically valid according to the wire format.
-// An implementation may panic if this is not the case.
-// Once stored, the caller must not mutate the content of the RawFields.
-// An empty RawFields may be passed to clear the fields.
-//
-// SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryQuorumRequest) SetUnknown(fields protoreflect.RawFields) {
-	x.unknownFields = fields
-}
-
-// IsValid reports whether the message is valid.
-//
-// An invalid message is an empty, read-only value.
-//
-// An invalid message often corresponds to a nil pointer of the concrete
-// message type, but the details are implementation dependent.
-// Validity is not part of the protobuf data model, and may not
-// be preserved in marshaling or other operations.
-func (x *fastReflection_QueryQuorumRequest) IsValid() bool {
-	return x != nil
-}
-
-// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
-// This method may return nil.
-//
-// The returned methods type is identical to
-// "google.golang.org/protobuf/runtime/protoiface".Methods.
-// Consult the protoiface package documentation for details.
-func (x *fastReflection_QueryQuorumRequest) ProtoMethods() *protoiface.Methods {
-	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*QueryQuorumRequest)
-		if x == nil {
-			return protoiface.SizeOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Size:              0,
-			}
-		}
-		options := runtime.SizeInputToOptions(input)
-		_ = options
-		var n int
-		var l int
-		_ = l
-		if x.unknownFields != nil {
-			n += len(x.unknownFields)
-		}
-		return protoiface.SizeOutput{
-			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-			Size:              n,
-		}
-	}
-
-	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*QueryQuorumRequest)
-		if x == nil {
-			return protoiface.MarshalOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Buf:               input.Buf,
-			}, nil
-		}
-		options := runtime.MarshalInputToOptions(input)
-		_ = options
-		size := options.Size(x)
-		dAtA := make([]byte, size)
-		i := len(dAtA)
-		_ = i
-		var l int
-		_ = l
-		if x.unknownFields != nil {
-			i -= len(x.unknownFields)
-			copy(dAtA[i:], x.unknownFields)
-		}
-		if input.Buf != nil {
-			input.Buf = append(input.Buf, dAtA...)
-		} else {
-			input.Buf = dAtA
-		}
-		return protoiface.MarshalOutput{
-			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-			Buf:               input.Buf,
-		}, nil
-	}
-	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*QueryQuorumRequest)
-		if x == nil {
-			return protoiface.UnmarshalOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Flags:             input.Flags,
-			}, nil
-		}
-		options := runtime.UnmarshalInputToOptions(input)
-		_ = options
-		dAtA := input.Buf
-		l := len(dAtA)
-		iNdEx := 0
-		for iNdEx < l {
-			preIndex := iNdEx
-			var wire uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-				}
-				if iNdEx >= l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				wire |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			fieldNum := int32(wire >> 3)
-			wireType := int(wire & 0x7)
-			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryQuorumRequest: wiretype end group for non-group")
-			}
-			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryQuorumRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-			}
-			switch fieldNum {
-			default:
-				iNdEx = preIndex
-				skippy, err := runtime.Skip(dAtA[iNdEx:])
-				if err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				if (skippy < 0) || (iNdEx+skippy) < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if (iNdEx + skippy) > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				if !options.DiscardUnknown {
-					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
-				}
-				iNdEx += skippy
-			}
-		}
-
-		if iNdEx > l {
-			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-		}
-		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
-	}
-	return &protoiface.Methods{
-		NoUnkeyedLiterals: struct{}{},
-		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
-		Size:              size,
-		Marshal:           marshal,
-		Unmarshal:         unmarshal,
-		Merge:             nil,
-		CheckInitialized:  nil,
-	}
-}
-
-var (
-	md_QueryQuorumResponse                               protoreflect.MessageDescriptor
-	fd_QueryQuorumResponse_quorum                        protoreflect.FieldDescriptor
-	fd_QueryQuorumResponse_constitution_amendment_quorum protoreflect.FieldDescriptor
-	fd_QueryQuorumResponse_law_quorum                    protoreflect.FieldDescriptor
-)
-
-func init() {
-	file_atomone_gov_v1_query_proto_init()
-	md_QueryQuorumResponse = File_atomone_gov_v1_query_proto.Messages().ByName("QueryQuorumResponse")
-	fd_QueryQuorumResponse_quorum = md_QueryQuorumResponse.Fields().ByName("quorum")
-	fd_QueryQuorumResponse_constitution_amendment_quorum = md_QueryQuorumResponse.Fields().ByName("constitution_amendment_quorum")
-	fd_QueryQuorumResponse_law_quorum = md_QueryQuorumResponse.Fields().ByName("law_quorum")
-}
-
-var _ protoreflect.Message = (*fastReflection_QueryQuorumResponse)(nil)
-
-type fastReflection_QueryQuorumResponse QueryQuorumResponse
-
-func (x *QueryQuorumResponse) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_QueryQuorumResponse)(x)
-}
-
-func (x *QueryQuorumResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_atomone_gov_v1_query_proto_msgTypes[23]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-var _fastReflection_QueryQuorumResponse_messageType fastReflection_QueryQuorumResponse_messageType
-var _ protoreflect.MessageType = fastReflection_QueryQuorumResponse_messageType{}
-
-type fastReflection_QueryQuorumResponse_messageType struct{}
-
-func (x fastReflection_QueryQuorumResponse_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_QueryQuorumResponse)(nil)
-}
-func (x fastReflection_QueryQuorumResponse_messageType) New() protoreflect.Message {
-	return new(fastReflection_QueryQuorumResponse)
-}
-func (x fastReflection_QueryQuorumResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_QueryQuorumResponse
-}
-
-// Descriptor returns message descriptor, which contains only the protobuf
-// type information for the message.
-func (x *fastReflection_QueryQuorumResponse) Descriptor() protoreflect.MessageDescriptor {
-	return md_QueryQuorumResponse
-}
-
-// Type returns the message type, which encapsulates both Go and protobuf
-// type information. If the Go type information is not needed,
-// it is recommended that the message descriptor be used instead.
-func (x *fastReflection_QueryQuorumResponse) Type() protoreflect.MessageType {
-	return _fastReflection_QueryQuorumResponse_messageType
-}
-
-// New returns a newly allocated and mutable empty message.
-func (x *fastReflection_QueryQuorumResponse) New() protoreflect.Message {
-	return new(fastReflection_QueryQuorumResponse)
-}
-
-// Interface unwraps the message reflection interface and
-// returns the underlying ProtoMessage interface.
-func (x *fastReflection_QueryQuorumResponse) Interface() protoreflect.ProtoMessage {
-	return (*QueryQuorumResponse)(x)
-}
-
-// Range iterates over every populated field in an undefined order,
-// calling f for each field descriptor and value encountered.
-// Range returns immediately if f returns false.
-// While iterating, mutating operations may only be performed
-// on the current field descriptor.
-func (x *fastReflection_QueryQuorumResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if x.Quorum != "" {
-		value := protoreflect.ValueOfString(x.Quorum)
-		if !f(fd_QueryQuorumResponse_quorum, value) {
-			return
-		}
-	}
-	if x.ConstitutionAmendmentQuorum != "" {
-		value := protoreflect.ValueOfString(x.ConstitutionAmendmentQuorum)
-		if !f(fd_QueryQuorumResponse_constitution_amendment_quorum, value) {
-			return
-		}
-	}
-	if x.LawQuorum != "" {
-		value := protoreflect.ValueOfString(x.LawQuorum)
-		if !f(fd_QueryQuorumResponse_law_quorum, value) {
-			return
-		}
-	}
-}
-
-// Has reports whether a field is populated.
-//
-// Some fields have the property of nullability where it is possible to
-// distinguish between the default value of a field and whether the field
-// was explicitly populated with the default value. Singular message fields,
-// member fields of a oneof, and proto2 scalar fields are nullable. Such
-// fields are populated only if explicitly set.
-//
-// In other cases (aside from the nullable cases above),
-// a proto3 scalar field is populated if it contains a non-zero value, and
-// a repeated field is populated if it is non-empty.
-func (x *fastReflection_QueryQuorumResponse) Has(fd protoreflect.FieldDescriptor) bool {
-	switch fd.FullName() {
-	case "atomone.gov.v1.QueryQuorumResponse.quorum":
-		return x.Quorum != ""
-	case "atomone.gov.v1.QueryQuorumResponse.constitution_amendment_quorum":
-		return x.ConstitutionAmendmentQuorum != ""
-	case "atomone.gov.v1.QueryQuorumResponse.law_quorum":
-		return x.LawQuorum != ""
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QueryQuorumResponse"))
-		}
-		panic(fmt.Errorf("message atomone.gov.v1.QueryQuorumResponse does not contain field %s", fd.FullName()))
-	}
-}
-
-// Clear clears the field such that a subsequent Has call reports false.
-//
-// Clearing an extension field clears both the extension type and value
-// associated with the given field number.
-//
-// Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryQuorumResponse) Clear(fd protoreflect.FieldDescriptor) {
-	switch fd.FullName() {
-	case "atomone.gov.v1.QueryQuorumResponse.quorum":
-		x.Quorum = ""
-	case "atomone.gov.v1.QueryQuorumResponse.constitution_amendment_quorum":
-		x.ConstitutionAmendmentQuorum = ""
-	case "atomone.gov.v1.QueryQuorumResponse.law_quorum":
-		x.LawQuorum = ""
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QueryQuorumResponse"))
-		}
-		panic(fmt.Errorf("message atomone.gov.v1.QueryQuorumResponse does not contain field %s", fd.FullName()))
-	}
-}
-
-// Get retrieves the value for a field.
-//
-// For unpopulated scalars, it returns the default value, where
-// the default value of a bytes scalar is guaranteed to be a copy.
-// For unpopulated composite types, it returns an empty, read-only view
-// of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_QueryQuorumResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
-	switch descriptor.FullName() {
-	case "atomone.gov.v1.QueryQuorumResponse.quorum":
-		value := x.Quorum
-		return protoreflect.ValueOfString(value)
-	case "atomone.gov.v1.QueryQuorumResponse.constitution_amendment_quorum":
-		value := x.ConstitutionAmendmentQuorum
-		return protoreflect.ValueOfString(value)
-	case "atomone.gov.v1.QueryQuorumResponse.law_quorum":
-		value := x.LawQuorum
-		return protoreflect.ValueOfString(value)
-	default:
-		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QueryQuorumResponse"))
-		}
-		panic(fmt.Errorf("message atomone.gov.v1.QueryQuorumResponse does not contain field %s", descriptor.FullName()))
-	}
-}
-
-// Set stores the value for a field.
-//
-// For a field belonging to a oneof, it implicitly clears any other field
-// that may be currently set within the same oneof.
-// For extension fields, it implicitly stores the provided ExtensionType.
-// When setting a composite type, it is unspecified whether the stored value
-// aliases the source's memory in any way. If the composite value is an
-// empty, read-only value, then it panics.
-//
-// Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryQuorumResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
-	switch fd.FullName() {
-	case "atomone.gov.v1.QueryQuorumResponse.quorum":
-		x.Quorum = value.Interface().(string)
-	case "atomone.gov.v1.QueryQuorumResponse.constitution_amendment_quorum":
-		x.ConstitutionAmendmentQuorum = value.Interface().(string)
-	case "atomone.gov.v1.QueryQuorumResponse.law_quorum":
-		x.LawQuorum = value.Interface().(string)
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QueryQuorumResponse"))
-		}
-		panic(fmt.Errorf("message atomone.gov.v1.QueryQuorumResponse does not contain field %s", fd.FullName()))
-	}
-}
-
-// Mutable returns a mutable reference to a composite type.
-//
-// If the field is unpopulated, it may allocate a composite value.
-// For a field belonging to a oneof, it implicitly clears any other field
-// that may be currently set within the same oneof.
-// For extension fields, it implicitly stores the provided ExtensionType
-// if not already stored.
-// It panics if the field does not contain a composite type.
-//
-// Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryQuorumResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
-	switch fd.FullName() {
-	case "atomone.gov.v1.QueryQuorumResponse.quorum":
-		panic(fmt.Errorf("field quorum of message atomone.gov.v1.QueryQuorumResponse is not mutable"))
-	case "atomone.gov.v1.QueryQuorumResponse.constitution_amendment_quorum":
-		panic(fmt.Errorf("field constitution_amendment_quorum of message atomone.gov.v1.QueryQuorumResponse is not mutable"))
-	case "atomone.gov.v1.QueryQuorumResponse.law_quorum":
-		panic(fmt.Errorf("field law_quorum of message atomone.gov.v1.QueryQuorumResponse is not mutable"))
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QueryQuorumResponse"))
-		}
-		panic(fmt.Errorf("message atomone.gov.v1.QueryQuorumResponse does not contain field %s", fd.FullName()))
-	}
-}
-
-// NewField returns a new value that is assignable to the field
-// for the given descriptor. For scalars, this returns the default value.
-// For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_QueryQuorumResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
-	switch fd.FullName() {
-	case "atomone.gov.v1.QueryQuorumResponse.quorum":
-		return protoreflect.ValueOfString("")
-	case "atomone.gov.v1.QueryQuorumResponse.constitution_amendment_quorum":
-		return protoreflect.ValueOfString("")
-	case "atomone.gov.v1.QueryQuorumResponse.law_quorum":
-		return protoreflect.ValueOfString("")
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QueryQuorumResponse"))
-		}
-		panic(fmt.Errorf("message atomone.gov.v1.QueryQuorumResponse does not contain field %s", fd.FullName()))
-	}
-}
-
-// WhichOneof reports which field within the oneof is populated,
-// returning nil if none are populated.
-// It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_QueryQuorumResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
-	switch d.FullName() {
-	default:
-		panic(fmt.Errorf("%s is not a oneof field in atomone.gov.v1.QueryQuorumResponse", d.FullName()))
-	}
-	panic("unreachable")
-}
-
-// GetUnknown retrieves the entire list of unknown fields.
-// The caller may only mutate the contents of the RawFields
-// if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_QueryQuorumResponse) GetUnknown() protoreflect.RawFields {
-	return x.unknownFields
-}
-
-// SetUnknown stores an entire list of unknown fields.
-// The raw fields must be syntactically valid according to the wire format.
-// An implementation may panic if this is not the case.
-// Once stored, the caller must not mutate the content of the RawFields.
-// An empty RawFields may be passed to clear the fields.
-//
-// SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryQuorumResponse) SetUnknown(fields protoreflect.RawFields) {
-	x.unknownFields = fields
-}
-
-// IsValid reports whether the message is valid.
-//
-// An invalid message is an empty, read-only value.
-//
-// An invalid message often corresponds to a nil pointer of the concrete
-// message type, but the details are implementation dependent.
-// Validity is not part of the protobuf data model, and may not
-// be preserved in marshaling or other operations.
-func (x *fastReflection_QueryQuorumResponse) IsValid() bool {
-	return x != nil
-}
-
-// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
-// This method may return nil.
-//
-// The returned methods type is identical to
-// "google.golang.org/protobuf/runtime/protoiface".Methods.
-// Consult the protoiface package documentation for details.
-func (x *fastReflection_QueryQuorumResponse) ProtoMethods() *protoiface.Methods {
-	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*QueryQuorumResponse)
-		if x == nil {
-			return protoiface.SizeOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Size:              0,
-			}
-		}
-		options := runtime.SizeInputToOptions(input)
-		_ = options
-		var n int
-		var l int
-		_ = l
-		l = len(x.Quorum)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		l = len(x.ConstitutionAmendmentQuorum)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		l = len(x.LawQuorum)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		if x.unknownFields != nil {
-			n += len(x.unknownFields)
-		}
-		return protoiface.SizeOutput{
-			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-			Size:              n,
-		}
-	}
-
-	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*QueryQuorumResponse)
-		if x == nil {
-			return protoiface.MarshalOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Buf:               input.Buf,
-			}, nil
-		}
-		options := runtime.MarshalInputToOptions(input)
-		_ = options
-		size := options.Size(x)
-		dAtA := make([]byte, size)
-		i := len(dAtA)
-		_ = i
-		var l int
-		_ = l
-		if x.unknownFields != nil {
-			i -= len(x.unknownFields)
-			copy(dAtA[i:], x.unknownFields)
-		}
-		if len(x.LawQuorum) > 0 {
-			i -= len(x.LawQuorum)
-			copy(dAtA[i:], x.LawQuorum)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.LawQuorum)))
-			i--
-			dAtA[i] = 0x1a
-		}
-		if len(x.ConstitutionAmendmentQuorum) > 0 {
-			i -= len(x.ConstitutionAmendmentQuorum)
-			copy(dAtA[i:], x.ConstitutionAmendmentQuorum)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.ConstitutionAmendmentQuorum)))
-			i--
-			dAtA[i] = 0x12
-		}
-		if len(x.Quorum) > 0 {
-			i -= len(x.Quorum)
-			copy(dAtA[i:], x.Quorum)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Quorum)))
-			i--
-			dAtA[i] = 0xa
-		}
-		if input.Buf != nil {
-			input.Buf = append(input.Buf, dAtA...)
-		} else {
-			input.Buf = dAtA
-		}
-		return protoiface.MarshalOutput{
-			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-			Buf:               input.Buf,
-		}, nil
-	}
-	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*QueryQuorumResponse)
-		if x == nil {
-			return protoiface.UnmarshalOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Flags:             input.Flags,
-			}, nil
-		}
-		options := runtime.UnmarshalInputToOptions(input)
-		_ = options
-		dAtA := input.Buf
-		l := len(dAtA)
-		iNdEx := 0
-		for iNdEx < l {
-			preIndex := iNdEx
-			var wire uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-				}
-				if iNdEx >= l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				wire |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			fieldNum := int32(wire >> 3)
-			wireType := int(wire & 0x7)
-			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryQuorumResponse: wiretype end group for non-group")
-			}
-			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryQuorumResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-			}
-			switch fieldNum {
-			case 1:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Quorum", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.Quorum = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 2:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ConstitutionAmendmentQuorum", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.ConstitutionAmendmentQuorum = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 3:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LawQuorum", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.LawQuorum = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			default:
-				iNdEx = preIndex
-				skippy, err := runtime.Skip(dAtA[iNdEx:])
-				if err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				if (skippy < 0) || (iNdEx+skippy) < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if (iNdEx + skippy) > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				if !options.DiscardUnknown {
-					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
-				}
-				iNdEx += skippy
-			}
-		}
-
-		if iNdEx > l {
-			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-		}
-		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
-	}
-	return &protoiface.Methods{
-		NoUnkeyedLiterals: struct{}{},
-		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
-		Size:              size,
-		Marshal:           marshal,
-		Unmarshal:         unmarshal,
-		Merge:             nil,
-		CheckInitialized:  nil,
-	}
-}
-
 // Since: cosmos-sdk 0.46
 
 // Code generated by protoc-gen-go. DO NOT EDIT.
@@ -11284,8 +8678,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// QueryConstitutionRequest is the request type for the Query/Constitution RPC
-// method
+// QueryConstitutionRequest is the request type for the Query/Constitution RPC method
 type QueryConstitutionRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -11312,8 +8705,7 @@ func (*QueryConstitutionRequest) Descriptor() ([]byte, []int) {
 	return file_atomone_gov_v1_query_proto_rawDescGZIP(), []int{0}
 }
 
-// QueryConstitutionResponse is the response type for the Query/Constitution RPC
-// method
+// QueryConstitutionResponse is the response type for the Query/Constitution RPC method
 type QueryConstitutionResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -12074,515 +9466,238 @@ func (x *QueryTallyResultResponse) GetTally() *TallyResult {
 	return nil
 }
 
-// QueryMinDepositRequest is the request type for the Query/MinDeposit RPC
-// method.
-type QueryMinDepositRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-}
-
-func (x *QueryMinDepositRequest) Reset() {
-	*x = QueryMinDepositRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_atomone_gov_v1_query_proto_msgTypes[18]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *QueryMinDepositRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*QueryMinDepositRequest) ProtoMessage() {}
-
-// Deprecated: Use QueryMinDepositRequest.ProtoReflect.Descriptor instead.
-func (*QueryMinDepositRequest) Descriptor() ([]byte, []int) {
-	return file_atomone_gov_v1_query_proto_rawDescGZIP(), []int{18}
-}
-
-// QueryMinDepositResponse is the response type for the Query/MinDeposit RPC
-// method.
-type QueryMinDepositResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	// min_deposit defines the minimum deposit required for a proposal to enter
-	// voting period.
-	MinDeposit []*v1beta11.Coin `protobuf:"bytes,1,rep,name=min_deposit,json=minDeposit,proto3" json:"min_deposit,omitempty"`
-}
-
-func (x *QueryMinDepositResponse) Reset() {
-	*x = QueryMinDepositResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_atomone_gov_v1_query_proto_msgTypes[19]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *QueryMinDepositResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*QueryMinDepositResponse) ProtoMessage() {}
-
-// Deprecated: Use QueryMinDepositResponse.ProtoReflect.Descriptor instead.
-func (*QueryMinDepositResponse) Descriptor() ([]byte, []int) {
-	return file_atomone_gov_v1_query_proto_rawDescGZIP(), []int{19}
-}
-
-func (x *QueryMinDepositResponse) GetMinDeposit() []*v1beta11.Coin {
-	if x != nil {
-		return x.MinDeposit
-	}
-	return nil
-}
-
-// QueryMinInitialDepositRequest is the request type for the
-// Query/MinInitialDeposit RPC method.
-type QueryMinInitialDepositRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-}
-
-func (x *QueryMinInitialDepositRequest) Reset() {
-	*x = QueryMinInitialDepositRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_atomone_gov_v1_query_proto_msgTypes[20]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *QueryMinInitialDepositRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*QueryMinInitialDepositRequest) ProtoMessage() {}
-
-// Deprecated: Use QueryMinInitialDepositRequest.ProtoReflect.Descriptor instead.
-func (*QueryMinInitialDepositRequest) Descriptor() ([]byte, []int) {
-	return file_atomone_gov_v1_query_proto_rawDescGZIP(), []int{20}
-}
-
-// QueryMinInitialDepositResponse is the response type for the
-// Query/MinInitialDeposit RPC method.
-type QueryMinInitialDepositResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	// min_initial_deposit defines the minimum initial deposit required for a
-	// proposal to be submitted.
-	MinInitialDeposit []*v1beta11.Coin `protobuf:"bytes,1,rep,name=min_initial_deposit,json=minInitialDeposit,proto3" json:"min_initial_deposit,omitempty"`
-}
-
-func (x *QueryMinInitialDepositResponse) Reset() {
-	*x = QueryMinInitialDepositResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_atomone_gov_v1_query_proto_msgTypes[21]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *QueryMinInitialDepositResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*QueryMinInitialDepositResponse) ProtoMessage() {}
-
-// Deprecated: Use QueryMinInitialDepositResponse.ProtoReflect.Descriptor instead.
-func (*QueryMinInitialDepositResponse) Descriptor() ([]byte, []int) {
-	return file_atomone_gov_v1_query_proto_rawDescGZIP(), []int{21}
-}
-
-func (x *QueryMinInitialDepositResponse) GetMinInitialDeposit() []*v1beta11.Coin {
-	if x != nil {
-		return x.MinInitialDeposit
-	}
-	return nil
-}
-
-// QueryQuorumRequest is the request type for the Query/Quorum RPC method.
-type QueryQuorumRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-}
-
-func (x *QueryQuorumRequest) Reset() {
-	*x = QueryQuorumRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_atomone_gov_v1_query_proto_msgTypes[22]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *QueryQuorumRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*QueryQuorumRequest) ProtoMessage() {}
-
-// Deprecated: Use QueryQuorumRequest.ProtoReflect.Descriptor instead.
-func (*QueryQuorumRequest) Descriptor() ([]byte, []int) {
-	return file_atomone_gov_v1_query_proto_rawDescGZIP(), []int{22}
-}
-
-// QueryQuorumResponse is the response type for the Query/Quorum RPC method.
-type QueryQuorumResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	// quorum defines the requested quorum.
-	Quorum string `protobuf:"bytes,1,opt,name=quorum,proto3" json:"quorum,omitempty"`
-	// constitution_amendment_quorum defines the requested quorum for
-	// constitution amendment proposals.
-	ConstitutionAmendmentQuorum string `protobuf:"bytes,2,opt,name=constitution_amendment_quorum,json=constitutionAmendmentQuorum,proto3" json:"constitution_amendment_quorum,omitempty"`
-	// law_quorum defines the requested quorum for law proposals.
-	LawQuorum string `protobuf:"bytes,3,opt,name=law_quorum,json=lawQuorum,proto3" json:"law_quorum,omitempty"`
-}
-
-func (x *QueryQuorumResponse) Reset() {
-	*x = QueryQuorumResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_atomone_gov_v1_query_proto_msgTypes[23]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *QueryQuorumResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*QueryQuorumResponse) ProtoMessage() {}
-
-// Deprecated: Use QueryQuorumResponse.ProtoReflect.Descriptor instead.
-func (*QueryQuorumResponse) Descriptor() ([]byte, []int) {
-	return file_atomone_gov_v1_query_proto_rawDescGZIP(), []int{23}
-}
-
-func (x *QueryQuorumResponse) GetQuorum() string {
-	if x != nil {
-		return x.Quorum
-	}
-	return ""
-}
-
-func (x *QueryQuorumResponse) GetConstitutionAmendmentQuorum() string {
-	if x != nil {
-		return x.ConstitutionAmendmentQuorum
-	}
-	return ""
-}
-
-func (x *QueryQuorumResponse) GetLawQuorum() string {
-	if x != nil {
-		return x.LawQuorum
-	}
-	return ""
-}
-
 var File_atomone_gov_v1_query_proto protoreflect.FileDescriptor
 
 var file_atomone_gov_v1_query_proto_rawDesc = []byte{
 	0x0a, 0x1a, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2f, 0x67, 0x6f, 0x76, 0x2f, 0x76, 0x31,
 	0x2f, 0x71, 0x75, 0x65, 0x72, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x0e, 0x61, 0x74,
-	0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x1a, 0x1e, 0x63, 0x6f,
-	0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x62, 0x61, 0x73, 0x65, 0x2f, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61,
-	0x31, 0x2f, 0x63, 0x6f, 0x69, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x14, 0x67, 0x6f,
-	0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x67, 0x6f, 0x67, 0x6f, 0x2e, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x1a, 0x2a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x62, 0x61, 0x73, 0x65, 0x2f,
-	0x71, 0x75, 0x65, 0x72, 0x79, 0x2f, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2f, 0x70, 0x61,
-	0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x1c,
-	0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x61, 0x6e, 0x6e, 0x6f, 0x74,
-	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x18, 0x61, 0x74,
-	0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2f, 0x67, 0x6f, 0x76, 0x2f, 0x76, 0x31, 0x2f, 0x67, 0x6f, 0x76,
-	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x19, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x5f, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x22, 0x1a, 0x0a, 0x18, 0x51, 0x75, 0x65, 0x72, 0x79, 0x43, 0x6f, 0x6e, 0x73, 0x74, 0x69,
-	0x74, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x3f, 0x0a,
-	0x19, 0x51, 0x75, 0x65, 0x72, 0x79, 0x43, 0x6f, 0x6e, 0x73, 0x74, 0x69, 0x74, 0x75, 0x74, 0x69,
-	0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x22, 0x0a, 0x0c, 0x63, 0x6f,
-	0x6e, 0x73, 0x74, 0x69, 0x74, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x0c, 0x63, 0x6f, 0x6e, 0x73, 0x74, 0x69, 0x74, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x37,
-	0x0a, 0x14, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x52,
-	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1f, 0x0a, 0x0b, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73,
-	0x61, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0a, 0x70, 0x72, 0x6f,
-	0x70, 0x6f, 0x73, 0x61, 0x6c, 0x49, 0x64, 0x22, 0x4d, 0x0a, 0x15, 0x51, 0x75, 0x65, 0x72, 0x79,
-	0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
-	0x12, 0x34, 0x0a, 0x08, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x0b, 0x32, 0x18, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76,
-	0x2e, 0x76, 0x31, 0x2e, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x52, 0x08, 0x70, 0x72,
-	0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x22, 0x90, 0x02, 0x0a, 0x15, 0x51, 0x75, 0x65, 0x72, 0x79,
-	0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x12, 0x47, 0x0a, 0x0f, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x5f, 0x73, 0x74, 0x61,
-	0x74, 0x75, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x1e, 0x2e, 0x61, 0x74, 0x6f, 0x6d,
-	0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x72, 0x6f, 0x70, 0x6f,
-	0x73, 0x61, 0x6c, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52, 0x0e, 0x70, 0x72, 0x6f, 0x70, 0x6f,
-	0x73, 0x61, 0x6c, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x2e, 0x0a, 0x05, 0x76, 0x6f, 0x74,
-	0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f,
-	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69,
-	0x6e, 0x67, 0x52, 0x05, 0x76, 0x6f, 0x74, 0x65, 0x72, 0x12, 0x36, 0x0a, 0x09, 0x64, 0x65, 0x70,
-	0x6f, 0x73, 0x69, 0x74, 0x6f, 0x72, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4,
+	0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x1a, 0x2a, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x62, 0x61, 0x73, 0x65, 0x2f, 0x71, 0x75, 0x65, 0x72, 0x79, 0x2f,
+	0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2f, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69,
+	0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x1c, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65,
+	0x2f, 0x61, 0x70, 0x69, 0x2f, 0x61, 0x6e, 0x6e, 0x6f, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73,
+	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x18, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2f,
+	0x67, 0x6f, 0x76, 0x2f, 0x76, 0x31, 0x2f, 0x67, 0x6f, 0x76, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x1a, 0x19, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x1a, 0x0a, 0x18, 0x51,
+	0x75, 0x65, 0x72, 0x79, 0x43, 0x6f, 0x6e, 0x73, 0x74, 0x69, 0x74, 0x75, 0x74, 0x69, 0x6f, 0x6e,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x3f, 0x0a, 0x19, 0x51, 0x75, 0x65, 0x72, 0x79,
+	0x43, 0x6f, 0x6e, 0x73, 0x74, 0x69, 0x74, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x22, 0x0a, 0x0c, 0x63, 0x6f, 0x6e, 0x73, 0x74, 0x69, 0x74, 0x75,
+	0x74, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x63, 0x6f, 0x6e, 0x73,
+	0x74, 0x69, 0x74, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x37, 0x0a, 0x14, 0x51, 0x75, 0x65, 0x72,
+	0x79, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x12, 0x1f, 0x0a, 0x0b, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x5f, 0x69, 0x64, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0a, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x49,
+	0x64, 0x22, 0x4d, 0x0a, 0x15, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73,
+	0x61, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x34, 0x0a, 0x08, 0x70, 0x72,
+	0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x61,
+	0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x72,
+	0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x52, 0x08, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c,
+	0x22, 0x90, 0x02, 0x0a, 0x15, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73,
+	0x61, 0x6c, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x47, 0x0a, 0x0f, 0x70, 0x72,
+	0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x5f, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x0e, 0x32, 0x1e, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f,
+	0x76, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x53, 0x74, 0x61,
+	0x74, 0x75, 0x73, 0x52, 0x0e, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x53, 0x74, 0x61,
+	0x74, 0x75, 0x73, 0x12, 0x2e, 0x0a, 0x05, 0x76, 0x6f, 0x74, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41,
+	0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x05, 0x76, 0x6f,
+	0x74, 0x65, 0x72, 0x12, 0x36, 0x0a, 0x09, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x6f, 0x72,
+	0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d,
+	0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67,
+	0x52, 0x09, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x6f, 0x72, 0x12, 0x46, 0x0a, 0x0a, 0x70,
+	0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x26, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x71, 0x75,
+	0x65, 0x72, 0x79, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x50, 0x61, 0x67, 0x65,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x52, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74,
+	0x69, 0x6f, 0x6e, 0x22, 0x99, 0x01, 0x0a, 0x16, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x72, 0x6f,
+	0x70, 0x6f, 0x73, 0x61, 0x6c, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x36,
+	0x0a, 0x09, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28,
+	0x0b, 0x32, 0x18, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e,
+	0x76, 0x31, 0x2e, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x52, 0x09, 0x70, 0x72, 0x6f,
+	0x70, 0x6f, 0x73, 0x61, 0x6c, 0x73, 0x12, 0x47, 0x0a, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x27, 0x2e, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x71, 0x75, 0x65, 0x72, 0x79, 0x2e, 0x76,
+	0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x50, 0x61, 0x67, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x52, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22,
+	0x63, 0x0a, 0x10, 0x51, 0x75, 0x65, 0x72, 0x79, 0x56, 0x6f, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x12, 0x1f, 0x0a, 0x0b, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x5f,
+	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0a, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73,
+	0x61, 0x6c, 0x49, 0x64, 0x12, 0x2e, 0x0a, 0x05, 0x76, 0x6f, 0x74, 0x65, 0x72, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e,
+	0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x05, 0x76,
+	0x6f, 0x74, 0x65, 0x72, 0x22, 0x3d, 0x0a, 0x11, 0x51, 0x75, 0x65, 0x72, 0x79, 0x56, 0x6f, 0x74,
+	0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x28, 0x0a, 0x04, 0x76, 0x6f, 0x74,
+	0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e,
+	0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x56, 0x6f, 0x74, 0x65, 0x52, 0x04, 0x76,
+	0x6f, 0x74, 0x65, 0x22, 0x7c, 0x0a, 0x11, 0x51, 0x75, 0x65, 0x72, 0x79, 0x56, 0x6f, 0x74, 0x65,
+	0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1f, 0x0a, 0x0b, 0x70, 0x72, 0x6f, 0x70,
+	0x6f, 0x73, 0x61, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0a, 0x70,
+	0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x49, 0x64, 0x12, 0x46, 0x0a, 0x0a, 0x70, 0x61, 0x67,
+	0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x26, 0x2e,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x71, 0x75, 0x65, 0x72,
+	0x79, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x50, 0x61, 0x67, 0x65, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x52, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x22, 0x89, 0x01, 0x0a, 0x12, 0x51, 0x75, 0x65, 0x72, 0x79, 0x56, 0x6f, 0x74, 0x65, 0x73,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x2a, 0x0a, 0x05, 0x76, 0x6f, 0x74, 0x65,
+	0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e,
+	0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x56, 0x6f, 0x74, 0x65, 0x52, 0x05, 0x76,
+	0x6f, 0x74, 0x65, 0x73, 0x12, 0x47, 0x0a, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69,
+	0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x27, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
+	0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x71, 0x75, 0x65, 0x72, 0x79, 0x2e, 0x76, 0x31, 0x62,
+	0x65, 0x74, 0x61, 0x31, 0x2e, 0x50, 0x61, 0x67, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x52, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x35, 0x0a,
+	0x12, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x12, 0x1f, 0x0a, 0x0b, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x5f, 0x74, 0x79,
+	0x70, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73,
+	0x54, 0x79, 0x70, 0x65, 0x22, 0x9a, 0x02, 0x0a, 0x13, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61,
+	0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x45, 0x0a, 0x0d,
+	0x76, 0x6f, 0x74, 0x69, 0x6e, 0x67, 0x5f, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f,
+	0x76, 0x2e, 0x76, 0x31, 0x2e, 0x56, 0x6f, 0x74, 0x69, 0x6e, 0x67, 0x50, 0x61, 0x72, 0x61, 0x6d,
+	0x73, 0x42, 0x02, 0x18, 0x01, 0x52, 0x0c, 0x76, 0x6f, 0x74, 0x69, 0x6e, 0x67, 0x50, 0x61, 0x72,
+	0x61, 0x6d, 0x73, 0x12, 0x48, 0x0a, 0x0e, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x5f, 0x70,
+	0x61, 0x72, 0x61, 0x6d, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1d, 0x2e, 0x61, 0x74,
+	0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x44, 0x65, 0x70,
+	0x6f, 0x73, 0x69, 0x74, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0x02, 0x18, 0x01, 0x52, 0x0d,
+	0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x42, 0x0a,
+	0x0c, 0x74, 0x61, 0x6c, 0x6c, 0x79, 0x5f, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f,
+	0x76, 0x2e, 0x76, 0x31, 0x2e, 0x54, 0x61, 0x6c, 0x6c, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73,
+	0x42, 0x02, 0x18, 0x01, 0x52, 0x0b, 0x74, 0x61, 0x6c, 0x6c, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d,
+	0x73, 0x12, 0x2e, 0x0a, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x18, 0x04, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x16, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e,
+	0x76, 0x31, 0x2e, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d,
+	0x73, 0x22, 0x6e, 0x0a, 0x13, 0x51, 0x75, 0x65, 0x72, 0x79, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69,
+	0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1f, 0x0a, 0x0b, 0x70, 0x72, 0x6f, 0x70,
+	0x6f, 0x73, 0x61, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0a, 0x70,
+	0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x49, 0x64, 0x12, 0x36, 0x0a, 0x09, 0x64, 0x65, 0x70,
+	0x6f, 0x73, 0x69, 0x74, 0x6f, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4,
 	0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73,
 	0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x09, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x6f,
-	0x72, 0x12, 0x46, 0x0a, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18,
-	0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x26, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62,
-	0x61, 0x73, 0x65, 0x2e, 0x71, 0x75, 0x65, 0x72, 0x79, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61,
-	0x31, 0x2e, 0x50, 0x61, 0x67, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x52, 0x0a, 0x70,
-	0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x99, 0x01, 0x0a, 0x16, 0x51, 0x75,
-	0x65, 0x72, 0x79, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x73, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x36, 0x0a, 0x09, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c,
-	0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e,
-	0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61,
-	0x6c, 0x52, 0x09, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x73, 0x12, 0x47, 0x0a, 0x0a,
+	0x72, 0x22, 0x49, 0x0a, 0x14, 0x51, 0x75, 0x65, 0x72, 0x79, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69,
+	0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x31, 0x0a, 0x07, 0x64, 0x65, 0x70,
+	0x6f, 0x73, 0x69, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x17, 0x2e, 0x61, 0x74, 0x6f,
+	0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x44, 0x65, 0x70, 0x6f,
+	0x73, 0x69, 0x74, 0x52, 0x07, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x22, 0x7f, 0x0a, 0x14,
+	0x51, 0x75, 0x65, 0x72, 0x79, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x73, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x12, 0x1f, 0x0a, 0x0b, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c,
+	0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0a, 0x70, 0x72, 0x6f, 0x70, 0x6f,
+	0x73, 0x61, 0x6c, 0x49, 0x64, 0x12, 0x46, 0x0a, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74,
+	0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x26, 0x2e, 0x63, 0x6f, 0x73, 0x6d,
+	0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x71, 0x75, 0x65, 0x72, 0x79, 0x2e, 0x76, 0x31,
+	0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x50, 0x61, 0x67, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x52, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x95, 0x01,
+	0x0a, 0x15, 0x51, 0x75, 0x65, 0x72, 0x79, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x73, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x33, 0x0a, 0x08, 0x64, 0x65, 0x70, 0x6f, 0x73,
+	0x69, 0x74, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x17, 0x2e, 0x61, 0x74, 0x6f, 0x6d,
+	0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x44, 0x65, 0x70, 0x6f, 0x73,
+	0x69, 0x74, 0x52, 0x08, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x73, 0x12, 0x47, 0x0a, 0x0a,
 	0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b,
 	0x32, 0x27, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x71,
 	0x75, 0x65, 0x72, 0x79, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x50, 0x61, 0x67,
 	0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x52, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e,
-	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x63, 0x0a, 0x10, 0x51, 0x75, 0x65, 0x72, 0x79, 0x56, 0x6f,
-	0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1f, 0x0a, 0x0b, 0x70, 0x72, 0x6f,
-	0x70, 0x6f, 0x73, 0x61, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0a,
-	0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x49, 0x64, 0x12, 0x2e, 0x0a, 0x05, 0x76, 0x6f,
-	0x74, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63,
-	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72,
-	0x69, 0x6e, 0x67, 0x52, 0x05, 0x76, 0x6f, 0x74, 0x65, 0x72, 0x22, 0x3d, 0x0a, 0x11, 0x51, 0x75,
-	0x65, 0x72, 0x79, 0x56, 0x6f, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
-	0x28, 0x0a, 0x04, 0x76, 0x6f, 0x74, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e,
-	0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x56,
-	0x6f, 0x74, 0x65, 0x52, 0x04, 0x76, 0x6f, 0x74, 0x65, 0x22, 0x7c, 0x0a, 0x11, 0x51, 0x75, 0x65,
-	0x72, 0x79, 0x56, 0x6f, 0x74, 0x65, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1f,
-	0x0a, 0x0b, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x04, 0x52, 0x0a, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x49, 0x64, 0x12,
-	0x46, 0x0a, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20,
-	0x01, 0x28, 0x0b, 0x32, 0x26, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73,
-	0x65, 0x2e, 0x71, 0x75, 0x65, 0x72, 0x79, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e,
-	0x50, 0x61, 0x67, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x52, 0x0a, 0x70, 0x61, 0x67,
-	0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x89, 0x01, 0x0a, 0x12, 0x51, 0x75, 0x65, 0x72,
-	0x79, 0x56, 0x6f, 0x74, 0x65, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x2a,
-	0x0a, 0x05, 0x76, 0x6f, 0x74, 0x65, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x14, 0x2e,
-	0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x56,
-	0x6f, 0x74, 0x65, 0x52, 0x05, 0x76, 0x6f, 0x74, 0x65, 0x73, 0x12, 0x47, 0x0a, 0x0a, 0x70, 0x61,
-	0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x27,
-	0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x71, 0x75, 0x65,
-	0x72, 0x79, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x50, 0x61, 0x67, 0x65, 0x52,
-	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x52, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74,
-	0x69, 0x6f, 0x6e, 0x22, 0x35, 0x0a, 0x12, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61,
-	0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1f, 0x0a, 0x0b, 0x70, 0x61, 0x72,
-	0x61, 0x6d, 0x73, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a,
-	0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x54, 0x79, 0x70, 0x65, 0x22, 0x9a, 0x02, 0x0a, 0x13, 0x51,
-	0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x12, 0x45, 0x0a, 0x0d, 0x76, 0x6f, 0x74, 0x69, 0x6e, 0x67, 0x5f, 0x70, 0x61, 0x72,
-	0x61, 0x6d, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x61, 0x74, 0x6f, 0x6d,
-	0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x56, 0x6f, 0x74, 0x69, 0x6e,
-	0x67, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0x02, 0x18, 0x01, 0x52, 0x0c, 0x76, 0x6f, 0x74,
-	0x69, 0x6e, 0x67, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x48, 0x0a, 0x0e, 0x64, 0x65, 0x70,
-	0x6f, 0x73, 0x69, 0x74, 0x5f, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28,
-	0x0b, 0x32, 0x1d, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e,
-	0x76, 0x31, 0x2e, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73,
-	0x42, 0x02, 0x18, 0x01, 0x52, 0x0d, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x50, 0x61, 0x72,
-	0x61, 0x6d, 0x73, 0x12, 0x42, 0x0a, 0x0c, 0x74, 0x61, 0x6c, 0x6c, 0x79, 0x5f, 0x70, 0x61, 0x72,
-	0x61, 0x6d, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x61, 0x74, 0x6f, 0x6d,
-	0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x54, 0x61, 0x6c, 0x6c, 0x79,
-	0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0x02, 0x18, 0x01, 0x52, 0x0b, 0x74, 0x61, 0x6c, 0x6c,
-	0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x2e, 0x0a, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d,
-	0x73, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x16, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e,
-	0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52,
-	0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x22, 0x6e, 0x0a, 0x13, 0x51, 0x75, 0x65, 0x72, 0x79,
-	0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1f,
-	0x0a, 0x0b, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x04, 0x52, 0x0a, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x49, 0x64, 0x12,
-	0x36, 0x0a, 0x09, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x6f, 0x72, 0x18, 0x02, 0x20, 0x01,
-	0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41,
-	0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x09, 0x64, 0x65,
-	0x70, 0x6f, 0x73, 0x69, 0x74, 0x6f, 0x72, 0x22, 0x49, 0x0a, 0x14, 0x51, 0x75, 0x65, 0x72, 0x79,
-	0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
-	0x31, 0x0a, 0x07, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b,
-	0x32, 0x17, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76,
-	0x31, 0x2e, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x52, 0x07, 0x64, 0x65, 0x70, 0x6f, 0x73,
-	0x69, 0x74, 0x22, 0x7f, 0x0a, 0x14, 0x51, 0x75, 0x65, 0x72, 0x79, 0x44, 0x65, 0x70, 0x6f, 0x73,
-	0x69, 0x74, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1f, 0x0a, 0x0b, 0x70, 0x72,
-	0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52,
-	0x0a, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x49, 0x64, 0x12, 0x46, 0x0a, 0x0a, 0x70,
-	0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32,
-	0x26, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x71, 0x75,
-	0x65, 0x72, 0x79, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x50, 0x61, 0x67, 0x65,
-	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x52, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74,
-	0x69, 0x6f, 0x6e, 0x22, 0x95, 0x01, 0x0a, 0x15, 0x51, 0x75, 0x65, 0x72, 0x79, 0x44, 0x65, 0x70,
-	0x6f, 0x73, 0x69, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x33, 0x0a,
-	0x08, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32,
-	0x17, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31,
-	0x2e, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x52, 0x08, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69,
-	0x74, 0x73, 0x12, 0x47, 0x0a, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x27, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e,
-	0x62, 0x61, 0x73, 0x65, 0x2e, 0x71, 0x75, 0x65, 0x72, 0x79, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74,
-	0x61, 0x31, 0x2e, 0x50, 0x61, 0x67, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x52,
-	0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x3a, 0x0a, 0x17, 0x51,
-	0x75, 0x65, 0x72, 0x79, 0x54, 0x61, 0x6c, 0x6c, 0x79, 0x52, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x52,
-	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1f, 0x0a, 0x0b, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73,
-	0x61, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0a, 0x70, 0x72, 0x6f,
-	0x70, 0x6f, 0x73, 0x61, 0x6c, 0x49, 0x64, 0x22, 0x4d, 0x0a, 0x18, 0x51, 0x75, 0x65, 0x72, 0x79,
-	0x54, 0x61, 0x6c, 0x6c, 0x79, 0x52, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x12, 0x31, 0x0a, 0x05, 0x74, 0x61, 0x6c, 0x6c, 0x79, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76,
-	0x2e, 0x76, 0x31, 0x2e, 0x54, 0x61, 0x6c, 0x6c, 0x79, 0x52, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x52,
-	0x05, 0x74, 0x61, 0x6c, 0x6c, 0x79, 0x22, 0x18, 0x0a, 0x16, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4d,
-	0x69, 0x6e, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x22, 0x5b, 0x0a, 0x17, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4d, 0x69, 0x6e, 0x44, 0x65, 0x70, 0x6f,
-	0x73, 0x69, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x40, 0x0a, 0x0b, 0x6d,
-	0x69, 0x6e, 0x5f, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b,
-	0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76,
-	0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f,
-	0x00, 0x52, 0x0a, 0x6d, 0x69, 0x6e, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x22, 0x1f, 0x0a,
-	0x1d, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4d, 0x69, 0x6e, 0x49, 0x6e, 0x69, 0x74, 0x69, 0x61, 0x6c,
-	0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x71,
-	0x0a, 0x1e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4d, 0x69, 0x6e, 0x49, 0x6e, 0x69, 0x74, 0x69, 0x61,
-	0x6c, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
-	0x12, 0x4f, 0x0a, 0x13, 0x6d, 0x69, 0x6e, 0x5f, 0x69, 0x6e, 0x69, 0x74, 0x69, 0x61, 0x6c, 0x5f,
-	0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e,
-	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65,
-	0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x11,
-	0x6d, 0x69, 0x6e, 0x49, 0x6e, 0x69, 0x74, 0x69, 0x61, 0x6c, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69,
-	0x74, 0x22, 0x14, 0x0a, 0x12, 0x51, 0x75, 0x65, 0x72, 0x79, 0x51, 0x75, 0x6f, 0x72, 0x75, 0x6d,
-	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0xc0, 0x01, 0x0a, 0x13, 0x51, 0x75, 0x65, 0x72,
-	0x79, 0x51, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
-	0x26, 0x0a, 0x06, 0x71, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42,
-	0x0e, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52,
-	0x06, 0x71, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x12, 0x52, 0x0a, 0x1d, 0x63, 0x6f, 0x6e, 0x73, 0x74,
-	0x69, 0x74, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x61, 0x6d, 0x65, 0x6e, 0x64, 0x6d, 0x65, 0x6e,
-	0x74, 0x5f, 0x71, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x0e,
-	0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x1b,
-	0x63, 0x6f, 0x6e, 0x73, 0x74, 0x69, 0x74, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x41, 0x6d, 0x65, 0x6e,
-	0x64, 0x6d, 0x65, 0x6e, 0x74, 0x51, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x12, 0x2d, 0x0a, 0x0a, 0x6c,
-	0x61, 0x77, 0x5f, 0x71, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42,
-	0x0e, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52,
-	0x09, 0x6c, 0x61, 0x77, 0x51, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x32, 0x9c, 0x0d, 0x0a, 0x05, 0x51,
-	0x75, 0x65, 0x72, 0x79, 0x12, 0x89, 0x01, 0x0a, 0x0c, 0x43, 0x6f, 0x6e, 0x73, 0x74, 0x69, 0x74,
-	0x75, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x28, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e,
+	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x3a, 0x0a, 0x17, 0x51, 0x75, 0x65, 0x72, 0x79, 0x54, 0x61,
+	0x6c, 0x6c, 0x79, 0x52, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x12, 0x1f, 0x0a, 0x0b, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x5f, 0x69, 0x64, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0a, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x49,
+	0x64, 0x22, 0x4d, 0x0a, 0x18, 0x51, 0x75, 0x65, 0x72, 0x79, 0x54, 0x61, 0x6c, 0x6c, 0x79, 0x52,
+	0x65, 0x73, 0x75, 0x6c, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x31, 0x0a,
+	0x05, 0x74, 0x61, 0x6c, 0x6c, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x61,
+	0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x54, 0x61,
+	0x6c, 0x6c, 0x79, 0x52, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x52, 0x05, 0x74, 0x61, 0x6c, 0x6c, 0x79,
+	0x32, 0xfe, 0x09, 0x0a, 0x05, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x89, 0x01, 0x0a, 0x0c, 0x43,
+	0x6f, 0x6e, 0x73, 0x74, 0x69, 0x74, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x28, 0x2e, 0x61, 0x74,
+	0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65,
+	0x72, 0x79, 0x43, 0x6f, 0x6e, 0x73, 0x74, 0x69, 0x74, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x29, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e,
 	0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x43, 0x6f, 0x6e, 0x73,
-	0x74, 0x69, 0x74, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
-	0x29, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31,
-	0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x43, 0x6f, 0x6e, 0x73, 0x74, 0x69, 0x74, 0x75, 0x74, 0x69,
-	0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x24, 0x82, 0xd3, 0xe4, 0x93,
-	0x02, 0x1e, 0x12, 0x1c, 0x2f, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2f, 0x67, 0x6f, 0x76,
-	0x2f, 0x76, 0x31, 0x2f, 0x63, 0x6f, 0x6e, 0x73, 0x74, 0x69, 0x74, 0x75, 0x74, 0x69, 0x6f, 0x6e,
-	0x12, 0x88, 0x01, 0x0a, 0x08, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x12, 0x24, 0x2e,
-	0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x51,
-	0x75, 0x65, 0x72, 0x79, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x52, 0x65, 0x71, 0x75,
-	0x65, 0x73, 0x74, 0x1a, 0x25, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f,
+	0x74, 0x69, 0x74, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x22, 0x24, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x1e, 0x12, 0x1c, 0x2f, 0x61, 0x74, 0x6f, 0x6d, 0x6f,
+	0x6e, 0x65, 0x2f, 0x67, 0x6f, 0x76, 0x2f, 0x76, 0x31, 0x2f, 0x63, 0x6f, 0x6e, 0x73, 0x74, 0x69,
+	0x74, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x88, 0x01, 0x0a, 0x08, 0x50, 0x72, 0x6f, 0x70, 0x6f,
+	0x73, 0x61, 0x6c, 0x12, 0x24, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f,
 	0x76, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73,
-	0x61, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2f, 0x82, 0xd3, 0xe4, 0x93,
-	0x02, 0x29, 0x12, 0x27, 0x2f, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2f, 0x67, 0x6f, 0x76,
-	0x2f, 0x76, 0x31, 0x2f, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x73, 0x2f, 0x7b, 0x70,
-	0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x5f, 0x69, 0x64, 0x7d, 0x12, 0x7d, 0x0a, 0x09, 0x50,
-	0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x73, 0x12, 0x25, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f,
-	0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50,
-	0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
-	0x26, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31,
-	0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x73, 0x52,
-	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x21, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x1b, 0x12,
-	0x19, 0x2f, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2f, 0x67, 0x6f, 0x76, 0x2f, 0x76, 0x31,
-	0x2f, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x73, 0x12, 0x8a, 0x01, 0x0a, 0x04, 0x56,
-	0x6f, 0x74, 0x65, 0x12, 0x20, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f,
-	0x76, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x56, 0x6f, 0x74, 0x65, 0x52, 0x65,
-	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x21, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e,
-	0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x56, 0x6f, 0x74, 0x65,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x3d, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x37,
-	0x12, 0x35, 0x2f, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2f, 0x67, 0x6f, 0x76, 0x2f, 0x76,
-	0x31, 0x2f, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x73, 0x2f, 0x7b, 0x70, 0x72, 0x6f,
-	0x70, 0x6f, 0x73, 0x61, 0x6c, 0x5f, 0x69, 0x64, 0x7d, 0x2f, 0x76, 0x6f, 0x74, 0x65, 0x73, 0x2f,
-	0x7b, 0x76, 0x6f, 0x74, 0x65, 0x72, 0x7d, 0x12, 0x85, 0x01, 0x0a, 0x05, 0x56, 0x6f, 0x74, 0x65,
-	0x73, 0x12, 0x21, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e,
-	0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x56, 0x6f, 0x74, 0x65, 0x73, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x1a, 0x22, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67,
-	0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x56, 0x6f, 0x74, 0x65, 0x73,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x35, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x2f,
-	0x12, 0x2d, 0x2f, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2f, 0x67, 0x6f, 0x76, 0x2f, 0x76,
-	0x31, 0x2f, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x73, 0x2f, 0x7b, 0x70, 0x72, 0x6f,
-	0x70, 0x6f, 0x73, 0x61, 0x6c, 0x5f, 0x69, 0x64, 0x7d, 0x2f, 0x76, 0x6f, 0x74, 0x65, 0x73, 0x12,
-	0x7f, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x22, 0x2e, 0x61, 0x74, 0x6f, 0x6d,
+	0x61, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x25, 0x2e, 0x61, 0x74, 0x6f, 0x6d,
 	0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79,
-	0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x23, 0x2e,
-	0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x51,
-	0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x22, 0x2c, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x26, 0x12, 0x24, 0x2f, 0x61, 0x74, 0x6f,
-	0x6d, 0x6f, 0x6e, 0x65, 0x2f, 0x67, 0x6f, 0x76, 0x2f, 0x76, 0x31, 0x2f, 0x70, 0x61, 0x72, 0x61,
-	0x6d, 0x73, 0x2f, 0x7b, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x7d,
-	0x12, 0x9a, 0x01, 0x0a, 0x07, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x12, 0x23, 0x2e, 0x61,
-	0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75,
-	0x65, 0x72, 0x79, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x1a, 0x24, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e,
-	0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x52,
-	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x44, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x3e, 0x12,
-	0x3c, 0x2f, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2f, 0x67, 0x6f, 0x76, 0x2f, 0x76, 0x31,
-	0x2f, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x73, 0x2f, 0x7b, 0x70, 0x72, 0x6f, 0x70,
-	0x6f, 0x73, 0x61, 0x6c, 0x5f, 0x69, 0x64, 0x7d, 0x2f, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74,
-	0x73, 0x2f, 0x7b, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x6f, 0x72, 0x7d, 0x12, 0x91, 0x01,
-	0x0a, 0x08, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x73, 0x12, 0x24, 0x2e, 0x61, 0x74, 0x6f,
+	0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x22, 0x2f, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x29, 0x12, 0x27, 0x2f, 0x61, 0x74, 0x6f, 0x6d, 0x6f,
+	0x6e, 0x65, 0x2f, 0x67, 0x6f, 0x76, 0x2f, 0x76, 0x31, 0x2f, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73,
+	0x61, 0x6c, 0x73, 0x2f, 0x7b, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x5f, 0x69, 0x64,
+	0x7d, 0x12, 0x7d, 0x0a, 0x09, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x73, 0x12, 0x25,
+	0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e,
+	0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x73, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x26, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e,
+	0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x72, 0x6f, 0x70,
+	0x6f, 0x73, 0x61, 0x6c, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x21, 0x82,
+	0xd3, 0xe4, 0x93, 0x02, 0x1b, 0x12, 0x19, 0x2f, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2f,
+	0x67, 0x6f, 0x76, 0x2f, 0x76, 0x31, 0x2f, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x73,
+	0x12, 0x8a, 0x01, 0x0a, 0x04, 0x56, 0x6f, 0x74, 0x65, 0x12, 0x20, 0x2e, 0x61, 0x74, 0x6f, 0x6d,
+	0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79,
+	0x56, 0x6f, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x21, 0x2e, 0x61, 0x74,
+	0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65,
+	0x72, 0x79, 0x56, 0x6f, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x3d,
+	0x82, 0xd3, 0xe4, 0x93, 0x02, 0x37, 0x12, 0x35, 0x2f, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65,
+	0x2f, 0x67, 0x6f, 0x76, 0x2f, 0x76, 0x31, 0x2f, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c,
+	0x73, 0x2f, 0x7b, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x5f, 0x69, 0x64, 0x7d, 0x2f,
+	0x76, 0x6f, 0x74, 0x65, 0x73, 0x2f, 0x7b, 0x76, 0x6f, 0x74, 0x65, 0x72, 0x7d, 0x12, 0x85, 0x01,
+	0x0a, 0x05, 0x56, 0x6f, 0x74, 0x65, 0x73, 0x12, 0x21, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e,
+	0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x56, 0x6f,
+	0x74, 0x65, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x22, 0x2e, 0x61, 0x74, 0x6f,
 	0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72,
-	0x79, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x1a, 0x25, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76,
+	0x79, 0x56, 0x6f, 0x74, 0x65, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x35,
+	0x82, 0xd3, 0xe4, 0x93, 0x02, 0x2f, 0x12, 0x2d, 0x2f, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65,
+	0x2f, 0x67, 0x6f, 0x76, 0x2f, 0x76, 0x31, 0x2f, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c,
+	0x73, 0x2f, 0x7b, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x5f, 0x69, 0x64, 0x7d, 0x2f,
+	0x76, 0x6f, 0x74, 0x65, 0x73, 0x12, 0x7f, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12,
+	0x22, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31,
+	0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x1a, 0x23, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f,
+	0x76, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2c, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x26,
+	0x12, 0x24, 0x2f, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2f, 0x67, 0x6f, 0x76, 0x2f, 0x76,
+	0x31, 0x2f, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x2f, 0x7b, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73,
+	0x5f, 0x74, 0x79, 0x70, 0x65, 0x7d, 0x12, 0x9a, 0x01, 0x0a, 0x07, 0x44, 0x65, 0x70, 0x6f, 0x73,
+	0x69, 0x74, 0x12, 0x23, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76,
+	0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x24, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e,
+	0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x44, 0x65,
+	0x70, 0x6f, 0x73, 0x69, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x44, 0x82,
+	0xd3, 0xe4, 0x93, 0x02, 0x3e, 0x12, 0x3c, 0x2f, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2f,
+	0x67, 0x6f, 0x76, 0x2f, 0x76, 0x31, 0x2f, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x73,
+	0x2f, 0x7b, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x5f, 0x69, 0x64, 0x7d, 0x2f, 0x64,
+	0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x73, 0x2f, 0x7b, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74,
+	0x6f, 0x72, 0x7d, 0x12, 0x91, 0x01, 0x0a, 0x08, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x73,
+	0x12, 0x24, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76,
 	0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x73, 0x52,
-	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x38, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x32, 0x12,
-	0x30, 0x2f, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2f, 0x67, 0x6f, 0x76, 0x2f, 0x76, 0x31,
-	0x2f, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x73, 0x2f, 0x7b, 0x70, 0x72, 0x6f, 0x70,
-	0x6f, 0x73, 0x61, 0x6c, 0x5f, 0x69, 0x64, 0x7d, 0x2f, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74,
-	0x73, 0x12, 0x97, 0x01, 0x0a, 0x0b, 0x54, 0x61, 0x6c, 0x6c, 0x79, 0x52, 0x65, 0x73, 0x75, 0x6c,
-	0x74, 0x12, 0x27, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e,
-	0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x54, 0x61, 0x6c, 0x6c, 0x79, 0x52, 0x65, 0x73,
-	0x75, 0x6c, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x28, 0x2e, 0x61, 0x74, 0x6f,
-	0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72,
-	0x79, 0x54, 0x61, 0x6c, 0x6c, 0x79, 0x52, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x35, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x2f, 0x12, 0x2d, 0x2f, 0x61,
-	0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2f, 0x67, 0x6f, 0x76, 0x2f, 0x76, 0x31, 0x2f, 0x70, 0x72,
-	0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x73, 0x2f, 0x7b, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61,
-	0x6c, 0x5f, 0x69, 0x64, 0x7d, 0x2f, 0x74, 0x61, 0x6c, 0x6c, 0x79, 0x12, 0x81, 0x01, 0x0a, 0x0a,
-	0x4d, 0x69, 0x6e, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x12, 0x26, 0x2e, 0x61, 0x74, 0x6f,
-	0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72,
-	0x79, 0x4d, 0x69, 0x6e, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x1a, 0x27, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76,
-	0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4d, 0x69, 0x6e, 0x44, 0x65, 0x70, 0x6f,
-	0x73, 0x69, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x22, 0x82, 0xd3, 0xe4,
-	0x93, 0x02, 0x1c, 0x12, 0x1a, 0x2f, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2f, 0x67, 0x6f,
-	0x76, 0x2f, 0x76, 0x31, 0x2f, 0x6d, 0x69, 0x6e, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x12,
-	0x9d, 0x01, 0x0a, 0x11, 0x4d, 0x69, 0x6e, 0x49, 0x6e, 0x69, 0x74, 0x69, 0x61, 0x6c, 0x44, 0x65,
-	0x70, 0x6f, 0x73, 0x69, 0x74, 0x12, 0x2d, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e,
-	0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4d, 0x69, 0x6e, 0x49,
-	0x6e, 0x69, 0x74, 0x69, 0x61, 0x6c, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x1a, 0x2e, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67,
-	0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4d, 0x69, 0x6e, 0x49, 0x6e,
-	0x69, 0x74, 0x69, 0x61, 0x6c, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x29, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x23, 0x12, 0x21, 0x2f, 0x61,
-	0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2f, 0x67, 0x6f, 0x76, 0x2f, 0x76, 0x31, 0x2f, 0x6d, 0x69,
-	0x6e, 0x69, 0x6e, 0x69, 0x74, 0x69, 0x61, 0x6c, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x12,
-	0x78, 0x0a, 0x06, 0x51, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x12, 0x22, 0x2e, 0x61, 0x74, 0x6f, 0x6d,
-	0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79,
-	0x51, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x23, 0x2e,
-	0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x51,
-	0x75, 0x65, 0x72, 0x79, 0x51, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x22, 0x25, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x1f, 0x12, 0x1d, 0x2f, 0x61, 0x74, 0x6f,
-	0x6d, 0x6f, 0x6e, 0x65, 0x2f, 0x67, 0x6f, 0x76, 0x2f, 0x76, 0x31, 0x2f, 0x70, 0x61, 0x72, 0x61,
-	0x6d, 0x73, 0x2f, 0x71, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x42, 0xa1, 0x01, 0x0a, 0x12, 0x63, 0x6f,
-	0x6d, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31,
-	0x42, 0x0a, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x25,
-	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x61, 0x70, 0x69,
-	0x2f, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2f, 0x67, 0x6f, 0x76, 0x2f, 0x76, 0x31, 0x3b,
-	0x67, 0x6f, 0x76, 0x76, 0x31, 0xa2, 0x02, 0x03, 0x41, 0x47, 0x58, 0xaa, 0x02, 0x0e, 0x41, 0x74,
-	0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x47, 0x6f, 0x76, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x0e, 0x41,
-	0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x5c, 0x47, 0x6f, 0x76, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x1a,
-	0x41, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x5c, 0x47, 0x6f, 0x76, 0x5c, 0x56, 0x31, 0x5c, 0x47,
-	0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x10, 0x41, 0x74, 0x6f,
-	0x6d, 0x6f, 0x6e, 0x65, 0x3a, 0x3a, 0x47, 0x6f, 0x76, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x25, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65,
+	0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x44, 0x65, 0x70,
+	0x6f, 0x73, 0x69, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x38, 0x82,
+	0xd3, 0xe4, 0x93, 0x02, 0x32, 0x12, 0x30, 0x2f, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2f,
+	0x67, 0x6f, 0x76, 0x2f, 0x76, 0x31, 0x2f, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x73,
+	0x2f, 0x7b, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x5f, 0x69, 0x64, 0x7d, 0x2f, 0x64,
+	0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x73, 0x12, 0x97, 0x01, 0x0a, 0x0b, 0x54, 0x61, 0x6c, 0x6c,
+	0x79, 0x52, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x12, 0x27, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e,
+	0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x54, 0x61,
+	0x6c, 0x6c, 0x79, 0x52, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x1a, 0x28, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76,
+	0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x54, 0x61, 0x6c, 0x6c, 0x79, 0x52, 0x65, 0x73, 0x75,
+	0x6c, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x35, 0x82, 0xd3, 0xe4, 0x93,
+	0x02, 0x2f, 0x12, 0x2d, 0x2f, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2f, 0x67, 0x6f, 0x76,
+	0x2f, 0x76, 0x31, 0x2f, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x73, 0x2f, 0x7b, 0x70,
+	0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x5f, 0x69, 0x64, 0x7d, 0x2f, 0x74, 0x61, 0x6c, 0x6c,
+	0x79, 0x42, 0xa1, 0x01, 0x0a, 0x12, 0x63, 0x6f, 0x6d, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e,
+	0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x42, 0x0a, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50,
+	0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x25, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64,
+	0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65,
+	0x2f, 0x67, 0x6f, 0x76, 0x2f, 0x76, 0x31, 0x3b, 0x67, 0x6f, 0x76, 0x76, 0x31, 0xa2, 0x02, 0x03,
+	0x41, 0x47, 0x58, 0xaa, 0x02, 0x0e, 0x41, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x47, 0x6f,
+	0x76, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x0e, 0x41, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x5c, 0x47,
+	0x6f, 0x76, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x1a, 0x41, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x5c,
+	0x47, 0x6f, 0x76, 0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61,
+	0x74, 0x61, 0xea, 0x02, 0x10, 0x41, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x3a, 0x3a, 0x47, 0x6f,
+	0x76, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -12597,95 +9712,80 @@ func file_atomone_gov_v1_query_proto_rawDescGZIP() []byte {
 	return file_atomone_gov_v1_query_proto_rawDescData
 }
 
-var file_atomone_gov_v1_query_proto_msgTypes = make([]protoimpl.MessageInfo, 24)
+var file_atomone_gov_v1_query_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
 var file_atomone_gov_v1_query_proto_goTypes = []interface{}{
-	(*QueryConstitutionRequest)(nil),       // 0: atomone.gov.v1.QueryConstitutionRequest
-	(*QueryConstitutionResponse)(nil),      // 1: atomone.gov.v1.QueryConstitutionResponse
-	(*QueryProposalRequest)(nil),           // 2: atomone.gov.v1.QueryProposalRequest
-	(*QueryProposalResponse)(nil),          // 3: atomone.gov.v1.QueryProposalResponse
-	(*QueryProposalsRequest)(nil),          // 4: atomone.gov.v1.QueryProposalsRequest
-	(*QueryProposalsResponse)(nil),         // 5: atomone.gov.v1.QueryProposalsResponse
-	(*QueryVoteRequest)(nil),               // 6: atomone.gov.v1.QueryVoteRequest
-	(*QueryVoteResponse)(nil),              // 7: atomone.gov.v1.QueryVoteResponse
-	(*QueryVotesRequest)(nil),              // 8: atomone.gov.v1.QueryVotesRequest
-	(*QueryVotesResponse)(nil),             // 9: atomone.gov.v1.QueryVotesResponse
-	(*QueryParamsRequest)(nil),             // 10: atomone.gov.v1.QueryParamsRequest
-	(*QueryParamsResponse)(nil),            // 11: atomone.gov.v1.QueryParamsResponse
-	(*QueryDepositRequest)(nil),            // 12: atomone.gov.v1.QueryDepositRequest
-	(*QueryDepositResponse)(nil),           // 13: atomone.gov.v1.QueryDepositResponse
-	(*QueryDepositsRequest)(nil),           // 14: atomone.gov.v1.QueryDepositsRequest
-	(*QueryDepositsResponse)(nil),          // 15: atomone.gov.v1.QueryDepositsResponse
-	(*QueryTallyResultRequest)(nil),        // 16: atomone.gov.v1.QueryTallyResultRequest
-	(*QueryTallyResultResponse)(nil),       // 17: atomone.gov.v1.QueryTallyResultResponse
-	(*QueryMinDepositRequest)(nil),         // 18: atomone.gov.v1.QueryMinDepositRequest
-	(*QueryMinDepositResponse)(nil),        // 19: atomone.gov.v1.QueryMinDepositResponse
-	(*QueryMinInitialDepositRequest)(nil),  // 20: atomone.gov.v1.QueryMinInitialDepositRequest
-	(*QueryMinInitialDepositResponse)(nil), // 21: atomone.gov.v1.QueryMinInitialDepositResponse
-	(*QueryQuorumRequest)(nil),             // 22: atomone.gov.v1.QueryQuorumRequest
-	(*QueryQuorumResponse)(nil),            // 23: atomone.gov.v1.QueryQuorumResponse
-	(*Proposal)(nil),                       // 24: atomone.gov.v1.Proposal
-	(ProposalStatus)(0),                    // 25: atomone.gov.v1.ProposalStatus
-	(*v1beta1.PageRequest)(nil),            // 26: cosmos.base.query.v1beta1.PageRequest
-	(*v1beta1.PageResponse)(nil),           // 27: cosmos.base.query.v1beta1.PageResponse
-	(*Vote)(nil),                           // 28: atomone.gov.v1.Vote
-	(*VotingParams)(nil),                   // 29: atomone.gov.v1.VotingParams
-	(*DepositParams)(nil),                  // 30: atomone.gov.v1.DepositParams
-	(*TallyParams)(nil),                    // 31: atomone.gov.v1.TallyParams
-	(*Params)(nil),                         // 32: atomone.gov.v1.Params
-	(*Deposit)(nil),                        // 33: atomone.gov.v1.Deposit
-	(*TallyResult)(nil),                    // 34: atomone.gov.v1.TallyResult
-	(*v1beta11.Coin)(nil),                  // 35: cosmos.base.v1beta1.Coin
+	(*QueryConstitutionRequest)(nil),  // 0: atomone.gov.v1.QueryConstitutionRequest
+	(*QueryConstitutionResponse)(nil), // 1: atomone.gov.v1.QueryConstitutionResponse
+	(*QueryProposalRequest)(nil),      // 2: atomone.gov.v1.QueryProposalRequest
+	(*QueryProposalResponse)(nil),     // 3: atomone.gov.v1.QueryProposalResponse
+	(*QueryProposalsRequest)(nil),     // 4: atomone.gov.v1.QueryProposalsRequest
+	(*QueryProposalsResponse)(nil),    // 5: atomone.gov.v1.QueryProposalsResponse
+	(*QueryVoteRequest)(nil),          // 6: atomone.gov.v1.QueryVoteRequest
+	(*QueryVoteResponse)(nil),         // 7: atomone.gov.v1.QueryVoteResponse
+	(*QueryVotesRequest)(nil),         // 8: atomone.gov.v1.QueryVotesRequest
+	(*QueryVotesResponse)(nil),        // 9: atomone.gov.v1.QueryVotesResponse
+	(*QueryParamsRequest)(nil),        // 10: atomone.gov.v1.QueryParamsRequest
+	(*QueryParamsResponse)(nil),       // 11: atomone.gov.v1.QueryParamsResponse
+	(*QueryDepositRequest)(nil),       // 12: atomone.gov.v1.QueryDepositRequest
+	(*QueryDepositResponse)(nil),      // 13: atomone.gov.v1.QueryDepositResponse
+	(*QueryDepositsRequest)(nil),      // 14: atomone.gov.v1.QueryDepositsRequest
+	(*QueryDepositsResponse)(nil),     // 15: atomone.gov.v1.QueryDepositsResponse
+	(*QueryTallyResultRequest)(nil),   // 16: atomone.gov.v1.QueryTallyResultRequest
+	(*QueryTallyResultResponse)(nil),  // 17: atomone.gov.v1.QueryTallyResultResponse
+	(*Proposal)(nil),                  // 18: atomone.gov.v1.Proposal
+	(ProposalStatus)(0),               // 19: atomone.gov.v1.ProposalStatus
+	(*v1beta1.PageRequest)(nil),       // 20: cosmos.base.query.v1beta1.PageRequest
+	(*v1beta1.PageResponse)(nil),      // 21: cosmos.base.query.v1beta1.PageResponse
+	(*Vote)(nil),                      // 22: atomone.gov.v1.Vote
+	(*VotingParams)(nil),              // 23: atomone.gov.v1.VotingParams
+	(*DepositParams)(nil),             // 24: atomone.gov.v1.DepositParams
+	(*TallyParams)(nil),               // 25: atomone.gov.v1.TallyParams
+	(*Params)(nil),                    // 26: atomone.gov.v1.Params
+	(*Deposit)(nil),                   // 27: atomone.gov.v1.Deposit
+	(*TallyResult)(nil),               // 28: atomone.gov.v1.TallyResult
 }
 var file_atomone_gov_v1_query_proto_depIdxs = []int32{
-	24, // 0: atomone.gov.v1.QueryProposalResponse.proposal:type_name -> atomone.gov.v1.Proposal
-	25, // 1: atomone.gov.v1.QueryProposalsRequest.proposal_status:type_name -> atomone.gov.v1.ProposalStatus
-	26, // 2: atomone.gov.v1.QueryProposalsRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
-	24, // 3: atomone.gov.v1.QueryProposalsResponse.proposals:type_name -> atomone.gov.v1.Proposal
-	27, // 4: atomone.gov.v1.QueryProposalsResponse.pagination:type_name -> cosmos.base.query.v1beta1.PageResponse
-	28, // 5: atomone.gov.v1.QueryVoteResponse.vote:type_name -> atomone.gov.v1.Vote
-	26, // 6: atomone.gov.v1.QueryVotesRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
-	28, // 7: atomone.gov.v1.QueryVotesResponse.votes:type_name -> atomone.gov.v1.Vote
-	27, // 8: atomone.gov.v1.QueryVotesResponse.pagination:type_name -> cosmos.base.query.v1beta1.PageResponse
-	29, // 9: atomone.gov.v1.QueryParamsResponse.voting_params:type_name -> atomone.gov.v1.VotingParams
-	30, // 10: atomone.gov.v1.QueryParamsResponse.deposit_params:type_name -> atomone.gov.v1.DepositParams
-	31, // 11: atomone.gov.v1.QueryParamsResponse.tally_params:type_name -> atomone.gov.v1.TallyParams
-	32, // 12: atomone.gov.v1.QueryParamsResponse.params:type_name -> atomone.gov.v1.Params
-	33, // 13: atomone.gov.v1.QueryDepositResponse.deposit:type_name -> atomone.gov.v1.Deposit
-	26, // 14: atomone.gov.v1.QueryDepositsRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
-	33, // 15: atomone.gov.v1.QueryDepositsResponse.deposits:type_name -> atomone.gov.v1.Deposit
-	27, // 16: atomone.gov.v1.QueryDepositsResponse.pagination:type_name -> cosmos.base.query.v1beta1.PageResponse
-	34, // 17: atomone.gov.v1.QueryTallyResultResponse.tally:type_name -> atomone.gov.v1.TallyResult
-	35, // 18: atomone.gov.v1.QueryMinDepositResponse.min_deposit:type_name -> cosmos.base.v1beta1.Coin
-	35, // 19: atomone.gov.v1.QueryMinInitialDepositResponse.min_initial_deposit:type_name -> cosmos.base.v1beta1.Coin
-	0,  // 20: atomone.gov.v1.Query.Constitution:input_type -> atomone.gov.v1.QueryConstitutionRequest
-	2,  // 21: atomone.gov.v1.Query.Proposal:input_type -> atomone.gov.v1.QueryProposalRequest
-	4,  // 22: atomone.gov.v1.Query.Proposals:input_type -> atomone.gov.v1.QueryProposalsRequest
-	6,  // 23: atomone.gov.v1.Query.Vote:input_type -> atomone.gov.v1.QueryVoteRequest
-	8,  // 24: atomone.gov.v1.Query.Votes:input_type -> atomone.gov.v1.QueryVotesRequest
-	10, // 25: atomone.gov.v1.Query.Params:input_type -> atomone.gov.v1.QueryParamsRequest
-	12, // 26: atomone.gov.v1.Query.Deposit:input_type -> atomone.gov.v1.QueryDepositRequest
-	14, // 27: atomone.gov.v1.Query.Deposits:input_type -> atomone.gov.v1.QueryDepositsRequest
-	16, // 28: atomone.gov.v1.Query.TallyResult:input_type -> atomone.gov.v1.QueryTallyResultRequest
-	18, // 29: atomone.gov.v1.Query.MinDeposit:input_type -> atomone.gov.v1.QueryMinDepositRequest
-	20, // 30: atomone.gov.v1.Query.MinInitialDeposit:input_type -> atomone.gov.v1.QueryMinInitialDepositRequest
-	22, // 31: atomone.gov.v1.Query.Quorum:input_type -> atomone.gov.v1.QueryQuorumRequest
-	1,  // 32: atomone.gov.v1.Query.Constitution:output_type -> atomone.gov.v1.QueryConstitutionResponse
-	3,  // 33: atomone.gov.v1.Query.Proposal:output_type -> atomone.gov.v1.QueryProposalResponse
-	5,  // 34: atomone.gov.v1.Query.Proposals:output_type -> atomone.gov.v1.QueryProposalsResponse
-	7,  // 35: atomone.gov.v1.Query.Vote:output_type -> atomone.gov.v1.QueryVoteResponse
-	9,  // 36: atomone.gov.v1.Query.Votes:output_type -> atomone.gov.v1.QueryVotesResponse
-	11, // 37: atomone.gov.v1.Query.Params:output_type -> atomone.gov.v1.QueryParamsResponse
-	13, // 38: atomone.gov.v1.Query.Deposit:output_type -> atomone.gov.v1.QueryDepositResponse
-	15, // 39: atomone.gov.v1.Query.Deposits:output_type -> atomone.gov.v1.QueryDepositsResponse
-	17, // 40: atomone.gov.v1.Query.TallyResult:output_type -> atomone.gov.v1.QueryTallyResultResponse
-	19, // 41: atomone.gov.v1.Query.MinDeposit:output_type -> atomone.gov.v1.QueryMinDepositResponse
-	21, // 42: atomone.gov.v1.Query.MinInitialDeposit:output_type -> atomone.gov.v1.QueryMinInitialDepositResponse
-	23, // 43: atomone.gov.v1.Query.Quorum:output_type -> atomone.gov.v1.QueryQuorumResponse
-	32, // [32:44] is the sub-list for method output_type
-	20, // [20:32] is the sub-list for method input_type
-	20, // [20:20] is the sub-list for extension type_name
-	20, // [20:20] is the sub-list for extension extendee
-	0,  // [0:20] is the sub-list for field type_name
+	18, // 0: atomone.gov.v1.QueryProposalResponse.proposal:type_name -> atomone.gov.v1.Proposal
+	19, // 1: atomone.gov.v1.QueryProposalsRequest.proposal_status:type_name -> atomone.gov.v1.ProposalStatus
+	20, // 2: atomone.gov.v1.QueryProposalsRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
+	18, // 3: atomone.gov.v1.QueryProposalsResponse.proposals:type_name -> atomone.gov.v1.Proposal
+	21, // 4: atomone.gov.v1.QueryProposalsResponse.pagination:type_name -> cosmos.base.query.v1beta1.PageResponse
+	22, // 5: atomone.gov.v1.QueryVoteResponse.vote:type_name -> atomone.gov.v1.Vote
+	20, // 6: atomone.gov.v1.QueryVotesRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
+	22, // 7: atomone.gov.v1.QueryVotesResponse.votes:type_name -> atomone.gov.v1.Vote
+	21, // 8: atomone.gov.v1.QueryVotesResponse.pagination:type_name -> cosmos.base.query.v1beta1.PageResponse
+	23, // 9: atomone.gov.v1.QueryParamsResponse.voting_params:type_name -> atomone.gov.v1.VotingParams
+	24, // 10: atomone.gov.v1.QueryParamsResponse.deposit_params:type_name -> atomone.gov.v1.DepositParams
+	25, // 11: atomone.gov.v1.QueryParamsResponse.tally_params:type_name -> atomone.gov.v1.TallyParams
+	26, // 12: atomone.gov.v1.QueryParamsResponse.params:type_name -> atomone.gov.v1.Params
+	27, // 13: atomone.gov.v1.QueryDepositResponse.deposit:type_name -> atomone.gov.v1.Deposit
+	20, // 14: atomone.gov.v1.QueryDepositsRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
+	27, // 15: atomone.gov.v1.QueryDepositsResponse.deposits:type_name -> atomone.gov.v1.Deposit
+	21, // 16: atomone.gov.v1.QueryDepositsResponse.pagination:type_name -> cosmos.base.query.v1beta1.PageResponse
+	28, // 17: atomone.gov.v1.QueryTallyResultResponse.tally:type_name -> atomone.gov.v1.TallyResult
+	0,  // 18: atomone.gov.v1.Query.Constitution:input_type -> atomone.gov.v1.QueryConstitutionRequest
+	2,  // 19: atomone.gov.v1.Query.Proposal:input_type -> atomone.gov.v1.QueryProposalRequest
+	4,  // 20: atomone.gov.v1.Query.Proposals:input_type -> atomone.gov.v1.QueryProposalsRequest
+	6,  // 21: atomone.gov.v1.Query.Vote:input_type -> atomone.gov.v1.QueryVoteRequest
+	8,  // 22: atomone.gov.v1.Query.Votes:input_type -> atomone.gov.v1.QueryVotesRequest
+	10, // 23: atomone.gov.v1.Query.Params:input_type -> atomone.gov.v1.QueryParamsRequest
+	12, // 24: atomone.gov.v1.Query.Deposit:input_type -> atomone.gov.v1.QueryDepositRequest
+	14, // 25: atomone.gov.v1.Query.Deposits:input_type -> atomone.gov.v1.QueryDepositsRequest
+	16, // 26: atomone.gov.v1.Query.TallyResult:input_type -> atomone.gov.v1.QueryTallyResultRequest
+	1,  // 27: atomone.gov.v1.Query.Constitution:output_type -> atomone.gov.v1.QueryConstitutionResponse
+	3,  // 28: atomone.gov.v1.Query.Proposal:output_type -> atomone.gov.v1.QueryProposalResponse
+	5,  // 29: atomone.gov.v1.Query.Proposals:output_type -> atomone.gov.v1.QueryProposalsResponse
+	7,  // 30: atomone.gov.v1.Query.Vote:output_type -> atomone.gov.v1.QueryVoteResponse
+	9,  // 31: atomone.gov.v1.Query.Votes:output_type -> atomone.gov.v1.QueryVotesResponse
+	11, // 32: atomone.gov.v1.Query.Params:output_type -> atomone.gov.v1.QueryParamsResponse
+	13, // 33: atomone.gov.v1.Query.Deposit:output_type -> atomone.gov.v1.QueryDepositResponse
+	15, // 34: atomone.gov.v1.Query.Deposits:output_type -> atomone.gov.v1.QueryDepositsResponse
+	17, // 35: atomone.gov.v1.Query.TallyResult:output_type -> atomone.gov.v1.QueryTallyResultResponse
+	27, // [27:36] is the sub-list for method output_type
+	18, // [18:27] is the sub-list for method input_type
+	18, // [18:18] is the sub-list for extension type_name
+	18, // [18:18] is the sub-list for extension extendee
+	0,  // [0:18] is the sub-list for field type_name
 }
 
 func init() { file_atomone_gov_v1_query_proto_init() }
@@ -12911,78 +10011,6 @@ func file_atomone_gov_v1_query_proto_init() {
 				return nil
 			}
 		}
-		file_atomone_gov_v1_query_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryMinDepositRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_atomone_gov_v1_query_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryMinDepositResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_atomone_gov_v1_query_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryMinInitialDepositRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_atomone_gov_v1_query_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryMinInitialDepositResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_atomone_gov_v1_query_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryQuorumRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_atomone_gov_v1_query_proto_msgTypes[23].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryQuorumResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -12990,7 +10018,7 @@ func file_atomone_gov_v1_query_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_atomone_gov_v1_query_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   24,
+			NumMessages:   18,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

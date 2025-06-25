@@ -15,8 +15,7 @@ service Query {
     option (google.api.http).get = "/atomone/photon/v1/params";
   }
   // ConversionRate queries the photon's conversion rate
-  rpc ConversionRate(QueryConversionRateRequest)
-      returns (QueryConversionRateResponse) {
+  rpc ConversionRate(QueryConversionRateRequest) returns (QueryConversionRateResponse) {
     option (google.api.http).get = "/atomone/photon/v1/conversion_rate";
   }
 }
@@ -30,13 +29,11 @@ message QueryParamsResponse {
   Params params = 1 [ (gogoproto.nullable) = false ];
 }
 
-// QueryConversionRateRequest is request type for the Query/ConversionRate RPC
-// method.
+// QueryConversionRateRequest is request type for the Query/ConversionRate RPC method.
 message QueryConversionRateRequest {}
 
-// QueryConversionRateResponse is response type for the Query/ConversionRate RPC
-// method.
+// QueryConversionRateResponse is response type for the Query/ConversionRate RPC method.
 message QueryConversionRateResponse {
-  // conversion_rate represents the factor used to convert atone to photon.
+	// conversion_rate represents the factor used to convert atone to photon.
   string conversion_rate = 1 [ (cosmos_proto.scalar) = "cosmos.Dec" ];
 }

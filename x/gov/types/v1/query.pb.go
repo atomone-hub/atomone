@@ -32,8 +32,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// QueryConstitutionRequest is the request type for the Query/Constitution RPC
-// method
+// QueryConstitutionRequest is the request type for the Query/Constitution RPC method
 type QueryConstitutionRequest struct {
 }
 
@@ -70,8 +69,7 @@ func (m *QueryConstitutionRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryConstitutionRequest proto.InternalMessageInfo
 
-// QueryConstitutionResponse is the response type for the Query/Constitution RPC
-// method
+// QueryConstitutionResponse is the response type for the Query/Constitution RPC method
 type QueryConstitutionResponse struct {
 	Constitution string `protobuf:"bytes,1,opt,name=constitution,proto3" json:"constitution,omitempty"`
 }
@@ -979,8 +977,7 @@ func (m *QueryTallyResultResponse) GetTally() *TallyResult {
 	return nil
 }
 
-// QueryMinDepositRequest is the request type for the Query/MinDeposit RPC
-// method.
+// QueryMinDepositRequest is the request type for the Query/MinDeposit RPC method.
 type QueryMinDepositRequest struct {
 }
 
@@ -1017,11 +1014,9 @@ func (m *QueryMinDepositRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryMinDepositRequest proto.InternalMessageInfo
 
-// QueryMinDepositResponse is the response type for the Query/MinDeposit RPC
-// method.
+// QueryMinDepositResponse is the response type for the Query/MinDeposit RPC method.
 type QueryMinDepositResponse struct {
-	// min_deposit defines the minimum deposit required for a proposal to enter
-	// voting period.
+	// min_deposit defines the minimum deposit required for a proposal to enter voting period.
 	MinDeposit []types.Coin `protobuf:"bytes,1,rep,name=min_deposit,json=minDeposit,proto3" json:"min_deposit"`
 }
 
@@ -1065,8 +1060,7 @@ func (m *QueryMinDepositResponse) GetMinDeposit() []types.Coin {
 	return nil
 }
 
-// QueryMinInitialDepositRequest is the request type for the
-// Query/MinInitialDeposit RPC method.
+// QueryMinInitialDepositRequest is the request type for the Query/MinInitialDeposit RPC method.
 type QueryMinInitialDepositRequest struct {
 }
 
@@ -1103,11 +1097,9 @@ func (m *QueryMinInitialDepositRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryMinInitialDepositRequest proto.InternalMessageInfo
 
-// QueryMinInitialDepositResponse is the response type for the
-// Query/MinInitialDeposit RPC method.
+// QueryMinInitialDepositResponse is the response type for the Query/MinInitialDeposit RPC method.
 type QueryMinInitialDepositResponse struct {
-	// min_initial_deposit defines the minimum initial deposit required for a
-	// proposal to be submitted.
+	// min_initial_deposit defines the minimum initial deposit required for a proposal to be submitted.
 	MinInitialDeposit []types.Coin `protobuf:"bytes,1,rep,name=min_initial_deposit,json=minInitialDeposit,proto3" json:"min_initial_deposit"`
 }
 
