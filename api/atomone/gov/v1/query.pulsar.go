@@ -11284,7 +11284,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// QueryConstitutionRequest is the request type for the Query/Constitution RPC method
+// QueryConstitutionRequest is the request type for the Query/Constitution RPC
+// method
 type QueryConstitutionRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -11311,7 +11312,8 @@ func (*QueryConstitutionRequest) Descriptor() ([]byte, []int) {
 	return file_atomone_gov_v1_query_proto_rawDescGZIP(), []int{0}
 }
 
-// QueryConstitutionResponse is the response type for the Query/Constitution RPC method
+// QueryConstitutionResponse is the response type for the Query/Constitution RPC
+// method
 type QueryConstitutionResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -12072,7 +12074,8 @@ func (x *QueryTallyResultResponse) GetTally() *TallyResult {
 	return nil
 }
 
-// QueryMinDepositRequest is the request type for the Query/MinDeposit RPC method.
+// QueryMinDepositRequest is the request type for the Query/MinDeposit RPC
+// method.
 type QueryMinDepositRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -12099,13 +12102,15 @@ func (*QueryMinDepositRequest) Descriptor() ([]byte, []int) {
 	return file_atomone_gov_v1_query_proto_rawDescGZIP(), []int{18}
 }
 
-// QueryMinDepositResponse is the response type for the Query/MinDeposit RPC method.
+// QueryMinDepositResponse is the response type for the Query/MinDeposit RPC
+// method.
 type QueryMinDepositResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// min_deposit defines the minimum deposit required for a proposal to enter voting period.
+	// min_deposit defines the minimum deposit required for a proposal to enter
+	// voting period.
 	MinDeposit []*v1beta11.Coin `protobuf:"bytes,1,rep,name=min_deposit,json=minDeposit,proto3" json:"min_deposit,omitempty"`
 }
 
@@ -12136,7 +12141,8 @@ func (x *QueryMinDepositResponse) GetMinDeposit() []*v1beta11.Coin {
 	return nil
 }
 
-// QueryMinInitialDepositRequest is the request type for the Query/MinInitialDeposit RPC method.
+// QueryMinInitialDepositRequest is the request type for the
+// Query/MinInitialDeposit RPC method.
 type QueryMinInitialDepositRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -12163,13 +12169,15 @@ func (*QueryMinInitialDepositRequest) Descriptor() ([]byte, []int) {
 	return file_atomone_gov_v1_query_proto_rawDescGZIP(), []int{20}
 }
 
-// QueryMinInitialDepositResponse is the response type for the Query/MinInitialDeposit RPC method.
+// QueryMinInitialDepositResponse is the response type for the
+// Query/MinInitialDeposit RPC method.
 type QueryMinInitialDepositResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// min_initial_deposit defines the minimum initial deposit required for a proposal to be submitted.
+	// min_initial_deposit defines the minimum initial deposit required for a
+	// proposal to be submitted.
 	MinInitialDeposit []*v1beta11.Coin `protobuf:"bytes,1,rep,name=min_initial_deposit,json=minInitialDeposit,proto3" json:"min_initial_deposit,omitempty"`
 }
 

@@ -14,6 +14,9 @@ import (
 func CreateValidator(pk cryptotypes.PubKey, stake math.Int) (stakingtypes.Validator, error) {
 	valConsAddr := sdk.GetConsAddress(pk)
 	val, err := stakingtypes.NewValidator(sdk.ValAddress(valConsAddr).String(), pk, stakingtypes.Description{Moniker: "TestValidator"})
+	if err != nil {
+		return val, err
+	}
 	val.Tokens = stake
 	val.DelegatorShares = math.LegacyNewDecFromInt(val.Tokens)
 	return val, err
@@ -94,16 +97,16 @@ func SlashValidator(
 			panic(err)
 		}
 	}
-	// Deduct from validator's bonded tokens and update the validator.
+	// Deduct from the validator's bonded tokens and update the validator.
 	// Burn the slashed tokens from the pool account and decrease the total supply.
 	validator.Tokens = validator.Tokens.Sub(tokensToBurn)
 
 	return tokensToBurn
 }
 
-// Delegate imitate what x/staking Delegate does. It should be used for testing only.
-// If a delegation is passed we are simulating an update to a previous delegation,
-// if it's nil then we simulate a new delegation.
+// Delegate imitates what x/staking Delegate does. It should be used for testing only.
+// If a delegation is passed, we are simulating an update to a previous delegation,
+// if it's nil, then we simulate a new delegation.
 func Delegate(
 	ctx sdk.Context,
 	distrKeeper keeper.Keeper,

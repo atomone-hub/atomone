@@ -2,14 +2,13 @@ package distribution
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
-
 	modulev1 "cosmossdk.io/api/cosmos/distribution/module/v1"
 	"cosmossdk.io/core/address"
 	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/depinject"
+	"encoding/json"
+	"fmt"
 	sdkclient "github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
@@ -155,8 +154,7 @@ func (AppModule) ConsensusVersion() uint64 { return ConsensusVersion }
 
 // BeginBlock returns the begin blocker for the distribution module.
 func (am AppModule) BeginBlock(ctx context.Context) error {
-	c := sdk.UnwrapSDKContext(ctx)
-	return BeginBlocker(c, am.keeper)
+	return am.keeper.BeginBlocker(ctx)
 }
 
 // AppModuleSimulation functions
@@ -204,6 +202,7 @@ type ModuleInputs struct {
 	AccountKeeper types.AccountKeeper
 	BankKeeper    types.BankKeeper
 	StakingKeeper types.StakingKeeper
+	MintKeeper    types.MintKeeper
 }
 
 type ModuleOutputs struct {
@@ -232,6 +231,7 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		in.AccountKeeper,
 		in.BankKeeper,
 		in.StakingKeeper,
+		in.MintKeeper.(types.MintQueryServer),
 		feeCollectorName,
 		authority.String(),
 	)

@@ -39,7 +39,8 @@ const (
 type QueryClient interface {
 	// Params queries params of the distribution module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
-	// ValidatorDistributionInfo queries validator commission and self-delegation rewards for validator
+	// ValidatorDistributionInfo queries validator commission and self-delegation
+	// rewards for validator
 	ValidatorDistributionInfo(ctx context.Context, in *QueryValidatorDistributionInfoRequest, opts ...grpc.CallOption) (*QueryValidatorDistributionInfoResponse, error)
 	// ValidatorOutstandingRewards queries rewards of a validator address.
 	ValidatorOutstandingRewards(ctx context.Context, in *QueryValidatorOutstandingRewardsRequest, opts ...grpc.CallOption) (*QueryValidatorOutstandingRewardsResponse, error)
@@ -176,7 +177,8 @@ func (c *queryClient) CommunityPool(ctx context.Context, in *QueryCommunityPoolR
 type QueryServer interface {
 	// Params queries params of the distribution module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
-	// ValidatorDistributionInfo queries validator commission and self-delegation rewards for validator
+	// ValidatorDistributionInfo queries validator commission and self-delegation
+	// rewards for validator
 	ValidatorDistributionInfo(context.Context, *QueryValidatorDistributionInfoRequest) (*QueryValidatorDistributionInfoResponse, error)
 	// ValidatorOutstandingRewards queries rewards of a validator address.
 	ValidatorOutstandingRewards(context.Context, *QueryValidatorOutstandingRewardsRequest) (*QueryValidatorOutstandingRewardsResponse, error)

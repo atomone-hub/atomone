@@ -22,6 +22,7 @@ type Keeper struct {
 	authKeeper    types.AccountKeeper
 	bankKeeper    types.BankKeeper
 	stakingKeeper types.StakingKeeper
+	mintQuery     types.MintQueryServer
 	// the address capable of executing a MsgUpdateParams message. Typically, this
 	// should be the x/gov module account.
 	authority string
@@ -35,9 +36,14 @@ type Keeper struct {
 
 // NewKeeper creates a new distribution Keeper instance
 func NewKeeper(
-	cdc codec.BinaryCodec, storeService store.KVStoreService,
-	ak types.AccountKeeper, bk types.BankKeeper, sk types.StakingKeeper,
-	feeCollectorName, authority string,
+	cdc codec.BinaryCodec,
+	storeService store.KVStoreService,
+	ak types.AccountKeeper,
+	bk types.BankKeeper,
+	sk types.StakingKeeper,
+	mq types.MintQueryServer,
+	feeCollectorName,
+	authority string,
 ) Keeper {
 	// ensure distribution module account is set
 	if addr := ak.GetModuleAddress(types.ModuleName); addr == nil {
@@ -51,6 +57,7 @@ func NewKeeper(
 		authKeeper:       ak,
 		bankKeeper:       bk,
 		stakingKeeper:    sk,
+		mintQuery:        mq,
 		feeCollectorName: feeCollectorName,
 		authority:        authority,
 		Params:           collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
@@ -99,11 +106,10 @@ func (k Keeper) SetWithdrawAddr(ctx context.Context, delegatorAddr, withdrawAddr
 		),
 	)
 
-	k.SetDelegatorWithdrawAddr(ctx, delegatorAddr, withdrawAddr)
-	return nil
+	return k.SetDelegatorWithdrawAddr(ctx, delegatorAddr, withdrawAddr)
 }
 
-// withdraw rewards from a delegation
+// WithdrawDelegationRewards withdraw rewards from a delegation
 func (k Keeper) WithdrawDelegationRewards(ctx context.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) (sdk.Coins, error) {
 	val, err := k.stakingKeeper.Validator(ctx, valAddr)
 	if err != nil {
@@ -137,7 +143,7 @@ func (k Keeper) WithdrawDelegationRewards(ctx context.Context, delAddr sdk.AccAd
 	return rewards, nil
 }
 
-// withdraw validator commission
+// WithdrawValidatorCommission withdraw validator commission
 func (k Keeper) WithdrawValidatorCommission(ctx context.Context, valAddr sdk.ValAddress) (sdk.Coins, error) {
 	// fetch validator accumulated commission
 	accumCommission, err := k.GetValidatorAccumulatedCommission(ctx, valAddr)
@@ -150,7 +156,15 @@ func (k Keeper) WithdrawValidatorCommission(ctx context.Context, valAddr sdk.Val
 	}
 
 	commission, remainder := accumCommission.Commission.TruncateDecimal()
-	k.SetValidatorAccumulatedCommission(ctx, valAddr, types.ValidatorAccumulatedCommission{Commission: remainder}) // leave remainder to withdraw later
+
+	// TODO handle error?
+	if err := k.SetValidatorAccumulatedCommission( // leave remainder to withdraw later
+		ctx,
+		valAddr,
+		types.ValidatorAccumulatedCommission{Commission: remainder},
+	); err != nil {
+		return nil, err
+	}
 
 	// update outstanding
 	outstanding, err := k.GetValidatorOutstandingRewards(ctx, valAddr)

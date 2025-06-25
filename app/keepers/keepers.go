@@ -197,6 +197,7 @@ func NewAppKeeper(
 		appKeepers.AccountKeeper,
 		appKeepers.BankKeeper,
 		appKeepers.StakingKeeper,
+		mintkeeper.NewQueryServerImpl(appKeepers.MintKeeper),
 		authtypes.FeeCollectorName,
 		authorityStr,
 	)

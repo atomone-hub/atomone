@@ -9,10 +9,146 @@ import (
 	reflect "reflect"
 
 	address "cosmossdk.io/core/address"
+	math "cosmossdk.io/math"
 	types "github.com/cosmos/cosmos-sdk/types"
-	types0 "github.com/cosmos/cosmos-sdk/x/staking/types"
+	types0 "github.com/cosmos/cosmos-sdk/x/mint/types"
+	types1 "github.com/cosmos/cosmos-sdk/x/staking/types"
 	gomock "github.com/golang/mock/gomock"
 )
+
+// MockMintQueryServer is a mock of MintQueryServer interface.
+type MockMintQueryServer struct {
+	ctrl     *gomock.Controller
+	recorder *MockMintQueryServerMockRecorder
+}
+
+// MockMintQueryServerMockRecorder is the mock recorder for MockMintQueryServer.
+type MockMintQueryServerMockRecorder struct {
+	mock *MockMintQueryServer
+}
+
+// NewMockMintQueryServer creates a new mock instance.
+func NewMockMintQueryServer(ctrl *gomock.Controller) *MockMintQueryServer {
+	mock := &MockMintQueryServer{ctrl: ctrl}
+	mock.recorder = &MockMintQueryServerMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockMintQueryServer) EXPECT() *MockMintQueryServerMockRecorder {
+	return m.recorder
+}
+
+// AnnualProvisions mocks base method.
+func (m *MockMintQueryServer) AnnualProvisions(arg0 context.Context, arg1 *types0.QueryAnnualProvisionsRequest) (*types0.QueryAnnualProvisionsResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AnnualProvisions", arg0, arg1)
+	ret0, _ := ret[0].(*types0.QueryAnnualProvisionsResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AnnualProvisions indicates an expected call of AnnualProvisions.
+func (mr *MockMintQueryServerMockRecorder) AnnualProvisions(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AnnualProvisions", reflect.TypeOf((*MockMintQueryServer)(nil).AnnualProvisions), arg0, arg1)
+}
+
+// Params mocks base method.
+func (m *MockMintQueryServer) Params(arg0 context.Context, arg1 *types0.QueryParamsRequest) (*types0.QueryParamsResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Params", arg0, arg1)
+	ret0, _ := ret[0].(*types0.QueryParamsResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Params indicates an expected call of Params.
+func (mr *MockMintQueryServerMockRecorder) Params(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Params", reflect.TypeOf((*MockMintQueryServer)(nil).Params), arg0, arg1)
+}
+
+// MockMintKeeper is a mock of MintKeeper interface.
+type MockMintKeeper struct {
+	ctrl     *gomock.Controller
+	recorder *MockMintKeeperMockRecorder
+}
+
+// MockMintKeeperMockRecorder is the mock recorder for MockMintKeeper.
+type MockMintKeeperMockRecorder struct {
+	mock *MockMintKeeper
+}
+
+// NewMockMintKeeper creates a new mock instance.
+func NewMockMintKeeper(ctrl *gomock.Controller) *MockMintKeeper {
+	mock := &MockMintKeeper{ctrl: ctrl}
+	mock.recorder = &MockMintKeeperMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockMintKeeper) EXPECT() *MockMintKeeperMockRecorder {
+	return m.recorder
+}
+
+// AddCollectedFees mocks base method.
+func (m *MockMintKeeper) AddCollectedFees(ctx context.Context, fees types.Coins) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddCollectedFees", ctx, fees)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// AddCollectedFees indicates an expected call of AddCollectedFees.
+func (mr *MockMintKeeperMockRecorder) AddCollectedFees(ctx, fees interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddCollectedFees", reflect.TypeOf((*MockMintKeeper)(nil).AddCollectedFees), ctx, fees)
+}
+
+// BondedRatio mocks base method.
+func (m *MockMintKeeper) BondedRatio(ctx context.Context) (math.LegacyDec, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "BondedRatio", ctx)
+	ret0, _ := ret[0].(math.LegacyDec)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// BondedRatio indicates an expected call of BondedRatio.
+func (mr *MockMintKeeperMockRecorder) BondedRatio(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BondedRatio", reflect.TypeOf((*MockMintKeeper)(nil).BondedRatio), ctx)
+}
+
+// MintCoins mocks base method.
+func (m *MockMintKeeper) MintCoins(ctx context.Context, newCoins types.Coins) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MintCoins", ctx, newCoins)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// MintCoins indicates an expected call of MintCoins.
+func (mr *MockMintKeeperMockRecorder) MintCoins(ctx, newCoins interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MintCoins", reflect.TypeOf((*MockMintKeeper)(nil).MintCoins), ctx, newCoins)
+}
+
+// StakingTokenSupply mocks base method.
+func (m *MockMintKeeper) StakingTokenSupply(ctx context.Context) (math.Int, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "StakingTokenSupply", ctx)
+	ret0, _ := ret[0].(math.Int)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// StakingTokenSupply indicates an expected call of StakingTokenSupply.
+func (mr *MockMintKeeperMockRecorder) StakingTokenSupply(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StakingTokenSupply", reflect.TypeOf((*MockMintKeeper)(nil).StakingTokenSupply), ctx)
+}
 
 // MockAccountKeeper is a mock of AccountKeeper interface.
 type MockAccountKeeper struct {
@@ -250,10 +386,10 @@ func (mr *MockStakingKeeperMockRecorder) ConsensusAddressCodec() *gomock.Call {
 }
 
 // Delegation mocks base method.
-func (m *MockStakingKeeper) Delegation(arg0 context.Context, arg1 types.AccAddress, arg2 types.ValAddress) (types0.DelegationI, error) {
+func (m *MockStakingKeeper) Delegation(arg0 context.Context, arg1 types.AccAddress, arg2 types.ValAddress) (types1.DelegationI, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Delegation", arg0, arg1, arg2)
-	ret0, _ := ret[0].(types0.DelegationI)
+	ret0, _ := ret[0].(types1.DelegationI)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -265,10 +401,10 @@ func (mr *MockStakingKeeperMockRecorder) Delegation(arg0, arg1, arg2 interface{}
 }
 
 // GetAllDelegatorDelegations mocks base method.
-func (m *MockStakingKeeper) GetAllDelegatorDelegations(ctx context.Context, delegator types.AccAddress) ([]types0.Delegation, error) {
+func (m *MockStakingKeeper) GetAllDelegatorDelegations(ctx context.Context, delegator types.AccAddress) ([]types1.Delegation, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAllDelegatorDelegations", ctx, delegator)
-	ret0, _ := ret[0].([]types0.Delegation)
+	ret0, _ := ret[0].([]types1.Delegation)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -280,10 +416,10 @@ func (mr *MockStakingKeeperMockRecorder) GetAllDelegatorDelegations(ctx, delegat
 }
 
 // GetAllSDKDelegations mocks base method.
-func (m *MockStakingKeeper) GetAllSDKDelegations(ctx context.Context) ([]types0.Delegation, error) {
+func (m *MockStakingKeeper) GetAllSDKDelegations(ctx context.Context) ([]types1.Delegation, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAllSDKDelegations", ctx)
-	ret0, _ := ret[0].([]types0.Delegation)
+	ret0, _ := ret[0].([]types1.Delegation)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -295,10 +431,10 @@ func (mr *MockStakingKeeperMockRecorder) GetAllSDKDelegations(ctx interface{}) *
 }
 
 // GetAllValidators mocks base method.
-func (m *MockStakingKeeper) GetAllValidators(ctx context.Context) ([]types0.Validator, error) {
+func (m *MockStakingKeeper) GetAllValidators(ctx context.Context) ([]types1.Validator, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAllValidators", ctx)
-	ret0, _ := ret[0].([]types0.Validator)
+	ret0, _ := ret[0].([]types1.Validator)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -309,8 +445,23 @@ func (mr *MockStakingKeeperMockRecorder) GetAllValidators(ctx interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllValidators", reflect.TypeOf((*MockStakingKeeper)(nil).GetAllValidators), ctx)
 }
 
+// GetBondedValidatorsByPower mocks base method.
+func (m *MockStakingKeeper) GetBondedValidatorsByPower(ctx context.Context) ([]types1.Validator, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetBondedValidatorsByPower", ctx)
+	ret0, _ := ret[0].([]types1.Validator)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetBondedValidatorsByPower indicates an expected call of GetBondedValidatorsByPower.
+func (mr *MockStakingKeeperMockRecorder) GetBondedValidatorsByPower(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBondedValidatorsByPower", reflect.TypeOf((*MockStakingKeeper)(nil).GetBondedValidatorsByPower), ctx)
+}
+
 // IterateDelegations mocks base method.
-func (m *MockStakingKeeper) IterateDelegations(ctx context.Context, delegator types.AccAddress, fn func(int64, types0.DelegationI) bool) error {
+func (m *MockStakingKeeper) IterateDelegations(ctx context.Context, delegator types.AccAddress, fn func(int64, types1.DelegationI) bool) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "IterateDelegations", ctx, delegator, fn)
 	ret0, _ := ret[0].(error)
@@ -324,7 +475,7 @@ func (mr *MockStakingKeeperMockRecorder) IterateDelegations(ctx, delegator, fn i
 }
 
 // IterateValidators mocks base method.
-func (m *MockStakingKeeper) IterateValidators(arg0 context.Context, arg1 func(int64, types0.ValidatorI) bool) error {
+func (m *MockStakingKeeper) IterateValidators(arg0 context.Context, arg1 func(int64, types1.ValidatorI) bool) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "IterateValidators", arg0, arg1)
 	ret0, _ := ret[0].(error)
@@ -338,10 +489,10 @@ func (mr *MockStakingKeeperMockRecorder) IterateValidators(arg0, arg1 interface{
 }
 
 // Validator mocks base method.
-func (m *MockStakingKeeper) Validator(arg0 context.Context, arg1 types.ValAddress) (types0.ValidatorI, error) {
+func (m *MockStakingKeeper) Validator(arg0 context.Context, arg1 types.ValAddress) (types1.ValidatorI, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Validator", arg0, arg1)
-	ret0, _ := ret[0].(types0.ValidatorI)
+	ret0, _ := ret[0].(types1.ValidatorI)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -367,10 +518,10 @@ func (mr *MockStakingKeeperMockRecorder) ValidatorAddressCodec() *gomock.Call {
 }
 
 // ValidatorByConsAddr mocks base method.
-func (m *MockStakingKeeper) ValidatorByConsAddr(arg0 context.Context, arg1 types.ConsAddress) (types0.ValidatorI, error) {
+func (m *MockStakingKeeper) ValidatorByConsAddr(arg0 context.Context, arg1 types.ConsAddress) (types1.ValidatorI, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ValidatorByConsAddr", arg0, arg1)
-	ret0, _ := ret[0].(types0.ValidatorI)
+	ret0, _ := ret[0].(types1.ValidatorI)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

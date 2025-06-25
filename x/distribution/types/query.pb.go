@@ -117,7 +117,8 @@ func (m *QueryParamsResponse) GetParams() Params {
 	return Params{}
 }
 
-// QueryValidatorDistributionInfoRequest is the request type for the Query/ValidatorDistributionInfo RPC method.
+// QueryValidatorDistributionInfoRequest is the request type for the
+// Query/ValidatorDistributionInfo RPC method.
 type QueryValidatorDistributionInfoRequest struct {
 	// validator_address defines the validator address to query for.
 	ValidatorAddress string `protobuf:"bytes,1,opt,name=validator_address,json=validatorAddress,proto3" json:"validator_address,omitempty"`
@@ -163,7 +164,8 @@ func (m *QueryValidatorDistributionInfoRequest) GetValidatorAddress() string {
 	return ""
 }
 
-// QueryValidatorDistributionInfoResponse is the response type for the Query/ValidatorDistributionInfo RPC method.
+// QueryValidatorDistributionInfoResponse is the response type for the
+// Query/ValidatorDistributionInfo RPC method.
 type QueryValidatorDistributionInfoResponse struct {
 	// operator_address defines the validator operator address.
 	OperatorAddress string `protobuf:"bytes,1,opt,name=operator_address,json=operatorAddress,proto3" json:"operator_address,omitempty"`
@@ -1077,7 +1079,8 @@ const _ = grpc.SupportPackageIsVersion4
 type QueryClient interface {
 	// Params queries params of the distribution module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
-	// ValidatorDistributionInfo queries validator commission and self-delegation rewards for validator
+	// ValidatorDistributionInfo queries validator commission and self-delegation
+	// rewards for validator
 	ValidatorDistributionInfo(ctx context.Context, in *QueryValidatorDistributionInfoRequest, opts ...grpc.CallOption) (*QueryValidatorDistributionInfoResponse, error)
 	// ValidatorOutstandingRewards queries rewards of a validator address.
 	ValidatorOutstandingRewards(ctx context.Context, in *QueryValidatorOutstandingRewardsRequest, opts ...grpc.CallOption) (*QueryValidatorOutstandingRewardsResponse, error)
@@ -1200,7 +1203,8 @@ func (c *queryClient) CommunityPool(ctx context.Context, in *QueryCommunityPoolR
 type QueryServer interface {
 	// Params queries params of the distribution module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
-	// ValidatorDistributionInfo queries validator commission and self-delegation rewards for validator
+	// ValidatorDistributionInfo queries validator commission and self-delegation
+	// rewards for validator
 	ValidatorDistributionInfo(context.Context, *QueryValidatorDistributionInfoRequest) (*QueryValidatorDistributionInfoResponse, error)
 	// ValidatorOutstandingRewards queries rewards of a validator address.
 	ValidatorOutstandingRewards(context.Context, *QueryValidatorOutstandingRewardsRequest) (*QueryValidatorOutstandingRewardsResponse, error)

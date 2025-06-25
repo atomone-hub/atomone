@@ -21,6 +21,13 @@ message Params {
   ];
 
   bool withdraw_addr_enabled = 4;
+
+  string nakamoto_bonus_coefficient = 5 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (amino.dont_omitempty) = true,
+    (gogoproto.nullable) = false
+  ];
 }
 
 // ValidatorHistoricalRewards represents historical rewards for a validator.
@@ -91,8 +98,10 @@ message ValidatorSlashEvent {
 
 // ValidatorSlashEvents is a collection of ValidatorSlashEvent messages.
 message ValidatorSlashEvents {
-  repeated ValidatorSlashEvent validator_slash_events = 1
-      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+  repeated ValidatorSlashEvent validator_slash_events = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
 }
 
 // FeePool is the global fee pool for distribution.
@@ -130,8 +139,7 @@ message DelegatorStartingInfo {
 message DelegationDelegatorReward {
   option (gogoproto.goproto_getters) = false;
 
-  string validator_address = 1
-      [ (cosmos_proto.scalar) = "cosmos.ValidatorAddressString" ];
+  string validator_address = 1 [(cosmos_proto.scalar) = "cosmos.ValidatorAddressString"];
 
   repeated cosmos.base.v1beta1.DecCoin reward = 2 [
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins",

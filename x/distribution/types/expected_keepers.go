@@ -2,11 +2,27 @@ package types
 
 import (
 	"context"
+	"cosmossdk.io/math"
 
 	"cosmossdk.io/core/address"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
+
+// MintQueryServer defines the expected interface needed to retrieve AnnualProvisions (noalias)
+type MintQueryServer interface {
+	AnnualProvisions(context.Context, *minttypes.QueryAnnualProvisionsRequest) (*minttypes.QueryAnnualProvisionsResponse, error)
+	Params(context.Context, *minttypes.QueryParamsRequest) (*minttypes.QueryParamsResponse, error)
+}
+
+// MintKeeper defines the expected interface needed to retrieve the mint keeper from dep inject (noalias)
+type MintKeeper interface {
+	StakingTokenSupply(ctx context.Context) (math.Int, error)
+	BondedRatio(ctx context.Context) (math.LegacyDec, error)
+	MintCoins(ctx context.Context, newCoins sdk.Coins) error
+	AddCollectedFees(ctx context.Context, fees sdk.Coins) error
+}
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
 type AccountKeeper interface {
@@ -52,6 +68,8 @@ type StakingKeeper interface {
 	GetAllSDKDelegations(ctx context.Context) ([]stakingtypes.Delegation, error)
 	GetAllValidators(ctx context.Context) ([]stakingtypes.Validator, error)
 	GetAllDelegatorDelegations(ctx context.Context, delegator sdk.AccAddress) ([]stakingtypes.Delegation, error)
+
+	GetBondedValidatorsByPower(ctx context.Context) ([]stakingtypes.Validator, error)
 }
 
 // StakingHooks event hooks for staking validator object (noalias)

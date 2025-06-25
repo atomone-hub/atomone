@@ -1659,7 +1659,8 @@ func (x *QueryParamsResponse) GetParams() *Params {
 	return nil
 }
 
-// QueryConversionRateRequest is request type for the Query/ConversionRate RPC method.
+// QueryConversionRateRequest is request type for the Query/ConversionRate RPC
+// method.
 type QueryConversionRateRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1686,7 +1687,8 @@ func (*QueryConversionRateRequest) Descriptor() ([]byte, []int) {
 	return file_atomone_photon_v1_query_proto_rawDescGZIP(), []int{2}
 }
 
-// QueryConversionRateResponse is response type for the Query/ConversionRate RPC method.
+// QueryConversionRateResponse is response type for the Query/ConversionRate RPC
+// method.
 type QueryConversionRateResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

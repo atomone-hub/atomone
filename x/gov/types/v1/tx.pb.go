@@ -775,12 +775,14 @@ func (m *MsgProposeLawResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgProposeLawResponse proto.InternalMessageInfo
 
-// MsgConstitutionAmendment is the Msg/ProposeConstitutionAmendment request type.
+// MsgConstitutionAmendment is the Msg/ProposeConstitutionAmendment request
+// type.
 type MsgProposeConstitutionAmendment struct {
 	// authority is the address that controls the module (defaults to x/gov unless
 	// overwritten).
 	Authority string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
-	// amendment is the amendment to the constitution. It must be in valid GNU patch format.
+	// amendment is the amendment to the constitution. It must be in valid GNU
+	// patch format.
 	Amendment string `protobuf:"bytes,2,opt,name=amendment,proto3" json:"amendment,omitempty"`
 }
 
@@ -831,8 +833,8 @@ func (m *MsgProposeConstitutionAmendment) GetAmendment() string {
 	return ""
 }
 
-// MsgProposeConstitutionAmendmentResponse defines the response structure for executing a
-// MsgProposeConstitutionAmendment message.
+// MsgProposeConstitutionAmendmentResponse defines the response structure for
+// executing a MsgProposeConstitutionAmendment message.
 type MsgProposeConstitutionAmendmentResponse struct {
 }
 

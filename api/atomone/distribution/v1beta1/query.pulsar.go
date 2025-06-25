@@ -9500,7 +9500,8 @@ func (x *QueryParamsResponse) GetParams() *Params {
 	return nil
 }
 
-// QueryValidatorDistributionInfoRequest is the request type for the Query/ValidatorDistributionInfo RPC method.
+// QueryValidatorDistributionInfoRequest is the request type for the
+// Query/ValidatorDistributionInfo RPC method.
 type QueryValidatorDistributionInfoRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -9537,7 +9538,8 @@ func (x *QueryValidatorDistributionInfoRequest) GetValidatorAddress() string {
 	return ""
 }
 
-// QueryValidatorDistributionInfoResponse is the response type for the Query/ValidatorDistributionInfo RPC method.
+// QueryValidatorDistributionInfoResponse is the response type for the
+// Query/ValidatorDistributionInfo RPC method.
 type QueryValidatorDistributionInfoResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
