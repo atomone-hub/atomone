@@ -573,8 +573,6 @@ $ %s query gov params
 }
 
 // GetCmdQueryQuorums implements the query quorums command.
-//
-
 func GetCmdQueryQuorums() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "quorums",
