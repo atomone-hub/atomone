@@ -202,7 +202,7 @@ type ModuleInputs struct {
 	AccountKeeper types.AccountKeeper
 	BankKeeper    types.BankKeeper
 	StakingKeeper types.StakingKeeper
-	MintKeeper    types.MintKeeper
+	MintQuery     types.MintQueryServer
 }
 
 type ModuleOutputs struct {
@@ -231,7 +231,7 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		in.AccountKeeper,
 		in.BankKeeper,
 		in.StakingKeeper,
-		in.MintKeeper.(types.MintQueryServer),
+		in.MintQuery,
 		feeCollectorName,
 		authority.String(),
 	)
