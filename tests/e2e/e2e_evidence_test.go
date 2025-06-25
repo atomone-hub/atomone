@@ -16,12 +16,12 @@ func (s *IntegrationTestSuite) testEvidenceQueries() {
 			chain    = s.chainA
 			chainAPI = fmt.Sprintf("http://%s", s.valResources[chain.id][valIdx].GetHostPort("1317/tcp"))
 		)
-		res, err := queryAllEvidence(chainAPI)
+		res, err := s.queryAllEvidence(chainAPI)
 		s.Require().NoError(err)
 		s.Require().Equal(numberOfEvidences, len(res.Evidence))
 		for _, evidence := range res.Evidence {
 			var exportedEvidence exported.Evidence
-			err := cdc.UnpackAny(evidence, &exportedEvidence)
+			err := s.cdc.UnpackAny(evidence, &exportedEvidence)
 			s.Require().NoError(err)
 			eq, ok := exportedEvidence.(*evidencetypes.Equivocation)
 			s.Require().True(ok)

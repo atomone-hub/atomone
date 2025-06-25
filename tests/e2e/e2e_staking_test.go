@@ -26,7 +26,7 @@ func (s *IntegrationTestSuite) testStaking() {
 		delegatorAddress, _ := s.chainA.genesisAccounts[2].keyInfo.GetAddress()
 
 		existingDelegation := math.LegacyZeroDec()
-		res, err := queryDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
+		res, err := s.queryDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
 		if err == nil {
 			existingDelegation = res.GetDelegationResponse().GetDelegation().GetShares()
 		}
@@ -40,7 +40,7 @@ func (s *IntegrationTestSuite) testStaking() {
 		// Validate delegation successful
 		s.Require().Eventually(
 			func() bool {
-				res, err := queryDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
+				res, err := s.queryDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
 				amt := res.GetDelegationResponse().GetDelegation().GetShares()
 				s.Require().NoError(err)
 
@@ -59,7 +59,7 @@ func (s *IntegrationTestSuite) testStaking() {
 		// Validate re-delegation successful
 		s.Require().Eventually(
 			func() bool {
-				res, err := queryDelegation(chainEndpoint, validatorAddressB, delegatorAddress.String())
+				res, err := s.queryDelegation(chainEndpoint, validatorAddressB, delegatorAddress.String())
 				amt := res.GetDelegationResponse().GetDelegation().GetShares()
 				s.Require().NoError(err)
 
@@ -77,7 +77,7 @@ func (s *IntegrationTestSuite) testStaking() {
 		// query alice's current delegation from validator A
 		s.Require().Eventually(
 			func() bool {
-				res, err := queryDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
+				res, err := s.queryDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
 				amt := res.GetDelegationResponse().GetDelegation().GetShares()
 				s.Require().NoError(err)
 
@@ -98,7 +98,7 @@ func (s *IntegrationTestSuite) testStaking() {
 		// validate unbonding delegations
 		s.Require().Eventually(
 			func() bool {
-				res, err := queryUnbondingDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
+				res, err := s.queryUnbondingDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
 				s.Require().NoError(err)
 
 				s.Require().Len(res.GetUnbond().Entries, 1)
@@ -124,12 +124,12 @@ func (s *IntegrationTestSuite) testStaking() {
 		// validate that unbonding delegation was successfully canceled
 		s.Require().Eventually(
 			func() bool {
-				resDel, err := queryDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
+				resDel, err := s.queryDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
 				amt := resDel.GetDelegationResponse().GetDelegation().GetShares()
 				s.Require().NoError(err)
 
 				// expect that no unbonding delegations are found for validator A
-				_, err = queryUnbondingDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
+				_, err = s.queryUnbondingDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
 				s.Require().Error(err)
 
 				// expect to get the delegation back

@@ -134,9 +134,9 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 		sendAmount := sdk.NewInt64Coin(uatoneDenom, 10_000_000) // 10atone
 		s.writeGovCommunitySpendProposal(s.chainA, sendAmount, recipient)
 
-		beforeSenderBalance, err := getSpecificBalance(chainAAPIEndpoint, sender, uatoneDenom)
+		beforeSenderBalance, err := s.getSpecificBalance(chainAAPIEndpoint, sender, uatoneDenom)
 		s.Require().NoError(err)
-		beforeRecipientBalance, err := getSpecificBalance(chainAAPIEndpoint, recipient, uatoneDenom)
+		beforeRecipientBalance, err := s.getSpecificBalance(chainAAPIEndpoint, recipient, uatoneDenom)
 		s.Require().NoError(err)
 
 		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
@@ -149,7 +149,7 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 		// Check that sender is refunded with the proposal deposit
 		s.Require().Eventually(
 			func() bool {
-				afterSenderBalance, err := getSpecificBalance(chainAAPIEndpoint, sender, uatoneDenom)
+				afterSenderBalance, err := s.getSpecificBalance(chainAAPIEndpoint, sender, uatoneDenom)
 				s.Require().NoError(err)
 
 				return afterSenderBalance.IsEqual(beforeSenderBalance)
@@ -160,7 +160,7 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 		// Check that recipient received the community pool spend
 		s.Require().Eventually(
 			func() bool {
-				afterRecipientBalance, err := getSpecificBalance(chainAAPIEndpoint, recipient, uatoneDenom)
+				afterRecipientBalance, err := s.getSpecificBalance(chainAAPIEndpoint, recipient, uatoneDenom)
 				s.Require().NoError(err)
 
 				return afterRecipientBalance.Sub(sendAmount).IsEqual(beforeRecipientBalance)
@@ -179,9 +179,9 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 		sendAmount := sdk.NewInt64Coin(uatoneDenom, 10_000_000) // 10atone
 		s.writeGovCommunitySpendProposal(s.chainA, sendAmount, recipient)
 
-		beforeSenderBalance, err := getSpecificBalance(chainAAPIEndpoint, sender, uatoneDenom)
+		beforeSenderBalance, err := s.getSpecificBalance(chainAAPIEndpoint, sender, uatoneDenom)
 		s.Require().NoError(err)
-		beforeRecipientBalance, err := getSpecificBalance(chainAAPIEndpoint, recipient, uatoneDenom)
+		beforeRecipientBalance, err := s.getSpecificBalance(chainAAPIEndpoint, recipient, uatoneDenom)
 		s.Require().NoError(err)
 
 		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
@@ -194,7 +194,7 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 		// Check that sender is not refunded with the proposal deposit
 		s.Require().Eventually(
 			func() bool {
-				afterSenderBalance, err := getSpecificBalance(chainAAPIEndpoint, sender, uatoneDenom)
+				afterSenderBalance, err := s.getSpecificBalance(chainAAPIEndpoint, sender, uatoneDenom)
 				s.Require().NoError(err)
 
 				return afterSenderBalance.Add(depositAmount).Add(initialDepositAmount).
@@ -207,7 +207,7 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 		// proposal was rejected
 		s.Require().Eventually(
 			func() bool {
-				afterRecipientBalance, err := getSpecificBalance(chainAAPIEndpoint, recipient, uatoneDenom)
+				afterRecipientBalance, err := s.getSpecificBalance(chainAAPIEndpoint, recipient, uatoneDenom)
 				s.Require().NoError(err)
 
 				return afterRecipientBalance.IsEqual(beforeRecipientBalance)
@@ -401,7 +401,7 @@ func (s *IntegrationTestSuite) submitGovCommand(chainAAPIEndpoint, sender string
 
 	s.Require().Eventually(
 		func() bool {
-			proposal, err := queryGovProposal(chainAAPIEndpoint, proposalID)
+			proposal, err := s.queryGovProposal(chainAAPIEndpoint, proposalID)
 			s.Require().NoError(err)
 			return proposal.GetProposal().Status == expectedSuccessStatus
 		},
@@ -429,7 +429,7 @@ func (s *IntegrationTestSuite) writeStakingParamChangeProposal(c *chain, params 
 		"summary": "summary"
 	}
 	`
-	propMsgBody := fmt.Sprintf(template, govModuleAddress, cdc.MustMarshalJSON(&params), initialDepositAmount)
+	propMsgBody := fmt.Sprintf(template, govModuleAddress, s.cdc.MustMarshalJSON(&params), initialDepositAmount)
 	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
@@ -452,7 +452,7 @@ func (s *IntegrationTestSuite) writeFeemarketParamChangeProposal(c *chain, param
 		"summary": "summary"
 	}
 	`
-	propMsgBody := fmt.Sprintf(template, govModuleAddress, cdc.MustMarshalJSON(&params), initialDepositAmount)
+	propMsgBody := fmt.Sprintf(template, govModuleAddress, s.cdc.MustMarshalJSON(&params), initialDepositAmount)
 	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
@@ -476,7 +476,7 @@ func (s *IntegrationTestSuite) writePhotonParamChangeProposal(c *chain, params p
 		"summary": "summary"
 	}
 	`
-	propMsgBody := fmt.Sprintf(template, govModuleAddress, cdc.MustMarshalJSON(&params), initialDepositAmount)
+	propMsgBody := fmt.Sprintf(template, govModuleAddress, s.cdc.MustMarshalJSON(&params), initialDepositAmount)
 	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
@@ -538,7 +538,7 @@ func (s *IntegrationTestSuite) parseGenerateConstitutionAmendmentOutput(msg *gov
 			return false
 		}
 
-		err := cdc.UnmarshalJSON(stdOut, msg)
+		err := s.cdc.UnmarshalJSON(stdOut, msg)
 		s.Require().NoError(err)
 
 		return true

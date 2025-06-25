@@ -4,16 +4,13 @@ import (
 	"fmt"
 	"os"
 
+	"cosmossdk.io/log"
+	atomone "github.com/atomone-hub/atomone/app"
 	tmrand "github.com/cometbft/cometbft/libs/rand"
 
-	ibctransfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
-
-	evidencetypes "cosmossdk.io/x/evidence/types"
-	"cosmossdk.io/x/feegrant"
-	upgradetypes "cosmossdk.io/x/upgrade/types"
+	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
-	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/tx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -22,6 +19,7 @@ import (
 	paramsproptypes "github.com/cosmos/cosmos-sdk/x/params/types/proposal"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	"github.com/cosmos/cosmos-sdk/types/module"
 
 	atomoneparams "github.com/atomone-hub/atomone/app/params"
 	distribtypes "github.com/atomone-hub/atomone/x/distribution/types"
@@ -36,48 +34,20 @@ const (
 	keyringAppName    = "testnet"
 )
 
-var (
-	encodingConfig atomoneparams.EncodingConfig
-	cdc            codec.Codec
-	txConfig       client.TxConfig
-)
-
-func init() {
-	encodingConfig = atomoneparams.MakeEncodingConfig()
-	sdk.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	tx.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	banktypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	authtypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	authvesting.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	stakingtypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	slashingtypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	evidencetypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	cryptocodec.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	feegrant.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	govv1types.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	govv1beta1types.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	paramsproptypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	paramsproptypes.RegisterLegacyAminoCodec(encodingConfig.Amino)
-	feegrant.RegisterLegacyAminoCodec(encodingConfig.Amino)
-	slashingtypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	upgradetypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	distribtypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	ibctransfertypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	photontypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	feemarkettypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-
-	cdc = encodingConfig.Codec
-	txConfig = encodingConfig.TxConfig
-}
-
 type chain struct {
 	dataDir    string
 	id         string
 	validators []*validator
 	accounts   []*account //nolint:unused
+
 	// initial accounts in genesis
 	genesisAccounts        []*account
 	genesisVestingAccounts map[string]sdk.AccAddress
+
+	// codecs and chain config
+	cdc      codec.Codec
+	txConfig client.TxConfig
+	bm       module.BasicManager
 }
 
 func newChain() (*chain, error) {
@@ -86,9 +56,14 @@ func newChain() (*chain, error) {
 		return nil, err
 	}
 
+	tempApp := atomone.NewAtomOneApp(log.NewNopLogger(), dbm.NewMemDB(), nil, false, atomone.EmptyAppOptions{})
+
 	return &chain{
-		id:      "chain-" + tmrand.Str(6),
-		dataDir: tmpDir,
+		id:       "chain-" + tmrand.Str(6),
+		dataDir:  tmpDir,
+		cdc:      tempApp.AppCodec(),
+		txConfig: tempApp.GetTxConfig(),
+		bm:       tempApp.BasicModuleManager(),
 	}, nil
 }
 
