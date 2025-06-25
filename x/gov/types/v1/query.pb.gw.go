@@ -1188,7 +1188,7 @@ var (
 
 	pattern_Query_MinInitialDeposit_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"atomone", "gov", "v1", "mininitialdeposit"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Quorum_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4}, []string{"atomone", "gov", "v1", "params", "quorum"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Quorum_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"atomone", "gov", "v1", "quorums"}, "", runtime.AssumeColonVerbOpt(false)))
 )
 
 var (
