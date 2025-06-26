@@ -551,7 +551,7 @@ $ %s query gov params
 			vp := v1.NewVotingParams(res.Params.VotingPeriod)
 			res.VotingParams = &vp
 
-			quorumRes, err := queryClient.Quorums(ctx, &v1.QueryQuorumRequest{})
+			quorumRes, err := queryClient.Quorums(ctx, &v1.QueryQuorumsRequest{})
 			if err != nil {
 				return err
 			}
@@ -597,7 +597,7 @@ $ %s query gov quorums
 			// Query store for all 3 params
 			ctx := cmd.Context()
 
-			quorumRes, err := queryClient.Quorums(ctx, &v1.QueryQuorumRequest{})
+			quorumRes, err := queryClient.Quorums(ctx, &v1.QueryQuorumsRequest{})
 			if err != nil {
 				return err
 			}

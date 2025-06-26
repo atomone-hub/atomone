@@ -77,7 +77,7 @@ service Query {
   }
 
   // Quorums queries the dynamically set quorums.
-  rpc Quorums(QueryQuorumRequest) returns (QueryQuorumResponse) {
+  rpc Quorums(QueryQuorumsRequest) returns (QueryQuorumsResponse) {
     option (google.api.http).get = "/atomone/gov/v1/quorums";
   }
 }
@@ -247,11 +247,11 @@ message QueryMinInitialDepositResponse {
   repeated cosmos.base.v1beta1.Coin min_initial_deposit = 1 [ (gogoproto.nullable) = false];
 }
 
-// QueryQuorumRequest is the request type for the Query/Quorum RPC method.
-message QueryQuorumRequest {}
+// QueryQuorumsRequest is the request type for the Query/Quorums RPC method.
+message QueryQuorumsRequest {}
 
-// QueryQuorumResponse is the response type for the Query/Quorum RPC method.
-message QueryQuorumResponse {
+// QueryQuorumsResponse is the response type for the Query/Quorums RPC method.
+message QueryQuorumsResponse {
   // quorum defines the requested quorum.
   string quorum = 1 [ (cosmos_proto.scalar) = "cosmos.Dec" ];
 

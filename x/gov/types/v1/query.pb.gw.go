@@ -582,7 +582,7 @@ func local_request_Query_MinInitialDeposit_0(ctx context.Context, marshaler runt
 }
 
 func request_Query_Quorums_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq QueryQuorumRequest
+	var protoReq QueryQuorumsRequest
 	var metadata runtime.ServerMetadata
 
 	msg, err := client.Quorums(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -591,7 +591,7 @@ func request_Query_Quorums_0(ctx context.Context, marshaler runtime.Marshaler, c
 }
 
 func local_request_Query_Quorums_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq QueryQuorumRequest
+	var protoReq QueryQuorumsRequest
 	var metadata runtime.ServerMetadata
 
 	msg, err := server.Quorums(ctx, &protoReq)
