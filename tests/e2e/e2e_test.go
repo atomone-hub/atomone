@@ -62,6 +62,7 @@ func (s *IntegrationTestSuite) TestGov() {
 	s.testGovCommunityPoolSpend()
 	s.testGovParamChange()
 	s.testGovConstitutionAmendment()
+	s.testGovDynamicQuorum()
 }
 
 func (s *IntegrationTestSuite) TestIBC() {
