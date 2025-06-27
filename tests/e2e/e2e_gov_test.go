@@ -327,12 +327,13 @@ func (s *IntegrationTestSuite) testGovConstitutionAmendment() {
 
 func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 	s.Run("dynamic quorum change", func() {
-
+		// From the formulae in ADR-005
+		// pEma = (Q - Qmin) / (Qmax - Qmin)
+		// Participation = (PEma_t - (PEma_{t-1} * 0.8)/0.2
 		chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
 		params := s.queryGovParams(chainAAPIEndpoint, "tallying")
 		s.T().Logf("Tally Params: %s", params)
 		quorums := s.queryGovQuorums(chainAAPIEndpoint)
-		// pEma = (Q - Qmin) / (Qmax - Qmin)
 		quorumRange := params.GetParams().QuorumRange
 		quorumMin := sdk.MustNewDecFromStr(quorumRange.Min)
 		quorumMax := sdk.MustNewDecFromStr(quorumRange.Max)
@@ -345,7 +346,6 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 		paramsFeemarket.Params.Alpha = oldAlpha.Add(sdk.NewDec(1))
 
 		s.writeFeemarketParamChangeProposal(s.chainA, paramsFeemarket.Params)
-		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
 		proposalCounter++
 		submitGovFlags := []string{configFile(proposalParamChangeFilename)}
 		depositGovFlags := []string{strconv.Itoa(proposalCounter), depositAmount.String()}
@@ -363,7 +363,7 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 		s.T().Logf("Quorum PEMA Before: %s", quorumPEma)
 		s.T().Logf("Quorum After: %s", endQuorum)
 		s.T().Logf("Quorum PEMA Before: %s", endQuorumPEma)
-		expectedParticipation := endQuorum.Sub(currentQuorum.Mul(sdk.MustNewDecFromStr("0.8"))).Quo(sdk.MustNewDecFromStr("0.2"))
+		expectedParticipation := endQuorumPEma.Sub(quorumPEma.Mul(sdk.MustNewDecFromStr("0.8"))).Quo(sdk.MustNewDecFromStr("0.2"))
 		s.T().Logf("Expected Participation: %s", expectedParticipation)
 		proposal, _ := queryGovProposal(chainAAPIEndpoint, proposalCounter)
 		s.T().Logf("Proposal: %s", proposal.Proposal.FinalTallyResult)
@@ -380,6 +380,9 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 	})
 
 	s.Run("dynamic law quorum change", func() {
+		// From the formulae in ADR-005
+		// pEma = (Q - Qmin) / (Qmax - Qmin)
+		// Participation = (PEma_t - (PEma_{t-1} * 0.8)/0.2
 		chainAAPIEndpoint := fmt.Sprintf("http://%s",
 			s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
 		params := s.queryGovParams(chainAAPIEndpoint, "tallying")
@@ -412,8 +415,7 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 		s.T().Logf("lawQuorum PEMA Before: %s", lawQuorumPEma)
 		s.T().Logf("lawQuorum After: %s", endLawQuorum)
 		s.T().Logf("lawQuorum PEMA Before: %s", endLawQuorumPEma)
-		expectedParticipation := endLawQuorum.Sub(currentLawQuorum.Mul(
-			sdk.MustNewDecFromStr("0.8"))).Quo(sdk.MustNewDecFromStr("0.2"))
+		expectedParticipation := endLawQuorumPEma.Sub(lawQuorumPEma.Mul(sdk.MustNewDecFromStr("0.8"))).Quo(sdk.MustNewDecFromStr("0.2"))
 		s.T().Logf("Expected Participation: %s", expectedParticipation)
 		proposal, _ := queryGovProposal(chainAAPIEndpoint, proposalCounter)
 		s.T().Logf("Proposal: %s", proposal.Proposal.FinalTallyResult)
@@ -430,6 +432,9 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 	})
 
 	s.Run("dynamic constitution amendment quorum change", func() {
+		// From the formulae in ADR-005
+		// pEma = (Q - Qmin) / (Qmax - Qmin)
+		// Participation = (PEma_t - (PEma_{t-1} * 0.8)/0.2
 		chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
 		params := s.queryGovParams(chainAAPIEndpoint, "tallying")
 		s.T().Logf("Tally Params: %s", params)
@@ -463,7 +468,7 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 		s.T().Logf("constitutionAmendmentQuorum PEMA Before: %s", constitutionAmendmentQuorumPEma)
 		s.T().Logf("constitutionAmendmentQuorum After: %s", endConstitutionAmendmentQuorum)
 		s.T().Logf("constitutionAmendmentQuorum PEMA Before: %s", endConstitutionAmendmentQuorumPEma)
-		expectedParticipation := endConstitutionAmendmentQuorum.Sub(currentConstitutionAmendmentQuorum.Mul(sdk.MustNewDecFromStr("0.8"))).Quo(sdk.MustNewDecFromStr("0.2"))
+		expectedParticipation := endConstitutionAmendmentQuorumPEma.Sub(constitutionAmendmentQuorumPEma.Mul(sdk.MustNewDecFromStr("0.8"))).Quo(sdk.MustNewDecFromStr("0.2"))
 		s.T().Logf("Expected Participation: %s", expectedParticipation)
 		proposal, _ := queryGovProposal(chainAAPIEndpoint, proposalCounter)
 		s.T().Logf("Proposal: %s", proposal.Proposal.FinalTallyResult)
