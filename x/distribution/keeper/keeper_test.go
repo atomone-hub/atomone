@@ -37,6 +37,7 @@ func TestSetWithdrawAddr(t *testing.T) {
 	bankKeeper := distrtestutil.NewMockBankKeeper(ctrl)
 	stakingKeeper := distrtestutil.NewMockStakingKeeper(ctrl)
 	accountKeeper := distrtestutil.NewMockAccountKeeper(ctrl)
+	mintQuery := distrtestutil.NewMockMintQueryServer(ctrl)
 
 	accountKeeper.EXPECT().GetModuleAddress("distribution").Return(distrAcc.GetAddress())
 
@@ -49,6 +50,7 @@ func TestSetWithdrawAddr(t *testing.T) {
 		accountKeeper,
 		bankKeeper,
 		stakingKeeper,
+		mintQuery,
 		"fee_collector",
 		authtypes.NewModuleAddress("gov").String(),
 	)
@@ -83,6 +85,7 @@ func TestWithdrawValidatorCommission(t *testing.T) {
 	bankKeeper := distrtestutil.NewMockBankKeeper(ctrl)
 	stakingKeeper := distrtestutil.NewMockStakingKeeper(ctrl)
 	accountKeeper := distrtestutil.NewMockAccountKeeper(ctrl)
+	mintQuery := distrtestutil.NewMockMintQueryServer(ctrl)
 
 	accountKeeper.EXPECT().GetModuleAddress("distribution").Return(distrAcc.GetAddress())
 
@@ -97,6 +100,7 @@ func TestWithdrawValidatorCommission(t *testing.T) {
 		accountKeeper,
 		bankKeeper,
 		stakingKeeper,
+		mintQuery,
 		"fee_collector",
 		authtypes.NewModuleAddress("gov").String(),
 	)
@@ -140,6 +144,7 @@ func TestGetTotalRewards(t *testing.T) {
 	bankKeeper := distrtestutil.NewMockBankKeeper(ctrl)
 	stakingKeeper := distrtestutil.NewMockStakingKeeper(ctrl)
 	accountKeeper := distrtestutil.NewMockAccountKeeper(ctrl)
+	mintQuery := distrtestutil.NewMockMintQueryServer(ctrl)
 
 	accountKeeper.EXPECT().GetModuleAddress("distribution").Return(distrAcc.GetAddress())
 
@@ -149,6 +154,7 @@ func TestGetTotalRewards(t *testing.T) {
 		accountKeeper,
 		bankKeeper,
 		stakingKeeper,
+		mintQuery,
 		"fee_collector",
 		authtypes.NewModuleAddress("gov").String(),
 	)
@@ -179,6 +185,7 @@ func TestFundCommunityPool(t *testing.T) {
 	bankKeeper := distrtestutil.NewMockBankKeeper(ctrl)
 	stakingKeeper := distrtestutil.NewMockStakingKeeper(ctrl)
 	accountKeeper := distrtestutil.NewMockAccountKeeper(ctrl)
+	mintQuery := distrtestutil.NewMockMintQueryServer(ctrl)
 
 	accountKeeper.EXPECT().GetModuleAddress("distribution").Return(distrAcc.GetAddress())
 
@@ -188,6 +195,7 @@ func TestFundCommunityPool(t *testing.T) {
 		accountKeeper,
 		bankKeeper,
 		stakingKeeper,
+		mintQuery,
 		"fee_collector",
 		authtypes.NewModuleAddress("gov").String(),
 	)

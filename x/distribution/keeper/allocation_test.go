@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"context"
 	"testing"
 	"time"
 
@@ -14,22 +15,78 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 
-	"github.com/atomone-hub/atomone/x/distribution"
+	dist "github.com/atomone-hub/atomone/x/distribution"
 	"github.com/atomone-hub/atomone/x/distribution/keeper"
 	distrtestutil "github.com/atomone-hub/atomone/x/distribution/testutil"
 	disttypes "github.com/atomone-hub/atomone/x/distribution/types"
 )
+
+func TestBlockProvision(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	minQuery := distrtestutil.NewMockMintQueryServer(ctrl)
+
+	expectedMintDenom := sdk.DefaultBondDenom
+	expectedBlocksPerYear := int64(10000)
+	expectedAnnualProvisions := math.LegacyNewDec(1000000)
+	expectedBlockProvision := expectedAnnualProvisions.QuoInt(math.NewInt(expectedBlocksPerYear))
+
+	minQuery.EXPECT().
+		Params(gomock.Any(), gomock.Any()).
+		Return(&minttypes.QueryParamsResponse{
+			Params: minttypes.Params{
+				MintDenom:     expectedMintDenom,
+				BlocksPerYear: uint64(expectedBlocksPerYear),
+			},
+		}, nil)
+	minQuery.EXPECT().
+		AnnualProvisions(gomock.Any(), gomock.Any()).
+		Return(&minttypes.QueryAnnualProvisionsResponse{
+			AnnualProvisions: expectedAnnualProvisions,
+		}, nil)
+
+	k := keeper.Keeper{MintQuery: minQuery}
+	ctx := context.Background()
+
+	blockProvision, err := k.BlockProvision(ctx)
+	require.NoError(t, err)
+	require.Equal(t, expectedMintDenom, blockProvision.Denom)
+	require.Equal(t, expectedBlockProvision.TruncateInt(), blockProvision.Amount)
+}
+
+func TestSplitReward(t *testing.T) {
+	k := keeper.Keeper{}
+	totalReward := sdk.NewDecCoinFromDec("uatom", math.LegacyNewDec(100))
+	eta := math.LegacyMustNewDecFromStr("0.05") // 5% NB
+
+	val1, err := distrtestutil.CreateValidator(valConsPk0, math.NewInt(70))
+	require.NoError(t, err)
+	val2, err := distrtestutil.CreateValidator(valConsPk0, math.NewInt(30))
+	require.NoError(t, err)
+	bondedValidators := []stakingtypes.Validator{val1, val2}
+
+	totalBonded := math.NewInt(100)
+
+	rewardMap := k.SplitReward(totalReward, eta, bondedValidators, totalBonded)
+	require.Len(t, rewardMap, 2)
+	val1Reward := rewardMap["val1"][0].Amount
+	val2Reward := rewardMap["val2"][0].Amount
+
+	require.True(t, val1Reward.GT(val2Reward), "val1 should get more than val2")
+	require.InDelta(t, 66.5+2.5, val1Reward.MustFloat64(), 0.001)
+	require.InDelta(t, 28.5+2.5, val2Reward.MustFloat64(), 0.001)
+}
 
 func TestAllocateTokensToValidatorWithCommission(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	key := storetypes.NewKVStoreKey(disttypes.StoreKey)
 	storeService := runtime.NewKVStoreService(key)
 	testCtx := testutil.DefaultContextWithDB(t, key, storetypes.NewTransientStoreKey("transient_test"))
-	encCfg := moduletestutil.MakeTestEncodingConfig(distribution.AppModuleBasic{})
+	encCfg := moduletestutil.MakeTestEncodingConfig(dist.AppModuleBasic{})
 	ctx := testCtx.Ctx.WithBlockHeader(cmtproto.Header{Time: time.Now()})
 
 	bankKeeper := distrtestutil.NewMockBankKeeper(ctrl)
@@ -88,7 +145,7 @@ func TestAllocateTokensToManyValidators(t *testing.T) {
 	key := storetypes.NewKVStoreKey(disttypes.StoreKey)
 	storeService := runtime.NewKVStoreService(key)
 	testCtx := testutil.DefaultContextWithDB(t, key, storetypes.NewTransientStoreKey("transient_test"))
-	encCfg := moduletestutil.MakeTestEncodingConfig(distribution.AppModuleBasic{})
+	encCfg := moduletestutil.MakeTestEncodingConfig(dist.AppModuleBasic{})
 	ctx := testCtx.Ctx.WithBlockHeader(cmtproto.Header{Time: time.Now()})
 
 	bankKeeper := distrtestutil.NewMockBankKeeper(ctrl)
@@ -96,10 +153,17 @@ func TestAllocateTokensToManyValidators(t *testing.T) {
 	accountKeeper := distrtestutil.NewMockAccountKeeper(ctrl)
 	mintQuery := distrtestutil.NewMockMintQueryServer(ctrl)
 
+	val0, err := distrtestutil.CreateValidator(valConsPk0, math.NewInt(100))
+	require.NoError(t, err)
+	val1, err := distrtestutil.CreateValidator(valConsPk1, math.NewInt(100))
+	require.NoError(t, err)
+	bondedValidators := []stakingtypes.Validator{val0, val1}
+
 	feeCollectorAcc := authtypes.NewEmptyModuleAccount("fee_collector")
 	accountKeeper.EXPECT().GetModuleAddress("distribution").Return(distrAcc.GetAddress())
 	accountKeeper.EXPECT().GetModuleAccount(gomock.Any(), "fee_collector").Return(feeCollectorAcc)
 	stakingKeeper.EXPECT().ValidatorAddressCodec().Return(address.NewBech32Codec("cosmosvaloper")).AnyTimes()
+	stakingKeeper.EXPECT().GetBondedValidatorsByPower(ctx).Return(bondedValidators).AnyTimes()
 
 	distrKeeper := keeper.NewKeeper(
 		encCfg.Codec,
@@ -118,15 +182,11 @@ func TestAllocateTokensToManyValidators(t *testing.T) {
 
 	// create validator with 50% commission
 	valAddr0 := sdk.ValAddress(valConsAddr0)
-	val0, err := distrtestutil.CreateValidator(valConsPk0, math.NewInt(100))
-	require.NoError(t, err)
 	val0.Commission = stakingtypes.NewCommission(math.LegacyNewDecWithPrec(5, 1), math.LegacyNewDecWithPrec(5, 1), math.LegacyNewDec(0))
 	stakingKeeper.EXPECT().ValidatorByConsAddr(gomock.Any(), sdk.GetConsAddress(valConsPk0)).Return(val0, nil).AnyTimes()
 
 	// create second validator with 0% commission
 	valAddr1 := sdk.ValAddress(valConsAddr1)
-	val1, err := distrtestutil.CreateValidator(valConsPk1, math.NewInt(100))
-	require.NoError(t, err)
 	val1.Commission = stakingtypes.NewCommission(math.LegacyNewDec(0), math.LegacyNewDec(0), math.LegacyNewDec(0))
 	stakingKeeper.EXPECT().ValidatorByConsAddr(gomock.Any(), sdk.GetConsAddress(valConsPk1)).Return(val1, nil).AnyTimes()
 
@@ -223,7 +283,7 @@ func TestAllocateTokensTruncation(t *testing.T) {
 	key := storetypes.NewKVStoreKey(disttypes.StoreKey)
 	storeService := runtime.NewKVStoreService(key)
 	testCtx := testutil.DefaultContextWithDB(t, key, storetypes.NewTransientStoreKey("transient_test"))
-	encCfg := moduletestutil.MakeTestEncodingConfig(distribution.AppModuleBasic{})
+	encCfg := moduletestutil.MakeTestEncodingConfig(dist.AppModuleBasic{})
 	ctx := testCtx.Ctx.WithBlockHeader(cmtproto.Header{Time: time.Now()})
 
 	bankKeeper := distrtestutil.NewMockBankKeeper(ctrl)
@@ -231,10 +291,19 @@ func TestAllocateTokensTruncation(t *testing.T) {
 	accountKeeper := distrtestutil.NewMockAccountKeeper(ctrl)
 	mintQuery := distrtestutil.NewMockMintQueryServer(ctrl)
 
+	val0, err := distrtestutil.CreateValidator(valConsPk0, math.NewInt(100))
+	require.NoError(t, err)
+	val1, err := distrtestutil.CreateValidator(valConsPk1, math.NewInt(100))
+	require.NoError(t, err)
+	val2, err := stakingtypes.NewValidator(sdk.ValAddress(valConsAddr2).String(), valConsPk1, stakingtypes.Description{})
+	require.NoError(t, err)
+	bondedValidators := []stakingtypes.Validator{val0, val1, val2}
+
 	feeCollectorAcc := authtypes.NewEmptyModuleAccount("fee_collector")
 	accountKeeper.EXPECT().GetModuleAddress("distribution").Return(distrAcc.GetAddress())
 	accountKeeper.EXPECT().GetModuleAccount(gomock.Any(), "fee_collector").Return(feeCollectorAcc)
 	stakingKeeper.EXPECT().ValidatorAddressCodec().Return(address.NewBech32Codec("cosmosvaloper")).AnyTimes()
+	stakingKeeper.EXPECT().GetBondedValidatorsByPower(ctx).Return(bondedValidators).AnyTimes()
 
 	distrKeeper := keeper.NewKeeper(
 		encCfg.Codec,
@@ -253,22 +322,16 @@ func TestAllocateTokensTruncation(t *testing.T) {
 
 	// create validator with 10% commission
 	valAddr0 := sdk.ValAddress(valConsAddr0)
-	val0, err := distrtestutil.CreateValidator(valConsPk0, math.NewInt(100))
-	require.NoError(t, err)
 	val0.Commission = stakingtypes.NewCommission(math.LegacyNewDecWithPrec(1, 1), math.LegacyNewDecWithPrec(1, 1), math.LegacyNewDec(0))
 	stakingKeeper.EXPECT().ValidatorByConsAddr(gomock.Any(), sdk.GetConsAddress(valConsPk0)).Return(val0, nil).AnyTimes()
 
 	// create second validator with 10% commission
 	valAddr1 := sdk.ValAddress(valConsAddr1)
-	val1, err := distrtestutil.CreateValidator(valConsPk1, math.NewInt(100))
-	require.NoError(t, err)
 	val1.Commission = stakingtypes.NewCommission(math.LegacyNewDecWithPrec(1, 1), math.LegacyNewDecWithPrec(1, 1), math.LegacyNewDec(0))
 	stakingKeeper.EXPECT().ValidatorByConsAddr(gomock.Any(), sdk.GetConsAddress(valConsPk1)).Return(val1, nil).AnyTimes()
 
 	// create third validator with 10% commission
 	valAddr2 := sdk.ValAddress(valConsAddr2)
-	val2, err := stakingtypes.NewValidator(sdk.ValAddress(valConsAddr2).String(), valConsPk1, stakingtypes.Description{})
-	require.NoError(t, err)
 	val2.Commission = stakingtypes.NewCommission(math.LegacyNewDecWithPrec(1, 1), math.LegacyNewDecWithPrec(1, 1), math.LegacyNewDec(0))
 	stakingKeeper.EXPECT().ValidatorByConsAddr(gomock.Any(), sdk.GetConsAddress(valConsPk2)).Return(val2, nil).AnyTimes()
 
