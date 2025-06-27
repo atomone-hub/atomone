@@ -332,19 +332,15 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 		// Participation = (PEma_t - (PEma_{t-1} * 0.8)/0.2
 		chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
 		params := s.queryGovParams(chainAAPIEndpoint, "tallying")
-		s.T().Logf("Tally Params: %s", params)
 		quorums := s.queryGovQuorums(chainAAPIEndpoint)
 		quorumRange := params.GetParams().QuorumRange
 		quorumMin := sdk.MustNewDecFromStr(quorumRange.Min)
 		quorumMax := sdk.MustNewDecFromStr(quorumRange.Max)
 		currentQuorum := sdk.MustNewDecFromStr(quorums.GetQuorum())
 		quorumPEma := (currentQuorum.Sub(quorumMin)).Quo(quorumMax.Sub(quorumMin))
-
 		paramsFeemarket := s.queryFeemarketParams(chainAAPIEndpoint)
-
 		oldAlpha := paramsFeemarket.Params.Alpha
 		paramsFeemarket.Params.Alpha = oldAlpha.Add(sdk.NewDec(1))
-
 		s.writeFeemarketParamChangeProposal(s.chainA, paramsFeemarket.Params)
 		proposalCounter++
 		submitGovFlags := []string{configFile(proposalParamChangeFilename)}
@@ -356,24 +352,13 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 		quorumsAfter := s.queryGovQuorums(chainAAPIEndpoint)
 		endQuorum := sdk.MustNewDecFromStr(quorumsAfter.GetQuorum())
 		endQuorumPEma := (endQuorum.Sub(quorumMin)).Quo(quorumMax.Sub(quorumMin))
-
-		s.T().Logf("QMin: %s", quorumMin)
-		s.T().Logf("QMax: %s", quorumMax)
-		s.T().Logf("Quorum Before: %s", currentQuorum)
-		s.T().Logf("Quorum PEMA Before: %s", quorumPEma)
-		s.T().Logf("Quorum After: %s", endQuorum)
-		s.T().Logf("Quorum PEMA Before: %s", endQuorumPEma)
 		expectedParticipation := endQuorumPEma.Sub(quorumPEma.Mul(sdk.MustNewDecFromStr("0.8"))).Quo(sdk.MustNewDecFromStr("0.2"))
-		s.T().Logf("Expected Participation: %s", expectedParticipation)
 		proposal, _ := queryGovProposal(chainAAPIEndpoint, proposalCounter)
-		s.T().Logf("Proposal: %s", proposal.Proposal.FinalTallyResult)
 		stakingPool := s.queryStakingPool(chainAAPIEndpoint)
-		s.T().Logf("Bonded Tokens: %s", stakingPool.Pool.BondedTokens)
 		votes := proposal.Proposal.FinalTallyResult.Yes.ToLegacyDec()
 		totalVP := stakingPool.Pool.BondedTokens.ToLegacyDec()
-
 		actualParticipation := votes.Quo(totalVP)
-		s.T().Logf("Actual Participation: %s", actualParticipation)
+
 		s.Require().True(actualParticipation.Equal(expectedParticipation))
 		s.Require().Equal(quorumsAfter.LawQuorum, quorums.LawQuorum)
 		s.Require().Equal(quorumsAfter.ConstitutionAmendmentQuorum, quorums.ConstitutionAmendmentQuorum)
@@ -386,15 +371,12 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 		chainAAPIEndpoint := fmt.Sprintf("http://%s",
 			s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
 		params := s.queryGovParams(chainAAPIEndpoint, "tallying")
-		s.T().Logf("Tally Params: %s", params)
 		quorums := s.queryGovQuorums(chainAAPIEndpoint)
-		// pEma = (Q - Qmin) / (Qmax - Qmin)
 		lawQuorumRange := params.GetParams().LawQuorumRange
 		lawQuorumMin := sdk.MustNewDecFromStr(lawQuorumRange.Min)
 		lawQuorumMax := sdk.MustNewDecFromStr(lawQuorumRange.Max)
 		currentLawQuorum := sdk.MustNewDecFromStr(quorums.GetLawQuorum())
 		lawQuorumPEma := (currentLawQuorum.Sub(lawQuorumMin)).Quo(lawQuorumMax.Sub(lawQuorumMin))
-
 		s.writeGovLawProposal(s.chainA)
 		proposalCounter++
 		submitGovFlags := []string{configFile(proposalLawFilename)}
@@ -408,23 +390,13 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 		quorumsAfter := s.queryGovQuorums(chainAAPIEndpoint)
 		endLawQuorum := sdk.MustNewDecFromStr(quorumsAfter.GetLawQuorum())
 		endLawQuorumPEma := (endLawQuorum.Sub(lawQuorumMin)).Quo(lawQuorumMax.Sub(lawQuorumMin))
-
-		s.T().Logf("QMin: %s", lawQuorumMin)
-		s.T().Logf("QMax: %s", lawQuorumMax)
-		s.T().Logf("lawQuorum Before: %s", currentLawQuorum)
-		s.T().Logf("lawQuorum PEMA Before: %s", lawQuorumPEma)
-		s.T().Logf("lawQuorum After: %s", endLawQuorum)
-		s.T().Logf("lawQuorum PEMA Before: %s", endLawQuorumPEma)
 		expectedParticipation := endLawQuorumPEma.Sub(lawQuorumPEma.Mul(sdk.MustNewDecFromStr("0.8"))).Quo(sdk.MustNewDecFromStr("0.2"))
-		s.T().Logf("Expected Participation: %s", expectedParticipation)
 		proposal, _ := queryGovProposal(chainAAPIEndpoint, proposalCounter)
-		s.T().Logf("Proposal: %s", proposal.Proposal.FinalTallyResult)
 		stakingPool := s.queryStakingPool(chainAAPIEndpoint)
-		s.T().Logf("Bonded Tokens: %s", stakingPool.Pool.BondedTokens)
 		votes := proposal.Proposal.FinalTallyResult.Yes.ToLegacyDec()
 		totalVP := stakingPool.Pool.BondedTokens.ToLegacyDec()
 		actualParticipation := votes.Quo(totalVP)
-		s.T().Logf("Actual Participation: %s", actualParticipation)
+
 		s.Require().True(actualParticipation.Equal(expectedParticipation))
 		s.Require().Equal(quorumsAfter.Quorum, quorums.Quorum)
 		s.Require().Equal(quorumsAfter.ConstitutionAmendmentQuorum,
@@ -437,20 +409,15 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 		// Participation = (PEma_t - (PEma_{t-1} * 0.8)/0.2
 		chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
 		params := s.queryGovParams(chainAAPIEndpoint, "tallying")
-		s.T().Logf("Tally Params: %s", params)
 		quorums := s.queryGovQuorums(chainAAPIEndpoint)
-		// pEma = (Q - Qmin) / (Qmax - Qmin)
 		constitutionAmendmentQuorumRange := params.GetParams().ConstitutionAmendmentQuorumRange
 		constitutionAmendmentQuorumMin := sdk.MustNewDecFromStr(constitutionAmendmentQuorumRange.Min)
 		constitutionAmendmentQuorumMax := sdk.MustNewDecFromStr(constitutionAmendmentQuorumRange.Max)
 		currentConstitutionAmendmentQuorum := sdk.MustNewDecFromStr(quorums.GetConstitutionAmendmentQuorum())
 		constitutionAmendmentQuorumPEma := (currentConstitutionAmendmentQuorum.Sub(constitutionAmendmentQuorumMin)).Quo(constitutionAmendmentQuorumMax.Sub(constitutionAmendmentQuorumMin))
-
-		newConstitution := "New test constitution"
+		newConstitution := "New test constitution 2"
 		amendmentMsg := s.generateConstitutionAmendment(s.chainA, newConstitution)
-
 		s.writeGovConstitutionAmendmentProposal(s.chainA, amendmentMsg.Amendment)
-		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
 		proposalCounter++
 		submitGovFlags := []string{configFile(proposalConstitutionAmendmentFilename)}
 		depositGovFlags := []string{strconv.Itoa(proposalCounter), depositAmount.String()}
@@ -461,23 +428,13 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 		quorumsAfter := s.queryGovQuorums(chainAAPIEndpoint)
 		endConstitutionAmendmentQuorum := sdk.MustNewDecFromStr(quorumsAfter.GetConstitutionAmendmentQuorum())
 		endConstitutionAmendmentQuorumPEma := (endConstitutionAmendmentQuorum.Sub(constitutionAmendmentQuorumMin)).Quo(constitutionAmendmentQuorumMax.Sub(constitutionAmendmentQuorumMin))
-
-		s.T().Logf("QMin: %s", constitutionAmendmentQuorumMin)
-		s.T().Logf("QMax: %s", constitutionAmendmentQuorumMax)
-		s.T().Logf("constitutionAmendmentQuorum Before: %s", currentConstitutionAmendmentQuorum)
-		s.T().Logf("constitutionAmendmentQuorum PEMA Before: %s", constitutionAmendmentQuorumPEma)
-		s.T().Logf("constitutionAmendmentQuorum After: %s", endConstitutionAmendmentQuorum)
-		s.T().Logf("constitutionAmendmentQuorum PEMA Before: %s", endConstitutionAmendmentQuorumPEma)
 		expectedParticipation := endConstitutionAmendmentQuorumPEma.Sub(constitutionAmendmentQuorumPEma.Mul(sdk.MustNewDecFromStr("0.8"))).Quo(sdk.MustNewDecFromStr("0.2"))
-		s.T().Logf("Expected Participation: %s", expectedParticipation)
 		proposal, _ := queryGovProposal(chainAAPIEndpoint, proposalCounter)
-		s.T().Logf("Proposal: %s", proposal.Proposal.FinalTallyResult)
 		stakingPool := s.queryStakingPool(chainAAPIEndpoint)
-		s.T().Logf("Bonded Tokens: %s", stakingPool.Pool.BondedTokens)
 		votes := proposal.Proposal.FinalTallyResult.Yes.ToLegacyDec()
 		totalVP := stakingPool.Pool.BondedTokens.ToLegacyDec()
 		actualParticipation := votes.Quo(totalVP)
-		s.T().Logf("Actual Participation: %s", actualParticipation)
+
 		s.Require().True(actualParticipation.Equal(expectedParticipation))
 		s.Require().Equal(quorumsAfter.Quorum, quorums.Quorum)
 		s.Require().Equal(quorumsAfter.LawQuorum, quorums.LawQuorum)
