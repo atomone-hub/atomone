@@ -68,7 +68,10 @@ func InitGenesis(ctx sdk.Context, ak types.AccountKeeper, bk types.BankKeeper, k
 			quorumCheckEntry := v1.NewQuorumCheckQueueEntry(quorumTimeoutTime, data.Params.QuorumCheckCount)
 			quorum := false
 			if ctx.BlockTime().After(quorumTimeoutTime) {
-				quorum = k.HasReachedQuorum(ctx, *proposal)
+				quorum, err = k.HasReachedQuorum(ctx, *proposal)
+				if err != nil {
+					panic(fmt.Sprintf("HasReachedQuorum returned an error: %v", err))
+				}
 				if !quorum {
 					// since we don't export the state of the quorum check queue, we can't know how many checks were actually
 					// done. However, in order to trigger a vote time extension, it is enough to have QuorumChecksDone > 0 to

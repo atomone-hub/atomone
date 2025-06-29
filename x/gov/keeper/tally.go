@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"fmt"
-
 	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -13,10 +11,17 @@ import (
 
 // Tally iterates over the votes and updates the tally of a proposal based on the voting power of the
 // voters
-func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, burnDeposits bool, participation math.LegacyDec, tallyResults v1.TallyResult) {
+// CONTRACT: passes is always false when err!=nil
+func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, burnDeposits bool, participation math.LegacyDec, tallyResults v1.TallyResult, err error) {
 	// fetch all the bonded validators
-	currValidators := keeper.getBondedValidatorsByAddress(ctx)
-	totalVotingPower, results := keeper.tallyVotes(ctx, proposal, currValidators, true)
+	currValidators, err := keeper.getBondedValidatorsByAddress(ctx)
+	if err != nil {
+		return false, false, math.LegacyZeroDec(), tallyResults, err
+	}
+	totalVotingPower, results, err := keeper.tallyVotes(ctx, proposal, currValidators, true)
+	if err != nil {
+		return false, false, math.LegacyZeroDec(), tallyResults, err
+	}
 
 	params := keeper.GetParams(ctx)
 	tallyResults = v1.NewTallyResultFromMap(results)
@@ -24,19 +29,18 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 	// If there is no staked coins, the proposal fails
 	totalBonded, err := keeper.sk.TotalBondedTokens(ctx)
 	if err != nil {
-		// FIXME return err
-		return false, false, math.LegacyZeroDec(), tallyResults
+		return false, false, math.LegacyZeroDec(), tallyResults, err
 	}
 
 	if totalBonded.IsZero() {
-		return false, false, math.LegacyZeroDec(), tallyResults
+		return false, false, math.LegacyZeroDec(), tallyResults, nil
 	}
 
 	// If there is not enough quorum of votes, the proposal fails
 	percentVoting := totalVotingPower.Quo(math.LegacyNewDecFromInt(totalBonded))
 	quorum, threshold := keeper.getQuorumAndThreshold(ctx, proposal)
 	if percentVoting.LT(quorum) {
-		return false, params.BurnVoteQuorum, percentVoting, tallyResults
+		return false, params.BurnVoteQuorum, percentVoting, tallyResults, nil
 	}
 
 	// Compute non-abstaining voting power, aka active voting power
@@ -44,13 +48,13 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 
 	// If no one votes (everyone abstains), proposal fails
 	if activeVotingPower.IsZero() {
-		return false, false, percentVoting, tallyResults
+		return false, false, percentVoting, tallyResults, nil
 	}
 
 	// If more than `threshold` of non-abstaining voters vote Yes, proposal passes.
 	yesPercent := results[v1.OptionYes].Quo(activeVotingPower)
 	if yesPercent.GT(threshold) {
-		return true, false, percentVoting, tallyResults
+		return true, false, percentVoting, tallyResults, nil
 	}
 
 	// If more than `burnDepositNoThreshold` of non-abstaining voters vote No,
@@ -58,27 +62,25 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 	burnDepositNoThreshold := math.LegacyMustNewDecFromStr(params.BurnDepositNoThreshold)
 	noPercent := results[v1.OptionNo].Quo(activeVotingPower)
 	if noPercent.GT(burnDepositNoThreshold) {
-		return false, true, percentVoting, tallyResults
+		return false, true, percentVoting, tallyResults, nil
 	}
 
 	// If less than `burnDepositNoThreshold` of non-abstaining voters vote No,
 	// proposal is rejected but deposit is not burned.
-	return false, false, percentVoting, tallyResults
+	return false, false, percentVoting, tallyResults, nil
 }
 
 // HasReachedQuorum returns whether or not a proposal has reached quorum
 // this is just a stripped down version of the Tally function above
-func (keeper Keeper) HasReachedQuorum(ctx sdk.Context, proposal v1.Proposal) bool {
+func (keeper Keeper) HasReachedQuorum(ctx sdk.Context, proposal v1.Proposal) (bool, error) {
 	// If there is no staked coins, the proposal has not reached quorum
 	totalBonded, err := keeper.sk.TotalBondedTokens(ctx)
 	if err != nil {
-		// FIXME return err
-		keeper.Logger(ctx).Error(fmt.Sprintf("error getting total bonded tokens: %s", err.Error()))
-		return false
+		return false, err
 	}
 
 	if totalBonded.IsZero() {
-		return false
+		return false, nil
 	}
 
 	/* DISABLED on AtomOne - no possible increase of computation speed by
@@ -103,24 +105,31 @@ func (keeper Keeper) HasReachedQuorum(ctx sdk.Context, proposal v1.Proposal) boo
 	*/
 
 	// voting power of validators does not reach quorum, let's tally all votes
-	currValidators := keeper.getBondedValidatorsByAddress(ctx)
-	totalVotingPower, _ := keeper.tallyVotes(ctx, proposal, currValidators, false)
+	currValidators, err := keeper.getBondedValidatorsByAddress(ctx)
+	if err != nil {
+		return false, err
+	}
+
+	totalVotingPower, _, err := keeper.tallyVotes(ctx, proposal, currValidators, false)
+	if err != nil {
+		return false, err
+	}
 
 	// check and return whether or not the proposal has reached quorum
 	percentVoting := totalVotingPower.Quo(math.LegacyNewDecFromInt(totalBonded))
 	quorum, _ := keeper.getQuorumAndThreshold(ctx, proposal)
-	return percentVoting.GTE(quorum)
+	return percentVoting.GTE(quorum), nil
 }
 
 // getBondedValidatorsByAddress fetches all the bonded validators and return
 // them in map using their operator address as the key.
-func (keeper Keeper) getBondedValidatorsByAddress(ctx sdk.Context) map[string]stakingtypes.ValidatorI {
+func (keeper Keeper) getBondedValidatorsByAddress(ctx sdk.Context) (map[string]stakingtypes.ValidatorI, error) {
 	vals := make(map[string]stakingtypes.ValidatorI)
-	keeper.sk.IterateBondedValidatorsByPower(ctx, func(index int64, validator stakingtypes.ValidatorI) (stop bool) {
+	err := keeper.sk.IterateBondedValidatorsByPower(ctx, func(index int64, validator stakingtypes.ValidatorI) (stop bool) {
 		vals[validator.GetOperator()] = validator
 		return false
 	})
-	return vals
+	return vals, err
 }
 
 // tallyVotes returns the total voting power and tally results of the votes
@@ -130,7 +139,7 @@ func (keeper Keeper) getBondedValidatorsByAddress(ctx sdk.Context) map[string]st
 func (keeper Keeper) tallyVotes(
 	ctx sdk.Context, proposal v1.Proposal,
 	currValidators map[string]stakingtypes.ValidatorI, isFinal bool,
-) (totalVotingPower math.LegacyDec, results map[v1.VoteOption]math.LegacyDec) {
+) (totalVotingPower math.LegacyDec, results map[v1.VoteOption]math.LegacyDec, err error) {
 	totalVotingPower = math.LegacyZeroDec()
 	if isFinal {
 		results = make(map[v1.VoteOption]math.LegacyDec)
@@ -142,7 +151,7 @@ func (keeper Keeper) tallyVotes(
 	keeper.IterateVotes(ctx, proposal.Id, func(vote v1.Vote) bool {
 		voter := sdk.MustAccAddressFromBech32(vote.Voter)
 		// iterate over all delegations from voter, deduct from any delegated-to validators
-		keeper.sk.IterateDelegations(ctx, voter, func(index int64, delegation stakingtypes.DelegationI) (stop bool) {
+		err = keeper.sk.IterateDelegations(ctx, voter, func(index int64, delegation stakingtypes.DelegationI) (stop bool) {
 			valAddrStr := delegation.GetValidatorAddr()
 
 			if val, ok := currValidators[valAddrStr]; ok {
@@ -161,12 +170,18 @@ func (keeper Keeper) tallyVotes(
 
 			return false
 		})
+		if err != nil {
+			return true
+		}
 
 		if isFinal {
 			keeper.deleteVote(ctx, vote.ProposalId, voter)
 		}
 		return false
 	})
+	if err != nil {
+		return totalVotingPower, results, err
+	}
 
 	/* DISABLED on AtomOne - Voting can only be done with your own stake
 	// iterate over the validators again to tally their voting power
@@ -187,7 +202,7 @@ func (keeper Keeper) tallyVotes(
 	}
 	*/
 
-	return totalVotingPower, results
+	return totalVotingPower, results, nil
 }
 
 // getQuorumAndThreshold returns the appropriate quorum and threshold according
