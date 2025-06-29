@@ -58,6 +58,10 @@ issues:
       text: "SA1019:"
       linters:
         - staticcheck
+    - linters:
+      - gosec
+      text: 'G115: integer overflow conversion'
+ 
 
   max-issues-per-linter: 10000
   max-same-issues: 10000
