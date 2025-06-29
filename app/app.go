@@ -14,6 +14,9 @@ import (
 	// unnamed import of statik for swagger UI support
 	_ "github.com/atomone-hub/atomone/client/docs/statik"
 
+	dbm "github.com/cosmos/cosmos-db"
+	"github.com/cosmos/gogoproto/proto"
+
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
 	"cosmossdk.io/client/v2/autocli"
@@ -23,7 +26,6 @@ import (
 	"cosmossdk.io/x/tx/signing"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	abci "github.com/cometbft/cometbft/abci/types"
-	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/grpc/cmtservice"
@@ -50,7 +52,6 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
-	"github.com/cosmos/gogoproto/proto"
 	ibckeeper "github.com/cosmos/ibc-go/v10/modules/core/keeper"
 	ibctesting "github.com/cosmos/ibc-go/v10/testing"
 
@@ -191,6 +192,10 @@ func NewAtomOneApp(
 	// must be passed by reference here.
 	app.mm = module.NewManager(appModules(app, appCodec, txConfig)...)
 
+	// NOTE: upgrade module is required to be prioritized
+	app.mm.SetOrderPreBlockers(
+		upgradetypes.ModuleName,
+	)
 	// During begin block slashing happens after distr.BeginBlocker so that
 	// there is nothing left over in the validator fee pool, so as to keep the
 	// CanWithdrawInvariant invariant.
@@ -291,6 +296,7 @@ func NewAtomOneApp(
 	app.SetAnteHandler(anteHandler)
 	app.SetPostHandler(postHandler)
 	app.SetInitChainer(app.InitChainer)
+	app.SetPreBlocker(app.PreBlocker)
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetEndBlocker(app.EndBlocker)
 
@@ -318,6 +324,11 @@ func (a *AtomOneApp) DefaultGenesis() map[string]json.RawMessage {
 // BasicModuleManager returns the BasicModuleManager of the app.
 func (app *AtomOneApp) BasicModuleManager() module.BasicManager {
 	return app.bmm
+}
+
+// PreBlocker application updates every pre block
+func (app *AtomOneApp) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) (*sdk.ResponsePreBlock, error) {
+	return app.mm.PreBlock(ctx)
 }
 
 // BeginBlocker application updates every begin block

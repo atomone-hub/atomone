@@ -92,12 +92,12 @@ func (s *IntegrationTestSuite) execEncode(
 	}
 
 	var encoded string
-	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, 0, func(stdOut []byte, stdErr []byte) bool {
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, 0, func(stdOut []byte, stdErr []byte) error {
 		if stdErr != nil {
-			return false
+			return fmt.Errorf("stdErr: %s", string(stdErr))
 		}
 		encoded = strings.TrimSuffix(string(stdOut), "\n")
-		return true
+		return nil
 	})
 	s.T().Logf("successfully encode with %v", txPath)
 	return encoded
@@ -124,12 +124,12 @@ func (s *IntegrationTestSuite) execDecode(
 	}
 
 	var decoded string
-	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, 0, func(stdOut []byte, stdErr []byte) bool {
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, 0, func(stdOut []byte, stdErr []byte) error {
 		if stdErr != nil {
-			return false
+			return fmt.Errorf("stderr=%s", stdErr)
 		}
 		decoded = strings.TrimSuffix(string(stdOut), "\n")
-		return true
+		return nil
 	})
 	s.T().Logf("successfully decode %v", txPath)
 	return decoded
@@ -676,7 +676,7 @@ func (s *IntegrationTestSuite) execWithdrawReward(
 	s.T().Logf("Successfully withdrew distribution rewards for delegator %s from validator %s", delegatorAddress, validatorAddress)
 }
 
-func (s *IntegrationTestSuite) executeAtomoneTxCommand(ctx context.Context, c *chain, atomoneCommand []string, valIdx int, validation func([]byte, []byte) bool) int {
+func (s *IntegrationTestSuite) executeAtomoneTxCommand(ctx context.Context, c *chain, atomoneCommand []string, valIdx int, validation func([]byte, []byte) error) int {
 	if validation == nil {
 		validation = s.defaultExecValidation(s.chainA, 0, nil)
 	}
@@ -704,10 +704,10 @@ func (s *IntegrationTestSuite) executeAtomoneTxCommand(ctx context.Context, c *c
 
 	stdOut := outBuf.Bytes()
 	stdErr := errBuf.Bytes()
-	if !validation(stdOut, stdErr) {
-		s.Require().FailNowf("Exec validation failed", "stdout: %s, stderr: %s",
-			string(stdOut), string(stdErr))
-	}
+	s.Require().NoError(validation(stdOut, stdErr),
+		"Exec validation failed stdout: %s, stderr: %s",
+		string(stdOut), string(stdErr))
+
 	var txResp sdk.TxResponse
 	if err := s.cdc.UnmarshalJSON(stdOut, &txResp); err != nil {
 		return 0
@@ -767,61 +767,34 @@ func (s *IntegrationTestSuite) executeHermesCommand(ctx context.Context, hermesC
 	return stdOut, nil
 }
 
-func (s *IntegrationTestSuite) expectErrExecValidation(chain *chain, valIdx int, expectErr bool) func([]byte, []byte) bool {
-	return func(stdOut []byte, stdErr []byte) bool {
-		var txResp sdk.TxResponse
-		err := s.cdc.UnmarshalJSON(stdOut, &txResp)
-		if !expectErr {
-			s.Require().NoError(err, "stdOut='%s' stdErr='%s'", string(stdOut), string(stdErr))
+func (s *IntegrationTestSuite) expectErrExecValidation(chain *chain, valIdx int, expectErr bool) func([]byte, []byte) error {
+	return func(stdOut []byte, stdErr []byte) error {
+		err := s.defaultExecValidation(chain, valIdx, nil)(stdOut, stdErr)
+		if expectErr && err != nil {
+			return nil
 		}
-
-		endpoint := fmt.Sprintf("http://%s", s.valResources[chain.id][valIdx].GetHostPort("1317/tcp"))
-		// wait for the tx to be committed on chain
-		s.Require().Eventuallyf(
-			func() bool {
-				_, err := s.queryAtomOneTx(endpoint, txResp.TxHash, nil)
-				if isErrNotFound(err) {
-					// tx not processed yet, continue
-					return false
-				}
-				gotErr := err != nil
-				return gotErr == expectErr
-			},
-			time.Minute,
-			time.Second,
-			"stdOut='%s', stdErr='%s'",
-			string(stdOut), string(stdErr),
-		)
-		return true
+		return err
 	}
 }
 
-func (s *IntegrationTestSuite) defaultExecValidation(chain *chain, valIdx int, msgResp codec.ProtoMarshaler) func([]byte, []byte) bool {
-	return func(stdOut []byte, stdErr []byte) bool {
+func (s *IntegrationTestSuite) defaultExecValidation(chain *chain, valIdx int, msgResp codec.ProtoMarshaler) func([]byte, []byte) error {
+	return func(stdOut []byte, stdErr []byte) error {
 		var txResp sdk.TxResponse
 		if err := s.cdc.UnmarshalJSON(stdOut, &txResp); err != nil {
-			return false
+			return err
 		}
 		if strings.Contains(txResp.String(), "code: 0") || txResp.Code == 0 {
 			endpoint := fmt.Sprintf("http://%s", s.valResources[chain.id][valIdx].GetHostPort("1317/tcp"))
-			s.Require().Eventually(
-				func() bool {
-					_, err := s.queryAtomOneTx(endpoint, txResp.TxHash, msgResp)
-					if isErrNotFound(err) {
-						// tx not processed yet, continue
-						return false
-					}
-					s.Require().NoError(err)
-					return true
-				},
-				time.Minute,
-				time.Second,
-				"stdOut: %s, stdErr: %s",
-				string(stdOut), string(stdErr),
-			)
-			return true
+			for i := 0; i < 15; i++ {
+				time.Sleep(time.Second)
+				_, err := s.queryAtomOneTx(endpoint, txResp.TxHash, msgResp)
+				if isErrNotFound(err) {
+					continue
+				}
+				return err
+			}
 		}
-		return false
+		return fmt.Errorf("tx error : %s", txResp.String())
 	}
 }
 
@@ -908,10 +881,10 @@ func (s *IntegrationTestSuite) signTxFileOnline(chain *chain, valIdx int, from s
 
 	var output []byte
 	var erroutput []byte
-	captureOutput := func(stdout []byte, stderr []byte) bool {
+	captureOutput := func(stdout []byte, stderr []byte) error {
 		output = stdout
 		erroutput = stderr
-		return true
+		return nil
 	}
 
 	s.executeAtomoneTxCommand(ctx, chain, atomoneCommand, valIdx, captureOutput)
@@ -943,10 +916,10 @@ func (s *IntegrationTestSuite) broadcastTxFile(chain *chain, valIdx int, from st
 
 	var output []byte
 	var erroutput []byte
-	captureOutput := func(stdout []byte, stderr []byte) bool {
+	captureOutput := func(stdout []byte, stderr []byte) error {
 		output = stdout
 		erroutput = stderr
-		return true
+		return nil
 	}
 
 	s.executeAtomoneTxCommand(ctx, chain, broadcastTxCmd, valIdx, captureOutput)

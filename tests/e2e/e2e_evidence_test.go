@@ -34,7 +34,7 @@ func (s *IntegrationTestSuite) execQueryEvidence(c *chain, valIdx int, hash stri
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	s.T().Logf("querying evidence %s on chain %s", hash, c.id)
+	s.T().Logf("querying evidence %X on chain %s", hash, c.id)
 
 	atomoneCommand := []string{
 		atomonedBinary,
@@ -43,11 +43,11 @@ func (s *IntegrationTestSuite) execQueryEvidence(c *chain, valIdx int, hash stri
 		hash,
 	}
 
-	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, func(stdOut []byte, stdErr []byte) bool {
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, func(stdOut []byte, stdErr []byte) error {
 		// TODO parse evidence after fix the SDK
 		// https://github.com/cosmos/cosmos-sdk/issues/13444
 		// s.Require().NoError(yaml.Unmarshal(stdOut, &res))
-		return true
+		return nil
 	})
 	return res
 }
