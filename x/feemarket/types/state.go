@@ -3,9 +3,8 @@ package types
 import (
 	fmt "fmt"
 
-	"cosmossdk.io/log"
-
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/log"
 	"cosmossdk.io/math"
 )
 
