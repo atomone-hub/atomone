@@ -15,7 +15,6 @@ linters:
   enable:
     - dogsled
     - errcheck
-    - exportloopref
     - gci
     - goconst
     - gocritic
