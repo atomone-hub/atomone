@@ -38,8 +38,8 @@ func (s *IntegrationTestSuite) testGovSoftwareUpgrade() {
 		senderAddress, _ := s.chainA.validators[0].keyInfo.GetAddress()
 		sender := senderAddress.String()
 		height := s.getLatestBlockHeight(s.chainA, 0)
-		proposalHeight := height + govProposalBlockBuffer
-		s.writeGovSoftwareUpgradeProposal(s.chainA, proposalHeight)
+		upgradeHeight := height + govProposalBlockBuffer
+		s.writeGovSoftwareUpgradeProposal(s.chainA, upgradeHeight)
 		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
 		proposalCounter++
 
@@ -50,10 +50,10 @@ func (s *IntegrationTestSuite) testGovSoftwareUpgrade() {
 
 		res := s.queryUpgradePlan(chainAAPIEndpoint)
 		s.Require().Equal("v2", res.Plan.Name)
-		s.Require().Equal(proposalHeight, res.Plan.Height)
+		s.Require().Equal(upgradeHeight, res.Plan.Height)
 
-		s.verifyChainHaltedAtUpgradeHeight(s.chainA, 0, proposalHeight)
-		s.T().Logf("Successfully halted chain at height %d", proposalHeight)
+		s.verifyChainHaltedAtUpgradeHeight(s.chainA, 0, upgradeHeight)
+		s.T().Logf("Successfully halted chain at height %d", upgradeHeight)
 
 		s.TearDownSuite()
 

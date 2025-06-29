@@ -515,6 +515,7 @@ func (s *IntegrationTestSuite) execUnbondDelegation(c *chain, valIdx int, amount
 		amount,
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, delegatorAddr),
 		fmt.Sprintf("--%s=%s", flags.FlagChainID, c.id),
+		fmt.Sprintf("--%s=%s", flags.FlagGas, "300000"), // default 200000 isn't enough
 		fmt.Sprintf("--%s=%s", flags.FlagFees, standardFees.String()),
 		"--keyring-backend=test",
 		fmt.Sprintf("--%s=%s", flags.FlagHome, home),
