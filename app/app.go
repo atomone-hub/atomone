@@ -225,8 +225,6 @@ func NewAtomOneApp(
 			govtypes.ModuleName: gov.NewAppModuleBasic(
 				[]govclient.ProposalHandler{
 					paramsChangeProposalHandler,
-					upgradeProposalHandler,
-					cancelUpgradeProposalHandler,
 				},
 			),
 		})
