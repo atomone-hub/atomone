@@ -12,6 +12,7 @@ import (
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkgrpc "github.com/cosmos/cosmos-sdk/types/grpc"
 	"github.com/cosmos/cosmos-sdk/types/tx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	authvesting "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
@@ -331,7 +332,7 @@ func (s *IntegrationTestSuite) queryFeemarketState(endpoint string) feemarkettyp
 }
 
 func (s *IntegrationTestSuite) queryFeemarketStateAtHeight(endpoint string, height string) feemarkettypes.StateResponse {
-	headers := addHeader(nil, "x-cosmos-block-height", height)
+	headers := addHeader(nil, sdkgrpc.GRPCBlockHeightHeader, height)
 	body, err := httpGetWithHeader(fmt.Sprintf("%s/atomone/feemarket/v1/state", endpoint), headers)
 	s.Require().NoError(err)
 	var res feemarkettypes.StateResponse

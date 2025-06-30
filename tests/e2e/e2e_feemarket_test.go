@@ -2,7 +2,6 @@ package e2e
 
 import (
 	"fmt"
-	"strconv"
 	"time"
 
 	feemarkettypes "github.com/atomone-hub/atomone/x/feemarket/types"
@@ -107,9 +106,10 @@ func (s *IntegrationTestSuite) testFeemarketGasPriceChange() {
 			time.Second,
 		)
 
-		txHeight := s.execBankMultiSend(s.chainA, valIdx, sender.String(),
+		_ = s.execBankMultiSend(s.chainA, valIdx, sender.String(),
 			destAccountsMultisend, tokenAmount.String(), false)
-		StateAfterMultisendTx := s.queryFeemarketStateAtHeight(chainEndpoint, strconv.Itoa(txHeight))
+		time.Sleep(2 * time.Second) // wait for block
+		StateAfterMultisendTx := s.queryFeemarketState(chainEndpoint)
 
 		oldFee := StateBeforeMultisendTx.State.BaseGasPrice
 		newFee := StateAfterMultisendTx.State.BaseGasPrice
