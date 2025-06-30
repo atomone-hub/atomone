@@ -8,6 +8,8 @@ import (
 
 	"cosmossdk.io/math"
 
+	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
@@ -32,8 +34,9 @@ func init() {
 func TestMsgDepositGetSignBytes(t *testing.T) {
 	addr := sdk.AccAddress("addr1")
 	msg := v1.NewMsgDeposit(addr, 0, coinsPos)
-	res := msg.GetSignBytes()
-
+	pc := codec.NewProtoCodec(types.NewInterfaceRegistry())
+	res, err := pc.MarshalAminoJSON(msg)
+	require.NoError(t, err)
 	expected := `{"type":"atomone/v1/MsgDeposit","value":{"amount":[{"amount":"1000","denom":"stake"}],"depositor":"cosmos1v9jxgu33kfsgr5","proposal_id":"0"}}`
 	require.Equal(t, expected, string(res))
 }
@@ -108,8 +111,8 @@ func TestMsgVoteWeighted(t *testing.T) {
 			v1.NewWeightedVoteOption(v1.OptionAbstain, math.LegacyNewDec(1)),
 		}, "", false},
 		{0, addrs[0], v1.WeightedVoteOptions{ // duplicate option
-			v1.NewWeightedVoteOption(v1.OptionYes, sdk.NewDecWithPrec(5, 1)),
-			v1.NewWeightedVoteOption(v1.OptionYes, sdk.NewDecWithPrec(5, 1)),
+			v1.NewWeightedVoteOption(v1.OptionYes, math.LegacyNewDecWithPrec(5, 1)),
+			v1.NewWeightedVoteOption(v1.OptionYes, math.LegacyNewDecWithPrec(5, 1)),
 		}, "", false},
 		{0, addrs[0], v1.WeightedVoteOptions{ // zero weight
 			v1.NewWeightedVoteOption(v1.OptionYes, math.LegacyNewDec(0)),
@@ -120,7 +123,7 @@ func TestMsgVoteWeighted(t *testing.T) {
 		{0, addrs[0], v1.WeightedVoteOptions{}, "", false},
 		{0, addrs[0], v1.NewNonSplitVoteOption(v1.VoteOption(0x13)), "", false},
 		{0, addrs[0], v1.WeightedVoteOptions{ // weight sum <1
-			v1.NewWeightedVoteOption(v1.OptionYes, sdk.NewDecWithPrec(5, 1)),
+			v1.NewWeightedVoteOption(v1.OptionYes, math.LegacyNewDecWithPrec(5, 1)),
 		}, "", false},
 	}
 
@@ -175,6 +178,7 @@ func TestMsgSubmitProposal_ValidateBasic(t *testing.T) {
 
 // this tests that Amino JSON MsgSubmitProposal.GetSignBytes() still works with Content as Any using the ModuleCdc
 func TestMsgSubmitProposal_GetSignBytes(t *testing.T) {
+	pc := codec.NewProtoCodec(types.NewInterfaceRegistry())
 	testcases := []struct {
 		name      string
 		proposal  []sdk.Msg
@@ -187,14 +191,14 @@ func TestMsgSubmitProposal_GetSignBytes(t *testing.T) {
 			[]sdk.Msg{v1.NewMsgVote(addrs[0], 1, v1.OptionYes, "")},
 			"gov/MsgVote",
 			"Proposal for a governance vote msg",
-			`{"type":"atomone/v1/MsgSubmitProposal","value":{"initial_deposit":[],"messages":[{"type":"atomone/v1/MsgVote","value":{"option":1,"proposal_id":"1","voter":"cosmos1w3jhxap3gempvr"}}],"summary":"Proposal for a governance vote msg","title":"gov/MsgVote"}}`,
+			`{"type":"atomone/v1/MsgSubmitProposal","value":{"initial_deposit":null,"messages":[{"type":"atomone/v1/MsgVote","value":{"option":1,"proposal_id":"1","voter":"cosmos1w3jhxap3gempvr"}}],"summary":"Proposal for a governance vote msg","title":"gov/MsgVote"}}`,
 		},
 		{
 			"MsgSend",
 			[]sdk.Msg{banktypes.NewMsgSend(addrs[0], addrs[0], sdk.NewCoins())},
 			"bank/MsgSend",
 			"Proposal for a bank msg send",
-			fmt.Sprintf(`{"type":"atomone/v1/MsgSubmitProposal","value":{"initial_deposit":[],"messages":[{"type":"cosmos-sdk/MsgSend","value":{"amount":[],"from_address":"%s","to_address":"%s"}}],"summary":"Proposal for a bank msg send","title":"bank/MsgSend"}}`, addrs[0], addrs[0]),
+			fmt.Sprintf(`{"type":"atomone/v1/MsgSubmitProposal","value":{"initial_deposit":null,"messages":[{"type":"cosmos-sdk/MsgSend","value":{"amount":[],"from_address":"%s","to_address":"%s"}}],"summary":"Proposal for a bank msg send","title":"bank/MsgSend"}}`, addrs[0], addrs[0]),
 		},
 	}
 
@@ -202,10 +206,8 @@ func TestMsgSubmitProposal_GetSignBytes(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			msg, err := v1.NewMsgSubmitProposal(tc.proposal, sdk.NewCoins(), sdk.AccAddress{}.String(), "", tc.title, tc.summary)
 			require.NoError(t, err)
-			var bz []byte
-			require.NotPanics(t, func() {
-				bz = msg.GetSignBytes()
-			})
+			bz, err := pc.MarshalAminoJSON(msg)
+			require.NoError(t, err)
 			require.Equal(t, tc.expSignBz, string(bz))
 		})
 	}

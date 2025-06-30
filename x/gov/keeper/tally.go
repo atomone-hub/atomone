@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -20,9 +22,13 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 	tallyResults = v1.NewTallyResultFromMap(results)
 
 	// If there is no staked coins, the proposal fails
-	totalBonded := keeper.sk.TotalBondedTokens(ctx)
+	totalBonded, err := keeper.sk.TotalBondedTokens(ctx)
+	if err != nil {
+		return false, false, math.LegacyZeroDec(), tallyResults
+	}
+
 	if totalBonded.IsZero() {
-		return false, false, sdk.ZeroDec(), tallyResults
+		return false, false, math.LegacyZeroDec(), tallyResults
 	}
 
 	// If there is not enough quorum of votes, the proposal fails
@@ -48,7 +54,7 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 
 	// If more than `burnDepositNoThreshold` of non-abstaining voters vote No,
 	// proposal is rejected and deposit is burned.
-	burnDepositNoThreshold := sdk.MustNewDecFromStr(params.BurnDepositNoThreshold)
+	burnDepositNoThreshold := math.LegacyMustNewDecFromStr(params.BurnDepositNoThreshold)
 	noPercent := results[v1.OptionNo].Quo(activeVotingPower)
 	if noPercent.GT(burnDepositNoThreshold) {
 		return false, true, percentVoting, tallyResults
@@ -63,7 +69,12 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal v1.Proposal) (passes bool, 
 // this is just a stripped down version of the Tally function above
 func (keeper Keeper) HasReachedQuorum(ctx sdk.Context, proposal v1.Proposal) bool {
 	// If there is no staked coins, the proposal has not reached quorum
-	totalBonded := keeper.sk.TotalBondedTokens(ctx)
+	totalBonded, err := keeper.sk.TotalBondedTokens(ctx)
+	if err != nil {
+		keeper.Logger(ctx).Error(fmt.Sprintf("error getting total bonded tokens: %s", err.Error()))
+		return false
+	}
+
 	if totalBonded.IsZero() {
 		return false
 	}
@@ -104,7 +115,7 @@ func (keeper Keeper) HasReachedQuorum(ctx sdk.Context, proposal v1.Proposal) boo
 func (keeper Keeper) getBondedValidatorsByAddress(ctx sdk.Context) map[string]stakingtypes.ValidatorI {
 	vals := make(map[string]stakingtypes.ValidatorI)
 	keeper.sk.IterateBondedValidatorsByPower(ctx, func(index int64, validator stakingtypes.ValidatorI) (stop bool) {
-		vals[validator.GetOperator().String()] = validator
+		vals[validator.GetOperator()] = validator
 		return false
 	})
 	return vals
@@ -130,7 +141,7 @@ func (keeper Keeper) tallyVotes(
 		voter := sdk.MustAccAddressFromBech32(vote.Voter)
 		// iterate over all delegations from voter, deduct from any delegated-to validators
 		keeper.sk.IterateDelegations(ctx, voter, func(index int64, delegation stakingtypes.DelegationI) (stop bool) {
-			valAddrStr := delegation.GetValidatorAddr().String()
+			valAddrStr := delegation.GetValidatorAddr()
 
 			if val, ok := currValidators[valAddrStr]; ok {
 				// delegation shares * bonded / total shares
@@ -166,7 +177,7 @@ func (keeper Keeper) tallyVotes(
 		votingPower := sharesAfterDeductions.MulInt(val.BondedTokens).Quo(val.DelegatorShares)
 
 		for _, option := range val.Vote {
-			weight, _ := sdk.NewDecFromStr(option.Weight)
+			weight, _ := math.LegacyNewDecFromStr(option.Weight)
 			subPower := votingPower.Mul(weight)
 			results[option.Option] = results[option.Option].Add(subPower)
 		}
@@ -179,20 +190,20 @@ func (keeper Keeper) tallyVotes(
 
 // getQuorumAndThreshold returns the appropriate quorum and threshold according
 // to proposal kind.
-func (keeper Keeper) getQuorumAndThreshold(ctx sdk.Context, proposal v1.Proposal) (quorum sdk.Dec, threshold sdk.Dec) {
+func (keeper Keeper) getQuorumAndThreshold(ctx sdk.Context, proposal v1.Proposal) (quorum math.LegacyDec, threshold math.LegacyDec) {
 	params := keeper.GetParams(ctx)
 	kinds := keeper.ProposalKinds(proposal)
 	if kinds.HasKindConstitutionAmendment() {
 		quorum = keeper.GetConstitutionAmendmentQuorum(ctx)
-		threshold = sdk.MustNewDecFromStr(params.ConstitutionAmendmentThreshold)
+		threshold = math.LegacyMustNewDecFromStr(params.ConstitutionAmendmentThreshold)
 		return
 	}
 	if kinds.HasKindLaw() {
 		quorum = keeper.GetLawQuorum(ctx)
-		threshold = sdk.MustNewDecFromStr(params.LawThreshold)
+		threshold = math.LegacyMustNewDecFromStr(params.LawThreshold)
 		return
 	}
 	quorum = keeper.GetQuorum(ctx)
-	threshold = sdk.MustNewDecFromStr(params.Threshold)
+	threshold = math.LegacyMustNewDecFromStr(params.Threshold)
 	return
 }

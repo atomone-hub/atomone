@@ -1,6 +1,7 @@
 package e2e
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 )
@@ -32,7 +33,7 @@ const (
 	blocksHeightPath                    = "/cosmos/base/tendermint/v1beta1/blocks/1"
 	syncingPath                         = "/cosmos/base/tendermint/v1beta1/syncing"
 	nodeInfoPath                        = "/cosmos/base/tendermint/v1beta1/node_info"
-	transactionsPath                    = "/cosmos/tx/v1beta1/txs?events=tx.height=9999999999"
+	transactionsPath                    = "/cosmos/tx/v1beta1/txs?query=tx.height=9999999999"
 	bankTotalModuleQueryPath            = "/cosmos/bank/v1beta1/supply"
 	authParamsModuleQueryPath           = "/cosmos/auth/v1beta1/params"
 	distributionCommPoolModuleQueryPath = "/cosmos/distribution/v1beta1/community_pool"
@@ -79,12 +80,16 @@ func (s *IntegrationTestSuite) testRestInterfaces() {
 
 		for _, endpoint := range testEndpoints {
 			resp, err := http.Get(fmt.Sprintf("%s%s", endpointURL, endpoint.Path))
-			s.NoError(err, fmt.Sprintf("failed to get endpoint: %s%s", endpointURL, endpoint.Path))
+			s.Require().NoError(err, "failed to get endpoint: %s%s", endpointURL, endpoint.Path)
 
-			_, err = readJSON(resp)
-			s.NoError(err, fmt.Sprintf("failed to read body of endpoint: %s%s", endpointURL, endpoint.Path))
+			m, err := readJSON(resp)
+			s.Require().NoError(err, "failed to read body of endpoint: %s%s", endpointURL, endpoint.Path)
 
-			s.EqualValues(resp.StatusCode, endpoint.ExpectedStatus, fmt.Sprintf("invalid status from endpoint: : %s%s", endpointURL, endpoint.Path))
+			if !s.Equal(endpoint.ExpectedStatus, resp.StatusCode,
+				"invalid status from endpoint: %s%s", endpointURL, endpoint.Path) {
+				b, _ := json.Marshal(m)
+				s.T().Log("response:", string(b))
+			}
 		}
 	})
 }
