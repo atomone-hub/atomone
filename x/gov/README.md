@@ -25,8 +25,8 @@ currently supports:
 * **Claiming deposit:** Users that deposited on proposals can recover their
   deposits if the proposal was accepted or rejected. If the proposal never entered
   the voting period (the dynamic minimum deposit was never reached within the
-  deposit period), or if the minimum quorum has not been reached, the deposit is 
-  burned (see [Burnable Params](#burnable-params) section).
+  deposit period), or if the minimum quorum has not been reached, the deposit might be burnt
+  (see [Burnable Params](#burnable-params) section).
 
 This module is in use in [AtomOne](https://github.com/atomone-hub/atomone).
 Features that may be added in the future are described in [Future Improvements](#future-improvements).
@@ -328,7 +328,7 @@ by a dynamic system that adapts depending on the vote participation:
 
 Each dynamic quorum has its own sets of parameters (see [Parameters](#parameters)).
 
-Quorums updates are triggered when proposals are exit the voting periods. More
+Quorums updates are triggered when proposals exit the voting periods. More
 details on the mechanism are available in
 [ADR-005](../../docs/architecture/adr-005-dynamic-quorum.md). 
 
@@ -349,7 +349,7 @@ which is modifiable by governance. This means that proposals are accepted if:
 
 #### No inheritance
 
-If a delegator does not vote, his validators will not inherit his vote.
+If a delegator does not vote, the vote of the delegated validator - if applicable - will not be inherited.
 
 Similarly, a validator's voting power is only equal to its own stake.
 
@@ -706,11 +706,9 @@ field, the related proposal will be tallied using specific quorum and threshold 
 instead of the default ones for regular proposals. More specifically, the following parameters
 are added to enable this behavior:
 
-- ~`constitution_amendment_quorum` which defines the quorum for constitution
   amendment proposals~
 - `constitution_amendment_threshold` which defines the minimum proportion of Yes votes for a
   Constitution Amendment proposal to pass.
-- ~`law_quorum` which defines the quorum for law proposals~
 - `law_threshold` which defines the minimum proportion of Yes votes for a Law proposal to pass.
 
 The law quorum and constitution amendment quorum are dynamically adjusted based
