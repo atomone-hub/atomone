@@ -204,8 +204,16 @@ func applyHunks(srcStr string, hunks []Hunk) ([]string, error) {
 	srcIndex := 0
 
 	for _, hunk := range hunks {
+		// Validate hunk.SrcLine is within bounds
+		if hunk.SrcLine > len(srcLines) {
+			return nil, fmt.Errorf("hunk starts at line %d but source only has %d lines", hunk.SrcLine+1, len(srcLines))
+		}
+
 		// Add unchanged lines before the hunk
 		for srcIndex < hunk.SrcLine {
+			if srcIndex >= len(srcLines) {
+				return nil, fmt.Errorf("source index %d exceeds source length %d", srcIndex, len(srcLines))
+			}
 			result = append(result, srcLines[srcIndex])
 			srcIndex++
 		}
@@ -221,14 +229,20 @@ func applyHunks(srcStr string, hunks []Hunk) ([]string, error) {
 			switch prefix {
 			case ' ':
 				// Context line, should match source
-				if srcIndex >= len(srcLines) || srcLines[srcIndex] != content {
+				if srcIndex >= len(srcLines) {
+					return nil, fmt.Errorf("context line at hunk position exceeds source length (srcIndex: %d, srcLines: %d)", srcIndex, len(srcLines))
+				}
+				if srcLines[srcIndex] != content {
 					return nil, fmt.Errorf("context line mismatch at line %d", srcIndex+1)
 				}
 				result = append(result, content)
 				srcIndex++
 			case '-':
 				// Deletion, skip source line
-				if srcIndex >= len(srcLines) || srcLines[srcIndex] != content {
+				if srcIndex >= len(srcLines) {
+					return nil, fmt.Errorf("deletion line at hunk position exceeds source length (srcIndex: %d, srcLines: %d)", srcIndex, len(srcLines))
+				}
+				if srcLines[srcIndex] != content {
 					return nil, fmt.Errorf("deletion line mismatch at line %d", srcIndex+1)
 				}
 				srcIndex++
