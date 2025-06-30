@@ -706,7 +706,6 @@ field, the related proposal will be tallied using specific quorum and threshold 
 instead of the default ones for regular proposals. More specifically, the following parameters
 are added to enable this behavior:
 
-  amendment proposals~
 - `constitution_amendment_threshold` which defines the minimum proportion of Yes votes for a
   Constitution Amendment proposal to pass.
 - `law_threshold` which defines the minimum proportion of Yes votes for a Law proposal to pass.
