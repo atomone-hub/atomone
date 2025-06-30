@@ -100,6 +100,7 @@ staking token of the chain.
         - [proposal](#proposal)
         - [proposals](#proposals-1)
         - [proposer](#proposer)
+        - [quorums](#quorums)
         - [tally](#tally)
         - [vote](#vote-2)
         - [votes](#votes)
@@ -1355,6 +1356,24 @@ Example Output:
 ```bash
 proposal_id: "1"
 proposer: atone1..
+```
+
+##### quorums
+
+The `quorums` command allows users to query the state of the dynamic quorums.
+
+Example:
+
+```bash
+./build/atomoned query gov quorums
+```
+
+Example Output:
+
+```bash
+constitution_amendment_quorum: "0.300000000000000000"
+law_quorum: "0.300000000000000000"
+quorum: "0.300000000000000000"
 ```
 
 ##### tally
