@@ -65,9 +65,8 @@ func (k Keeper) AllocateTokens(ctx context.Context, totalPreviousPower int64, bo
 	numValidators := int64(len(bondedVotes))
 	nbPerValidator := sdk.NewDecCoinFromDec(bondDenom, math.LegacyZeroDec())
 	if numValidators > 0 && len(nakamotoBonus) > 0 {
-		denom := nakamotoBonus[0].Denom
-		amount := nakamotoBonus.AmountOf(denom).Quo(math.LegacyNewDec(numValidators))
-		nbPerValidator = sdk.NewDecCoinFromDec(denom, amount)
+		amount := nakamotoBonus.AmountOf(bondDenom).Quo(math.LegacyNewDec(numValidators))
+		nbPerValidator = sdk.NewDecCoinFromDec(bondDenom, amount)
 	}
 
 	remaining := feesCollected
