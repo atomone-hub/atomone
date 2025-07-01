@@ -22,7 +22,6 @@ type Keeper struct {
 	authKeeper    types.AccountKeeper
 	bankKeeper    types.BankKeeper
 	stakingKeeper types.StakingKeeper
-	MintQuery     types.MintQueryServer
 	// the address capable of executing a MsgUpdateParams message. Typically, this
 	// should be the x/gov module account.
 	authority string
@@ -41,7 +40,6 @@ func NewKeeper(
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
 	sk types.StakingKeeper,
-	mq types.MintQueryServer,
 	feeCollectorName,
 	authority string,
 ) Keeper {
@@ -57,7 +55,6 @@ func NewKeeper(
 		authKeeper:       ak,
 		bankKeeper:       bk,
 		stakingKeeper:    sk,
-		MintQuery:        mq,
 		feeCollectorName: feeCollectorName,
 		authority:        authority,
 		Params:           collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
