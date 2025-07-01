@@ -56,9 +56,14 @@ func (k Keeper) AllocateTokens(ctx context.Context, totalPreviousPower int64, bo
 	nakamotoBonus := validatorTotalReward.MulDecTruncate(nakamotoCoefficient)
 	proportionalReward := validatorTotalReward.Sub(nakamotoBonus)
 
+	bondDenom, err := k.stakingKeeper.BondDenom(ctx)
+	if err != nil {
+		return err
+	}
+
 	// Compute per-validator fixed Nakamoto bonus
 	numValidators := int64(len(bondedVotes))
-	nbPerValidator := sdk.NewDecCoinFromDec(sdk.DefaultBondDenom, math.LegacyZeroDec())
+	nbPerValidator := sdk.NewDecCoinFromDec(bondDenom, math.LegacyZeroDec())
 	if numValidators > 0 && len(nakamotoBonus) > 0 {
 		denom := nakamotoBonus[0].Denom
 		amount := nakamotoBonus.AmountOf(denom).Quo(math.LegacyNewDec(numValidators))
