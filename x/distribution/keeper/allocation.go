@@ -11,104 +11,83 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
-// AllocateTokens performs reward and fee distribution to all validators
-// based on the F1 fee distribution specification and ADR-004 (Nakamoto Bonus).
 func (k Keeper) AllocateTokens(ctx context.Context, totalPreviousPower int64, bondedVotes []abci.VoteInfo) error {
-	// Step 1: fetch and clear the collected fees for distribution, since this is
-	// called in BeginBlock, collected fees will be from the previous block
-	// (and distributed to the previous proposer)
+	// Get collected fees from the fee collector module account
 	feeCollector := k.authKeeper.GetModuleAccount(ctx, k.feeCollectorName)
 	feesCollectedInt := k.bankKeeper.GetAllBalances(ctx, feeCollector.GetAddress())
 	feesCollected := sdk.NewDecCoinsFromCoins(feesCollectedInt...)
 
-	// transfer collected fees to the distribution module account
+	// Transfer collected fees to the distribution module
 	err := k.bankKeeper.SendCoinsFromModuleToModule(ctx, k.feeCollectorName, types.ModuleName, feesCollectedInt)
 	if err != nil {
 		return err
 	}
 
-	// temporary workaround to keep CanWithdrawInvariant happy
-	// general discussions here: https://github.com/cosmos/cosmos-sdk/issues/2906#issuecomment-441867634
+	// Get the current fee pool
 	feePool, err := k.FeePool.Get(ctx)
 	if err != nil {
 		return err
 	}
 
+	// If there's no validator power, redirect everything to the community pool
 	if totalPreviousPower == 0 {
 		feePool.CommunityPool = feePool.CommunityPool.Add(feesCollected...)
 		return k.FeePool.Set(ctx, feePool)
 	}
 
-	/// Step 2: calculate fraction allocated to validators
+	// Get community tax and Nakamoto bonus ratio η
 	communityTax, err := k.GetCommunityTax(ctx)
 	if err != nil {
 		return err
 	}
-
-	voteMultiplier := math.LegacyOneDec().Sub(communityTax)
-	feeMultiplier := feesCollected.MulDecTruncate(voteMultiplier)
-
-	// Step 3: Get bonded validators and total bonded power
-	bondedValidators, err := k.stakingKeeper.GetBondedValidatorsByPower(ctx)
-	if err != nil {
-		return err
-	}
-	totalBonded := math.ZeroInt()
-	for _, val := range bondedValidators {
-		totalBonded = totalBonded.Add(val.BondedTokens())
-	}
-
-	// Step 4: Get block provision (minted tokens)
-	blockProvision, err := k.BlockProvision(ctx)
-	if err != nil {
-		return err
-	}
-
-	// Step 5: Get eta (Nakamoto Bonus coefficient)
 	params, err := k.Params.Get(ctx)
 	if err != nil {
 		return err
 	}
-	eta := params.NakamotoBonusCoefficient
+	nakamotoCoefficient := params.NakamotoBonusCoefficient // the nakamoto bonus coefficient (e.g., 0.05 means 5% NB, 95% PR)
 
-	// Step 6: Split blockProvision using Nakamoto Bonus logic
-	rewardMap := k.SplitReward(
-		blockProvision,
-		eta,
-		bondedValidators,
-		totalBonded,
-	)
+	// Compute total validator rewards (after community tax)
+	voteMultiplier := math.LegacyOneDec().Sub(communityTax)
+	validatorTotalReward := feesCollected.MulDecTruncate(voteMultiplier)
 
-	// Step 7: Distribute rewards (fees + mint) to validators
-	remaining := feeMultiplier // Start with fees to allocate
+	// Split reward into Proportional (PR_i) and Nakamoto Bonus (NB_i)
+	nakamotoBonus := validatorTotalReward.MulDecTruncate(nakamotoCoefficient)
+	proportionalReward := validatorTotalReward.Sub(nakamotoBonus)
 
+	// Compute per-validator fixed Nakamoto bonus
+	numValidators := int64(len(bondedVotes))
+	nbPerValidator := sdk.NewDecCoinFromDec("uatom", math.LegacyZeroDec())
+	if numValidators > 0 && len(nakamotoBonus) > 0 {
+		denom := nakamotoBonus[0].Denom
+		amount := nakamotoBonus.AmountOf(denom).Quo(math.LegacyNewDec(numValidators))
+		nbPerValidator = sdk.NewDecCoinFromDec(denom, amount)
+	}
+
+	remaining := feesCollected
+
+	// Distribute rewards to each validator
 	for _, vote := range bondedVotes {
 		validator, err := k.stakingKeeper.ValidatorByConsAddr(ctx, vote.Validator.Address)
 		if err != nil {
 			return err
 		}
-		valAddr := validator.GetOperator()
 
-		// Calculate fee reward (proportional by voting power)
+		// Compute proportional share based on voting power
 		powerFraction := math.LegacyNewDec(vote.Validator.Power).QuoTruncate(math.LegacyNewDec(totalPreviousPower))
-		feeReward := feeMultiplier.MulDecTruncate(powerFraction)
+		proportional := proportionalReward.MulDecTruncate(powerFraction)
 
-		// Get block reward (PR + NB) for this validator
-		blockReward := rewardMap[valAddr] // This is sdk.DecCoins
+		// Add fixed Nakamoto bonus to proportional share
+		totalReward := proportional.Add(nbPerValidator)
 
-		// Total reward for this block for this validator
-		totalReward := feeReward.Add(blockReward...)
-
-		// Allocate (handles commission, outstanding, etc)
 		err = k.AllocateTokensToValidator(ctx, validator, totalReward)
 		if err != nil {
 			return err
 		}
 
-		remaining = remaining.Sub(feeReward)
+		remaining = remaining.Sub(totalReward)
 	}
 
-	// Send any leftover fees (from rounding) to community pool
+	// Add any remaining tokens to the community pool
 	feePool.CommunityPool = feePool.CommunityPool.Add(remaining...)
 	return k.FeePool.Set(ctx, feePool)
 }
@@ -136,20 +115,33 @@ func (k Keeper) BlockProvision(ctx context.Context) (sdk.DecCoin, error) {
 }
 
 // SplitReward splits the total reward into proportional and nakamoto bonus.
-// - totalReward: the total reward for the block
-// - eta: the nakamoto bonus coefficient (e.g., 0.05 means 5% NB, 95% PR)
-// - bondedValidators: the list of bonded validators for this block
-// - totalBonded: total stake bonded across all validators
-func (k Keeper) SplitReward(
-	totalReward sdk.DecCoin,
-	eta math.LegacyDec,
-	bondedValidators []stakingtypes.Validator,
-	totalBonded math.Int,
-) map[string]sdk.DecCoins {
+func (k Keeper) SplitReward(ctx context.Context) (map[string]sdk.DecCoins, error) {
+	bondedValidators, err := k.stakingKeeper.GetBondedValidatorsByPower(ctx)
+	if err != nil {
+		return nil, err
+	}
+	totalBonded := math.ZeroInt()
+	for _, val := range bondedValidators {
+		totalBonded = totalBonded.Add(val.BondedTokens())
+	}
+
+	// Step 4: Get block provision (minted tokens)
+	blockProvision, err := k.BlockProvision(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	// Step 5: Get eta (Nakamoto Bonus coefficient)
+	params, err := k.Params.Get(ctx)
+	if err != nil {
+		return nil, err
+	}
+	eta := params.NakamotoBonusCoefficient // the nakamoto bonus coefficient (e.g., 0.05 means 5% NB, 95% PR)
+
 	// Calculate PR and NB components
 	var (
-		proportional  = totalReward.Amount.Mul(math.LegacyOneDec().Sub(eta))
-		nakamotoBonus = totalReward.Amount.Mul(eta)
+		proportional  = blockProvision.Amount.Mul(math.LegacyOneDec().Sub(eta))
+		nakamotoBonus = blockProvision.Amount.Mul(eta)
 		numValidators = math.LegacyNewDec(int64(len(bondedValidators)))
 		rewards       = make(map[string]sdk.DecCoins)
 	)
@@ -168,11 +160,11 @@ func (k Keeper) SplitReward(
 
 		total := prShare.Add(nbShare)
 		rewards[val.GetOperator()] = sdk.NewDecCoins(
-			sdk.NewDecCoinFromDec(totalReward.Denom, total),
+			sdk.NewDecCoinFromDec(blockProvision.Denom, total),
 		)
 	}
 
-	return rewards
+	return rewards, nil
 }
 
 // AllocateTokensToValidator allocate tokens to a particular validator,
