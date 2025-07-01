@@ -9,7 +9,6 @@ import (
 	reflect "reflect"
 
 	address "cosmossdk.io/core/address"
-	math "cosmossdk.io/math"
 	types "github.com/cosmos/cosmos-sdk/types"
 	types0 "github.com/cosmos/cosmos-sdk/x/mint/types"
 	types1 "github.com/cosmos/cosmos-sdk/x/staking/types"
@@ -67,87 +66,6 @@ func (m *MockMintQueryServer) Params(arg0 context.Context, arg1 *types0.QueryPar
 func (mr *MockMintQueryServerMockRecorder) Params(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Params", reflect.TypeOf((*MockMintQueryServer)(nil).Params), arg0, arg1)
-}
-
-// MockMintKeeper is a mock of MintKeeper interface.
-type MockMintKeeper struct {
-	ctrl     *gomock.Controller
-	recorder *MockMintKeeperMockRecorder
-}
-
-// MockMintKeeperMockRecorder is the mock recorder for MockMintKeeper.
-type MockMintKeeperMockRecorder struct {
-	mock *MockMintKeeper
-}
-
-// NewMockMintKeeper creates a new mock instance.
-func NewMockMintKeeper(ctrl *gomock.Controller) *MockMintKeeper {
-	mock := &MockMintKeeper{ctrl: ctrl}
-	mock.recorder = &MockMintKeeperMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockMintKeeper) EXPECT() *MockMintKeeperMockRecorder {
-	return m.recorder
-}
-
-// AddCollectedFees mocks base method.
-func (m *MockMintKeeper) AddCollectedFees(ctx context.Context, fees types.Coins) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AddCollectedFees", ctx, fees)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// AddCollectedFees indicates an expected call of AddCollectedFees.
-func (mr *MockMintKeeperMockRecorder) AddCollectedFees(ctx, fees interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddCollectedFees", reflect.TypeOf((*MockMintKeeper)(nil).AddCollectedFees), ctx, fees)
-}
-
-// BondedRatio mocks base method.
-func (m *MockMintKeeper) BondedRatio(ctx context.Context) (math.LegacyDec, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "BondedRatio", ctx)
-	ret0, _ := ret[0].(math.LegacyDec)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// BondedRatio indicates an expected call of BondedRatio.
-func (mr *MockMintKeeperMockRecorder) BondedRatio(ctx interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BondedRatio", reflect.TypeOf((*MockMintKeeper)(nil).BondedRatio), ctx)
-}
-
-// MintCoins mocks base method.
-func (m *MockMintKeeper) MintCoins(ctx context.Context, newCoins types.Coins) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "MintCoins", ctx, newCoins)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// MintCoins indicates an expected call of MintCoins.
-func (mr *MockMintKeeperMockRecorder) MintCoins(ctx, newCoins interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MintCoins", reflect.TypeOf((*MockMintKeeper)(nil).MintCoins), ctx, newCoins)
-}
-
-// StakingTokenSupply mocks base method.
-func (m *MockMintKeeper) StakingTokenSupply(ctx context.Context) (math.Int, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "StakingTokenSupply", ctx)
-	ret0, _ := ret[0].(math.Int)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// StakingTokenSupply indicates an expected call of StakingTokenSupply.
-func (mr *MockMintKeeperMockRecorder) StakingTokenSupply(ctx interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StakingTokenSupply", reflect.TypeOf((*MockMintKeeper)(nil).StakingTokenSupply), ctx)
 }
 
 // MockAccountKeeper is a mock of AccountKeeper interface.
@@ -369,6 +287,21 @@ func NewMockStakingKeeper(ctrl *gomock.Controller) *MockStakingKeeper {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockStakingKeeper) EXPECT() *MockStakingKeeperMockRecorder {
 	return m.recorder
+}
+
+// BondDenom mocks base method.
+func (m *MockStakingKeeper) BondDenom(ctx context.Context) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "BondDenom", ctx)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// BondDenom indicates an expected call of BondDenom.
+func (mr *MockStakingKeeperMockRecorder) BondDenom(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BondDenom", reflect.TypeOf((*MockStakingKeeper)(nil).BondDenom), ctx)
 }
 
 // ConsensusAddressCodec mocks base method.

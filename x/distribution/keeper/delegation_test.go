@@ -36,6 +36,7 @@ func TestCalculateRewardsBasic(t *testing.T) {
 
 	accountKeeper.EXPECT().GetModuleAddress("distribution").Return(distrAcc.GetAddress())
 	stakingKeeper.EXPECT().ValidatorAddressCodec().Return(address.NewBech32Codec(sdk.Bech32PrefixValAddr)).AnyTimes()
+	stakingKeeper.EXPECT().BondDenom(ctx).Return(sdk.DefaultBondDenom, nil).AnyTimes()
 	accountKeeper.EXPECT().AddressCodec().Return(address.NewBech32Codec(sdk.Bech32MainPrefix)).AnyTimes()
 
 	distrKeeper := keeper.NewKeeper(
@@ -121,6 +122,7 @@ func TestCalculateRewardsAfterSlash(t *testing.T) {
 
 	accountKeeper.EXPECT().GetModuleAddress("distribution").Return(distrAcc.GetAddress())
 	stakingKeeper.EXPECT().ValidatorAddressCodec().Return(address.NewBech32Codec(sdk.Bech32PrefixValAddr)).AnyTimes()
+	stakingKeeper.EXPECT().BondDenom(ctx).Return(sdk.DefaultBondDenom, nil).AnyTimes()
 	accountKeeper.EXPECT().AddressCodec().Return(address.NewBech32Codec(sdk.Bech32MainPrefix)).AnyTimes()
 
 	distrKeeper := keeper.NewKeeper(
@@ -224,6 +226,7 @@ func TestCalculateRewardsAfterManySlashes(t *testing.T) {
 
 	accountKeeper.EXPECT().GetModuleAddress("distribution").Return(distrAcc.GetAddress())
 	stakingKeeper.EXPECT().ValidatorAddressCodec().Return(address.NewBech32Codec(sdk.Bech32PrefixValAddr)).AnyTimes()
+	stakingKeeper.EXPECT().BondDenom(ctx).Return(sdk.DefaultBondDenom, nil).AnyTimes()
 	accountKeeper.EXPECT().AddressCodec().Return(address.NewBech32Codec(sdk.Bech32MainPrefix)).AnyTimes()
 
 	distrKeeper := keeper.NewKeeper(
@@ -348,6 +351,7 @@ func TestCalculateRewardsMultiDelegator(t *testing.T) {
 
 	accountKeeper.EXPECT().GetModuleAddress("distribution").Return(distrAcc.GetAddress())
 	stakingKeeper.EXPECT().ValidatorAddressCodec().Return(address.NewBech32Codec(sdk.Bech32PrefixValAddr)).AnyTimes()
+	stakingKeeper.EXPECT().BondDenom(ctx).Return(sdk.DefaultBondDenom, nil).AnyTimes()
 	accountKeeper.EXPECT().AddressCodec().Return(address.NewBech32Codec(sdk.Bech32MainPrefix)).AnyTimes()
 
 	distrKeeper := keeper.NewKeeper(
@@ -445,6 +449,7 @@ func TestWithdrawDelegationRewardsBasic(t *testing.T) {
 
 	accountKeeper.EXPECT().GetModuleAddress("distribution").Return(distrAcc.GetAddress())
 	stakingKeeper.EXPECT().ValidatorAddressCodec().Return(address.NewBech32Codec(sdk.Bech32PrefixValAddr)).AnyTimes()
+	stakingKeeper.EXPECT().BondDenom(ctx).Return(sdk.DefaultBondDenom, nil).AnyTimes()
 	accountKeeper.EXPECT().AddressCodec().Return(address.NewBech32Codec(sdk.Bech32MainPrefix)).AnyTimes()
 
 	distrKeeper := keeper.NewKeeper(
@@ -520,6 +525,7 @@ func TestCalculateRewardsAfterManySlashesInSameBlock(t *testing.T) {
 
 	accountKeeper.EXPECT().GetModuleAddress("distribution").Return(distrAcc.GetAddress())
 	stakingKeeper.EXPECT().ValidatorAddressCodec().Return(address.NewBech32Codec(sdk.Bech32PrefixValAddr)).AnyTimes()
+	stakingKeeper.EXPECT().BondDenom(ctx).Return(sdk.DefaultBondDenom, nil).AnyTimes()
 	accountKeeper.EXPECT().AddressCodec().Return(address.NewBech32Codec(sdk.Bech32MainPrefix)).AnyTimes()
 
 	distrKeeper := keeper.NewKeeper(
@@ -636,6 +642,7 @@ func TestCalculateRewardsMultiDelegatorMultiSlash(t *testing.T) {
 
 	accountKeeper.EXPECT().GetModuleAddress("distribution").Return(distrAcc.GetAddress())
 	stakingKeeper.EXPECT().ValidatorAddressCodec().Return(address.NewBech32Codec(sdk.Bech32PrefixValAddr)).AnyTimes()
+	stakingKeeper.EXPECT().BondDenom(ctx).Return(sdk.DefaultBondDenom, nil).AnyTimes()
 	accountKeeper.EXPECT().AddressCodec().Return(address.NewBech32Codec(sdk.Bech32MainPrefix)).AnyTimes()
 
 	distrKeeper := keeper.NewKeeper(
@@ -773,6 +780,7 @@ func TestCalculateRewardsMultiDelegatorMultWithdraw(t *testing.T) {
 
 	accountKeeper.EXPECT().GetModuleAddress("distribution").Return(distrAcc.GetAddress())
 	stakingKeeper.EXPECT().ValidatorAddressCodec().Return(address.NewBech32Codec(sdk.Bech32PrefixValAddr)).AnyTimes()
+	stakingKeeper.EXPECT().BondDenom(ctx).Return(sdk.DefaultBondDenom, nil).AnyTimes()
 	accountKeeper.EXPECT().AddressCodec().Return(address.NewBech32Codec(sdk.Bech32MainPrefix)).AnyTimes()
 
 	distrKeeper := keeper.NewKeeper(
@@ -972,6 +980,7 @@ func Test100PercentCommissionReward(t *testing.T) {
 
 	accountKeeper.EXPECT().GetModuleAddress("distribution").Return(distrAcc.GetAddress())
 	stakingKeeper.EXPECT().ValidatorAddressCodec().Return(address.NewBech32Codec(sdk.Bech32PrefixValAddr)).AnyTimes()
+	stakingKeeper.EXPECT().BondDenom(ctx).Return(sdk.DefaultBondDenom, nil).AnyTimes()
 	accountKeeper.EXPECT().AddressCodec().Return(address.NewBech32Codec(sdk.Bech32MainPrefix)).AnyTimes()
 
 	distrKeeper := keeper.NewKeeper(
