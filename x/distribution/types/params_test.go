@@ -27,7 +27,8 @@ func TestParams_ValidateBasic(t *testing.T) {
 		},
 		{
 			name: "negative community tax",
-			params: types.Params{CommunityTax: toDec("-0.1"),
+			params: types.Params{
+				CommunityTax:             toDec("-0.1"),
 				NakamotoBonusCoefficient: toDec("0.3"),
 				WithdrawAddrEnabled:      false,
 			},
