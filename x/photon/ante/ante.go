@@ -45,7 +45,7 @@ func (vfd ValidateFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate 
 	}
 	if feeDenom := feeCoins[0].Denom; feeDenom != types.Denom {
 		// feeDenom not allowed
-		return ctx, errorsmod.Wrapf(types.ErrInvalidFeeToken, "only fee denom %s is allowed", types.Denom)
+		return ctx, errorsmod.Wrapf(types.ErrInvalidFeeToken, "fee denom %s not allowed; only fee denom %s is allowed", feeDenom, types.Denom)
 	}
 	// feeDenom photon is allowed
 	return next(ctx, tx, simulate)
