@@ -5,10 +5,11 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
+	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
 	"github.com/atomone-hub/atomone/app/keepers"
-	appparams "github.com/atomone-hub/atomone/app/params"
 	govkeeper "github.com/atomone-hub/atomone/x/gov/keeper"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
@@ -71,7 +72,7 @@ func convertFundsToPhoton(ctx sdk.Context, keepers *keepers.AppKeepers) error {
 
 	// Get treasury DAO address
 	treasuryAddrBz := []byte("\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xbd\xa0")
-	treasuryAddr := sdk.MustBech32ifyAddressBytes(appparams.Bech32PrefixAccAddr, treasuryAddrBz)
+	treasuryAddr := sdk.MustBech32ifyAddressBytes(sdk.GetConfig().GetBech32AccountAddrPrefix(), treasuryAddrBz)
 
 	// Process community pool funds
 	if err := convertCommunityPoolFundsToPhoton(ctx, keepers, bondDenom); err != nil {
@@ -102,9 +103,8 @@ func convertCommunityPoolFundsToPhoton(ctx sdk.Context, keepers *keepers.AppKeep
 	amountToConvert := bondDenomCoin.Mul(sdk.NewDecWithPrec(90, 2))
 	coinToConvert := sdk.NewCoin(bondDenom, amountToConvert.TruncateInt())
 
-	// First, distribute from community pool to photon module account
-	moduleAddr := keepers.AccountKeeper.GetModuleAddress(photontypes.ModuleName)
-	err := keepers.DistrKeeper.DistributeFromFeePool(ctx, sdk.NewCoins(coinToConvert), moduleAddr)
+	// Send funds from community pool to photon module account
+	err := sendCommunityPoolFundsToModuleAccount(ctx, keepers.BankKeeper, keepers.DistrKeeper, sdk.NewCoins(coinToConvert), photontypes.ModuleName)
 	if err != nil {
 		return fmt.Errorf("failed to distribute from community pool: %w", err)
 	}
@@ -130,6 +130,7 @@ func convertCommunityPoolFundsToPhoton(ctx sdk.Context, keepers *keepers.AppKeep
 	}
 
 	// Send minted photons back to community pool
+	moduleAddr := keepers.AccountKeeper.GetModuleAddress(photontypes.ModuleName)
 	err = keepers.DistrKeeper.FundCommunityPool(ctx, sdk.NewCoins(photonToMint), moduleAddr)
 	if err != nil {
 		return fmt.Errorf("failed to fund community pool with photons: %w", err)
@@ -207,5 +208,30 @@ func convertTreasuryDAOFundsToPhoton(ctx sdk.Context, keepers *keepers.AppKeeper
 		),
 	)
 
+	return nil
+}
+
+// sendCommunityPoolFundsToModuleAccount sends funds from the community pool to the specified module account.
+// It is a modified version of the original `DistributeFromFeePool` function that uses `SendCoinsFromModuleToModule`
+// instead of `SendCoinsFromModuleToAccount` to send the funds to the photon module.
+func sendCommunityPoolFundsToModuleAccount(ctx sdk.Context, bankKeeper distrtypes.BankKeeper, distrKeeper distrkeeper.Keeper, amount sdk.Coins, receiverModuleName string) error {
+	feePool := distrKeeper.GetFeePool(ctx)
+
+	// NOTE the community pool isn't a module account, however its coins
+	// are held in the distribution module account. Thus the community pool
+	// must be reduced separately from the SendCoinsFromModuleToAccount call
+	newPool, negative := feePool.CommunityPool.SafeSub(sdk.NewDecCoinsFromCoins(amount...))
+	if negative {
+		return distrtypes.ErrBadDistribution
+	}
+
+	feePool.CommunityPool = newPool
+
+	err := bankKeeper.SendCoinsFromModuleToModule(ctx, distrtypes.ModuleName, receiverModuleName, amount)
+	if err != nil {
+		return err
+	}
+
+	distrKeeper.SetFeePool(ctx, feePool)
 	return nil
 }
