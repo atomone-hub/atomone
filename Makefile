@@ -252,6 +252,7 @@ format: lint-fix
 		-not -name "*.pb.go" \
 		-not -name "*.pb.gw.go" \
 		-not -name "*.pulsar.go" \
+		-not -name "*_mocks.go" \
 		-not -path "*client/docs/statik*" \
 		| xargs $(rundep) mvdan.cc/gofumpt -w -l
 
