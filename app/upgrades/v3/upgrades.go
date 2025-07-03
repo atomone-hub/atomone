@@ -8,6 +8,7 @@ import (
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
 	"github.com/atomone-hub/atomone/app/keepers"
+	appparams "github.com/atomone-hub/atomone/app/params"
 	govkeeper "github.com/atomone-hub/atomone/x/gov/keeper"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
@@ -70,7 +71,7 @@ func convertFundsToPhoton(ctx sdk.Context, keepers *keepers.AppKeepers) error {
 
 	// Get treasury DAO address
 	treasuryAddrBz := []byte("\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xbd\xa0")
-	treasuryAddr := sdk.MustBech32ifyAddressBytes("atone", treasuryAddrBz)
+	treasuryAddr := sdk.MustBech32ifyAddressBytes(appparams.Bech32PrefixAccAddr, treasuryAddrBz)
 
 	// Process community pool funds
 	if err := convertCommunityPoolFundsToPhoton(ctx, keepers, bondDenom); err != nil {
