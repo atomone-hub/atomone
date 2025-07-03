@@ -56,10 +56,6 @@ type PV struct {
 	PrivKey cryptotypes.PrivKey
 }
 
-type EmptyAppOptions struct{}
-
-func (EmptyAppOptions) Get(_ string) interface{} { return nil }
-
 func Setup(t *testing.T) *atomoneapp.AtomOneApp {
 	t.Helper()
 

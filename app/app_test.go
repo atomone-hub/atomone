@@ -15,19 +15,13 @@ import (
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 )
 
-type EmptyAppOptions struct{}
-
-func (ao EmptyAppOptions) Get(_ string) interface{} {
-	return nil
-}
-
 func TestAtomOneApp_BlockedModuleAccountAddrs(t *testing.T) {
 	app := atomone.NewAtomOneApp(
 		log.NewNopLogger(),
 		dbm.NewMemDB(),
 		nil,
 		true,
-		EmptyAppOptions{},
+		atomone.EmptyAppOptions{},
 	)
 
 	moduleAccountAddresses := app.ModuleAccountAddrs()

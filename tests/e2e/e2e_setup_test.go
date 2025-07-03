@@ -43,7 +43,6 @@ import (
 
 	appparams "github.com/atomone-hub/atomone/app/params"
 	_ "github.com/atomone-hub/atomone/cmd/atomoned/cmd"
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
 )
 
@@ -65,6 +64,8 @@ const (
 	proposalBypassMsgFilename             = "proposal_bypass_msg.json"
 	proposalMaxTotalBypassFilename        = "proposal_max_total_bypass.json"
 	proposalCommunitySpendFilename        = "proposal_community_spend.json"
+	proposalSoftwareUpgradeFilename       = "proposal_software_upgrade.json"
+	proposalCancelUpgradeFilename         = "proposal_cancel_uprade.json"
 	proposalParamChangeFilename           = "param_change.json"
 	proposalConstitutionAmendmentFilename = "constitution_amendment.json"
 	newConstitutionFilename               = "new_constitution.md"
@@ -734,38 +735,4 @@ func (s *IntegrationTestSuite) runIBCRelayer() {
 	// create the client, connection and channel between the two Gaia chains
 	s.createConnection()
 	s.createChannel()
-}
-
-func (s *IntegrationTestSuite) writeGovCommunitySpendProposal(c *chain, amount sdk.Coin, recipient string) {
-	govModuleAddress := authtypes.NewModuleAddress(govtypes.ModuleName).String()
-
-	template := `
-	{
-		"messages":[
-		  {
-			"@type": "/atomone.distribution.v1beta1.MsgCommunityPoolSpend",
-			"authority": "%s",
-			"recipient": "%s",
-			"amount": [{
-				"denom": "%s",
-				"amount": "%s"
-			}]
-		  }
-		],
-		"deposit": "%s",
-		"proposer": "Proposing validator address",
-		"metadata": "Community Pool Spend",
-		"title": "Fund Team!",
-		"summary": "summary"
-	}
-	`
-	propMsgBody := fmt.Sprintf(template, govModuleAddress, recipient,
-		amount.Denom, amount.Amount.String(), initialDepositAmount.String())
-	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalCommunitySpendFilename), []byte(propMsgBody))
-	s.Require().NoError(err)
-}
-
-func configFile(filename string) string {
-	filepath := filepath.Join(atomoneConfigPath, filename)
-	return filepath
 }

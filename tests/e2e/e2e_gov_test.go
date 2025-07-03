@@ -8,8 +8,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	"cosmossdk.io/math"
-	upgradetypes "cosmossdk.io/x/upgrade/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
@@ -36,26 +38,22 @@ func (s *IntegrationTestSuite) testGovSoftwareUpgrade() {
 		senderAddress, _ := s.chainA.validators[0].keyInfo.GetAddress()
 		sender := senderAddress.String()
 		height := s.getLatestBlockHeight(s.chainA, 0)
-		proposalHeight := height + govProposalBlockBuffer
+		upgradeHeight := height + govProposalBlockBuffer
+		s.writeGovSoftwareUpgradeProposal(s.chainA, upgradeHeight)
 		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
 		proposalCounter++
 
-		submitGovFlags := []string{
-			"software-upgrade",
-			"Upgrade-0",
-			"--title='Upgrade V0'",
-			"--description='Software Upgrade'",
-			"--no-validate",
-			fmt.Sprintf("--upgrade-height=%d", proposalHeight),
-			"--upgrade-info=my-info",
-		}
-
+		submitGovFlags := []string{configFile(proposalSoftwareUpgradeFilename)}
 		depositGovFlags := []string{strconv.Itoa(proposalCounter), depositAmount.String()}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes=0.8,no=0.1,abstain=0.1"}
-		s.submitLegacyGovProposal(chainAAPIEndpoint, sender, proposalCounter, upgradetypes.ProposalTypeSoftwareUpgrade, submitGovFlags, depositGovFlags, voteGovFlags, "weighted-vote", true)
+		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "SoftwareUpgrade", submitGovFlags, depositGovFlags, voteGovFlags, "weighted-vote", govtypesv1beta1.StatusPassed)
 
-		s.verifyChainHaltedAtUpgradeHeight(s.chainA, 0, proposalHeight)
-		s.T().Logf("Successfully halted chain at  height %d", proposalHeight)
+		res := s.queryUpgradePlan(chainAAPIEndpoint)
+		s.Require().Equal("v2", res.Plan.Name)
+		s.Require().Equal(upgradeHeight, res.Plan.Height)
+
+		s.verifyChainHaltedAtUpgradeHeight(s.chainA, 0, upgradeHeight)
+		s.T().Logf("Successfully halted chain at height %d", upgradeHeight)
 
 		s.TearDownSuite()
 
@@ -89,27 +87,21 @@ func (s *IntegrationTestSuite) testGovCancelSoftwareUpgrade() {
 		sender := senderAddress.String()
 		height := s.getLatestBlockHeight(s.chainA, 0)
 		proposalHeight := height + 50
+		s.writeGovSoftwareUpgradeProposal(s.chainA, proposalHeight)
 
 		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
 		proposalCounter++
-		submitGovFlags := []string{
-			"software-upgrade",
-			"Upgrade-1",
-			"--title='Upgrade V1'",
-			"--description='Software Upgrade'",
-			"--no-validate",
-			fmt.Sprintf("--upgrade-height=%d", proposalHeight),
-		}
-
+		submitGovFlags := []string{configFile(proposalSoftwareUpgradeFilename)}
 		depositGovFlags := []string{strconv.Itoa(proposalCounter), depositAmount.String()}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
-		s.submitLegacyGovProposal(chainAAPIEndpoint, sender, proposalCounter, upgradetypes.ProposalTypeSoftwareUpgrade, submitGovFlags, depositGovFlags, voteGovFlags, "vote", true)
+		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "SoftwareUpgrade", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
 
 		proposalCounter++
-		submitGovFlags = []string{"cancel-software-upgrade", "--title='Upgrade V1'", "--description='Software Upgrade'"}
+		s.writeGovCancelUpgradeProposal(s.chainA)
+		submitGovFlags = []string{configFile(proposalCancelUpgradeFilename)}
 		depositGovFlags = []string{strconv.Itoa(proposalCounter), depositAmount.String()}
 		voteGovFlags = []string{strconv.Itoa(proposalCounter), "yes"}
-		s.submitLegacyGovProposal(chainAAPIEndpoint, sender, proposalCounter, upgradetypes.ProposalTypeCancelSoftwareUpgrade, submitGovFlags, depositGovFlags, voteGovFlags, "vote", true)
+		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "CancelUpgrade", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
 
 		s.verifyChainPassesUpgradeHeight(s.chainA, 0, proposalHeight)
 		s.T().Logf("Successfully canceled upgrade at height %d", proposalHeight)
@@ -355,10 +347,10 @@ func (s *IntegrationTestSuite) submitGovProposal(chainAAPIEndpoint, sender strin
 }
 
 func (s *IntegrationTestSuite) verifyChainHaltedAtUpgradeHeight(c *chain, valIdx int, upgradeHeight int64) {
+	s.T().Logf("Waiting chain halt at height %d", upgradeHeight)
 	s.Require().Eventually(
 		func() bool {
 			currentHeight := s.getLatestBlockHeight(c, valIdx)
-
 			return currentHeight == upgradeHeight
 		},
 		30*time.Second,
@@ -396,14 +388,15 @@ func (s *IntegrationTestSuite) verifyChainPassesUpgradeHeight(c *chain, valIdx i
 	)
 }
 
-func (s *IntegrationTestSuite) submitGovCommand(chainAAPIEndpoint, sender string, proposalID int, govCommand string, proposalFlags []string, expectedSuccessStatus govtypesv1beta1.ProposalStatus) {
+func (s *IntegrationTestSuite) submitGovCommand(chainAAPIEndpoint, sender string, proposalID int, govCommand string, proposalFlags []string, expectedStatus govtypesv1beta1.ProposalStatus) {
 	s.runGovExec(s.chainA, 0, sender, govCommand, proposalFlags)
 
-	s.Require().Eventually(
-		func() bool {
-			proposal, err := s.queryGovProposal(chainAAPIEndpoint, proposalID)
-			s.Require().NoError(err)
-			return proposal.GetProposal().Status == expectedSuccessStatus
+	s.T().Logf("Waiting for proposal status %s", expectedStatus.String())
+	s.Require().EventuallyWithT(
+		func(c *assert.CollectT) {
+			res, err := s.queryGovProposal(chainAAPIEndpoint, proposalID)
+			require.NoError(c, err)
+			assert.Equal(c, res.GetProposal().Status.String(), expectedStatus.String())
 		},
 		15*time.Second,
 		time.Second,
@@ -531,16 +524,98 @@ func (s *IntegrationTestSuite) generateConstitutionAmendment(c *chain, newConsti
 	return msg
 }
 
-func (s *IntegrationTestSuite) parseGenerateConstitutionAmendmentOutput(msg *govtypesv1.MsgProposeConstitutionAmendment) func([]byte, []byte) bool {
-	return func(stdOut []byte, stdErr []byte) bool {
+func (s *IntegrationTestSuite) parseGenerateConstitutionAmendmentOutput(msg *govtypesv1.MsgProposeConstitutionAmendment) func([]byte, []byte) error {
+	return func(stdOut []byte, stdErr []byte) error {
 		if len(stdErr) > 0 {
-			s.T().Logf("Error: %s", string(stdErr))
-			return false
+			return fmt.Errorf("stdErr: %s", string(stdErr))
 		}
-
-		err := s.cdc.UnmarshalJSON(stdOut, msg)
-		s.Require().NoError(err)
-
-		return true
+		return s.cdc.UnmarshalJSON(stdOut, msg)
 	}
+}
+
+func (s *IntegrationTestSuite) writeGovCommunitySpendProposal(c *chain, amount sdk.Coin, recipient string) {
+	govModuleAddress := authtypes.NewModuleAddress(govtypes.ModuleName).String()
+
+	template := `
+	{
+		"messages":[
+		  {
+			"@type": "/cosmos.distribution.v1beta1.MsgCommunityPoolSpend",
+			"authority": "%s",
+			"recipient": "%s",
+			"amount": [{
+				"denom": "%s",
+				"amount": "%s"
+			}]
+		  }
+		],
+		"deposit": "%s",
+		"proposer": "Proposing validator address",
+		"metadata": "Community Pool Spend",
+		"title": "Fund Team!",
+		"summary": "summary"
+	}
+	`
+	propMsgBody := fmt.Sprintf(template, govModuleAddress, recipient,
+		amount.Denom, amount.Amount.String(), initialDepositAmount.String())
+	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalCommunitySpendFilename), []byte(propMsgBody))
+	s.Require().NoError(err)
+}
+
+func (s *IntegrationTestSuite) writeGovSoftwareUpgradeProposal(c *chain, height int64) {
+	govModuleAddress := authtypes.NewModuleAddress(govtypes.ModuleName).String()
+
+	template := `
+	{
+		"messages":[
+		  {
+			"@type": "/cosmos.upgrade.v1beta1.MsgSoftwareUpgrade",
+			"authority": "%s",
+			"plan": {
+				"name": "v2",
+				"time": "0001-01-01T00:00:00Z",
+				"height": "%d",
+				"info": "",
+				"upgraded_client_state": null
+			}
+		  }
+		],
+		"deposit": "%s",
+		"proposer": "Proposing validator address",
+		"metadata": "Software Upgrade Proposal",
+		"title": "Upgrade Team!",
+		"summary": "summary"
+	}
+	`
+	propMsgBody := fmt.Sprintf(template, govModuleAddress, height, initialDepositAmount.String())
+	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalSoftwareUpgradeFilename), []byte(propMsgBody))
+	s.Require().NoError(err)
+}
+
+func (s *IntegrationTestSuite) writeGovCancelUpgradeProposal(c *chain) {
+	govModuleAddress := authtypes.NewModuleAddress(govtypes.ModuleName).String()
+
+	template := `
+	{
+		"messages":[
+		  {
+			"@type": "/cosmos.upgrade.v1beta1.MsgCancelUpgrade",
+			"authority": "%s"
+		  }
+		],
+		"deposit": "%s",
+		"proposer": "Proposing validator address",
+		"metadata": "Cancel Upgrade Proposal",
+		"title": "Cancel Team!",
+		"summary": "summary"
+	}
+	`
+	propMsgBody := fmt.Sprintf(template, govModuleAddress, initialDepositAmount.String())
+	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalCancelUpgradeFilename), []byte(propMsgBody))
+	s.Require().NoError(err)
+}
+
+func configFile(filename string) string {
+	filepath := filepath.Join(atomoneConfigPath, filename)
+	return filepath
 }
