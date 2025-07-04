@@ -5,10 +5,10 @@
 package testutil
 
 import (
+	context "context"
 	reflect "reflect"
 
 	types "github.com/cometbft/cometbft/proto/tendermint/types"
-	types0 "github.com/cosmos/cosmos-sdk/types"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -36,10 +36,10 @@ func (m *MockConsensusParamsKeeper) EXPECT() *MockConsensusParamsKeeperMockRecor
 }
 
 // Get mocks base method.
-func (m *MockConsensusParamsKeeper) Get(arg0 types0.Context) (*types.ConsensusParams, error) {
+func (m *MockConsensusParamsKeeper) Get(arg0 context.Context) (types.ConsensusParams, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Get", arg0)
-	ret0, _ := ret[0].(*types.ConsensusParams)
+	ret0, _ := ret[0].(types.ConsensusParams)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

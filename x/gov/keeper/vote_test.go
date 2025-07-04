@@ -5,6 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
@@ -54,9 +55,9 @@ func TestVotes(t *testing.T) {
 
 	// Test second vote
 	require.NoError(t, govKeeper.AddVote(ctx, proposalID, addrs[1], v1.WeightedVoteOptions{
-		v1.NewWeightedVoteOption(v1.OptionYes, sdk.NewDecWithPrec(60, 2)),
-		v1.NewWeightedVoteOption(v1.OptionNo, sdk.NewDecWithPrec(30, 2)),
-		v1.NewWeightedVoteOption(v1.OptionAbstain, sdk.NewDecWithPrec(5, 2)),
+		v1.NewWeightedVoteOption(v1.OptionYes, math.LegacyNewDecWithPrec(60, 2)),
+		v1.NewWeightedVoteOption(v1.OptionNo, math.LegacyNewDecWithPrec(30, 2)),
+		v1.NewWeightedVoteOption(v1.OptionAbstain, math.LegacyNewDecWithPrec(5, 2)),
 	}, ""))
 	vote, found = govKeeper.GetVote(ctx, proposalID, addrs[1])
 	require.True(t, found)
@@ -66,9 +67,9 @@ func TestVotes(t *testing.T) {
 	require.Equal(t, v1.OptionYes, vote.Options[0].Option)
 	require.Equal(t, v1.OptionNo, vote.Options[1].Option)
 	require.Equal(t, v1.OptionAbstain, vote.Options[2].Option)
-	require.Equal(t, vote.Options[0].Weight, sdk.NewDecWithPrec(60, 2).String())
-	require.Equal(t, vote.Options[1].Weight, sdk.NewDecWithPrec(30, 2).String())
-	require.Equal(t, vote.Options[2].Weight, sdk.NewDecWithPrec(5, 2).String())
+	require.Equal(t, vote.Options[0].Weight, math.LegacyNewDecWithPrec(60, 2).String())
+	require.Equal(t, vote.Options[1].Weight, math.LegacyNewDecWithPrec(30, 2).String())
+	require.Equal(t, vote.Options[2].Weight, math.LegacyNewDecWithPrec(5, 2).String())
 
 	// Test vote iterator
 	// NOTE order of deposits is determined by the addresses
@@ -82,7 +83,7 @@ func TestVotes(t *testing.T) {
 	require.Equal(t, addrs[1].String(), votes[1].Voter)
 	require.Equal(t, proposalID, votes[1].ProposalId)
 	require.True(t, len(votes[1].Options) == 3)
-	require.Equal(t, votes[1].Options[0].Weight, sdk.NewDecWithPrec(60, 2).String())
-	require.Equal(t, votes[1].Options[1].Weight, sdk.NewDecWithPrec(30, 2).String())
-	require.Equal(t, votes[1].Options[2].Weight, sdk.NewDecWithPrec(5, 2).String())
+	require.Equal(t, votes[1].Options[0].Weight, math.LegacyNewDecWithPrec(60, 2).String())
+	require.Equal(t, votes[1].Options[1].Weight, math.LegacyNewDecWithPrec(30, 2).String())
+	require.Equal(t, votes[1].Options[2].Weight, math.LegacyNewDecWithPrec(5, 2).String())
 }

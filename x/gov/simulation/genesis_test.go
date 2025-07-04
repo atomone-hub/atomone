@@ -8,6 +8,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -86,7 +87,7 @@ func TestRandomizedGenState(t *testing.T) {
 	require.Equal(t, []*v1.Proposal{}, govGenesis.Proposals)
 	require.Equal(t, "", govGenesis.Constitution)
 	require.Equal(t, v1.MinDepositThrottler{
-		FloorValue:                        sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(631))),
+		FloorValue:                        sdk.NewCoins(sdk.NewCoin("stake", math.NewInt(631))),
 		UpdatePeriod:                      &minDepositUpdatePeriod,
 		TargetActiveProposals:             1,
 		DecreaseSensitivityTargetDistance: 3,
@@ -94,7 +95,7 @@ func TestRandomizedGenState(t *testing.T) {
 		DecreaseRatio:                     "0.050000000000000000",
 	}, *govGenesis.Params.MinDepositThrottler)
 	require.Equal(t, v1.MinInitialDepositThrottler{
-		FloorValue:                        sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(201))),
+		FloorValue:                        sdk.NewCoins(sdk.NewCoin("stake", math.NewInt(201))),
 		UpdatePeriod:                      &minInitialDepositUpdatePeriod,
 		TargetProposals:                   29,
 		DecreaseSensitivityTargetDistance: 1,

@@ -7,7 +7,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/cometbft/cometbft/libs/log"
+	"cosmossdk.io/log"
+	storetypes "cosmossdk.io/store/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -27,7 +28,7 @@ func setupMocks(t *testing.T) mocks {
 	t.Helper()
 	ctrl := gomock.NewController(t)
 	return mocks{
-		ctx:                   sdk.NewContext(nil, tmproto.Header{}, false, log.TestingLogger()),
+		ctx:                   sdk.NewContext(nil, tmproto.Header{}, false, log.NewTestLogger(t)),
 		FeeMarketKeeper:       NewMockFeeMarketKeeper(ctrl),
 		ConsensusParamsKeeper: NewMockConsensusParamsKeeper(ctrl),
 	}
@@ -66,7 +67,7 @@ func TestPostHandle(t *testing.T) {
 			name: "ok: state updated",
 			setup: func(m mocks) {
 				m.ConsensusParamsKeeper.EXPECT().Get(m.ctx).
-					Return(&tmproto.ConsensusParams{
+					Return(tmproto.ConsensusParams{
 						Block: &tmproto.BlockParams{MaxGas: testutil.MaxBlockGas},
 					}, nil)
 				m.FeeMarketKeeper.EXPECT().GetParams(m.ctx).
@@ -75,7 +76,7 @@ func TestPostHandle(t *testing.T) {
 				m.FeeMarketKeeper.EXPECT().GetState(m.ctx).
 					Return(types.DefaultState(), nil)
 
-				gasConsumed := sdk.Gas(1000)
+				gasConsumed := storetypes.Gas(1000)
 				m.ctx.GasMeter().ConsumeGas(gasConsumed, "")
 
 				expectedState := types.DefaultState()
@@ -88,7 +89,7 @@ func TestPostHandle(t *testing.T) {
 			simulate: true,
 			setup: func(m mocks) {
 				m.ConsensusParamsKeeper.EXPECT().Get(m.ctx).
-					Return(&tmproto.ConsensusParams{
+					Return(tmproto.ConsensusParams{
 						Block: &tmproto.BlockParams{MaxGas: testutil.MaxBlockGas},
 					}, nil)
 				m.FeeMarketKeeper.EXPECT().GetParams(m.ctx).
@@ -97,7 +98,7 @@ func TestPostHandle(t *testing.T) {
 				m.FeeMarketKeeper.EXPECT().GetState(m.ctx).
 					Return(types.DefaultState(), nil)
 
-				gasConsumed := sdk.Gas(1000)
+				gasConsumed := storetypes.Gas(1000)
 				m.ctx.GasMeter().ConsumeGas(gasConsumed, "")
 
 				expectedState := types.DefaultState()

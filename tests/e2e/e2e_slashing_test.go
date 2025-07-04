@@ -4,7 +4,7 @@ const jailedValidatorKey = "jailed"
 
 func (s *IntegrationTestSuite) testSlashing(chainEndpoint string) {
 	s.Run("unjail validator", func() {
-		validators, err := queryValidators(chainEndpoint)
+		validators, err := s.queryValidators(chainEndpoint)
 		s.Require().NoError(err)
 
 		for _, val := range validators {
@@ -14,7 +14,7 @@ func (s *IntegrationTestSuite) testSlashing(chainEndpoint string) {
 					withKeyValue(flagFrom, jailedValidatorKey),
 				)
 
-				valQ, err := queryValidator(chainEndpoint, val.OperatorAddress)
+				valQ, err := s.queryValidator(chainEndpoint, val.OperatorAddress)
 				s.Require().NoError(err)
 				s.Require().False(valQ.Jailed)
 			}
