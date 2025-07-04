@@ -129,8 +129,8 @@ In summary, a delegator is incentivized to delegate its stake to validators with
 
 ### Dynamic Change of the $\eta$ parameter
 
-The $\eta$ coefficient will move between 0 and 100\% and its initial value of will be set to `5%`.
-The coefficient will be updated every 120K blocks (~ one week) by performing increases or decreases of +- 5%.
+The $\eta$ coefficient will move between 0 and 100\% and its initial value of will be set to `3%`.
+The coefficient will be updated every 120K blocks (~ one week) by performing increases or decreases of +- 3%.
 
 The decision on whether $\eta$ needs to be increased or decreased is performed as follows:
 1. Bonded validators are sorted by voting power and split into 3 groups (33 in high, 33 in medium, and 34 in low).
@@ -138,12 +138,22 @@ The decision on whether $\eta$ needs to be increased or decreased is performed a
 3. If the average voting power of the high group is *3x* or more the average voting power of the low group, $\eta$ is increased, otherwise it is decreased.
 
 
+## Consequences
 
-## Sybil Attack
+The feature discussed in this ADR rewards delegators who behave in a way beneficial to the decentralization of the AtomOne chain. Delegators who will proactively redelegate their stake considering the state of distribution of voting power can expect a higher staking rewards.
 
-The rewarding mechanism as presented above can be taken advantage of by a sybil attack.
+### Positive
 
-Specifically, a validator may profit by adding multiple validators to the chain and splitting its stake across such validators.
+- The change in reward system incentivises delegators who increase the decentralization of the chain.
+
+### Negative
+
+- The rewarding mechanism as presented above can be taken advantage of by a sybil attack.
+
+#### Sybil Attack
+
+
+A validator may profit by adding multiple validators to the chain and splitting its stake across such validators.
 
 In fact, in this scenario assuming $y$ as the number of sybil instances:
 
@@ -153,7 +163,7 @@ $$
 
 So the validator would keep intact its `Proportional Reward` and be rewarded y times the `Nakamoto Bonus`.
 
-As a measure to mitigate this, we propose to adopt and ajust the mechanism of `proportional slashing` as presented in [adr-014](https://github.com/cosmos/cosmos-sdk/blob/main/docs/architecture/adr-014-proportional-slashing.md) of the Cosmos Hub.
+As a separate and additional feature to mitigate sybil attacks, we propose to adopt and adjust the mechanism of `proportional slashing` as presented in ADR-014 [^1] of the Cosmos Hub. 
 Two (or more) validators are considered correlated if they fail within the same time period. The correlated validators are then slashed as follows:
 
 $$
@@ -166,5 +176,14 @@ Where
 
 For example, assuming $k=1$ and $r=2$, if one validator of 10% faults, it gets a 10% slash, while if two validators of 5% each fault together, they both get a 20% slash ($1 \times (0.05^{\frac{1}{2}}+0.05^{\frac{1}{2}})^2$).
 
+`Proportional slashing` is not part of the Nakamoto Bonus feature, and it will be implemented as a separate feature.
 
+### Neutral
+
+- Increased number of distribution parameters.
+- Adds a new endpoint to query the value of $\eta$.
+
+## References
+
+- [^1]: [ADR-014 - Proportional Slashing](https://github.com/cosmos/cosmos-sdk/blob/main/docs/architecture/adr-014-proportional-slashing.md)
 
