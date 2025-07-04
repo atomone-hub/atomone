@@ -1,6 +1,7 @@
 package ante_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -112,7 +113,11 @@ func TestValidateFeeDecorator(t *testing.T) {
 				m.PhotonKeeper.EXPECT().GetParams(m.ctx).
 					Return(types.DefaultParams())
 			},
-			expectedError: "fee denom uatone not allowed: invalid fee token",
+			expectedError: fmt.Sprintf(
+				"fee denom %s not allowed; only fee denom %s is allowed: invalid fee token",
+				"uatone",
+				types.Denom,
+			),
 		},
 		{
 			name: "fail: MsgUpdateParams fee xxx",
@@ -132,7 +137,11 @@ func TestValidateFeeDecorator(t *testing.T) {
 				m.PhotonKeeper.EXPECT().GetParams(m.ctx).
 					Return(types.DefaultParams())
 			},
-			expectedError: "fee denom xxx not allowed: invalid fee token",
+			expectedError: fmt.Sprintf(
+				"fee denom %s not allowed; only fee denom %s is allowed: invalid fee token",
+				"xxx",
+				types.Denom,
+			),
 		},
 		{
 			name: "fail: MsgUpdateParams multiple fee denom",
