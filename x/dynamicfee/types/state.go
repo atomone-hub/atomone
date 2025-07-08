@@ -9,10 +9,10 @@ import (
 	"cosmossdk.io/math"
 )
 
-// NewState instantiates a new fee market state instance. This is utilized
-// to implement both the base EIP-1559 fee market implementation and the
-// AIMD EIP-1559 fee market implementation. Note that on init, you initialize
-// both the minimum and current base gas price to the same value.
+// NewState instantiates a new dynamicfee state instance. This is utilized
+// to implement both the base EIP-1559 dynamic fee pricing implementation and
+// the AIMD EIP-1559 dynamic fee pricing implementation. Note that on init,
+// you initialize both the minimum and current base gas price to the same value.
 func NewState(
 	windowSize uint64,
 	baseGasPrice math.LegacyDec,

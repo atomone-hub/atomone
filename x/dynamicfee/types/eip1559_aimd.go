@@ -3,8 +3,8 @@ package types
 import "cosmossdk.io/math"
 
 // Note: The following constants are the default values for the AIMD EIP-1559
-// fee market implementation. This implements an adjustable learning rate
-// algorithm that is not present in the base EIP-1559 implementation.
+// dynamic fee pricing implementation. This implements an adjustable learning
+// rate algorithm that is not present in the base EIP-1559 implementation.
 
 var (
 	// DefaultAIMDWindow is the default window size for the sliding window
@@ -45,9 +45,9 @@ var (
 )
 
 // DefaultAIMDParams returns a default set of parameters that implements
-// the AIMD EIP-1559 fee market implementation. These parameters allow for
-// the learning rate to be dynamically adjusted based on the block gas
-// within the window.
+// the AIMD EIP-1559 dynamic fee pricing implementation. These parameters
+// allow for the learning rate to be dynamically adjusted based on the block
+// gas within the window.
 func DefaultAIMDParams() Params {
 	return NewParams(
 		DefaultAIMDWindow,
@@ -63,9 +63,9 @@ func DefaultAIMDParams() Params {
 	)
 }
 
-// DefaultAIMDState returns the default state for the AIMD EIP-1559 fee market
-// implementation. This implementation uses a sliding window to track the
-// block gas and dynamically adjusts the learning rate based on the
+// DefaultAIMDState returns the default state for the AIMD EIP-1559 dynamic
+// fee pricing implementation. This implementation uses a sliding window to
+// track the block gas and dynamically adjusts the learning rate based on the
 // gas within the window.
 func DefaultAIMDState() State {
 	return NewState(
@@ -76,7 +76,7 @@ func DefaultAIMDState() State {
 }
 
 // DefaultAIMDGenesisState returns a default genesis state that implements
-// the AIMD EIP-1559 fee market implementation.
+// the AIMD EIP-1559 dynamic fee pricing implementation.
 func DefaultAIMDGenesisState() *GenesisState {
 	return NewGenesisState(DefaultAIMDParams(), DefaultAIMDState())
 }

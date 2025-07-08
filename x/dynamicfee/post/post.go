@@ -6,8 +6,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// DynamicfeeStateUpdateDecorator updates the state of the fee market based on the gas consumed in the gasmeter.
-// Call next PostHandler if fees successfully deducted.
+// DynamicfeeStateUpdateDecorator updates the state of the dynamic fee pricing
+// based on the gas consumed in the gasmeter. Call next PostHandler if fees
+// successfully deducted.
 // CONTRACT: Tx must implement FeeTx interface
 type DynamicfeeStateUpdateDecorator struct {
 	dynamicfeeKeeper      DynamicfeeKeeper
@@ -30,10 +31,10 @@ func (dfd DynamicfeeStateUpdateDecorator) PostHandle(ctx sdk.Context, tx sdk.Tx,
 		return next(ctx, tx, simulate, success)
 	}
 
-	// update fee market params
+	// update dynamic fee pricing params
 	params, err := dfd.dynamicfeeKeeper.GetParams(ctx)
 	if err != nil {
-		return ctx, errorsmod.Wrapf(err, "unable to get fee market params")
+		return ctx, errorsmod.Wrapf(err, "unable to get dynamicfee params")
 	}
 
 	// return if disabled
@@ -43,7 +44,7 @@ func (dfd DynamicfeeStateUpdateDecorator) PostHandle(ctx sdk.Context, tx sdk.Tx,
 
 	enabledHeight, err := dfd.dynamicfeeKeeper.GetEnabledHeight(ctx)
 	if err != nil {
-		return ctx, errorsmod.Wrapf(err, "unable to get fee market enabled height")
+		return ctx, errorsmod.Wrapf(err, "unable to get dynamicfee enabled height")
 	}
 
 	// if the current height is that which enabled the dynamicfee or lower, skip deduction
@@ -51,10 +52,10 @@ func (dfd DynamicfeeStateUpdateDecorator) PostHandle(ctx sdk.Context, tx sdk.Tx,
 		return next(ctx, tx, simulate, success)
 	}
 
-	// update fee market state
+	// update dynamic fee pricing state
 	state, err := dfd.dynamicfeeKeeper.GetState(ctx)
 	if err != nil {
-		return ctx, errorsmod.Wrapf(err, "unable to get fee market state")
+		return ctx, errorsmod.Wrapf(err, "unable to get dynamicfee state")
 	}
 
 	gas := ctx.GasMeter().GasConsumed() // use context gas consumed
@@ -71,12 +72,12 @@ func (dfd DynamicfeeStateUpdateDecorator) PostHandle(ctx sdk.Context, tx sdk.Tx,
 
 	err = state.Update(gas, maxBlockGas)
 	if err != nil {
-		return ctx, errorsmod.Wrapf(err, "unable to update fee market state")
+		return ctx, errorsmod.Wrapf(err, "unable to update dynamicfee state")
 	}
 
 	err = dfd.dynamicfeeKeeper.SetState(ctx, state)
 	if err != nil {
-		return ctx, errorsmod.Wrapf(err, "unable to set fee market state")
+		return ctx, errorsmod.Wrapf(err, "unable to set dynamicfee state")
 	}
 
 	return next(ctx, tx, simulate, success)

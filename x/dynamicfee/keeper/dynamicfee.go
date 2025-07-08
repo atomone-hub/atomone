@@ -7,10 +7,10 @@ import (
 )
 
 // UpdateDynamicfee updates the base fee and learning rate based on the
-// AIMD learning rate adjustment algorithm. Note that if the fee market
-// is disabled, this function will return without updating the fee market.
-// This is executed in EndBlock which allows the next block's base fee to
-// be readily available for wallets to estimate gas prices.
+// AIMD learning rate adjustment algorithm. Note that if the dynamic fee
+// pricing is disabled, this function will return without updating the
+// dynamic fee pricing. This is executed in EndBlock which allows the next
+// block's base fee to be readily available for wallets to estimate gas prices.
 func (k *Keeper) UpdateDynamicfee(ctx sdk.Context) error {
 	params, err := k.GetParams(ctx)
 	if err != nil {
@@ -18,7 +18,7 @@ func (k *Keeper) UpdateDynamicfee(ctx sdk.Context) error {
 	}
 
 	k.Logger(ctx).Info(
-		"updated the fee market",
+		"updated the dynamic fee pricing",
 		"params", params,
 	)
 
@@ -45,7 +45,7 @@ func (k *Keeper) UpdateDynamicfee(ctx sdk.Context) error {
 	newBaseGasPrice := state.UpdateBaseGasPrice(k.Logger(ctx), params, maxBlockGas)
 
 	k.Logger(ctx).Info(
-		"updated the fee market",
+		"updated the dynamic fee pricing",
 		"height", ctx.BlockHeight(),
 		"new_base_gas_price", newBaseGasPrice,
 		"new_learning_rate", newLR,
@@ -58,7 +58,7 @@ func (k *Keeper) UpdateDynamicfee(ctx sdk.Context) error {
 	return k.SetState(ctx, state)
 }
 
-// GetBaseGasPrice returns the base fee from the fee market state.
+// GetBaseGasPrice returns the base fee from the dynamic fee pricing state.
 func (k *Keeper) GetBaseGasPrice(ctx sdk.Context) (math.LegacyDec, error) {
 	state, err := k.GetState(ctx)
 	if err != nil {
@@ -68,7 +68,7 @@ func (k *Keeper) GetBaseGasPrice(ctx sdk.Context) (math.LegacyDec, error) {
 	return state.BaseGasPrice, nil
 }
 
-// GetLearningRate returns the learning rate from the fee market state.
+// GetLearningRate returns the learning rate from the dynamic fee pricing state.
 func (k *Keeper) GetLearningRate(ctx sdk.Context) (math.LegacyDec, error) {
 	state, err := k.GetState(ctx)
 	if err != nil {
@@ -78,7 +78,8 @@ func (k *Keeper) GetLearningRate(ctx sdk.Context) (math.LegacyDec, error) {
 	return state.LearningRate, nil
 }
 
-// GetMinGasPrice returns the mininum gas prices for given denom as sdk.DecCoins from the fee market state.
+// GetMinGasPrice returns the mininum gas prices for given denom as
+// sdk.DecCoins from the dynamic fee pricing state.
 func (k *Keeper) GetMinGasPrice(ctx sdk.Context, denom string) (sdk.DecCoin, error) {
 	baseGasPrice, err := k.GetBaseGasPrice(ctx)
 	if err != nil {
@@ -104,7 +105,8 @@ func (k *Keeper) GetMinGasPrice(ctx sdk.Context, denom string) (sdk.DecCoin, err
 	return gasPrice, nil
 }
 
-// GetMinGasPrices returns the mininum gas prices as sdk.DecCoins from the fee market state.
+// GetMinGasPrices returns the mininum gas prices as sdk.DecCoins from the
+// dynamic fee pricing state.
 func (k *Keeper) GetMinGasPrices(ctx sdk.Context) (sdk.DecCoins, error) {
 	baseGasPrice, err := k.GetBaseGasPrice(ctx)
 	if err != nil {

@@ -25,8 +25,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// Params contains the required set of parameters for the EIP1559 fee market
-// plugin implementation.
+// Params contains the required set of parameters for the EIP1559 dynamic fee
+// pricing implementation.
 type Params struct {
 	// Alpha is the amount we additively increase the learning rate
 	// when it is above or below the target +/- threshold.
@@ -61,8 +61,8 @@ type Params struct {
 	Window uint64 `protobuf:"varint,9,opt,name=window,proto3" json:"window,omitempty"`
 	// FeeDenom is the denom that will be used for all fee payments.
 	FeeDenom string `protobuf:"bytes,10,opt,name=fee_denom,json=feeDenom,proto3" json:"fee_denom,omitempty"`
-	// Enabled is a boolean that determines whether the EIP1559 fee market is
-	// enabled.
+	// Enabled is a boolean that determines whether the EIP1559 dynamic fee
+	// pricing is enabled.
 	Enabled bool `protobuf:"varint,11,opt,name=enabled,proto3" json:"enabled,omitempty"`
 }
 

@@ -6,8 +6,9 @@ import (
 	"cosmossdk.io/math"
 )
 
-// NewParams instantiates a new EIP-1559 Params object. This params object is utilized
-// to implement both the base EIP-1559 fee and AIMD EIP-1559 fee market implementations.
+// NewParams instantiates a new EIP-1559 Params object. This params object is
+// utilized to implement both the base EIP-1559 fee and AIMD EIP-1559 dynamic
+// fee pricing implementations.
 func NewParams(
 	window uint64,
 	alpha math.LegacyDec,

@@ -997,8 +997,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Params contains the required set of parameters for the EIP1559 fee market
-// plugin implementation.
+// Params contains the required set of parameters for the EIP1559 dynamic fee
+// pricing implementation.
 type Params struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1037,8 +1037,8 @@ type Params struct {
 	Window uint64 `protobuf:"varint,9,opt,name=window,proto3" json:"window,omitempty"`
 	// FeeDenom is the denom that will be used for all fee payments.
 	FeeDenom string `protobuf:"bytes,10,opt,name=fee_denom,json=feeDenom,proto3" json:"fee_denom,omitempty"`
-	// Enabled is a boolean that determines whether the EIP1559 fee market is
-	// enabled.
+	// Enabled is a boolean that determines whether the EIP1559 dynamic fee
+	// pricing is enabled.
 	Enabled bool `protobuf:"varint,11,opt,name=enabled,proto3" json:"enabled,omitempty"`
 }
 

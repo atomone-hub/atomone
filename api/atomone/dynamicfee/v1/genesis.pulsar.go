@@ -1260,10 +1260,10 @@ type GenesisState struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Params are the parameters for the dynamicfee module. These parameters
-	// can be utilized to implement both the base EIP-1559 fee market and
-	// and the AIMD EIP-1559 fee market.
+	// can be utilized to implement both the base EIP-1559 dynamic fee pricing
+	// and the AIMD EIP-1559 dynamic fee pricing.
 	Params *Params `protobuf:"bytes,1,opt,name=params,proto3" json:"params,omitempty"`
-	// State contains the current state of the AIMD fee market.
+	// State contains the current state of the AIMD dynamic fee pricer.
 	State *State `protobuf:"bytes,2,opt,name=state,proto3" json:"state,omitempty"`
 }
 
@@ -1301,8 +1301,8 @@ func (x *GenesisState) GetState() *State {
 	return nil
 }
 
-// State is utilized to track the current state of the fee market. This includes
-// the current base fee, learning rate, and block gas within the
+// State is utilized to track the current state of the dynamic fee pricer.
+// This includes the current base fee, learning rate, and block gas within the
 // specified AIMD window.
 type State struct {
 	state         protoimpl.MessageState
