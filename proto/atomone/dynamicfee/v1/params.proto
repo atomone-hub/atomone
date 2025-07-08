@@ -6,8 +6,8 @@ option go_package = "github.com/atomone-hub/atomone/x/dynamicfee/types";
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
 
-// Params contains the required set of parameters for the EIP1559 fee market
-// plugin implementation.
+// Params contains the required set of parameters for the EIP1559 dynamic fee
+// pricing implementation.
 message Params {
   // Alpha is the amount we additively increase the learning rate
   // when it is above or below the target +/- threshold.
@@ -79,7 +79,7 @@ message Params {
   // FeeDenom is the denom that will be used for all fee payments.
   string fee_denom = 10;
 
-  // Enabled is a boolean that determines whether the EIP1559 fee market is
-  // enabled.
+  // Enabled is a boolean that determines whether the EIP1559 dynamic fee
+  // pricing is enabled.
   bool enabled = 11;
 }

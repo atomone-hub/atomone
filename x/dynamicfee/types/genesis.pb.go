@@ -28,10 +28,10 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 // GenesisState defines the dynamicfee module's genesis state.
 type GenesisState struct {
 	// Params are the parameters for the dynamicfee module. These parameters
-	// can be utilized to implement both the base EIP-1559 fee market and
-	// and the AIMD EIP-1559 fee market.
+	// can be utilized to implement both the base EIP-1559 dynamic fee pricing
+	// and the AIMD EIP-1559 dynamic fee pricing.
 	Params Params `protobuf:"bytes,1,opt,name=params,proto3" json:"params"`
-	// State contains the current state of the AIMD fee market.
+	// State contains the current state of the AIMD dynamic fee pricer.
 	State State `protobuf:"bytes,2,opt,name=state,proto3" json:"state"`
 }
 
@@ -82,8 +82,8 @@ func (m *GenesisState) GetState() State {
 	return State{}
 }
 
-// State is utilized to track the current state of the fee market. This includes
-// the current base fee, learning rate, and block gas within the
+// State is utilized to track the current state of the dynamic fee pricer.
+// This includes the current base fee, learning rate, and block gas within the
 // specified AIMD window.
 type State struct {
 	// BaseGasPrice is the current base fee. This is denominated in the fee per

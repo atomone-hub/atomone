@@ -26,7 +26,7 @@ func TestLearningRate(t *testing.T) {
 		// Randomly generate the block gas.
 		blockGas := rapid.Uint64Range(0, maxBlockGas).Draw(t, "gas")
 
-		// Update the fee market.
+		// Update the dynamic fee pricing.
 		if err := state.Update(blockGas, maxBlockGas); err != nil {
 			t.Fatalf("block update errors: %v", err)
 		}
@@ -52,7 +52,7 @@ func TestGasPrice(t *testing.T) {
 		// Randomly generate the block gas.
 		blockGas := rapid.Uint64Range(0, maxBlockGas).Draw(t, "gas")
 
-		// Update the fee market.
+		// Update the dynamic fee pricing.
 		if err := state.Update(blockGas, maxBlockGas); err != nil {
 			t.Fatalf("block update errors: %v", err)
 		}
@@ -77,7 +77,7 @@ func TestGasPrice(t *testing.T) {
 }
 
 // CreateRandomParams returns a random set of parameters for the default
-// EIP-1559 fee market implementation.
+// EIP-1559 dynamic fee pricing implementation.
 func CreateRandomParams(t *rapid.T) (types.Params, uint64) {
 	a := rapid.Uint64Range(1, 1000).Draw(t, "alpha")
 	alpha := math.LegacyNewDec(int64(a)).Quo(math.LegacyNewDec(1000))

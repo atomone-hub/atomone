@@ -78,7 +78,7 @@ func (d DynamicfeeCheckDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulat
 	return next(ctx, tx, simulate)
 }
 
-// anteHandle checks if the tx provides sufficient fee to cover the required fee from the fee market.
+// anteHandle checks if the tx provides sufficient fee to cover the required fee from the dynamic fee pricing.
 func (dfd dynamicfeeCheckDecorator) anteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (sdk.Context, error) {
 	// GenTx consume no fee
 	if ctx.BlockHeight() == 0 {
@@ -96,7 +96,7 @@ func (dfd dynamicfeeCheckDecorator) anteHandle(ctx sdk.Context, tx sdk.Tx, simul
 
 	params, err := dfd.dynamicfeeKeeper.GetParams(ctx)
 	if err != nil {
-		return ctx, errorsmod.Wrapf(err, "unable to get fee market params")
+		return ctx, errorsmod.Wrapf(err, "unable to get dynamicfee params")
 	}
 
 	// return if disabled
@@ -226,8 +226,9 @@ func (dfd dynamicfeeCheckDecorator) DeductFees(ctx sdk.Context, sdkTx sdk.Tx, pr
 	return nil
 }
 
-// CheckTxFee implements the logic for the fee market to check if a Tx has provided sufficient
-// fees given the current state of the fee market. Returns an error if insufficient fees.
+// CheckTxFee implements the logic for the dynamic fee pricing to check if a Tx
+// has provided sufficient fees given the current state of the dynamic fee
+// pricer. Returns an error if insufficient fees.
 func CheckTxFee(ctx sdk.Context, gasPrice sdk.DecCoin, feeCoin sdk.Coin, feeGas int64) error {
 	// Ensure that the provided fees meet the minimum
 	if !gasPrice.IsZero() {

@@ -110,8 +110,8 @@ consumed per block.
 Index is the index of the current block in the block gas window.
 
 ```protobuf
-// State is utilized to track the current state of the fee market. This includes
-// the current base fee, learning rate, and block gas within the
+// State is utilized to track the current state of the dynamic fee pricer. This
+// includes the current base fee, learning rate, and block gas within the
 // specified AIMD window.
 message State {
   // BaseGasPrice is the current base fee. This is denominated in the fee per gas
@@ -269,13 +269,13 @@ FeeDenom is the denom that will be used for all fee payments.
 
 ### Enabled
 
-Enabled is a boolean that determines whether the EIP1559 fee market is
-enabled. This can be used to add the dynamicfee module and enable it
+Enabled is a boolean that determines whether the EIP1559 dynamic fee pricing
+is enabled. This can be used to add the dynamicfee module and enable it
 through governance at a later time.
 
 ```protobuf
-// Params contains the required set of parameters for the EIP1559 fee market
-// plugin implementation.
+// Params contains the required set of parameters for the EIP1559 dynamic fee
+// pricing implementation.
 message Params {
   // Alpha is the amount we additively increase the learning rate
   // when it is above or below the target +/- threshold.
@@ -347,8 +347,8 @@ message Params {
   // FeeDenom is the denom that will be used for all fee payments.
   string fee_denom = 10;
 
-  // Enabled is a boolean that determines whether the EIP1559 fee market is
-  // enabled.
+  // Enabled is a boolean that determines whether the EIP1559 dynamic fee
+  // pricing is enabled.
   bool enabled = 11;
 }
 ```

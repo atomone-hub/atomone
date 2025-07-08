@@ -9,20 +9,20 @@
 >   from the `x/consensus` module.
 
 This plugin implements the AIMD (Additive Increase Multiplicative Decrease)
-EIP-1559 fee market as described in this
+EIP-1559 dynamic fee pricing as described in this
 [AIMD EIP-1559](https://arxiv.org/abs/2110.04753) research publication.
 
-The AIMD EIP-1559 fee market is a slight modification to Ethereum's EIP-1559
-fee market. Specifically it introduces the notion of an adaptive learning rate
-which scales the base gas price more aggressively when the network is congested
-and less aggressively when the network is not congested. This is primarily done
-to address the often cited criticism of EIP-1559 that it's base fee often lags
-behind the current demand for block space. The learning rate on Ethereum is
-effectively hard-coded to be 12.5%, which means that between any two blocks the
-base fee can maximally increase by 12.5% or decrease by 12.5%. Additionally,
-AIMD EIP-1559 differs from Ethereum's EIP-1559 by considering a configured time
-window (number of blocks) to consider when calculating and comparing target
-block gas and current block gas.
+The AIMD EIP-1559 dynamic fee pricing is a slight modification to Ethereum's
+EIP-1559 dynamic fee pricing. Specifically it introduces the notion of an
+adaptive learning rate which scales the base gas price more aggressively when
+the network is congested and less aggressively when the network is not
+congested. This is primarily done to address the often cited criticism of
+EIP-1559 that it's base fee often lags behind the current demand for block
+space. The learning rate on Ethereum is effectively hard-coded to be 12.5%,
+which means that between any two blocks the base fee can maximally increase by
+12.5% or decrease by 12.5%. Additionally, AIMD EIP-1559 differs from Ethereum's
+EIP-1559 by considering a configured time window (number of blocks) to consider
+when calculating and comparing target block gas and current block gas.
 
 ## Parameters
 
@@ -44,7 +44,7 @@ currentBaseGasPrice := previousBaseGasPrice * (1 + 0.125 * (currentBlockSize - t
 
 ### AIMD EIP-1559
 
-AIMD EIP-1559 introduces a few new parameters to the EIP-1559 fee market:
+AIMD EIP-1559 introduces a few new parameters to the EIP-1559 dynamic fee pricing:
 
 * **`Alpha`**: This is the amount we additively increase the learning rate when
   the target gas is less than the current gas i.e. the block was
@@ -151,8 +151,9 @@ As we can see, the base fee remained the same and the learning rate decreased.
 
 ## Default EIP-1559 With AIMD EIP-1559
 
-It is entirely possible to implement the default EIP-1559 fee market with the
-AIMD EIP-1559 fee market. This can be done by setting the following parameters:
+It is entirely possible to implement the default EIP-1559 dynamic fee pricing
+with the AIMD EIP-1559 dynamic fee pricing. This can be done by setting the
+following parameters:
 
 * `Alpha = 0.0`
 * `Beta = 1.0`

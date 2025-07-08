@@ -29,16 +29,16 @@ func TestAIMDLearningRate(t *testing.T) {
 
 		params, maxBlockGas := CreateRandomAIMDParams(t)
 
-		// Randomly generate the block gas
+		// Randomly generate the block gas.
 		numBlocks := rapid.Uint64Range(0, 1000).Draw(t, "num_blocks")
 		gasGen := rapid.Uint64Range(0, maxBlockGas)
 
-		// Update the fee market.
+		// Update the dynamic fee pricing.
 		for i := uint64(0); i < numBlocks; i++ {
 			blockGas := gasGen.Draw(t, "gas")
 			prevLearningRate := state.LearningRate
 
-			// Update the fee market.
+			// Update the dynamic fee pricing.
 			if err := state.Update(blockGas, maxBlockGas); err != nil {
 				t.Fatalf("block update errors: %v", err)
 			}
@@ -79,7 +79,7 @@ func TestAIMDGasPrice(t *testing.T) {
 		numBlocks := rapid.Uint64Range(0, uint64(window)*10).Draw(t, "num_blocks")
 		gasGen := rapid.Uint64Range(0, maxBlockGas)
 
-		// Update the fee market.
+		// Update the dynamic fee pricing.
 		for i := uint64(0); i < numBlocks; i++ {
 			blockGas := gasGen.Draw(t, "gas")
 			prevBaseGasPrice := state.BaseGasPrice
@@ -138,7 +138,7 @@ func TestAIMDGasPrice(t *testing.T) {
 }
 
 // CreateRandomAIMDParams returns a random set of parameters for the AIMD
-// EIP-1559 fee market implementation.
+// EIP-1559 dynamic fee pricing implementation.
 func CreateRandomAIMDParams(t *rapid.T) (types.Params, uint64) {
 	a := rapid.Uint64Range(1, 1000).Draw(t, "alpha")
 	alpha := math.LegacyNewDec(int64(a)).Quo(math.LegacyNewDec(1000))

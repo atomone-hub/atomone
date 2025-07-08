@@ -29,7 +29,7 @@ func FuzzDefaultDynamicfee(f *testing.F) {
 
 	defaultLR := math.LegacyMustNewDecFromStr("0.125")
 
-	// Default fee market.
+	// Default dynamicfee.
 	f.Fuzz(func(t *testing.T, blockGasUsed uint64) {
 		state := types.DefaultState()
 		params := types.DefaultParams()
@@ -79,7 +79,7 @@ func FuzzAIMDDynamicfee(f *testing.F) {
 		f.Add(tc)
 	}
 
-	// Fee market with adjustable learning rate.
+	// Dynamic fee pricing with adjustable learning rate.
 	f.Fuzz(func(t *testing.T, blockGasUsed uint64) {
 		state := types.DefaultAIMDState()
 		params := types.DefaultAIMDParams()

@@ -6,9 +6,9 @@ import (
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
 )
 
-// Note: We use the same default values as Ethereum for the EIP-1559
-// fee market implementation. These parameters do not implement the
-// AIMD learning rate adjustment algorithm.
+// Note: We use the same default values as Ethereum for the EIP-1559 dynamic
+// fee pricing implementation. These parameters do not implement the AIMD
+// learning rate adjustment algorithm.
 
 var (
 	// DefaultWindow is the default window size for the sliding window
@@ -42,8 +42,8 @@ var (
 )
 
 // DefaultParams returns a default set of parameters that implements
-// the EIP-1559 fee market implementation without the AIMD learning
-// rate adjustment algorithm.
+// the EIP-1559 dynamic fee pricing implementation without the AIMD
+// learning rate adjustment algorithm.
 func DefaultParams() Params {
 	return NewParams(
 		DefaultWindow,
@@ -59,7 +59,7 @@ func DefaultParams() Params {
 	)
 }
 
-// DefaultState returns the default state for the EIP-1559 fee market
+// DefaultState returns the default state for the EIP-1559 dynamic fee pricing
 // implementation without the AIMD learning rate adjustment algorithm.
 func DefaultState() State {
 	return NewState(
@@ -70,8 +70,8 @@ func DefaultState() State {
 }
 
 // DefaultGenesisState returns a default genesis state that implements
-// the EIP-1559 fee market implementation without the AIMD learning
-// rate adjustment algorithm.
+// the EIP-1559 dynamic fee pricing implementation without the AIMD
+// learning rate adjustment algorithm.
 func DefaultGenesisState() *GenesisState {
 	return NewGenesisState(DefaultParams(), DefaultState())
 }
