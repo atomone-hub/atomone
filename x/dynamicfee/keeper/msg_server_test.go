@@ -82,7 +82,7 @@ func TestMsgUpdateParams(t *testing.T) {
 		require.NoError(err)
 		require.Equal(ctx.BlockHeight(), gotHeight)
 
-		// now that the markets are disabled, enable and check block height
+		// now that dynamic fees are disabled, enable and check block height
 		ctx = ctx.WithBlockHeight(ctx.BlockHeight() + 10)
 
 		req = &types.MsgUpdateParams{
