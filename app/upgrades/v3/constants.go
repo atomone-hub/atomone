@@ -4,7 +4,7 @@ import (
 	store "github.com/cosmos/cosmos-sdk/store/types"
 
 	"github.com/atomone-hub/atomone/app/upgrades"
-	feemarkettypes "github.com/atomone-hub/atomone/x/feemarket/types"
+	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
 )
 
 const (
@@ -17,7 +17,7 @@ var Upgrade = upgrades.Upgrade{
 	StoreUpgrades: store.StoreUpgrades{
 		Added: []string{
 			// new module added in v3
-			feemarkettypes.ModuleName,
+			dynamicfeetypes.ModuleName,
 		},
 	},
 }
