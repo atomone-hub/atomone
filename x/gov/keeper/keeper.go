@@ -5,12 +5,11 @@ import (
 	"time"
 
 	"cosmossdk.io/log"
-
 	storetypes "cosmossdk.io/store/types"
+
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	"github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
@@ -136,7 +135,7 @@ func (keeper Keeper) LegacyRouter() v1beta1.Router {
 }
 
 // GetGovernanceAccount returns the governance ModuleAccount
-func (keeper Keeper) GetGovernanceAccount(ctx sdk.Context) authtypes.ModuleAccountI {
+func (keeper Keeper) GetGovernanceAccount(ctx sdk.Context) sdk.ModuleAccountI {
 	return keeper.authKeeper.GetModuleAccount(ctx, types.ModuleName)
 }
 
