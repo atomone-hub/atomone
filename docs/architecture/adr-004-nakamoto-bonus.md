@@ -84,9 +84,6 @@ Where:
 - $PR_i$ is the proportional reward for block $i$.
 - $NB_i$ is the Nakamoto Bonus for block $i$.
 
-Moreover, we define a new parameter $\eta \in [0,1]$ that specifies how NB is computed from the reward: $NB_i = R_i \times \eta$.
-Increasing $\eta$ increases NB, and decreasing it, decreases NB.
-
 The reward obtained by a validator $j$ at block $i$ is computed as:
 
 $$
@@ -129,7 +126,11 @@ In summary, a delegator is incentivized to delegate its stake to validators with
 
 ### Dynamic Change of the $\eta$ parameter
 
-The $\eta$ coefficient will move between 0 and 100\% and its initial value of will be set to `3%`.
+We define a new parameter $\eta \in [0,1]$ that specifies how the Nakamoto Bonus (NB) is computed from the reward:
+$NB_i = R_i \times \eta$, where $R_i$ is the total reward obtained by validating block $i$.
+
+Increasing $\eta$ increases the proportion of the reward distributed following the Nakamoto Bonus methodology. Conversely, decreasing $\eta$ increases the proportion of the block reward distributed proportionally to the validators.
+The initial value of $\eta$ will be set to `3%`.
 The coefficient will be updated every 120K blocks (~ one week) by performing increases or decreases of +- 3%.
 
 The decision on whether $\eta$ needs to be increased or decreased is performed as follows:
