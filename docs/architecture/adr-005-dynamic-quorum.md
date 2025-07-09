@@ -121,8 +121,6 @@ participation is higher then `pEMA`, and the current dynamic quorum is below
 - Increased number of governance parameters.
 - Adds a new endpoint to query the `Quorum` value.
 
-## References
-
-- [^1]: [Exponential smoothing](https://en.wikipedia.org/wiki/Exponential_smoothing)
-- [^2]: [Tezos, Quorum computation](https://opentezos.com/tezos-basics/governance-on-chain/#quorum-computation)
-- [^3]: [AtomOne, Staking and Governance Separation: Introduction of Delegation-less](https://github.com/atomone-hub/genesis/blob/main/GOVERNANCE.md#3-staking-and-governance-separation-introduction-of-delegation-less)
+[^1]: [Exponential smoothing](https://en.wikipedia.org/wiki/Exponential_smoothing)
+[^2]: [Tezos, Quorum computation](https://opentezos.com/tezos-basics/governance-on-chain/#quorum-computation)
+[^3]: [AtomOne, Staking and Governance Separation: Introduction of Delegation-less](https://github.com/atomone-hub/genesis/blob/main/GOVERNANCE.md#3-staking-and-governance-separation-introduction-of-delegation-less)
