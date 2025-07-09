@@ -90,15 +90,18 @@ func (g GovVoteDecorator) ValidateVoteMsgs(ctx sdk.Context, msgs []sdk.Msg) erro
 				panic(err) // shouldn't happen
 			}
 			validator, err := g.stakingKeeper.GetValidator(ctx, validatorAddr)
-			if err == nil {
-				shares := delegation.Shares
-				tokens := validator.TokensFromSharesTruncated(shares)
-				stakedTokens = stakedTokens.Add(tokens)
-				if stakedTokens.GTE(minStakedTokens) {
-					enoughStake = true
-					return true // break the iteration
-				}
+			if err != nil {
+				panic(err) // shouldn't happen
 			}
+
+			shares := delegation.Shares
+			tokens := validator.TokensFromSharesTruncated(shares)
+			stakedTokens = stakedTokens.Add(tokens)
+			if stakedTokens.GTE(minStakedTokens) {
+				enoughStake = true
+				return true // break the iteration
+			}
+
 			delegationCount++
 			// break the iteration if maxDelegationsChecked were already checked
 			return delegationCount >= maxDelegationsChecked
