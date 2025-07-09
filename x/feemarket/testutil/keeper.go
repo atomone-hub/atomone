@@ -3,8 +3,6 @@ package testutil
 import (
 	"testing"
 
-	"github.com/golang/mock/gomock"
-
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	tmtime "github.com/cometbft/cometbft/types/time"
 
@@ -18,30 +16,22 @@ import (
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 )
 
-type Mocks struct {
-	ConsensusParamsKeeper *MockConsensusParamsKeeper
+func SetupMsgServer(t *testing.T, maxBlockGas uint64) (types.MsgServer, *keeper.Keeper, sdk.Context) {
+	t.Helper()
+	k, ctx := SetupKeeper(t, maxBlockGas)
+	return keeper.NewMsgServer(k), k, ctx
 }
 
-func SetupMsgServer(t *testing.T, maxBlockGas uint64) (types.MsgServer, *keeper.Keeper, Mocks, sdk.Context) {
+func SetupQueryServer(t *testing.T, maxBlockGas uint64) (types.QueryServer, *keeper.Keeper, sdk.Context) {
 	t.Helper()
-	k, m, ctx := SetupKeeper(t, maxBlockGas)
-	return keeper.NewMsgServer(k), k, m, ctx
-}
-
-func SetupQueryServer(t *testing.T, maxBlockGas uint64) (types.QueryServer, *keeper.Keeper, Mocks, sdk.Context) {
-	t.Helper()
-	k, m, ctx := SetupKeeper(t, maxBlockGas)
-	return keeper.NewQueryServer(*k), k, m, ctx
+	k, ctx := SetupKeeper(t, maxBlockGas)
+	return keeper.NewQueryServer(*k), k, ctx
 }
 
 const MaxBlockGas = 30_000_000
 
-func SetupKeeper(t *testing.T, maxBlockGas uint64) (*keeper.Keeper, Mocks, sdk.Context) {
+func SetupKeeper(t *testing.T, maxBlockGas uint64) (*keeper.Keeper, sdk.Context) {
 	t.Helper()
-	ctrl := gomock.NewController(t)
-	m := Mocks{
-		ConsensusParamsKeeper: NewMockConsensusParamsKeeper(ctrl),
-	}
 
 	key := sdk.NewKVStoreKey(types.StoreKey)
 	testCtx := testutil.DefaultContextWithDB(t, key, sdk.NewTransientStoreKey("transient_test"))
@@ -55,10 +45,6 @@ func SetupKeeper(t *testing.T, maxBlockGas uint64) (*keeper.Keeper, Mocks, sdk.C
 	if maxBlockGas == 0 {
 		maxBlockGas = MaxBlockGas
 	}
-	m.ConsensusParamsKeeper.EXPECT().Get(ctx).
-		Return(&tmproto.ConsensusParams{
-			Block: &tmproto.BlockParams{MaxGas: int64(maxBlockGas)},
-		}, nil).MaxTimes(1)
 
-	return keeper.NewKeeper(encCfg.Codec, key, &types.ErrorDenomResolver{}, m.ConsensusParamsKeeper, authority), m, ctx
+	return keeper.NewKeeper(encCfg.Codec, key, &types.ErrorDenomResolver{}, authority), ctx
 }

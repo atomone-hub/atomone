@@ -335,7 +335,6 @@ func NewAppKeeper(
 		appCodec,
 		appKeepers.keys[feemarkettypes.StoreKey],
 		appKeepers.PhotonKeeper,
-		&appKeepers.ConsensusParamsKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 

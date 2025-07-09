@@ -189,7 +189,6 @@ func ProvideModule(in Inputs) Outputs {
 		in.Cdc,
 		in.Key,
 		nil,
-		nil,
 		authority.String(),
 	)
 

@@ -8,7 +8,6 @@ import (
 	reflect "reflect"
 
 	types "github.com/atomone-hub/atomone/x/feemarket/types"
-	types0 "github.com/cometbft/cometbft/proto/tendermint/types"
 	types1 "github.com/cosmos/cosmos-sdk/types"
 	gomock "github.com/golang/mock/gomock"
 )
@@ -93,42 +92,4 @@ func (m *MockFeeMarketKeeper) SetState(ctx types1.Context, state types.State) er
 func (mr *MockFeeMarketKeeperMockRecorder) SetState(ctx, state interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetState", reflect.TypeOf((*MockFeeMarketKeeper)(nil).SetState), ctx, state)
-}
-
-// MockConsensusParamsKeeper is a mock of ConsensusParamsKeeper interface.
-type MockConsensusParamsKeeper struct {
-	ctrl     *gomock.Controller
-	recorder *MockConsensusParamsKeeperMockRecorder
-}
-
-// MockConsensusParamsKeeperMockRecorder is the mock recorder for MockConsensusParamsKeeper.
-type MockConsensusParamsKeeperMockRecorder struct {
-	mock *MockConsensusParamsKeeper
-}
-
-// NewMockConsensusParamsKeeper creates a new mock instance.
-func NewMockConsensusParamsKeeper(ctrl *gomock.Controller) *MockConsensusParamsKeeper {
-	mock := &MockConsensusParamsKeeper{ctrl: ctrl}
-	mock.recorder = &MockConsensusParamsKeeperMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockConsensusParamsKeeper) EXPECT() *MockConsensusParamsKeeperMockRecorder {
-	return m.recorder
-}
-
-// Get mocks base method.
-func (m *MockConsensusParamsKeeper) Get(arg0 types1.Context) (*types0.ConsensusParams, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Get", arg0)
-	ret0, _ := ret[0].(*types0.ConsensusParams)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// Get indicates an expected call of Get.
-func (mr *MockConsensusParamsKeeperMockRecorder) Get(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockConsensusParamsKeeper)(nil).Get), arg0)
 }

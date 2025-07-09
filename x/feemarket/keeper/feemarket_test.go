@@ -15,7 +15,7 @@ import (
 func TestUpdateFeeMarket(t *testing.T) {
 	t.Run("empty block with default eip1559 with min base fee", func(t *testing.T) {
 		require := require.New(t)
-		k, _, ctx := testutil.SetupKeeper(t, 0)
+		k, ctx := testutil.SetupKeeper(t, 0)
 		state := types.DefaultState()
 		params := types.DefaultParams()
 		k.InitGenesis(ctx, types.GenesisState{Params: params, State: state})
@@ -33,7 +33,7 @@ func TestUpdateFeeMarket(t *testing.T) {
 
 	t.Run("empty block with default eip1559 with preset base fee", func(t *testing.T) {
 		require := require.New(t)
-		k, _, ctx := testutil.SetupKeeper(t, 0)
+		k, ctx := testutil.SetupKeeper(t, 0)
 		state := types.DefaultState()
 		state.BaseGasPrice = state.BaseGasPrice.Mul(math.LegacyNewDec(2))
 		params := types.DefaultParams()
@@ -57,7 +57,7 @@ func TestUpdateFeeMarket(t *testing.T) {
 
 	t.Run("empty block with default eip1559 with preset base fee < 1", func(t *testing.T) {
 		require := require.New(t)
-		k, _, ctx := testutil.SetupKeeper(t, 0)
+		k, ctx := testutil.SetupKeeper(t, 0)
 		state := types.DefaultState()
 		// this value should be ignored -> 0.5 should be used instead
 		state.BaseGasPrice = math.LegacyMustNewDecFromStr("0.25")
@@ -81,7 +81,7 @@ func TestUpdateFeeMarket(t *testing.T) {
 
 	t.Run("empty block default eip1559 with preset base fee that should default to min", func(t *testing.T) {
 		require := require.New(t)
-		k, _, ctx := testutil.SetupKeeper(t, 0)
+		k, ctx := testutil.SetupKeeper(t, 0)
 		// Set the base fee to just below the expected threshold decrease of 1/8th. This means it
 		// should default to the minimum base fee.
 		state := types.DefaultState()
@@ -106,7 +106,7 @@ func TestUpdateFeeMarket(t *testing.T) {
 
 	t.Run("target block with default eip1559 at min base fee", func(t *testing.T) {
 		require := require.New(t)
-		k, _, ctx := testutil.SetupKeeper(t, 0)
+		k, ctx := testutil.SetupKeeper(t, 0)
 		state := types.DefaultState()
 		params := types.DefaultParams()
 
@@ -131,7 +131,7 @@ func TestUpdateFeeMarket(t *testing.T) {
 
 	t.Run("target block with default eip1559 at preset base fee", func(t *testing.T) {
 		require := require.New(t)
-		k, _, ctx := testutil.SetupKeeper(t, 0)
+		k, ctx := testutil.SetupKeeper(t, 0)
 		state := types.DefaultState()
 		params := types.DefaultParams()
 
@@ -157,7 +157,7 @@ func TestUpdateFeeMarket(t *testing.T) {
 
 	t.Run("max block with default eip1559 at min base fee", func(t *testing.T) {
 		require := require.New(t)
-		k, _, ctx := testutil.SetupKeeper(t, 0)
+		k, ctx := testutil.SetupKeeper(t, 0)
 		state := types.DefaultState()
 		params := types.DefaultParams()
 
@@ -185,7 +185,7 @@ func TestUpdateFeeMarket(t *testing.T) {
 
 	t.Run("max block with default eip1559 at preset base fee", func(t *testing.T) {
 		require := require.New(t)
-		k, _, ctx := testutil.SetupKeeper(t, 0)
+		k, ctx := testutil.SetupKeeper(t, 0)
 		state := types.DefaultState()
 		params := types.DefaultParams()
 
@@ -215,7 +215,7 @@ func TestUpdateFeeMarket(t *testing.T) {
 	t.Run("in-between min and target block with default eip1559 at min base fee", func(t *testing.T) {
 		require := require.New(t)
 		maxBlockGas := uint64(100)
-		k, _, ctx := testutil.SetupKeeper(t, maxBlockGas)
+		k, ctx := testutil.SetupKeeper(t, maxBlockGas)
 		state := types.DefaultState()
 		params := types.DefaultParams()
 
@@ -239,7 +239,7 @@ func TestUpdateFeeMarket(t *testing.T) {
 	t.Run("in-between min and target block with default eip1559 at preset base fee", func(t *testing.T) {
 		require := require.New(t)
 		maxBlockGas := uint64(100)
-		k, _, ctx := testutil.SetupKeeper(t, maxBlockGas)
+		k, ctx := testutil.SetupKeeper(t, maxBlockGas)
 		state := types.DefaultState()
 		state.BaseGasPrice = state.BaseGasPrice.Mul(math.LegacyNewDec(2))
 
@@ -268,7 +268,7 @@ func TestUpdateFeeMarket(t *testing.T) {
 	t.Run("in-between target and max block with default eip1559 at min base fee", func(t *testing.T) {
 		require := require.New(t)
 		maxBlockGas := uint64(100)
-		k, _, ctx := testutil.SetupKeeper(t, maxBlockGas)
+		k, ctx := testutil.SetupKeeper(t, maxBlockGas)
 		state := types.DefaultState()
 		params := types.DefaultParams()
 
@@ -295,7 +295,7 @@ func TestUpdateFeeMarket(t *testing.T) {
 	t.Run("in-between target and max block with default eip1559 at preset base fee", func(t *testing.T) {
 		require := require.New(t)
 		maxBlockGas := uint64(100)
-		k, _, ctx := testutil.SetupKeeper(t, maxBlockGas)
+		k, ctx := testutil.SetupKeeper(t, maxBlockGas)
 		state := types.DefaultState()
 		state.BaseGasPrice = state.BaseGasPrice.Mul(math.LegacyNewDec(2))
 		params := types.DefaultParams()
@@ -322,7 +322,7 @@ func TestUpdateFeeMarket(t *testing.T) {
 
 	t.Run("empty blocks with aimd eip1559 with min base fee", func(t *testing.T) {
 		require := require.New(t)
-		k, _, ctx := testutil.SetupKeeper(t, 0)
+		k, ctx := testutil.SetupKeeper(t, 0)
 		state := types.DefaultAIMDState()
 		params := types.DefaultAIMDParams()
 		k.InitGenesis(ctx, types.GenesisState{Params: params, State: state})
@@ -341,7 +341,7 @@ func TestUpdateFeeMarket(t *testing.T) {
 
 	t.Run("empty blocks with aimd eip1559 with preset base fee", func(t *testing.T) {
 		require := require.New(t)
-		k, _, ctx := testutil.SetupKeeper(t, 0)
+		k, ctx := testutil.SetupKeeper(t, 0)
 		state := types.DefaultAIMDState()
 		state.BaseGasPrice = state.BaseGasPrice.Mul(math.LegacyNewDec(2))
 		params := types.DefaultAIMDParams()
@@ -365,7 +365,7 @@ func TestUpdateFeeMarket(t *testing.T) {
 
 	t.Run("empty blocks aimd eip1559 with preset base fee that should default to min", func(t *testing.T) {
 		require := require.New(t)
-		k, _, ctx := testutil.SetupKeeper(t, 0)
+		k, ctx := testutil.SetupKeeper(t, 0)
 		params := types.DefaultAIMDParams()
 
 		state := types.DefaultAIMDState()
@@ -393,7 +393,7 @@ func TestUpdateFeeMarket(t *testing.T) {
 
 	t.Run("target block with aimd eip1559 at min base fee + LR", func(t *testing.T) {
 		require := require.New(t)
-		k, _, ctx := testutil.SetupKeeper(t, 0)
+		k, ctx := testutil.SetupKeeper(t, 0)
 		state := types.DefaultAIMDState()
 		params := types.DefaultAIMDParams()
 
@@ -420,7 +420,7 @@ func TestUpdateFeeMarket(t *testing.T) {
 
 	t.Run("target block with aimd eip1559 at preset base fee + LR", func(t *testing.T) {
 		require := require.New(t)
-		k, _, ctx := testutil.SetupKeeper(t, 0)
+		k, ctx := testutil.SetupKeeper(t, 0)
 		state := types.DefaultAIMDState()
 		state.BaseGasPrice = state.BaseGasPrice.Mul(math.LegacyNewDec(2))
 		state.LearningRate = math.LegacyMustNewDecFromStr("0.125")
@@ -452,7 +452,7 @@ func TestUpdateFeeMarket(t *testing.T) {
 func TestGetBaseGasPrice(t *testing.T) {
 	t.Run("can retrieve base fee with default eip-1559", func(t *testing.T) {
 		require := require.New(t)
-		k, _, ctx := testutil.SetupKeeper(t, 0)
+		k, ctx := testutil.SetupKeeper(t, 0)
 		gs := types.DefaultGenesisState()
 		k.InitGenesis(ctx, *gs)
 
@@ -463,7 +463,7 @@ func TestGetBaseGasPrice(t *testing.T) {
 
 	t.Run("can retrieve base fee with aimd eip-1559", func(t *testing.T) {
 		require := require.New(t)
-		k, _, ctx := testutil.SetupKeeper(t, 0)
+		k, ctx := testutil.SetupKeeper(t, 0)
 		gs := types.DefaultAIMDGenesisState()
 		k.InitGenesis(ctx, *gs)
 
@@ -476,7 +476,7 @@ func TestGetBaseGasPrice(t *testing.T) {
 func TestGetLearningRate(t *testing.T) {
 	t.Run("can retrieve learning rate with default eip-1559", func(t *testing.T) {
 		require := require.New(t)
-		k, _, ctx := testutil.SetupKeeper(t, 0)
+		k, ctx := testutil.SetupKeeper(t, 0)
 		gs := types.DefaultGenesisState()
 		k.InitGenesis(ctx, *gs)
 
@@ -487,7 +487,7 @@ func TestGetLearningRate(t *testing.T) {
 
 	t.Run("can retrieve learning rate with aimd eip-1559", func(t *testing.T) {
 		require := require.New(t)
-		k, _, ctx := testutil.SetupKeeper(t, 0)
+		k, ctx := testutil.SetupKeeper(t, 0)
 		gs := types.DefaultAIMDGenesisState()
 		k.InitGenesis(ctx, *gs)
 
@@ -500,7 +500,7 @@ func TestGetLearningRate(t *testing.T) {
 func TestGetMinGasPrices(t *testing.T) {
 	t.Run("can retrieve min gas prices with default eip-1559", func(t *testing.T) {
 		require := require.New(t)
-		k, _, ctx := testutil.SetupKeeper(t, 0)
+		k, ctx := testutil.SetupKeeper(t, 0)
 		gs := types.DefaultGenesisState()
 		k.InitGenesis(ctx, *gs)
 
@@ -513,7 +513,7 @@ func TestGetMinGasPrices(t *testing.T) {
 
 	t.Run("can retrieve min gas prices with aimd eip-1559", func(t *testing.T) {
 		require := require.New(t)
-		k, _, ctx := testutil.SetupKeeper(t, 0)
+		k, ctx := testutil.SetupKeeper(t, 0)
 		gs := types.DefaultAIMDGenesisState()
 		k.InitGenesis(ctx, *gs)
 
