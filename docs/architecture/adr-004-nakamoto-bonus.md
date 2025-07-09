@@ -10,13 +10,17 @@ DRAFT
 
 ## Abstract
 
-This ADR proposes a mechanism to increase the Nakamoto coefficient of a chain, by incentivizing delegators to delegate on validators having less stake. The ADR proposes to divide the staking reward in two components: a part proportional to the overall amount of stake of a validator - this coincides with the current staking reward model, and a part that is distributed uniformly to validators - the `Nakamoto bonus`.
+The Nakamoto Coefficient is the main way used to measure the amount of decentralization of a blockchain. Many of the benefits of the blockchain technology can be directly attributed to its decentralization: its resilience to attacks, collusion and errors.
+
+The Nakamoto Coefficient is defined as the minimum number of nodes that need to be compromised to harm the network [^1]. In the case of AtomOne, a voting power of 33.3% is enough to disrupt the consensus algorithm, therefore the Nakamoto Coefficient of the chain is the minimum number of validators having such voting power.
+
+This ADR proposes a mechanism to increase the Nakamoto Coefficient of a chain, by incentivizing delegators to delegate on validators having less stake. The ADR proposes to divide the staking reward in two components: a part proportional to the overall amount of stake of a validator - this coincides with the current staking reward model, and a part that is distributed uniformly to validators. The part of the staking reward that is distributed uniformly is called `Nakamoto bonus` to underline its purpose: increasing the Nakamoto Coefficient.
 
 The overall amount of the reward remains unchanged, however the criteria for assigning the reward changes.
 
 ## Context
 
-At the time of writing, the AtomOne chain suffers from a concentration of delegations on the top staking validators. The current Nakamoto coefficient is 5, which is lower that the ideal (34, given that the current maximum number of validators at the time of writing is 100) and armful to the security of the chain.
+At the time of writing, the AtomOne chain suffers from a concentration of delegations on the top staking validators. The current Nakamoto coefficient is **5**, which is lower that the ideal (34, given that the current maximum number of validators at the time of writing is 100) and armful to the security of the chain. There are multiple ways in which the issue of low decentralization could be addressed. One way is to incentivize delegators to increase the decentralization of AtomOne which is the aim of this ADR.
 
 
 ### Reward Distribution
@@ -164,7 +168,7 @@ $$
 
 So the validator would keep intact its `Proportional Reward` and be rewarded y times the `Nakamoto Bonus`.
 
-As a separate and additional feature to mitigate sybil attacks, we propose to adopt and adjust the mechanism of `proportional slashing` as presented in ADR-014 [^1] of the Cosmos Hub. 
+As a separate and additional feature to mitigate sybil attacks, we propose to adopt and adjust the mechanism of `proportional slashing` as presented in ADR-014 [^2] of the Cosmos Hub. 
 Two (or more) validators are considered correlated if they fail within the same time period. The correlated validators are then slashed as follows:
 
 $$
@@ -184,7 +188,7 @@ For example, assuming $k=1$ and $r=2$, if one validator of 10% faults, it gets a
 - Increased number of distribution parameters.
 - Adds a new endpoint to query the value of $\eta$.
 
-## References
 
-- [^1]: [ADR-014 - Proportional Slashing](https://github.com/cosmos/cosmos-sdk/blob/main/docs/architecture/adr-014-proportional-slashing.md)
+[^1]: [Quantifying Decentralization](https://news.earn.com/quantifying-decentralization-e39db233c28e)
+[^2]: [ADR-014 - Proportional Slashing](https://github.com/cosmos/cosmos-sdk/blob/main/docs/architecture/adr-014-proportional-slashing.md)
 
