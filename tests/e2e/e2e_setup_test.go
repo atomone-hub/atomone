@@ -66,6 +66,7 @@ const (
 	proposalCommunitySpendFilename        = "proposal_community_spend.json"
 	proposalParamChangeFilename           = "param_change.json"
 	proposalConstitutionAmendmentFilename = "constitution_amendment.json"
+	proposalLawFilename                   = "proposal_law.json"
 	newConstitutionFilename               = "new_constitution.md"
 
 	hermesBinary              = "hermes"
