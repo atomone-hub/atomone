@@ -642,8 +642,6 @@ cosmossdk.io/x/feegrant v0.1.1 h1:EKFWOeo/pup0yF0svDisWWKAA9Zags6Zd0P3nRvVvw8=
 cosmossdk.io/x/feegrant v0.1.1/go.mod h1:2GjVVxX6G2fta8LWj7pC/ytHjryA6MHAJroBWHFNiEQ=
 cosmossdk.io/x/tx v0.14.0 h1:hB3O25kIcyDW/7kMTLMaO8Ripj3yqs5imceVd6c/heA=
 cosmossdk.io/x/tx v0.14.0/go.mod h1:Tn30rSRA1PRfdGB3Yz55W4Sn6EIutr9xtMKSHij+9PM=
-cosmossdk.io/x/upgrade v0.2.0 h1:ZHy0xny3wBCSLomyhE06+UmQHWO8cYlVYjfFAJxjz5g=
-cosmossdk.io/x/upgrade v0.2.0/go.mod h1:DXDtkvi//TrFyHWSOaeCZGBoiGAE6Rs8/0ABt2pcDD0=
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
 filippo.io/edwards25519 v1.1.0 h1:FNf4tywRC1HmFuKW5xopWpigGjJKiJSV0Cqo0cJWDaA=
 filippo.io/edwards25519 v1.1.0/go.mod h1:BxyFTGdWcka3PhytdK4V28tE5sGfRvvvRV7EaN4VDT4=
@@ -705,6 +703,8 @@ github.com/armon/go-radix v0.0.0-20180808171621-7fddfc383310/go.mod h1:ufUuZ+zHj
 github.com/aryann/difflib v0.0.0-20170710044230-e206f873d14a/go.mod h1:DAHtR1m6lCRdSC2Tm3DSWRPvIPr6xNKyeHdqDQSQT+A=
 github.com/atomone-hub/cosmos-sdk v0.50.13-0.20250707084642-d4ee0ce40063 h1:QNTEiVyqyJ0tW3Ggvk4rOQMTAbAZKVMWIdU/i6Oa4+c=
 github.com/atomone-hub/cosmos-sdk v0.50.13-0.20250707084642-d4ee0ce40063/go.mod h1:hrWEFMU1eoXqLJeE6VVESpJDQH67FS1nnMrQIjO2daw=
+github.com/atomone-hub/cosmos-sdk/x/upgrade v0.1.5-0.20250707084642-d4ee0ce40063 h1:LP2l/8AFitp5TISZpgDInctUrzAR985BmwG4bA7cRTc=
+github.com/atomone-hub/cosmos-sdk/x/upgrade v0.1.5-0.20250707084642-d4ee0ce40063/go.mod h1:GdR2F3YQhICk8j5cEHOoSBdsIkKBDUcznPfjgnDHg5U=
 github.com/aws/aws-lambda-go v1.13.3/go.mod h1:4UKl9IzQMoD+QF79YdCuzCwp8VbmG4VAQwij/eHl5CU=
 github.com/aws/aws-sdk-go v1.27.0/go.mod h1:KmX6BPdI08NWTb3/sm4ZGu5ShLoqVDhKgpiN924inxo=
 github.com/aws/aws-sdk-go v1.44.122/go.mod h1:y4AeaBuwd2Lk+GepC1E9v0qOiTws0MIWAX4oIKwKHZo=

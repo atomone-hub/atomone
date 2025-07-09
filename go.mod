@@ -4,6 +4,7 @@ go 1.24.1
 
 replace (
 	cosmossdk.io/x/feegrant => cosmossdk.io/x/feegrant v0.1.1
+	cosmossdk.io/x/upgrade => github.com/atomone-hub/cosmos-sdk/x/upgrade v0.1.5-0.20250707084642-d4ee0ce40063
 	github.com/cosmos/cosmos-sdk => github.com/atomone-hub/cosmos-sdk v0.50.13-0.20250707084642-d4ee0ce40063 // ref https://github.com/atomone-hub/cosmos-sdk/pull/1
 	github.com/cosmos/ibc-go/v10 => github.com/cosmos/ibc-go/v10 v10.2.0
 )
