@@ -82,10 +82,17 @@ Where:
 
 ### Implementation
 
-The following parameters are added to the `x/gov` module params:
+In the Implementation, the dynamic quorums of law and constitution
+amendment proposals are separated from the other proposals. For each
+of these quorum there is one `pEMA` state variable that is updated independently.
 
-- `MinQuorum` : minimum quorum value required to pass a proposal.
-- `MaxQuorum` : maximum quorum value required to pass a proposal.
+The following parameters are added to the `x/gov` module:
+
+- `quorum_range` : struct containing `Min` and `Max` quorum values required to pass a proposal.
+- `law_quorum_range` : struct containing `Min` and `Max` quorum values required to pass a law proposal.
+- `constitution_amendment_quorum_range` : struct containing `Min` and `Max` quorum values required to pass a constitution amendment proposal.
+
+The initial partecipation values for each quorum are imported from the genesis file.
 
 ### Querying the quorum value
 
