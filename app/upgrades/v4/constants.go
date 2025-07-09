@@ -1,15 +1,13 @@
-package v2
+package v4
 
 import (
 	store "cosmossdk.io/store/types"
-	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
 
 	"github.com/atomone-hub/atomone/app/upgrades"
-	photontypes "github.com/atomone-hub/atomone/x/photon/types"
 )
 
 const (
-	UpgradeName = "v2"
+	UpgradeName = "v4"
 )
 
 var Upgrade = upgrades.Upgrade{
@@ -17,11 +15,8 @@ var Upgrade = upgrades.Upgrade{
 	CreateUpgradeHandler: CreateUpgradeHandler,
 	StoreUpgrades: store.StoreUpgrades{
 		Added: []string{
-			// new module added in v2
-			photontypes.ModuleName,
+			// new module added in v4
 		},
-		Deleted: []string{
-			crisistypes.ModuleName,
-		},
+		Deleted: []string{},
 	},
 }

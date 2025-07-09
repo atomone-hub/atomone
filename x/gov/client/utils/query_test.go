@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"cosmossdk.io/math"
 	"github.com/stretchr/testify/require"
 
 	"github.com/cometbft/cometbft/rpc/client/mock"
@@ -69,7 +70,7 @@ func TestGetPaginatedVotes(t *testing.T) {
 	acc1Msgs := []sdk.Msg{
 		v1.NewMsgVote(acc1, 0, v1.OptionYes, ""),
 		v1.NewMsgVote(acc1, 0, v1.OptionYes, ""),
-		v1.NewMsgDeposit(acc1, 0, sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(10)))), // should be ignored
+		v1.NewMsgDeposit(acc1, 0, sdk.NewCoins(sdk.NewCoin("stake", math.NewInt(10)))), // should be ignored
 	}
 	acc2Msgs := []sdk.Msg{
 		v1.NewMsgVote(acc2, 0, v1.OptionYes, ""),

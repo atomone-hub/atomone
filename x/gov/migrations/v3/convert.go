@@ -3,6 +3,7 @@ package v3
 import (
 	"fmt"
 
+	"cosmossdk.io/math"
 	"github.com/golang/protobuf/proto"
 
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
@@ -82,15 +83,15 @@ func ConvertToLegacyProposal(proposal v1.Proposal) (v1beta1.Proposal, error) {
 }
 
 func ConvertToLegacyTallyResult(tally *v1.TallyResult) (v1beta1.TallyResult, error) {
-	yes, ok := types.NewIntFromString(tally.YesCount)
+	yes, ok := math.NewIntFromString(tally.YesCount)
 	if !ok {
 		return v1beta1.TallyResult{}, fmt.Errorf("unable to convert yes tally string (%s) to int", tally.YesCount)
 	}
-	no, ok := types.NewIntFromString(tally.NoCount)
+	no, ok := math.NewIntFromString(tally.NoCount)
 	if !ok {
 		return v1beta1.TallyResult{}, fmt.Errorf("unable to convert no tally string (%s) to int", tally.NoCount)
 	}
-	abstain, ok := types.NewIntFromString(tally.AbstainCount)
+	abstain, ok := math.NewIntFromString(tally.AbstainCount)
 	if !ok {
 		return v1beta1.TallyResult{}, fmt.Errorf("unable to convert abstain tally string (%s) to int", tally.AbstainCount)
 	}
@@ -98,7 +99,7 @@ func ConvertToLegacyTallyResult(tally *v1.TallyResult) (v1beta1.TallyResult, err
 	return v1beta1.TallyResult{
 		Yes:        yes,
 		No:         no,
-		NoWithVeto: types.ZeroInt(),
+		NoWithVeto: math.ZeroInt(),
 		Abstain:    abstain,
 	}, nil
 }
@@ -118,7 +119,7 @@ func ConvertToLegacyVote(vote v1.Vote) (v1beta1.Vote, error) {
 func ConvertToLegacyVoteOptions(voteOptions []*v1.WeightedVoteOption) ([]v1beta1.WeightedVoteOption, error) {
 	options := make([]v1beta1.WeightedVoteOption, len(voteOptions))
 	for i, option := range voteOptions {
-		weight, err := types.NewDecFromStr(option.Weight)
+		weight, err := math.LegacyNewDecFromStr(option.Weight)
 		if err != nil {
 			return options, err
 		}
