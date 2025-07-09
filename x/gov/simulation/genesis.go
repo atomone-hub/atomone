@@ -126,6 +126,9 @@ func GenDepositParamsMinDepositSensitivityTargetDistance(r *rand.Rand) uint64 {
 
 // GenDepositParamsMinDepositChangeRatio returns randomized DepositParamsMinDepositChangeRatio
 func GenDepositParamsMinDepositChangeRatio(r *rand.Rand, max, prec int) sdk.Dec {
+	if max <= 0 {
+		return sdk.ZeroDec()
+	}
 	return sdk.NewDecWithPrec(int64(simulation.RandIntBetween(r, 0, max)), int64(prec))
 }
 
@@ -146,6 +149,9 @@ func GenDepositParamsMinInitialDepositSensitivityTargetDistance(r *rand.Rand) ui
 
 // GenDepositParamsMinInitialDepositChangeRatio returns randomized DepositParamsMinInitialDepositChangeRatio
 func GenDepositParamsMinInitialDepositChangeRatio(r *rand.Rand, max, prec int) sdk.Dec {
+	if max <= 0 {
+		return sdk.ZeroDec()
+	}
 	return sdk.NewDecWithPrec(int64(simulation.RandIntBetween(r, 0, max)), int64(prec))
 }
 
