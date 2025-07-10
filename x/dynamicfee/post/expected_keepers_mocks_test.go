@@ -50,6 +50,21 @@ func (mr *MockDynamicfeeKeeperMockRecorder) GetEnabledHeight(ctx interface{}) *g
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetEnabledHeight", reflect.TypeOf((*MockDynamicfeeKeeper)(nil).GetEnabledHeight), ctx)
 }
 
+// GetMaxGas mocks base method.
+func (m *MockDynamicfeeKeeper) GetMaxGas(ctx types0.Context) (uint64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetMaxGas", ctx)
+	ret0, _ := ret[0].(uint64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetMaxGas indicates an expected call of GetMaxGas.
+func (mr *MockDynamicfeeKeeperMockRecorder) GetMaxGas(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMaxGas", reflect.TypeOf((*MockDynamicfeeKeeper)(nil).GetMaxGas), ctx)
+}
+
 // GetParams mocks base method.
 func (m *MockDynamicfeeKeeper) GetParams(ctx types0.Context) (types.Params, error) {
 	m.ctrl.T.Helper()

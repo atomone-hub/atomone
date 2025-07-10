@@ -24,6 +24,7 @@ func (s *IntegrationTestSuite) testDynamicfeeQuery() {
 		s.Require().Equal("0.000010000000000000", params.Params.MinBaseGasPrice.String())
 		s.Require().Equal("0.010000000000000000", params.Params.MinLearningRate.String())
 		s.Require().Equal("0.500000000000000000", params.Params.MaxLearningRate.String())
+		s.Require().Equal(uint64(100_000_000), params.Params.DefaultMaxBlockGas)
 		s.Require().Equal(window_size, params.Params.Window)
 		s.Require().Equal("uphoton", params.Params.FeeDenom)
 		s.Require().True(params.Params.Enabled)
