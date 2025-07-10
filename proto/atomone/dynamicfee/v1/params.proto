@@ -58,15 +58,20 @@ message Params {
     (gogoproto.nullable) = false
   ];
 
+  // DefaultMaxBlockGas is the default max block gas. 
+  // This parameter is used by the dynamicfee module
+  // in the case consensus_params.block.max_gas returns 0 or -1.
+  uint64 default_max_block_gas = 7;
+
   // MinLearningRate is the lower bound for the learning rate.
-  string min_learning_rate = 7 [
+  string min_learning_rate = 8 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
 
   // MaxLearningRate is the upper bound for the learning rate.
-  string max_learning_rate = 8 [
+  string max_learning_rate = 9 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
@@ -74,12 +79,12 @@ message Params {
 
   // Window defines the window size for calculating an adaptive learning rate
   // over a moving window of blocks.
-  uint64 window = 9;
+  uint64 window = 10;
 
   // FeeDenom is the denom that will be used for all fee payments.
-  string fee_denom = 10;
+  string fee_denom = 11;
 
   // Enabled is a boolean that determines whether the EIP1559 dynamic fee
   // pricing is enabled.
-  bool enabled = 11;
+  bool enabled = 12;
 }

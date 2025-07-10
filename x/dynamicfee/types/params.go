@@ -16,6 +16,7 @@ func NewParams(
 	gamma math.LegacyDec,
 	minBaseGasPrice math.LegacyDec,
 	targetBlockUtilization math.LegacyDec,
+	defaultMaxBlockGas uint64,
 	minLearingRate math.LegacyDec,
 	maxLearningRate math.LegacyDec,
 	feeDenom string,
@@ -27,6 +28,7 @@ func NewParams(
 		Gamma:                  gamma,
 		MinBaseGasPrice:        minBaseGasPrice,
 		TargetBlockUtilization: targetBlockUtilization,
+		DefaultMaxBlockGas:     defaultMaxBlockGas,
 		MinLearningRate:        minLearingRate,
 		MaxLearningRate:        maxLearningRate,
 		Window:                 window,
@@ -59,6 +61,10 @@ func (p *Params) ValidateBasic() error {
 
 	if p.TargetBlockUtilization.IsNil() || !p.TargetBlockUtilization.IsPositive() || p.TargetBlockUtilization.GT(math.LegacyOneDec()) {
 		return fmt.Errorf("target block utilization must be between (0, 1]")
+	}
+
+	if p.DefaultMaxBlockGas == 0 {
+		return fmt.Errorf("default max block gas must be greater than 0")
 	}
 
 	if p.MaxLearningRate.IsNil() || p.MinLearningRate.IsNegative() {
