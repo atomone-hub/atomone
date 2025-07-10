@@ -106,6 +106,7 @@ func TestPostHandle(t *testing.T) {
 					return ctx, nil
 				}
 			)
+			m.ctx = m.ctx.WithConsensusParams(&tmproto.ConsensusParams{Block: &tmproto.BlockParams{MaxGas: int64(30_000_000)}})
 			if tt.genTx {
 				m.ctx = m.ctx.WithBlockHeight(0)
 			} else {

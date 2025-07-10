@@ -36,15 +36,15 @@ func SetupKeeper(t *testing.T, maxBlockGas uint64) (*keeper.Keeper, sdk.Context)
 	key := sdk.NewKVStoreKey(types.StoreKey)
 	testCtx := testutil.DefaultContextWithDB(t, key, sdk.NewTransientStoreKey("transient_test"))
 	ctx := testCtx.Ctx.WithBlockHeader(tmproto.Header{Time: tmtime.Now()})
-	encCfg := moduletestutil.MakeTestEncodingConfig()
-	types.RegisterInterfaces(encCfg.InterfaceRegistry)
-	// banktypes.RegisterInterfaces(encCfg.InterfaceRegistry)
-	authority := authtypes.NewModuleAddress(govtypes.ModuleName).String()
-
 	// setup  block max gas
 	if maxBlockGas == 0 {
 		maxBlockGas = MaxBlockGas
 	}
+	ctx = ctx.WithConsensusParams(&tmproto.ConsensusParams{Block: &tmproto.BlockParams{MaxGas: int64(maxBlockGas)}})
+	encCfg := moduletestutil.MakeTestEncodingConfig()
+	types.RegisterInterfaces(encCfg.InterfaceRegistry)
+	// banktypes.RegisterInterfaces(encCfg.InterfaceRegistry)
+	authority := authtypes.NewModuleAddress(govtypes.ModuleName).String()
 
 	return keeper.NewKeeper(encCfg.Codec, key, &types.ErrorDenomResolver{}, authority), ctx
 }
