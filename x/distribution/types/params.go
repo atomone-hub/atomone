@@ -9,18 +9,14 @@ import (
 // DefaultParams returns default distribution parameters
 func DefaultParams() Params {
 	return Params{
-		CommunityTax:             math.LegacyNewDecWithPrec(2, 2), // 2%
-		WithdrawAddrEnabled:      true,
-		NakamotoBonusCoefficient: math.LegacyNewDecWithPrec(5, 2),
+		CommunityTax:        math.LegacyNewDecWithPrec(2, 2), // 2%
+		WithdrawAddrEnabled: true,
 	}
 }
 
 // ValidateBasic performs basic validation on distribution parameters.
 func (p Params) ValidateBasic() error {
-	if err := validateCommunityTax(p.CommunityTax); err != nil {
-		return err
-	}
-	return validateNakamotoBonusCoefficient(p.NakamotoBonusCoefficient)
+	return validateCommunityTax(p.CommunityTax)
 }
 
 func validateCommunityTax(i interface{}) error {
@@ -29,14 +25,16 @@ func validateCommunityTax(i interface{}) error {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
-	switch {
-	case v.IsNil():
+	if v.IsNil() {
 		return fmt.Errorf("community tax must be not nil")
-	case v.IsNegative():
+	}
+	if v.IsNegative() {
 		return fmt.Errorf("community tax must be positive: %s", v)
-	case v.GT(math.LegacyOneDec()):
+	}
+	if v.GT(math.LegacyOneDec()) {
 		return fmt.Errorf("community tax too large: %s", v)
 	}
+
 	return nil
 }
 
@@ -46,22 +44,5 @@ func validateWithdrawAddrEnabled(i interface{}) error {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
-	return nil
-}
-
-func validateNakamotoBonusCoefficient(i interface{}) error {
-	v, ok := i.(math.LegacyDec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	switch {
-	case v.IsNil():
-		return fmt.Errorf("nakamoto bonus coefficient must be not nil")
-	case v.IsNegative():
-		return fmt.Errorf("nakamoto bonus coefficient must be positive: %s", v)
-	case v.GT(math.LegacyOneDec()):
-		return fmt.Errorf("nakamoto bonus coefficient too large: %s", v)
-	}
 	return nil
 }

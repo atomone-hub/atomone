@@ -6,11 +6,13 @@ import (
 	"cosmossdk.io/math"
 	abci "github.com/cometbft/cometbft/abci/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	"github.com/atomone-hub/atomone/x/distribution/types"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
+// AllocateTokens performs reward and fee distribution to all validators based
+// on the F1 fee distribution specification.
 func (k Keeper) AllocateTokens(ctx context.Context, totalPreviousPower int64, bondedVotes []abci.VoteInfo) error {
 	// fetch and clear the collected fees for distribution, since this is
 	// called in BeginBlock, collected fees will be from the previous block
@@ -37,63 +39,42 @@ func (k Keeper) AllocateTokens(ctx context.Context, totalPreviousPower int64, bo
 		return k.FeePool.Set(ctx, feePool)
 	}
 
-	// Get community tax and Nakamoto bonus ratio η
+	// calculate fraction allocated to validators
+	remaining := feesCollected
 	communityTax, err := k.GetCommunityTax(ctx)
 	if err != nil {
 		return err
 	}
-	params, err := k.Params.Get(ctx)
-	if err != nil {
-		return err
-	}
-	nakamotoCoefficient := params.NakamotoBonusCoefficient // the nakamoto bonus coefficient (e.g., 0.05 means 5% NB, 95% PR)
 
-	// Compute total validator rewards (after community tax)
 	voteMultiplier := math.LegacyOneDec().Sub(communityTax)
-	validatorTotalReward := feesCollected.MulDecTruncate(voteMultiplier)
+	feeMultiplier := feesCollected.MulDecTruncate(voteMultiplier)
 
-	// Split reward into Proportional (PR_i) and Nakamoto Bonus (NB_i)
-	nakamotoBonus := validatorTotalReward.MulDecTruncate(nakamotoCoefficient)
-	proportionalReward := validatorTotalReward.Sub(nakamotoBonus)
-
-	bondDenom, err := k.stakingKeeper.BondDenom(ctx)
-	if err != nil {
-		return err
-	}
-
-	// Compute per-validator fixed Nakamoto bonus
-	numValidators := int64(len(bondedVotes))
-	nbPerValidator := sdk.NewDecCoinFromDec(bondDenom, math.LegacyZeroDec())
-	if numValidators > 0 && len(nakamotoBonus) > 0 {
-		amount := nakamotoBonus.AmountOf(bondDenom).Quo(math.LegacyNewDec(numValidators))
-		nbPerValidator = sdk.NewDecCoinFromDec(bondDenom, amount)
-	}
-
-	remaining := feesCollected
-
-	// Distribute rewards to each validator
+	// allocate tokens proportionally to voting power
+	//
+	// TODO: Consider parallelizing later
+	//
+	// Ref: https://github.com/cosmos/cosmos-sdk/pull/3099#discussion_r246276376
 	for _, vote := range bondedVotes {
 		validator, err := k.stakingKeeper.ValidatorByConsAddr(ctx, vote.Validator.Address)
 		if err != nil {
 			return err
 		}
 
-		// Compute proportional share based on voting power
+		// TODO: Consider micro-slashing for missing votes.
+		//
+		// Ref: https://github.com/cosmos/cosmos-sdk/issues/2525#issuecomment-430838701
 		powerFraction := math.LegacyNewDec(vote.Validator.Power).QuoTruncate(math.LegacyNewDec(totalPreviousPower))
-		proportional := proportionalReward.MulDecTruncate(powerFraction)
+		reward := feeMultiplier.MulDecTruncate(powerFraction)
 
-		// Add fixed Nakamoto bonus to proportional share
-		totalReward := proportional.Add(nbPerValidator)
-
-		err = k.AllocateTokensToValidator(ctx, validator, totalReward)
+		err = k.AllocateTokensToValidator(ctx, validator, reward)
 		if err != nil {
 			return err
 		}
 
-		remaining = remaining.Sub(totalReward)
+		remaining = remaining.Sub(reward)
 	}
 
-	// Add any remaining tokens to the community pool
+	// allocate community funding
 	feePool.CommunityPool = feePool.CommunityPool.Add(remaining...)
 	return k.FeePool.Set(ctx, feePool)
 }
