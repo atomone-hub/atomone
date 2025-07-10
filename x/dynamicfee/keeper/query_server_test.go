@@ -14,7 +14,7 @@ import (
 func TestParamsRequest(t *testing.T) {
 	t.Run("can get default params", func(t *testing.T) {
 		require := require.New(t)
-		queryServer, k, _, ctx := testutil.SetupQueryServer(t, 0)
+		queryServer, k, ctx := testutil.SetupQueryServer(t, 0)
 		err := k.SetParams(ctx, types.DefaultParams())
 		require.NoError(err)
 		req := &types.ParamsRequest{}
@@ -32,7 +32,7 @@ func TestParamsRequest(t *testing.T) {
 
 	t.Run("can get updated params", func(t *testing.T) {
 		require := require.New(t)
-		queryServer, k, _, ctx := testutil.SetupQueryServer(t, 0)
+		queryServer, k, ctx := testutil.SetupQueryServer(t, 0)
 		params := types.Params{
 			Alpha:                  math.LegacyMustNewDecFromStr("0.1"),
 			Beta:                   math.LegacyMustNewDecFromStr("0.1"),
@@ -64,7 +64,7 @@ func TestParamsRequest(t *testing.T) {
 func TestStateRequest(t *testing.T) {
 	t.Run("can get default state", func(t *testing.T) {
 		require := require.New(t)
-		queryServer, k, _, ctx := testutil.SetupQueryServer(t, 0)
+		queryServer, k, ctx := testutil.SetupQueryServer(t, 0)
 		err := k.SetState(ctx, types.DefaultState())
 		require.NoError(err)
 		req := &types.StateRequest{}
@@ -82,7 +82,7 @@ func TestStateRequest(t *testing.T) {
 
 	t.Run("can get updated state", func(t *testing.T) {
 		require := require.New(t)
-		queryServer, k, _, ctx := testutil.SetupQueryServer(t, 0)
+		queryServer, k, ctx := testutil.SetupQueryServer(t, 0)
 		state := types.State{
 			BaseGasPrice: math.LegacyOneDec(),
 			LearningRate: math.LegacyOneDec(),
@@ -109,7 +109,7 @@ func TestStateRequest(t *testing.T) {
 func TestGasPriceRequest(t *testing.T) {
 	t.Run("can get gas price", func(t *testing.T) {
 		require := require.New(t)
-		queryServer, k, _, ctx := testutil.SetupQueryServer(t, 0)
+		queryServer, k, ctx := testutil.SetupQueryServer(t, 0)
 		err := k.SetParams(ctx, types.DefaultParams())
 		require.NoError(err)
 		err = k.SetState(ctx, types.DefaultState())
@@ -129,7 +129,7 @@ func TestGasPriceRequest(t *testing.T) {
 
 	t.Run("can get updated gas price", func(t *testing.T) {
 		require := require.New(t)
-		queryServer, k, _, ctx := testutil.SetupQueryServer(t, 0)
+		queryServer, k, ctx := testutil.SetupQueryServer(t, 0)
 		state := types.State{
 			BaseGasPrice: math.LegacyOneDec(),
 		}
@@ -157,7 +157,7 @@ func TestGasPriceRequest(t *testing.T) {
 
 	t.Run("can get updated gas price < 1", func(t *testing.T) {
 		require := require.New(t)
-		queryServer, k, _, ctx := testutil.SetupQueryServer(t, 0)
+		queryServer, k, ctx := testutil.SetupQueryServer(t, 0)
 		state := types.State{
 			BaseGasPrice: math.LegacyMustNewDecFromStr("0.005"),
 		}

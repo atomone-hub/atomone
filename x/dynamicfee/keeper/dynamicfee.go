@@ -26,11 +26,7 @@ func (k *Keeper) UpdateDynamicfee(ctx sdk.Context) error {
 		return nil
 	}
 
-	consensusParams, err := k.consensusParamsKeeper.Get(ctx)
-	if err != nil {
-		return err
-	}
-	maxBlockGas := uint64(consensusParams.Block.MaxGas)
+	maxBlockGas := uint64(ctx.ConsensusParams().Block.GetMaxGas())
 
 	state, err := k.GetState(ctx)
 	if err != nil {
