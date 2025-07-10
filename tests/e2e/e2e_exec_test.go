@@ -20,10 +20,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	distributiontypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
+	distributiontypes "github.com/atomone-hub/atomone/x/distribution/types"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
 )

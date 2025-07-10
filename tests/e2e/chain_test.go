@@ -5,14 +5,14 @@ import (
 	"os"
 
 	"cosmossdk.io/log"
-	atomone "github.com/atomone-hub/atomone/app"
 	tmrand "github.com/cometbft/cometbft/libs/rand"
-
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+
+	atomone "github.com/atomone-hub/atomone/app"
 )
 
 const (
