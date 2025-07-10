@@ -140,10 +140,10 @@ type AppModule struct {
 // NewAppModule creates a new AppModule object
 func NewAppModule(
 	cdc codec.Codec, keeper *keeper.Keeper,
-	ak govtypes.AccountKeeper, bk govtypes.BankKeeper, ss govtypes.ParamSubspace,
+	ak govtypes.AccountKeeper, bk govtypes.BankKeeper, ss govtypes.ParamSubspace, legacyProposalHandlers ...govclient.ProposalHandler,
 ) AppModule {
 	return AppModule{
-		AppModuleBasic: AppModuleBasic{cdc: cdc},
+		AppModuleBasic: AppModuleBasic{cdc: cdc, legacyProposalHandlers: legacyProposalHandlers},
 		keeper:         keeper,
 		accountKeeper:  ak,
 		bankKeeper:     bk,
