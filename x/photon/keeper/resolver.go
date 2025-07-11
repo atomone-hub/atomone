@@ -18,7 +18,7 @@ func (k Keeper) ConvertToDenom(ctx sdk.Context, coin sdk.DecCoin, denom string) 
 		// use the conversion rate to convert bond denom to photon
 		bondDenomSupply := k.bankKeeper.GetSupply(ctx, denom).Amount.ToLegacyDec()
 		uphotonSupply := k.bankKeeper.GetSupply(ctx, types.Denom).Amount.ToLegacyDec()
-		conversionRate := k.conversionRate(ctx, bondDenomSupply, uphotonSupply)
+		conversionRate := k.PhotonConversionRate(ctx, bondDenomSupply, uphotonSupply)
 
 		// convert bond denom to photon
 		amount := coin.Amount.Quo(conversionRate)
