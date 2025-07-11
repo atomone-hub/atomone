@@ -26,7 +26,10 @@ func (k *Keeper) UpdateDynamicfee(ctx sdk.Context) error {
 		return nil
 	}
 
-	maxBlockGas := uint64(ctx.ConsensusParams().Block.GetMaxGas())
+	maxBlockGas, err := k.GetMaxGas(ctx)
+	if err != nil {
+		return err
+	}
 
 	state, err := k.GetState(ctx)
 	if err != nil {
@@ -52,6 +55,22 @@ func (k *Keeper) UpdateDynamicfee(ctx sdk.Context) error {
 	// Increment the height of the state and set the new state.
 	state.IncrementHeight()
 	return k.SetState(ctx, state)
+}
+
+// GetMaxGasPrice returns the maximum gas of a block
+// It returns the value obtained from ConsensusParams if
+// it is different from 0 or -1, otherwise it returns
+// DefaultMaxBlockGas
+func (k *Keeper) GetMaxGas(ctx sdk.Context) (uint64, error) {
+	maxBlockGas := ctx.ConsensusParams().Block.GetMaxGas()
+	if maxBlockGas == 0 || maxBlockGas == -1 {
+		params, err := k.GetParams(ctx)
+		if err != nil {
+			return 0, err
+		}
+		return params.DefaultMaxBlockGas, nil
+	}
+	return uint64(maxBlockGas), nil
 }
 
 // GetBaseGasPrice returns the base fee from the dynamic fee pricing state.
