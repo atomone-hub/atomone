@@ -28,6 +28,8 @@ message Params {
     (amino.dont_omitempty) = true,
     (gogoproto.nullable) = false
   ];
+
+  bool nakamoto_bonus_enabled = 6;
 }
 
 // ValidatorHistoricalRewards represents historical rewards for a validator.

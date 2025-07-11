@@ -29,6 +29,7 @@ const (
 	Query_DelegatorValidators_FullMethodName         = "/atomone.distribution.v1beta1.Query/DelegatorValidators"
 	Query_DelegatorWithdrawAddress_FullMethodName    = "/atomone.distribution.v1beta1.Query/DelegatorWithdrawAddress"
 	Query_CommunityPool_FullMethodName               = "/atomone.distribution.v1beta1.Query/CommunityPool"
+	Query_Eta_FullMethodName                         = "/atomone.distribution.v1beta1.Query/Eta"
 )
 
 // QueryClient is the client API for Query service.
@@ -59,6 +60,8 @@ type QueryClient interface {
 	DelegatorWithdrawAddress(ctx context.Context, in *QueryDelegatorWithdrawAddressRequest, opts ...grpc.CallOption) (*QueryDelegatorWithdrawAddressResponse, error)
 	// CommunityPool queries the community pool coins.
 	CommunityPool(ctx context.Context, in *QueryCommunityPoolRequest, opts ...grpc.CallOption) (*QueryCommunityPoolResponse, error)
+	// Eta queries the current eta parameter.
+	Eta(ctx context.Context, in *QueryEtaRequest, opts ...grpc.CallOption) (*QueryEtaResponse, error)
 }
 
 type queryClient struct {
@@ -169,6 +172,16 @@ func (c *queryClient) CommunityPool(ctx context.Context, in *QueryCommunityPoolR
 	return out, nil
 }
 
+func (c *queryClient) Eta(ctx context.Context, in *QueryEtaRequest, opts ...grpc.CallOption) (*QueryEtaResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(QueryEtaResponse)
+	err := c.cc.Invoke(ctx, Query_Eta_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility.
@@ -197,6 +210,8 @@ type QueryServer interface {
 	DelegatorWithdrawAddress(context.Context, *QueryDelegatorWithdrawAddressRequest) (*QueryDelegatorWithdrawAddressResponse, error)
 	// CommunityPool queries the community pool coins.
 	CommunityPool(context.Context, *QueryCommunityPoolRequest) (*QueryCommunityPoolResponse, error)
+	// Eta queries the current eta parameter.
+	Eta(context.Context, *QueryEtaRequest) (*QueryEtaResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -236,6 +251,9 @@ func (UnimplementedQueryServer) DelegatorWithdrawAddress(context.Context, *Query
 }
 func (UnimplementedQueryServer) CommunityPool(context.Context, *QueryCommunityPoolRequest) (*QueryCommunityPoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CommunityPool not implemented")
+}
+func (UnimplementedQueryServer) Eta(context.Context, *QueryEtaRequest) (*QueryEtaResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Eta not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 func (UnimplementedQueryServer) testEmbeddedByValue()               {}
@@ -438,6 +456,24 @@ func _Query_CommunityPool_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_Eta_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryEtaRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Eta(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_Eta_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Eta(ctx, req.(*QueryEtaRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -484,6 +520,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CommunityPool",
 			Handler:    _Query_CommunityPool_Handler,
+		},
+		{
+			MethodName: "Eta",
+			Handler:    _Query_Eta_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -39,7 +39,6 @@ func TestSetWithdrawAddr(t *testing.T) {
 	accountKeeper := distrtestutil.NewMockAccountKeeper(ctrl)
 
 	accountKeeper.EXPECT().GetModuleAddress("distribution").Return(distrAcc.GetAddress())
-
 	bankKeeper.EXPECT().BlockedAddr(withdrawAddr).Return(false).AnyTimes()
 	bankKeeper.EXPECT().BlockedAddr(distrAcc.GetAddress()).Return(true).AnyTimes()
 

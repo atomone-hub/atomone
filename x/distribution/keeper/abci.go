@@ -29,6 +29,10 @@ func (k Keeper) BeginBlocker(ctx context.Context) error {
 		}
 	}
 
+	if err := k.AdjustEta(c); err != nil {
+		return err
+	}
+
 	// record the proposer for when we payout on the next block
 	consAddr := sdk.ConsAddress(c.BlockHeader().ProposerAddress)
 	return k.SetPreviousProposerConsAddr(ctx, consAddr)
