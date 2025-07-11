@@ -98,8 +98,8 @@ print_tm_version:
 	@echo $(TM_VERSION)
 
 check_go_version:
-ifeq ($(shell echo "$(GO_SYSTEM_VERSION) $(GO_REQUIRED_VERSION)" | awk '{if ($$1 >= $$2) print "1"}'),)
-	@echo 'ERROR: Go version $(GO_REQUIRED_VERSION) or greater is required for building AtomOne (curent: $(GO_SYSTEM_VERSION))'
+ifneq ($(GO_SYSTEM_VERSION), $(GO_REQUIRED_VERSION))
+	@echo 'ERROR: Go version $(GO_REQUIRED_VERSION) is required for building AtomOne'
 	@echo '--> You can install it using:'
 	@echo 'go install golang.org/dl/go$(GO_REQUIRED_VERSION)@latest && go$(GO_REQUIRED_VERSION) download'
 	@echo '--> Then prefix your make command with:'
