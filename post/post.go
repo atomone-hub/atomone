@@ -11,8 +11,7 @@ import (
 
 // PostHandlerOptions are the options required for constructing a Dynamicfee PostHandler.
 type HandlerOptions struct {
-	DynamicfeeKeeper      dynamicfeepost.DynamicfeeKeeper
-	ConsensusParamsKeeper dynamicfeepost.ConsensusParamsKeeper
+	DynamicfeeKeeper dynamicfeepost.DynamicfeeKeeper
 }
 
 // NewPostHandler returns a PostHandler chain with the fee deduct decorator.
@@ -24,7 +23,6 @@ func NewPostHandler(options HandlerOptions) (sdk.PostHandler, error) {
 	postDecorators := []sdk.PostDecorator{
 		dynamicfeepost.NewDynamicfeeStateUpdateDecorator(
 			options.DynamicfeeKeeper,
-			options.ConsensusParamsKeeper,
 		),
 	}
 

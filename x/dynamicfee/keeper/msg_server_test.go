@@ -16,7 +16,7 @@ func TestMsgUpdateParams(t *testing.T) {
 	authority := authtypes.NewModuleAddress(govtypes.ModuleName).String()
 	t.Run("accepts a req with no params", func(t *testing.T) {
 		require := require.New(t)
-		msgServer, k, _, ctx := testutil.SetupMsgServer(t, 0)
+		msgServer, k, ctx := testutil.SetupMsgServer(t, 0)
 		req := &types.MsgUpdateParams{
 			Authority: authority,
 		}
@@ -31,7 +31,7 @@ func TestMsgUpdateParams(t *testing.T) {
 
 	t.Run("accepts a req with params", func(t *testing.T) {
 		require := require.New(t)
-		msgServer, k, _, ctx := testutil.SetupMsgServer(t, 0)
+		msgServer, k, ctx := testutil.SetupMsgServer(t, 0)
 		req := &types.MsgUpdateParams{
 			Authority: authority,
 			Params:    types.DefaultParams(),
@@ -47,7 +47,7 @@ func TestMsgUpdateParams(t *testing.T) {
 
 	t.Run("rejects a req with invalid signer", func(t *testing.T) {
 		require := require.New(t)
-		msgServer, _, _, ctx := testutil.SetupMsgServer(t, 0)
+		msgServer, _, ctx := testutil.SetupMsgServer(t, 0)
 		req := &types.MsgUpdateParams{
 			Authority: "invalid",
 		}
@@ -57,7 +57,7 @@ func TestMsgUpdateParams(t *testing.T) {
 
 	t.Run("sets enabledHeight when transitioning from disabled -> enabled", func(t *testing.T) {
 		require := require.New(t)
-		msgServer, k, _, ctx := testutil.SetupMsgServer(t, 0)
+		msgServer, k, ctx := testutil.SetupMsgServer(t, 0)
 		ctx = ctx.WithBlockHeight(ctx.BlockHeight())
 		enabledParams := types.DefaultParams()
 
@@ -99,7 +99,7 @@ func TestMsgUpdateParams(t *testing.T) {
 
 	t.Run("resets state after new params request", func(t *testing.T) {
 		require := require.New(t)
-		msgServer, k, _, ctx := testutil.SetupMsgServer(t, 0)
+		msgServer, k, ctx := testutil.SetupMsgServer(t, 0)
 		params, err := k.GetParams(ctx)
 		require.NoError(err)
 		err = k.SetState(ctx, types.DefaultState())

@@ -8,8 +8,7 @@ import (
 	reflect "reflect"
 
 	types "github.com/atomone-hub/atomone/x/dynamicfee/types"
-	types0 "github.com/cometbft/cometbft/proto/tendermint/types"
-	types1 "github.com/cosmos/cosmos-sdk/types"
+	types0 "github.com/cosmos/cosmos-sdk/types"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -37,7 +36,7 @@ func (m *MockDynamicfeeKeeper) EXPECT() *MockDynamicfeeKeeperMockRecorder {
 }
 
 // GetEnabledHeight mocks base method.
-func (m *MockDynamicfeeKeeper) GetEnabledHeight(ctx types1.Context) (int64, error) {
+func (m *MockDynamicfeeKeeper) GetEnabledHeight(ctx types0.Context) (int64, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetEnabledHeight", ctx)
 	ret0, _ := ret[0].(int64)
@@ -52,7 +51,7 @@ func (mr *MockDynamicfeeKeeperMockRecorder) GetEnabledHeight(ctx interface{}) *g
 }
 
 // GetParams mocks base method.
-func (m *MockDynamicfeeKeeper) GetParams(ctx types1.Context) (types.Params, error) {
+func (m *MockDynamicfeeKeeper) GetParams(ctx types0.Context) (types.Params, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetParams", ctx)
 	ret0, _ := ret[0].(types.Params)
@@ -67,7 +66,7 @@ func (mr *MockDynamicfeeKeeperMockRecorder) GetParams(ctx interface{}) *gomock.C
 }
 
 // GetState mocks base method.
-func (m *MockDynamicfeeKeeper) GetState(ctx types1.Context) (types.State, error) {
+func (m *MockDynamicfeeKeeper) GetState(ctx types0.Context) (types.State, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetState", ctx)
 	ret0, _ := ret[0].(types.State)
@@ -82,7 +81,7 @@ func (mr *MockDynamicfeeKeeperMockRecorder) GetState(ctx interface{}) *gomock.Ca
 }
 
 // SetState mocks base method.
-func (m *MockDynamicfeeKeeper) SetState(ctx types1.Context, state types.State) error {
+func (m *MockDynamicfeeKeeper) SetState(ctx types0.Context, state types.State) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SetState", ctx, state)
 	ret0, _ := ret[0].(error)
@@ -93,42 +92,4 @@ func (m *MockDynamicfeeKeeper) SetState(ctx types1.Context, state types.State) e
 func (mr *MockDynamicfeeKeeperMockRecorder) SetState(ctx, state interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetState", reflect.TypeOf((*MockDynamicfeeKeeper)(nil).SetState), ctx, state)
-}
-
-// MockConsensusParamsKeeper is a mock of ConsensusParamsKeeper interface.
-type MockConsensusParamsKeeper struct {
-	ctrl     *gomock.Controller
-	recorder *MockConsensusParamsKeeperMockRecorder
-}
-
-// MockConsensusParamsKeeperMockRecorder is the mock recorder for MockConsensusParamsKeeper.
-type MockConsensusParamsKeeperMockRecorder struct {
-	mock *MockConsensusParamsKeeper
-}
-
-// NewMockConsensusParamsKeeper creates a new mock instance.
-func NewMockConsensusParamsKeeper(ctrl *gomock.Controller) *MockConsensusParamsKeeper {
-	mock := &MockConsensusParamsKeeper{ctrl: ctrl}
-	mock.recorder = &MockConsensusParamsKeeperMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockConsensusParamsKeeper) EXPECT() *MockConsensusParamsKeeperMockRecorder {
-	return m.recorder
-}
-
-// Get mocks base method.
-func (m *MockConsensusParamsKeeper) Get(arg0 types1.Context) (*types0.ConsensusParams, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Get", arg0)
-	ret0, _ := ret[0].(*types0.ConsensusParams)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// Get indicates an expected call of Get.
-func (mr *MockConsensusParamsKeeperMockRecorder) Get(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockConsensusParamsKeeper)(nil).Get), arg0)
 }

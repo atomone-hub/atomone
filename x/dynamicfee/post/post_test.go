@@ -13,23 +13,20 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/atomone-hub/atomone/x/dynamicfee/post"
-	"github.com/atomone-hub/atomone/x/dynamicfee/testutil"
 	"github.com/atomone-hub/atomone/x/dynamicfee/types"
 )
 
 type mocks struct {
-	ctx                   sdk.Context
-	DynamicfeeKeeper      *MockDynamicfeeKeeper
-	ConsensusParamsKeeper *MockConsensusParamsKeeper
+	ctx              sdk.Context
+	DynamicfeeKeeper *MockDynamicfeeKeeper
 }
 
 func setupMocks(t *testing.T) mocks {
 	t.Helper()
 	ctrl := gomock.NewController(t)
 	return mocks{
-		ctx:                   sdk.NewContext(nil, tmproto.Header{}, false, log.TestingLogger()),
-		DynamicfeeKeeper:      NewMockDynamicfeeKeeper(ctrl),
-		ConsensusParamsKeeper: NewMockConsensusParamsKeeper(ctrl),
+		ctx:              sdk.NewContext(nil, tmproto.Header{}, false, log.TestingLogger()),
+		DynamicfeeKeeper: NewMockDynamicfeeKeeper(ctrl),
 	}
 }
 
@@ -65,10 +62,6 @@ func TestPostHandle(t *testing.T) {
 		{
 			name: "ok: state updated",
 			setup: func(m mocks) {
-				m.ConsensusParamsKeeper.EXPECT().Get(m.ctx).
-					Return(&tmproto.ConsensusParams{
-						Block: &tmproto.BlockParams{MaxGas: testutil.MaxBlockGas},
-					}, nil)
 				m.DynamicfeeKeeper.EXPECT().GetParams(m.ctx).
 					Return(types.DefaultParams(), nil)
 				m.DynamicfeeKeeper.EXPECT().GetEnabledHeight(m.ctx).Return(int64(0), nil)
@@ -87,10 +80,6 @@ func TestPostHandle(t *testing.T) {
 			name:     "ok: simulate && state updated",
 			simulate: true,
 			setup: func(m mocks) {
-				m.ConsensusParamsKeeper.EXPECT().Get(m.ctx).
-					Return(&tmproto.ConsensusParams{
-						Block: &tmproto.BlockParams{MaxGas: testutil.MaxBlockGas},
-					}, nil)
 				m.DynamicfeeKeeper.EXPECT().GetParams(m.ctx).
 					Return(types.DefaultParams(), nil)
 				m.DynamicfeeKeeper.EXPECT().GetEnabledHeight(m.ctx).Return(int64(0), nil)
@@ -110,13 +99,14 @@ func TestPostHandle(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			var (
 				m           = setupMocks(t)
-				dfd         = post.NewDynamicfeeStateUpdateDecorator(m.DynamicfeeKeeper, m.ConsensusParamsKeeper)
+				dfd         = post.NewDynamicfeeStateUpdateDecorator(m.DynamicfeeKeeper)
 				nextInvoked bool
 				next        = func(ctx sdk.Context, tx sdk.Tx, simulate, success bool) (sdk.Context, error) {
 					nextInvoked = true
 					return ctx, nil
 				}
 			)
+			m.ctx = m.ctx.WithConsensusParams(&tmproto.ConsensusParams{Block: &tmproto.BlockParams{MaxGas: int64(30_000_000)}})
 			if tt.genTx {
 				m.ctx = m.ctx.WithBlockHeight(0)
 			} else {

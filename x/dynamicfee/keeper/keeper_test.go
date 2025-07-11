@@ -12,7 +12,7 @@ import (
 )
 
 func TestState(t *testing.T) {
-	k, _, ctx := testutil.SetupKeeper(t, 0)
+	k, ctx := testutil.SetupKeeper(t, 0)
 	t.Run("set and get default eip1559 state", func(t *testing.T) {
 		state := types.DefaultState()
 
@@ -39,7 +39,7 @@ func TestState(t *testing.T) {
 }
 
 func TestParams(t *testing.T) {
-	k, _, ctx := testutil.SetupKeeper(t, 0)
+	k, ctx := testutil.SetupKeeper(t, 0)
 	t.Run("set and get default params", func(t *testing.T) {
 		params := types.DefaultParams()
 
@@ -76,7 +76,7 @@ func TestParams(t *testing.T) {
 }
 
 func TestEnabledHeight(t *testing.T) {
-	k, _, ctx := testutil.SetupKeeper(t, 0)
+	k, ctx := testutil.SetupKeeper(t, 0)
 	t.Run("get and set values", func(t *testing.T) {
 		k.SetEnabledHeight(ctx, 10)
 
