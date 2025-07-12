@@ -13,7 +13,7 @@ const (
 	EtaStep           = 3       // step to increase or decrease η
 )
 
-// AdjustEta is called in BeginBlocker or EndBlocker to adjust η dynamically.
+// AdjustEta is called to adjust η dynamically for each block.
 func (k Keeper) AdjustEta(ctx sdk.Context) error {
 	if ctx.BlockHeight()%EtaUpdateInterval != 0 {
 		return nil

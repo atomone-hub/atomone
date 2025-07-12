@@ -15,6 +15,11 @@ func (k Keeper) BeginBlocker(ctx context.Context) error {
 	defer telemetry.ModuleMeasureSince(types.ModuleName, telemetry.Now(), telemetry.MetricKeyBeginBlocker)
 	c := sdk.UnwrapSDKContext(ctx)
 
+	// dynamically adjust the nakamoto bonus coefficient first.
+	if err := k.AdjustEta(c); err != nil {
+		return err
+	}
+
 	// determine the total power signing the block
 	var previousTotalPower int64
 	for _, voteInfo := range c.VoteInfos() {
@@ -27,10 +32,6 @@ func (k Keeper) BeginBlocker(ctx context.Context) error {
 		if err := k.AllocateTokens(ctx, previousTotalPower, c.VoteInfos()); err != nil {
 			return err
 		}
-	}
-
-	if err := k.AdjustEta(c); err != nil {
-		return err
 	}
 
 	// record the proposer for when we payout on the next block
