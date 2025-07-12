@@ -56,8 +56,8 @@ func (p *Params) ValidateBasic() error {
 		return fmt.Errorf("min base gas price cannot be nil and must be greater than or equal to zero")
 	}
 
-	if p.TargetBlockUtilization.IsNil() || p.TargetBlockUtilization.IsNegative() || p.TargetBlockUtilization.GT(math.LegacyOneDec()) {
-		return fmt.Errorf("target block utilization must be between [0, 1]")
+	if p.TargetBlockUtilization.IsNil() || !p.TargetBlockUtilization.IsPositive() || p.TargetBlockUtilization.GT(math.LegacyOneDec()) {
+		return fmt.Errorf("target block utilization must be between (0, 1]")
 	}
 
 	if p.MaxLearningRate.IsNil() || p.MinLearningRate.IsNegative() {
