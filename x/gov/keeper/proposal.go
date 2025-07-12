@@ -335,6 +335,11 @@ func (k Keeper) ProposalKinds(p v1.Proposal) v1.ProposalKinds {
 			default:
 				kinds |= v1.ProposalKindAny
 			}
+		} else {
+			// If we can't unpack the message, it's likely a broken proposal.
+			// although almost impossible, we still want to handle it gracefully.
+			// We assume that the proposal is of any kind.
+			kinds |= v1.ProposalKindAny
 		}
 	}
 	return kinds
