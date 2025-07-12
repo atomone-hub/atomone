@@ -1093,6 +1093,579 @@ func (x *fastReflection_Deposit) ProtoMethods() *protoiface.Methods {
 	}
 }
 
+var _ protoreflect.List = (*_LastMinDeposit_1_list)(nil)
+
+type _LastMinDeposit_1_list struct {
+	list *[]*v1beta1.Coin
+}
+
+func (x *_LastMinDeposit_1_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_LastMinDeposit_1_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_LastMinDeposit_1_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*v1beta1.Coin)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_LastMinDeposit_1_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*v1beta1.Coin)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_LastMinDeposit_1_list) AppendMutable() protoreflect.Value {
+	v := new(v1beta1.Coin)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_LastMinDeposit_1_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_LastMinDeposit_1_list) NewElement() protoreflect.Value {
+	v := new(v1beta1.Coin)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_LastMinDeposit_1_list) IsValid() bool {
+	return x.list != nil
+}
+
+var (
+	md_LastMinDeposit       protoreflect.MessageDescriptor
+	fd_LastMinDeposit_value protoreflect.FieldDescriptor
+	fd_LastMinDeposit_time  protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_atomone_gov_v1_gov_proto_init()
+	md_LastMinDeposit = File_atomone_gov_v1_gov_proto.Messages().ByName("LastMinDeposit")
+	fd_LastMinDeposit_value = md_LastMinDeposit.Fields().ByName("value")
+	fd_LastMinDeposit_time = md_LastMinDeposit.Fields().ByName("time")
+}
+
+var _ protoreflect.Message = (*fastReflection_LastMinDeposit)(nil)
+
+type fastReflection_LastMinDeposit LastMinDeposit
+
+func (x *LastMinDeposit) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_LastMinDeposit)(x)
+}
+
+func (x *LastMinDeposit) slowProtoReflect() protoreflect.Message {
+	mi := &file_atomone_gov_v1_gov_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_LastMinDeposit_messageType fastReflection_LastMinDeposit_messageType
+var _ protoreflect.MessageType = fastReflection_LastMinDeposit_messageType{}
+
+type fastReflection_LastMinDeposit_messageType struct{}
+
+func (x fastReflection_LastMinDeposit_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_LastMinDeposit)(nil)
+}
+func (x fastReflection_LastMinDeposit_messageType) New() protoreflect.Message {
+	return new(fastReflection_LastMinDeposit)
+}
+func (x fastReflection_LastMinDeposit_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_LastMinDeposit
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_LastMinDeposit) Descriptor() protoreflect.MessageDescriptor {
+	return md_LastMinDeposit
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_LastMinDeposit) Type() protoreflect.MessageType {
+	return _fastReflection_LastMinDeposit_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_LastMinDeposit) New() protoreflect.Message {
+	return new(fastReflection_LastMinDeposit)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_LastMinDeposit) Interface() protoreflect.ProtoMessage {
+	return (*LastMinDeposit)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_LastMinDeposit) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if len(x.Value) != 0 {
+		value := protoreflect.ValueOfList(&_LastMinDeposit_1_list{list: &x.Value})
+		if !f(fd_LastMinDeposit_value, value) {
+			return
+		}
+	}
+	if x.Time != nil {
+		value := protoreflect.ValueOfMessage(x.Time.ProtoReflect())
+		if !f(fd_LastMinDeposit_time, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_LastMinDeposit) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "atomone.gov.v1.LastMinDeposit.value":
+		return len(x.Value) != 0
+	case "atomone.gov.v1.LastMinDeposit.time":
+		return x.Time != nil
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.LastMinDeposit"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.LastMinDeposit does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_LastMinDeposit) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "atomone.gov.v1.LastMinDeposit.value":
+		x.Value = nil
+	case "atomone.gov.v1.LastMinDeposit.time":
+		x.Time = nil
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.LastMinDeposit"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.LastMinDeposit does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_LastMinDeposit) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "atomone.gov.v1.LastMinDeposit.value":
+		if len(x.Value) == 0 {
+			return protoreflect.ValueOfList(&_LastMinDeposit_1_list{})
+		}
+		listValue := &_LastMinDeposit_1_list{list: &x.Value}
+		return protoreflect.ValueOfList(listValue)
+	case "atomone.gov.v1.LastMinDeposit.time":
+		value := x.Time
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.LastMinDeposit"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.LastMinDeposit does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_LastMinDeposit) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "atomone.gov.v1.LastMinDeposit.value":
+		lv := value.List()
+		clv := lv.(*_LastMinDeposit_1_list)
+		x.Value = *clv.list
+	case "atomone.gov.v1.LastMinDeposit.time":
+		x.Time = value.Message().Interface().(*timestamppb.Timestamp)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.LastMinDeposit"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.LastMinDeposit does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_LastMinDeposit) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "atomone.gov.v1.LastMinDeposit.value":
+		if x.Value == nil {
+			x.Value = []*v1beta1.Coin{}
+		}
+		value := &_LastMinDeposit_1_list{list: &x.Value}
+		return protoreflect.ValueOfList(value)
+	case "atomone.gov.v1.LastMinDeposit.time":
+		if x.Time == nil {
+			x.Time = new(timestamppb.Timestamp)
+		}
+		return protoreflect.ValueOfMessage(x.Time.ProtoReflect())
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.LastMinDeposit"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.LastMinDeposit does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_LastMinDeposit) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "atomone.gov.v1.LastMinDeposit.value":
+		list := []*v1beta1.Coin{}
+		return protoreflect.ValueOfList(&_LastMinDeposit_1_list{list: &list})
+	case "atomone.gov.v1.LastMinDeposit.time":
+		m := new(timestamppb.Timestamp)
+		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.LastMinDeposit"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.LastMinDeposit does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_LastMinDeposit) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in atomone.gov.v1.LastMinDeposit", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_LastMinDeposit) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_LastMinDeposit) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_LastMinDeposit) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_LastMinDeposit) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*LastMinDeposit)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		if len(x.Value) > 0 {
+			for _, e := range x.Value {
+				l = options.Size(e)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
+		if x.Time != nil {
+			l = options.Size(x.Time)
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*LastMinDeposit)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.Time != nil {
+			encoded, err := options.Marshal(x.Time)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x12
+		}
+		if len(x.Value) > 0 {
+			for iNdEx := len(x.Value) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.Value[iNdEx])
+				if err != nil {
+					return protoiface.MarshalOutput{
+						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+						Buf:               input.Buf,
+					}, err
+				}
+				i -= len(encoded)
+				copy(dAtA[i:], encoded)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i--
+				dAtA[i] = 0xa
+			}
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*LastMinDeposit)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: LastMinDeposit: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: LastMinDeposit: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Value", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Value = append(x.Value, &v1beta1.Coin{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Value[len(x.Value)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Time", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.Time == nil {
+					x.Time = &timestamppb.Timestamp{}
+				}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Time); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
 var _ protoreflect.List = (*_Proposal_2_list)(nil)
 
 type _Proposal_2_list struct {
@@ -1239,7 +1812,7 @@ func (x *Proposal) ProtoReflect() protoreflect.Message {
 }
 
 func (x *Proposal) slowProtoReflect() protoreflect.Message {
-	mi := &file_atomone_gov_v1_gov_proto_msgTypes[2]
+	mi := &file_atomone_gov_v1_gov_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2496,7 +3069,7 @@ func (x *TallyResult) ProtoReflect() protoreflect.Message {
 }
 
 func (x *TallyResult) slowProtoReflect() protoreflect.Message {
-	mi := &file_atomone_gov_v1_gov_proto_msgTypes[3]
+	mi := &file_atomone_gov_v1_gov_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3097,7 +3670,7 @@ func (x *Vote) ProtoReflect() protoreflect.Message {
 }
 
 func (x *Vote) slowProtoReflect() protoreflect.Message {
-	mi := &file_atomone_gov_v1_gov_proto_msgTypes[4]
+	mi := &file_atomone_gov_v1_gov_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3714,7 +4287,7 @@ func (x *QuorumCheckQueueEntry) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QuorumCheckQueueEntry) slowProtoReflect() protoreflect.Message {
-	mi := &file_atomone_gov_v1_gov_proto_msgTypes[5]
+	mi := &file_atomone_gov_v1_gov_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4294,7 +4867,7 @@ func (x *DepositParams) ProtoReflect() protoreflect.Message {
 }
 
 func (x *DepositParams) slowProtoReflect() protoreflect.Message {
-	mi := &file_atomone_gov_v1_gov_proto_msgTypes[6]
+	mi := &file_atomone_gov_v1_gov_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4814,7 +5387,7 @@ func (x *VotingParams) ProtoReflect() protoreflect.Message {
 }
 
 func (x *VotingParams) slowProtoReflect() protoreflect.Message {
-	mi := &file_atomone_gov_v1_gov_proto_msgTypes[7]
+	mi := &file_atomone_gov_v1_gov_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5259,7 +5832,7 @@ func (x *TallyParams) ProtoReflect() protoreflect.Message {
 }
 
 func (x *TallyParams) slowProtoReflect() protoreflect.Message {
-	mi := &file_atomone_gov_v1_gov_proto_msgTypes[8]
+	mi := &file_atomone_gov_v1_gov_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5969,6 +6542,1600 @@ func (x *fastReflection_TallyParams) ProtoMethods() *protoiface.Methods {
 	}
 }
 
+var _ protoreflect.List = (*_MinDepositThrottler_1_list)(nil)
+
+type _MinDepositThrottler_1_list struct {
+	list *[]*v1beta1.Coin
+}
+
+func (x *_MinDepositThrottler_1_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_MinDepositThrottler_1_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_MinDepositThrottler_1_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*v1beta1.Coin)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_MinDepositThrottler_1_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*v1beta1.Coin)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_MinDepositThrottler_1_list) AppendMutable() protoreflect.Value {
+	v := new(v1beta1.Coin)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_MinDepositThrottler_1_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_MinDepositThrottler_1_list) NewElement() protoreflect.Value {
+	v := new(v1beta1.Coin)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_MinDepositThrottler_1_list) IsValid() bool {
+	return x.list != nil
+}
+
+var (
+	md_MinDepositThrottler                                      protoreflect.MessageDescriptor
+	fd_MinDepositThrottler_floor_value                          protoreflect.FieldDescriptor
+	fd_MinDepositThrottler_update_period                        protoreflect.FieldDescriptor
+	fd_MinDepositThrottler_target_active_proposals              protoreflect.FieldDescriptor
+	fd_MinDepositThrottler_increase_ratio                       protoreflect.FieldDescriptor
+	fd_MinDepositThrottler_decrease_ratio                       protoreflect.FieldDescriptor
+	fd_MinDepositThrottler_decrease_sensitivity_target_distance protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_atomone_gov_v1_gov_proto_init()
+	md_MinDepositThrottler = File_atomone_gov_v1_gov_proto.Messages().ByName("MinDepositThrottler")
+	fd_MinDepositThrottler_floor_value = md_MinDepositThrottler.Fields().ByName("floor_value")
+	fd_MinDepositThrottler_update_period = md_MinDepositThrottler.Fields().ByName("update_period")
+	fd_MinDepositThrottler_target_active_proposals = md_MinDepositThrottler.Fields().ByName("target_active_proposals")
+	fd_MinDepositThrottler_increase_ratio = md_MinDepositThrottler.Fields().ByName("increase_ratio")
+	fd_MinDepositThrottler_decrease_ratio = md_MinDepositThrottler.Fields().ByName("decrease_ratio")
+	fd_MinDepositThrottler_decrease_sensitivity_target_distance = md_MinDepositThrottler.Fields().ByName("decrease_sensitivity_target_distance")
+}
+
+var _ protoreflect.Message = (*fastReflection_MinDepositThrottler)(nil)
+
+type fastReflection_MinDepositThrottler MinDepositThrottler
+
+func (x *MinDepositThrottler) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_MinDepositThrottler)(x)
+}
+
+func (x *MinDepositThrottler) slowProtoReflect() protoreflect.Message {
+	mi := &file_atomone_gov_v1_gov_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_MinDepositThrottler_messageType fastReflection_MinDepositThrottler_messageType
+var _ protoreflect.MessageType = fastReflection_MinDepositThrottler_messageType{}
+
+type fastReflection_MinDepositThrottler_messageType struct{}
+
+func (x fastReflection_MinDepositThrottler_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_MinDepositThrottler)(nil)
+}
+func (x fastReflection_MinDepositThrottler_messageType) New() protoreflect.Message {
+	return new(fastReflection_MinDepositThrottler)
+}
+func (x fastReflection_MinDepositThrottler_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_MinDepositThrottler
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_MinDepositThrottler) Descriptor() protoreflect.MessageDescriptor {
+	return md_MinDepositThrottler
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_MinDepositThrottler) Type() protoreflect.MessageType {
+	return _fastReflection_MinDepositThrottler_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_MinDepositThrottler) New() protoreflect.Message {
+	return new(fastReflection_MinDepositThrottler)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_MinDepositThrottler) Interface() protoreflect.ProtoMessage {
+	return (*MinDepositThrottler)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_MinDepositThrottler) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if len(x.FloorValue) != 0 {
+		value := protoreflect.ValueOfList(&_MinDepositThrottler_1_list{list: &x.FloorValue})
+		if !f(fd_MinDepositThrottler_floor_value, value) {
+			return
+		}
+	}
+	if x.UpdatePeriod != nil {
+		value := protoreflect.ValueOfMessage(x.UpdatePeriod.ProtoReflect())
+		if !f(fd_MinDepositThrottler_update_period, value) {
+			return
+		}
+	}
+	if x.TargetActiveProposals != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.TargetActiveProposals)
+		if !f(fd_MinDepositThrottler_target_active_proposals, value) {
+			return
+		}
+	}
+	if x.IncreaseRatio != "" {
+		value := protoreflect.ValueOfString(x.IncreaseRatio)
+		if !f(fd_MinDepositThrottler_increase_ratio, value) {
+			return
+		}
+	}
+	if x.DecreaseRatio != "" {
+		value := protoreflect.ValueOfString(x.DecreaseRatio)
+		if !f(fd_MinDepositThrottler_decrease_ratio, value) {
+			return
+		}
+	}
+	if x.DecreaseSensitivityTargetDistance != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.DecreaseSensitivityTargetDistance)
+		if !f(fd_MinDepositThrottler_decrease_sensitivity_target_distance, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_MinDepositThrottler) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "atomone.gov.v1.MinDepositThrottler.floor_value":
+		return len(x.FloorValue) != 0
+	case "atomone.gov.v1.MinDepositThrottler.update_period":
+		return x.UpdatePeriod != nil
+	case "atomone.gov.v1.MinDepositThrottler.target_active_proposals":
+		return x.TargetActiveProposals != uint64(0)
+	case "atomone.gov.v1.MinDepositThrottler.increase_ratio":
+		return x.IncreaseRatio != ""
+	case "atomone.gov.v1.MinDepositThrottler.decrease_ratio":
+		return x.DecreaseRatio != ""
+	case "atomone.gov.v1.MinDepositThrottler.decrease_sensitivity_target_distance":
+		return x.DecreaseSensitivityTargetDistance != uint64(0)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.MinDepositThrottler"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.MinDepositThrottler does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MinDepositThrottler) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "atomone.gov.v1.MinDepositThrottler.floor_value":
+		x.FloorValue = nil
+	case "atomone.gov.v1.MinDepositThrottler.update_period":
+		x.UpdatePeriod = nil
+	case "atomone.gov.v1.MinDepositThrottler.target_active_proposals":
+		x.TargetActiveProposals = uint64(0)
+	case "atomone.gov.v1.MinDepositThrottler.increase_ratio":
+		x.IncreaseRatio = ""
+	case "atomone.gov.v1.MinDepositThrottler.decrease_ratio":
+		x.DecreaseRatio = ""
+	case "atomone.gov.v1.MinDepositThrottler.decrease_sensitivity_target_distance":
+		x.DecreaseSensitivityTargetDistance = uint64(0)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.MinDepositThrottler"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.MinDepositThrottler does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_MinDepositThrottler) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "atomone.gov.v1.MinDepositThrottler.floor_value":
+		if len(x.FloorValue) == 0 {
+			return protoreflect.ValueOfList(&_MinDepositThrottler_1_list{})
+		}
+		listValue := &_MinDepositThrottler_1_list{list: &x.FloorValue}
+		return protoreflect.ValueOfList(listValue)
+	case "atomone.gov.v1.MinDepositThrottler.update_period":
+		value := x.UpdatePeriod
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "atomone.gov.v1.MinDepositThrottler.target_active_proposals":
+		value := x.TargetActiveProposals
+		return protoreflect.ValueOfUint64(value)
+	case "atomone.gov.v1.MinDepositThrottler.increase_ratio":
+		value := x.IncreaseRatio
+		return protoreflect.ValueOfString(value)
+	case "atomone.gov.v1.MinDepositThrottler.decrease_ratio":
+		value := x.DecreaseRatio
+		return protoreflect.ValueOfString(value)
+	case "atomone.gov.v1.MinDepositThrottler.decrease_sensitivity_target_distance":
+		value := x.DecreaseSensitivityTargetDistance
+		return protoreflect.ValueOfUint64(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.MinDepositThrottler"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.MinDepositThrottler does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MinDepositThrottler) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "atomone.gov.v1.MinDepositThrottler.floor_value":
+		lv := value.List()
+		clv := lv.(*_MinDepositThrottler_1_list)
+		x.FloorValue = *clv.list
+	case "atomone.gov.v1.MinDepositThrottler.update_period":
+		x.UpdatePeriod = value.Message().Interface().(*durationpb.Duration)
+	case "atomone.gov.v1.MinDepositThrottler.target_active_proposals":
+		x.TargetActiveProposals = value.Uint()
+	case "atomone.gov.v1.MinDepositThrottler.increase_ratio":
+		x.IncreaseRatio = value.Interface().(string)
+	case "atomone.gov.v1.MinDepositThrottler.decrease_ratio":
+		x.DecreaseRatio = value.Interface().(string)
+	case "atomone.gov.v1.MinDepositThrottler.decrease_sensitivity_target_distance":
+		x.DecreaseSensitivityTargetDistance = value.Uint()
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.MinDepositThrottler"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.MinDepositThrottler does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MinDepositThrottler) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "atomone.gov.v1.MinDepositThrottler.floor_value":
+		if x.FloorValue == nil {
+			x.FloorValue = []*v1beta1.Coin{}
+		}
+		value := &_MinDepositThrottler_1_list{list: &x.FloorValue}
+		return protoreflect.ValueOfList(value)
+	case "atomone.gov.v1.MinDepositThrottler.update_period":
+		if x.UpdatePeriod == nil {
+			x.UpdatePeriod = new(durationpb.Duration)
+		}
+		return protoreflect.ValueOfMessage(x.UpdatePeriod.ProtoReflect())
+	case "atomone.gov.v1.MinDepositThrottler.target_active_proposals":
+		panic(fmt.Errorf("field target_active_proposals of message atomone.gov.v1.MinDepositThrottler is not mutable"))
+	case "atomone.gov.v1.MinDepositThrottler.increase_ratio":
+		panic(fmt.Errorf("field increase_ratio of message atomone.gov.v1.MinDepositThrottler is not mutable"))
+	case "atomone.gov.v1.MinDepositThrottler.decrease_ratio":
+		panic(fmt.Errorf("field decrease_ratio of message atomone.gov.v1.MinDepositThrottler is not mutable"))
+	case "atomone.gov.v1.MinDepositThrottler.decrease_sensitivity_target_distance":
+		panic(fmt.Errorf("field decrease_sensitivity_target_distance of message atomone.gov.v1.MinDepositThrottler is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.MinDepositThrottler"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.MinDepositThrottler does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_MinDepositThrottler) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "atomone.gov.v1.MinDepositThrottler.floor_value":
+		list := []*v1beta1.Coin{}
+		return protoreflect.ValueOfList(&_MinDepositThrottler_1_list{list: &list})
+	case "atomone.gov.v1.MinDepositThrottler.update_period":
+		m := new(durationpb.Duration)
+		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	case "atomone.gov.v1.MinDepositThrottler.target_active_proposals":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "atomone.gov.v1.MinDepositThrottler.increase_ratio":
+		return protoreflect.ValueOfString("")
+	case "atomone.gov.v1.MinDepositThrottler.decrease_ratio":
+		return protoreflect.ValueOfString("")
+	case "atomone.gov.v1.MinDepositThrottler.decrease_sensitivity_target_distance":
+		return protoreflect.ValueOfUint64(uint64(0))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.MinDepositThrottler"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.MinDepositThrottler does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_MinDepositThrottler) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in atomone.gov.v1.MinDepositThrottler", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_MinDepositThrottler) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MinDepositThrottler) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_MinDepositThrottler) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_MinDepositThrottler) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*MinDepositThrottler)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		if len(x.FloorValue) > 0 {
+			for _, e := range x.FloorValue {
+				l = options.Size(e)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
+		if x.UpdatePeriod != nil {
+			l = options.Size(x.UpdatePeriod)
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.TargetActiveProposals != 0 {
+			n += 1 + runtime.Sov(uint64(x.TargetActiveProposals))
+		}
+		l = len(x.IncreaseRatio)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.DecreaseRatio)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.DecreaseSensitivityTargetDistance != 0 {
+			n += 1 + runtime.Sov(uint64(x.DecreaseSensitivityTargetDistance))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*MinDepositThrottler)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.DecreaseSensitivityTargetDistance != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.DecreaseSensitivityTargetDistance))
+			i--
+			dAtA[i] = 0x30
+		}
+		if len(x.DecreaseRatio) > 0 {
+			i -= len(x.DecreaseRatio)
+			copy(dAtA[i:], x.DecreaseRatio)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.DecreaseRatio)))
+			i--
+			dAtA[i] = 0x2a
+		}
+		if len(x.IncreaseRatio) > 0 {
+			i -= len(x.IncreaseRatio)
+			copy(dAtA[i:], x.IncreaseRatio)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.IncreaseRatio)))
+			i--
+			dAtA[i] = 0x22
+		}
+		if x.TargetActiveProposals != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.TargetActiveProposals))
+			i--
+			dAtA[i] = 0x18
+		}
+		if x.UpdatePeriod != nil {
+			encoded, err := options.Marshal(x.UpdatePeriod)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x12
+		}
+		if len(x.FloorValue) > 0 {
+			for iNdEx := len(x.FloorValue) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.FloorValue[iNdEx])
+				if err != nil {
+					return protoiface.MarshalOutput{
+						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+						Buf:               input.Buf,
+					}, err
+				}
+				i -= len(encoded)
+				copy(dAtA[i:], encoded)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i--
+				dAtA[i] = 0xa
+			}
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*MinDepositThrottler)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MinDepositThrottler: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MinDepositThrottler: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field FloorValue", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.FloorValue = append(x.FloorValue, &v1beta1.Coin{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.FloorValue[len(x.FloorValue)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field UpdatePeriod", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.UpdatePeriod == nil {
+					x.UpdatePeriod = &durationpb.Duration{}
+				}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.UpdatePeriod); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 3:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TargetActiveProposals", wireType)
+				}
+				x.TargetActiveProposals = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.TargetActiveProposals |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 4:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field IncreaseRatio", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.IncreaseRatio = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 5:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field DecreaseRatio", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.DecreaseRatio = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 6:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field DecreaseSensitivityTargetDistance", wireType)
+				}
+				x.DecreaseSensitivityTargetDistance = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.DecreaseSensitivityTargetDistance |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var _ protoreflect.List = (*_MinInitialDepositThrottler_1_list)(nil)
+
+type _MinInitialDepositThrottler_1_list struct {
+	list *[]*v1beta1.Coin
+}
+
+func (x *_MinInitialDepositThrottler_1_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_MinInitialDepositThrottler_1_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_MinInitialDepositThrottler_1_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*v1beta1.Coin)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_MinInitialDepositThrottler_1_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*v1beta1.Coin)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_MinInitialDepositThrottler_1_list) AppendMutable() protoreflect.Value {
+	v := new(v1beta1.Coin)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_MinInitialDepositThrottler_1_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_MinInitialDepositThrottler_1_list) NewElement() protoreflect.Value {
+	v := new(v1beta1.Coin)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_MinInitialDepositThrottler_1_list) IsValid() bool {
+	return x.list != nil
+}
+
+var (
+	md_MinInitialDepositThrottler                                      protoreflect.MessageDescriptor
+	fd_MinInitialDepositThrottler_floor_value                          protoreflect.FieldDescriptor
+	fd_MinInitialDepositThrottler_update_period                        protoreflect.FieldDescriptor
+	fd_MinInitialDepositThrottler_target_proposals                     protoreflect.FieldDescriptor
+	fd_MinInitialDepositThrottler_increase_ratio                       protoreflect.FieldDescriptor
+	fd_MinInitialDepositThrottler_decrease_ratio                       protoreflect.FieldDescriptor
+	fd_MinInitialDepositThrottler_decrease_sensitivity_target_distance protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_atomone_gov_v1_gov_proto_init()
+	md_MinInitialDepositThrottler = File_atomone_gov_v1_gov_proto.Messages().ByName("MinInitialDepositThrottler")
+	fd_MinInitialDepositThrottler_floor_value = md_MinInitialDepositThrottler.Fields().ByName("floor_value")
+	fd_MinInitialDepositThrottler_update_period = md_MinInitialDepositThrottler.Fields().ByName("update_period")
+	fd_MinInitialDepositThrottler_target_proposals = md_MinInitialDepositThrottler.Fields().ByName("target_proposals")
+	fd_MinInitialDepositThrottler_increase_ratio = md_MinInitialDepositThrottler.Fields().ByName("increase_ratio")
+	fd_MinInitialDepositThrottler_decrease_ratio = md_MinInitialDepositThrottler.Fields().ByName("decrease_ratio")
+	fd_MinInitialDepositThrottler_decrease_sensitivity_target_distance = md_MinInitialDepositThrottler.Fields().ByName("decrease_sensitivity_target_distance")
+}
+
+var _ protoreflect.Message = (*fastReflection_MinInitialDepositThrottler)(nil)
+
+type fastReflection_MinInitialDepositThrottler MinInitialDepositThrottler
+
+func (x *MinInitialDepositThrottler) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_MinInitialDepositThrottler)(x)
+}
+
+func (x *MinInitialDepositThrottler) slowProtoReflect() protoreflect.Message {
+	mi := &file_atomone_gov_v1_gov_proto_msgTypes[11]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_MinInitialDepositThrottler_messageType fastReflection_MinInitialDepositThrottler_messageType
+var _ protoreflect.MessageType = fastReflection_MinInitialDepositThrottler_messageType{}
+
+type fastReflection_MinInitialDepositThrottler_messageType struct{}
+
+func (x fastReflection_MinInitialDepositThrottler_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_MinInitialDepositThrottler)(nil)
+}
+func (x fastReflection_MinInitialDepositThrottler_messageType) New() protoreflect.Message {
+	return new(fastReflection_MinInitialDepositThrottler)
+}
+func (x fastReflection_MinInitialDepositThrottler_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_MinInitialDepositThrottler
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_MinInitialDepositThrottler) Descriptor() protoreflect.MessageDescriptor {
+	return md_MinInitialDepositThrottler
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_MinInitialDepositThrottler) Type() protoreflect.MessageType {
+	return _fastReflection_MinInitialDepositThrottler_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_MinInitialDepositThrottler) New() protoreflect.Message {
+	return new(fastReflection_MinInitialDepositThrottler)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_MinInitialDepositThrottler) Interface() protoreflect.ProtoMessage {
+	return (*MinInitialDepositThrottler)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_MinInitialDepositThrottler) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if len(x.FloorValue) != 0 {
+		value := protoreflect.ValueOfList(&_MinInitialDepositThrottler_1_list{list: &x.FloorValue})
+		if !f(fd_MinInitialDepositThrottler_floor_value, value) {
+			return
+		}
+	}
+	if x.UpdatePeriod != nil {
+		value := protoreflect.ValueOfMessage(x.UpdatePeriod.ProtoReflect())
+		if !f(fd_MinInitialDepositThrottler_update_period, value) {
+			return
+		}
+	}
+	if x.TargetProposals != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.TargetProposals)
+		if !f(fd_MinInitialDepositThrottler_target_proposals, value) {
+			return
+		}
+	}
+	if x.IncreaseRatio != "" {
+		value := protoreflect.ValueOfString(x.IncreaseRatio)
+		if !f(fd_MinInitialDepositThrottler_increase_ratio, value) {
+			return
+		}
+	}
+	if x.DecreaseRatio != "" {
+		value := protoreflect.ValueOfString(x.DecreaseRatio)
+		if !f(fd_MinInitialDepositThrottler_decrease_ratio, value) {
+			return
+		}
+	}
+	if x.DecreaseSensitivityTargetDistance != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.DecreaseSensitivityTargetDistance)
+		if !f(fd_MinInitialDepositThrottler_decrease_sensitivity_target_distance, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_MinInitialDepositThrottler) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "atomone.gov.v1.MinInitialDepositThrottler.floor_value":
+		return len(x.FloorValue) != 0
+	case "atomone.gov.v1.MinInitialDepositThrottler.update_period":
+		return x.UpdatePeriod != nil
+	case "atomone.gov.v1.MinInitialDepositThrottler.target_proposals":
+		return x.TargetProposals != uint64(0)
+	case "atomone.gov.v1.MinInitialDepositThrottler.increase_ratio":
+		return x.IncreaseRatio != ""
+	case "atomone.gov.v1.MinInitialDepositThrottler.decrease_ratio":
+		return x.DecreaseRatio != ""
+	case "atomone.gov.v1.MinInitialDepositThrottler.decrease_sensitivity_target_distance":
+		return x.DecreaseSensitivityTargetDistance != uint64(0)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.MinInitialDepositThrottler"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.MinInitialDepositThrottler does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MinInitialDepositThrottler) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "atomone.gov.v1.MinInitialDepositThrottler.floor_value":
+		x.FloorValue = nil
+	case "atomone.gov.v1.MinInitialDepositThrottler.update_period":
+		x.UpdatePeriod = nil
+	case "atomone.gov.v1.MinInitialDepositThrottler.target_proposals":
+		x.TargetProposals = uint64(0)
+	case "atomone.gov.v1.MinInitialDepositThrottler.increase_ratio":
+		x.IncreaseRatio = ""
+	case "atomone.gov.v1.MinInitialDepositThrottler.decrease_ratio":
+		x.DecreaseRatio = ""
+	case "atomone.gov.v1.MinInitialDepositThrottler.decrease_sensitivity_target_distance":
+		x.DecreaseSensitivityTargetDistance = uint64(0)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.MinInitialDepositThrottler"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.MinInitialDepositThrottler does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_MinInitialDepositThrottler) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "atomone.gov.v1.MinInitialDepositThrottler.floor_value":
+		if len(x.FloorValue) == 0 {
+			return protoreflect.ValueOfList(&_MinInitialDepositThrottler_1_list{})
+		}
+		listValue := &_MinInitialDepositThrottler_1_list{list: &x.FloorValue}
+		return protoreflect.ValueOfList(listValue)
+	case "atomone.gov.v1.MinInitialDepositThrottler.update_period":
+		value := x.UpdatePeriod
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "atomone.gov.v1.MinInitialDepositThrottler.target_proposals":
+		value := x.TargetProposals
+		return protoreflect.ValueOfUint64(value)
+	case "atomone.gov.v1.MinInitialDepositThrottler.increase_ratio":
+		value := x.IncreaseRatio
+		return protoreflect.ValueOfString(value)
+	case "atomone.gov.v1.MinInitialDepositThrottler.decrease_ratio":
+		value := x.DecreaseRatio
+		return protoreflect.ValueOfString(value)
+	case "atomone.gov.v1.MinInitialDepositThrottler.decrease_sensitivity_target_distance":
+		value := x.DecreaseSensitivityTargetDistance
+		return protoreflect.ValueOfUint64(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.MinInitialDepositThrottler"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.MinInitialDepositThrottler does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MinInitialDepositThrottler) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "atomone.gov.v1.MinInitialDepositThrottler.floor_value":
+		lv := value.List()
+		clv := lv.(*_MinInitialDepositThrottler_1_list)
+		x.FloorValue = *clv.list
+	case "atomone.gov.v1.MinInitialDepositThrottler.update_period":
+		x.UpdatePeriod = value.Message().Interface().(*durationpb.Duration)
+	case "atomone.gov.v1.MinInitialDepositThrottler.target_proposals":
+		x.TargetProposals = value.Uint()
+	case "atomone.gov.v1.MinInitialDepositThrottler.increase_ratio":
+		x.IncreaseRatio = value.Interface().(string)
+	case "atomone.gov.v1.MinInitialDepositThrottler.decrease_ratio":
+		x.DecreaseRatio = value.Interface().(string)
+	case "atomone.gov.v1.MinInitialDepositThrottler.decrease_sensitivity_target_distance":
+		x.DecreaseSensitivityTargetDistance = value.Uint()
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.MinInitialDepositThrottler"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.MinInitialDepositThrottler does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MinInitialDepositThrottler) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "atomone.gov.v1.MinInitialDepositThrottler.floor_value":
+		if x.FloorValue == nil {
+			x.FloorValue = []*v1beta1.Coin{}
+		}
+		value := &_MinInitialDepositThrottler_1_list{list: &x.FloorValue}
+		return protoreflect.ValueOfList(value)
+	case "atomone.gov.v1.MinInitialDepositThrottler.update_period":
+		if x.UpdatePeriod == nil {
+			x.UpdatePeriod = new(durationpb.Duration)
+		}
+		return protoreflect.ValueOfMessage(x.UpdatePeriod.ProtoReflect())
+	case "atomone.gov.v1.MinInitialDepositThrottler.target_proposals":
+		panic(fmt.Errorf("field target_proposals of message atomone.gov.v1.MinInitialDepositThrottler is not mutable"))
+	case "atomone.gov.v1.MinInitialDepositThrottler.increase_ratio":
+		panic(fmt.Errorf("field increase_ratio of message atomone.gov.v1.MinInitialDepositThrottler is not mutable"))
+	case "atomone.gov.v1.MinInitialDepositThrottler.decrease_ratio":
+		panic(fmt.Errorf("field decrease_ratio of message atomone.gov.v1.MinInitialDepositThrottler is not mutable"))
+	case "atomone.gov.v1.MinInitialDepositThrottler.decrease_sensitivity_target_distance":
+		panic(fmt.Errorf("field decrease_sensitivity_target_distance of message atomone.gov.v1.MinInitialDepositThrottler is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.MinInitialDepositThrottler"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.MinInitialDepositThrottler does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_MinInitialDepositThrottler) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "atomone.gov.v1.MinInitialDepositThrottler.floor_value":
+		list := []*v1beta1.Coin{}
+		return protoreflect.ValueOfList(&_MinInitialDepositThrottler_1_list{list: &list})
+	case "atomone.gov.v1.MinInitialDepositThrottler.update_period":
+		m := new(durationpb.Duration)
+		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	case "atomone.gov.v1.MinInitialDepositThrottler.target_proposals":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "atomone.gov.v1.MinInitialDepositThrottler.increase_ratio":
+		return protoreflect.ValueOfString("")
+	case "atomone.gov.v1.MinInitialDepositThrottler.decrease_ratio":
+		return protoreflect.ValueOfString("")
+	case "atomone.gov.v1.MinInitialDepositThrottler.decrease_sensitivity_target_distance":
+		return protoreflect.ValueOfUint64(uint64(0))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.MinInitialDepositThrottler"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.MinInitialDepositThrottler does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_MinInitialDepositThrottler) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in atomone.gov.v1.MinInitialDepositThrottler", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_MinInitialDepositThrottler) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MinInitialDepositThrottler) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_MinInitialDepositThrottler) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_MinInitialDepositThrottler) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*MinInitialDepositThrottler)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		if len(x.FloorValue) > 0 {
+			for _, e := range x.FloorValue {
+				l = options.Size(e)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
+		if x.UpdatePeriod != nil {
+			l = options.Size(x.UpdatePeriod)
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.TargetProposals != 0 {
+			n += 1 + runtime.Sov(uint64(x.TargetProposals))
+		}
+		l = len(x.IncreaseRatio)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.DecreaseRatio)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.DecreaseSensitivityTargetDistance != 0 {
+			n += 1 + runtime.Sov(uint64(x.DecreaseSensitivityTargetDistance))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*MinInitialDepositThrottler)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.DecreaseSensitivityTargetDistance != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.DecreaseSensitivityTargetDistance))
+			i--
+			dAtA[i] = 0x30
+		}
+		if len(x.DecreaseRatio) > 0 {
+			i -= len(x.DecreaseRatio)
+			copy(dAtA[i:], x.DecreaseRatio)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.DecreaseRatio)))
+			i--
+			dAtA[i] = 0x2a
+		}
+		if len(x.IncreaseRatio) > 0 {
+			i -= len(x.IncreaseRatio)
+			copy(dAtA[i:], x.IncreaseRatio)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.IncreaseRatio)))
+			i--
+			dAtA[i] = 0x22
+		}
+		if x.TargetProposals != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.TargetProposals))
+			i--
+			dAtA[i] = 0x18
+		}
+		if x.UpdatePeriod != nil {
+			encoded, err := options.Marshal(x.UpdatePeriod)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x12
+		}
+		if len(x.FloorValue) > 0 {
+			for iNdEx := len(x.FloorValue) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.FloorValue[iNdEx])
+				if err != nil {
+					return protoiface.MarshalOutput{
+						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+						Buf:               input.Buf,
+					}, err
+				}
+				i -= len(encoded)
+				copy(dAtA[i:], encoded)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i--
+				dAtA[i] = 0xa
+			}
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*MinInitialDepositThrottler)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MinInitialDepositThrottler: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MinInitialDepositThrottler: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field FloorValue", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.FloorValue = append(x.FloorValue, &v1beta1.Coin{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.FloorValue[len(x.FloorValue)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field UpdatePeriod", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.UpdatePeriod == nil {
+					x.UpdatePeriod = &durationpb.Duration{}
+				}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.UpdatePeriod); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 3:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TargetProposals", wireType)
+				}
+				x.TargetProposals = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.TargetProposals |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 4:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field IncreaseRatio", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.IncreaseRatio = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 5:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field DecreaseRatio", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.DecreaseRatio = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 6:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field DecreaseSensitivityTargetDistance", wireType)
+				}
+				x.DecreaseSensitivityTargetDistance = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.DecreaseSensitivityTargetDistance |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
 var _ protoreflect.List = (*_Params_1_list)(nil)
 
 type _Params_1_list struct {
@@ -6021,23 +8188,29 @@ func (x *_Params_1_list) IsValid() bool {
 }
 
 var (
-	md_Params                                  protoreflect.MessageDescriptor
-	fd_Params_min_deposit                      protoreflect.FieldDescriptor
-	fd_Params_max_deposit_period               protoreflect.FieldDescriptor
-	fd_Params_voting_period                    protoreflect.FieldDescriptor
-	fd_Params_quorum                           protoreflect.FieldDescriptor
-	fd_Params_threshold                        protoreflect.FieldDescriptor
-	fd_Params_min_initial_deposit_ratio        protoreflect.FieldDescriptor
-	fd_Params_burn_vote_quorum                 protoreflect.FieldDescriptor
-	fd_Params_burn_proposal_deposit_prevote    protoreflect.FieldDescriptor
-	fd_Params_min_deposit_ratio                protoreflect.FieldDescriptor
-	fd_Params_constitution_amendment_quorum    protoreflect.FieldDescriptor
-	fd_Params_constitution_amendment_threshold protoreflect.FieldDescriptor
-	fd_Params_law_quorum                       protoreflect.FieldDescriptor
-	fd_Params_law_threshold                    protoreflect.FieldDescriptor
-	fd_Params_quorum_timeout                   protoreflect.FieldDescriptor
-	fd_Params_max_voting_period_extension      protoreflect.FieldDescriptor
-	fd_Params_quorum_check_count               protoreflect.FieldDescriptor
+	md_Params                                     protoreflect.MessageDescriptor
+	fd_Params_min_deposit                         protoreflect.FieldDescriptor
+	fd_Params_max_deposit_period                  protoreflect.FieldDescriptor
+	fd_Params_voting_period                       protoreflect.FieldDescriptor
+	fd_Params_quorum                              protoreflect.FieldDescriptor
+	fd_Params_threshold                           protoreflect.FieldDescriptor
+	fd_Params_min_initial_deposit_ratio           protoreflect.FieldDescriptor
+	fd_Params_burn_vote_quorum                    protoreflect.FieldDescriptor
+	fd_Params_burn_proposal_deposit_prevote       protoreflect.FieldDescriptor
+	fd_Params_min_deposit_ratio                   protoreflect.FieldDescriptor
+	fd_Params_constitution_amendment_quorum       protoreflect.FieldDescriptor
+	fd_Params_constitution_amendment_threshold    protoreflect.FieldDescriptor
+	fd_Params_law_quorum                          protoreflect.FieldDescriptor
+	fd_Params_law_threshold                       protoreflect.FieldDescriptor
+	fd_Params_quorum_timeout                      protoreflect.FieldDescriptor
+	fd_Params_max_voting_period_extension         protoreflect.FieldDescriptor
+	fd_Params_quorum_check_count                  protoreflect.FieldDescriptor
+	fd_Params_min_deposit_throttler               protoreflect.FieldDescriptor
+	fd_Params_min_initial_deposit_throttler       protoreflect.FieldDescriptor
+	fd_Params_burn_deposit_no_threshold           protoreflect.FieldDescriptor
+	fd_Params_quorum_range                        protoreflect.FieldDescriptor
+	fd_Params_constitution_amendment_quorum_range protoreflect.FieldDescriptor
+	fd_Params_law_quorum_range                    protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -6059,6 +8232,12 @@ func init() {
 	fd_Params_quorum_timeout = md_Params.Fields().ByName("quorum_timeout")
 	fd_Params_max_voting_period_extension = md_Params.Fields().ByName("max_voting_period_extension")
 	fd_Params_quorum_check_count = md_Params.Fields().ByName("quorum_check_count")
+	fd_Params_min_deposit_throttler = md_Params.Fields().ByName("min_deposit_throttler")
+	fd_Params_min_initial_deposit_throttler = md_Params.Fields().ByName("min_initial_deposit_throttler")
+	fd_Params_burn_deposit_no_threshold = md_Params.Fields().ByName("burn_deposit_no_threshold")
+	fd_Params_quorum_range = md_Params.Fields().ByName("quorum_range")
+	fd_Params_constitution_amendment_quorum_range = md_Params.Fields().ByName("constitution_amendment_quorum_range")
+	fd_Params_law_quorum_range = md_Params.Fields().ByName("law_quorum_range")
 }
 
 var _ protoreflect.Message = (*fastReflection_Params)(nil)
@@ -6070,7 +8249,7 @@ func (x *Params) ProtoReflect() protoreflect.Message {
 }
 
 func (x *Params) slowProtoReflect() protoreflect.Message {
-	mi := &file_atomone_gov_v1_gov_proto_msgTypes[9]
+	mi := &file_atomone_gov_v1_gov_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6222,6 +8401,42 @@ func (x *fastReflection_Params) Range(f func(protoreflect.FieldDescriptor, proto
 			return
 		}
 	}
+	if x.MinDepositThrottler != nil {
+		value := protoreflect.ValueOfMessage(x.MinDepositThrottler.ProtoReflect())
+		if !f(fd_Params_min_deposit_throttler, value) {
+			return
+		}
+	}
+	if x.MinInitialDepositThrottler != nil {
+		value := protoreflect.ValueOfMessage(x.MinInitialDepositThrottler.ProtoReflect())
+		if !f(fd_Params_min_initial_deposit_throttler, value) {
+			return
+		}
+	}
+	if x.BurnDepositNoThreshold != "" {
+		value := protoreflect.ValueOfString(x.BurnDepositNoThreshold)
+		if !f(fd_Params_burn_deposit_no_threshold, value) {
+			return
+		}
+	}
+	if x.QuorumRange != nil {
+		value := protoreflect.ValueOfMessage(x.QuorumRange.ProtoReflect())
+		if !f(fd_Params_quorum_range, value) {
+			return
+		}
+	}
+	if x.ConstitutionAmendmentQuorumRange != nil {
+		value := protoreflect.ValueOfMessage(x.ConstitutionAmendmentQuorumRange.ProtoReflect())
+		if !f(fd_Params_constitution_amendment_quorum_range, value) {
+			return
+		}
+	}
+	if x.LawQuorumRange != nil {
+		value := protoreflect.ValueOfMessage(x.LawQuorumRange.ProtoReflect())
+		if !f(fd_Params_law_quorum_range, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -6269,6 +8484,18 @@ func (x *fastReflection_Params) Has(fd protoreflect.FieldDescriptor) bool {
 		return x.MaxVotingPeriodExtension != nil
 	case "atomone.gov.v1.Params.quorum_check_count":
 		return x.QuorumCheckCount != uint64(0)
+	case "atomone.gov.v1.Params.min_deposit_throttler":
+		return x.MinDepositThrottler != nil
+	case "atomone.gov.v1.Params.min_initial_deposit_throttler":
+		return x.MinInitialDepositThrottler != nil
+	case "atomone.gov.v1.Params.burn_deposit_no_threshold":
+		return x.BurnDepositNoThreshold != ""
+	case "atomone.gov.v1.Params.quorum_range":
+		return x.QuorumRange != nil
+	case "atomone.gov.v1.Params.constitution_amendment_quorum_range":
+		return x.ConstitutionAmendmentQuorumRange != nil
+	case "atomone.gov.v1.Params.law_quorum_range":
+		return x.LawQuorumRange != nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.Params"))
@@ -6317,6 +8544,18 @@ func (x *fastReflection_Params) Clear(fd protoreflect.FieldDescriptor) {
 		x.MaxVotingPeriodExtension = nil
 	case "atomone.gov.v1.Params.quorum_check_count":
 		x.QuorumCheckCount = uint64(0)
+	case "atomone.gov.v1.Params.min_deposit_throttler":
+		x.MinDepositThrottler = nil
+	case "atomone.gov.v1.Params.min_initial_deposit_throttler":
+		x.MinInitialDepositThrottler = nil
+	case "atomone.gov.v1.Params.burn_deposit_no_threshold":
+		x.BurnDepositNoThreshold = ""
+	case "atomone.gov.v1.Params.quorum_range":
+		x.QuorumRange = nil
+	case "atomone.gov.v1.Params.constitution_amendment_quorum_range":
+		x.ConstitutionAmendmentQuorumRange = nil
+	case "atomone.gov.v1.Params.law_quorum_range":
+		x.LawQuorumRange = nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.Params"))
@@ -6384,6 +8623,24 @@ func (x *fastReflection_Params) Get(descriptor protoreflect.FieldDescriptor) pro
 	case "atomone.gov.v1.Params.quorum_check_count":
 		value := x.QuorumCheckCount
 		return protoreflect.ValueOfUint64(value)
+	case "atomone.gov.v1.Params.min_deposit_throttler":
+		value := x.MinDepositThrottler
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "atomone.gov.v1.Params.min_initial_deposit_throttler":
+		value := x.MinInitialDepositThrottler
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "atomone.gov.v1.Params.burn_deposit_no_threshold":
+		value := x.BurnDepositNoThreshold
+		return protoreflect.ValueOfString(value)
+	case "atomone.gov.v1.Params.quorum_range":
+		value := x.QuorumRange
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "atomone.gov.v1.Params.constitution_amendment_quorum_range":
+		value := x.ConstitutionAmendmentQuorumRange
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "atomone.gov.v1.Params.law_quorum_range":
+		value := x.LawQuorumRange
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.Params"))
@@ -6438,6 +8695,18 @@ func (x *fastReflection_Params) Set(fd protoreflect.FieldDescriptor, value proto
 		x.MaxVotingPeriodExtension = value.Message().Interface().(*durationpb.Duration)
 	case "atomone.gov.v1.Params.quorum_check_count":
 		x.QuorumCheckCount = value.Uint()
+	case "atomone.gov.v1.Params.min_deposit_throttler":
+		x.MinDepositThrottler = value.Message().Interface().(*MinDepositThrottler)
+	case "atomone.gov.v1.Params.min_initial_deposit_throttler":
+		x.MinInitialDepositThrottler = value.Message().Interface().(*MinInitialDepositThrottler)
+	case "atomone.gov.v1.Params.burn_deposit_no_threshold":
+		x.BurnDepositNoThreshold = value.Interface().(string)
+	case "atomone.gov.v1.Params.quorum_range":
+		x.QuorumRange = value.Message().Interface().(*QuorumRange)
+	case "atomone.gov.v1.Params.constitution_amendment_quorum_range":
+		x.ConstitutionAmendmentQuorumRange = value.Message().Interface().(*QuorumRange)
+	case "atomone.gov.v1.Params.law_quorum_range":
+		x.LawQuorumRange = value.Message().Interface().(*QuorumRange)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.Params"))
@@ -6484,6 +8753,31 @@ func (x *fastReflection_Params) Mutable(fd protoreflect.FieldDescriptor) protore
 			x.MaxVotingPeriodExtension = new(durationpb.Duration)
 		}
 		return protoreflect.ValueOfMessage(x.MaxVotingPeriodExtension.ProtoReflect())
+	case "atomone.gov.v1.Params.min_deposit_throttler":
+		if x.MinDepositThrottler == nil {
+			x.MinDepositThrottler = new(MinDepositThrottler)
+		}
+		return protoreflect.ValueOfMessage(x.MinDepositThrottler.ProtoReflect())
+	case "atomone.gov.v1.Params.min_initial_deposit_throttler":
+		if x.MinInitialDepositThrottler == nil {
+			x.MinInitialDepositThrottler = new(MinInitialDepositThrottler)
+		}
+		return protoreflect.ValueOfMessage(x.MinInitialDepositThrottler.ProtoReflect())
+	case "atomone.gov.v1.Params.quorum_range":
+		if x.QuorumRange == nil {
+			x.QuorumRange = new(QuorumRange)
+		}
+		return protoreflect.ValueOfMessage(x.QuorumRange.ProtoReflect())
+	case "atomone.gov.v1.Params.constitution_amendment_quorum_range":
+		if x.ConstitutionAmendmentQuorumRange == nil {
+			x.ConstitutionAmendmentQuorumRange = new(QuorumRange)
+		}
+		return protoreflect.ValueOfMessage(x.ConstitutionAmendmentQuorumRange.ProtoReflect())
+	case "atomone.gov.v1.Params.law_quorum_range":
+		if x.LawQuorumRange == nil {
+			x.LawQuorumRange = new(QuorumRange)
+		}
+		return protoreflect.ValueOfMessage(x.LawQuorumRange.ProtoReflect())
 	case "atomone.gov.v1.Params.quorum":
 		panic(fmt.Errorf("field quorum of message atomone.gov.v1.Params is not mutable"))
 	case "atomone.gov.v1.Params.threshold":
@@ -6506,6 +8800,8 @@ func (x *fastReflection_Params) Mutable(fd protoreflect.FieldDescriptor) protore
 		panic(fmt.Errorf("field law_threshold of message atomone.gov.v1.Params is not mutable"))
 	case "atomone.gov.v1.Params.quorum_check_count":
 		panic(fmt.Errorf("field quorum_check_count of message atomone.gov.v1.Params is not mutable"))
+	case "atomone.gov.v1.Params.burn_deposit_no_threshold":
+		panic(fmt.Errorf("field burn_deposit_no_threshold of message atomone.gov.v1.Params is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.Params"))
@@ -6556,6 +8852,23 @@ func (x *fastReflection_Params) NewField(fd protoreflect.FieldDescriptor) protor
 		return protoreflect.ValueOfMessage(m.ProtoReflect())
 	case "atomone.gov.v1.Params.quorum_check_count":
 		return protoreflect.ValueOfUint64(uint64(0))
+	case "atomone.gov.v1.Params.min_deposit_throttler":
+		m := new(MinDepositThrottler)
+		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	case "atomone.gov.v1.Params.min_initial_deposit_throttler":
+		m := new(MinInitialDepositThrottler)
+		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	case "atomone.gov.v1.Params.burn_deposit_no_threshold":
+		return protoreflect.ValueOfString("")
+	case "atomone.gov.v1.Params.quorum_range":
+		m := new(QuorumRange)
+		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	case "atomone.gov.v1.Params.constitution_amendment_quorum_range":
+		m := new(QuorumRange)
+		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	case "atomone.gov.v1.Params.law_quorum_range":
+		m := new(QuorumRange)
+		return protoreflect.ValueOfMessage(m.ProtoReflect())
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.Params"))
@@ -6688,6 +9001,30 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 		if x.QuorumCheckCount != 0 {
 			n += 2 + runtime.Sov(uint64(x.QuorumCheckCount))
 		}
+		if x.MinDepositThrottler != nil {
+			l = options.Size(x.MinDepositThrottler)
+			n += 2 + l + runtime.Sov(uint64(l))
+		}
+		if x.MinInitialDepositThrottler != nil {
+			l = options.Size(x.MinInitialDepositThrottler)
+			n += 2 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.BurnDepositNoThreshold)
+		if l > 0 {
+			n += 2 + l + runtime.Sov(uint64(l))
+		}
+		if x.QuorumRange != nil {
+			l = options.Size(x.QuorumRange)
+			n += 2 + l + runtime.Sov(uint64(l))
+		}
+		if x.ConstitutionAmendmentQuorumRange != nil {
+			l = options.Size(x.ConstitutionAmendmentQuorumRange)
+			n += 2 + l + runtime.Sov(uint64(l))
+		}
+		if x.LawQuorumRange != nil {
+			l = options.Size(x.LawQuorumRange)
+			n += 2 + l + runtime.Sov(uint64(l))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -6716,6 +9053,95 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.LawQuorumRange != nil {
+			encoded, err := options.Marshal(x.LawQuorumRange)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x1
+			i--
+			dAtA[i] = 0xe2
+		}
+		if x.ConstitutionAmendmentQuorumRange != nil {
+			encoded, err := options.Marshal(x.ConstitutionAmendmentQuorumRange)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x1
+			i--
+			dAtA[i] = 0xda
+		}
+		if x.QuorumRange != nil {
+			encoded, err := options.Marshal(x.QuorumRange)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x1
+			i--
+			dAtA[i] = 0xd2
+		}
+		if len(x.BurnDepositNoThreshold) > 0 {
+			i -= len(x.BurnDepositNoThreshold)
+			copy(dAtA[i:], x.BurnDepositNoThreshold)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.BurnDepositNoThreshold)))
+			i--
+			dAtA[i] = 0x1
+			i--
+			dAtA[i] = 0xca
+		}
+		if x.MinInitialDepositThrottler != nil {
+			encoded, err := options.Marshal(x.MinInitialDepositThrottler)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x1
+			i--
+			dAtA[i] = 0xc2
+		}
+		if x.MinDepositThrottler != nil {
+			encoded, err := options.Marshal(x.MinDepositThrottler)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x1
+			i--
+			dAtA[i] = 0xba
 		}
 		if x.QuorumCheckCount != 0 {
 			i = runtime.EncodeVarint(dAtA, i, uint64(x.QuorumCheckCount))
@@ -7426,6 +9852,702 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 						break
 					}
 				}
+			case 23:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MinDepositThrottler", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.MinDepositThrottler == nil {
+					x.MinDepositThrottler = &MinDepositThrottler{}
+				}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.MinDepositThrottler); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 24:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MinInitialDepositThrottler", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.MinInitialDepositThrottler == nil {
+					x.MinInitialDepositThrottler = &MinInitialDepositThrottler{}
+				}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.MinInitialDepositThrottler); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 25:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field BurnDepositNoThreshold", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.BurnDepositNoThreshold = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 26:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field QuorumRange", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.QuorumRange == nil {
+					x.QuorumRange = &QuorumRange{}
+				}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.QuorumRange); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 27:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ConstitutionAmendmentQuorumRange", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.ConstitutionAmendmentQuorumRange == nil {
+					x.ConstitutionAmendmentQuorumRange = &QuorumRange{}
+				}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.ConstitutionAmendmentQuorumRange); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 28:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LawQuorumRange", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.LawQuorumRange == nil {
+					x.LawQuorumRange = &QuorumRange{}
+				}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.LawQuorumRange); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_QuorumRange     protoreflect.MessageDescriptor
+	fd_QuorumRange_max protoreflect.FieldDescriptor
+	fd_QuorumRange_min protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_atomone_gov_v1_gov_proto_init()
+	md_QuorumRange = File_atomone_gov_v1_gov_proto.Messages().ByName("QuorumRange")
+	fd_QuorumRange_max = md_QuorumRange.Fields().ByName("max")
+	fd_QuorumRange_min = md_QuorumRange.Fields().ByName("min")
+}
+
+var _ protoreflect.Message = (*fastReflection_QuorumRange)(nil)
+
+type fastReflection_QuorumRange QuorumRange
+
+func (x *QuorumRange) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QuorumRange)(x)
+}
+
+func (x *QuorumRange) slowProtoReflect() protoreflect.Message {
+	mi := &file_atomone_gov_v1_gov_proto_msgTypes[13]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_QuorumRange_messageType fastReflection_QuorumRange_messageType
+var _ protoreflect.MessageType = fastReflection_QuorumRange_messageType{}
+
+type fastReflection_QuorumRange_messageType struct{}
+
+func (x fastReflection_QuorumRange_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QuorumRange)(nil)
+}
+func (x fastReflection_QuorumRange_messageType) New() protoreflect.Message {
+	return new(fastReflection_QuorumRange)
+}
+func (x fastReflection_QuorumRange_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QuorumRange
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_QuorumRange) Descriptor() protoreflect.MessageDescriptor {
+	return md_QuorumRange
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_QuorumRange) Type() protoreflect.MessageType {
+	return _fastReflection_QuorumRange_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_QuorumRange) New() protoreflect.Message {
+	return new(fastReflection_QuorumRange)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_QuorumRange) Interface() protoreflect.ProtoMessage {
+	return (*QuorumRange)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_QuorumRange) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Max != "" {
+		value := protoreflect.ValueOfString(x.Max)
+		if !f(fd_QuorumRange_max, value) {
+			return
+		}
+	}
+	if x.Min != "" {
+		value := protoreflect.ValueOfString(x.Min)
+		if !f(fd_QuorumRange_min, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_QuorumRange) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "atomone.gov.v1.QuorumRange.max":
+		return x.Max != ""
+	case "atomone.gov.v1.QuorumRange.min":
+		return x.Min != ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QuorumRange"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.QuorumRange does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QuorumRange) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "atomone.gov.v1.QuorumRange.max":
+		x.Max = ""
+	case "atomone.gov.v1.QuorumRange.min":
+		x.Min = ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QuorumRange"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.QuorumRange does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_QuorumRange) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "atomone.gov.v1.QuorumRange.max":
+		value := x.Max
+		return protoreflect.ValueOfString(value)
+	case "atomone.gov.v1.QuorumRange.min":
+		value := x.Min
+		return protoreflect.ValueOfString(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QuorumRange"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.QuorumRange does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QuorumRange) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "atomone.gov.v1.QuorumRange.max":
+		x.Max = value.Interface().(string)
+	case "atomone.gov.v1.QuorumRange.min":
+		x.Min = value.Interface().(string)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QuorumRange"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.QuorumRange does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QuorumRange) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "atomone.gov.v1.QuorumRange.max":
+		panic(fmt.Errorf("field max of message atomone.gov.v1.QuorumRange is not mutable"))
+	case "atomone.gov.v1.QuorumRange.min":
+		panic(fmt.Errorf("field min of message atomone.gov.v1.QuorumRange is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QuorumRange"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.QuorumRange does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_QuorumRange) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "atomone.gov.v1.QuorumRange.max":
+		return protoreflect.ValueOfString("")
+	case "atomone.gov.v1.QuorumRange.min":
+		return protoreflect.ValueOfString("")
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.QuorumRange"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.QuorumRange does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_QuorumRange) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in atomone.gov.v1.QuorumRange", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_QuorumRange) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QuorumRange) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_QuorumRange) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_QuorumRange) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*QuorumRange)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.Max)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.Min)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*QuorumRange)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.Min) > 0 {
+			i -= len(x.Min)
+			copy(dAtA[i:], x.Min)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Min)))
+			i--
+			dAtA[i] = 0x12
+		}
+		if len(x.Max) > 0 {
+			i -= len(x.Max)
+			copy(dAtA[i:], x.Max)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Max)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*QuorumRange)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QuorumRange: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QuorumRange: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Max", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Max = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Min", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Min = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -7706,6 +10828,53 @@ func (x *Deposit) GetAmount() []*v1beta1.Coin {
 	return nil
 }
 
+// LastMinDeposit is a record of the last time the minimum deposit
+// was updated in the store, both its value and a timestamp
+type LastMinDeposit struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// value is the value of the minimum deposit
+	Value []*v1beta1.Coin `protobuf:"bytes,1,rep,name=value,proto3" json:"value,omitempty"`
+	// time is the time the minimum deposit was last updated
+	Time *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=time,proto3" json:"time,omitempty"`
+}
+
+func (x *LastMinDeposit) Reset() {
+	*x = LastMinDeposit{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_atomone_gov_v1_gov_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *LastMinDeposit) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LastMinDeposit) ProtoMessage() {}
+
+// Deprecated: Use LastMinDeposit.ProtoReflect.Descriptor instead.
+func (*LastMinDeposit) Descriptor() ([]byte, []int) {
+	return file_atomone_gov_v1_gov_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *LastMinDeposit) GetValue() []*v1beta1.Coin {
+	if x != nil {
+		return x.Value
+	}
+	return nil
+}
+
+func (x *LastMinDeposit) GetTime() *timestamppb.Timestamp {
+	if x != nil {
+		return x.Time
+	}
+	return nil
+}
+
 // Proposal defines the core field members of a governance proposal.
 type Proposal struct {
 	state         protoimpl.MessageState
@@ -7751,7 +10920,7 @@ type Proposal struct {
 func (x *Proposal) Reset() {
 	*x = Proposal{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_atomone_gov_v1_gov_proto_msgTypes[2]
+		mi := &file_atomone_gov_v1_gov_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -7765,7 +10934,7 @@ func (*Proposal) ProtoMessage() {}
 
 // Deprecated: Use Proposal.ProtoReflect.Descriptor instead.
 func (*Proposal) Descriptor() ([]byte, []int) {
-	return file_atomone_gov_v1_gov_proto_rawDescGZIP(), []int{2}
+	return file_atomone_gov_v1_gov_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *Proposal) GetId() uint64 {
@@ -7876,7 +11045,7 @@ type TallyResult struct {
 func (x *TallyResult) Reset() {
 	*x = TallyResult{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_atomone_gov_v1_gov_proto_msgTypes[3]
+		mi := &file_atomone_gov_v1_gov_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -7890,7 +11059,7 @@ func (*TallyResult) ProtoMessage() {}
 
 // Deprecated: Use TallyResult.ProtoReflect.Descriptor instead.
 func (*TallyResult) Descriptor() ([]byte, []int) {
-	return file_atomone_gov_v1_gov_proto_rawDescGZIP(), []int{3}
+	return file_atomone_gov_v1_gov_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *TallyResult) GetYesCount() string {
@@ -7934,7 +11103,7 @@ type Vote struct {
 func (x *Vote) Reset() {
 	*x = Vote{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_atomone_gov_v1_gov_proto_msgTypes[4]
+		mi := &file_atomone_gov_v1_gov_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -7948,7 +11117,7 @@ func (*Vote) ProtoMessage() {}
 
 // Deprecated: Use Vote.ProtoReflect.Descriptor instead.
 func (*Vote) Descriptor() ([]byte, []int) {
-	return file_atomone_gov_v1_gov_proto_rawDescGZIP(), []int{4}
+	return file_atomone_gov_v1_gov_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *Vote) GetProposalId() uint64 {
@@ -7999,7 +11168,7 @@ type QuorumCheckQueueEntry struct {
 func (x *QuorumCheckQueueEntry) Reset() {
 	*x = QuorumCheckQueueEntry{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_atomone_gov_v1_gov_proto_msgTypes[5]
+		mi := &file_atomone_gov_v1_gov_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -8013,7 +11182,7 @@ func (*QuorumCheckQueueEntry) ProtoMessage() {}
 
 // Deprecated: Use QuorumCheckQueueEntry.ProtoReflect.Descriptor instead.
 func (*QuorumCheckQueueEntry) Descriptor() ([]byte, []int) {
-	return file_atomone_gov_v1_gov_proto_rawDescGZIP(), []int{5}
+	return file_atomone_gov_v1_gov_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *QuorumCheckQueueEntry) GetQuorumTimeoutTime() *timestamppb.Timestamp {
@@ -8053,7 +11222,7 @@ type DepositParams struct {
 func (x *DepositParams) Reset() {
 	*x = DepositParams{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_atomone_gov_v1_gov_proto_msgTypes[6]
+		mi := &file_atomone_gov_v1_gov_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -8067,7 +11236,7 @@ func (*DepositParams) ProtoMessage() {}
 
 // Deprecated: Use DepositParams.ProtoReflect.Descriptor instead.
 func (*DepositParams) Descriptor() ([]byte, []int) {
-	return file_atomone_gov_v1_gov_proto_rawDescGZIP(), []int{6}
+	return file_atomone_gov_v1_gov_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *DepositParams) GetMinDeposit() []*v1beta1.Coin {
@@ -8097,7 +11266,7 @@ type VotingParams struct {
 func (x *VotingParams) Reset() {
 	*x = VotingParams{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_atomone_gov_v1_gov_proto_msgTypes[7]
+		mi := &file_atomone_gov_v1_gov_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -8111,7 +11280,7 @@ func (*VotingParams) ProtoMessage() {}
 
 // Deprecated: Use VotingParams.ProtoReflect.Descriptor instead.
 func (*VotingParams) Descriptor() ([]byte, []int) {
-	return file_atomone_gov_v1_gov_proto_rawDescGZIP(), []int{7}
+	return file_atomone_gov_v1_gov_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *VotingParams) GetVotingPeriod() *durationpb.Duration {
@@ -8129,14 +11298,20 @@ type TallyParams struct {
 
 	// Minimum percentage of total stake needed to vote for a result to be
 	// considered valid.
+	//
+	// Deprecated: Do not use.
 	Quorum string `protobuf:"bytes,1,opt,name=quorum,proto3" json:"quorum,omitempty"`
 	// Minimum proportion of Yes votes for proposal to pass. Default value: 2/3.
 	Threshold string `protobuf:"bytes,2,opt,name=threshold,proto3" json:"threshold,omitempty"`
 	// quorum for constitution amendment proposals
+	//
+	// Deprecated: Do not use.
 	ConstitutionAmendmentQuorum string `protobuf:"bytes,3,opt,name=constitution_amendment_quorum,json=constitutionAmendmentQuorum,proto3" json:"constitution_amendment_quorum,omitempty"`
 	// Minimum proportion of Yes votes for a Constitution Amendment proposal to pass. Default value: 0.9.
 	ConstitutionAmendmentThreshold string `protobuf:"bytes,4,opt,name=constitution_amendment_threshold,json=constitutionAmendmentThreshold,proto3" json:"constitution_amendment_threshold,omitempty"`
 	// quorum for law proposals
+	//
+	// Deprecated: Do not use.
 	LawQuorum string `protobuf:"bytes,5,opt,name=law_quorum,json=lawQuorum,proto3" json:"law_quorum,omitempty"`
 	// Minimum proportion of Yes votes for a Law proposal to pass. Default value: 0.9.
 	LawThreshold string `protobuf:"bytes,6,opt,name=law_threshold,json=lawThreshold,proto3" json:"law_threshold,omitempty"`
@@ -8145,7 +11320,7 @@ type TallyParams struct {
 func (x *TallyParams) Reset() {
 	*x = TallyParams{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_atomone_gov_v1_gov_proto_msgTypes[8]
+		mi := &file_atomone_gov_v1_gov_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -8159,9 +11334,10 @@ func (*TallyParams) ProtoMessage() {}
 
 // Deprecated: Use TallyParams.ProtoReflect.Descriptor instead.
 func (*TallyParams) Descriptor() ([]byte, []int) {
-	return file_atomone_gov_v1_gov_proto_rawDescGZIP(), []int{8}
+	return file_atomone_gov_v1_gov_proto_rawDescGZIP(), []int{9}
 }
 
+// Deprecated: Do not use.
 func (x *TallyParams) GetQuorum() string {
 	if x != nil {
 		return x.Quorum
@@ -8176,6 +11352,7 @@ func (x *TallyParams) GetThreshold() string {
 	return ""
 }
 
+// Deprecated: Do not use.
 func (x *TallyParams) GetConstitutionAmendmentQuorum() string {
 	if x != nil {
 		return x.ConstitutionAmendmentQuorum
@@ -8190,6 +11367,7 @@ func (x *TallyParams) GetConstitutionAmendmentThreshold() string {
 	return ""
 }
 
+// Deprecated: Do not use.
 func (x *TallyParams) GetLawQuorum() string {
 	if x != nil {
 		return x.LawQuorum
@@ -8204,6 +11382,180 @@ func (x *TallyParams) GetLawThreshold() string {
 	return ""
 }
 
+type MinDepositThrottler struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Floor value for the minimum deposit required for a proposal to enter the voting period.
+	FloorValue []*v1beta1.Coin `protobuf:"bytes,1,rep,name=floor_value,json=floorValue,proto3" json:"floor_value,omitempty"`
+	// Duration that dictates after how long the dynamic minimum deposit should be recalculated
+	// for time-based decreases.
+	UpdatePeriod *durationpb.Duration `protobuf:"bytes,2,opt,name=update_period,json=updatePeriod,proto3" json:"update_period,omitempty"`
+	// The number of active proposals the dynamic minimum deposit should target.
+	TargetActiveProposals uint64 `protobuf:"varint,3,opt,name=target_active_proposals,json=targetActiveProposals,proto3" json:"target_active_proposals,omitempty"`
+	// The ratio of increase for the minimum deposit when the number of active proposals
+	// is at or above the target.
+	IncreaseRatio string `protobuf:"bytes,4,opt,name=increase_ratio,json=increaseRatio,proto3" json:"increase_ratio,omitempty"`
+	// The ratio of decrease for the minimum deposit when the number of active proposals
+	// is 1 less than the target.
+	DecreaseRatio string `protobuf:"bytes,5,opt,name=decrease_ratio,json=decreaseRatio,proto3" json:"decrease_ratio,omitempty"`
+	// A positive integer representing the sensitivity of dynamic minimum deposit
+	// decreases to the distance from the target number of active proposals.
+	// The higher the number, the lower the sensitivity. A value of 1 represents the
+	// highest sensitivity.
+	DecreaseSensitivityTargetDistance uint64 `protobuf:"varint,6,opt,name=decrease_sensitivity_target_distance,json=decreaseSensitivityTargetDistance,proto3" json:"decrease_sensitivity_target_distance,omitempty"`
+}
+
+func (x *MinDepositThrottler) Reset() {
+	*x = MinDepositThrottler{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_atomone_gov_v1_gov_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *MinDepositThrottler) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MinDepositThrottler) ProtoMessage() {}
+
+// Deprecated: Use MinDepositThrottler.ProtoReflect.Descriptor instead.
+func (*MinDepositThrottler) Descriptor() ([]byte, []int) {
+	return file_atomone_gov_v1_gov_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *MinDepositThrottler) GetFloorValue() []*v1beta1.Coin {
+	if x != nil {
+		return x.FloorValue
+	}
+	return nil
+}
+
+func (x *MinDepositThrottler) GetUpdatePeriod() *durationpb.Duration {
+	if x != nil {
+		return x.UpdatePeriod
+	}
+	return nil
+}
+
+func (x *MinDepositThrottler) GetTargetActiveProposals() uint64 {
+	if x != nil {
+		return x.TargetActiveProposals
+	}
+	return 0
+}
+
+func (x *MinDepositThrottler) GetIncreaseRatio() string {
+	if x != nil {
+		return x.IncreaseRatio
+	}
+	return ""
+}
+
+func (x *MinDepositThrottler) GetDecreaseRatio() string {
+	if x != nil {
+		return x.DecreaseRatio
+	}
+	return ""
+}
+
+func (x *MinDepositThrottler) GetDecreaseSensitivityTargetDistance() uint64 {
+	if x != nil {
+		return x.DecreaseSensitivityTargetDistance
+	}
+	return 0
+}
+
+type MinInitialDepositThrottler struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Floor value for the minimum initial deposit required for a proposal to enter the deposit period.
+	FloorValue []*v1beta1.Coin `protobuf:"bytes,1,rep,name=floor_value,json=floorValue,proto3" json:"floor_value,omitempty"`
+	// Duration that dictates after how long the dynamic minimum deposit should be recalculated
+	// for time-based decreases.
+	UpdatePeriod *durationpb.Duration `protobuf:"bytes,2,opt,name=update_period,json=updatePeriod,proto3" json:"update_period,omitempty"`
+	// The number of proposals in deposit period the dynamic minimum initial deposit should target.
+	TargetProposals uint64 `protobuf:"varint,3,opt,name=target_proposals,json=targetProposals,proto3" json:"target_proposals,omitempty"`
+	// The ratio of increase for the minimum initial deposit when the number of proposals
+	// in deposit period is at or above the target.
+	IncreaseRatio string `protobuf:"bytes,4,opt,name=increase_ratio,json=increaseRatio,proto3" json:"increase_ratio,omitempty"`
+	// The ratio of decrease for the minimum initial deposit when the number of proposals
+	// in deposit period is 1 less than the target.
+	DecreaseRatio string `protobuf:"bytes,5,opt,name=decrease_ratio,json=decreaseRatio,proto3" json:"decrease_ratio,omitempty"`
+	// A positive integer representing the sensitivity of dynamic minimum initial
+	// deposit decreases to the distance from the target number of proposals
+	// in deposit period. The higher the number, the lower the sensitivity. A value
+	// of 1 represents the highest sensitivity.
+	DecreaseSensitivityTargetDistance uint64 `protobuf:"varint,6,opt,name=decrease_sensitivity_target_distance,json=decreaseSensitivityTargetDistance,proto3" json:"decrease_sensitivity_target_distance,omitempty"`
+}
+
+func (x *MinInitialDepositThrottler) Reset() {
+	*x = MinInitialDepositThrottler{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_atomone_gov_v1_gov_proto_msgTypes[11]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *MinInitialDepositThrottler) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MinInitialDepositThrottler) ProtoMessage() {}
+
+// Deprecated: Use MinInitialDepositThrottler.ProtoReflect.Descriptor instead.
+func (*MinInitialDepositThrottler) Descriptor() ([]byte, []int) {
+	return file_atomone_gov_v1_gov_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *MinInitialDepositThrottler) GetFloorValue() []*v1beta1.Coin {
+	if x != nil {
+		return x.FloorValue
+	}
+	return nil
+}
+
+func (x *MinInitialDepositThrottler) GetUpdatePeriod() *durationpb.Duration {
+	if x != nil {
+		return x.UpdatePeriod
+	}
+	return nil
+}
+
+func (x *MinInitialDepositThrottler) GetTargetProposals() uint64 {
+	if x != nil {
+		return x.TargetProposals
+	}
+	return 0
+}
+
+func (x *MinInitialDepositThrottler) GetIncreaseRatio() string {
+	if x != nil {
+		return x.IncreaseRatio
+	}
+	return ""
+}
+
+func (x *MinInitialDepositThrottler) GetDecreaseRatio() string {
+	if x != nil {
+		return x.DecreaseRatio
+	}
+	return ""
+}
+
+func (x *MinInitialDepositThrottler) GetDecreaseSensitivityTargetDistance() uint64 {
+	if x != nil {
+		return x.DecreaseSensitivityTargetDistance
+	}
+	return 0
+}
+
 // Params defines the parameters for the x/gov module.
 //
 // Since: cosmos-sdk 0.47
@@ -8213,18 +11565,29 @@ type Params struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Minimum deposit for a proposal to enter voting period.
+	// Deprecated: a dynamic system now determines the minimum deposit,
+	// see the other params inside the min_deposit_throttler field.
+	// While setting this value returns an error, when queried it is set to the
+	// value of the current minimum deposit value as determined by the dynamic
+	// system for backward compatibility.
+	//
+	// Deprecated: Do not use.
 	MinDeposit []*v1beta1.Coin `protobuf:"bytes,1,rep,name=min_deposit,json=minDeposit,proto3" json:"min_deposit,omitempty"`
 	// Maximum period for Atom holders to deposit on a proposal. Initial value: 2
 	// months.
 	MaxDepositPeriod *durationpb.Duration `protobuf:"bytes,2,opt,name=max_deposit_period,json=maxDepositPeriod,proto3" json:"max_deposit_period,omitempty"`
 	// Duration of the voting period.
 	VotingPeriod *durationpb.Duration `protobuf:"bytes,3,opt,name=voting_period,json=votingPeriod,proto3" json:"voting_period,omitempty"`
-	// Minimum percentage of total stake needed to vote for a result to be
-	// considered valid. Default value: 0.25.
+	//	Minimum percentage of total stake needed to vote for a result to be
+	//	considered valid. Default value: 0.25.
+	//
+	// Deprecated: Do not use.
 	Quorum string `protobuf:"bytes,4,opt,name=quorum,proto3" json:"quorum,omitempty"`
 	// Minimum proportion of Yes votes for proposal to pass. Default value: 2/3.
 	Threshold string `protobuf:"bytes,5,opt,name=threshold,proto3" json:"threshold,omitempty"`
-	// The ratio representing the proportion of the deposit value that must be paid at proposal submission.
+	//	The ratio representing the proportion of the deposit value that must be paid at proposal submission.
+	//
+	// Deprecated: Do not use.
 	MinInitialDepositRatio string `protobuf:"bytes,7,opt,name=min_initial_deposit_ratio,json=minInitialDepositRatio,proto3" json:"min_initial_deposit_ratio,omitempty"`
 	// burn deposits if a proposal does not meet quorum
 	BurnVoteQuorum bool `protobuf:"varint,13,opt,name=burn_vote_quorum,json=burnVoteQuorum,proto3" json:"burn_vote_quorum,omitempty"`
@@ -8239,10 +11602,14 @@ type Params struct {
 	// NOTE: backported from v50 (https://github.com/cosmos/cosmos-sdk/pull/18146)
 	MinDepositRatio string `protobuf:"bytes,15,opt,name=min_deposit_ratio,json=minDepositRatio,proto3" json:"min_deposit_ratio,omitempty"`
 	// quorum for constitution amendment proposals
+	//
+	// Deprecated: Do not use.
 	ConstitutionAmendmentQuorum string `protobuf:"bytes,16,opt,name=constitution_amendment_quorum,json=constitutionAmendmentQuorum,proto3" json:"constitution_amendment_quorum,omitempty"`
 	// Minimum proportion of Yes votes for a Constitution Amendment proposal to pass. Default value: 0.9.
 	ConstitutionAmendmentThreshold string `protobuf:"bytes,17,opt,name=constitution_amendment_threshold,json=constitutionAmendmentThreshold,proto3" json:"constitution_amendment_threshold,omitempty"`
 	// quorum for law proposals
+	//
+	// Deprecated: Do not use.
 	LawQuorum string `protobuf:"bytes,18,opt,name=law_quorum,json=lawQuorum,proto3" json:"law_quorum,omitempty"`
 	// Minimum proportion of Yes votes for a Law proposal to pass. Default value: 0.9.
 	LawThreshold string `protobuf:"bytes,19,opt,name=law_threshold,json=lawThreshold,proto3" json:"law_threshold,omitempty"`
@@ -8254,13 +11621,23 @@ type Params struct {
 	MaxVotingPeriodExtension *durationpb.Duration `protobuf:"bytes,21,opt,name=max_voting_period_extension,json=maxVotingPeriodExtension,proto3" json:"max_voting_period_extension,omitempty"`
 	// Number of times a proposal should be checked for quorum after the quorum timeout
 	// has elapsed. Used to compute the amount of time in between quorum checks.
-	QuorumCheckCount uint64 `protobuf:"varint,22,opt,name=quorum_check_count,json=quorumCheckCount,proto3" json:"quorum_check_count,omitempty"`
+	QuorumCheckCount           uint64                      `protobuf:"varint,22,opt,name=quorum_check_count,json=quorumCheckCount,proto3" json:"quorum_check_count,omitempty"`
+	MinDepositThrottler        *MinDepositThrottler        `protobuf:"bytes,23,opt,name=min_deposit_throttler,json=minDepositThrottler,proto3" json:"min_deposit_throttler,omitempty"`
+	MinInitialDepositThrottler *MinInitialDepositThrottler `protobuf:"bytes,24,opt,name=min_initial_deposit_throttler,json=minInitialDepositThrottler,proto3" json:"min_initial_deposit_throttler,omitempty"`
+	// Minimum proportion of No Votes for a proposal deposit to be burnt.
+	BurnDepositNoThreshold string `protobuf:"bytes,25,opt,name=burn_deposit_no_threshold,json=burnDepositNoThreshold,proto3" json:"burn_deposit_no_threshold,omitempty"`
+	// Achievable quorum
+	QuorumRange *QuorumRange `protobuf:"bytes,26,opt,name=quorum_range,json=quorumRange,proto3" json:"quorum_range,omitempty"`
+	// Achievable quorum for constitution amendment proposals
+	ConstitutionAmendmentQuorumRange *QuorumRange `protobuf:"bytes,27,opt,name=constitution_amendment_quorum_range,json=constitutionAmendmentQuorumRange,proto3" json:"constitution_amendment_quorum_range,omitempty"`
+	// Achievable quorum for law proposals
+	LawQuorumRange *QuorumRange `protobuf:"bytes,28,opt,name=law_quorum_range,json=lawQuorumRange,proto3" json:"law_quorum_range,omitempty"`
 }
 
 func (x *Params) Reset() {
 	*x = Params{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_atomone_gov_v1_gov_proto_msgTypes[9]
+		mi := &file_atomone_gov_v1_gov_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -8274,9 +11651,10 @@ func (*Params) ProtoMessage() {}
 
 // Deprecated: Use Params.ProtoReflect.Descriptor instead.
 func (*Params) Descriptor() ([]byte, []int) {
-	return file_atomone_gov_v1_gov_proto_rawDescGZIP(), []int{9}
+	return file_atomone_gov_v1_gov_proto_rawDescGZIP(), []int{12}
 }
 
+// Deprecated: Do not use.
 func (x *Params) GetMinDeposit() []*v1beta1.Coin {
 	if x != nil {
 		return x.MinDeposit
@@ -8298,6 +11676,7 @@ func (x *Params) GetVotingPeriod() *durationpb.Duration {
 	return nil
 }
 
+// Deprecated: Do not use.
 func (x *Params) GetQuorum() string {
 	if x != nil {
 		return x.Quorum
@@ -8312,6 +11691,7 @@ func (x *Params) GetThreshold() string {
 	return ""
 }
 
+// Deprecated: Do not use.
 func (x *Params) GetMinInitialDepositRatio() string {
 	if x != nil {
 		return x.MinInitialDepositRatio
@@ -8340,6 +11720,7 @@ func (x *Params) GetMinDepositRatio() string {
 	return ""
 }
 
+// Deprecated: Do not use.
 func (x *Params) GetConstitutionAmendmentQuorum() string {
 	if x != nil {
 		return x.ConstitutionAmendmentQuorum
@@ -8354,6 +11735,7 @@ func (x *Params) GetConstitutionAmendmentThreshold() string {
 	return ""
 }
 
+// Deprecated: Do not use.
 func (x *Params) GetLawQuorum() string {
 	if x != nil {
 		return x.LawQuorum
@@ -8387,6 +11769,93 @@ func (x *Params) GetQuorumCheckCount() uint64 {
 		return x.QuorumCheckCount
 	}
 	return 0
+}
+
+func (x *Params) GetMinDepositThrottler() *MinDepositThrottler {
+	if x != nil {
+		return x.MinDepositThrottler
+	}
+	return nil
+}
+
+func (x *Params) GetMinInitialDepositThrottler() *MinInitialDepositThrottler {
+	if x != nil {
+		return x.MinInitialDepositThrottler
+	}
+	return nil
+}
+
+func (x *Params) GetBurnDepositNoThreshold() string {
+	if x != nil {
+		return x.BurnDepositNoThreshold
+	}
+	return ""
+}
+
+func (x *Params) GetQuorumRange() *QuorumRange {
+	if x != nil {
+		return x.QuorumRange
+	}
+	return nil
+}
+
+func (x *Params) GetConstitutionAmendmentQuorumRange() *QuorumRange {
+	if x != nil {
+		return x.ConstitutionAmendmentQuorumRange
+	}
+	return nil
+}
+
+func (x *Params) GetLawQuorumRange() *QuorumRange {
+	if x != nil {
+		return x.LawQuorumRange
+	}
+	return nil
+}
+
+type QuorumRange struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Maximum achievable quorum
+	Max string `protobuf:"bytes,1,opt,name=max,proto3" json:"max,omitempty"`
+	// Minimum achievable quorum
+	Min string `protobuf:"bytes,2,opt,name=min,proto3" json:"min,omitempty"`
+}
+
+func (x *QuorumRange) Reset() {
+	*x = QuorumRange{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_atomone_gov_v1_gov_proto_msgTypes[13]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QuorumRange) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QuorumRange) ProtoMessage() {}
+
+// Deprecated: Use QuorumRange.ProtoReflect.Descriptor instead.
+func (*QuorumRange) Descriptor() ([]byte, []int) {
+	return file_atomone_gov_v1_gov_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *QuorumRange) GetMax() string {
+	if x != nil {
+		return x.Max
+	}
+	return ""
+}
+
+func (x *QuorumRange) GetMin() string {
+	if x != nil {
+		return x.Min
+	}
+	return ""
 }
 
 var File_atomone_gov_v1_gov_proto protoreflect.FileDescriptor
@@ -8424,193 +11893,294 @@ var file_atomone_gov_v1_gov_proto_rawDesc = []byte{
 	0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e,
 	0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x09, 0xc8, 0xde,
 	0x1f, 0x00, 0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x22,
-	0xc3, 0x05, 0x0a, 0x08, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x12, 0x0e, 0x0a, 0x02,
-	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x02, 0x69, 0x64, 0x12, 0x30, 0x0a, 0x08,
-	0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x14,
-	0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66,
-	0x2e, 0x41, 0x6e, 0x79, 0x52, 0x08, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x73, 0x12, 0x36,
-	0x0a, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x1e,
-	0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e,
-	0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52, 0x06,
-	0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x49, 0x0a, 0x12, 0x66, 0x69, 0x6e, 0x61, 0x6c, 0x5f,
-	0x74, 0x61, 0x6c, 0x6c, 0x79, 0x5f, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x18, 0x04, 0x20, 0x01,
-	0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76,
-	0x2e, 0x76, 0x31, 0x2e, 0x54, 0x61, 0x6c, 0x6c, 0x79, 0x52, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x52,
-	0x10, 0x66, 0x69, 0x6e, 0x61, 0x6c, 0x54, 0x61, 0x6c, 0x6c, 0x79, 0x52, 0x65, 0x73, 0x75, 0x6c,
-	0x74, 0x12, 0x41, 0x0a, 0x0b, 0x73, 0x75, 0x62, 0x6d, 0x69, 0x74, 0x5f, 0x74, 0x69, 0x6d, 0x65,
-	0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61,
-	0x6d, 0x70, 0x42, 0x04, 0x90, 0xdf, 0x1f, 0x01, 0x52, 0x0a, 0x73, 0x75, 0x62, 0x6d, 0x69, 0x74,
-	0x54, 0x69, 0x6d, 0x65, 0x12, 0x4a, 0x0a, 0x10, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x5f,
-	0x65, 0x6e, 0x64, 0x5f, 0x74, 0x69, 0x6d, 0x65, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a,
-	0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66,
-	0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x42, 0x04, 0x90, 0xdf, 0x1f, 0x01,
-	0x52, 0x0e, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x45, 0x6e, 0x64, 0x54, 0x69, 0x6d, 0x65,
-	0x12, 0x49, 0x0a, 0x0d, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x5f, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69,
-	0x74, 0x18, 0x07, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
-	0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f,
-	0x69, 0x6e, 0x42, 0x09, 0xc8, 0xde, 0x1f, 0x00, 0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x0c, 0x74,
-	0x6f, 0x74, 0x61, 0x6c, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x12, 0x4c, 0x0a, 0x11, 0x76,
-	0x6f, 0x74, 0x69, 0x6e, 0x67, 0x5f, 0x73, 0x74, 0x61, 0x72, 0x74, 0x5f, 0x74, 0x69, 0x6d, 0x65,
-	0x18, 0x08, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61,
-	0x6d, 0x70, 0x42, 0x04, 0x90, 0xdf, 0x1f, 0x01, 0x52, 0x0f, 0x76, 0x6f, 0x74, 0x69, 0x6e, 0x67,
-	0x53, 0x74, 0x61, 0x72, 0x74, 0x54, 0x69, 0x6d, 0x65, 0x12, 0x48, 0x0a, 0x0f, 0x76, 0x6f, 0x74,
-	0x69, 0x6e, 0x67, 0x5f, 0x65, 0x6e, 0x64, 0x5f, 0x74, 0x69, 0x6d, 0x65, 0x18, 0x09, 0x20, 0x01,
-	0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x42, 0x04,
-	0x90, 0xdf, 0x1f, 0x01, 0x52, 0x0d, 0x76, 0x6f, 0x74, 0x69, 0x6e, 0x67, 0x45, 0x6e, 0x64, 0x54,
-	0x69, 0x6d, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x18,
-	0x0a, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x12,
-	0x14, 0x0a, 0x05, 0x74, 0x69, 0x74, 0x6c, 0x65, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05,
-	0x74, 0x69, 0x74, 0x6c, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x6d, 0x6d, 0x61, 0x72, 0x79,
-	0x18, 0x0c, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x73, 0x75, 0x6d, 0x6d, 0x61, 0x72, 0x79, 0x12,
-	0x34, 0x0a, 0x08, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x65, 0x72, 0x18, 0x0d, 0x20, 0x01, 0x28,
-	0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64,
-	0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x08, 0x70, 0x72, 0x6f,
-	0x70, 0x6f, 0x73, 0x65, 0x72, 0x22, 0x9a, 0x01, 0x0a, 0x0b, 0x54, 0x61, 0x6c, 0x6c, 0x79, 0x52,
-	0x65, 0x73, 0x75, 0x6c, 0x74, 0x12, 0x2b, 0x0a, 0x09, 0x79, 0x65, 0x73, 0x5f, 0x63, 0x6f, 0x75,
-	0x6e, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x0e, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
-	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x08, 0x79, 0x65, 0x73, 0x43, 0x6f, 0x75,
-	0x6e, 0x74, 0x12, 0x33, 0x0a, 0x0d, 0x61, 0x62, 0x73, 0x74, 0x61, 0x69, 0x6e, 0x5f, 0x63, 0x6f,
-	0x75, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x0e, 0xd2, 0xb4, 0x2d, 0x0a, 0x63,
-	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x0c, 0x61, 0x62, 0x73, 0x74, 0x61,
-	0x69, 0x6e, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x29, 0x0a, 0x08, 0x6e, 0x6f, 0x5f, 0x63, 0x6f,
-	0x75, 0x6e, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x0e, 0xd2, 0xb4, 0x2d, 0x0a, 0x63,
-	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x07, 0x6e, 0x6f, 0x43, 0x6f, 0x75,
-	0x6e, 0x74, 0x22, 0xb7, 0x01, 0x0a, 0x04, 0x56, 0x6f, 0x74, 0x65, 0x12, 0x1f, 0x0a, 0x0b, 0x70,
-	0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04,
-	0x52, 0x0a, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x49, 0x64, 0x12, 0x2e, 0x0a, 0x05,
-	0x76, 0x6f, 0x74, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d,
-	0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53,
-	0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x05, 0x76, 0x6f, 0x74, 0x65, 0x72, 0x12, 0x3c, 0x0a, 0x07,
-	0x6f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x04, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x22, 0x2e,
-	0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x57,
-	0x65, 0x69, 0x67, 0x68, 0x74, 0x65, 0x64, 0x56, 0x6f, 0x74, 0x65, 0x4f, 0x70, 0x74, 0x69, 0x6f,
-	0x6e, 0x52, 0x07, 0x6f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x1a, 0x0a, 0x08, 0x6d, 0x65,
-	0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x6d, 0x65,
-	0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x4a, 0x04, 0x08, 0x03, 0x10, 0x04, 0x22, 0xc5, 0x01, 0x0a,
-	0x15, 0x51, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x51, 0x75, 0x65, 0x75,
-	0x65, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x50, 0x0a, 0x13, 0x71, 0x75, 0x6f, 0x72, 0x75, 0x6d,
-	0x5f, 0x74, 0x69, 0x6d, 0x65, 0x6f, 0x75, 0x74, 0x5f, 0x74, 0x69, 0x6d, 0x65, 0x18, 0x01, 0x20,
+	0x82, 0x01, 0x0a, 0x0e, 0x4c, 0x61, 0x73, 0x74, 0x4d, 0x69, 0x6e, 0x44, 0x65, 0x70, 0x6f, 0x73,
+	0x69, 0x74, 0x12, 0x3a, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x01, 0x20, 0x03, 0x28,
+	0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e,
+	0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x09, 0xc8, 0xde,
+	0x1f, 0x00, 0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x12, 0x34,
+	0x0a, 0x04, 0x74, 0x69, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67,
+	0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54,
+	0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x42, 0x04, 0x90, 0xdf, 0x1f, 0x01, 0x52, 0x04,
+	0x74, 0x69, 0x6d, 0x65, 0x22, 0xc3, 0x05, 0x0a, 0x08, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61,
+	0x6c, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x02, 0x69,
+	0x64, 0x12, 0x30, 0x0a, 0x08, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x73, 0x18, 0x02, 0x20,
+	0x03, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x41, 0x6e, 0x79, 0x52, 0x08, 0x6d, 0x65, 0x73, 0x73, 0x61,
+	0x67, 0x65, 0x73, 0x12, 0x36, 0x0a, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x0e, 0x32, 0x1e, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f,
+	0x76, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x53, 0x74, 0x61,
+	0x74, 0x75, 0x73, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x49, 0x0a, 0x12, 0x66,
+	0x69, 0x6e, 0x61, 0x6c, 0x5f, 0x74, 0x61, 0x6c, 0x6c, 0x79, 0x5f, 0x72, 0x65, 0x73, 0x75, 0x6c,
+	0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e,
+	0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x54, 0x61, 0x6c, 0x6c, 0x79, 0x52, 0x65,
+	0x73, 0x75, 0x6c, 0x74, 0x52, 0x10, 0x66, 0x69, 0x6e, 0x61, 0x6c, 0x54, 0x61, 0x6c, 0x6c, 0x79,
+	0x52, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x12, 0x41, 0x0a, 0x0b, 0x73, 0x75, 0x62, 0x6d, 0x69, 0x74,
+	0x5f, 0x74, 0x69, 0x6d, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f,
+	0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69,
+	0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x42, 0x04, 0x90, 0xdf, 0x1f, 0x01, 0x52, 0x0a, 0x73,
+	0x75, 0x62, 0x6d, 0x69, 0x74, 0x54, 0x69, 0x6d, 0x65, 0x12, 0x4a, 0x0a, 0x10, 0x64, 0x65, 0x70,
+	0x6f, 0x73, 0x69, 0x74, 0x5f, 0x65, 0x6e, 0x64, 0x5f, 0x74, 0x69, 0x6d, 0x65, 0x18, 0x06, 0x20,
 	0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f,
 	0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x42,
-	0x04, 0x90, 0xdf, 0x1f, 0x01, 0x52, 0x11, 0x71, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x54, 0x69, 0x6d,
-	0x65, 0x6f, 0x75, 0x74, 0x54, 0x69, 0x6d, 0x65, 0x12, 0x2c, 0x0a, 0x12, 0x71, 0x75, 0x6f, 0x72,
-	0x75, 0x6d, 0x5f, 0x63, 0x68, 0x65, 0x63, 0x6b, 0x5f, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x04, 0x52, 0x10, 0x71, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x43, 0x68, 0x65, 0x63,
-	0x6b, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x2c, 0x0a, 0x12, 0x71, 0x75, 0x6f, 0x72, 0x75, 0x6d,
-	0x5f, 0x63, 0x68, 0x65, 0x63, 0x6b, 0x73, 0x5f, 0x64, 0x6f, 0x6e, 0x65, 0x18, 0x03, 0x20, 0x01,
-	0x28, 0x04, 0x52, 0x10, 0x71, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x73,
-	0x44, 0x6f, 0x6e, 0x65, 0x22, 0xd9, 0x01, 0x0a, 0x0d, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74,
-	0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x59, 0x0a, 0x0b, 0x6d, 0x69, 0x6e, 0x5f, 0x64, 0x65,
+	0x04, 0x90, 0xdf, 0x1f, 0x01, 0x52, 0x0e, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x45, 0x6e,
+	0x64, 0x54, 0x69, 0x6d, 0x65, 0x12, 0x49, 0x0a, 0x0d, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x5f, 0x64,
+	0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x18, 0x07, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74,
+	0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x09, 0xc8, 0xde, 0x1f, 0x00, 0xa8, 0xe7, 0xb0,
+	0x2a, 0x01, 0x52, 0x0c, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74,
+	0x12, 0x4c, 0x0a, 0x11, 0x76, 0x6f, 0x74, 0x69, 0x6e, 0x67, 0x5f, 0x73, 0x74, 0x61, 0x72, 0x74,
+	0x5f, 0x74, 0x69, 0x6d, 0x65, 0x18, 0x08, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f,
+	0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69,
+	0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x42, 0x04, 0x90, 0xdf, 0x1f, 0x01, 0x52, 0x0f, 0x76,
+	0x6f, 0x74, 0x69, 0x6e, 0x67, 0x53, 0x74, 0x61, 0x72, 0x74, 0x54, 0x69, 0x6d, 0x65, 0x12, 0x48,
+	0x0a, 0x0f, 0x76, 0x6f, 0x74, 0x69, 0x6e, 0x67, 0x5f, 0x65, 0x6e, 0x64, 0x5f, 0x74, 0x69, 0x6d,
+	0x65, 0x18, 0x09, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65,
+	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74,
+	0x61, 0x6d, 0x70, 0x42, 0x04, 0x90, 0xdf, 0x1f, 0x01, 0x52, 0x0d, 0x76, 0x6f, 0x74, 0x69, 0x6e,
+	0x67, 0x45, 0x6e, 0x64, 0x54, 0x69, 0x6d, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x6d, 0x65, 0x74, 0x61,
+	0x64, 0x61, 0x74, 0x61, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x6d, 0x65, 0x74, 0x61,
+	0x64, 0x61, 0x74, 0x61, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x69, 0x74, 0x6c, 0x65, 0x18, 0x0b, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x69, 0x74, 0x6c, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75,
+	0x6d, 0x6d, 0x61, 0x72, 0x79, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x73, 0x75, 0x6d,
+	0x6d, 0x61, 0x72, 0x79, 0x12, 0x34, 0x0a, 0x08, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x65, 0x72,
+	0x18, 0x0d, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d,
+	0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67,
+	0x52, 0x08, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x65, 0x72, 0x22, 0x9a, 0x01, 0x0a, 0x0b, 0x54,
+	0x61, 0x6c, 0x6c, 0x79, 0x52, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x12, 0x2b, 0x0a, 0x09, 0x79, 0x65,
+	0x73, 0x5f, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x0e, 0xd2,
+	0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x08, 0x79,
+	0x65, 0x73, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x33, 0x0a, 0x0d, 0x61, 0x62, 0x73, 0x74, 0x61,
+	0x69, 0x6e, 0x5f, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x0e,
+	0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x0c,
+	0x61, 0x62, 0x73, 0x74, 0x61, 0x69, 0x6e, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x29, 0x0a, 0x08,
+	0x6e, 0x6f, 0x5f, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x0e,
+	0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x07,
+	0x6e, 0x6f, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0xb7, 0x01, 0x0a, 0x04, 0x56, 0x6f, 0x74, 0x65,
+	0x12, 0x1f, 0x0a, 0x0b, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x5f, 0x69, 0x64, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0a, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x49,
+	0x64, 0x12, 0x2e, 0x0a, 0x05, 0x76, 0x6f, 0x74, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
+	0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64,
+	0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x05, 0x76, 0x6f, 0x74, 0x65,
+	0x72, 0x12, 0x3c, 0x0a, 0x07, 0x6f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x04, 0x20, 0x03,
+	0x28, 0x0b, 0x32, 0x22, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76,
+	0x2e, 0x76, 0x31, 0x2e, 0x57, 0x65, 0x69, 0x67, 0x68, 0x74, 0x65, 0x64, 0x56, 0x6f, 0x74, 0x65,
+	0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x07, 0x6f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12,
+	0x1a, 0x0a, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x18, 0x05, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x4a, 0x04, 0x08, 0x03, 0x10,
+	0x04, 0x22, 0xc5, 0x01, 0x0a, 0x15, 0x51, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x43, 0x68, 0x65, 0x63,
+	0x6b, 0x51, 0x75, 0x65, 0x75, 0x65, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x50, 0x0a, 0x13, 0x71,
+	0x75, 0x6f, 0x72, 0x75, 0x6d, 0x5f, 0x74, 0x69, 0x6d, 0x65, 0x6f, 0x75, 0x74, 0x5f, 0x74, 0x69,
+	0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c,
+	0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73,
+	0x74, 0x61, 0x6d, 0x70, 0x42, 0x04, 0x90, 0xdf, 0x1f, 0x01, 0x52, 0x11, 0x71, 0x75, 0x6f, 0x72,
+	0x75, 0x6d, 0x54, 0x69, 0x6d, 0x65, 0x6f, 0x75, 0x74, 0x54, 0x69, 0x6d, 0x65, 0x12, 0x2c, 0x0a,
+	0x12, 0x71, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x5f, 0x63, 0x68, 0x65, 0x63, 0x6b, 0x5f, 0x63, 0x6f,
+	0x75, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x10, 0x71, 0x75, 0x6f, 0x72, 0x75,
+	0x6d, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x2c, 0x0a, 0x12, 0x71,
+	0x75, 0x6f, 0x72, 0x75, 0x6d, 0x5f, 0x63, 0x68, 0x65, 0x63, 0x6b, 0x73, 0x5f, 0x64, 0x6f, 0x6e,
+	0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x04, 0x52, 0x10, 0x71, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x43,
+	0x68, 0x65, 0x63, 0x6b, 0x73, 0x44, 0x6f, 0x6e, 0x65, 0x22, 0xd9, 0x01, 0x0a, 0x0d, 0x44, 0x65,
+	0x70, 0x6f, 0x73, 0x69, 0x74, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x59, 0x0a, 0x0b, 0x6d,
+	0x69, 0x6e, 0x5f, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b,
+	0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76,
+	0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x1d, 0xc8, 0xde, 0x1f,
+	0x00, 0xea, 0xde, 0x1f, 0x15, 0x6d, 0x69, 0x6e, 0x5f, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74,
+	0x2c, 0x6f, 0x6d, 0x69, 0x74, 0x65, 0x6d, 0x70, 0x74, 0x79, 0x52, 0x0a, 0x6d, 0x69, 0x6e, 0x44,
+	0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x12, 0x6d, 0x0a, 0x12, 0x6d, 0x61, 0x78, 0x5f, 0x64, 0x65,
+	0x70, 0x6f, 0x73, 0x69, 0x74, 0x5f, 0x70, 0x65, 0x72, 0x69, 0x6f, 0x64, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x19, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x62, 0x75, 0x66, 0x2e, 0x44, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x42, 0x24, 0xea,
+	0xde, 0x1f, 0x1c, 0x6d, 0x61, 0x78, 0x5f, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x5f, 0x70,
+	0x65, 0x72, 0x69, 0x6f, 0x64, 0x2c, 0x6f, 0x6d, 0x69, 0x74, 0x65, 0x6d, 0x70, 0x74, 0x79, 0x98,
+	0xdf, 0x1f, 0x01, 0x52, 0x10, 0x6d, 0x61, 0x78, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x50,
+	0x65, 0x72, 0x69, 0x6f, 0x64, 0x22, 0x54, 0x0a, 0x0c, 0x56, 0x6f, 0x74, 0x69, 0x6e, 0x67, 0x50,
+	0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x44, 0x0a, 0x0d, 0x76, 0x6f, 0x74, 0x69, 0x6e, 0x67, 0x5f,
+	0x70, 0x65, 0x72, 0x69, 0x6f, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x67,
+	0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x44,
+	0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x42, 0x04, 0x98, 0xdf, 0x1f, 0x01, 0x52, 0x0c, 0x76,
+	0x6f, 0x74, 0x69, 0x6e, 0x67, 0x50, 0x65, 0x72, 0x69, 0x6f, 0x64, 0x22, 0xfb, 0x02, 0x0a, 0x0b,
+	0x54, 0x61, 0x6c, 0x6c, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x28, 0x0a, 0x06, 0x71,
+	0x75, 0x6f, 0x72, 0x75, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x10, 0xd2, 0xb4, 0x2d,
+	0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x18, 0x01, 0x52, 0x06, 0x71,
+	0x75, 0x6f, 0x72, 0x75, 0x6d, 0x12, 0x2c, 0x0a, 0x09, 0x74, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f,
+	0x6c, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x0e, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x09, 0x74, 0x68, 0x72, 0x65, 0x73, 0x68,
+	0x6f, 0x6c, 0x64, 0x12, 0x54, 0x0a, 0x1d, 0x63, 0x6f, 0x6e, 0x73, 0x74, 0x69, 0x74, 0x75, 0x74,
+	0x69, 0x6f, 0x6e, 0x5f, 0x61, 0x6d, 0x65, 0x6e, 0x64, 0x6d, 0x65, 0x6e, 0x74, 0x5f, 0x71, 0x75,
+	0x6f, 0x72, 0x75, 0x6d, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x10, 0xd2, 0xb4, 0x2d, 0x0a,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x18, 0x01, 0x52, 0x1b, 0x63, 0x6f,
+	0x6e, 0x73, 0x74, 0x69, 0x74, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x41, 0x6d, 0x65, 0x6e, 0x64, 0x6d,
+	0x65, 0x6e, 0x74, 0x51, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x12, 0x58, 0x0a, 0x20, 0x63, 0x6f, 0x6e,
+	0x73, 0x74, 0x69, 0x74, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x61, 0x6d, 0x65, 0x6e, 0x64, 0x6d,
+	0x65, 0x6e, 0x74, 0x5f, 0x74, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c, 0x64, 0x18, 0x04, 0x20,
+	0x01, 0x28, 0x09, 0x42, 0x0e, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e,
+	0x44, 0x65, 0x63, 0x52, 0x1e, 0x63, 0x6f, 0x6e, 0x73, 0x74, 0x69, 0x74, 0x75, 0x74, 0x69, 0x6f,
+	0x6e, 0x41, 0x6d, 0x65, 0x6e, 0x64, 0x6d, 0x65, 0x6e, 0x74, 0x54, 0x68, 0x72, 0x65, 0x73, 0x68,
+	0x6f, 0x6c, 0x64, 0x12, 0x2f, 0x0a, 0x0a, 0x6c, 0x61, 0x77, 0x5f, 0x71, 0x75, 0x6f, 0x72, 0x75,
+	0x6d, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x42, 0x10, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x18, 0x01, 0x52, 0x09, 0x6c, 0x61, 0x77, 0x51, 0x75,
+	0x6f, 0x72, 0x75, 0x6d, 0x12, 0x33, 0x0a, 0x0d, 0x6c, 0x61, 0x77, 0x5f, 0x74, 0x68, 0x72, 0x65,
+	0x73, 0x68, 0x6f, 0x6c, 0x64, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x42, 0x0e, 0xd2, 0xb4, 0x2d,
+	0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0c, 0x6c, 0x61, 0x77,
+	0x54, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c, 0x64, 0x22, 0x99, 0x03, 0x0a, 0x13, 0x4d, 0x69,
+	0x6e, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x54, 0x68, 0x72, 0x6f, 0x74, 0x74, 0x6c, 0x65,
+	0x72, 0x12, 0x45, 0x0a, 0x0b, 0x66, 0x6c, 0x6f, 0x6f, 0x72, 0x5f, 0x76, 0x61, 0x6c, 0x75, 0x65,
+	0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e,
+	0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69,
+	0x6e, 0x42, 0x09, 0xc8, 0xde, 0x1f, 0x00, 0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x0a, 0x66, 0x6c,
+	0x6f, 0x6f, 0x72, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x12, 0x44, 0x0a, 0x0d, 0x75, 0x70, 0x64, 0x61,
+	0x74, 0x65, 0x5f, 0x70, 0x65, 0x72, 0x69, 0x6f, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x19, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
+	0x66, 0x2e, 0x44, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x42, 0x04, 0x98, 0xdf, 0x1f, 0x01,
+	0x52, 0x0c, 0x75, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x65, 0x72, 0x69, 0x6f, 0x64, 0x12, 0x36,
+	0x0a, 0x17, 0x74, 0x61, 0x72, 0x67, 0x65, 0x74, 0x5f, 0x61, 0x63, 0x74, 0x69, 0x76, 0x65, 0x5f,
+	0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x04, 0x52,
+	0x15, 0x74, 0x61, 0x72, 0x67, 0x65, 0x74, 0x41, 0x63, 0x74, 0x69, 0x76, 0x65, 0x50, 0x72, 0x6f,
+	0x70, 0x6f, 0x73, 0x61, 0x6c, 0x73, 0x12, 0x35, 0x0a, 0x0e, 0x69, 0x6e, 0x63, 0x72, 0x65, 0x61,
+	0x73, 0x65, 0x5f, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x42, 0x0e,
+	0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0d,
+	0x69, 0x6e, 0x63, 0x72, 0x65, 0x61, 0x73, 0x65, 0x52, 0x61, 0x74, 0x69, 0x6f, 0x12, 0x35, 0x0a,
+	0x0e, 0x64, 0x65, 0x63, 0x72, 0x65, 0x61, 0x73, 0x65, 0x5f, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x18,
+	0x05, 0x20, 0x01, 0x28, 0x09, 0x42, 0x0e, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
+	0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0d, 0x64, 0x65, 0x63, 0x72, 0x65, 0x61, 0x73, 0x65, 0x52,
+	0x61, 0x74, 0x69, 0x6f, 0x12, 0x4f, 0x0a, 0x24, 0x64, 0x65, 0x63, 0x72, 0x65, 0x61, 0x73, 0x65,
+	0x5f, 0x73, 0x65, 0x6e, 0x73, 0x69, 0x74, 0x69, 0x76, 0x69, 0x74, 0x79, 0x5f, 0x74, 0x61, 0x72,
+	0x67, 0x65, 0x74, 0x5f, 0x64, 0x69, 0x73, 0x74, 0x61, 0x6e, 0x63, 0x65, 0x18, 0x06, 0x20, 0x01,
+	0x28, 0x04, 0x52, 0x21, 0x64, 0x65, 0x63, 0x72, 0x65, 0x61, 0x73, 0x65, 0x53, 0x65, 0x6e, 0x73,
+	0x69, 0x74, 0x69, 0x76, 0x69, 0x74, 0x79, 0x54, 0x61, 0x72, 0x67, 0x65, 0x74, 0x44, 0x69, 0x73,
+	0x74, 0x61, 0x6e, 0x63, 0x65, 0x22, 0x93, 0x03, 0x0a, 0x1a, 0x4d, 0x69, 0x6e, 0x49, 0x6e, 0x69,
+	0x74, 0x69, 0x61, 0x6c, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x54, 0x68, 0x72, 0x6f, 0x74,
+	0x74, 0x6c, 0x65, 0x72, 0x12, 0x45, 0x0a, 0x0b, 0x66, 0x6c, 0x6f, 0x6f, 0x72, 0x5f, 0x76, 0x61,
+	0x6c, 0x75, 0x65, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d,
+	0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e,
+	0x43, 0x6f, 0x69, 0x6e, 0x42, 0x09, 0xc8, 0xde, 0x1f, 0x00, 0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52,
+	0x0a, 0x66, 0x6c, 0x6f, 0x6f, 0x72, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x12, 0x44, 0x0a, 0x0d, 0x75,
+	0x70, 0x64, 0x61, 0x74, 0x65, 0x5f, 0x70, 0x65, 0x72, 0x69, 0x6f, 0x64, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x19, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x62, 0x75, 0x66, 0x2e, 0x44, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x42, 0x04, 0x98,
+	0xdf, 0x1f, 0x01, 0x52, 0x0c, 0x75, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x65, 0x72, 0x69, 0x6f,
+	0x64, 0x12, 0x29, 0x0a, 0x10, 0x74, 0x61, 0x72, 0x67, 0x65, 0x74, 0x5f, 0x70, 0x72, 0x6f, 0x70,
+	0x6f, 0x73, 0x61, 0x6c, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0f, 0x74, 0x61, 0x72,
+	0x67, 0x65, 0x74, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x73, 0x12, 0x35, 0x0a, 0x0e,
+	0x69, 0x6e, 0x63, 0x72, 0x65, 0x61, 0x73, 0x65, 0x5f, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x18, 0x04,
+	0x20, 0x01, 0x28, 0x09, 0x42, 0x0e, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
+	0x2e, 0x44, 0x65, 0x63, 0x52, 0x0d, 0x69, 0x6e, 0x63, 0x72, 0x65, 0x61, 0x73, 0x65, 0x52, 0x61,
+	0x74, 0x69, 0x6f, 0x12, 0x35, 0x0a, 0x0e, 0x64, 0x65, 0x63, 0x72, 0x65, 0x61, 0x73, 0x65, 0x5f,
+	0x72, 0x61, 0x74, 0x69, 0x6f, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x42, 0x0e, 0xd2, 0xb4, 0x2d,
+	0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0d, 0x64, 0x65, 0x63,
+	0x72, 0x65, 0x61, 0x73, 0x65, 0x52, 0x61, 0x74, 0x69, 0x6f, 0x12, 0x4f, 0x0a, 0x24, 0x64, 0x65,
+	0x63, 0x72, 0x65, 0x61, 0x73, 0x65, 0x5f, 0x73, 0x65, 0x6e, 0x73, 0x69, 0x74, 0x69, 0x76, 0x69,
+	0x74, 0x79, 0x5f, 0x74, 0x61, 0x72, 0x67, 0x65, 0x74, 0x5f, 0x64, 0x69, 0x73, 0x74, 0x61, 0x6e,
+	0x63, 0x65, 0x18, 0x06, 0x20, 0x01, 0x28, 0x04, 0x52, 0x21, 0x64, 0x65, 0x63, 0x72, 0x65, 0x61,
+	0x73, 0x65, 0x53, 0x65, 0x6e, 0x73, 0x69, 0x74, 0x69, 0x76, 0x69, 0x74, 0x79, 0x54, 0x61, 0x72,
+	0x67, 0x65, 0x74, 0x44, 0x69, 0x73, 0x74, 0x61, 0x6e, 0x63, 0x65, 0x22, 0xd6, 0x0c, 0x0a, 0x06,
+	0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x47, 0x0a, 0x0b, 0x6d, 0x69, 0x6e, 0x5f, 0x64, 0x65,
 	0x70, 0x6f, 0x73, 0x69, 0x74, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f,
 	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61,
-	0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x1d, 0xc8, 0xde, 0x1f, 0x00, 0xea, 0xde, 0x1f, 0x15,
-	0x6d, 0x69, 0x6e, 0x5f, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x2c, 0x6f, 0x6d, 0x69, 0x74,
-	0x65, 0x6d, 0x70, 0x74, 0x79, 0x52, 0x0a, 0x6d, 0x69, 0x6e, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69,
-	0x74, 0x12, 0x6d, 0x0a, 0x12, 0x6d, 0x61, 0x78, 0x5f, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74,
-	0x5f, 0x70, 0x65, 0x72, 0x69, 0x6f, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e,
-	0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e,
-	0x44, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x42, 0x24, 0xea, 0xde, 0x1f, 0x1c, 0x6d, 0x61,
-	0x78, 0x5f, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x5f, 0x70, 0x65, 0x72, 0x69, 0x6f, 0x64,
-	0x2c, 0x6f, 0x6d, 0x69, 0x74, 0x65, 0x6d, 0x70, 0x74, 0x79, 0x98, 0xdf, 0x1f, 0x01, 0x52, 0x10,
-	0x6d, 0x61, 0x78, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x50, 0x65, 0x72, 0x69, 0x6f, 0x64,
-	0x22, 0x54, 0x0a, 0x0c, 0x56, 0x6f, 0x74, 0x69, 0x6e, 0x67, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73,
-	0x12, 0x44, 0x0a, 0x0d, 0x76, 0x6f, 0x74, 0x69, 0x6e, 0x67, 0x5f, 0x70, 0x65, 0x72, 0x69, 0x6f,
-	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65,
-	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x44, 0x75, 0x72, 0x61, 0x74, 0x69,
-	0x6f, 0x6e, 0x42, 0x04, 0x98, 0xdf, 0x1f, 0x01, 0x52, 0x0c, 0x76, 0x6f, 0x74, 0x69, 0x6e, 0x67,
-	0x50, 0x65, 0x72, 0x69, 0x6f, 0x64, 0x22, 0xf5, 0x02, 0x0a, 0x0b, 0x54, 0x61, 0x6c, 0x6c, 0x79,
-	0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x26, 0x0a, 0x06, 0x71, 0x75, 0x6f, 0x72, 0x75, 0x6d,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x0e, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d,
-	0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x06, 0x71, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x12, 0x2c,
-	0x0a, 0x09, 0x74, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x0b, 0xc8, 0xde, 0x1f, 0x00, 0xa8, 0xe7, 0xb0, 0x2a,
+	0x01, 0x18, 0x01, 0x52, 0x0a, 0x6d, 0x69, 0x6e, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x12,
+	0x4d, 0x0a, 0x12, 0x6d, 0x61, 0x78, 0x5f, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x5f, 0x70,
+	0x65, 0x72, 0x69, 0x6f, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x67, 0x6f,
+	0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x44, 0x75,
+	0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x42, 0x04, 0x98, 0xdf, 0x1f, 0x01, 0x52, 0x10, 0x6d, 0x61,
+	0x78, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x50, 0x65, 0x72, 0x69, 0x6f, 0x64, 0x12, 0x44,
+	0x0a, 0x0d, 0x76, 0x6f, 0x74, 0x69, 0x6e, 0x67, 0x5f, 0x70, 0x65, 0x72, 0x69, 0x6f, 0x64, 0x18,
+	0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x44, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e,
+	0x42, 0x04, 0x98, 0xdf, 0x1f, 0x01, 0x52, 0x0c, 0x76, 0x6f, 0x74, 0x69, 0x6e, 0x67, 0x50, 0x65,
+	0x72, 0x69, 0x6f, 0x64, 0x12, 0x28, 0x0a, 0x06, 0x71, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x18, 0x04,
+	0x20, 0x01, 0x28, 0x09, 0x42, 0x10, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
+	0x2e, 0x44, 0x65, 0x63, 0x18, 0x01, 0x52, 0x06, 0x71, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x12, 0x2c,
+	0x0a, 0x09, 0x74, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c, 0x64, 0x18, 0x05, 0x20, 0x01, 0x28,
 	0x09, 0x42, 0x0e, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65,
-	0x63, 0x52, 0x09, 0x74, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c, 0x64, 0x12, 0x52, 0x0a, 0x1d,
-	0x63, 0x6f, 0x6e, 0x73, 0x74, 0x69, 0x74, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x61, 0x6d, 0x65,
-	0x6e, 0x64, 0x6d, 0x65, 0x6e, 0x74, 0x5f, 0x71, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x18, 0x03, 0x20,
-	0x01, 0x28, 0x09, 0x42, 0x0e, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e,
-	0x44, 0x65, 0x63, 0x52, 0x1b, 0x63, 0x6f, 0x6e, 0x73, 0x74, 0x69, 0x74, 0x75, 0x74, 0x69, 0x6f,
-	0x6e, 0x41, 0x6d, 0x65, 0x6e, 0x64, 0x6d, 0x65, 0x6e, 0x74, 0x51, 0x75, 0x6f, 0x72, 0x75, 0x6d,
-	0x12, 0x58, 0x0a, 0x20, 0x63, 0x6f, 0x6e, 0x73, 0x74, 0x69, 0x74, 0x75, 0x74, 0x69, 0x6f, 0x6e,
-	0x5f, 0x61, 0x6d, 0x65, 0x6e, 0x64, 0x6d, 0x65, 0x6e, 0x74, 0x5f, 0x74, 0x68, 0x72, 0x65, 0x73,
-	0x68, 0x6f, 0x6c, 0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x42, 0x0e, 0xd2, 0xb4, 0x2d, 0x0a,
-	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x1e, 0x63, 0x6f, 0x6e, 0x73,
-	0x74, 0x69, 0x74, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x41, 0x6d, 0x65, 0x6e, 0x64, 0x6d, 0x65, 0x6e,
-	0x74, 0x54, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c, 0x64, 0x12, 0x2d, 0x0a, 0x0a, 0x6c, 0x61,
-	0x77, 0x5f, 0x71, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x42, 0x0e,
-	0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x09,
-	0x6c, 0x61, 0x77, 0x51, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x12, 0x33, 0x0a, 0x0d, 0x6c, 0x61, 0x77,
-	0x5f, 0x74, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c, 0x64, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09,
-	0x42, 0x0e, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63,
-	0x52, 0x0c, 0x6c, 0x61, 0x77, 0x54, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c, 0x64, 0x22, 0x96,
-	0x08, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x45, 0x0a, 0x0b, 0x6d, 0x69, 0x6e,
-	0x5f, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19,
-	0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62,
-	0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x09, 0xc8, 0xde, 0x1f, 0x00, 0xa8,
-	0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x0a, 0x6d, 0x69, 0x6e, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74,
-	0x12, 0x4d, 0x0a, 0x12, 0x6d, 0x61, 0x78, 0x5f, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x5f,
-	0x70, 0x65, 0x72, 0x69, 0x6f, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x67,
-	0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x44,
-	0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x42, 0x04, 0x98, 0xdf, 0x1f, 0x01, 0x52, 0x10, 0x6d,
-	0x61, 0x78, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x50, 0x65, 0x72, 0x69, 0x6f, 0x64, 0x12,
-	0x44, 0x0a, 0x0d, 0x76, 0x6f, 0x74, 0x69, 0x6e, 0x67, 0x5f, 0x70, 0x65, 0x72, 0x69, 0x6f, 0x64,
-	0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x44, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f,
-	0x6e, 0x42, 0x04, 0x98, 0xdf, 0x1f, 0x01, 0x52, 0x0c, 0x76, 0x6f, 0x74, 0x69, 0x6e, 0x67, 0x50,
-	0x65, 0x72, 0x69, 0x6f, 0x64, 0x12, 0x26, 0x0a, 0x06, 0x71, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x18,
-	0x04, 0x20, 0x01, 0x28, 0x09, 0x42, 0x0e, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
-	0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x06, 0x71, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x12, 0x2c, 0x0a,
-	0x09, 0x74, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c, 0x64, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09,
-	0x42, 0x0e, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63,
-	0x52, 0x09, 0x74, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c, 0x64, 0x12, 0x49, 0x0a, 0x19, 0x6d,
-	0x69, 0x6e, 0x5f, 0x69, 0x6e, 0x69, 0x74, 0x69, 0x61, 0x6c, 0x5f, 0x64, 0x65, 0x70, 0x6f, 0x73,
-	0x69, 0x74, 0x5f, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x42, 0x0e,
-	0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x16,
-	0x6d, 0x69, 0x6e, 0x49, 0x6e, 0x69, 0x74, 0x69, 0x61, 0x6c, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69,
-	0x74, 0x52, 0x61, 0x74, 0x69, 0x6f, 0x12, 0x28, 0x0a, 0x10, 0x62, 0x75, 0x72, 0x6e, 0x5f, 0x76,
-	0x6f, 0x74, 0x65, 0x5f, 0x71, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x18, 0x0d, 0x20, 0x01, 0x28, 0x08,
-	0x52, 0x0e, 0x62, 0x75, 0x72, 0x6e, 0x56, 0x6f, 0x74, 0x65, 0x51, 0x75, 0x6f, 0x72, 0x75, 0x6d,
-	0x12, 0x41, 0x0a, 0x1d, 0x62, 0x75, 0x72, 0x6e, 0x5f, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61,
-	0x6c, 0x5f, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x5f, 0x70, 0x72, 0x65, 0x76, 0x6f, 0x74,
-	0x65, 0x18, 0x0e, 0x20, 0x01, 0x28, 0x08, 0x52, 0x1a, 0x62, 0x75, 0x72, 0x6e, 0x50, 0x72, 0x6f,
-	0x70, 0x6f, 0x73, 0x61, 0x6c, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x50, 0x72, 0x65, 0x76,
-	0x6f, 0x74, 0x65, 0x12, 0x3a, 0x0a, 0x11, 0x6d, 0x69, 0x6e, 0x5f, 0x64, 0x65, 0x70, 0x6f, 0x73,
-	0x69, 0x74, 0x5f, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x18, 0x0f, 0x20, 0x01, 0x28, 0x09, 0x42, 0x0e,
-	0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0f,
-	0x6d, 0x69, 0x6e, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x52, 0x61, 0x74, 0x69, 0x6f, 0x12,
-	0x52, 0x0a, 0x1d, 0x63, 0x6f, 0x6e, 0x73, 0x74, 0x69, 0x74, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x5f,
-	0x61, 0x6d, 0x65, 0x6e, 0x64, 0x6d, 0x65, 0x6e, 0x74, 0x5f, 0x71, 0x75, 0x6f, 0x72, 0x75, 0x6d,
-	0x18, 0x10, 0x20, 0x01, 0x28, 0x09, 0x42, 0x0e, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d,
-	0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x1b, 0x63, 0x6f, 0x6e, 0x73, 0x74, 0x69, 0x74, 0x75,
-	0x74, 0x69, 0x6f, 0x6e, 0x41, 0x6d, 0x65, 0x6e, 0x64, 0x6d, 0x65, 0x6e, 0x74, 0x51, 0x75, 0x6f,
-	0x72, 0x75, 0x6d, 0x12, 0x58, 0x0a, 0x20, 0x63, 0x6f, 0x6e, 0x73, 0x74, 0x69, 0x74, 0x75, 0x74,
-	0x69, 0x6f, 0x6e, 0x5f, 0x61, 0x6d, 0x65, 0x6e, 0x64, 0x6d, 0x65, 0x6e, 0x74, 0x5f, 0x74, 0x68,
-	0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c, 0x64, 0x18, 0x11, 0x20, 0x01, 0x28, 0x09, 0x42, 0x0e, 0xd2,
-	0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x1e, 0x63,
-	0x6f, 0x6e, 0x73, 0x74, 0x69, 0x74, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x41, 0x6d, 0x65, 0x6e, 0x64,
-	0x6d, 0x65, 0x6e, 0x74, 0x54, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c, 0x64, 0x12, 0x2d, 0x0a,
-	0x0a, 0x6c, 0x61, 0x77, 0x5f, 0x71, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x18, 0x12, 0x20, 0x01, 0x28,
+	0x63, 0x52, 0x09, 0x74, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c, 0x64, 0x12, 0x4b, 0x0a, 0x19,
+	0x6d, 0x69, 0x6e, 0x5f, 0x69, 0x6e, 0x69, 0x74, 0x69, 0x61, 0x6c, 0x5f, 0x64, 0x65, 0x70, 0x6f,
+	0x73, 0x69, 0x74, 0x5f, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x42,
+	0x10, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x18,
+	0x01, 0x52, 0x16, 0x6d, 0x69, 0x6e, 0x49, 0x6e, 0x69, 0x74, 0x69, 0x61, 0x6c, 0x44, 0x65, 0x70,
+	0x6f, 0x73, 0x69, 0x74, 0x52, 0x61, 0x74, 0x69, 0x6f, 0x12, 0x28, 0x0a, 0x10, 0x62, 0x75, 0x72,
+	0x6e, 0x5f, 0x76, 0x6f, 0x74, 0x65, 0x5f, 0x71, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x18, 0x0d, 0x20,
+	0x01, 0x28, 0x08, 0x52, 0x0e, 0x62, 0x75, 0x72, 0x6e, 0x56, 0x6f, 0x74, 0x65, 0x51, 0x75, 0x6f,
+	0x72, 0x75, 0x6d, 0x12, 0x41, 0x0a, 0x1d, 0x62, 0x75, 0x72, 0x6e, 0x5f, 0x70, 0x72, 0x6f, 0x70,
+	0x6f, 0x73, 0x61, 0x6c, 0x5f, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x5f, 0x70, 0x72, 0x65,
+	0x76, 0x6f, 0x74, 0x65, 0x18, 0x0e, 0x20, 0x01, 0x28, 0x08, 0x52, 0x1a, 0x62, 0x75, 0x72, 0x6e,
+	0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x50,
+	0x72, 0x65, 0x76, 0x6f, 0x74, 0x65, 0x12, 0x3a, 0x0a, 0x11, 0x6d, 0x69, 0x6e, 0x5f, 0x64, 0x65,
+	0x70, 0x6f, 0x73, 0x69, 0x74, 0x5f, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x18, 0x0f, 0x20, 0x01, 0x28,
 	0x09, 0x42, 0x0e, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65,
-	0x63, 0x52, 0x09, 0x6c, 0x61, 0x77, 0x51, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x12, 0x33, 0x0a, 0x0d,
-	0x6c, 0x61, 0x77, 0x5f, 0x74, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c, 0x64, 0x18, 0x13, 0x20,
-	0x01, 0x28, 0x09, 0x42, 0x0e, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e,
-	0x44, 0x65, 0x63, 0x52, 0x0c, 0x6c, 0x61, 0x77, 0x54, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c,
-	0x64, 0x12, 0x46, 0x0a, 0x0e, 0x71, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x5f, 0x74, 0x69, 0x6d, 0x65,
-	0x6f, 0x75, 0x74, 0x18, 0x14, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x67, 0x6f, 0x6f, 0x67,
-	0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x44, 0x75, 0x72, 0x61,
-	0x74, 0x69, 0x6f, 0x6e, 0x42, 0x04, 0x98, 0xdf, 0x1f, 0x01, 0x52, 0x0d, 0x71, 0x75, 0x6f, 0x72,
-	0x75, 0x6d, 0x54, 0x69, 0x6d, 0x65, 0x6f, 0x75, 0x74, 0x12, 0x5e, 0x0a, 0x1b, 0x6d, 0x61, 0x78,
-	0x5f, 0x76, 0x6f, 0x74, 0x69, 0x6e, 0x67, 0x5f, 0x70, 0x65, 0x72, 0x69, 0x6f, 0x64, 0x5f, 0x65,
-	0x78, 0x74, 0x65, 0x6e, 0x73, 0x69, 0x6f, 0x6e, 0x18, 0x15, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19,
-	0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66,
-	0x2e, 0x44, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x42, 0x04, 0x98, 0xdf, 0x1f, 0x01, 0x52,
-	0x18, 0x6d, 0x61, 0x78, 0x56, 0x6f, 0x74, 0x69, 0x6e, 0x67, 0x50, 0x65, 0x72, 0x69, 0x6f, 0x64,
-	0x45, 0x78, 0x74, 0x65, 0x6e, 0x73, 0x69, 0x6f, 0x6e, 0x12, 0x2c, 0x0a, 0x12, 0x71, 0x75, 0x6f,
-	0x72, 0x75, 0x6d, 0x5f, 0x63, 0x68, 0x65, 0x63, 0x6b, 0x5f, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18,
-	0x16, 0x20, 0x01, 0x28, 0x04, 0x52, 0x10, 0x71, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x43, 0x68, 0x65,
-	0x63, 0x6b, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x2a, 0x6b, 0x0a, 0x0a, 0x56, 0x6f, 0x74, 0x65, 0x4f,
+	0x63, 0x52, 0x0f, 0x6d, 0x69, 0x6e, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x52, 0x61, 0x74,
+	0x69, 0x6f, 0x12, 0x54, 0x0a, 0x1d, 0x63, 0x6f, 0x6e, 0x73, 0x74, 0x69, 0x74, 0x75, 0x74, 0x69,
+	0x6f, 0x6e, 0x5f, 0x61, 0x6d, 0x65, 0x6e, 0x64, 0x6d, 0x65, 0x6e, 0x74, 0x5f, 0x71, 0x75, 0x6f,
+	0x72, 0x75, 0x6d, 0x18, 0x10, 0x20, 0x01, 0x28, 0x09, 0x42, 0x10, 0xd2, 0xb4, 0x2d, 0x0a, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x18, 0x01, 0x52, 0x1b, 0x63, 0x6f, 0x6e,
+	0x73, 0x74, 0x69, 0x74, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x41, 0x6d, 0x65, 0x6e, 0x64, 0x6d, 0x65,
+	0x6e, 0x74, 0x51, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x12, 0x58, 0x0a, 0x20, 0x63, 0x6f, 0x6e, 0x73,
+	0x74, 0x69, 0x74, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x61, 0x6d, 0x65, 0x6e, 0x64, 0x6d, 0x65,
+	0x6e, 0x74, 0x5f, 0x74, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c, 0x64, 0x18, 0x11, 0x20, 0x01,
+	0x28, 0x09, 0x42, 0x0e, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44,
+	0x65, 0x63, 0x52, 0x1e, 0x63, 0x6f, 0x6e, 0x73, 0x74, 0x69, 0x74, 0x75, 0x74, 0x69, 0x6f, 0x6e,
+	0x41, 0x6d, 0x65, 0x6e, 0x64, 0x6d, 0x65, 0x6e, 0x74, 0x54, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f,
+	0x6c, 0x64, 0x12, 0x2f, 0x0a, 0x0a, 0x6c, 0x61, 0x77, 0x5f, 0x71, 0x75, 0x6f, 0x72, 0x75, 0x6d,
+	0x18, 0x12, 0x20, 0x01, 0x28, 0x09, 0x42, 0x10, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d,
+	0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x18, 0x01, 0x52, 0x09, 0x6c, 0x61, 0x77, 0x51, 0x75, 0x6f,
+	0x72, 0x75, 0x6d, 0x12, 0x33, 0x0a, 0x0d, 0x6c, 0x61, 0x77, 0x5f, 0x74, 0x68, 0x72, 0x65, 0x73,
+	0x68, 0x6f, 0x6c, 0x64, 0x18, 0x13, 0x20, 0x01, 0x28, 0x09, 0x42, 0x0e, 0xd2, 0xb4, 0x2d, 0x0a,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0c, 0x6c, 0x61, 0x77, 0x54,
+	0x68, 0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c, 0x64, 0x12, 0x46, 0x0a, 0x0e, 0x71, 0x75, 0x6f, 0x72,
+	0x75, 0x6d, 0x5f, 0x74, 0x69, 0x6d, 0x65, 0x6f, 0x75, 0x74, 0x18, 0x14, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x19, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62,
+	0x75, 0x66, 0x2e, 0x44, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x42, 0x04, 0x98, 0xdf, 0x1f,
+	0x01, 0x52, 0x0d, 0x71, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x54, 0x69, 0x6d, 0x65, 0x6f, 0x75, 0x74,
+	0x12, 0x5e, 0x0a, 0x1b, 0x6d, 0x61, 0x78, 0x5f, 0x76, 0x6f, 0x74, 0x69, 0x6e, 0x67, 0x5f, 0x70,
+	0x65, 0x72, 0x69, 0x6f, 0x64, 0x5f, 0x65, 0x78, 0x74, 0x65, 0x6e, 0x73, 0x69, 0x6f, 0x6e, 0x18,
+	0x15, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x44, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e,
+	0x42, 0x04, 0x98, 0xdf, 0x1f, 0x01, 0x52, 0x18, 0x6d, 0x61, 0x78, 0x56, 0x6f, 0x74, 0x69, 0x6e,
+	0x67, 0x50, 0x65, 0x72, 0x69, 0x6f, 0x64, 0x45, 0x78, 0x74, 0x65, 0x6e, 0x73, 0x69, 0x6f, 0x6e,
+	0x12, 0x2c, 0x0a, 0x12, 0x71, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x5f, 0x63, 0x68, 0x65, 0x63, 0x6b,
+	0x5f, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x16, 0x20, 0x01, 0x28, 0x04, 0x52, 0x10, 0x71, 0x75,
+	0x6f, 0x72, 0x75, 0x6d, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x57,
+	0x0a, 0x15, 0x6d, 0x69, 0x6e, 0x5f, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x5f, 0x74, 0x68,
+	0x72, 0x6f, 0x74, 0x74, 0x6c, 0x65, 0x72, 0x18, 0x17, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x23, 0x2e,
+	0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x4d,
+	0x69, 0x6e, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x54, 0x68, 0x72, 0x6f, 0x74, 0x74, 0x6c,
+	0x65, 0x72, 0x52, 0x13, 0x6d, 0x69, 0x6e, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x54, 0x68,
+	0x72, 0x6f, 0x74, 0x74, 0x6c, 0x65, 0x72, 0x12, 0x6d, 0x0a, 0x1d, 0x6d, 0x69, 0x6e, 0x5f, 0x69,
+	0x6e, 0x69, 0x74, 0x69, 0x61, 0x6c, 0x5f, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x5f, 0x74,
+	0x68, 0x72, 0x6f, 0x74, 0x74, 0x6c, 0x65, 0x72, 0x18, 0x18, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x2a,
+	0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e,
+	0x4d, 0x69, 0x6e, 0x49, 0x6e, 0x69, 0x74, 0x69, 0x61, 0x6c, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69,
+	0x74, 0x54, 0x68, 0x72, 0x6f, 0x74, 0x74, 0x6c, 0x65, 0x72, 0x52, 0x1a, 0x6d, 0x69, 0x6e, 0x49,
+	0x6e, 0x69, 0x74, 0x69, 0x61, 0x6c, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x54, 0x68, 0x72,
+	0x6f, 0x74, 0x74, 0x6c, 0x65, 0x72, 0x12, 0x49, 0x0a, 0x19, 0x62, 0x75, 0x72, 0x6e, 0x5f, 0x64,
+	0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x5f, 0x6e, 0x6f, 0x5f, 0x74, 0x68, 0x72, 0x65, 0x73, 0x68,
+	0x6f, 0x6c, 0x64, 0x18, 0x19, 0x20, 0x01, 0x28, 0x09, 0x42, 0x0e, 0xd2, 0xb4, 0x2d, 0x0a, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x16, 0x62, 0x75, 0x72, 0x6e, 0x44,
+	0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x4e, 0x6f, 0x54, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c,
+	0x64, 0x12, 0x4e, 0x0a, 0x0c, 0x71, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x5f, 0x72, 0x61, 0x6e, 0x67,
+	0x65, 0x18, 0x1a, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e,
+	0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x52,
+	0x61, 0x6e, 0x67, 0x65, 0x42, 0x0e, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
+	0x2e, 0x44, 0x65, 0x63, 0x52, 0x0b, 0x71, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x52, 0x61, 0x6e, 0x67,
+	0x65, 0x12, 0x7a, 0x0a, 0x23, 0x63, 0x6f, 0x6e, 0x73, 0x74, 0x69, 0x74, 0x75, 0x74, 0x69, 0x6f,
+	0x6e, 0x5f, 0x61, 0x6d, 0x65, 0x6e, 0x64, 0x6d, 0x65, 0x6e, 0x74, 0x5f, 0x71, 0x75, 0x6f, 0x72,
+	0x75, 0x6d, 0x5f, 0x72, 0x61, 0x6e, 0x67, 0x65, 0x18, 0x1b, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1b,
+	0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e,
+	0x51, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x52, 0x61, 0x6e, 0x67, 0x65, 0x42, 0x0e, 0xd2, 0xb4, 0x2d,
+	0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x20, 0x63, 0x6f, 0x6e,
+	0x73, 0x74, 0x69, 0x74, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x41, 0x6d, 0x65, 0x6e, 0x64, 0x6d, 0x65,
+	0x6e, 0x74, 0x51, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x52, 0x61, 0x6e, 0x67, 0x65, 0x12, 0x55, 0x0a,
+	0x10, 0x6c, 0x61, 0x77, 0x5f, 0x71, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x5f, 0x72, 0x61, 0x6e, 0x67,
+	0x65, 0x18, 0x1c, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e,
+	0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x52,
+	0x61, 0x6e, 0x67, 0x65, 0x42, 0x0e, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
+	0x2e, 0x44, 0x65, 0x63, 0x52, 0x0e, 0x6c, 0x61, 0x77, 0x51, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x52,
+	0x61, 0x6e, 0x67, 0x65, 0x22, 0x51, 0x0a, 0x0b, 0x51, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x52, 0x61,
+	0x6e, 0x67, 0x65, 0x12, 0x20, 0x0a, 0x03, 0x6d, 0x61, 0x78, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x42, 0x0e, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63,
+	0x52, 0x03, 0x6d, 0x61, 0x78, 0x12, 0x20, 0x0a, 0x03, 0x6d, 0x69, 0x6e, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x09, 0x42, 0x0e, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44,
+	0x65, 0x63, 0x52, 0x03, 0x6d, 0x69, 0x6e, 0x2a, 0x6b, 0x0a, 0x0a, 0x56, 0x6f, 0x74, 0x65, 0x4f,
 	0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1b, 0x0a, 0x17, 0x56, 0x4f, 0x54, 0x45, 0x5f, 0x4f, 0x50,
 	0x54, 0x49, 0x4f, 0x4e, 0x5f, 0x55, 0x4e, 0x53, 0x50, 0x45, 0x43, 0x49, 0x46, 0x49, 0x45, 0x44,
 	0x10, 0x00, 0x12, 0x13, 0x0a, 0x0f, 0x56, 0x4f, 0x54, 0x45, 0x5f, 0x4f, 0x50, 0x54, 0x49, 0x4f,
@@ -8656,51 +12226,66 @@ func file_atomone_gov_v1_gov_proto_rawDescGZIP() []byte {
 }
 
 var file_atomone_gov_v1_gov_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_atomone_gov_v1_gov_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_atomone_gov_v1_gov_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
 var file_atomone_gov_v1_gov_proto_goTypes = []interface{}{
-	(VoteOption)(0),               // 0: atomone.gov.v1.VoteOption
-	(ProposalStatus)(0),           // 1: atomone.gov.v1.ProposalStatus
-	(*WeightedVoteOption)(nil),    // 2: atomone.gov.v1.WeightedVoteOption
-	(*Deposit)(nil),               // 3: atomone.gov.v1.Deposit
-	(*Proposal)(nil),              // 4: atomone.gov.v1.Proposal
-	(*TallyResult)(nil),           // 5: atomone.gov.v1.TallyResult
-	(*Vote)(nil),                  // 6: atomone.gov.v1.Vote
-	(*QuorumCheckQueueEntry)(nil), // 7: atomone.gov.v1.QuorumCheckQueueEntry
-	(*DepositParams)(nil),         // 8: atomone.gov.v1.DepositParams
-	(*VotingParams)(nil),          // 9: atomone.gov.v1.VotingParams
-	(*TallyParams)(nil),           // 10: atomone.gov.v1.TallyParams
-	(*Params)(nil),                // 11: atomone.gov.v1.Params
-	(*v1beta1.Coin)(nil),          // 12: cosmos.base.v1beta1.Coin
-	(*anypb.Any)(nil),             // 13: google.protobuf.Any
-	(*timestamppb.Timestamp)(nil), // 14: google.protobuf.Timestamp
-	(*durationpb.Duration)(nil),   // 15: google.protobuf.Duration
+	(VoteOption)(0),                    // 0: atomone.gov.v1.VoteOption
+	(ProposalStatus)(0),                // 1: atomone.gov.v1.ProposalStatus
+	(*WeightedVoteOption)(nil),         // 2: atomone.gov.v1.WeightedVoteOption
+	(*Deposit)(nil),                    // 3: atomone.gov.v1.Deposit
+	(*LastMinDeposit)(nil),             // 4: atomone.gov.v1.LastMinDeposit
+	(*Proposal)(nil),                   // 5: atomone.gov.v1.Proposal
+	(*TallyResult)(nil),                // 6: atomone.gov.v1.TallyResult
+	(*Vote)(nil),                       // 7: atomone.gov.v1.Vote
+	(*QuorumCheckQueueEntry)(nil),      // 8: atomone.gov.v1.QuorumCheckQueueEntry
+	(*DepositParams)(nil),              // 9: atomone.gov.v1.DepositParams
+	(*VotingParams)(nil),               // 10: atomone.gov.v1.VotingParams
+	(*TallyParams)(nil),                // 11: atomone.gov.v1.TallyParams
+	(*MinDepositThrottler)(nil),        // 12: atomone.gov.v1.MinDepositThrottler
+	(*MinInitialDepositThrottler)(nil), // 13: atomone.gov.v1.MinInitialDepositThrottler
+	(*Params)(nil),                     // 14: atomone.gov.v1.Params
+	(*QuorumRange)(nil),                // 15: atomone.gov.v1.QuorumRange
+	(*v1beta1.Coin)(nil),               // 16: cosmos.base.v1beta1.Coin
+	(*timestamppb.Timestamp)(nil),      // 17: google.protobuf.Timestamp
+	(*anypb.Any)(nil),                  // 18: google.protobuf.Any
+	(*durationpb.Duration)(nil),        // 19: google.protobuf.Duration
 }
 var file_atomone_gov_v1_gov_proto_depIdxs = []int32{
 	0,  // 0: atomone.gov.v1.WeightedVoteOption.option:type_name -> atomone.gov.v1.VoteOption
-	12, // 1: atomone.gov.v1.Deposit.amount:type_name -> cosmos.base.v1beta1.Coin
-	13, // 2: atomone.gov.v1.Proposal.messages:type_name -> google.protobuf.Any
-	1,  // 3: atomone.gov.v1.Proposal.status:type_name -> atomone.gov.v1.ProposalStatus
-	5,  // 4: atomone.gov.v1.Proposal.final_tally_result:type_name -> atomone.gov.v1.TallyResult
-	14, // 5: atomone.gov.v1.Proposal.submit_time:type_name -> google.protobuf.Timestamp
-	14, // 6: atomone.gov.v1.Proposal.deposit_end_time:type_name -> google.protobuf.Timestamp
-	12, // 7: atomone.gov.v1.Proposal.total_deposit:type_name -> cosmos.base.v1beta1.Coin
-	14, // 8: atomone.gov.v1.Proposal.voting_start_time:type_name -> google.protobuf.Timestamp
-	14, // 9: atomone.gov.v1.Proposal.voting_end_time:type_name -> google.protobuf.Timestamp
-	2,  // 10: atomone.gov.v1.Vote.options:type_name -> atomone.gov.v1.WeightedVoteOption
-	14, // 11: atomone.gov.v1.QuorumCheckQueueEntry.quorum_timeout_time:type_name -> google.protobuf.Timestamp
-	12, // 12: atomone.gov.v1.DepositParams.min_deposit:type_name -> cosmos.base.v1beta1.Coin
-	15, // 13: atomone.gov.v1.DepositParams.max_deposit_period:type_name -> google.protobuf.Duration
-	15, // 14: atomone.gov.v1.VotingParams.voting_period:type_name -> google.protobuf.Duration
-	12, // 15: atomone.gov.v1.Params.min_deposit:type_name -> cosmos.base.v1beta1.Coin
-	15, // 16: atomone.gov.v1.Params.max_deposit_period:type_name -> google.protobuf.Duration
-	15, // 17: atomone.gov.v1.Params.voting_period:type_name -> google.protobuf.Duration
-	15, // 18: atomone.gov.v1.Params.quorum_timeout:type_name -> google.protobuf.Duration
-	15, // 19: atomone.gov.v1.Params.max_voting_period_extension:type_name -> google.protobuf.Duration
-	20, // [20:20] is the sub-list for method output_type
-	20, // [20:20] is the sub-list for method input_type
-	20, // [20:20] is the sub-list for extension type_name
-	20, // [20:20] is the sub-list for extension extendee
-	0,  // [0:20] is the sub-list for field type_name
+	16, // 1: atomone.gov.v1.Deposit.amount:type_name -> cosmos.base.v1beta1.Coin
+	16, // 2: atomone.gov.v1.LastMinDeposit.value:type_name -> cosmos.base.v1beta1.Coin
+	17, // 3: atomone.gov.v1.LastMinDeposit.time:type_name -> google.protobuf.Timestamp
+	18, // 4: atomone.gov.v1.Proposal.messages:type_name -> google.protobuf.Any
+	1,  // 5: atomone.gov.v1.Proposal.status:type_name -> atomone.gov.v1.ProposalStatus
+	6,  // 6: atomone.gov.v1.Proposal.final_tally_result:type_name -> atomone.gov.v1.TallyResult
+	17, // 7: atomone.gov.v1.Proposal.submit_time:type_name -> google.protobuf.Timestamp
+	17, // 8: atomone.gov.v1.Proposal.deposit_end_time:type_name -> google.protobuf.Timestamp
+	16, // 9: atomone.gov.v1.Proposal.total_deposit:type_name -> cosmos.base.v1beta1.Coin
+	17, // 10: atomone.gov.v1.Proposal.voting_start_time:type_name -> google.protobuf.Timestamp
+	17, // 11: atomone.gov.v1.Proposal.voting_end_time:type_name -> google.protobuf.Timestamp
+	2,  // 12: atomone.gov.v1.Vote.options:type_name -> atomone.gov.v1.WeightedVoteOption
+	17, // 13: atomone.gov.v1.QuorumCheckQueueEntry.quorum_timeout_time:type_name -> google.protobuf.Timestamp
+	16, // 14: atomone.gov.v1.DepositParams.min_deposit:type_name -> cosmos.base.v1beta1.Coin
+	19, // 15: atomone.gov.v1.DepositParams.max_deposit_period:type_name -> google.protobuf.Duration
+	19, // 16: atomone.gov.v1.VotingParams.voting_period:type_name -> google.protobuf.Duration
+	16, // 17: atomone.gov.v1.MinDepositThrottler.floor_value:type_name -> cosmos.base.v1beta1.Coin
+	19, // 18: atomone.gov.v1.MinDepositThrottler.update_period:type_name -> google.protobuf.Duration
+	16, // 19: atomone.gov.v1.MinInitialDepositThrottler.floor_value:type_name -> cosmos.base.v1beta1.Coin
+	19, // 20: atomone.gov.v1.MinInitialDepositThrottler.update_period:type_name -> google.protobuf.Duration
+	16, // 21: atomone.gov.v1.Params.min_deposit:type_name -> cosmos.base.v1beta1.Coin
+	19, // 22: atomone.gov.v1.Params.max_deposit_period:type_name -> google.protobuf.Duration
+	19, // 23: atomone.gov.v1.Params.voting_period:type_name -> google.protobuf.Duration
+	19, // 24: atomone.gov.v1.Params.quorum_timeout:type_name -> google.protobuf.Duration
+	19, // 25: atomone.gov.v1.Params.max_voting_period_extension:type_name -> google.protobuf.Duration
+	12, // 26: atomone.gov.v1.Params.min_deposit_throttler:type_name -> atomone.gov.v1.MinDepositThrottler
+	13, // 27: atomone.gov.v1.Params.min_initial_deposit_throttler:type_name -> atomone.gov.v1.MinInitialDepositThrottler
+	15, // 28: atomone.gov.v1.Params.quorum_range:type_name -> atomone.gov.v1.QuorumRange
+	15, // 29: atomone.gov.v1.Params.constitution_amendment_quorum_range:type_name -> atomone.gov.v1.QuorumRange
+	15, // 30: atomone.gov.v1.Params.law_quorum_range:type_name -> atomone.gov.v1.QuorumRange
+	31, // [31:31] is the sub-list for method output_type
+	31, // [31:31] is the sub-list for method input_type
+	31, // [31:31] is the sub-list for extension type_name
+	31, // [31:31] is the sub-list for extension extendee
+	0,  // [0:31] is the sub-list for field type_name
 }
 
 func init() { file_atomone_gov_v1_gov_proto_init() }
@@ -8734,7 +12319,7 @@ func file_atomone_gov_v1_gov_proto_init() {
 			}
 		}
 		file_atomone_gov_v1_gov_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Proposal); i {
+			switch v := v.(*LastMinDeposit); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -8746,7 +12331,7 @@ func file_atomone_gov_v1_gov_proto_init() {
 			}
 		}
 		file_atomone_gov_v1_gov_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TallyResult); i {
+			switch v := v.(*Proposal); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -8758,7 +12343,7 @@ func file_atomone_gov_v1_gov_proto_init() {
 			}
 		}
 		file_atomone_gov_v1_gov_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Vote); i {
+			switch v := v.(*TallyResult); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -8770,7 +12355,7 @@ func file_atomone_gov_v1_gov_proto_init() {
 			}
 		}
 		file_atomone_gov_v1_gov_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QuorumCheckQueueEntry); i {
+			switch v := v.(*Vote); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -8782,7 +12367,7 @@ func file_atomone_gov_v1_gov_proto_init() {
 			}
 		}
 		file_atomone_gov_v1_gov_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DepositParams); i {
+			switch v := v.(*QuorumCheckQueueEntry); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -8794,7 +12379,7 @@ func file_atomone_gov_v1_gov_proto_init() {
 			}
 		}
 		file_atomone_gov_v1_gov_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*VotingParams); i {
+			switch v := v.(*DepositParams); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -8806,7 +12391,7 @@ func file_atomone_gov_v1_gov_proto_init() {
 			}
 		}
 		file_atomone_gov_v1_gov_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TallyParams); i {
+			switch v := v.(*VotingParams); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -8818,7 +12403,55 @@ func file_atomone_gov_v1_gov_proto_init() {
 			}
 		}
 		file_atomone_gov_v1_gov_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TallyParams); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_atomone_gov_v1_gov_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*MinDepositThrottler); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_atomone_gov_v1_gov_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*MinInitialDepositThrottler); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_atomone_gov_v1_gov_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Params); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_atomone_gov_v1_gov_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QuorumRange); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -8836,7 +12469,7 @@ func file_atomone_gov_v1_gov_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_atomone_gov_v1_gov_proto_rawDesc,
 			NumEnums:      2,
-			NumMessages:   10,
+			NumMessages:   14,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

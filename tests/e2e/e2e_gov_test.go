@@ -13,7 +13,7 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
-	feemarkettypes "github.com/atomone-hub/atomone/x/feemarket/types"
+	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	govtypesv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	govtypesv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
@@ -274,25 +274,25 @@ func (s *IntegrationTestSuite) testGovParamChange() {
 		newParams = s.queryPhotonParams(chainAAPIEndpoint)
 		s.Require().False(newParams.Params.MintDisabled, "expected photon param mint disabled to be false")
 	})
-	s.Run("feemarket param change", func() {
+	s.Run("dynamicfee param change", func() {
 		// check existing params
 		chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
 		senderAddress, _ := s.chainA.validators[0].keyInfo.GetAddress()
 		sender := senderAddress.String()
-		params := s.queryFeemarketParams(chainAAPIEndpoint)
+		params := s.queryDynamicfeeParams(chainAAPIEndpoint)
 
 		oldAlpha := params.Params.Alpha
 		params.Params.Alpha = oldAlpha.Add(sdk.NewDec(1))
 
-		s.writeFeemarketParamChangeProposal(s.chainA, params.Params)
+		s.writeDynamicfeeParamChangeProposal(s.chainA, params.Params)
 		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
 		proposalCounter++
 		submitGovFlags := []string{configFile(proposalParamChangeFilename)}
 		depositGovFlags := []string{strconv.Itoa(proposalCounter), depositAmount.String()}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
-		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "atomone.feemarket.v1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
+		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "atomone.dynamicfee.v1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
 
-		newParams := s.queryFeemarketParams(chainAAPIEndpoint)
+		newParams := s.queryDynamicfeeParams(chainAAPIEndpoint)
 		s.Require().Equal(newParams.Params.Alpha, oldAlpha.Add(sdk.NewDec(1)))
 	})
 }
@@ -433,21 +433,21 @@ func (s *IntegrationTestSuite) writeStakingParamChangeProposal(c *chain, params 
 	s.Require().NoError(err)
 }
 
-func (s *IntegrationTestSuite) writeFeemarketParamChangeProposal(c *chain, params feemarkettypes.Params) {
+func (s *IntegrationTestSuite) writeDynamicfeeParamChangeProposal(c *chain, params dynamicfeetypes.Params) {
 	govModuleAddress := authtypes.NewModuleAddress(govtypes.ModuleName).String()
 	template := `
 	{
 		"messages":[
 		  {
-			"@type": "/atomone.feemarket.v1.MsgUpdateParams",
+			"@type": "/atomone.dynamicfee.v1.MsgUpdateParams",
 			"authority": "%s",
 			"params": %s
 		  }
 		],
 		"deposit": "%s",
-		"proposer": "Proposing feemarket param change",
+		"proposer": "Proposing dynamicfee param change",
 		"metadata": "",
-		"title": "Change in feemarket params",
+		"title": "Change in dynamicfee params",
 		"summary": "summary"
 	}
 	`
