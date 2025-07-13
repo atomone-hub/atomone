@@ -28,6 +28,7 @@ func createValidators(powers ...int64) ([]stakingtypes.Validator, error) {
 		vals[i] = stakingtypes.Validator{
 			OperatorAddress: sdk.ValAddress([]byte{byte(i)}).String(),
 			Tokens:          math.NewInt(p),
+			Status:          stakingtypes.Bonded,
 		}
 	}
 	return vals, nil
