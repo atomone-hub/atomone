@@ -6,6 +6,8 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+
+	"github.com/atomone-hub/atomone/x/distribution/types"
 )
 
 const (
@@ -73,6 +75,15 @@ func (k Keeper) AdjustEta(ctx sdk.Context) error {
 	}
 	if eta.GT(math.LegacyOneDec()) {
 		eta = math.LegacyOneDec()
+	}
+
+	if !eta.Equal(params.NakamotoBonusCoefficient) {
+		ctx.EventManager().EmitEvent(
+			sdk.NewEvent(
+				types.EventTypeNakamotoCoefficient,
+				sdk.NewAttribute(types.AttributeNakamotoCoefficient, eta.String()),
+			),
+		)
 	}
 
 	params.NakamotoBonusCoefficient = eta
