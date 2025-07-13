@@ -55,7 +55,12 @@ func (k Keeper) AllocateTokens(ctx context.Context, totalPreviousPower int64, bo
 	validatorTotalReward := feesCollected.MulDecTruncate(voteMultiplier)
 
 	// Split reward into Proportional (PR_i) and Nakamoto Bonus (NB_i)
-	nakamotoBonus := validatorTotalReward.MulDecTruncate(nakamotoCoefficient)
+	nakamotoBonus := sdk.DecCoins{}
+	if params.NakamotoBonusEnabled {
+		nakamotoBonus = validatorTotalReward.MulDecTruncate(nakamotoCoefficient)
+	} else {
+		nakamotoBonus = sdk.DecCoins{}
+	}
 	proportionalReward := validatorTotalReward.Sub(nakamotoBonus)
 
 	bondDenom, err := k.stakingKeeper.BondDenom(ctx)

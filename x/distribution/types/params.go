@@ -12,6 +12,7 @@ func DefaultParams() Params {
 		CommunityTax:             math.LegacyNewDecWithPrec(2, 2), // 2%
 		WithdrawAddrEnabled:      true,
 		NakamotoBonusCoefficient: math.LegacyNewDecWithPrec(5, 2),
+		NakamotoBonusEnabled:     true,
 	}
 }
 

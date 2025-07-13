@@ -26,6 +26,16 @@ func (k Keeper) AdjustEta(ctx sdk.Context) error {
 		return err
 	}
 
+	if !params.NakamotoBonusEnabled {
+		// Always set eta to zero and skip dynamic update
+		if params.NakamotoBonusCoefficient.IsZero() {
+			// Already zero, nothing to do
+			return nil
+		}
+		params.NakamotoBonusCoefficient = math.LegacyZeroDec()
+		return k.Params.Set(ctx, params)
+	}
+
 	validators, err := k.stakingKeeper.GetBondedValidatorsByPower(ctx)
 	if err != nil {
 		return err

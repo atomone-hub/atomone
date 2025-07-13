@@ -212,6 +212,88 @@ func TestAllocateTokensToManyValidators(t *testing.T) {
 	require.Equal(t, sdk.DecCoins{{Denom: sdk.DefaultBondDenom, Amount: math.LegacyNewDecWithPrec(490, 1)}}, val1CurrentRewards.Rewards)
 }
 
+func TestAllocateTokens_NakamotoBonusDisabled(t *testing.T) {
+	s := setupTestKeeper(t, math.LegacyNewDecWithPrec(5, 2), 100) // η = 0.05 (should not matter since disabled)
+
+	// Set nakamoto_bonus_enabled parameter to false
+	params, err := s.distrKeeper.Params.Get(s.ctx)
+	require.NoError(t, err)
+	params.NakamotoBonusEnabled = false
+	// η can be any value, should have no effect
+	params.NakamotoBonusCoefficient = math.LegacyNewDecWithPrec(5, 2)
+	require.NoError(t, s.distrKeeper.Params.Set(s.ctx, params))
+
+	// Setup validators: two validators, equal power, 0% commission
+	valAddr0 := sdk.ValAddress(valConsAddr0)
+	val0, err := distrtestutil.CreateValidator(valConsPk0, math.NewInt(100))
+	require.NoError(t, err)
+	val0.Commission = stakingtypes.NewCommission(
+		math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(),
+	)
+	s.stakingKeeper.EXPECT().ValidatorByConsAddr(gomock.Any(), sdk.GetConsAddress(valConsPk0)).Return(val0, nil).AnyTimes()
+
+	valAddr1 := sdk.ValAddress(valConsAddr1)
+	val1, err := distrtestutil.CreateValidator(valConsPk1, math.NewInt(100))
+	require.NoError(t, err)
+	val1.Commission = stakingtypes.NewCommission(
+		math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(),
+	)
+	s.stakingKeeper.EXPECT().ValidatorByConsAddr(gomock.Any(), sdk.GetConsAddress(valConsPk1)).Return(val1, nil).AnyTimes()
+
+	abciValA := abci.Validator{
+		Address: valConsPk0.Address(),
+		Power:   100,
+	}
+	abciValB := abci.Validator{
+		Address: valConsPk1.Address(),
+		Power:   100,
+	}
+
+	fees := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(100)))
+	s.bankKeeper.EXPECT().GetAllBalances(gomock.Any(), s.feeCollectorAcc.GetAddress()).Return(fees)
+	s.bankKeeper.EXPECT().SendCoinsFromModuleToModule(gomock.Any(), "fee_collector", disttypes.ModuleName, fees)
+
+	votes := []abci.VoteInfo{
+		{Validator: abciValA},
+		{Validator: abciValB},
+	}
+
+	require.NoError(t, s.distrKeeper.AllocateTokens(s.ctx, 200, votes))
+
+	// With nakamoto_bonus_enabled = false, all rewards should be proportional (no bonus)
+	// Community tax is 2%, so 98 left, each validator gets 49
+	expectedReward := sdk.DecCoins{{Denom: sdk.DefaultBondDenom, Amount: math.LegacyNewDecWithPrec(490, 1)}}
+	var expectedCommission sdk.DecCoins
+
+	val0OutstandingRewards, err := s.distrKeeper.GetValidatorOutstandingRewards(s.ctx, valAddr0)
+	require.NoError(t, err)
+	require.Equal(t, expectedReward, val0OutstandingRewards.Rewards)
+
+	val1OutstandingRewards, err := s.distrKeeper.GetValidatorOutstandingRewards(s.ctx, valAddr1)
+	require.NoError(t, err)
+	require.Equal(t, expectedReward, val1OutstandingRewards.Rewards)
+
+	feePool, err := s.distrKeeper.FeePool.Get(s.ctx)
+	require.NoError(t, err)
+	require.Equal(t, sdk.NewDecCoinsFromCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(2))), feePool.CommunityPool)
+
+	val0Commission, err := s.distrKeeper.GetValidatorAccumulatedCommission(s.ctx, valAddr0)
+	require.NoError(t, err)
+	require.Equal(t, expectedCommission, val0Commission.Commission)
+
+	val1Commission, err := s.distrKeeper.GetValidatorAccumulatedCommission(s.ctx, valAddr1)
+	require.NoError(t, err)
+	require.Equal(t, expectedCommission, val1Commission.Commission)
+
+	val0CurrentRewards, err := s.distrKeeper.GetValidatorCurrentRewards(s.ctx, valAddr0)
+	require.NoError(t, err)
+	require.Equal(t, expectedReward, val0CurrentRewards.Rewards)
+
+	val1CurrentRewards, err := s.distrKeeper.GetValidatorCurrentRewards(s.ctx, valAddr1)
+	require.NoError(t, err)
+	require.Equal(t, expectedReward, val1CurrentRewards.Rewards)
+}
+
 func TestAllocateTokensTruncation(t *testing.T) {
 	s := setupTestKeeper(t, math.LegacyZeroDec(), 100)
 
@@ -219,7 +301,7 @@ func TestAllocateTokensTruncation(t *testing.T) {
 	require.NoError(t, s.distrKeeper.FeePool.Set(s.ctx, disttypes.InitialFeePool()))
 	require.NoError(t, s.distrKeeper.Params.Set(s.ctx, disttypes.DefaultParams()))
 
-	// create validator with 10% commission
+	// create a validator with 10% commission
 	valAddr0 := sdk.ValAddress(valConsAddr0)
 	val0, err := distrtestutil.CreateValidator(valConsPk0, math.NewInt(100))
 	require.NoError(t, err)
