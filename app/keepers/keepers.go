@@ -36,6 +36,7 @@ import (
 	authzkeeper "github.com/cosmos/cosmos-sdk/x/authz/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	"github.com/cosmos/cosmos-sdk/x/consensus"
 	consensusparamkeeper "github.com/cosmos/cosmos-sdk/x/consensus/keeper"
 	consensusparamtypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
 	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
@@ -130,6 +131,7 @@ func NewAppKeeper(
 		runtime.EventService{},
 	)
 	bApp.SetParamStore(&appKeepers.ConsensusParamsKeeper.ParamsStore)
+	bApp.SetVersionModifier(consensus.ProvideAppVersionModifier(appKeepers.ConsensusParamsKeeper))
 
 	// Add normal keepers
 	appKeepers.AccountKeeper = authkeeper.NewAccountKeeper(
