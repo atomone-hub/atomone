@@ -13,6 +13,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/atomone-hub/atomone/x/dynamicfee/post"
+	"github.com/atomone-hub/atomone/x/dynamicfee/testutil"
 	"github.com/atomone-hub/atomone/x/dynamicfee/types"
 )
 
@@ -106,7 +107,8 @@ func TestPostHandle(t *testing.T) {
 					return ctx, nil
 				}
 			)
-			m.ctx = m.ctx.WithConsensusParams(&tmproto.ConsensusParams{Block: &tmproto.BlockParams{MaxGas: int64(30_000_000)}})
+			maxBlockGas := testutil.MaxBlockGas
+			m.ctx = m.ctx.WithConsensusParams(&tmproto.ConsensusParams{Block: &tmproto.BlockParams{MaxGas: int64(maxBlockGas)}})
 			if tt.genTx {
 				m.ctx = m.ctx.WithBlockHeight(0)
 			} else {
