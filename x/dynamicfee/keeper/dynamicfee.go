@@ -3,8 +3,9 @@ package keeper
 import (
 	"cosmossdk.io/math"
 
-	"github.com/atomone-hub/atomone/x/dynamicfee/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/atomone-hub/atomone/x/dynamicfee/types"
 )
 
 // UpdateDynamicfee updates the base fee and learning rate based on the
