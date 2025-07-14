@@ -87,7 +87,7 @@ func TestEnabledHeight(t *testing.T) {
 	})
 }
 
-func TestMaxGas(t *testing.T) {
+func TestGetMaxBlockGas(t *testing.T) {
 	k, ctx := testutil.SetupKeeper(t, 0)
 	t.Run("get max block gas when 0", func(t *testing.T) {
 		ctx = ctx.WithConsensusParams(&tmproto.ConsensusParams{Block: &tmproto.BlockParams{MaxGas: int64(0)}})
