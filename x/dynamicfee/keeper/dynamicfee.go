@@ -3,6 +3,7 @@ package keeper
 import (
 	"cosmossdk.io/math"
 
+	"github.com/atomone-hub/atomone/x/dynamicfee/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -26,7 +27,7 @@ func (k *Keeper) UpdateDynamicfee(ctx sdk.Context) error {
 		return nil
 	}
 
-	maxBlockGas := k.GetMaxBlockGas(ctx)
+	maxBlockGas := k.GetMaxBlockGas(ctx, params)
 
 	state, err := k.GetState(ctx)
 	if err != nil {
@@ -54,15 +55,13 @@ func (k *Keeper) UpdateDynamicfee(ctx sdk.Context) error {
 	return k.SetState(ctx, state)
 }
 
-// GetMaxGasPrice returns the maximum gas of a block
+// GetMaxBlockGas returns the maximum gas of a block
 // It returns the value obtained from ConsensusParams if
 // it is different from 0 or -1, otherwise it returns
 // DefaultMaxBlockGas
-func (k *Keeper) GetMaxBlockGas(ctx sdk.Context) uint64 {
+func (k *Keeper) GetMaxBlockGas(ctx sdk.Context, params types.Params) uint64 {
 	maxBlockGas := ctx.ConsensusParams().Block.GetMaxGas()
 	if maxBlockGas == 0 || maxBlockGas == -1 {
-		params, _ := k.GetParams(ctx)
-
 		return params.DefaultMaxBlockGas
 	}
 	return uint64(maxBlockGas)
