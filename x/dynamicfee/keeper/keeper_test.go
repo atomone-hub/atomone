@@ -96,8 +96,7 @@ func TestMaxGas(t *testing.T) {
 		err := k.SetParams(ctx, params)
 		require.NoError(t, err)
 
-		maxGas, err := k.GetMaxGas(ctx)
-		require.NoError(t, err)
+		maxGas := k.GetMaxBlockGas(ctx)
 
 		require.Equal(t, uint64(100_000_000), maxGas)
 	})
@@ -109,8 +108,7 @@ func TestMaxGas(t *testing.T) {
 		err := k.SetParams(ctx, params)
 		require.NoError(t, err)
 
-		maxGas, err := k.GetMaxGas(ctx)
-		require.NoError(t, err)
+		maxGas := k.GetMaxBlockGas(ctx)
 
 		require.Equal(t, uint64(100_000_000), maxGas)
 	})
@@ -122,8 +120,7 @@ func TestMaxGas(t *testing.T) {
 		err := k.SetParams(ctx, params)
 		require.NoError(t, err)
 
-		maxGas, err := k.GetMaxGas(ctx)
-		require.NoError(t, err)
+		maxGas := k.GetMaxBlockGas(ctx)
 
 		require.Equal(t, uint64(42), maxGas)
 	})

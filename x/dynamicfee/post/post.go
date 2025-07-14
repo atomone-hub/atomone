@@ -62,10 +62,7 @@ func (dfd DynamicfeeStateUpdateDecorator) PostHandle(ctx sdk.Context, tx sdk.Tx,
 		"gas consumed", gas,
 	)
 
-	maxBlockGas, err := dfd.dynamicfeeKeeper.GetMaxGas(ctx)
-	if err != nil {
-		return ctx, err
-	}
+	maxBlockGas := dfd.dynamicfeeKeeper.GetMaxBlockGas(ctx)
 
 	err = state.Update(gas, maxBlockGas)
 	if err != nil {
