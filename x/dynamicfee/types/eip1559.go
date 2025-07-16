@@ -31,6 +31,10 @@ var (
 	// DefaultTargetBlockUtilization is the default target block utilization.
 	DefaultTargetBlockUtilization = math.LegacyMustNewDecFromStr("0.5")
 
+	// DefaultMaxBlockGas is the default max block gas that is used
+	// when consensus_params.block.max_gas returns 0 or -1
+	DefaultMaxBlockGas uint64 = 100_000_000
+
 	// DefaultMinLearningRate is not used in the base EIP-1559 implementation.
 	DefaultMinLearningRate = math.LegacyMustNewDecFromStr("0.125")
 
@@ -52,6 +56,7 @@ func DefaultParams() Params {
 		DefaultGamma,
 		DefaultMinBaseGasPrice,
 		DefaultTargetBlockUtilization,
+		DefaultMaxBlockGas,
 		DefaultMinLearningRate,
 		DefaultMaxLearningRate,
 		DefaultFeeDenom,

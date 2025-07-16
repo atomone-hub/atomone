@@ -75,6 +75,8 @@ func TestPostHandle(t *testing.T) {
 				expectedState := types.DefaultState()
 				expectedState.Window[0] = gasConsumed
 				m.DynamicfeeKeeper.EXPECT().SetState(m.ctx, expectedState)
+				maxBlockGas := testutil.MaxBlockGas
+				m.DynamicfeeKeeper.EXPECT().GetMaxBlockGas(m.ctx, types.DefaultParams()).Return(uint64(maxBlockGas))
 			},
 		},
 		{
@@ -93,6 +95,8 @@ func TestPostHandle(t *testing.T) {
 				expectedState := types.DefaultState()
 				expectedState.Window[0] = gasConsumed
 				m.DynamicfeeKeeper.EXPECT().SetState(m.ctx, expectedState)
+				maxBlockGas := testutil.MaxBlockGas
+				m.DynamicfeeKeeper.EXPECT().GetMaxBlockGas(m.ctx, types.DefaultParams()).Return(uint64(maxBlockGas))
 			},
 		},
 	}

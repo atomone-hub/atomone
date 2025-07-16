@@ -34,6 +34,10 @@ var (
 	// DefaultAIMDTargetBlockUtilization is the default target block utilization.
 	DefaultAIMDTargetBlockUtilization = math.LegacyMustNewDecFromStr("0.5")
 
+	// DefaultMaxBlockGas is the default max block gas that is used
+	// when consensus_params.block.max_gas returns 0 or -1
+	DefaultAIMDMaxBlockGas uint64 = 100_000_000
+
 	// DefaultAIMDMinLearningRate is the default minimum learning rate.
 	DefaultAIMDMinLearningRate = math.LegacyMustNewDecFromStr("0.01")
 
@@ -56,6 +60,7 @@ func DefaultAIMDParams() Params {
 		DefaultAIMDGamma,
 		DefaultAIMDMinBaseGasPrice,
 		DefaultAIMDTargetBlockUtilization,
+		DefaultAIMDMaxBlockGas,
 		DefaultAIMDMinLearningRate,
 		DefaultAIMDMaxLearningRate,
 		DefaultAIMDFeeDenom,

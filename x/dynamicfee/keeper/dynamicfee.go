@@ -4,6 +4,8 @@ import (
 	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/atomone-hub/atomone/x/dynamicfee/types"
 )
 
 // UpdateDynamicfee updates the base fee and learning rate based on the
@@ -26,7 +28,7 @@ func (k *Keeper) UpdateDynamicfee(ctx sdk.Context) error {
 		return nil
 	}
 
-	maxBlockGas := uint64(ctx.ConsensusParams().Block.GetMaxGas())
+	maxBlockGas := k.GetMaxBlockGas(ctx, params)
 
 	state, err := k.GetState(ctx)
 	if err != nil {
@@ -52,6 +54,18 @@ func (k *Keeper) UpdateDynamicfee(ctx sdk.Context) error {
 	// Increment the height of the state and set the new state.
 	state.IncrementHeight()
 	return k.SetState(ctx, state)
+}
+
+// GetMaxBlockGas returns the maximum gas of a block
+// It returns the value obtained from ConsensusParams if
+// it is different from 0 or -1, otherwise it returns
+// DefaultMaxBlockGas
+func (k *Keeper) GetMaxBlockGas(ctx sdk.Context, params types.Params) uint64 {
+	maxBlockGas := ctx.ConsensusParams().Block.GetMaxGas()
+	if maxBlockGas == 0 || maxBlockGas == -1 {
+		return params.DefaultMaxBlockGas
+	}
+	return uint64(maxBlockGas)
 }
 
 // GetBaseGasPrice returns the base fee from the dynamic fee pricing state.
