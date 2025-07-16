@@ -12,7 +12,7 @@ import (
 	"github.com/atomone-hub/atomone/x/distribution/types"
 )
 
-// initialize rewards for a new validator
+// initializeValidator initializes rewards for a new validator
 func (k Keeper) initializeValidator(ctx context.Context, val stakingtypes.ValidatorI) error {
 	valBz, err := k.stakingKeeper.ValidatorAddressCodec().StringToBytes(val.GetOperator())
 	if err != nil {
@@ -41,7 +41,7 @@ func (k Keeper) initializeValidator(ctx context.Context, val stakingtypes.Valida
 	return err
 }
 
-// increment validator period, returning the period just ended
+// IncrementValidatorPeriod increments validator period, returning the period just ended
 func (k Keeper) IncrementValidatorPeriod(ctx context.Context, val stakingtypes.ValidatorI) (uint64, error) {
 	valBz, err := k.stakingKeeper.ValidatorAddressCodec().StringToBytes(val.GetOperator())
 	if err != nil {

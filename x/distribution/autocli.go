@@ -136,12 +136,23 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					},
 				},
 				{
-					RpcMethod: "UpdateParams",
-					Skip:      true, // skipped because authority gated
+					RpcMethod:      "UpdateParams",
+					Use:            "update-params-proposal [params]",
+					Short:          "Submit a proposal to update distribution module params. Note: the entire params must be provided.",
+					Example:        fmt.Sprintf(`%s tx distribution update-params-proposal '{ "community_tax": "20000", "base_proposer_reward": "0", "bonus_proposer_reward": "0", "withdraw_addr_enabled": true }'`, version.AppName),
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "params"}},
+					GovProposal:    true,
 				},
 				{
 					RpcMethod: "CommunityPoolSpend",
-					Skip:      true, // skipped because authority gated
+					Use:       "community-pool-spend-proposal [recipient] [amount]",
+					Example:   fmt.Sprintf(`$ %s tx distribution community-pool-spend-proposal [recipient] 100uatom`, version.AppName),
+					Short:     "Submit a proposal to spend from the community pool",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{
+						{ProtoField: "recipient"},
+						{ProtoField: "amount", Varargs: true},
+					},
+					GovProposal: true,
 				},
 			},
 			EnhanceCustomCommand: false, // use custom commands only until v0.51

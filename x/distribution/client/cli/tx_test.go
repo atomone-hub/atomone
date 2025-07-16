@@ -127,8 +127,6 @@ func (s *CLITestSuite) TestTxWithdrawRewardsCmd() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			args := append([]string{tc.valAddr.String()}, tc.args...)
 
@@ -182,8 +180,6 @@ func (s *CLITestSuite) TestTxWithdrawAllRewardsCmd() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.NewWithdrawAllRewardsCmd(address.NewBech32Codec("cosmosvaloper"), address.NewBech32Codec("cosmos"))
 
@@ -234,8 +230,6 @@ func (s *CLITestSuite) TestTxSetWithdrawAddrCmd() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.NewSetWithdrawAddrCmd(address.NewBech32Codec("cosmos"))
 
@@ -284,8 +278,6 @@ func (s *CLITestSuite) TestTxFundCommunityPoolCmd() {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
-
 		s.Run(tc.name, func() {
 			cmd := cli.NewFundCommunityPoolCmd(address.NewBech32Codec("cosmos"))
 
