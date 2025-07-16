@@ -231,8 +231,7 @@ func NewAtomOneApp(
 	}
 
 	postHandlerOptions := atomonepost.HandlerOptions{
-		DynamicfeeKeeper:      app.DynamicfeeKeeper,
-		ConsensusParamsKeeper: &app.ConsensusParamsKeeper,
+		DynamicfeeKeeper: app.DynamicfeeKeeper,
 	}
 	postHandler, err := atomonepost.NewPostHandler(postHandlerOptions)
 	if err != nil {

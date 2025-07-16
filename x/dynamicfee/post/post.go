@@ -11,14 +11,12 @@ import (
 // successfully deducted.
 // CONTRACT: Tx must implement FeeTx interface
 type DynamicfeeStateUpdateDecorator struct {
-	dynamicfeeKeeper      DynamicfeeKeeper
-	consensusParamsKeeper ConsensusParamsKeeper
+	dynamicfeeKeeper DynamicfeeKeeper
 }
 
-func NewDynamicfeeStateUpdateDecorator(fmk DynamicfeeKeeper, cpk ConsensusParamsKeeper) DynamicfeeStateUpdateDecorator {
+func NewDynamicfeeStateUpdateDecorator(fmk DynamicfeeKeeper) DynamicfeeStateUpdateDecorator {
 	return DynamicfeeStateUpdateDecorator{
-		dynamicfeeKeeper:      fmk,
-		consensusParamsKeeper: cpk,
+		dynamicfeeKeeper: fmk,
 	}
 }
 
@@ -64,11 +62,7 @@ func (dfd DynamicfeeStateUpdateDecorator) PostHandle(ctx sdk.Context, tx sdk.Tx,
 		"gas consumed", gas,
 	)
 
-	consensusParams, err := dfd.consensusParamsKeeper.Get(ctx)
-	if err != nil {
-		return ctx, errorsmod.Wrapf(err, "unable to get consensus params")
-	}
-	maxBlockGas := uint64(consensusParams.Block.MaxGas)
+	maxBlockGas := uint64(ctx.ConsensusParams().Block.GetMaxGas())
 
 	err = state.Update(gas, maxBlockGas)
 	if err != nil {

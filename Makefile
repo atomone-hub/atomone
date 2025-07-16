@@ -224,7 +224,6 @@ mocks-gen:
 	$(mockgen_cmd) -source=x/photon/ante/expected_keepers.go -package ante_test -destination x/photon/ante/expected_keepers_mocks_test.go
 	$(mockgen_cmd) -source=x/dynamicfee/ante/expected_keepers.go -package ante_test -destination x/dynamicfee/ante/expected_keepers_mocks_test.go
 	$(mockgen_cmd) -source=x/dynamicfee/post/expected_keepers.go -package post_test -destination x/dynamicfee/post/expected_keepers_mocks_test.go
-	$(mockgen_cmd) -source=x/dynamicfee/types/expected_keepers.go -package testutil -destination x/dynamicfee/testutil/expected_keepers_mocks.go
 
 .PHONY: docker-build-debug docker-build-hermes docker-build-all mocks-gen
 
