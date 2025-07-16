@@ -6,13 +6,13 @@ import (
 
 	"cosmossdk.io/math"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
 	"github.com/atomone-hub/atomone/app/keepers"
-
 	govkeeper "github.com/atomone-hub/atomone/x/gov/keeper"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // CreateUpgradeHandler returns a upgrade handler for AtomOne v3

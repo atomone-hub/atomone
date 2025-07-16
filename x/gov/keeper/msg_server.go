@@ -9,7 +9,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors1 "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/atomone-hub/atomone/x/gov/types"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
@@ -89,22 +88,22 @@ func (k msgServer) ExecLegacyContent(goCtx context.Context, msg *v1.MsgExecLegac
 
 	govAcct := k.GetGovernanceAccount(ctx).GetAddress().String()
 	if govAcct != msg.Authority {
-		return nil, errors.Wrapf(types.ErrInvalidSigner, "expected %s got %s", govAcct, msg.Authority)
+		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "expected %s got %s", govAcct, msg.Authority)
 	}
 
 	content, err := v1.LegacyContentFromMessage(msg)
 	if err != nil {
-		return nil, errors.Wrapf(types.ErrInvalidProposalContent, "%+v", err)
+		return nil, errors.Wrapf(govtypes.ErrInvalidProposalContent, "%+v", err)
 	}
 
 	// Ensure that the content has a respective handler
 	if !k.Keeper.legacyRouter.HasRoute(content.ProposalRoute()) {
-		return nil, errors.Wrap(types.ErrNoProposalHandlerExists, content.ProposalRoute())
+		return nil, errors.Wrap(govtypes.ErrNoProposalHandlerExists, content.ProposalRoute())
 	}
 
 	handler := k.Keeper.legacyRouter.GetRoute(content.ProposalRoute())
 	if err := handler(ctx, content); err != nil {
-		return nil, errors.Wrapf(types.ErrInvalidProposalContent, "failed to run legacy handler %s, %+v", content.ProposalRoute(), err)
+		return nil, errors.Wrapf(govtypes.ErrInvalidProposalContent, "failed to run legacy handler %s, %+v", content.ProposalRoute(), err)
 	}
 
 	return &v1.MsgExecLegacyContentResponse{}, nil
@@ -181,7 +180,7 @@ func validateDeposit(amount sdk.Coins) error {
 // UpdateParams implements the MsgServer.UpdateParams method.
 func (k msgServer) UpdateParams(goCtx context.Context, msg *v1.MsgUpdateParams) (*v1.MsgUpdateParamsResponse, error) {
 	if k.authority != msg.Authority {
-		return nil, errors.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
+		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
@@ -202,7 +201,7 @@ func (k msgServer) UpdateParams(goCtx context.Context, msg *v1.MsgUpdateParams) 
 // ProposeLaw implements the MsgServer.ProposeLaw method.
 func (k msgServer) ProposeLaw(goCtx context.Context, msg *v1.MsgProposeLaw) (*v1.MsgProposeLawResponse, error) {
 	if k.authority != msg.Authority {
-		return nil, errors.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
+		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
 	}
 	// only a no-op for now
 	return &v1.MsgProposeLawResponse{}, nil
@@ -211,15 +210,15 @@ func (k msgServer) ProposeLaw(goCtx context.Context, msg *v1.MsgProposeLaw) (*v1
 // ProposeConstitutionAmendment implements the MsgServer.ProposeConstitutionAmendment method.
 func (k msgServer) ProposeConstitutionAmendment(goCtx context.Context, msg *v1.MsgProposeConstitutionAmendment) (*v1.MsgProposeConstitutionAmendmentResponse, error) {
 	if k.authority != msg.Authority {
-		return nil, errors.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
+		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
 	}
 	if msg.Amendment == "" {
-		return nil, types.ErrInvalidProposalMsg.Wrap("amendment cannot be empty")
+		return nil, govtypes.ErrInvalidProposalMsg.Wrap("amendment cannot be empty")
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	constitution, err := k.ApplyConstitutionAmendment(ctx, msg.Amendment)
 	if err != nil {
-		return nil, types.ErrInvalidProposalMsg.Wrap(err.Error())
+		return nil, govtypes.ErrInvalidProposalMsg.Wrap(err.Error())
 	}
 	k.SetConstitution(ctx, constitution)
 	return &v1.MsgProposeConstitutionAmendmentResponse{}, nil
