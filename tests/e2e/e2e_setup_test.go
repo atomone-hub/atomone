@@ -23,7 +23,6 @@ import (
 
 	tmconfig "github.com/cometbft/cometbft/config"
 	"github.com/cometbft/cometbft/crypto/ed25519"
-	tmjson "github.com/cometbft/cometbft/libs/json"
 
 	"cosmossdk.io/math"
 	evidencetypes "cosmossdk.io/x/evidence/types"
@@ -447,7 +446,7 @@ func (s *IntegrationTestSuite) initGenesis(c *chain, vestingMnemonic, jailedValM
 
 	// set custom max gas per block in genesis consensus params,
 	// required for feemarket tests
-	genDoc.Consensus.Params.Block.MaxGas = 50_000_000 // 50M gas per block
+	genDoc.Consensus.Params.Block.MaxGas = 60_000_000 // 60M gas per block
 
 	appGenState = s.addGenesisVestingAndJailedAccounts(
 		c,
@@ -502,7 +501,7 @@ func (s *IntegrationTestSuite) initGenesis(c *chain, vestingMnemonic, jailedValM
 	genDoc.AppState, err = json.MarshalIndent(appGenState, "", "  ")
 	s.Require().NoError(err)
 
-	bz, err := tmjson.MarshalIndent(genDoc, "", "  ")
+	bz, err := json.MarshalIndent(genDoc, "", "  ")
 	s.Require().NoError(err)
 
 	vestingPeriod, err := generateVestingPeriod()

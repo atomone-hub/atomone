@@ -7,7 +7,7 @@ import (
 
 	math "cosmossdk.io/math"
 
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 
 	"github.com/atomone-hub/atomone/x/gov/types"
@@ -18,7 +18,7 @@ import (
 type AccountKeeper interface {
 	types.AccountKeeper
 
-	IterateAccounts(ctx context.Context, cb func(account authtypes.AccountI) (stop bool)) error
+	IterateAccounts(ctx context.Context, cb func(account sdk.AccountI) (stop bool)) error
 }
 
 // BankKeeper extends gov's actual expected BankKeeper with additional

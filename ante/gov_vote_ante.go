@@ -84,25 +84,30 @@ func (g GovVoteDecorator) ValidateVoteMsgs(ctx sdk.Context, msgs []sdk.Msg) erro
 		enoughStake := false
 		delegationCount := 0
 		stakedTokens := math.LegacyNewDec(0)
-		g.stakingKeeper.IterateDelegatorDelegations(ctx, accAddr, func(delegation stakingtypes.Delegation) bool {
+		if err := g.stakingKeeper.IterateDelegatorDelegations(ctx, accAddr, func(delegation stakingtypes.Delegation) bool {
 			validatorAddr, err := sdk.ValAddressFromBech32(delegation.ValidatorAddress)
 			if err != nil {
 				panic(err) // shouldn't happen
 			}
 			validator, err := g.stakingKeeper.GetValidator(ctx, validatorAddr)
-			if err == nil {
-				shares := delegation.Shares
-				tokens := validator.TokensFromSharesTruncated(shares)
-				stakedTokens = stakedTokens.Add(tokens)
-				if stakedTokens.GTE(minStakedTokens) {
-					enoughStake = true
-					return true // break the iteration
-				}
+			if err != nil {
+				panic(err) // shouldn't happen
 			}
+
+			shares := delegation.Shares
+			tokens := validator.TokensFromSharesTruncated(shares)
+			stakedTokens = stakedTokens.Add(tokens)
+			if stakedTokens.GTE(minStakedTokens) {
+				enoughStake = true
+				return true // break the iteration
+			}
+
 			delegationCount++
 			// break the iteration if maxDelegationsChecked were already checked
 			return delegationCount >= maxDelegationsChecked
-		})
+		}); err != nil {
+			return err
+		}
 
 		if !enoughStake {
 			return errorsmod.Wrapf(atomoneerrors.ErrInsufficientStake, "insufficient stake for voting - min required %v", minStakedTokens)

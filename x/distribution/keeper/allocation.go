@@ -6,9 +6,9 @@ import (
 	"cosmossdk.io/math"
 	abci "github.com/cometbft/cometbft/abci/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	"github.com/atomone-hub/atomone/x/distribution/types"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
 // AllocateTokens performs reward and fee distribution to all validators based
@@ -90,17 +90,17 @@ func (k Keeper) AllocateTokens(ctx context.Context, totalPreviousPower int64, bo
 		proportional := proportionalReward.MulDecTruncate(powerFraction)
 
 		// Add fixed Nakamoto bonus to proportional share
-		totalReward := proportional.Add(nbPerValidator)
+		reward := proportional.Add(nbPerValidator)
 
-		err = k.AllocateTokensToValidator(ctx, validator, totalReward)
+		err = k.AllocateTokensToValidator(ctx, validator, reward)
 		if err != nil {
 			return err
 		}
 
-		remaining = remaining.Sub(totalReward)
+		remaining = remaining.Sub(reward)
 	}
 
-	// Add any remaining tokens to the community pool
+	// allocate community funding
 	feePool.CommunityPool = feePool.CommunityPool.Add(remaining...)
 	return k.FeePool.Set(ctx, feePool)
 }

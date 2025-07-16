@@ -4,8 +4,10 @@ import (
 	"context"
 
 	upgradetypes "cosmossdk.io/x/upgrade/types"
-	"github.com/atomone-hub/atomone/app/keepers"
+
 	"github.com/cosmos/cosmos-sdk/types/module"
+
+	"github.com/atomone-hub/atomone/app/keepers"
 )
 
 // CreateUpgradeHandler returns a upgrade handler for AtomOne v4
