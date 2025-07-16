@@ -34,12 +34,15 @@ func GetQueryCmd() *cobra.Command {
 		GetCmdQueryVote(),
 		GetCmdQueryVotes(),
 		GetCmdQueryParams(),
+		GetCmdQueryQuorums(),
 		GetCmdQueryParam(),
 		GetCmdQueryProposer(),
 		GetCmdQueryDeposit(),
 		GetCmdQueryDeposits(),
 		GetCmdQueryTally(),
 		GetCmdConstitution(),
+		GetCmdQueryMinDeposit(),
+		GetCmdQueryMinInitialDeposit(),
 		GetCmdQueryGovernor(),
 		GetCmdQueryGovernors(),
 		GetCmdQueryGovernanceDelegation(),
@@ -553,10 +556,57 @@ $ %s query gov params
 			vp := v1.NewVotingParams(res.Params.VotingPeriod)
 			res.VotingParams = &vp
 
-			tp := v1.NewTallyParams(res.Params.Quorum, res.Params.Threshold)
+			quorumRes, err := queryClient.Quorums(ctx, &v1.QueryQuorumsRequest{})
+			if err != nil {
+				return err
+			}
+
+			tp := v1.NewTallyParams(
+				quorumRes.Quorum, res.Params.Threshold,
+				quorumRes.ConstitutionAmendmentQuorum, res.Params.ConstitutionAmendmentThreshold,
+				quorumRes.LawQuorum, res.Params.LawThreshold,
+			)
 			res.TallyParams = &tp
 
 			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetCmdQueryQuorums implements the query quorums command.
+func GetCmdQueryQuorums() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "quorums",
+		Short: "Query the current state of the dynamic quorums",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query the current state of all the dynamic quorums.
+
+Example:
+$ %s query gov quorums
+`,
+				version.AppName,
+			),
+		),
+		Args: cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := v1.NewQueryClient(clientCtx)
+
+			// Query store for all 3 params
+			ctx := cmd.Context()
+
+			quorumRes, err := queryClient.Quorums(ctx, &v1.QueryQuorumsRequest{})
+			if err != nil {
+				return err
+			}
+			return clientCtx.PrintProto(quorumRes)
 		},
 	}
 
@@ -673,6 +723,70 @@ func GetCmdConstitution() *cobra.Command {
 			queryClient := v1.NewQueryClient(clientCtx)
 
 			resp, err := queryClient.Constitution(cmd.Context(), &v1.QueryConstitutionRequest{})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(resp)
+		},
+	}
+}
+
+// GetCmdQueryMinDeposit implements the query min deposit command.
+func GetCmdQueryMinDeposit() *cobra.Command {
+	return &cobra.Command{
+		Use:   "min-deposit",
+		Args:  cobra.ExactArgs(0),
+		Short: "Query the minimum deposit currently needed for a proposal to enter voting period",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query the minimum deposit needed for a proposal to enter voting period.
+
+Example:
+$ %s query gov min-deposit
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := v1.NewQueryClient(clientCtx)
+
+			resp, err := queryClient.MinDeposit(cmd.Context(), &v1.QueryMinDepositRequest{})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(resp)
+		},
+	}
+}
+
+// GetCmdQueryMinInitialDeposit implements the query min initial deposit command.
+func GetCmdQueryMinInitialDeposit() *cobra.Command {
+	return &cobra.Command{
+		Use:   "min-initial-deposit",
+		Args:  cobra.ExactArgs(0),
+		Short: "Query the minimum initial deposit needed for a proposal to enter deposit period",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query the minimum initial deposit needed for a proposal to enter deposit period.
+
+Example:
+$ %s query gov min-initial-deposit
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := v1.NewQueryClient(clientCtx)
+
+			resp, err := queryClient.MinInitialDeposit(cmd.Context(), &v1.QueryMinInitialDepositRequest{})
 			if err != nil {
 				return err
 			}

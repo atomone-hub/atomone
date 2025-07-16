@@ -295,7 +295,7 @@ func (s *IntegrationTestSuite) execBankMultiSend(
 	amt string,
 	expectErr bool,
 	opt ...flagOption,
-) {
+) int {
 	// TODO remove the hardcode opt after refactor, all methods should accept custom flags
 	opt = append(opt, withKeyValue(flagFrom, from))
 	opts := applyOptions(c.id, opt)
@@ -303,7 +303,11 @@ func (s *IntegrationTestSuite) execBankMultiSend(
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	s.T().Logf("sending %s tokens from %s to %s on chain %s", amt, from, to, c.id)
+	if len(to) < 4 {
+		s.T().Logf("sending %s tokens from %s to %s on chain %s", amt, from, to, c.id)
+	} else {
+		s.T().Logf("sending %s tokens from %s to %d accounts on chain %s", amt, from, len(to), c.id)
+	}
 
 	atomoneCommand := []string{
 		atomonedBinary,
@@ -320,7 +324,7 @@ func (s *IntegrationTestSuite) execBankMultiSend(
 		atomoneCommand = append(atomoneCommand, fmt.Sprintf("--%s=%v", flag, value))
 	}
 
-	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.expectErrExecValidation(c, valIdx, expectErr))
+	return s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.expectErrExecValidation(c, valIdx, expectErr))
 }
 
 type txBankSend struct { //nolint:unused
@@ -690,7 +694,7 @@ func (s *IntegrationTestSuite) execWithdrawReward(
 	s.T().Logf("Successfully withdrew distribution rewards for delegator %s from validator %s", delegatorAddress, validatorAddress)
 }
 
-func (s *IntegrationTestSuite) executeAtomoneTxCommand(ctx context.Context, c *chain, atomoneCommand []string, valIdx int, validation func([]byte, []byte) bool) {
+func (s *IntegrationTestSuite) executeAtomoneTxCommand(ctx context.Context, c *chain, atomoneCommand []string, valIdx int, validation func([]byte, []byte) bool) int {
 	if validation == nil {
 		validation = s.defaultExecValidation(s.chainA, 0, nil)
 	}
@@ -722,6 +726,17 @@ func (s *IntegrationTestSuite) executeAtomoneTxCommand(ctx context.Context, c *c
 		s.Require().FailNowf("Exec validation failed", "stdout: %s, stderr: %s",
 			string(stdOut), string(stdErr))
 	}
+	var txResp sdk.TxResponse
+	if err := cdc.UnmarshalJSON(stdOut, &txResp); err != nil {
+		return 0
+	}
+	endpoint := fmt.Sprintf("http://%s", s.valResources[c.id][valIdx].GetHostPort("1317/tcp"))
+	height, err := queryAtomOneTx(endpoint, txResp.TxHash, nil)
+	if err != nil {
+		s.Require().FailNowf("Failed query of Tx height", "err: %s, stdout: %s, stderr: %s",
+			err, string(stdOut), string(stdErr))
+	}
+	return height
 }
 
 func (s *IntegrationTestSuite) executeHermesCommand(ctx context.Context, hermesCmd []string) ([]byte, error) {
@@ -757,8 +772,10 @@ func (s *IntegrationTestSuite) executeHermesCommand(ctx context.Context, hermesC
 		}
 		// errors are catched by observing the logs level in the stderr output
 		if lvl := out["level"]; lvl != nil && strings.ToLower(lvl.(string)) == "error" {
-			errMsg := out["fields"].(map[string]interface{})["message"]
-			return nil, fmt.Errorf("hermes relayer command failed: %s", errMsg)
+			fields := out["fields"].(map[string]any)
+			errMsg := fields["message"]
+			resp := fields["response"]
+			return nil, fmt.Errorf("hermes relayer command failed: %s: %s", errMsg, resp)
 		}
 		if s := out["status"]; s != nil && s != "success" {
 			return nil, fmt.Errorf("hermes relayer command returned failed with status: %s", s)
@@ -780,7 +797,12 @@ func (s *IntegrationTestSuite) expectErrExecValidation(chain *chain, valIdx int,
 		// wait for the tx to be committed on chain
 		s.Require().Eventuallyf(
 			func() bool {
-				gotErr := queryAtomOneTx(endpoint, txResp.TxHash, nil) != nil
+				_, err := queryAtomOneTx(endpoint, txResp.TxHash, nil)
+				if isErrNotFound(err) {
+					// tx not processed yet, continue
+					return false
+				}
+				gotErr := err != nil
 				return gotErr == expectErr
 			},
 			time.Minute,
@@ -802,7 +824,7 @@ func (s *IntegrationTestSuite) defaultExecValidation(chain *chain, valIdx int, m
 			endpoint := fmt.Sprintf("http://%s", s.valResources[chain.id][valIdx].GetHostPort("1317/tcp"))
 			s.Require().Eventually(
 				func() bool {
-					err := queryAtomOneTx(endpoint, txResp.TxHash, msgResp)
+					_, err := queryAtomOneTx(endpoint, txResp.TxHash, msgResp)
 					if isErrNotFound(err) {
 						// tx not processed yet, continue
 						return false
@@ -851,6 +873,7 @@ func (s *IntegrationTestSuite) execPhotonMint(
 	valIdx int,
 	from,
 	amt string,
+	expectFail bool,
 	opt ...flagOption,
 ) (resp photontypes.MsgMintPhotonResponse) {
 	opt = append(opt, withKeyValue(flagFrom, from))
@@ -873,7 +896,11 @@ func (s *IntegrationTestSuite) execPhotonMint(
 		atomoneCommand = append(atomoneCommand, fmt.Sprintf("--%s=%v", flag, value))
 	}
 
-	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx, &resp))
+	if !expectFail {
+		s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx, &resp))
+	} else {
+		s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.expectErrExecValidation(c, valIdx, true))
+	}
 	return
 }
 

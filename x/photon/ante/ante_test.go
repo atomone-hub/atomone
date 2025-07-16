@@ -1,24 +1,44 @@
-package ante
+package ante_test
 
 import (
+	"fmt"
 	"testing"
 
-	"gotest.tools/v3/assert"
-
-	appparams "github.com/atomone-hub/atomone/app/params"
-	"github.com/atomone-hub/atomone/x/photon/testutil"
-	"github.com/atomone-hub/atomone/x/photon/types"
+	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/cometbft/cometbft/libs/log"
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/tx"
+
+	appparams "github.com/atomone-hub/atomone/app/params"
+	"github.com/atomone-hub/atomone/x/photon/ante"
+	"github.com/atomone-hub/atomone/x/photon/types"
 )
+
+type mocks struct {
+	ctx          sdk.Context
+	PhotonKeeper *MockPhotonKeeper
+}
+
+func setupMocks(t *testing.T) mocks {
+	t.Helper()
+	ctrl := gomock.NewController(t)
+	return mocks{
+		ctx:          sdk.NewContext(nil, tmproto.Header{}, false, log.TestingLogger()),
+		PhotonKeeper: NewMockPhotonKeeper(ctrl),
+	}
+}
 
 func TestValidateFeeDecorator(t *testing.T) {
 	tests := []struct {
 		name          string
 		tx            sdk.Tx
+		setup         func(mocks)
 		expectedError string
 	}{
 		{
@@ -51,6 +71,10 @@ func TestValidateFeeDecorator(t *testing.T) {
 					},
 				},
 			},
+			setup: func(m mocks) {
+				m.PhotonKeeper.EXPECT().GetParams(m.ctx).
+					Return(types.DefaultParams())
+			},
 		},
 		{
 			name: "ok: MsgUpdateParams fee uphoton",
@@ -65,6 +89,10 @@ func TestValidateFeeDecorator(t *testing.T) {
 						codectypes.UnsafePackAny(&types.MsgUpdateParams{}),
 					},
 				},
+			},
+			setup: func(m mocks) {
+				m.PhotonKeeper.EXPECT().GetParams(m.ctx).
+					Return(types.DefaultParams())
 			},
 		},
 		{
@@ -81,7 +109,15 @@ func TestValidateFeeDecorator(t *testing.T) {
 					},
 				},
 			},
-			expectedError: "fee denom uatone not allowed: invalid fee token",
+			setup: func(m mocks) {
+				m.PhotonKeeper.EXPECT().GetParams(m.ctx).
+					Return(types.DefaultParams())
+			},
+			expectedError: fmt.Sprintf(
+				"fee denom %s not allowed; only fee denom %s is allowed: invalid fee token",
+				"uatone",
+				types.Denom,
+			),
 		},
 		{
 			name: "fail: MsgUpdateParams fee xxx",
@@ -97,7 +133,15 @@ func TestValidateFeeDecorator(t *testing.T) {
 					},
 				},
 			},
-			expectedError: "fee denom xxx not allowed: invalid fee token",
+			setup: func(m mocks) {
+				m.PhotonKeeper.EXPECT().GetParams(m.ctx).
+					Return(types.DefaultParams())
+			},
+			expectedError: fmt.Sprintf(
+				"fee denom %s not allowed; only fee denom %s is allowed: invalid fee token",
+				"xxx",
+				types.Denom,
+			),
 		},
 		{
 			name: "fail: MsgUpdateParams multiple fee denom",
@@ -116,23 +160,29 @@ func TestValidateFeeDecorator(t *testing.T) {
 					},
 				},
 			},
+			setup: func(m mocks) {
+				m.PhotonKeeper.EXPECT().GetParams(m.ctx).
+					Return(types.DefaultParams())
+			},
 			expectedError: "too many fee coins, only accepts fees in one denom",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			k, _, ctx := testutil.SetupPhotonKeeper(t)
-			k.SetParams(ctx, types.DefaultParams())
 			var (
+				m           = setupMocks(t)
 				nextInvoked bool
 				next        = func(ctx sdk.Context, tx sdk.Tx, simulate bool) (sdk.Context, error) {
 					nextInvoked = true
 					return ctx, nil
 				}
-				vfd = NewValidateFeeDecorator(k)
 			)
+			if tt.setup != nil {
+				tt.setup(m)
+			}
 
-			_, err := vfd.AnteHandle(ctx, tt.tx, false, next)
+			vfd := ante.NewValidateFeeDecorator(m.PhotonKeeper)
+			_, err := vfd.AnteHandle(m.ctx, tt.tx, false, next)
 
 			if tt.expectedError != "" {
 				require.EqualError(t, err, tt.expectedError)
@@ -232,7 +282,7 @@ func TestAllowsAnyTxFee(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			res := allowsAnyTxFee(tt.tx, tt.txFeeExceptions)
+			res := ante.AllowsAnyTxFee(tt.tx, tt.txFeeExceptions)
 
 			assert.Equal(t, tt.expectedRes, res)
 		})

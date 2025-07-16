@@ -23,8 +23,6 @@ import (
 	capabilitytypes "github.com/cosmos/cosmos-sdk/x/capability/types"
 	"github.com/cosmos/cosmos-sdk/x/consensus"
 	consensusparamtypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
-	"github.com/cosmos/cosmos-sdk/x/crisis"
-	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
 	distr "github.com/cosmos/cosmos-sdk/x/distribution"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	"github.com/cosmos/cosmos-sdk/x/evidence"
@@ -45,6 +43,8 @@ import (
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
 	atomoneappparams "github.com/atomone-hub/atomone/app/params"
+	"github.com/atomone-hub/atomone/x/feemarket"
+	feemarkettypes "github.com/atomone-hub/atomone/x/feemarket/types"
 	"github.com/atomone-hub/atomone/x/gov"
 	govclient "github.com/atomone-hub/atomone/x/gov/client"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
@@ -62,6 +62,7 @@ var maccPerms = map[string][]string{
 	govtypes.ModuleName:            {authtypes.Burner},
 	ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
 	photontypes.ModuleName:         {authtypes.Minter, authtypes.Burner},
+	feemarkettypes.ModuleName:      nil,
 }
 
 // ModuleBasics defines the module BasicManager is in charge of setting up basic,
@@ -85,7 +86,6 @@ var ModuleBasics = module.NewBasicManager(
 		},
 	),
 	sdkparams.AppModuleBasic{},
-	crisis.AppModuleBasic{},
 	slashing.AppModuleBasic{},
 	photon.AppModuleBasic{},
 	feegrantmodule.AppModuleBasic{},
@@ -98,12 +98,12 @@ var ModuleBasics = module.NewBasicManager(
 	vesting.AppModuleBasic{},
 	ica.AppModuleBasic{},
 	consensus.AppModuleBasic{},
+	feemarket.AppModuleBasic{},
 )
 
 func appModules(
 	app *AtomOneApp,
 	encodingConfig atomoneappparams.EncodingConfig,
-	skipGenesisInvariants bool,
 ) []module.AppModule {
 	appCodec := encodingConfig.Marshaler
 
@@ -118,7 +118,6 @@ func appModules(
 		vesting.NewAppModule(app.AccountKeeper, app.BankKeeper),
 		bank.NewAppModule(appCodec, app.BankKeeper, app.AccountKeeper, app.GetSubspace(banktypes.ModuleName)),
 		capability.NewAppModule(appCodec, *app.CapabilityKeeper, false),
-		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)),
 		gov.NewAppModule(appCodec, app.GovKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(govtypes.ModuleName)),
 		mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper, nil, app.GetSubspace(minttypes.ModuleName)),
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(slashingtypes.ModuleName)),
@@ -134,6 +133,7 @@ func appModules(
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
 		app.TransferModule,
 		app.ICAModule,
+		feemarket.NewAppModule(appCodec, *app.FeemarketKeeper),
 	}
 }
 
@@ -142,7 +142,6 @@ func appModules(
 func simulationModules(
 	app *AtomOneApp,
 	encodingConfig atomoneappparams.EncodingConfig,
-	_ bool,
 ) []module.AppModuleSimulation {
 	appCodec := encodingConfig.Marshaler
 
@@ -153,6 +152,7 @@ func simulationModules(
 		feegrantmodule.NewAppModule(appCodec, app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper, app.interfaceRegistry),
 		gov.NewAppModule(appCodec, app.GovKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(govtypes.ModuleName)),
 		mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper, nil, app.GetSubspace(minttypes.ModuleName)),
+		feemarket.NewAppModule(appCodec, *app.FeemarketKeeper),
 		staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
 		photon.NewAppModule(appCodec, *app.PhotonKeeper, app.BankKeeper, app.AccountKeeper, app.StakingKeeper),
 		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(distrtypes.ModuleName)),
@@ -184,6 +184,7 @@ func orderBeginBlockers() []string {
 		upgradetypes.ModuleName,
 		capabilitytypes.ModuleName,
 		minttypes.ModuleName,
+		feemarkettypes.ModuleName,
 		distrtypes.ModuleName,
 		slashingtypes.ModuleName,
 		evidencetypes.ModuleName,
@@ -192,7 +193,6 @@ func orderBeginBlockers() []string {
 		banktypes.ModuleName,
 		photontypes.ModuleName,
 		govtypes.ModuleName,
-		crisistypes.ModuleName,
 		ibcexported.ModuleName,
 		ibctransfertypes.ModuleName,
 		icatypes.ModuleName,
@@ -215,7 +215,7 @@ thus, gov.EndBlock must be executed before staking.EndBlock
 */
 func orderEndBlockers() []string {
 	return []string{
-		crisistypes.ModuleName,
+		feemarkettypes.ModuleName,
 		govtypes.ModuleName,
 		stakingtypes.ModuleName,
 		ibcexported.ModuleName,
@@ -258,7 +258,6 @@ func orderInitBlockers() []string {
 		photontypes.ModuleName,
 		slashingtypes.ModuleName,
 		minttypes.ModuleName,
-		crisistypes.ModuleName,
 		genutiltypes.ModuleName,
 		ibctransfertypes.ModuleName,
 		ibcexported.ModuleName,
@@ -270,5 +269,6 @@ func orderInitBlockers() []string {
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
+		feemarkettypes.ModuleName,
 	}
 }

@@ -12,7 +12,6 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	capabilitytypes "github.com/cosmos/cosmos-sdk/x/capability/types"
 	consensusparamtypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
-	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
 	"github.com/cosmos/cosmos-sdk/x/feegrant"
@@ -22,6 +21,7 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
+	feemarkettypes "github.com/atomone-hub/atomone/x/feemarket/types"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
 )
@@ -33,7 +33,6 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 		authtypes.StoreKey,
 		banktypes.StoreKey,
 		stakingtypes.StoreKey,
-		crisistypes.StoreKey,
 		minttypes.StoreKey,
 		distrtypes.StoreKey,
 		slashingtypes.StoreKey,
@@ -49,6 +48,7 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 		authzkeeper.StoreKey,
 		consensusparamtypes.StoreKey,
 		photontypes.StoreKey,
+		feemarkettypes.StoreKey,
 	)
 
 	// Define transient store keys

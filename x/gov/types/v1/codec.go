@@ -9,7 +9,6 @@ import (
 	authzcodec "github.com/cosmos/cosmos-sdk/x/authz/codec"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	consensustypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
-	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
 	distributiontypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
 	groupcodec "github.com/cosmos/cosmos-sdk/x/group/codec"
@@ -69,7 +68,6 @@ func init() {
 	// register their amino types in the legacy gov module.
 	banktypes.RegisterLegacyAminoCodec(govcodec.Amino)
 	consensustypes.RegisterLegacyAminoCodec(govcodec.Amino)
-	crisistypes.RegisterLegacyAminoCodec(govcodec.Amino)
 	distributiontypes.RegisterLegacyAminoCodec(govcodec.Amino)
 	evidencetypes.RegisterLegacyAminoCodec(govcodec.Amino)
 	minttypes.RegisterLegacyAminoCodec(govcodec.Amino)

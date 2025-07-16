@@ -3,6 +3,8 @@ package gov
 import (
 	"fmt"
 
+	"cosmossdk.io/math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/atomone-hub/atomone/x/gov/keeper"
@@ -17,6 +19,24 @@ func InitGenesis(ctx sdk.Context, ak types.AccountKeeper, bk types.BankKeeper, k
 		panic(fmt.Sprintf("%s module params has not been set", types.ModuleName))
 	}
 	k.SetConstitution(ctx, data.Constitution)
+
+	participationEma, err := math.LegacyNewDecFromStr(data.ParticipationEma)
+	if err != nil {
+		panic(fmt.Sprintf("invalid value for participationEma %s: %v", data.ParticipationEma, err))
+	}
+	k.SetParticipationEMA(ctx, participationEma)
+
+	constitutionAmendmentparticipationEma, err := math.LegacyNewDecFromStr(data.ConstitutionAmendmentParticipationEma)
+	if err != nil {
+		panic(fmt.Sprintf("invalid value for constitutionAmendmentparticipationEma %s: %v", data.ConstitutionAmendmentParticipationEma, err))
+	}
+	k.SetConstitutionAmendmentParticipationEMA(ctx, constitutionAmendmentparticipationEma)
+
+	lawParticipationEma, err := math.LegacyNewDecFromStr(data.LawParticipationEma)
+	if err != nil {
+		panic(fmt.Sprintf("invalid value for lawParticipationEma %s: %v", data.LawParticipationEma, err))
+	}
+	k.SetLawParticipationEMA(ctx, lawParticipationEma)
 
 	// check if the deposits pool account exists
 	moduleAcc := k.GetGovernanceAccount(ctx)
@@ -48,11 +68,7 @@ func InitGenesis(ctx sdk.Context, ak types.AccountKeeper, bk types.BankKeeper, k
 			quorumCheckEntry := v1.NewQuorumCheckQueueEntry(quorumTimeoutTime, data.Params.QuorumCheckCount)
 			quorum := false
 			if ctx.BlockTime().After(quorumTimeoutTime) {
-				var err error
-				quorum, err = k.HasReachedQuorum(ctx, *proposal)
-				if err != nil {
-					panic(err)
-				}
+				quorum = k.HasReachedQuorum(ctx, *proposal)
 				if !quorum {
 					// since we don't export the state of the quorum check queue, we can't know how many checks were actually
 					// done. However, in order to trigger a vote time extension, it is enough to have QuorumChecksDone > 0 to
@@ -76,6 +92,18 @@ func InitGenesis(ctx sdk.Context, ak types.AccountKeeper, bk types.BankKeeper, k
 	// check if total deposits equals balance, if it doesn't panic because there were export/import errors
 	if !balance.IsEqual(totalDeposits) {
 		panic(fmt.Sprintf("expected module account was %s but we got %s", balance.String(), totalDeposits.String()))
+	}
+
+	if data.LastMinDeposit != nil {
+		k.SetLastMinDeposit(ctx, data.LastMinDeposit.Value, *data.LastMinDeposit.Time)
+	} else {
+		k.SetLastMinDeposit(ctx, data.Params.MinDepositThrottler.FloorValue, ctx.BlockTime())
+	}
+
+	if data.LastMinInitialDeposit != nil {
+		k.SetLastMinInitialDeposit(ctx, data.LastMinInitialDeposit.Value, *data.LastMinInitialDeposit.Time)
+	} else {
+		k.SetLastMinInitialDeposit(ctx, data.Params.MinInitialDepositThrottler.FloorValue, ctx.BlockTime())
 	}
 
 	// set governors
@@ -120,6 +148,9 @@ func InitGenesis(ctx sdk.Context, ak types.AccountKeeper, bk types.BankKeeper, k
 // ExportGenesis - output genesis parameters
 func ExportGenesis(ctx sdk.Context, k *keeper.Keeper) *v1.GenesisState {
 	startingProposalID, _ := k.GetProposalID(ctx)
+	participationEma := k.GetParticipationEMA(ctx).String()
+	constitutionAmendmentParticipationEma := k.GetConstitutionAmendmentParticipationEMA(ctx).String()
+	lawParticipationEma := k.GetLawParticipationEMA(ctx).String()
 	proposals := k.GetProposals(ctx)
 	params := k.GetParams(ctx)
 	constitution := k.GetConstitution(ctx)
@@ -135,19 +166,36 @@ func ExportGenesis(ctx sdk.Context, k *keeper.Keeper) *v1.GenesisState {
 		proposalsVotes = append(proposalsVotes, votes...)
 	}
 
+	blockTime := ctx.BlockTime()
+	lastMinDeposit := v1.LastMinDeposit{
+		Value: k.GetMinDeposit(ctx),
+		Time:  &blockTime,
+	}
+
+	lastMinInitialDeposit := v1.LastMinDeposit{
+		Value: k.GetMinInitialDeposit(ctx),
+		Time:  &blockTime,
+	}
+
 	var governanceDelegations []*v1.GovernanceDelegation
 	for _, g := range governors {
 		delegations := k.GetAllGovernanceDelegationsByGovernor(ctx, g.GetAddress())
 		governanceDelegations = append(governanceDelegations, delegations...)
 	}
+
 	return &v1.GenesisState{
-		StartingProposalId:    startingProposalID,
-		Deposits:              proposalsDeposits,
-		Votes:                 proposalsVotes,
-		Proposals:             proposals,
-		Params:                &params,
-		Constitution:          constitution,
-		Governors:             governors,
-		GovernanceDelegations: governanceDelegations,
+		StartingProposalId:                    startingProposalID,
+		Deposits:                              proposalsDeposits,
+		Votes:                                 proposalsVotes,
+		Proposals:                             proposals,
+		Params:                                &params,
+		Constitution:                          constitution,
+		LastMinDeposit:                        &lastMinDeposit,
+		LastMinInitialDeposit:                 &lastMinInitialDeposit,
+		ParticipationEma:                      participationEma,
+		ConstitutionAmendmentParticipationEma: constitutionAmendmentParticipationEma,
+		LawParticipationEma:                   lawParticipationEma,
+		Governors:                             governors,
+		GovernanceDelegations:                 governanceDelegations,
 	}
 }

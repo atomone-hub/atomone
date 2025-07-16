@@ -14,6 +14,7 @@ var (
 	runVestingTest                = true
 	runRestInterfacesTest         = true
 	runPhotonTest                 = true
+	runFeemarketTest              = true
 )
 
 func (s *IntegrationTestSuite) TestRestInterfaces() {
@@ -68,6 +69,7 @@ func (s *IntegrationTestSuite) TestIBC() {
 	if !runIBCTest {
 		s.T().Skip()
 	}
+	s.ensureIBCSetup()
 
 	s.testIBCTokenTransfer()
 }
@@ -104,4 +106,12 @@ func (s *IntegrationTestSuite) TestPhoton() {
 		s.T().Skip()
 	}
 	s.testMintPhoton()
+}
+
+func (s *IntegrationTestSuite) TestFeemarket() {
+	if !runFeemarketTest {
+		s.T().Skip()
+	}
+	s.testFeemarketQuery()
+	s.testFeemarketGasPriceChange()
 }

@@ -167,6 +167,11 @@ func (q Keeper) Params(c context.Context, req *v1.QueryParamsRequest) (*v1.Query
 
 	ctx := sdk.UnwrapSDKContext(c)
 	params := q.GetParams(ctx)
+	// NOTE: feed deprecated parameters with dynamic values for backward compat
+	params.MinDeposit = q.GetMinDeposit(ctx)
+	params.Quorum = q.GetQuorum(ctx).String()
+	params.ConstitutionAmendmentQuorum = q.GetConstitutionAmendmentQuorum(ctx).String()
+	params.LawQuorum = q.GetLawQuorum(ctx).String()
 
 	response := &v1.QueryParamsResponse{}
 
@@ -181,7 +186,11 @@ func (q Keeper) Params(c context.Context, req *v1.QueryParamsRequest) (*v1.Query
 		response.VotingParams = &votingParams
 
 	case v1.ParamTallying:
-		tallyParams := v1.NewTallyParams(params.Quorum, params.Threshold)
+		tallyParams := v1.NewTallyParams(
+			params.Quorum, params.Threshold,
+			params.ConstitutionAmendmentQuorum, params.ConstitutionAmendmentThreshold,
+			params.LawQuorum, params.LawThreshold,
+		)
 		response.TallyParams = &tallyParams
 
 	default:
@@ -284,10 +293,36 @@ func (q Keeper) TallyResult(c context.Context, req *v1.QueryTallyResultRequest) 
 
 	default:
 		// proposal is in voting period
-		_, _, tallyResult = q.Tally(ctx, proposal)
+		_, _, _, tallyResult = q.Tally(ctx, proposal)
 	}
 
 	return &v1.QueryTallyResultResponse{Tally: &tallyResult}, nil
+}
+
+// MinDeposit returns the minimum deposit currently required for a proposal to enter voting period
+func (q Keeper) MinDeposit(c context.Context, req *v1.QueryMinDepositRequest) (*v1.QueryMinDepositResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+	minDeposit := q.GetMinDeposit(ctx)
+
+	return &v1.QueryMinDepositResponse{MinDeposit: minDeposit}, nil
+}
+
+// MinInitialDeposit returns the minimum deposit required for a proposal to be submitted
+func (q Keeper) MinInitialDeposit(c context.Context, req *v1.QueryMinInitialDepositRequest) (*v1.QueryMinInitialDepositResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+	minInitialDeposit := q.GetMinInitialDeposit(ctx)
+
+	return &v1.QueryMinInitialDepositResponse{MinInitialDeposit: minInitialDeposit}, nil
+}
+
+// Quorums returns the current quorums
+func (q Keeper) Quorums(c context.Context, _ *v1.QueryQuorumsRequest) (*v1.QueryQuorumsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+	return &v1.QueryQuorumsResponse{
+		Quorum:                      q.GetQuorum(ctx).String(),
+		ConstitutionAmendmentQuorum: q.GetConstitutionAmendmentQuorum(ctx).String(),
+		LawQuorum:                   q.GetLawQuorum(ctx).String(),
+	}, nil
 }
 
 // Governor queries governor information based on governor address.
@@ -552,7 +587,7 @@ func (q legacyQueryServer) Params(c context.Context, req *v1beta1.QueryParamsReq
 	}
 
 	if resp.TallyParams != nil {
-		quorum, err := sdk.NewDecFromStr(resp.TallyParams.Quorum)
+		quorumRes, err := q.keeper.Quorums(c, &v1.QueryQuorumsRequest{})
 		if err != nil {
 			return nil, err
 		}
@@ -560,7 +595,7 @@ func (q legacyQueryServer) Params(c context.Context, req *v1beta1.QueryParamsReq
 		if err != nil {
 			return nil, err
 		}
-
+		quorum := sdk.MustNewDecFromStr(quorumRes.Quorum)
 		response.TallyParams = v1beta1.NewTallyParams(quorum, threshold, sdk.ZeroDec())
 	}
 

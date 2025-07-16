@@ -4,6 +4,7 @@ syntax = "proto3";
 package atomone.gov.v1;
 
 import "atomone/gov/v1/gov.proto";
+import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/atomone-hub/atomone/x/gov/types/v1";
 
@@ -34,8 +35,30 @@ message GenesisState {
   //
   // Since: cosmos-sdk 0.48
   string constitution = 9;
+
+  // last updated value for the dynamic min deposit
+  LastMinDeposit last_min_deposit = 10;
+
+  // last updated value for the dynamic min initial deposit
+  LastMinDeposit last_min_initial_deposit = 11;
+  
+  // governance participation EMA
+  // If unset or set to 0, the quorum for the next proposal will be set to the
+  // params.MinQuorum value.
+  string participation_ema = 12 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  
+  // governance participation EMA for constitution amendment proposals.
+  // If unset or set to 0, the quorum for the next constitution amendment
+  // proposal will be set to the params.MinConstitutionAmendmentQuorum value.
+  string constitution_amendment_participation_ema = 13 [(cosmos_proto.scalar) = "cosmos.Dec"];
+
+  // governance participation EMA for law proposals.
+  // If unset or set to 0, the quorum for the next law proposal will be set to
+  // the params.LawMinQuorum value.
+  string law_participation_ema = 14 [(cosmos_proto.scalar) = "cosmos.Dec"];
+
   // governors defines all the governors present at genesis.
-  repeated Governor governors = 10;
+  repeated Governor governors = 15;
   // governance_delegations defines all the governance delegations present at genesis.
-  repeated GovernanceDelegation governance_delegations = 11;
+  repeated GovernanceDelegation governance_delegations = 16;
 }

@@ -22,7 +22,7 @@ type Content interface {
 // governance process.
 type Handler func(ctx sdk.Context, content Content) error
 
-// WrapHandler converts a Cosmos SDK gov Handler to GovGen gov Handler
+// WrapSDKHandler converts a Cosmos SDK gov Handler to GovGen gov Handler
 func WrapSDKHandler(sdkHandler sdkgovtypes.Handler) Handler {
 	return func(ctx sdk.Context, content Content) error {
 		return sdkHandler(ctx, content)

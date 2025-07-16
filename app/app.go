@@ -44,14 +44,14 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/cosmos/cosmos-sdk/x/crisis"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
 	atomoneante "github.com/atomone-hub/atomone/ante"
 	"github.com/atomone-hub/atomone/app/keepers"
 	"github.com/atomone-hub/atomone/app/params"
 	"github.com/atomone-hub/atomone/app/upgrades"
-	v2 "github.com/atomone-hub/atomone/app/upgrades/v2"
+	v3 "github.com/atomone-hub/atomone/app/upgrades/v3"
+	atomonepost "github.com/atomone-hub/atomone/post"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 )
 
@@ -59,7 +59,7 @@ var (
 	// DefaultNodeHome default home directories for the application daemon
 	DefaultNodeHome string
 
-	Upgrades = []upgrades.Upgrade{v2.Upgrade}
+	Upgrades = []upgrades.Upgrade{v3.Upgrade}
 )
 
 var (
@@ -116,7 +116,6 @@ func NewAtomOneApp(
 	txConfig := encodingConfig.TxConfig
 
 	// App Opts
-	skipGenesisInvariants := cast.ToBool(appOpts.Get(crisis.FlagSkipGenesisInvariants))
 	invCheckPeriod := cast.ToUint(appOpts.Get(server.FlagInvCheckPeriod))
 
 	bApp := baseapp.NewBaseApp(
@@ -159,7 +158,7 @@ func NewAtomOneApp(
 
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
-	app.mm = module.NewManager(appModules(app, encodingConfig, skipGenesisInvariants)...)
+	app.mm = module.NewManager(appModules(app, encodingConfig)...)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
 	// there is nothing left over in the validator fee pool, so as to keep the
@@ -182,7 +181,6 @@ func NewAtomOneApp(
 	// Uncomment if you want to set a custom migration order here.
 	// app.mm.SetOrderMigrations(custom order)
 
-	app.mm.RegisterInvariants(app.CrisisKeeper)
 	app.configurator = module.NewConfigurator(app.appCodec, app.MsgServiceRouter(), app.GRPCQueryRouter())
 	app.mm.RegisterServices(app.configurator)
 
@@ -201,7 +199,7 @@ func NewAtomOneApp(
 	//
 	// NOTE: this is not required apps that don't use the simulator for fuzz testing
 	// transactions
-	app.sm = module.NewSimulationManager(simulationModules(app, encodingConfig, skipGenesisInvariants)...)
+	app.sm = module.NewSimulationManager(simulationModules(app, encodingConfig)...)
 
 	app.sm.RegisterStoreDecoders()
 
@@ -224,14 +222,25 @@ func NewAtomOneApp(
 			StakingKeeper: app.StakingKeeper,
 			PhotonKeeper:  app.PhotonKeeper,
 			// If TxFeeChecker is nil the default ante TxFeeChecker is used
-			TxFeeChecker: nil,
+			TxFeeChecker:    nil,
+			FeemarketKeeper: app.FeemarketKeeper,
 		},
 	)
 	if err != nil {
 		panic(fmt.Errorf("failed to create AnteHandler: %s", err))
 	}
 
+	postHandlerOptions := atomonepost.HandlerOptions{
+		FeemarketKeeper:       app.FeemarketKeeper,
+		ConsensusParamsKeeper: &app.ConsensusParamsKeeper,
+	}
+	postHandler, err := atomonepost.NewPostHandler(postHandlerOptions)
+	if err != nil {
+		panic(err)
+	}
+
 	app.SetAnteHandler(anteHandler)
+	app.SetPostHandler(postHandler)
 	app.SetInitChainer(app.InitChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetEndBlocker(app.EndBlocker)

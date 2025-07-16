@@ -7,10 +7,12 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
 	"github.com/atomone-hub/atomone/x/gov/client/testutil"
 	"github.com/atomone-hub/atomone/x/gov/types"
@@ -56,6 +58,7 @@ func (suite *KeeperTestSuite) TestActivateVotingPeriod() {
 	params.MaxVotingPeriodExtension = &maxVotingPeriodExtension
 	err := suite.govKeeper.SetParams(suite.ctx, params)
 	suite.Require().NoError(err)
+	currentProposalNumber := suite.govKeeper.GetActiveProposalsNumber(suite.ctx)
 
 	tp := TestProposal
 	proposal, err := suite.govKeeper.SubmitProposal(suite.ctx, tp, "", "test", "summary", sdk.AccAddress("cosmos1ghekyjucln7y67ntx7cf27m9dpuxxemn4c8g4r"))
@@ -65,6 +68,8 @@ func (suite *KeeperTestSuite) TestActivateVotingPeriod() {
 
 	suite.govKeeper.ActivateVotingPeriod(suite.ctx, proposal)
 
+	suite.Require().Equal(currentProposalNumber+1, suite.govKeeper.GetActiveProposalsNumber(suite.ctx),
+		"active proposal number not incremented after proposal activation")
 	proposal, ok := suite.govKeeper.GetProposal(suite.ctx, proposal.Id)
 	suite.Require().True(ok)
 	suite.Require().True(proposal.VotingStartTime.Equal(suite.ctx.BlockHeader().Time))
@@ -162,28 +167,8 @@ func (suite *KeeperTestSuite) TestSubmitProposal() {
 
 func (suite *KeeperTestSuite) TestGetProposalsFiltered() {
 	proposalID := uint64(1)
-	status := []v1.ProposalStatus{v1.StatusDepositPeriod, v1.StatusVotingPeriod}
 
 	addr1 := sdk.AccAddress("foo_________________")
-
-	for _, s := range status {
-		for i := 0; i < 50; i++ {
-			p, err := v1.NewProposal(TestProposal, proposalID, time.Now(), time.Now(), "", "title", "summary", sdk.AccAddress("cosmos1ghekyjucln7y67ntx7cf27m9dpuxxemn4c8g4r"))
-			suite.Require().NoError(err)
-
-			p.Status = s
-
-			if i%2 == 0 {
-				d := v1.NewDeposit(proposalID, addr1, nil)
-				v := v1.NewVote(proposalID, addr1, v1.NewNonSplitVoteOption(v1.OptionYes), "")
-				suite.govKeeper.SetDeposit(suite.ctx, d)
-				suite.govKeeper.SetVote(suite.ctx, v)
-			}
-
-			suite.govKeeper.SetProposal(suite.ctx, p)
-			proposalID++
-		}
-	}
 
 	testCases := []struct {
 		params             v1.QueryProposalsParams
@@ -205,6 +190,26 @@ func (suite *KeeperTestSuite) TestGetProposalsFiltered() {
 
 	for i, tc := range testCases {
 		suite.Run(fmt.Sprintf("Test Case %d", i), func() {
+			status := []v1.ProposalStatus{v1.StatusDepositPeriod, v1.StatusVotingPeriod}
+			for _, s := range status {
+				for i := 0; i < 50; i++ {
+					p, err := v1.NewProposal(TestProposal, proposalID, time.Now(), time.Now(), "", "title", "summary", sdk.AccAddress("cosmos1ghekyjucln7y67ntx7cf27m9dpuxxemn4c8g4r"))
+					suite.Require().NoError(err)
+
+					p.Status = s
+
+					if i%2 == 0 {
+						d := v1.NewDeposit(proposalID, addr1, nil)
+						v := v1.NewVote(proposalID, addr1, v1.NewNonSplitVoteOption(v1.OptionYes), "")
+						suite.govKeeper.SetDeposit(suite.ctx, d)
+						suite.govKeeper.SetVote(suite.ctx, v)
+					}
+
+					suite.govKeeper.SetProposal(suite.ctx, p)
+					proposalID++
+				}
+			}
+
 			proposals := suite.govKeeper.GetProposalsFiltered(suite.ctx, tc.params)
 			suite.Require().Len(proposals, tc.expectedNumResults)
 
@@ -225,4 +230,90 @@ func TestMigrateProposalMessages(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, "Test", content.GetTitle())
 	require.Equal(t, "description", content.GetDescription())
+}
+
+func TestProposalKinds(t *testing.T) {
+	tests := []struct {
+		name          string
+		proposal      v1.Proposal
+		expectedKinds v1.ProposalKinds
+	}{
+		{
+			name:          "no message",
+			proposal:      v1.Proposal{},
+			expectedKinds: v1.ProposalKindAny,
+		},
+		{
+			name: "Send message",
+			proposal: v1.Proposal{
+				Messages: setMsgs(t, []sdk.Msg{&banktypes.MsgSend{}}),
+			},
+			expectedKinds: v1.ProposalKindAny,
+		},
+		{
+			name: "Law message",
+			proposal: v1.Proposal{
+				Messages: setMsgs(t, []sdk.Msg{&v1.MsgProposeLaw{}}),
+			},
+			expectedKinds: v1.ProposalKindLaw,
+		},
+		{
+			name: "Law+Send messages",
+			proposal: v1.Proposal{
+				Messages: setMsgs(t, []sdk.Msg{
+					&v1.MsgProposeLaw{},
+					&banktypes.MsgSend{},
+				}),
+			},
+			expectedKinds: v1.ProposalKindLaw | v1.ProposalKindAny,
+		},
+		{
+			name: "ConstitutionAmendment message",
+			proposal: v1.Proposal{
+				Messages: setMsgs(t, []sdk.Msg{&v1.MsgProposeConstitutionAmendment{}}),
+			},
+			expectedKinds: v1.ProposalKindConstitutionAmendment,
+		},
+		{
+			name: "ConstitutionAmendment+Law messages",
+			proposal: v1.Proposal{
+				Messages: setMsgs(t, []sdk.Msg{
+					&v1.MsgProposeConstitutionAmendment{},
+					&v1.MsgProposeLaw{},
+				}),
+			},
+			expectedKinds: v1.ProposalKindConstitutionAmendment | v1.ProposalKindLaw,
+		},
+		{
+			name: "Law+ConstitutionAmendment messages",
+			proposal: v1.Proposal{
+				Messages: setMsgs(t, []sdk.Msg{
+					&v1.MsgProposeLaw{},
+					&v1.MsgProposeConstitutionAmendment{},
+				}),
+			},
+			expectedKinds: v1.ProposalKindConstitutionAmendment | v1.ProposalKindLaw,
+		},
+		{
+			name: "Law+ConstitutionAmendment+Send messages",
+			proposal: v1.Proposal{
+				Messages: setMsgs(t, []sdk.Msg{
+					&v1.MsgProposeLaw{},
+					&v1.MsgProposeConstitutionAmendment{},
+					&banktypes.MsgSend{},
+				}),
+			},
+			expectedKinds: v1.ProposalKindConstitutionAmendment | v1.ProposalKindLaw | v1.ProposalKindAny,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			k, _, _, _ := setupGovKeeper(t)
+			assert := assert.New(t)
+
+			kinds := k.ProposalKinds(tt.proposal)
+
+			assert.Equal(tt.expectedKinds, kinds)
+		})
+	}
 }

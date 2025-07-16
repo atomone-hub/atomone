@@ -1,9 +1,12 @@
 package types
 
 import (
+	errorsmod "cosmossdk.io/errors"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
+	"github.com/atomone-hub/atomone/app/params"
 	"github.com/atomone-hub/atomone/x/gov/types"
 )
 
@@ -37,13 +40,17 @@ func (msg *MsgMintPhoton) GetSignBytes() []byte {
 
 func (msg *MsgMintPhoton) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.ToAddress); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid toAddress: %s", err) //nolint:staticcheck
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid toAddress: %s", err)
 	}
 	if err := msg.Amount.Validate(); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "invalid coin to burn: %s", err) //nolint:staticcheck
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidCoins, "invalid coin to burn: %s", err)
 	}
 	if !msg.Amount.IsPositive() {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "coin to burn must be positive") //nolint:staticcheck
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidCoins, "coin to burn must be positive")
+	}
+	// Ensure burned amount denom is bond denom
+	if msg.Amount.Denom != params.BondDenom {
+		return errorsmod.Wrapf(ErrBurnInvalidDenom, "invalid denom %s", msg.Amount.Denom)
 	}
 	return nil
 }

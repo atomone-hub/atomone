@@ -45,6 +45,10 @@ var (
 	ProposalIDKey                 = []byte{0x03}
 	VotingPeriodProposalKeyPrefix = []byte{0x04}
 	QuorumCheckQueuePrefix        = []byte{0x05}
+	ActiveProposalsNumberKey      = []byte{0x06}
+	LastMinDepositKey             = []byte{0x07}
+	InactiveProposalsNumberKey    = []byte{0x08}
+	LastMinInitialDepositKey      = []byte{0x09}
 
 	DepositsKeyPrefix = []byte{0x10}
 
@@ -56,11 +60,16 @@ var (
 	// KeyConstitution is the key string used to store the chain's constitution
 	KeyConstitution = []byte{0x40}
 
+	// KeyParticipationEMA is the key string used to store the governance participation EMA
+	KeyParticipationEMA                      = []byte{0x50}
+	KeyConstitutionAmendmentParticipationEMA = []byte{0x60}
+	KeyLawParticipationEMA                   = []byte{0x70}
+
 	// GovernorKeyPrefix is the prefix for governor key
-	GovernorKeyPrefix                        = []byte{0x50}
-	GovernanceDelegationKeyPrefix            = []byte{0x51}
-	ValidatorSharesByGovernorKeyPrefix       = []byte{0x52}
-	GovernanceDelegationsByGovernorKeyPrefix = []byte{0x53}
+	GovernorKeyPrefix                        = []byte{0x80}
+	GovernanceDelegationKeyPrefix            = []byte{0x81}
+	ValidatorSharesByGovernorKeyPrefix       = []byte{0x82}
+	GovernanceDelegationsByGovernorKeyPrefix = []byte{0x83}
 )
 
 var lenTime = len(sdk.FormatTimeBytes(time.Now()))
@@ -115,6 +124,30 @@ func QuorumCheckByTimeKey(endTime time.Time) []byte {
 // QuorumCheckQueueKey returns the key for a proposalID in the quorumCheckQueue
 func QuorumCheckQueueKey(proposalID uint64, endTime time.Time) []byte {
 	return append(QuorumCheckByTimeKey(endTime), GetProposalIDBytes(proposalID)...)
+}
+
+// GetActiveProposalsNumberBytes returns the byte representation of the activeProposalsNumber
+func GetActiveProposalsNumberBytes(activeProposalsNumber uint64) (activeProposalsNumberBz []byte) {
+	activeProposalsNumberBz = make([]byte, 8)
+	binary.BigEndian.PutUint64(activeProposalsNumberBz, activeProposalsNumber)
+	return
+}
+
+// GetActiveProposalsNumberFromBytes returns activeProposalsNumber in uint64 format from a byte array
+func GetActiveProposalsNumberFromBytes(bz []byte) (activeProposalsNumber uint64) {
+	return binary.BigEndian.Uint64(bz)
+}
+
+// GetInactiveProposalsNumberBytes returns the byte representation of the inactiveProposalsNumber
+func GetInactiveProposalsNumberBytes(inactiveProposalsNumber uint64) (inactiveProposalsNumberBz []byte) {
+	inactiveProposalsNumberBz = make([]byte, 8)
+	binary.BigEndian.PutUint64(inactiveProposalsNumberBz, inactiveProposalsNumber)
+	return
+}
+
+// GetInactiveProposalsNumberFromBytes returns inactiveProposalsNumber in uint64 format from a byte array
+func GetInactiveProposalsNumberFromBytes(bz []byte) (inactiveProposalsNumber uint64) {
+	return binary.BigEndian.Uint64(bz)
 }
 
 // DepositsKey gets the first part of the deposits key based on the proposalID

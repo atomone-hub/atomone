@@ -14,10 +14,10 @@ require (
 	github.com/cometbft/cometbft v0.37.15
 	github.com/cometbft/cometbft-db v0.10.0
 	github.com/cosmos/cosmos-proto v1.0.0-beta.5
-	github.com/cosmos/cosmos-sdk v0.47.15
+	github.com/cosmos/cosmos-sdk v0.47.17
 	github.com/cosmos/go-bip39 v1.0.0
 	github.com/cosmos/gogoproto v1.7.0
-	github.com/cosmos/ibc-go/v7 v7.9.2
+	github.com/cosmos/ibc-go/v7 v7.10.0
 	github.com/golang/mock v1.6.0
 	github.com/golang/protobuf v1.5.4
 	github.com/google/gofuzz v1.2.0
@@ -39,6 +39,7 @@ require (
 	google.golang.org/protobuf v1.36.1
 	gopkg.in/yaml.v2 v2.4.0
 	gotest.tools/v3 v3.5.1
+	pgregory.net/rapid v1.1.0
 	sigs.k8s.io/yaml v1.4.0
 )
 
@@ -170,7 +171,7 @@ require (
 	github.com/sagikazarmark/locafero v0.4.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
 	github.com/sasha-s/go-deadlock v0.3.5 // indirect
-	github.com/sirupsen/logrus v1.9.0 // indirect
+	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/sourcegraph/conc v0.3.0 // indirect
 	github.com/spf13/afero v1.11.0 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
@@ -207,7 +208,6 @@ require (
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	nhooyr.io/websocket v1.8.6 // indirect
-	pgregory.net/rapid v1.1.0 // indirect
 )
 
 replace (
