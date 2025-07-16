@@ -61,10 +61,10 @@ func (m *MsgSubmitProposal) SetMsgs(msgs []sdk.Msg) error {
 // ValidateBasic implements the sdk.Msg interface.
 func (m MsgSubmitProposal) ValidateBasic() error {
 	if m.Title == "" {
-		return sdkerrors.ErrInvalidRequest.Wrap("proposal title cannot be empty") //nolint:staticcheck
+		return sdkerrors.ErrInvalidRequest.Wrap("proposal title cannot be empty")
 	}
 	if m.Summary == "" {
-		return sdkerrors.ErrInvalidRequest.Wrap("proposal summary cannot be empty") //nolint:staticcheck
+		return sdkerrors.ErrInvalidRequest.Wrap("proposal summary cannot be empty")
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.Proposer); err != nil {
@@ -73,16 +73,16 @@ func (m MsgSubmitProposal) ValidateBasic() error {
 
 	deposit := sdk.NewCoins(m.InitialDeposit...)
 	if !deposit.IsValid() {
-		return sdkerrors.ErrInvalidCoins.Wrap(deposit.String()) //nolint:staticcheck
+		return sdkerrors.ErrInvalidCoins.Wrap(deposit.String())
 	}
 
 	if deposit.IsAnyNegative() {
-		return sdkerrors.ErrInvalidCoins.Wrap(deposit.String()) //nolint:staticcheck
+		return sdkerrors.ErrInvalidCoins.Wrap(deposit.String())
 	}
 
 	// Check that either metadata or Msgs length is non nil.
 	if len(m.Messages) == 0 && len(m.Metadata) == 0 {
-		return types.ErrNoProposalMsgs.Wrap("either metadata or Msgs length must be non-nil") //nolint:staticcheck
+		return types.ErrNoProposalMsgs.Wrap("either metadata or Msgs length must be non-nil")
 	}
 
 	msgs, err := m.GetMsgs()
@@ -120,10 +120,10 @@ func (msg MsgDeposit) ValidateBasic() error {
 	}
 	amount := sdk.NewCoins(msg.Amount...)
 	if !amount.IsValid() {
-		return sdkerrors.ErrInvalidCoins.Wrap(amount.String()) //nolint:staticcheck
+		return sdkerrors.ErrInvalidCoins.Wrap(amount.String())
 	}
 	if amount.IsAnyNegative() {
-		return sdkerrors.ErrInvalidCoins.Wrap(amount.String()) //nolint:staticcheck
+		return sdkerrors.ErrInvalidCoins.Wrap(amount.String())
 	}
 
 	return nil
@@ -142,7 +142,7 @@ func (msg MsgVote) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid voter address: %s", err)
 	}
 	if !ValidVoteOption(msg.Option) {
-		return types.ErrInvalidVote.Wrap(msg.Option.String()) //nolint:staticcheck
+		return types.ErrInvalidVote.Wrap(msg.Option.String())
 	}
 
 	return nil
@@ -167,32 +167,32 @@ func (msg MsgVoteWeighted) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid voter address: %s", err)
 	}
 	if len(msg.Options) == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrap(WeightedVoteOptions(msg.Options).String()) //nolint:staticcheck
+		return sdkerrors.ErrInvalidRequest.Wrap(WeightedVoteOptions(msg.Options).String())
 	}
 
 	totalWeight := math.LegacyNewDec(0)
 	usedOptions := make(map[VoteOption]bool)
 	for _, option := range msg.Options {
 		if !option.IsValid() {
-			return types.ErrInvalidVote.Wrap(option.String()) //nolint:staticcheck
+			return types.ErrInvalidVote.Wrap(option.String())
 		}
 		weight, err := math.LegacyNewDecFromStr(option.Weight)
 		if err != nil {
-			return types.ErrInvalidVote.Wrapf("Invalid weight: %s", err) //nolint:staticcheck
+			return types.ErrInvalidVote.Wrapf("Invalid weight: %s", err)
 		}
 		totalWeight = totalWeight.Add(weight)
 		if usedOptions[option.Option] {
-			return types.ErrInvalidVote.Wrap("Duplicated vote option") //nolint:staticcheck
+			return types.ErrInvalidVote.Wrap("Duplicated vote option")
 		}
 		usedOptions[option.Option] = true
 	}
 
 	if totalWeight.GT(math.LegacyNewDec(1)) {
-		return types.ErrInvalidVote.Wrap("Total weight overflow 1.00") //nolint:staticcheck
+		return types.ErrInvalidVote.Wrap("Total weight overflow 1.00")
 	}
 
 	if totalWeight.LT(math.LegacyNewDec(1)) {
-		return types.ErrInvalidVote.Wrap("Total weight lower than 1.00") //nolint:staticcheck
+		return types.ErrInvalidVote.Wrap("Total weight lower than 1.00")
 	}
 
 	return nil
