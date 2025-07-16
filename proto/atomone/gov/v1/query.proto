@@ -80,6 +80,11 @@ service Query {
   rpc Quorums(QueryQuorumsRequest) returns (QueryQuorumsResponse) {
     option (google.api.http).get = "/atomone/gov/v1/quorums";
   }
+
+ // ParticipationEMAs queries the state of the proposal participation exponential moving averages.
+  rpc ParticipationEMAs(QueryParticipationEMAsRequest) returns (QueryParticipationEMAsResponse) {
+    option (google.api.http).get = "/atomone/gov/v1/participationemas";
+  }
 }
 
 // QueryConstitutionRequest is the request type for the Query/Constitution RPC method
@@ -261,4 +266,20 @@ message QueryQuorumsResponse {
 
   // law_quorum defines the requested quorum for law proposals.
   string law_quorum = 3 [ (cosmos_proto.scalar) = "cosmos.Dec" ];
+}
+
+// QueryParticipationEMAsRequest is the request type for the Query/ParticipationEMAs RPC method.
+message QueryParticipationEMAsRequest {}
+
+// QueryParticipationEMAsResponse is the response type for the Query/ParticipationEMAs RPC method.
+message QueryParticipationEMAsResponse {
+  // participation_ema defines the requested participation EMA for proposals.
+  string participation_ema = 1 [ (cosmos_proto.scalar) = "cosmos.Dec" ];
+
+  // constitution_amendment_participation_ema defines the requested participation EMA for
+  // constitution amendment proposals.
+  string constitution_amendment_participation_ema = 2 [ (cosmos_proto.scalar) = "cosmos.Dec" ];
+
+  // law_participation_ema defines the requestedparticipation EMA for law proposals.
+  string law_participation_ema = 3 [ (cosmos_proto.scalar) = "cosmos.Dec" ];
 }
