@@ -4,14 +4,16 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
+
 	"cosmossdk.io/core/address"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/version"
-	"github.com/spf13/cobra"
-	"github.com/spf13/pflag"
 
 	"github.com/atomone-hub/atomone/x/distribution/types"
 )
@@ -58,12 +60,7 @@ func newSplitAndApply(
 	// split messages into slices of length chunkSize
 	totalMessages := len(msgs)
 	for i := 0; i < len(msgs); i += chunkSize {
-
-		sliceEnd := i + chunkSize
-		if sliceEnd > totalMessages {
-			sliceEnd = totalMessages
-		}
-
+		sliceEnd := min(i+chunkSize, totalMessages)
 		msgChunk := msgs[i:sliceEnd]
 		if err := genOrBroadcastFn(clientCtx, fs, msgChunk...); err != nil {
 			return err

@@ -4,10 +4,12 @@ import (
 	"context"
 	"errors"
 
+	gogotypes "github.com/cosmos/gogoproto/types"
+
 	storetypes "cosmossdk.io/store/types"
+
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	gogotypes "github.com/cosmos/gogoproto/types"
 
 	"github.com/atomone-hub/atomone/x/distribution/types"
 )

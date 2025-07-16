@@ -5,13 +5,14 @@ import (
 	"fmt"
 
 	"cosmossdk.io/math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	"github.com/atomone-hub/atomone/x/distribution/types"
 )
 
-// initialize rewards for a new validator
+// initializeValidator initializes rewards for a new validator
 func (k Keeper) initializeValidator(ctx context.Context, val stakingtypes.ValidatorI) error {
 	valBz, err := k.stakingKeeper.ValidatorAddressCodec().StringToBytes(val.GetOperator())
 	if err != nil {
@@ -40,7 +41,7 @@ func (k Keeper) initializeValidator(ctx context.Context, val stakingtypes.Valida
 	return err
 }
 
-// increment validator period, returning the period just ended
+// IncrementValidatorPeriod increments validator period, returning the period just ended
 func (k Keeper) IncrementValidatorPeriod(ctx context.Context, val stakingtypes.ValidatorI) (uint64, error) {
 	valBz, err := k.stakingKeeper.ValidatorAddressCodec().StringToBytes(val.GetOperator())
 	if err != nil {
@@ -164,8 +165,10 @@ func (k Keeper) updateValidatorSlashFraction(ctx context.Context, valAddr sdk.Va
 		return err
 	}
 
-	// increment reference count on period we need to track
-	k.incrementReferenceCount(ctx, valAddr, newPeriod) // TODO: handle error
+	// increment reference count on a period we need to track
+	if err := k.incrementReferenceCount(ctx, valAddr, newPeriod); err != nil {
+		return err
+	}
 
 	slashEvent := types.NewValidatorSlashEvent(newPeriod, fraction)
 	height := uint64(sdkCtx.BlockHeight())

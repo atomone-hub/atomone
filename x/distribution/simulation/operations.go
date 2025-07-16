@@ -6,6 +6,7 @@ import (
 	"math/rand"
 
 	"cosmossdk.io/collections"
+
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -19,6 +20,8 @@ import (
 )
 
 // Simulation operation weights constants
+//
+//nolint:gosec // these are not hard-coded credentials.
 const (
 	OpWeightMsgSetWithdrawAddress          = "op_weight_msg_set_withdraw_address"
 	OpWeightMsgWithdrawDelegationReward    = "op_weight_msg_withdraw_delegation_reward"
@@ -34,7 +37,7 @@ const (
 // WeightedOperations returns all the operations from the module with their respective weights
 func WeightedOperations(
 	appParams simtypes.AppParams,
-	cdc codec.JSONCodec,
+	_ codec.JSONCodec,
 	txConfig client.TxConfig,
 	ak types.AccountKeeper,
 	bk types.BankKeeper,

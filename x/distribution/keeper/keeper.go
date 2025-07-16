@@ -8,6 +8,7 @@ import (
 	"cosmossdk.io/core/store"
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/log"
+
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -154,12 +155,8 @@ func (k Keeper) WithdrawValidatorCommission(ctx context.Context, valAddr sdk.Val
 
 	commission, remainder := accumCommission.Commission.TruncateDecimal()
 
-	// TODO handle error?
-	if err := k.SetValidatorAccumulatedCommission( // leave remainder to withdraw later
-		ctx,
-		valAddr,
-		types.ValidatorAccumulatedCommission{Commission: remainder},
-	); err != nil {
+	err = k.SetValidatorAccumulatedCommission(ctx, valAddr, types.ValidatorAccumulatedCommission{Commission: remainder}) // leave remainder to withdraw later
+	if err != nil {
 		return nil, err
 	}
 

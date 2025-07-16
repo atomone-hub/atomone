@@ -6,7 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// InitialFeePool zero fee pool
+// InitialFeePool returns a zero fee pool
 func InitialFeePool() FeePool {
 	return FeePool{
 		CommunityPool: sdk.DecCoins{},
