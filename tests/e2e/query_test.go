@@ -178,6 +178,24 @@ func queryGovProposal(endpoint string, proposalID int) (govtypesv1beta1.QueryPro
 	return govProposalResp, nil
 }
 
+func (s *IntegrationTestSuite) queryGovQuorums(endpoint string) govtypesv1.QueryQuorumsResponse {
+	body, err := httpGet(fmt.Sprintf("%s/atomone/gov/v1/quorums", endpoint))
+	s.Require().NoError(err)
+	var res govtypesv1.QueryQuorumsResponse
+	err = cdc.UnmarshalJSON(body, &res)
+	s.Require().NoError(err)
+	return res
+}
+
+func (s *IntegrationTestSuite) queryGovParams(endpoint string, param string) govtypesv1.QueryParamsResponse {
+	body, err := httpGet(fmt.Sprintf("%s/atomone/gov/v1/params/%s", endpoint, param))
+	s.Require().NoError(err)
+	var res govtypesv1.QueryParamsResponse
+	err = cdc.UnmarshalJSON(body, &res)
+	s.Require().NoError(err)
+	return res
+}
+
 func queryAccount(endpoint, address string) (acc authtypes.AccountI, err error) {
 	var res authtypes.QueryAccountResponse
 	resp, err := http.Get(fmt.Sprintf("%s/cosmos/auth/v1beta1/accounts/%s", endpoint, address))
@@ -260,6 +278,15 @@ func queryValidators(endpoint string) (stakingtypes.Validators, error) {
 		return nil, err
 	}
 	return res.Validators, nil
+}
+
+func (s *IntegrationTestSuite) queryStakingPool(endpoint string) stakingtypes.QueryPoolResponse {
+	body, err := httpGet(fmt.Sprintf("%s/cosmos/staking/v1beta1/pool", endpoint))
+	s.Require().NoError(err)
+	var res stakingtypes.QueryPoolResponse
+	err = cdc.UnmarshalJSON(body, &res)
+	s.Require().NoError(err)
+	return res
 }
 
 func queryEvidence(endpoint, hash string) (evidencetypes.QueryEvidenceResponse, error) { //nolint:unused // this is called during e2e tests

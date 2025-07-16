@@ -325,6 +325,134 @@ func (s *IntegrationTestSuite) testGovConstitutionAmendment() {
 	})
 }
 
+func (s *IntegrationTestSuite) testGovTextProposal() {
+	s.Run("text proposal pass", func() {
+		chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
+		s.writeTextProposal(s.chainA)
+		proposalCounter++
+		submitGovFlags := []string{configFile(proposalTextFilename)}
+		depositGovFlags := []string{strconv.Itoa(proposalCounter), depositAmount.String()}
+		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
+		senderAddress, _ := s.chainA.validators[0].keyInfo.GetAddress()
+		sender := senderAddress.String()
+		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "Text", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
+	})
+}
+
+func (s *IntegrationTestSuite) testGovDynamicQuorum() {
+	s.Run("dynamic quorum change", func() {
+		// From the formulae in ADR-005
+		// pEma = (Q - Qmin) / (Qmax - Qmin)
+		// Participation = (PEma_t - (PEma_{t-1} * 0.8)/0.2
+		chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
+		params := s.queryGovParams(chainAAPIEndpoint, "tallying")
+		quorums := s.queryGovQuorums(chainAAPIEndpoint)
+		quorumRange := params.GetParams().QuorumRange
+		quorumMin := sdk.MustNewDecFromStr(quorumRange.Min)
+		quorumMax := sdk.MustNewDecFromStr(quorumRange.Max)
+		currentQuorum := sdk.MustNewDecFromStr(quorums.GetQuorum())
+		quorumPEma := (currentQuorum.Sub(quorumMin)).Quo(quorumMax.Sub(quorumMin))
+		s.writeTextProposal(s.chainA)
+		proposalCounter++
+		submitGovFlags := []string{configFile(proposalTextFilename)}
+		depositGovFlags := []string{strconv.Itoa(proposalCounter), depositAmount.String()}
+		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
+		senderAddress, _ := s.chainA.validators[0].keyInfo.GetAddress()
+		sender := senderAddress.String()
+		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "Text", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
+		quorumsAfter := s.queryGovQuorums(chainAAPIEndpoint)
+		endQuorum := sdk.MustNewDecFromStr(quorumsAfter.GetQuorum())
+		endQuorumPEma := (endQuorum.Sub(quorumMin)).Quo(quorumMax.Sub(quorumMin))
+		expectedParticipation := endQuorumPEma.Sub(quorumPEma.Mul(sdk.MustNewDecFromStr("0.8"))).Quo(sdk.MustNewDecFromStr("0.2"))
+		proposal, _ := queryGovProposal(chainAAPIEndpoint, proposalCounter)
+		stakingPool := s.queryStakingPool(chainAAPIEndpoint)
+		votes := proposal.Proposal.FinalTallyResult.Yes.ToLegacyDec()
+		totalVP := stakingPool.Pool.BondedTokens.ToLegacyDec()
+		actualParticipation := votes.Quo(totalVP)
+
+		s.Require().True(actualParticipation.Equal(expectedParticipation))
+		s.Require().Equal(quorumsAfter.LawQuorum, quorums.LawQuorum)
+		s.Require().Equal(quorumsAfter.ConstitutionAmendmentQuorum, quorums.ConstitutionAmendmentQuorum)
+	})
+
+	s.Run("dynamic law quorum change", func() {
+		// From the formulae in ADR-005
+		// pEma = (Q - Qmin) / (Qmax - Qmin)
+		// Participation = (PEma_t - (PEma_{t-1} * 0.8)/0.2
+		chainAAPIEndpoint := fmt.Sprintf("http://%s",
+			s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
+		params := s.queryGovParams(chainAAPIEndpoint, "tallying")
+		quorums := s.queryGovQuorums(chainAAPIEndpoint)
+		lawQuorumRange := params.GetParams().LawQuorumRange
+		lawQuorumMin := sdk.MustNewDecFromStr(lawQuorumRange.Min)
+		lawQuorumMax := sdk.MustNewDecFromStr(lawQuorumRange.Max)
+		currentLawQuorum := sdk.MustNewDecFromStr(quorums.GetLawQuorum())
+		lawQuorumPEma := (currentLawQuorum.Sub(lawQuorumMin)).Quo(lawQuorumMax.Sub(lawQuorumMin))
+		s.writeGovLawProposal(s.chainA)
+		proposalCounter++
+		submitGovFlags := []string{configFile(proposalLawFilename)}
+		depositGovFlags := []string{strconv.Itoa(proposalCounter), depositAmount.String()}
+		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
+		senderAddress, _ := s.chainA.validators[0].keyInfo.GetAddress()
+		sender := senderAddress.String()
+		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter,
+			"gov/MsgSubmitProposal", submitGovFlags, depositGovFlags, voteGovFlags,
+			"vote", govtypesv1beta1.StatusPassed)
+		quorumsAfter := s.queryGovQuorums(chainAAPIEndpoint)
+		endLawQuorum := sdk.MustNewDecFromStr(quorumsAfter.GetLawQuorum())
+		endLawQuorumPEma := (endLawQuorum.Sub(lawQuorumMin)).Quo(lawQuorumMax.Sub(lawQuorumMin))
+		expectedParticipation := endLawQuorumPEma.Sub(lawQuorumPEma.Mul(sdk.MustNewDecFromStr("0.8"))).Quo(sdk.MustNewDecFromStr("0.2"))
+		proposal, _ := queryGovProposal(chainAAPIEndpoint, proposalCounter)
+		stakingPool := s.queryStakingPool(chainAAPIEndpoint)
+		votes := proposal.Proposal.FinalTallyResult.Yes.ToLegacyDec()
+		totalVP := stakingPool.Pool.BondedTokens.ToLegacyDec()
+		actualParticipation := votes.Quo(totalVP)
+
+		s.Require().True(actualParticipation.Equal(expectedParticipation))
+		s.Require().Equal(quorumsAfter.Quorum, quorums.Quorum)
+		s.Require().Equal(quorumsAfter.ConstitutionAmendmentQuorum,
+			quorums.ConstitutionAmendmentQuorum)
+	})
+
+	s.Run("dynamic constitution amendment quorum change", func() {
+		// From the formulae in ADR-005
+		// pEma = (Q - Qmin) / (Qmax - Qmin)
+		// Participation = (PEma_t - (PEma_{t-1} * 0.8)/0.2
+		chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
+		params := s.queryGovParams(chainAAPIEndpoint, "tallying")
+		quorums := s.queryGovQuorums(chainAAPIEndpoint)
+		constitutionAmendmentQuorumRange := params.GetParams().ConstitutionAmendmentQuorumRange
+		constitutionAmendmentQuorumMin := sdk.MustNewDecFromStr(constitutionAmendmentQuorumRange.Min)
+		constitutionAmendmentQuorumMax := sdk.MustNewDecFromStr(constitutionAmendmentQuorumRange.Max)
+		currentConstitutionAmendmentQuorum := sdk.MustNewDecFromStr(quorums.GetConstitutionAmendmentQuorum())
+		constitutionAmendmentQuorumPEma := (currentConstitutionAmendmentQuorum.Sub(constitutionAmendmentQuorumMin)).Quo(constitutionAmendmentQuorumMax.Sub(constitutionAmendmentQuorumMin))
+		newConstitution := "New test constitution 2"
+		amendmentMsg := s.generateConstitutionAmendment(s.chainA, newConstitution)
+		s.writeGovConstitutionAmendmentProposal(s.chainA, amendmentMsg.Amendment)
+		proposalCounter++
+		submitGovFlags := []string{configFile(proposalConstitutionAmendmentFilename)}
+		depositGovFlags := []string{strconv.Itoa(proposalCounter), depositAmount.String()}
+		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
+		senderAddress, _ := s.chainA.validators[0].keyInfo.GetAddress()
+		sender := senderAddress.String()
+		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "gov/MsgSubmitProposal", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
+		quorumsAfter := s.queryGovQuorums(chainAAPIEndpoint)
+		endConstitutionAmendmentQuorum := sdk.MustNewDecFromStr(quorumsAfter.GetConstitutionAmendmentQuorum())
+		endConstitutionAmendmentQuorumPEma := (endConstitutionAmendmentQuorum.Sub(constitutionAmendmentQuorumMin)).Quo(constitutionAmendmentQuorumMax.Sub(constitutionAmendmentQuorumMin))
+		expectedParticipation := endConstitutionAmendmentQuorumPEma.Sub(constitutionAmendmentQuorumPEma.Mul(sdk.MustNewDecFromStr("0.8"))).Quo(sdk.MustNewDecFromStr("0.2"))
+		proposal, _ := queryGovProposal(chainAAPIEndpoint, proposalCounter)
+		stakingPool := s.queryStakingPool(chainAAPIEndpoint)
+		votes := proposal.Proposal.FinalTallyResult.Yes.ToLegacyDec()
+		totalVP := stakingPool.Pool.BondedTokens.ToLegacyDec()
+		actualParticipation := votes.Quo(totalVP)
+
+		s.Require().True(actualParticipation.Equal(expectedParticipation))
+		s.Require().Equal(quorumsAfter.Quorum, quorums.Quorum)
+		s.Require().Equal(quorumsAfter.LawQuorum, quorums.LawQuorum)
+	})
+
+}
+
 func (s *IntegrationTestSuite) submitLegacyGovProposal(chainAAPIEndpoint, sender string, proposalID int, proposalType string, submitFlags []string, depositFlags []string, voteFlags []string, voteCommand string, withDeposit bool) {
 	s.T().Logf("Submitting Gov Proposal: %s", proposalType)
 	// min deposit of 1000uatone is required in e2e tests, otherwise the gov antehandler causes the proposal to be dropped
@@ -456,6 +584,20 @@ func (s *IntegrationTestSuite) writeDynamicfeeParamChangeProposal(c *chain, para
 	s.Require().NoError(err)
 }
 
+func (s *IntegrationTestSuite) writeTextProposal(c *chain) {
+	template := `
+	{
+		"deposit": "%s",
+		"metadata": "some metadata",
+		"title": "Text Proposal",
+		"summary": "summary"
+	}
+	`
+	propMsgBody := fmt.Sprintf(template, initialDepositAmount)
+	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalTextFilename), []byte(propMsgBody))
+	s.Require().NoError(err)
+}
+
 func (s *IntegrationTestSuite) writePhotonParamChangeProposal(c *chain, params photontypes.Params) {
 	govModuleAddress := authtypes.NewModuleAddress(govtypes.ModuleName).String()
 
@@ -502,6 +644,28 @@ func (s *IntegrationTestSuite) writeGovConstitutionAmendmentProposal(c *chain, a
 	`
 	propMsgBody := fmt.Sprintf(template, govModuleAddress, amendment, initialDepositAmount)
 	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalConstitutionAmendmentFilename), []byte(propMsgBody))
+	s.Require().NoError(err)
+}
+
+func (s *IntegrationTestSuite) writeGovLawProposal(c *chain) {
+	govModuleAddress := authtypes.NewModuleAddress(govtypes.ModuleName).String()
+
+	template := `
+	{
+	 "messages": [
+		{
+		 "@type": "/atomone.gov.v1.MsgProposeLaw",
+		 "authority": "%s"
+		}
+	 ],
+	 "deposit": "%s",
+	 "metadata": "New Law",
+	 "title": "New Law",
+	 "summary": "This is the summary"
+	}
+	`
+	propMsgBody := fmt.Sprintf(template, govModuleAddress, initialDepositAmount)
+	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalLawFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
