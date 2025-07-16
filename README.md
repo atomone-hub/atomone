@@ -46,7 +46,7 @@ website.
 
 ## Acknowledgements
 
-Portions of this codebase are copied or adapted from 
+Portions of this codebase are copied or adapted from
 [cosmos/gaia@v15](https://github.com/cosmos/gaia/tree/v15.0.0),
 [cosmos/cosmos-sdk@v47.10](https://github.com/cosmos/cosmos-sdk/tree/v0.47.10)
 and [skip-mev/feemarket@v1.1.1](https://github.com/skip-mev/feemarket/tree/v1.1.1).
