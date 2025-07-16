@@ -23,7 +23,7 @@ func CreateUpgradeHandler(
 ) upgradetypes.UpgradeHandler {
 	return func(ctx sdk.Context, plan upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
 		ctx.Logger().Info("Starting module migrations...")
-		// RunMigrations will detect the add of the feemarket module, will initiate
+		// RunMigrations will detect the add of the dynamicfee module, will initiate
 		// its genesis and will fill the versionMap with its consensus version.
 		vm, err := mm.RunMigrations(ctx, configurator, vm)
 		if err != nil {
