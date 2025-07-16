@@ -1,11 +1,11 @@
 package types
 
 import (
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	context "context"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 )
 
 type ConsensusParamsKeeper interface {
-	Get(sdk.Context) (*tmproto.ConsensusParams, error)
+	Get(context.Context) (tmproto.ConsensusParams, error)
 }

@@ -3,15 +3,16 @@ package e2e
 import (
 	"fmt"
 
+	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/codec/unknownproto"
 	sdktx "github.com/cosmos/cosmos-sdk/types/tx"
 )
 
-func decodeTx(txBytes []byte) (*sdktx.Tx, error) {
+func decodeTx(cdc codec.Codec, txBytes []byte) (*sdktx.Tx, error) {
 	var raw sdktx.TxRaw
 
 	// reject all unknown proto fields in the root TxRaw
-	err := unknownproto.RejectUnknownFieldsStrict(txBytes, &raw, encodingConfig.InterfaceRegistry)
+	err := unknownproto.RejectUnknownFieldsStrict(txBytes, &raw, cdc.InterfaceRegistry())
 	if err != nil {
 		return nil, fmt.Errorf("failed to reject unknown fields: %w", err)
 	}
@@ -28,7 +29,7 @@ func decodeTx(txBytes []byte) (*sdktx.Tx, error) {
 	var authInfo sdktx.AuthInfo
 
 	// reject all unknown proto fields in AuthInfo
-	err = unknownproto.RejectUnknownFieldsStrict(raw.AuthInfoBytes, &authInfo, encodingConfig.InterfaceRegistry)
+	err = unknownproto.RejectUnknownFieldsStrict(raw.AuthInfoBytes, &authInfo, cdc.InterfaceRegistry())
 	if err != nil {
 		return nil, fmt.Errorf("failed to reject unknown fields: %w", err)
 	}

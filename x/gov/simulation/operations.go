@@ -1,9 +1,11 @@
 package simulation
 
 import (
-	"math"
+	stdmath "math"
 	"math/rand"
 	"time"
+
+	"cosmossdk.io/math"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -52,19 +54,19 @@ func WeightedOperations(appParams simtypes.AppParams, cdc codec.JSONCodec, ak ty
 		weightMsgVoteWeighted int
 	)
 
-	appParams.GetOrGenerate(cdc, OpWeightMsgDeposit, &weightMsgDeposit, nil,
+	appParams.GetOrGenerate(OpWeightMsgDeposit, &weightMsgDeposit, nil,
 		func(_ *rand.Rand) {
 			weightMsgDeposit = DefaultWeightMsgDeposit
 		},
 	)
 
-	appParams.GetOrGenerate(cdc, OpWeightMsgVote, &weightMsgVote, nil,
+	appParams.GetOrGenerate(OpWeightMsgVote, &weightMsgVote, nil,
 		func(_ *rand.Rand) {
 			weightMsgVote = DefaultWeightMsgVote
 		},
 	)
 
-	appParams.GetOrGenerate(cdc, OpWeightMsgVoteWeighted, &weightMsgVoteWeighted, nil,
+	appParams.GetOrGenerate(OpWeightMsgVoteWeighted, &weightMsgVoteWeighted, nil,
 		func(_ *rand.Rand) {
 			weightMsgVoteWeighted = DefaultWeightMsgVoteWeighted
 		},
@@ -75,7 +77,7 @@ func WeightedOperations(appParams simtypes.AppParams, cdc codec.JSONCodec, ak ty
 	for _, wMsg := range wMsgs {
 		wMsg := wMsg // pin variable
 		var weight int
-		appParams.GetOrGenerate(cdc, wMsg.AppParamsKey(), &weight, nil,
+		appParams.GetOrGenerate(wMsg.AppParamsKey(), &weight, nil,
 			func(_ *rand.Rand) { weight = wMsg.DefaultWeight() },
 		)
 
@@ -93,7 +95,7 @@ func WeightedOperations(appParams simtypes.AppParams, cdc codec.JSONCodec, ak ty
 	for _, wContent := range wContents {
 		wContent := wContent // pin variable
 		var weight int
-		appParams.GetOrGenerate(cdc, wContent.AppParamsKey(), &weight, nil,
+		appParams.GetOrGenerate(wContent.AppParamsKey(), &weight, nil,
 			func(_ *rand.Rand) { weight = wContent.DefaultWeight() },
 		)
 
@@ -209,7 +211,7 @@ func simulateMsgSubmitProposal(ak types.AccountKeeper, bk types.BankKeeper, k *k
 			simtypes.RandStringOfLength(r, 100),
 		)
 		if err != nil {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "unable to generate a submit proposal msg"), nil, err
+			return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(msg), "unable to generate a submit proposal msg"), nil, err
 		}
 
 		account := ak.GetAccount(ctx, simAccount.Address)
@@ -226,26 +228,26 @@ func simulateMsgSubmitProposal(ak types.AccountKeeper, bk types.BankKeeper, k *k
 			simAccount.PrivKey,
 		)
 		if err != nil {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "unable to generate mock tx"), nil, err
+			return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(msg), "unable to generate mock tx"), nil, err
 		}
 
 		_, _, err = app.SimDeliver(txGen.TxEncoder(), tx)
 		if err != nil {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "unable to deliver tx"), nil, err
+			return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(msg), "unable to deliver tx"), nil, err
 		}
 
-		opMsg := simtypes.NewOperationMsg(msg, true, "", nil)
+		opMsg := simtypes.NewOperationMsg(msg, true, "")
 
 		// get the submitted proposal ID
 		proposalID, err := k.GetProposalID(ctx)
 		if err != nil {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "unable to generate proposalID"), nil, err
+			return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(msg), "unable to generate proposalID"), nil, err
 		}
 
 		// 2) Schedule operations for votes
 		// 2.1) first pick a number of people to vote.
 		curNumVotesState = numVotesTransitionMatrix.NextState(r, curNumVotesState)
-		numVotes := int(math.Ceil(float64(len(accs)) * statePercentageArray[curNumVotesState]))
+		numVotes := int(stdmath.Ceil(float64(len(accs)) * statePercentageArray[curNumVotesState]))
 
 		// 2.2) select who votes and when
 		whoVotes := r.Perm(len(accs))
@@ -297,7 +299,7 @@ func SimulateMsgDeposit(ak types.AccountKeeper, bk types.BankKeeper, k *keeper.K
 		if !hasNeg {
 			fees, err = simtypes.RandomFees(r, ctx, coins)
 			if err != nil {
-				return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "unable to generate fees"), nil, err
+				return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(msg), "unable to generate fees"), nil, err
 			}
 		}
 
@@ -307,7 +309,6 @@ func SimulateMsgDeposit(ak types.AccountKeeper, bk types.BankKeeper, k *keeper.K
 			TxGen:         moduletestutil.MakeTestEncodingConfig().TxConfig,
 			Cdc:           nil,
 			Msg:           msg,
-			MsgType:       msg.Type(),
 			Context:       ctx,
 			SimAccount:    simAccount,
 			AccountKeeper: ak,
@@ -357,7 +358,6 @@ func operationSimulateMsgVote(ak types.AccountKeeper, bk types.BankKeeper, k *ke
 			TxGen:           moduletestutil.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
 			Msg:             msg,
-			MsgType:         msg.Type(),
 			Context:         ctx,
 			SimAccount:      simAccount,
 			AccountKeeper:   ak,
@@ -409,7 +409,6 @@ func operationSimulateMsgVoteWeighted(ak types.AccountKeeper, bk types.BankKeepe
 			TxGen:           moduletestutil.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
 			Msg:             msg,
-			MsgType:         msg.Type(),
 			Context:         ctx,
 			SimAccount:      simAccount,
 			AccountKeeper:   ak,
@@ -454,14 +453,14 @@ func randomDeposit(
 
 	minDepositAmount := minDeposit[denomIndex].Amount
 
-	minDepositRatio, err := sdk.NewDecFromStr(params.GetMinDepositRatio())
+	minDepositRatio, err := math.LegacyNewDecFromStr(params.GetMinDepositRatio())
 	if err != nil {
 		return nil, false, err
 	}
 
 	threshold := minDepositAmount.ToLegacyDec().Mul(minDepositRatio).TruncateInt()
 
-	minAmount := sdk.ZeroInt()
+	minAmount := math.ZeroInt()
 	if useMinAmount {
 		// 	minDepositPercent, err := sdk.NewDecFromStr(params.MinInitialDepositRatio)
 		// 	if err != nil {
@@ -471,8 +470,8 @@ func randomDeposit(
 		minAmount = k.GetMinInitialDeposit(ctx)[denomIndex].Amount
 	}
 
-	amount := sdk.ZeroInt()
-	if minDepositAmount.Sub(minAmount).GTE(sdk.OneInt()) {
+	amount := math.ZeroInt()
+	if minDepositAmount.Sub(minAmount).GTE(math.OneInt()) {
 		amount, err = simtypes.RandPositiveInt(r, minDepositAmount.Sub(minAmount))
 		if err != nil {
 			return nil, false, err
@@ -539,19 +538,19 @@ func randomWeightedVotingOptions(r *rand.Rand) v1.WeightedVoteOptions {
 	if w1 > 0 {
 		weightedVoteOptions = append(weightedVoteOptions, &v1.WeightedVoteOption{
 			Option: v1.OptionYes,
-			Weight: sdk.NewDecWithPrec(int64(w1), 2).String(),
+			Weight: math.LegacyNewDecWithPrec(int64(w1), 2).String(),
 		})
 	}
 	if w2 > 0 {
 		weightedVoteOptions = append(weightedVoteOptions, &v1.WeightedVoteOption{
 			Option: v1.OptionAbstain,
-			Weight: sdk.NewDecWithPrec(int64(w2), 2).String(),
+			Weight: math.LegacyNewDecWithPrec(int64(w2), 2).String(),
 		})
 	}
 	if w3 > 0 {
 		weightedVoteOptions = append(weightedVoteOptions, &v1.WeightedVoteOption{
 			Option: v1.OptionNo,
-			Weight: sdk.NewDecWithPrec(int64(w3), 2).String(),
+			Weight: math.LegacyNewDecWithPrec(int64(w3), 2).String(),
 		})
 	}
 	return weightedVoteOptions

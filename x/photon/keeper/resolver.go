@@ -14,7 +14,12 @@ func (k Keeper) ConvertToDenom(ctx sdk.Context, coin sdk.DecCoin, denom string) 
 		return coin, nil
 	}
 
-	if denom == k.stakingKeeper.BondDenom(ctx) {
+	bondDenom, err := k.stakingKeeper.BondDenom(ctx)
+	if err != nil {
+		return sdk.DecCoin{}, err
+	}
+
+	if denom == bondDenom {
 		// use the conversion rate to convert bond denom to photon
 		bondDenomSupply := k.bankKeeper.GetSupply(ctx, denom).Amount.ToLegacyDec()
 		uphotonSupply := k.bankKeeper.GetSupply(ctx, types.Denom).Amount.ToLegacyDec()
@@ -29,7 +34,12 @@ func (k Keeper) ConvertToDenom(ctx sdk.Context, coin sdk.DecCoin, denom string) 
 }
 
 func (k Keeper) ExtraDenoms(ctx sdk.Context) ([]string, error) {
+	bondDenom, err := k.stakingKeeper.BondDenom(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	return []string{
-		k.stakingKeeper.BondDenom(ctx),
+		bondDenom,
 	}, nil
 }

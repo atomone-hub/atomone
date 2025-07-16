@@ -6,7 +6,7 @@ import (
 	appparams "github.com/atomone-hub/atomone/app/params"
 )
 
-func InitSDKConfig() {
+func init() {
 	cfg := sdk.GetConfig()
 	cfg.SetBech32PrefixForAccount(appparams.Bech32PrefixAccAddr, appparams.Bech32PrefixAccPub)
 	cfg.SetBech32PrefixForValidator(appparams.Bech32PrefixValAddr, appparams.Bech32PrefixValPub)
