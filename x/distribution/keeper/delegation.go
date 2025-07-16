@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"cosmossdk.io/math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
@@ -97,15 +98,15 @@ func (k Keeper) CalculateDelegationRewards(ctx context.Context, val stakingtypes
 	}
 
 	// fetch starting info for delegation
-	startingInfo, err := k.GetDelegatorStartingInfo(ctx, sdk.ValAddress(valAddr), sdk.AccAddress(delAddr))
+	startingInfo, err := k.GetDelegatorStartingInfo(ctx, valAddr, delAddr)
 	if err != nil {
-		return
+		return sdk.DecCoins{}, err
 	}
 
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 	if startingInfo.Height == uint64(sdkCtx.BlockHeight()) {
 		// started this height, no rewards yet
-		return
+		return sdk.DecCoins{}, nil
 	}
 
 	startingPeriod := startingInfo.PreviousPeriod

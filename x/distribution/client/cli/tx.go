@@ -4,14 +4,16 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
+
 	"cosmossdk.io/core/address"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/version"
-	"github.com/spf13/cobra"
-	"github.com/spf13/pflag"
 
 	"github.com/atomone-hub/atomone/x/distribution/types"
 )

@@ -4,6 +4,7 @@ import (
 	"math/rand"
 
 	sdkmath "cosmossdk.io/math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
@@ -13,6 +14,8 @@ import (
 )
 
 // Simulation operation weights constants
+//
+//nolint:gosec // these are not hard-coded credentials.
 const (
 	DefaultWeightMsgUpdateParams int = 50
 

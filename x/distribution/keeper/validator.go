@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"cosmossdk.io/math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
@@ -164,8 +165,10 @@ func (k Keeper) updateValidatorSlashFraction(ctx context.Context, valAddr sdk.Va
 		return err
 	}
 
-	// increment reference count on period we need to track
-	k.incrementReferenceCount(ctx, valAddr, newPeriod) // TODO: handle error
+	// increment reference count on a period we need to track
+	if err := k.incrementReferenceCount(ctx, valAddr, newPeriod); err != nil {
+		return err
+	}
 
 	slashEvent := types.NewValidatorSlashEvent(newPeriod, fraction)
 	height := uint64(sdkCtx.BlockHeight())

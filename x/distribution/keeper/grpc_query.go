@@ -3,14 +3,16 @@ package keeper
 import (
 	"context"
 
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
 	"cosmossdk.io/errors"
 	"cosmossdk.io/store/prefix"
+
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 
 	"github.com/atomone-hub/atomone/x/distribution/types"
 )
