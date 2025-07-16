@@ -60,8 +60,6 @@ func (k Keeper) AllocateTokens(ctx context.Context, totalPreviousPower int64, bo
 	nakamotoBonus := sdk.DecCoins{}
 	if params.NakamotoBonusEnabled {
 		nakamotoBonus = validatorTotalReward.MulDecTruncate(nakamotoCoefficient)
-	} else {
-		nakamotoBonus = sdk.DecCoins{}
 	}
 	proportionalReward := validatorTotalReward.Sub(nakamotoBonus)
 
