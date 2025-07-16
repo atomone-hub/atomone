@@ -325,6 +325,20 @@ func (s *IntegrationTestSuite) testGovConstitutionAmendment() {
 	})
 }
 
+func (s *IntegrationTestSuite) testGovTextProposal() {
+	s.Run("text proposal pass", func() {
+		chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
+		s.writeTextProposal(s.chainA)
+		proposalCounter++
+		submitGovFlags := []string{configFile(proposalTextFilename)}
+		depositGovFlags := []string{strconv.Itoa(proposalCounter), depositAmount.String()}
+		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
+		senderAddress, _ := s.chainA.validators[0].keyInfo.GetAddress()
+		sender := senderAddress.String()
+		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "Text", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
+	})
+}
+
 func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 	s.Run("dynamic quorum change", func() {
 		// From the formulae in ADR-005
@@ -338,17 +352,14 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 		quorumMax := sdk.MustNewDecFromStr(quorumRange.Max)
 		currentQuorum := sdk.MustNewDecFromStr(quorums.GetQuorum())
 		quorumPEma := (currentQuorum.Sub(quorumMin)).Quo(quorumMax.Sub(quorumMin))
-		paramsFeemarket := s.queryFeemarketParams(chainAAPIEndpoint)
-		oldAlpha := paramsFeemarket.Params.Alpha
-		paramsFeemarket.Params.Alpha = oldAlpha.Add(sdk.NewDec(1))
-		s.writeFeemarketParamChangeProposal(s.chainA, paramsFeemarket.Params)
+		s.writeTextProposal(s.chainA)
 		proposalCounter++
-		submitGovFlags := []string{configFile(proposalParamChangeFilename)}
+		submitGovFlags := []string{configFile(proposalTextFilename)}
 		depositGovFlags := []string{strconv.Itoa(proposalCounter), depositAmount.String()}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
 		senderAddress, _ := s.chainA.validators[0].keyInfo.GetAddress()
 		sender := senderAddress.String()
-		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "atomone.feemarket.v1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
+		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "Text", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
 		quorumsAfter := s.queryGovQuorums(chainAAPIEndpoint)
 		endQuorum := sdk.MustNewDecFromStr(quorumsAfter.GetQuorum())
 		endQuorumPEma := (endQuorum.Sub(quorumMin)).Quo(quorumMax.Sub(quorumMin))
@@ -570,6 +581,20 @@ func (s *IntegrationTestSuite) writeFeemarketParamChangeProposal(c *chain, param
 	`
 	propMsgBody := fmt.Sprintf(template, govModuleAddress, cdc.MustMarshalJSON(&params), initialDepositAmount)
 	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
+	s.Require().NoError(err)
+}
+
+func (s *IntegrationTestSuite) writeTextProposal(c *chain) {
+	template := `
+	{
+		"deposit": "%s",
+		"metadata": "some metadata",
+		"title": "Text Proposal",
+		"summary": "summary"
+	}
+	`
+	propMsgBody := fmt.Sprintf(template, initialDepositAmount)
+	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalTextFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
