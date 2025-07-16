@@ -6,12 +6,19 @@ import (
 	"cosmossdk.io/math"
 )
 
+const (
+	// EtaUpdateInterval represents 120k blocks
+	EtaUpdateInterval = 120_000
+	// EtaStep represents the step to increase or decrease η
+	EtaStep = 3
+)
+
 // DefaultParams returns default distribution parameters
 func DefaultParams() Params {
 	return Params{
 		CommunityTax:             math.LegacyNewDecWithPrec(2, 2), // 2%
 		WithdrawAddrEnabled:      true,
-		NakamotoBonusCoefficient: math.LegacyNewDecWithPrec(5, 2),
+		NakamotoBonusCoefficient: math.LegacyNewDecWithPrec(EtaStep, 2), // 3%
 		NakamotoBonusEnabled:     true,
 	}
 }

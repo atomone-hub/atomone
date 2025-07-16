@@ -8,17 +8,17 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 
-	disttypes "github.com/atomone-hub/atomone/x/distribution/types"
+	"github.com/atomone-hub/atomone/x/distribution/types"
 )
 
 func TestBeginBlocker_NakamotoBonusEtaChange(t *testing.T) {
-	s := setupTestKeeper(t, math.LegacyNewDecWithPrec(3, 2), 120_000)
+	s := setupTestKeeper(t, math.LegacyNewDecWithPrec(3, 2), types.EtaUpdateInterval)
 
 	// Use η = 0.03, block height triggers adjustment
 	s.stakingKeeper.EXPECT().GetBondedValidatorsByPower(s.ctx).Return(createValidators(100, 100, 10))
 	fees := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(634195840)))
 	s.bankKeeper.EXPECT().GetAllBalances(gomock.Any(), s.feeCollectorAcc.GetAddress()).Return(fees).AnyTimes()
-	s.bankKeeper.EXPECT().SendCoinsFromModuleToModule(gomock.Any(), "fee_collector", disttypes.ModuleName, fees)
+	s.bankKeeper.EXPECT().SendCoinsFromModuleToModule(gomock.Any(), "fee_collector", types.ModuleName, fees)
 
 	// Simulate BeginBlocker
 	err := s.distrKeeper.BeginBlocker(s.ctx)
@@ -31,13 +31,13 @@ func TestBeginBlocker_NakamotoBonusEtaChange(t *testing.T) {
 }
 
 func TestBeginBlocker_NakamotoBonusEtaDecrease(t *testing.T) {
-	s := setupTestKeeper(t, math.LegacyNewDecWithPrec(3, 2), 120_000)
+	s := setupTestKeeper(t, math.LegacyNewDecWithPrec(3, 2), types.EtaUpdateInterval)
 
 	// Use η = 0.03, block height triggers adjustment, but ratio < 3 (should decrease to 0)
 	s.stakingKeeper.EXPECT().GetBondedValidatorsByPower(s.ctx).Return(createValidators(20, 20, 10))
 	fees := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(634195840)))
 	s.bankKeeper.EXPECT().GetAllBalances(gomock.Any(), s.feeCollectorAcc.GetAddress()).Return(fees).AnyTimes()
-	s.bankKeeper.EXPECT().SendCoinsFromModuleToModule(gomock.Any(), "fee_collector", disttypes.ModuleName, fees)
+	s.bankKeeper.EXPECT().SendCoinsFromModuleToModule(gomock.Any(), "fee_collector", types.ModuleName, fees)
 
 	// Simulate BeginBlocker
 	err := s.distrKeeper.BeginBlocker(s.ctx)
@@ -50,13 +50,13 @@ func TestBeginBlocker_NakamotoBonusEtaDecrease(t *testing.T) {
 }
 
 func TestAllocateTokens_NakamotoBonusClampEta(t *testing.T) {
-	s := setupTestKeeper(t, math.LegacyOneDec(), 120_000)
+	s := setupTestKeeper(t, math.LegacyOneDec(), types.EtaUpdateInterval)
 
 	// η = 1.0, should clamp to 1.0 even if increase requested
 	s.stakingKeeper.EXPECT().GetBondedValidatorsByPower(s.ctx).Return(createValidators(100, 100, 10))
 	fees := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(634195840)))
 	s.bankKeeper.EXPECT().GetAllBalances(gomock.Any(), s.feeCollectorAcc.GetAddress()).Return(fees).AnyTimes()
-	s.bankKeeper.EXPECT().SendCoinsFromModuleToModule(gomock.Any(), "fee_collector", disttypes.ModuleName, fees)
+	s.bankKeeper.EXPECT().SendCoinsFromModuleToModule(gomock.Any(), "fee_collector", types.ModuleName, fees)
 
 	// Simulate BeginBlocker
 	err := s.distrKeeper.BeginBlocker(s.ctx)
@@ -69,13 +69,13 @@ func TestAllocateTokens_NakamotoBonusClampEta(t *testing.T) {
 }
 
 func TestAllocateTokens_NakamotoBonusClampEtaZero(t *testing.T) {
-	s := setupTestKeeper(t, math.LegacyZeroDec(), 120_000)
+	s := setupTestKeeper(t, math.LegacyZeroDec(), types.EtaUpdateInterval)
 
 	// η = 0.0, should clamp to 0.0 even if decrease requested
 	s.stakingKeeper.EXPECT().GetBondedValidatorsByPower(s.ctx).Return(createValidators(20, 20, 10))
 	fees := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(634195840)))
 	s.bankKeeper.EXPECT().GetAllBalances(gomock.Any(), s.feeCollectorAcc.GetAddress()).Return(fees).AnyTimes()
-	s.bankKeeper.EXPECT().SendCoinsFromModuleToModule(gomock.Any(), "fee_collector", disttypes.ModuleName, fees)
+	s.bankKeeper.EXPECT().SendCoinsFromModuleToModule(gomock.Any(), "fee_collector", types.ModuleName, fees)
 
 	// Simulate BeginBlocker
 	err := s.distrKeeper.BeginBlocker(s.ctx)

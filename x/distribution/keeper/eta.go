@@ -11,14 +11,9 @@ import (
 	"github.com/atomone-hub/atomone/x/distribution/types"
 )
 
-const (
-	EtaUpdateInterval = 120_000 // every 120k blocks (~1 week)
-	EtaStep           = 3       // step to increase or decrease η
-)
-
 // AdjustEta is called to adjust η dynamically for each block.
 func (k Keeper) AdjustEta(ctx sdk.Context) error {
-	if ctx.BlockHeight()%EtaUpdateInterval != 0 {
+	if ctx.BlockHeight()%types.EtaUpdateInterval != 0 {
 		return nil
 	}
 
@@ -76,10 +71,10 @@ func (k Keeper) AdjustEta(ctx sdk.Context) error {
 	lowAvg := avg(low)
 	eta := params.NakamotoBonusCoefficient
 
-	if lowAvg.IsZero() || highAvg.Quo(lowAvg).GTE(math.LegacyNewDec(EtaStep)) {
-		eta = eta.Add(math.LegacyNewDecWithPrec(EtaStep, 2))
+	if lowAvg.IsZero() || highAvg.Quo(lowAvg).GTE(math.LegacyNewDec(types.EtaStep)) {
+		eta = eta.Add(math.LegacyNewDecWithPrec(types.EtaStep, 2))
 	} else {
-		eta = eta.Sub(math.LegacyNewDecWithPrec(EtaStep, 2))
+		eta = eta.Sub(math.LegacyNewDecWithPrec(types.EtaStep, 2))
 	}
 	if eta.LT(math.LegacyZeroDec()) {
 		eta = math.LegacyZeroDec()

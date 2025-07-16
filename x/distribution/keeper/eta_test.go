@@ -7,6 +7,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/stretchr/testify/require"
+
+	"github.com/atomone-hub/atomone/x/distribution/types"
 )
 
 func createValidators(powers ...int64) ([]stakingtypes.Validator, error) {
@@ -23,8 +25,8 @@ func createValidators(powers ...int64) ([]stakingtypes.Validator, error) {
 }
 
 func TestAdjustEta_NakamotoDisabled(t *testing.T) {
-	initEta := math.LegacyNewDecWithPrec(3, 2)
-	s := setupTestKeeper(t, initEta, 120_000)
+	initEta := math.LegacyNewDecWithPrec(types.EtaStep, 2)
+	s := setupTestKeeper(t, initEta, types.EtaUpdateInterval)
 
 	p, err := s.distrKeeper.Params.Get(s.ctx)
 	require.NoError(t, err)
@@ -38,7 +40,7 @@ func TestAdjustEta_NakamotoDisabled(t *testing.T) {
 }
 
 func TestAdjustEta_NoInterval(t *testing.T) {
-	initEta := math.LegacyNewDecWithPrec(3, 2)
+	initEta := math.LegacyNewDecWithPrec(types.EtaStep, 2)
 	s := setupTestKeeper(t, initEta, 119_999)
 
 	require.NoError(t, s.distrKeeper.AdjustEta(s.ctx))
@@ -48,8 +50,8 @@ func TestAdjustEta_NoInterval(t *testing.T) {
 }
 
 func TestAdjustEta_NotEnoughValidators(t *testing.T) {
-	initEta := math.LegacyNewDecWithPrec(3, 2)
-	s := setupTestKeeper(t, initEta, 120_000)
+	initEta := math.LegacyNewDecWithPrec(types.EtaStep, 2)
+	s := setupTestKeeper(t, initEta, types.EtaUpdateInterval)
 
 	s.stakingKeeper.EXPECT().GetBondedValidatorsByPower(s.ctx).Return(createValidators(10, 10)).AnyTimes()
 
@@ -60,8 +62,8 @@ func TestAdjustEta_NotEnoughValidators(t *testing.T) {
 }
 
 func TestAdjustEta_Increase(t *testing.T) {
-	initEta := math.LegacyNewDecWithPrec(3, 2)
-	s := setupTestKeeper(t, initEta, 120_000)
+	initEta := math.LegacyNewDecWithPrec(types.EtaStep, 2)
+	s := setupTestKeeper(t, initEta, types.EtaUpdateInterval)
 
 	// highAvg = 100, lowAvg = 10, ratio = 10 >= 3, should increase
 	s.stakingKeeper.EXPECT().GetBondedValidatorsByPower(s.ctx).Return(createValidators(100, 100, 10)).AnyTimes()
@@ -69,12 +71,12 @@ func TestAdjustEta_Increase(t *testing.T) {
 	require.NoError(t, s.distrKeeper.AdjustEta(s.ctx))
 	gotParams, err := s.distrKeeper.Params.Get(s.ctx)
 	require.NoError(t, err)
-	require.Equal(t, initEta.Add(math.LegacyNewDecWithPrec(3, 2)), gotParams.NakamotoBonusCoefficient)
+	require.Equal(t, initEta.Add(math.LegacyNewDecWithPrec(types.EtaStep, 2)), gotParams.NakamotoBonusCoefficient)
 }
 
 func TestAdjustEta_Decrease(t *testing.T) {
-	initEta := math.LegacyNewDecWithPrec(3, 2)
-	s := setupTestKeeper(t, initEta, 120_000)
+	initEta := math.LegacyNewDecWithPrec(types.EtaStep, 2)
+	s := setupTestKeeper(t, initEta, types.EtaUpdateInterval)
 
 	// highAvg = 20, lowAvg = 10, ratio = 2 < 3, should decrease
 	s.stakingKeeper.EXPECT().GetBondedValidatorsByPower(s.ctx).Return(createValidators(20, 20, 10)).AnyTimes()
@@ -87,7 +89,7 @@ func TestAdjustEta_Decrease(t *testing.T) {
 
 func TestAdjustEta_ClampZero(t *testing.T) {
 	initEta := math.LegacyZeroDec()
-	s := setupTestKeeper(t, initEta, 120_000)
+	s := setupTestKeeper(t, initEta, types.EtaUpdateInterval)
 
 	// highAvg = 20, lowAvg = 10, ratio = 2 < 3, should decrease, and clamp at 0
 	s.stakingKeeper.EXPECT().GetBondedValidatorsByPower(s.ctx).Return(createValidators(20, 20, 10)).AnyTimes()
@@ -100,7 +102,7 @@ func TestAdjustEta_ClampZero(t *testing.T) {
 
 func TestAdjustEta_ClampOne(t *testing.T) {
 	initEta := math.LegacyOneDec()
-	s := setupTestKeeper(t, initEta, 120_000)
+	s := setupTestKeeper(t, initEta, types.EtaUpdateInterval)
 
 	// highAvg = 100, lowAvg = 10, ratio = 10 >= 3, should increase
 	s.stakingKeeper.EXPECT().GetBondedValidatorsByPower(s.ctx).Return(createValidators(100, 100, 10)).AnyTimes()
