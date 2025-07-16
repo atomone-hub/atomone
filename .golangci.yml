@@ -2,13 +2,6 @@ run:
   tests: false
   # timeout for analysis, e.g. 30s, 5m, default is 1m
   timeout: 5m
-  skip-dirs:
-    - tests/
-    - client/docs/statik
-  skip-files:
-    - ".*\\.pb\\.go$"
-    - ".*\\.pb\\.gw\\.go$"
-    - ".*\\.pulsar\\.go$"
 
 linters:
   disable-all: true
@@ -35,6 +28,13 @@ linters:
     - unused
 
 issues:
+  exclude-dirs:
+    - tests/
+    - client/docs/statik
+  exclude-files:
+    - ".*\\.pb\\.go$"
+    - ".*\\.pb\\.gw\\.go$"
+    - ".*\\.pulsar\\.go$"
   exclude-rules:
     - text: "Use of weak random number generator"
       linters:
@@ -58,9 +58,9 @@ issues:
       linters:
         - staticcheck
     - linters:
-      - gosec
+        - gosec
       text: 'G115: integer overflow conversion'
- 
+
 
   max-issues-per-linter: 10000
   max-same-issues: 10000

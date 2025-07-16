@@ -7,7 +7,8 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
+
+	distrtypes "github.com/atomone-hub/atomone/x/distribution/types"
 )
 
 func (s *IntegrationTestSuite) testDistribution() {
