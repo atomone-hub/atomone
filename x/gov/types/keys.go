@@ -64,6 +64,12 @@ var (
 	KeyParticipationEMA                      = []byte{0x50}
 	KeyConstitutionAmendmentParticipationEMA = []byte{0x60}
 	KeyLawParticipationEMA                   = []byte{0x70}
+
+	// GovernorKeyPrefix is the prefix for governor key
+	GovernorKeyPrefix                        = []byte{0x80}
+	GovernanceDelegationKeyPrefix            = []byte{0x81}
+	ValidatorSharesByGovernorKeyPrefix       = []byte{0x82}
+	GovernanceDelegationsByGovernorKeyPrefix = []byte{0x83}
 )
 
 var lenTime = len(sdk.FormatTimeBytes(time.Now()))
@@ -162,6 +168,28 @@ func VotesKey(proposalID uint64) []byte {
 // VoteKey key of a specific vote from the store
 func VoteKey(proposalID uint64, voterAddr sdk.AccAddress) []byte {
 	return append(VotesKey(proposalID), address.MustLengthPrefix(voterAddr.Bytes())...)
+}
+
+// GovernorKey gets the first part of the governor key based on the governor address
+func GovernorKey(governorAddr GovernorAddress) []byte {
+	return append(GovernorKeyPrefix, address.MustLengthPrefix(governorAddr.Bytes())...)
+}
+
+// GovernanceDelegationKey gets the first part of the governance delegation key based on the delegator address
+func GovernanceDelegationKey(delegatorAddr sdk.AccAddress) []byte {
+	return append(GovernanceDelegationKeyPrefix, address.MustLengthPrefix(delegatorAddr.Bytes())...)
+}
+
+// GovernanceDelegationsByGovernorKey gets the first part of the key for governance delegations indexed by governor
+// based on the delegator address and delegator address
+func GovernanceDelegationsByGovernorKey(governorAddr GovernorAddress, delegatorAddr sdk.AccAddress) []byte {
+	return append(GovernanceDelegationsByGovernorKeyPrefix, append(address.MustLengthPrefix(governorAddr.Bytes()), address.MustLengthPrefix(delegatorAddr.Bytes())...)...)
+}
+
+// ValidatorSharesByGovernorKey gets the first part of the validator shares key based
+// on the governor address and validator address
+func ValidatorSharesByGovernorKey(governorAddr GovernorAddress, validatorAddr sdk.ValAddress) []byte {
+	return append(ValidatorSharesByGovernorKeyPrefix, append(address.MustLengthPrefix(governorAddr.Bytes()), address.MustLengthPrefix(validatorAddr.Bytes())...)...)
 }
 
 // Split keys function; used for iterators
