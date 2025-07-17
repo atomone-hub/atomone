@@ -342,7 +342,7 @@ message Params {
   // Number of times a proposal should be checked for quorum after the quorum timeout
   // has elapsed. Used to compute the amount of time in between quorum checks.
   uint64 quorum_check_count = 22;
-  
+
   MinDepositThrottler min_deposit_throttler = 23;
 
   MinInitialDepositThrottler min_initial_deposit_throttler = 24;

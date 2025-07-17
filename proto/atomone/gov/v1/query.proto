@@ -81,7 +81,7 @@ service Query {
     option (google.api.http).get = "/atomone/gov/v1/quorums";
   }
 
-   // ParticipationEMAs queries the state of the proposal participation exponential moving averages.
+  // ParticipationEMAs queries the state of the proposal participation exponential moving averages.
   rpc ParticipationEMAs(QueryParticipationEMAsRequest) returns (QueryParticipationEMAsResponse) {
     option (google.api.http).get = "/atomone/gov/v1/participationemas";
   }
