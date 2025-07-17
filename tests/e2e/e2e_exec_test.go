@@ -495,6 +495,7 @@ func (s *IntegrationTestSuite) execDelegate(c *chain, valIdx int, amount sdk.Coi
 		amount.String(),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, delegatorAddr),
 		fmt.Sprintf("--%s=%s", flags.FlagChainID, c.id),
+		fmt.Sprintf("--%s=%s", flags.FlagGas, "210000"), // default 200000 isn't enough
 		fmt.Sprintf("--%s=%s", flags.FlagFees, standardFees.String()),
 		"--keyring-backend=test",
 		"--output=json",
@@ -533,6 +534,7 @@ func (s *IntegrationTestSuite) execUnbondDelegation(c *chain, valIdx int, amount
 		amount,
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, delegatorAddr),
 		fmt.Sprintf("--%s=%s", flags.FlagChainID, c.id),
+		fmt.Sprintf("--%s=%s", flags.FlagGas, "210000"), // default 200000 isn't enough
 		fmt.Sprintf("--%s=%s", flags.FlagFees, standardFees.String()),
 		"--keyring-backend=test",
 		fmt.Sprintf("--%s=%s", flags.FlagHome, home),
@@ -589,7 +591,7 @@ func (s *IntegrationTestSuite) execRedelegate(c *chain, valIdx int, amount, orig
 		amount,
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, delegatorAddr),
 		fmt.Sprintf("--%s=%s", flags.FlagChainID, c.id),
-		fmt.Sprintf("--%s=%s", flags.FlagGas, "300000"), // default 200000 isn't enough
+		fmt.Sprintf("--%s=%s", flags.FlagGas, "310000"), // default 200000 isn't enough
 		fmt.Sprintf("--%s=%s", flags.FlagFees, standardFees.String()),
 		"--keyring-backend=test",
 		fmt.Sprintf("--%s=%s", flags.FlagHome, home),

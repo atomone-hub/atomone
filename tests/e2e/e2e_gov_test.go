@@ -530,7 +530,7 @@ func (s *IntegrationTestSuite) testGovGovernors() {
 
 		// Vote with governor
 		voteFlags := []string{strconv.Itoa(proposalCounter), "yes"}
-		s.submitGovCommand(chainAAPIEndpoint, govDelegatorAddr, proposalCounter, "vote", voteFlags, govtypesv1.StatusPassed)
+		s.submitGovCommand(chainAAPIEndpoint, govDelegatorAddr, proposalCounter, "vote", voteFlags, govtypesv1.StatusRejected)
 
 		// assert tally result
 		prop, err := queryGovProposal(chainAAPIEndpoint, proposalCounter)
