@@ -33,6 +33,7 @@ const (
 	Query_MinDeposit_FullMethodName            = "/atomone.gov.v1.Query/MinDeposit"
 	Query_MinInitialDeposit_FullMethodName     = "/atomone.gov.v1.Query/MinInitialDeposit"
 	Query_Quorums_FullMethodName               = "/atomone.gov.v1.Query/Quorums"
+	Query_ParticipationEMAs_FullMethodName     = "/atomone.gov.v1.Query/ParticipationEMAs"
 	Query_Governor_FullMethodName              = "/atomone.gov.v1.Query/Governor"
 	Query_Governors_FullMethodName             = "/atomone.gov.v1.Query/Governors"
 	Query_GovernanceDelegations_FullMethodName = "/atomone.gov.v1.Query/GovernanceDelegations"
@@ -72,6 +73,8 @@ type QueryClient interface {
 	MinInitialDeposit(ctx context.Context, in *QueryMinInitialDepositRequest, opts ...grpc.CallOption) (*QueryMinInitialDepositResponse, error)
 	// Quorums queries the dynamically set quorums.
 	Quorums(ctx context.Context, in *QueryQuorumsRequest, opts ...grpc.CallOption) (*QueryQuorumsResponse, error)
+	// ParticipationEMAs queries the state of the proposal participation exponential moving averages.
+	ParticipationEMAs(ctx context.Context, in *QueryParticipationEMAsRequest, opts ...grpc.CallOption) (*QueryParticipationEMAsResponse, error)
 	// Governor queries governor information based on governor address.
 	Governor(ctx context.Context, in *QueryGovernorRequest, opts ...grpc.CallOption) (*QueryGovernorResponse, error)
 	// Governors queries all governors.
@@ -212,6 +215,16 @@ func (c *queryClient) Quorums(ctx context.Context, in *QueryQuorumsRequest, opts
 	return out, nil
 }
 
+func (c *queryClient) ParticipationEMAs(ctx context.Context, in *QueryParticipationEMAsRequest, opts ...grpc.CallOption) (*QueryParticipationEMAsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(QueryParticipationEMAsResponse)
+	err := c.cc.Invoke(ctx, Query_ParticipationEMAs_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *queryClient) Governor(ctx context.Context, in *QueryGovernorRequest, opts ...grpc.CallOption) (*QueryGovernorResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(QueryGovernorResponse)
@@ -294,6 +307,8 @@ type QueryServer interface {
 	MinInitialDeposit(context.Context, *QueryMinInitialDepositRequest) (*QueryMinInitialDepositResponse, error)
 	// Quorums queries the dynamically set quorums.
 	Quorums(context.Context, *QueryQuorumsRequest) (*QueryQuorumsResponse, error)
+	// ParticipationEMAs queries the state of the proposal participation exponential moving averages.
+	ParticipationEMAs(context.Context, *QueryParticipationEMAsRequest) (*QueryParticipationEMAsResponse, error)
 	// Governor queries governor information based on governor address.
 	Governor(context.Context, *QueryGovernorRequest) (*QueryGovernorResponse, error)
 	// Governors queries all governors.
@@ -349,6 +364,9 @@ func (UnimplementedQueryServer) MinInitialDeposit(context.Context, *QueryMinInit
 }
 func (UnimplementedQueryServer) Quorums(context.Context, *QueryQuorumsRequest) (*QueryQuorumsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Quorums not implemented")
+}
+func (UnimplementedQueryServer) ParticipationEMAs(context.Context, *QueryParticipationEMAsRequest) (*QueryParticipationEMAsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ParticipationEMAs not implemented")
 }
 func (UnimplementedQueryServer) Governor(context.Context, *QueryGovernorRequest) (*QueryGovernorResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Governor not implemented")
@@ -602,6 +620,24 @@ func _Query_Quorums_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_ParticipationEMAs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryParticipationEMAsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).ParticipationEMAs(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_ParticipationEMAs_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).ParticipationEMAs(ctx, req.(*QueryParticipationEMAsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Query_Governor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryGovernorRequest)
 	if err := dec(in); err != nil {
@@ -746,6 +782,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Quorums",
 			Handler:    _Query_Quorums_Handler,
+		},
+		{
+			MethodName: "ParticipationEMAs",
+			Handler:    _Query_ParticipationEMAs_Handler,
 		},
 		{
 			MethodName: "Governor",
