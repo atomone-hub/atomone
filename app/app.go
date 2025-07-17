@@ -222,8 +222,8 @@ func NewAtomOneApp(
 			StakingKeeper: app.StakingKeeper,
 			PhotonKeeper:  app.PhotonKeeper,
 			// If TxFeeChecker is nil the default ante TxFeeChecker is used
-			TxFeeChecker:    nil,
-			FeemarketKeeper: app.FeemarketKeeper,
+			TxFeeChecker:     nil,
+			DynamicfeeKeeper: app.DynamicfeeKeeper,
 		},
 	)
 	if err != nil {
@@ -231,8 +231,7 @@ func NewAtomOneApp(
 	}
 
 	postHandlerOptions := atomonepost.HandlerOptions{
-		FeemarketKeeper:       app.FeemarketKeeper,
-		ConsensusParamsKeeper: &app.ConsensusParamsKeeper,
+		DynamicfeeKeeper: app.DynamicfeeKeeper,
 	}
 	postHandler, err := atomonepost.NewPostHandler(postHandlerOptions)
 	if err != nil {

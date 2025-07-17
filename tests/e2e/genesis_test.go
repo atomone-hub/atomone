@@ -20,7 +20,7 @@ import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	feemarkettypes "github.com/atomone-hub/atomone/x/feemarket/types"
+	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	govv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 )
@@ -239,17 +239,17 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 	appState[govtypes.ModuleName] = govGenStateBz
 
 	//-----------------------------------------
-	// Modifying feemarket genesis
+	// Modifying dynamicfee genesis
 
-	feemarketGenState := feemarkettypes.GetGenesisStateFromAppState(cdc, appState)
+	dynamicfeeGenState := dynamicfeetypes.GetGenesisStateFromAppState(cdc, appState)
 	baseGasPrice := sdk.MustNewDecFromStr("0.00001")
-	feemarketGenState.Params.MinBaseGasPrice = baseGasPrice
-	feemarketGenState.State.BaseGasPrice = baseGasPrice
-	feemarketGenStateBz, err := cdc.MarshalJSON(&feemarketGenState)
+	dynamicfeeGenState.Params.MinBaseGasPrice = baseGasPrice
+	dynamicfeeGenState.State.BaseGasPrice = baseGasPrice
+	dynamicfeeGenStateBz, err := cdc.MarshalJSON(&dynamicfeeGenState)
 	if err != nil {
-		return fmt.Errorf("failed to marshal feemarket genesis state: %w", err)
+		return fmt.Errorf("failed to marshal dynamicfee genesis state: %w", err)
 	}
-	appState[feemarkettypes.ModuleName] = feemarketGenStateBz
+	appState[dynamicfeetypes.ModuleName] = dynamicfeeGenStateBz
 
 	//-----------------------------------------
 	// Record final genesis

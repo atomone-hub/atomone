@@ -128,7 +128,7 @@ Therefore:
 
 In summary, a delegator is incentivized to delegate its stake to validators with the least stake as their RPS is higher.
 
-### Dynamic Change of the $\eta$ parameter
+### Dynamic change of the $\eta$ parameter
 
 We define a new parameter $\eta \in [0,1]$ that specifies how the Nakamoto Bonus (NB) is computed from the reward:
 $NB_i = R_i \times \eta$, where $R_i$ is the total reward obtained by validating block $i$.
@@ -142,6 +142,11 @@ The decision on whether $\eta$ needs to be increased or decreased is performed a
 2. The average voting power of the high and low validator groups is computed.
 3. If the average voting power of the high group is *3x* or more the average voting power of the low group, $\eta$ is increased, otherwise it is decreased.
 
+### Validator Commissions
+
+Unrestricted, validator-set commissions can be used to undermine the mechanisms proposed in this ADR. For example, a top validator could temporarily lower their commission to counteract the effects of the Nakamoto Bonus in the short term.
+Moreover, unrestricted commissions may enable validators to exploit delegators. A validator could lower their commission to attract delegations, only to later increase it — potentially up to 100% — for personal gain.
+To address this, this ADR proposes that the commission rate become a equal-for-all, network-wide parameter adjustable only through governance. This measure is also mandated by the AtomOne Constitution[^3].
 
 ## Consequences
 
@@ -191,4 +196,5 @@ For example, assuming $k=1$ and $r=2$, if one validator of 10% faults, it gets a
 
 [^1]: [Quantifying Decentralization](https://news.earn.com/quantifying-decentralization-e39db233c28e)
 [^2]: [ADR-014 - Proportional Slashing](https://github.com/cosmos/cosmos-sdk/blob/main/docs/architecture/adr-014-proportional-slashing.md)
+[^3]: [AtomOne Constitution, Article 3, Section 9](https://github.com/atomone-hub/genesis/blob/50882cac6ea4e56b6703d7e3325f35073c75aa6b/CONSTITUTION.md#section-9-validators)
 

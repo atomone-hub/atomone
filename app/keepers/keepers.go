@@ -56,8 +56,8 @@ import (
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
-	feemarketkeeper "github.com/atomone-hub/atomone/x/feemarket/keeper"
-	feemarkettypes "github.com/atomone-hub/atomone/x/feemarket/types"
+	dynamicfeekeeper "github.com/atomone-hub/atomone/x/dynamicfee/keeper"
+	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
 	govkeeper "github.com/atomone-hub/atomone/x/gov/keeper"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	govv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
@@ -92,7 +92,7 @@ type AppKeepers struct {
 	AuthzKeeper           authzkeeper.Keeper
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
 	PhotonKeeper          *photonkeeper.Keeper
-	FeemarketKeeper       *feemarketkeeper.Keeper
+	DynamicfeeKeeper      *dynamicfeekeeper.Keeper
 
 	// Modules
 	ICAModule      ica.AppModule
@@ -332,11 +332,10 @@ func NewAppKeeper(
 		appKeepers.ScopedTransferKeeper,
 	)
 
-	appKeepers.FeemarketKeeper = feemarketkeeper.NewKeeper(
+	appKeepers.DynamicfeeKeeper = dynamicfeekeeper.NewKeeper(
 		appCodec,
-		appKeepers.keys[feemarkettypes.StoreKey],
+		appKeepers.keys[dynamicfeetypes.StoreKey],
 		appKeepers.PhotonKeeper,
-		&appKeepers.ConsensusParamsKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
