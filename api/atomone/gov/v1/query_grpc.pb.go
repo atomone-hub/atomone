@@ -33,6 +33,7 @@ const (
 	Query_MinDeposit_FullMethodName        = "/atomone.gov.v1.Query/MinDeposit"
 	Query_MinInitialDeposit_FullMethodName = "/atomone.gov.v1.Query/MinInitialDeposit"
 	Query_Quorums_FullMethodName           = "/atomone.gov.v1.Query/Quorums"
+	Query_ParticipationEMAs_FullMethodName = "/atomone.gov.v1.Query/ParticipationEMAs"
 )
 
 // QueryClient is the client API for Query service.
@@ -67,6 +68,8 @@ type QueryClient interface {
 	MinInitialDeposit(ctx context.Context, in *QueryMinInitialDepositRequest, opts ...grpc.CallOption) (*QueryMinInitialDepositResponse, error)
 	// Quorums queries the dynamically set quorums.
 	Quorums(ctx context.Context, in *QueryQuorumsRequest, opts ...grpc.CallOption) (*QueryQuorumsResponse, error)
+	// ParticipationEMAs queries the state of the proposal participation exponential moving averages.
+	ParticipationEMAs(ctx context.Context, in *QueryParticipationEMAsRequest, opts ...grpc.CallOption) (*QueryParticipationEMAsResponse, error)
 }
 
 type queryClient struct {
@@ -197,6 +200,16 @@ func (c *queryClient) Quorums(ctx context.Context, in *QueryQuorumsRequest, opts
 	return out, nil
 }
 
+func (c *queryClient) ParticipationEMAs(ctx context.Context, in *QueryParticipationEMAsRequest, opts ...grpc.CallOption) (*QueryParticipationEMAsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(QueryParticipationEMAsResponse)
+	err := c.cc.Invoke(ctx, Query_ParticipationEMAs_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility.
@@ -229,6 +242,8 @@ type QueryServer interface {
 	MinInitialDeposit(context.Context, *QueryMinInitialDepositRequest) (*QueryMinInitialDepositResponse, error)
 	// Quorums queries the dynamically set quorums.
 	Quorums(context.Context, *QueryQuorumsRequest) (*QueryQuorumsResponse, error)
+	// ParticipationEMAs queries the state of the proposal participation exponential moving averages.
+	ParticipationEMAs(context.Context, *QueryParticipationEMAsRequest) (*QueryParticipationEMAsResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -274,6 +289,9 @@ func (UnimplementedQueryServer) MinInitialDeposit(context.Context, *QueryMinInit
 }
 func (UnimplementedQueryServer) Quorums(context.Context, *QueryQuorumsRequest) (*QueryQuorumsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Quorums not implemented")
+}
+func (UnimplementedQueryServer) ParticipationEMAs(context.Context, *QueryParticipationEMAsRequest) (*QueryParticipationEMAsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ParticipationEMAs not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 func (UnimplementedQueryServer) testEmbeddedByValue()               {}
@@ -512,6 +530,24 @@ func _Query_Quorums_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_ParticipationEMAs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryParticipationEMAsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).ParticipationEMAs(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_ParticipationEMAs_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).ParticipationEMAs(ctx, req.(*QueryParticipationEMAsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -566,6 +602,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Quorums",
 			Handler:    _Query_Quorums_Handler,
+		},
+		{
+			MethodName: "ParticipationEMAs",
+			Handler:    _Query_ParticipationEMAs_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

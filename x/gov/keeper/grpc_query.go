@@ -325,6 +325,16 @@ func (q Keeper) Quorums(c context.Context, _ *v1.QueryQuorumsRequest) (*v1.Query
 	}, nil
 }
 
+// ParticipationEMAs queries the state of the proposal participation exponential moving averages.
+func (q Keeper) ParticipationEMAs(c context.Context, _ *v1.QueryParticipationEMAsRequest) (*v1.QueryParticipationEMAsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+	return &v1.QueryParticipationEMAsResponse{
+		ParticipationEma:                      q.GetParticipationEMA(ctx).String(),
+		ConstitutionAmendmentParticipationEma: q.GetConstitutionAmendmentParticipationEMA(ctx).String(),
+		LawParticipationEma:                   q.GetLawParticipationEMA(ctx).String(),
+	}, nil
+}
+
 var _ v1beta1.QueryServer = legacyQueryServer{}
 
 type legacyQueryServer struct {
