@@ -37,11 +37,22 @@ service Msg {
 
 // MsgAnnotateProposal defines a message for annotating a proposal.
 message MsgAnnotateProposal {
+    option (cosmos.msg.v1.signer) = "annotator";
+    option (amino.name) = "atomone/coredaos/v1/MsgAnnotateProposal";
+
+    // annotator is the address of the dao annotating the proposal.
+    string annotator = 1;
+
     // proposal_id is the ID of the proposal to annotate.
-    uint64 proposal_id = 1;
+    uint64 proposal_id = 2;
 
     // annotation is the annotation to add to the proposal.
-    string annotation = 2;
+    string annotation = 3;
+
+    // overwrite is a boolean indicating whether to overwrite the existing annotation.
+    // Must be set to true if the proposal already has an annotation.
+    // Ignored if the proposal does not have yet an annotation.
+    bool overwrite = 4;
 }
 
 // MsgAnnotateProposalResponse defines the response for MsgAnnotateProposal.
@@ -49,8 +60,14 @@ message MsgAnnotateProposalResponse {}
 
 // MsgEndorseProposal defines a message for endorsing a proposal.
 message MsgEndorseProposal {
+    option (cosmos.msg.v1.signer) = "endorser";
+    option (amino.name) = "atomone/coredaos/v1/MsgEndorseProposal";
+
+    // endorser is the address of the dao endorsing the proposal.
+    string endorser = 1;
+
     // proposal_id is the ID of the proposal to endorse.
-    uint64 proposal_id = 1;
+    uint64 proposal_id = 2;
 }
 
 // MsgEndorseProposalResponse defines the response for MsgEndorseProposal.
@@ -58,8 +75,13 @@ message MsgEndorseProposalResponse {}
 
 // MsgExtendVotingPeriod defines a message for extending the voting period of a proposal.
 message MsgExtendVotingPeriod {
+    option (cosmos.msg.v1.signer) = "extender";
+    option (amino.name) = "atomone/coredaos/v1/MsgExtendVotingPeriod";
+    // extender is the address of the dao extending the voting period.
+    string extender = 1;
+
     // proposal_id is the ID of the proposal to extend.
-    uint64 proposal_id = 1;
+    uint64 proposal_id = 2;
 }
 
 // MsgExtendVotingPeriodResponse defines the response for MsgExtendVotingPeriod.
@@ -67,8 +89,14 @@ message MsgExtendVotingPeriodResponse {}
 
 // MsgVetoProposal defines a message for vetoing a proposal.
 message MsgVetoProposal {
+    option (cosmos.msg.v1.signer) = "vetoer";
+    option (amino.name) = "atomone/coredaos/v1/MsgVetoProposal";
+
+    // vetoer is the address of the dao vetoing the proposal.
+    string vetoer = 1;
+
     // proposal_id is the ID of the proposal to veto.
-    uint64 proposal_id = 1;
+    uint64 proposal_id = 2;
 }
 
 // MsgVetoProposalResponse defines the response for MsgVetoProposal.
