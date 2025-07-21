@@ -122,9 +122,9 @@ func GetTxExtendVotingPeriodCmd() *cobra.Command {
 // GetTxVetoProposalCmd returns the command to veto a proposal
 func GetTxVetoProposalCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "veto [proposal-id]",
+		Use:   "veto [proposal-id] [burn-deposit]",
 		Short: "Broadcast a message to veto a proposal. Only available to the Oversight DAO.",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -134,9 +134,14 @@ func GetTxVetoProposalCmd() *cobra.Command {
 			if err != nil {
 				return fmt.Errorf("proposal-id %s not a valid uint, please input a valid proposal-id", args[0])
 			}
+			burnDeposit, err := strconv.ParseBool(args[1])
+			if err != nil {
+				return fmt.Errorf("burn-deposit %s not a valid boolean, please input a valid burn-deposit", args[1])
+			}
 			msg := types.NewMsgVetoProposal(
 				clientCtx.GetFromAddress(),
 				proposalID,
+				burnDeposit,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
