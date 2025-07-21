@@ -10,10 +10,10 @@ import (
 )
 
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	legacy.RegisterAminoMsg(cdc, &MsgAnnotateProposal{}, "atomone/x/coredaos/v1/MsgAnnotateProposal")
-	legacy.RegisterAminoMsg(cdc, &MsgEndorseProposal{}, "atomone/x/coredaos/v1/MsgEndorseProposal")
-	legacy.RegisterAminoMsg(cdc, &MsgExtendVotingPeriod{}, "atomone/x/coredaos/v1/MsgExtendVotingPeriod")
-	legacy.RegisterAminoMsg(cdc, &MsgVetoProposal{}, "atomone/x/coredaos/v1/MsgVetoProposal")
+	legacy.RegisterAminoMsg(cdc, &MsgAnnotateProposal{}, "atomone/v1/MsgAnnotateProposal")
+	legacy.RegisterAminoMsg(cdc, &MsgEndorseProposal{}, "atomone/v1/MsgEndorseProposal")
+	legacy.RegisterAminoMsg(cdc, &MsgExtendVotingPeriod{}, "atomone/v1/MsgExtendVotingPeriod")
+	legacy.RegisterAminoMsg(cdc, &MsgVetoProposal{}, "atomone/v1/MsgVetoProposal")
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "atomone/x/coredaos/v1/MsgUpdateParams")
 	cdc.RegisterConcrete(&Params{}, "atomone/coredaos/v1/Params", nil)
 }
