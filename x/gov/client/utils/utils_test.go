@@ -76,7 +76,7 @@ func TestNormalizeProposalStatus(t *testing.T) {
 		{"Rejected", args{"Rejected"}, "PROPOSAL_STATUS_REJECTED"},
 		{"rejected", args{"rejected"}, "PROPOSAL_STATUS_REJECTED"},
 		{"Vetoed", args{"Vetoed"}, "PROPOSAL_STATUS_VETOED"},
-		{"vetoed", args{"vetoed"}, "PROPOSAL_STATUS_VETOED"}
+		{"vetoed", args{"vetoed"}, "PROPOSAL_STATUS_VETOED"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
