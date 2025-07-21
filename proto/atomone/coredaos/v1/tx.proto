@@ -97,6 +97,10 @@ message MsgVetoProposal {
 
     // proposal_id is the ID of the proposal to veto.
     uint64 proposal_id = 2;
+
+    // burn_deposit is a boolean indicating whether to burn the deposit of the proposal.
+    // If true, the deposit is burned and not refunded.
+    bool burn_deposit = 3;
 }
 
 // MsgVetoProposalResponse defines the response for MsgVetoProposal.
