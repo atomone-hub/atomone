@@ -1,0 +1,27 @@
+syntax = "proto3";
+package atomone.coredaos.v1;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/duration.proto";
+import "cosmos_proto/cosmos.proto";
+
+option go_package = "github.com/atomone-hub/atomone/x/coredaos/types";
+
+// Params defines the parameters for the x/coredaos module.
+message Params {
+    // steering_dao_address defines the address which has authority
+    // to execute messages as Steering DAO.
+    string steering_dao_address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+    // oversight_dao_address defines the address which has authority
+    // to execute messages as Oversight DAO.
+    string oversight_dao_address = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+    // voting_period_extensions_limit defines the maximum number of times
+    // a proposal's voting period can be extended.
+    uint32 voting_period_extensions_limit = 3;
+
+    // voting_period_extension_duration defines the duration for which
+    // a proposal's voting period can be extended.
+    google.protobuf.Duration voting_period_extension_duration = 4 [(gogoproto.stdduration) = true];
+}
