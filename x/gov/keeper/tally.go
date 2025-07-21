@@ -205,6 +205,10 @@ func (keeper Keeper) getQuorumAndThreshold(ctx sdk.Context, proposal v1.Proposal
 	if kinds.HasKindLaw() {
 		lawQuorum := keeper.GetLawQuorum(ctx)
 		lawThreshold := sdk.MustNewDecFromStr(params.LawThreshold)
+		if proposal.Endorsed {
+			// If the proposal is endorsed, we use threshold for the generic kind
+			lawThreshold = sdk.MustNewDecFromStr(params.Threshold)
+		}
 
 		if lawQuorum.GT(quorum) {
 			quorum = lawQuorum

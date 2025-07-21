@@ -46,6 +46,12 @@ func ConvertToLegacyProposal(proposal v1.Proposal) (v1beta1.Proposal, error) {
 		legacyProposal.DepositEndTime = *proposal.DepositEndTime
 	}
 
+	if proposal.Annotation != "" {
+		legacyProposal.Annotation = proposal.Annotation
+	}
+
+	legacyProposal.TimesVotingPeriodExtended = proposal.TimesVotingPeriodExtended
+
 	msgs, err := proposal.GetMsgs()
 	if err != nil {
 		return v1beta1.Proposal{}, err

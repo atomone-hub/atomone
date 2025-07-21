@@ -59,6 +59,8 @@ func NormalizeProposalStatus(status string) string {
 		return v1beta1.StatusPassed.String()
 	case "Rejected", "rejected":
 		return v1beta1.StatusRejected.String()
+	case "Vetoed", "vetoed":
+		return v1beta1.StatusVetoed.String()
 	default:
 		return status
 	}
