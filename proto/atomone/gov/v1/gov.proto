@@ -109,6 +109,14 @@ message Proposal {
   //
   // Since: cosmos-sdk 0.47
   string proposer = 13 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // endorsed is a boolean indicating whether the proposal has been endorsed
+  // by the Steering DAO.
+  bool endorsed = 14;
+
+  // annotation is an optional field that contains annotations
+  // added by the Steering DAO.
+  string annotation = 15;
 }
 
 // ProposalStatus enumerates the valid statuses of a proposal.

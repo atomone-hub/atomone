@@ -1,0 +1,13 @@
+syntax = "proto3";
+package atomone.coredaos.v1;
+
+import "gogoproto/gogo.proto";
+import "atomone/coredaos/v1/coredaos.proto";
+import "amino/amino.proto";
+
+option go_package = "github.com/atomone-hub/atomone/x/coredaos/types";
+
+// GenesisState defines the x/coredaos module's genesis state.
+message GenesisState {
+	Params params = 1 [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
