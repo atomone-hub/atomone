@@ -21,6 +21,7 @@ const (
 	StatusPassed        = ProposalStatus_PROPOSAL_STATUS_PASSED
 	StatusRejected      = ProposalStatus_PROPOSAL_STATUS_REJECTED
 	StatusFailed        = ProposalStatus_PROPOSAL_STATUS_FAILED
+	StatusVetoed        = ProposalStatus_PROPOSAL_STATUS_VETOED
 )
 
 // ProposalKinds is a bitmask representing which messages are listed in a
@@ -65,6 +66,7 @@ func NewProposal(messages []sdk.Msg, id uint64, submitTime, depositEndTime time.
 		Title:            title,
 		Summary:          summary,
 		Proposer:         proposer.String(),
+		Endorsed:         false,
 	}
 
 	return p, nil
@@ -138,7 +140,8 @@ func ValidProposalStatus(status ProposalStatus) bool {
 		status == StatusVotingPeriod ||
 		status == StatusPassed ||
 		status == StatusRejected ||
-		status == StatusFailed {
+		status == StatusFailed ||
+		status == StatusVetoed {
 		return true
 	}
 	return false
