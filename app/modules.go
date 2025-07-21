@@ -208,6 +208,7 @@ func orderBeginBlockers() []string {
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
+		coredaostypes.ModuleName,
 	}
 }
 
@@ -242,6 +243,7 @@ func orderEndBlockers() []string {
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
+		coredaostypes.ModuleName,
 	}
 }
 
@@ -276,5 +278,6 @@ func orderInitBlockers() []string {
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		dynamicfeetypes.ModuleName,
+		coredaostypes.ModuleName,
 	}
 }
