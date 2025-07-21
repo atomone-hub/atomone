@@ -137,10 +137,11 @@ func (msg *MsgExtendVotingPeriod) ValidateBasic() error {
 }
 
 // NewMsgVetoProposal creates a new MsgVetoProposal instance
-func NewMsgVetoProposal(signer sdk.AccAddress, proposalID uint64) *MsgVetoProposal {
+func NewMsgVetoProposal(signer sdk.AccAddress, proposalID uint64, burnDeposit bool) *MsgVetoProposal {
 	return &MsgVetoProposal{
-		Vetoer:     signer.String(),
-		ProposalId: proposalID,
+		Vetoer:      signer.String(),
+		ProposalId:  proposalID,
+		BurnDeposit: burnDeposit,
 	}
 }
 

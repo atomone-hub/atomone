@@ -48,6 +48,18 @@ func (mr *MockGovKeeperMockRecorder) DecrementActiveProposalsNumber(ctx interfac
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DecrementActiveProposalsNumber", reflect.TypeOf((*MockGovKeeper)(nil).DecrementActiveProposalsNumber), ctx)
 }
 
+// DeleteAndBurnDeposits mocks base method.
+func (m *MockGovKeeper) DeleteAndBurnDeposits(ctx types.Context, proposalID uint64) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "DeleteAndBurnDeposits", ctx, proposalID)
+}
+
+// DeleteAndBurnDeposits indicates an expected call of DeleteAndBurnDeposits.
+func (mr *MockGovKeeperMockRecorder) DeleteAndBurnDeposits(ctx, proposalID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAndBurnDeposits", reflect.TypeOf((*MockGovKeeper)(nil).DeleteAndBurnDeposits), ctx, proposalID)
+}
+
 // GetProposal mocks base method.
 func (m *MockGovKeeper) GetProposal(ctx types.Context, id uint64) (v1.Proposal, bool) {
 	m.ctrl.T.Helper()

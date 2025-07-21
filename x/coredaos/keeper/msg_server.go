@@ -343,8 +343,11 @@ func (ms MsgServer) VetoProposal(goCtx context.Context, msg *types.MsgVetoPropos
 	}
 
 	// follows the same logic as in x/gov/abci.go for rejected proposals
-	ms.k.govKeeper.RefundAndDeleteDeposits(ctx, proposal.Id)
-	ms.k.govKeeper.RemoveFromActiveProposalQueue(ctx, proposal.Id, *proposal.VotingEndTime)
+	if msg.BurnDeposit {
+		ms.k.govKeeper.DeleteAndBurnDeposits(ctx, proposal.Id)
+	} else {
+		ms.k.govKeeper.RefundAndDeleteDeposits(ctx, proposal.Id)
+	}
 	proposal.Status = govtypesv1.StatusVetoed
 
 	// Since the proposal is veoted, we set the final tally result to an empty tally.

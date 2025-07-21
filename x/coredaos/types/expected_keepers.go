@@ -17,6 +17,9 @@ type GovKeeper interface {
 	// ProposalKinds returns a v1.ProposalKinds useful to determine which kind
 	// of messages are included in a proposal.
 	ProposalKinds(proposal govtypesv1.Proposal) govtypesv1.ProposalKinds
+	// DeleteAndBurnDeposits deletes and burns all the deposits on a
+	// specific proposal.
+	DeleteAndBurnDeposits(ctx sdk.Context, proposalID uint64)
 	// RefundAndDeleteDeposits refunds and deletes all the deposits on a
 	// specific proposal.
 	RefundAndDeleteDeposits(ctx sdk.Context, proposalID uint64)
