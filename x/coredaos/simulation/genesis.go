@@ -30,12 +30,12 @@ func GenVotingPeriodExtensionDuration(r *rand.Rand) time.Duration {
 func RandomizedGenState(simState *module.SimulationState) {
 	var votingPeriodExtensionsLimit uint32
 	simState.AppParams.GetOrGenerate(
-		simState.Cdc, VotingPeriodExtensionsLimit, &votingPeriodExtensionsLimit, simState.Rand,
+		 VotingPeriodExtensionsLimit, &votingPeriodExtensionsLimit, simState.Rand,
 		func(r *rand.Rand) { votingPeriodExtensionsLimit = GenVotingPeriodExtensionsLimit(r) },
 	)
 	var votingPeriodExtensionDuration time.Duration
 	simState.AppParams.GetOrGenerate(
-		simState.Cdc, VotingPeriodExtensionDuration, &votingPeriodExtensionDuration, simState.Rand,
+		VotingPeriodExtensionDuration, &votingPeriodExtensionDuration, simState.Rand,
 		func(r *rand.Rand) { votingPeriodExtensionDuration = GenVotingPeriodExtensionDuration(r) },
 	)
 
