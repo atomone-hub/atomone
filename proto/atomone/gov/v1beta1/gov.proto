@@ -136,6 +136,10 @@ message Proposal {
     (gogoproto.nullable) = false,
     (amino.dont_omitempty) = true
   ];
+
+  // annotations is an optional field that contains annotations
+  // added by the Steering DAO.
+  string annotation = 10;
 }
 
 // ProposalStatus enumerates the valid statuses of a proposal.
