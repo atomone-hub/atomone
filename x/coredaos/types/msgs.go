@@ -10,8 +10,9 @@ import (
 var _, _, _, _, _ sdk.Msg = &MsgAnnotateProposal{}, &MsgEndorseProposal{}, &MsgExtendVotingPeriod{}, &MsgVetoProposal{}, &MsgUpdateParams{}
 
 // NewMsgAnnotateProposal creates a new MsgAnnotateProposal instance
-func NewMsgAnnotateProposal(proposalID uint64, annotation string) *MsgAnnotateProposal {
+func NewMsgAnnotateProposal(signer sdk.AccAddress, proposalID uint64, annotation string) *MsgAnnotateProposal {
 	return &MsgAnnotateProposal{
+		Annotator:  signer.String(),
 		ProposalId: proposalID,
 		Annotation: annotation,
 	}
@@ -54,9 +55,9 @@ func (msg *MsgAnnotateProposal) ValidateBasic() error {
 }
 
 // NewMsgEndorseProposal creates a new MsgEndorseProposal instance
-func NewMsgEndorseProposal(endorser sdk.AccAddress, proposalID uint64) *MsgEndorseProposal {
+func NewMsgEndorseProposal(signer sdk.AccAddress, proposalID uint64) *MsgEndorseProposal {
 	return &MsgEndorseProposal{
-		Endorser:   endorser.String(),
+		Endorser:   signer.String(),
 		ProposalId: proposalID,
 	}
 }
@@ -95,9 +96,9 @@ func (msg *MsgEndorseProposal) ValidateBasic() error {
 }
 
 // NewMsgExtendVotingPeriod creates a new MsgExtendVotingPeriod instance
-func NewMsgExtendVotingPeriod(extender sdk.AccAddress, proposalID uint64) *MsgExtendVotingPeriod {
+func NewMsgExtendVotingPeriod(signer sdk.AccAddress, proposalID uint64) *MsgExtendVotingPeriod {
 	return &MsgExtendVotingPeriod{
-		Extender:   extender.String(),
+		Extender:   signer.String(),
 		ProposalId: proposalID,
 	}
 }
@@ -136,9 +137,9 @@ func (msg *MsgExtendVotingPeriod) ValidateBasic() error {
 }
 
 // NewMsgVetoProposal creates a new MsgVetoProposal instance
-func NewMsgVetoProposal(vetoer sdk.AccAddress, proposalID uint64) *MsgVetoProposal {
+func NewMsgVetoProposal(signer sdk.AccAddress, proposalID uint64) *MsgVetoProposal {
 	return &MsgVetoProposal{
-		Vetoer:     vetoer.String(),
+		Vetoer:     signer.String(),
 		ProposalId: proposalID,
 	}
 }
