@@ -1639,6 +1639,7 @@ var (
 	fd_Proposal_total_deposit      protoreflect.FieldDescriptor
 	fd_Proposal_voting_start_time  protoreflect.FieldDescriptor
 	fd_Proposal_voting_end_time    protoreflect.FieldDescriptor
+	fd_Proposal_annotation         protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -1653,6 +1654,7 @@ func init() {
 	fd_Proposal_total_deposit = md_Proposal.Fields().ByName("total_deposit")
 	fd_Proposal_voting_start_time = md_Proposal.Fields().ByName("voting_start_time")
 	fd_Proposal_voting_end_time = md_Proposal.Fields().ByName("voting_end_time")
+	fd_Proposal_annotation = md_Proposal.Fields().ByName("annotation")
 }
 
 var _ protoreflect.Message = (*fastReflection_Proposal)(nil)
@@ -1774,6 +1776,12 @@ func (x *fastReflection_Proposal) Range(f func(protoreflect.FieldDescriptor, pro
 			return
 		}
 	}
+	if x.Annotation != "" {
+		value := protoreflect.ValueOfString(x.Annotation)
+		if !f(fd_Proposal_annotation, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -1807,6 +1815,8 @@ func (x *fastReflection_Proposal) Has(fd protoreflect.FieldDescriptor) bool {
 		return x.VotingStartTime != nil
 	case "atomone.gov.v1beta1.Proposal.voting_end_time":
 		return x.VotingEndTime != nil
+	case "atomone.gov.v1beta1.Proposal.annotation":
+		return x.Annotation != ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1beta1.Proposal"))
@@ -1841,6 +1851,8 @@ func (x *fastReflection_Proposal) Clear(fd protoreflect.FieldDescriptor) {
 		x.VotingStartTime = nil
 	case "atomone.gov.v1beta1.Proposal.voting_end_time":
 		x.VotingEndTime = nil
+	case "atomone.gov.v1beta1.Proposal.annotation":
+		x.Annotation = ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1beta1.Proposal"))
@@ -1887,6 +1899,9 @@ func (x *fastReflection_Proposal) Get(descriptor protoreflect.FieldDescriptor) p
 	case "atomone.gov.v1beta1.Proposal.voting_end_time":
 		value := x.VotingEndTime
 		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "atomone.gov.v1beta1.Proposal.annotation":
+		value := x.Annotation
+		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1beta1.Proposal"))
@@ -1927,6 +1942,8 @@ func (x *fastReflection_Proposal) Set(fd protoreflect.FieldDescriptor, value pro
 		x.VotingStartTime = value.Message().Interface().(*timestamppb.Timestamp)
 	case "atomone.gov.v1beta1.Proposal.voting_end_time":
 		x.VotingEndTime = value.Message().Interface().(*timestamppb.Timestamp)
+	case "atomone.gov.v1beta1.Proposal.annotation":
+		x.Annotation = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1beta1.Proposal"))
@@ -1987,6 +2004,8 @@ func (x *fastReflection_Proposal) Mutable(fd protoreflect.FieldDescriptor) proto
 		panic(fmt.Errorf("field proposal_id of message atomone.gov.v1beta1.Proposal is not mutable"))
 	case "atomone.gov.v1beta1.Proposal.status":
 		panic(fmt.Errorf("field status of message atomone.gov.v1beta1.Proposal is not mutable"))
+	case "atomone.gov.v1beta1.Proposal.annotation":
+		panic(fmt.Errorf("field annotation of message atomone.gov.v1beta1.Proposal is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1beta1.Proposal"))
@@ -2025,6 +2044,8 @@ func (x *fastReflection_Proposal) NewField(fd protoreflect.FieldDescriptor) prot
 	case "atomone.gov.v1beta1.Proposal.voting_end_time":
 		m := new(timestamppb.Timestamp)
 		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	case "atomone.gov.v1beta1.Proposal.annotation":
+		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1beta1.Proposal"))
@@ -2130,6 +2151,10 @@ func (x *fastReflection_Proposal) ProtoMethods() *protoiface.Methods {
 			l = options.Size(x.VotingEndTime)
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
+		l = len(x.Annotation)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -2158,6 +2183,13 @@ func (x *fastReflection_Proposal) ProtoMethods() *protoiface.Methods {
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.Annotation) > 0 {
+			i -= len(x.Annotation)
+			copy(dAtA[i:], x.Annotation)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Annotation)))
+			i--
+			dAtA[i] = 0x52
 		}
 		if x.VotingEndTime != nil {
 			encoded, err := options.Marshal(x.VotingEndTime)
@@ -2605,6 +2637,38 @@ func (x *fastReflection_Proposal) ProtoMethods() *protoiface.Methods {
 				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.VotingEndTime); err != nil {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
+				iNdEx = postIndex
+			case 10:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Annotation", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Annotation = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
@@ -5791,6 +5855,9 @@ type Proposal struct {
 	VotingStartTime *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=voting_start_time,json=votingStartTime,proto3" json:"voting_start_time,omitempty"`
 	// voting_end_time is the end time of voting on a proposal.
 	VotingEndTime *timestamppb.Timestamp `protobuf:"bytes,9,opt,name=voting_end_time,json=votingEndTime,proto3" json:"voting_end_time,omitempty"`
+	// annotations is an optional field that contains annotations
+	// added by the Steering DAO.
+	Annotation string `protobuf:"bytes,10,opt,name=annotation,proto3" json:"annotation,omitempty"`
 }
 
 func (x *Proposal) Reset() {
@@ -5874,6 +5941,13 @@ func (x *Proposal) GetVotingEndTime() *timestamppb.Timestamp {
 		return x.VotingEndTime
 	}
 	return nil
+}
+
+func (x *Proposal) GetAnnotation() string {
+	if x != nil {
+		return x.Annotation
+	}
+	return ""
 }
 
 // TallyResult defines a standard tally for a governance proposal.
@@ -6206,7 +6280,7 @@ var file_atomone_gov_v1beta1_gov_proto_rawDesc = []byte{
 	0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x63, 0x6f, 0x73,
 	0x6d, 0x6f, 0x73, 0x2d, 0x73, 0x64, 0x6b, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x43, 0x6f,
 	0x69, 0x6e, 0x73, 0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74,
-	0x3a, 0x08, 0x88, 0xa0, 0x1f, 0x00, 0xe8, 0xa0, 0x1f, 0x00, 0x22, 0xdc, 0x05, 0x0a, 0x08, 0x50,
+	0x3a, 0x08, 0x88, 0xa0, 0x1f, 0x00, 0xe8, 0xa0, 0x1f, 0x00, 0x22, 0xfc, 0x05, 0x0a, 0x08, 0x50,
 	0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x12, 0x1f, 0x0a, 0x0b, 0x70, 0x72, 0x6f, 0x70, 0x6f,
 	0x73, 0x61, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0a, 0x70, 0x72,
 	0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x49, 0x64, 0x12, 0x4f, 0x0a, 0x07, 0x63, 0x6f, 0x6e, 0x74,
@@ -6252,7 +6326,9 @@ var file_atomone_gov_v1beta1_gov_proto_rawDesc = []byte{
 	0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65,
 	0x73, 0x74, 0x61, 0x6d, 0x70, 0x42, 0x0d, 0xc8, 0xde, 0x1f, 0x00, 0x90, 0xdf, 0x1f, 0x01, 0xa8,
 	0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x0d, 0x76, 0x6f, 0x74, 0x69, 0x6e, 0x67, 0x45, 0x6e, 0x64, 0x54,
-	0x69, 0x6d, 0x65, 0x3a, 0x04, 0xe8, 0xa0, 0x1f, 0x01, 0x22, 0xe9, 0x02, 0x0a, 0x0b, 0x54, 0x61,
+	0x69, 0x6d, 0x65, 0x12, 0x1e, 0x0a, 0x0a, 0x61, 0x6e, 0x6e, 0x6f, 0x74, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x61, 0x6e, 0x6e, 0x6f, 0x74, 0x61, 0x74,
+	0x69, 0x6f, 0x6e, 0x3a, 0x04, 0xe8, 0xa0, 0x1f, 0x01, 0x22, 0xe9, 0x02, 0x0a, 0x0b, 0x54, 0x61,
 	0x6c, 0x6c, 0x79, 0x52, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x12, 0x4e, 0x0a, 0x03, 0x79, 0x65, 0x73,
 	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x3c, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x26,
 	0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
