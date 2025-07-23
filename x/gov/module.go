@@ -30,12 +30,12 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
-	modulev1 "github.com/atomone-hub/atomone/api/atomone/gov/module/v1"
 	govclient "github.com/atomone-hub/atomone/x/gov/client"
 	"github.com/atomone-hub/atomone/x/gov/client/cli"
 	"github.com/atomone-hub/atomone/x/gov/keeper"
 	"github.com/atomone-hub/atomone/x/gov/simulation"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
+	modulev1 "github.com/atomone-hub/atomone/x/gov/types/module"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 )

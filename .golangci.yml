@@ -8,7 +8,6 @@ run:
   skip-files:
     - ".*\\.pb\\.go$"
     - ".*\\.pb\\.gw\\.go$"
-    - ".*\\.pulsar\\.go$"
 
 linters:
   disable-all: true

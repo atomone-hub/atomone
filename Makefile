@@ -249,7 +249,6 @@ format: lint-fix
 		-not -path "*.git*" \
 		-not -name "*.pb.go" \
 		-not -name "*.pb.gw.go" \
-		-not -name "*.pulsar.go" \
 		-not -path "*client/docs/statik*" \
 		| xargs $(rundep) mvdan.cc/gofumpt -w -l
 
@@ -341,10 +340,6 @@ proto-all: proto-format proto-lint proto-gen
 proto-gen:
 	@echo "--> Generating Protobuf files"
 	@$(protoImage) sh ./proto/scripts/protocgen.sh
-
-proto-pulsar-gen:
-	@echo "Generating Dep-Inj Protobuf files"
-	@$(protoImage) sh ./proto/scripts/protocgen-pulsar.sh
 
 proto-swagger-gen:
 	@echo "--> Generating Protobuf Swagger"

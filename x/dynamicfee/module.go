@@ -18,10 +18,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	modulev1 "github.com/atomone-hub/atomone/api/atomone/dynamicfee/module/v1"
 	"github.com/atomone-hub/atomone/x/dynamicfee/client/cli"
 	"github.com/atomone-hub/atomone/x/dynamicfee/keeper"
 	"github.com/atomone-hub/atomone/x/dynamicfee/types"
+	modulev1 "github.com/atomone-hub/atomone/x/dynamicfee/types/module"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 )
 
