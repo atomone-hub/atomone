@@ -67,7 +67,6 @@ func (k *Keeper) UpdateDynamicfee(ctx context.Context) error {
 // DefaultMaxBlockGas
 func (k *Keeper) GetMaxBlockGas(ctx context.Context, params types.Params) uint64 {
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
-
 	maxBlockGas := sdkCtx.ConsensusParams().Block.GetMaxGas()
 	if maxBlockGas == 0 || maxBlockGas == -1 {
 		return params.DefaultMaxBlockGas
