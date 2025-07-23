@@ -71,6 +71,8 @@ func (m *MsgMintPhoton) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgMintPhoton proto.InternalMessageInfo
 
+// MsgMintPhotonResponse defines the response structure for executing a
+// MsgMintPhoton message.
 type MsgMintPhotonResponse struct {
 	Minted types.Coin `protobuf:"bytes,1,opt,name=minted,proto3" json:"minted"`
 	// conversion_rate represents the factor used to convert atone to photon.

@@ -42,6 +42,7 @@ func SetupKeeper(t *testing.T, maxBlockGas uint64) (*keeper.Keeper, sdk.Context)
 	if maxBlockGas == 0 {
 		maxBlockGas = MaxBlockGas
 	}
+	ctx = ctx.WithConsensusParams(tmproto.ConsensusParams{Block: &tmproto.BlockParams{MaxGas: int64(maxBlockGas)}})
 	encCfg := moduletestutil.MakeTestEncodingConfig()
 	types.RegisterInterfaces(encCfg.InterfaceRegistry)
 	// banktypes.RegisterInterfaces(encCfg.InterfaceRegistry)
