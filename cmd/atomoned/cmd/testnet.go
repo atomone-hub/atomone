@@ -16,9 +16,13 @@ import (
 	"github.com/cometbft/cometbft/types"
 	tmtime "github.com/cometbft/cometbft/types/time"
 
-	"cosmossdk.io/math"
-	"cosmossdk.io/simapp"
+	dbm "github.com/cosmos/cosmos-db"
 
+	"cosmossdk.io/log"
+	"cosmossdk.io/math"
+	pruningtypes "cosmossdk.io/store/pruning/types"
+
+	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
@@ -27,15 +31,20 @@ import (
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	"github.com/cosmos/cosmos-sdk/server"
 	srvconfig "github.com/cosmos/cosmos-sdk/server/config"
+	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	"github.com/cosmos/cosmos-sdk/testutil"
 	"github.com/cosmos/cosmos-sdk/testutil/network"
+	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+
+	atomone "github.com/atomone-hub/atomone/app"
 )
 
 var (
@@ -124,7 +133,7 @@ or a similar setup where each node has a manually configurable IP address.
 Note, strict routability for addresses is turned off in the config file.
 
 Example:
-	simd testnet init-files --v 4 --output-dir ./.testnets --starting-ip-address 192.168.10.2
+	atomeoned testnet init-files --v 4 --output-dir ./.testnets --starting-ip-address 192.168.10.2
 	`,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -169,7 +178,7 @@ and generate "v" directories, populated with necessary validator configuration f
 (private validator, genesis, config, etc.).
 
 Example:
-	simd testnet --v 4 --output-dir ./.testnets
+	atomoned testnet --v 4 --output-dir ./.testnets
 	`,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			args := startArgs{}
@@ -214,13 +223,13 @@ func initTestnetFiles(
 	nodeIDs := make([]string, args.numValidators)
 	valPubKeys := make([]cryptotypes.PubKey, args.numValidators)
 
-	simappConfig := srvconfig.DefaultConfig()
-	simappConfig.MinGasPrices = args.minGasPrices
-	simappConfig.API.Enable = true
-	simappConfig.Telemetry.Enabled = true
-	simappConfig.Telemetry.PrometheusRetentionTime = 60
-	simappConfig.Telemetry.EnableHostnameLabel = false
-	simappConfig.Telemetry.GlobalLabels = [][]string{{"chain_id", args.chainID}}
+	atomoneConfig := srvconfig.DefaultConfig()
+	atomoneConfig.MinGasPrices = args.minGasPrices
+	atomoneConfig.API.Enable = true
+	atomoneConfig.Telemetry.Enabled = true
+	atomoneConfig.Telemetry.PrometheusRetentionTime = 60
+	atomoneConfig.Telemetry.EnableHostnameLabel = false
+	atomoneConfig.Telemetry.GlobalLabels = [][]string{{"chain_id", args.chainID}}
 
 	var (
 		genAccounts []authtypes.GenesisAccount
@@ -300,12 +309,12 @@ func initTestnetFiles(
 
 		valTokens := sdk.TokensFromConsensusPower(100, sdk.DefaultPowerReduction)
 		createValMsg, err := stakingtypes.NewMsgCreateValidator(
-			sdk.ValAddress(addr),
+			sdk.ValAddress(addr).String(),
 			valPubKeys[i],
 			sdk.NewCoin(sdk.DefaultBondDenom, valTokens),
 			stakingtypes.NewDescription(nodeDirName, "", "", "", ""),
 			stakingtypes.NewCommissionRates(math.LegacyOneDec(), math.LegacyOneDec(), math.LegacyOneDec()),
-			sdk.OneInt(),
+			math.OneInt(),
 		)
 		if err != nil {
 			return err
@@ -325,7 +334,7 @@ func initTestnetFiles(
 			WithKeybase(kb).
 			WithTxConfig(clientCtx.TxConfig)
 
-		if err := tx.Sign(txFactory, nodeDirName, txBuilder, true); err != nil {
+		if err := tx.Sign(clientCtx.CmdContext, txFactory, nodeDirName, txBuilder, true); err != nil {
 			return err
 		}
 
@@ -338,7 +347,7 @@ func initTestnetFiles(
 			return err
 		}
 
-		srvconfig.WriteConfigFile(filepath.Join(nodeDir, "config", "app.toml"), simappConfig)
+		srvconfig.WriteConfigFile(filepath.Join(nodeDir, "config", "app.toml"), atomoneConfig)
 	}
 
 	if err := initGenFiles(clientCtx, mbm, args.chainID, genAccounts, genBalances, genFiles, args.numValidators); err != nil {
@@ -425,12 +434,13 @@ func collectGenFiles(
 		nodeID, valPubKey := nodeIDs[i], valPubKeys[i]
 		initCfg := genutiltypes.NewInitConfig(chainID, gentxsDir, nodeID, valPubKey)
 
-		genDoc, err := types.GenesisDocFromFile(nodeConfig.GenesisFile())
+		genFile := nodeConfig.GenesisFile()
+		appGenesis, err := genutiltypes.AppGenesisFromFile(genFile)
 		if err != nil {
 			return err
 		}
 
-		nodeAppState, err := genutil.GenAppStateFromConfig(clientCtx.Codec, clientCtx.TxConfig, nodeConfig, initCfg, *genDoc, genBalIterator, genutiltypes.DefaultMessageValidator)
+		nodeAppState, err := genutil.GenAppStateFromConfig(clientCtx.Codec, clientCtx.TxConfig, nodeConfig, initCfg, appGenesis, genBalIterator, genutiltypes.DefaultMessageValidator, clientCtx.InterfaceRegistry.SigningContext().AddressCodec())
 		if err != nil {
 			return err
 		}
@@ -439,8 +449,6 @@ func collectGenFiles(
 			// set the canonical application state (they should not differ)
 			appState = nodeAppState
 		}
-
-		genFile := nodeConfig.GenesisFile()
 
 		// overwrite each validator's genesis file to have a canonical genesis time
 		if err := genutil.ExportGenesisFileWithTime(genFile, chainID, nil, appState, genTime); err != nil {
@@ -491,7 +499,7 @@ func writeFile(name string, dir string, contents []byte) error {
 
 // startTestnet starts an in-process testnet
 func startTestnet(cmd *cobra.Command, args startArgs) error {
-	networkConfig := network.DefaultConfig(simapp.NewTestNetworkFixture)
+	networkConfig := network.DefaultConfig(NewTestNetworkFixture)
 
 	// Default networkConfig.ChainID is random, and we should only override it if chainID provided
 	// is non-empty
@@ -501,7 +509,6 @@ func startTestnet(cmd *cobra.Command, args startArgs) error {
 	networkConfig.SigningAlgo = args.algo
 	networkConfig.MinGasPrices = args.minGasPrices
 	networkConfig.NumValidators = args.numValidators
-	networkConfig.EnableTMLogging = args.enableLogging
 	networkConfig.RPCAddress = args.rpcAddress
 	networkConfig.APIAddress = args.apiAddress
 	networkConfig.GRPCAddress = args.grpcAddress
@@ -530,4 +537,35 @@ func startTestnet(cmd *cobra.Command, args startArgs) error {
 	testnet.Cleanup()
 
 	return nil
+}
+
+func NewTestNetworkFixture() network.TestFixture {
+	dir, err := os.MkdirTemp("", atomone.DefaultNodeHome)
+	if err != nil {
+		panic(fmt.Sprintf("failed creating temporary directory: %v", err))
+	}
+	defer os.RemoveAll(dir)
+
+	app := atomone.NewAtomOneApp(log.NewNopLogger(), dbm.NewMemDB(), nil, true, simtestutil.NewAppOptionsWithFlagHome(dir))
+
+	appCtr := func(val network.ValidatorI) servertypes.Application {
+		return atomone.NewAtomOneApp(
+			val.GetCtx().Logger, dbm.NewMemDB(), nil, true,
+			simtestutil.NewAppOptionsWithFlagHome(val.GetCtx().Config.RootDir),
+			baseapp.SetPruning(pruningtypes.NewPruningOptionsFromString(val.GetAppConfig().Pruning)),
+			baseapp.SetMinGasPrices(val.GetAppConfig().MinGasPrices),
+			baseapp.SetChainID(val.GetCtx().Viper.GetString(flags.FlagChainID)),
+		)
+	}
+
+	return network.TestFixture{
+		AppConstructor: appCtr,
+		GenesisState:   app.DefaultGenesis(),
+		EncodingConfig: moduletestutil.TestEncodingConfig{
+			InterfaceRegistry: app.InterfaceRegistry(),
+			Codec:             app.AppCodec(),
+			TxConfig:          app.TxConfig(),
+			Amino:             app.LegacyAmino(),
+		},
+	}
 }

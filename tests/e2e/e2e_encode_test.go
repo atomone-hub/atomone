@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"path/filepath"
 
+	"github.com/cosmos/cosmos-sdk/client"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -13,7 +14,7 @@ const (
 
 func (s *IntegrationTestSuite) testEncode() {
 	chain := s.chainA
-	_, encoded, err := buildRawTx()
+	_, encoded, err := buildRawTx(s.txConfig)
 	s.Require().NoError(err)
 
 	got := s.execEncode(chain, filepath.Join(atomoneHomePath, rawTxFile))
@@ -23,7 +24,7 @@ func (s *IntegrationTestSuite) testEncode() {
 
 func (s *IntegrationTestSuite) testDecode() {
 	chain := s.chainA
-	rawTx, encoded, err := buildRawTx()
+	rawTx, encoded, err := buildRawTx(s.txConfig)
 	s.Require().NoError(err)
 
 	got := s.execDecode(chain, encoded)
@@ -33,7 +34,7 @@ func (s *IntegrationTestSuite) testDecode() {
 
 // buildRawTx build a dummy tx using the TxBuilder and
 // return the JSON and encoded tx's
-func buildRawTx() ([]byte, string, error) {
+func buildRawTx(txConfig client.TxConfig) ([]byte, string, error) {
 	builder := txConfig.NewTxBuilder()
 	builder.SetGasLimit(gas)
 	builder.SetFeeAmount(sdk.NewCoins(standardFees))

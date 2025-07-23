@@ -1,8 +1,12 @@
 package v1
 
-import sdk "github.com/cosmos/cosmos-sdk/types"
+import (
+	"cosmossdk.io/math"
 
-func GetNewMinDeposit(minDepositFloor, lastMinDeposit sdk.Coins, percChange sdk.Dec) sdk.Coins {
+	sdk "github.com/cosmos/cosmos-sdk/types"
+)
+
+func GetNewMinDeposit(minDepositFloor, lastMinDeposit sdk.Coins, percChange math.LegacyDec) sdk.Coins {
 	newMinDeposit := sdk.Coins{}
 	minDepositFloorDenomsSeen := make(map[string]bool)
 	for _, lastMinDepositCoin := range lastMinDeposit {

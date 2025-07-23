@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"sort"
+	"strings"
 
 	gwruntime "github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
@@ -17,24 +18,24 @@ import (
 
 	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/depinject"
+	store "cosmossdk.io/store/types"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	store "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
-	modulev1 "github.com/atomone-hub/atomone/api/atomone/gov/module/v1"
 	govclient "github.com/atomone-hub/atomone/x/gov/client"
 	"github.com/atomone-hub/atomone/x/gov/client/cli"
 	"github.com/atomone-hub/atomone/x/gov/keeper"
 	"github.com/atomone-hub/atomone/x/gov/simulation"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
+	modulev1 "github.com/atomone-hub/atomone/x/gov/types/module"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 )
@@ -42,9 +43,10 @@ import (
 const ConsensusVersion = 5
 
 var (
-	_ module.EndBlockAppModule   = AppModule{}
 	_ module.AppModuleBasic      = AppModuleBasic{}
 	_ module.AppModuleSimulation = AppModule{}
+
+	_ appmodule.HasEndBlocker = AppModule{}
 )
 
 // AppModuleBasic defines the basic application module used by the gov module.
@@ -138,10 +140,10 @@ type AppModule struct {
 // NewAppModule creates a new AppModule object
 func NewAppModule(
 	cdc codec.Codec, keeper *keeper.Keeper,
-	ak govtypes.AccountKeeper, bk govtypes.BankKeeper, ss govtypes.ParamSubspace,
+	ak govtypes.AccountKeeper, bk govtypes.BankKeeper, ss govtypes.ParamSubspace, legacyProposalHandlers ...govclient.ProposalHandler,
 ) AppModule {
 	return AppModule{
-		AppModuleBasic: AppModuleBasic{cdc: cdc},
+		AppModuleBasic: AppModuleBasic{cdc: cdc, legacyProposalHandlers: legacyProposalHandlers},
 		keeper:         keeper,
 		accountKeeper:  ak,
 		bankKeeper:     bk,
@@ -228,8 +230,8 @@ func InvokeAddRoutes(keeper *keeper.Keeper, routes []v1beta1.HandlerRoute) {
 
 	// Default route order is a lexical sort by RouteKey.
 	// Explicit ordering can be added to the module config if required.
-	slices.SortFunc(routes, func(x, y v1beta1.HandlerRoute) bool {
-		return x.RouteKey < y.RouteKey
+	slices.SortFunc(routes, func(x, y v1beta1.HandlerRoute) int {
+		return strings.Compare(x.RouteKey, y.RouteKey)
 	})
 
 	router := v1beta1.NewRouter()
@@ -308,11 +310,10 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.Raw
 // ConsensusVersion implements AppModule/ConsensusVersion.
 func (AppModule) ConsensusVersion() uint64 { return ConsensusVersion }
 
-// EndBlock returns the end blocker for the gov module. It returns no validator
-// updates.
-func (am AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
+// EndBlock returns the end blocker for the gov module.
+func (am AppModule) EndBlock(ctx context.Context) error {
 	EndBlocker(ctx, am.keeper)
-	return []abci.ValidatorUpdate{}
+	return nil
 }
 
 // AppModuleSimulation functions
@@ -334,7 +335,7 @@ func (AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.Weight
 }
 
 // RegisterStoreDecoder registers a decoder for gov module's types
-func (am AppModule) RegisterStoreDecoder(sdr sdk.StoreDecoderRegistry) {
+func (am AppModule) RegisterStoreDecoder(sdr simtypes.StoreDecoderRegistry) {
 	sdr[govtypes.StoreKey] = simulation.NewDecodeStore(am.cdc)
 }
 

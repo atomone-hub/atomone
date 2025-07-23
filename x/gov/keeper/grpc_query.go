@@ -6,7 +6,9 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"cosmossdk.io/math"
+	"cosmossdk.io/store/prefix"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 
@@ -293,7 +295,11 @@ func (q Keeper) TallyResult(c context.Context, req *v1.QueryTallyResultRequest) 
 
 	default:
 		// proposal is in voting period
-		_, _, _, tallyResult = q.Tally(ctx, proposal)
+		var err error
+		_, _, _, tallyResult, err = q.Tally(ctx, proposal)
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "proposal tally error: %v", err)
+		}
 	}
 
 	return &v1.QueryTallyResultResponse{Tally: &tallyResult}, nil
@@ -452,12 +458,12 @@ func (q legacyQueryServer) Params(c context.Context, req *v1beta1.QueryParamsReq
 		if err != nil {
 			return nil, err
 		}
-		threshold, err := sdk.NewDecFromStr(resp.TallyParams.Threshold)
+		threshold, err := math.LegacyNewDecFromStr(resp.TallyParams.Threshold)
 		if err != nil {
 			return nil, err
 		}
-		quorum := sdk.MustNewDecFromStr(quorumRes.Quorum)
-		response.TallyParams = v1beta1.NewTallyParams(quorum, threshold, sdk.ZeroDec())
+		quorum := math.LegacyMustNewDecFromStr(quorumRes.Quorum)
+		response.TallyParams = v1beta1.NewTallyParams(quorum, threshold, math.LegacyZeroDec())
 	}
 
 	return response, nil
