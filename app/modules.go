@@ -39,8 +39,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	"github.com/atomone-hub/atomone/x/feemarket"
-	feemarkettypes "github.com/atomone-hub/atomone/x/feemarket/types"
+	"github.com/atomone-hub/atomone/x/dynamicfee"
+	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
 	"github.com/atomone-hub/atomone/x/gov"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	"github.com/atomone-hub/atomone/x/photon"
@@ -57,7 +57,7 @@ var maccPerms = map[string][]string{
 	govtypes.ModuleName:            {authtypes.Burner},
 	ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
 	photontypes.ModuleName:         {authtypes.Minter, authtypes.Burner},
-	feemarkettypes.ModuleName:      nil,
+	dynamicfeetypes.ModuleName:     nil,
 }
 
 func appModules(
@@ -95,7 +95,7 @@ func appModules(
 		ibc.NewAppModule(app.IBCKeeper),
 		sdkparams.NewAppModule(app.ParamsKeeper),
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
-		feemarket.NewAppModule(appCodec, *app.FeemarketKeeper),
+		dynamicfee.NewAppModule(appCodec, *app.DynamicfeeKeeper),
 		app.TransferModule,
 		app.ICAModule,
 		app.TMClientModule,
@@ -119,7 +119,7 @@ func orderBeginBlockers() []string {
 		// upgrades should be run first
 		upgradetypes.ModuleName,
 		minttypes.ModuleName,
-		feemarkettypes.ModuleName,
+		dynamicfeetypes.ModuleName,
 		distrtypes.ModuleName,
 		slashingtypes.ModuleName,
 		evidencetypes.ModuleName,
@@ -150,7 +150,7 @@ thus, gov.EndBlock must be executed before staking.EndBlock
 */
 func orderEndBlockers() []string {
 	return []string{
-		feemarkettypes.ModuleName,
+		dynamicfeetypes.ModuleName,
 		govtypes.ModuleName,
 		stakingtypes.ModuleName,
 		ibcexported.ModuleName,
@@ -201,6 +201,6 @@ func orderInitBlockers() []string {
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
-		feemarkettypes.ModuleName,
+		dynamicfeetypes.ModuleName,
 	}
 }

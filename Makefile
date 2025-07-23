@@ -222,9 +222,8 @@ mocks-gen:
 	$(mockgen_cmd) -source=x/gov/testutil/expected_keepers.go -package testutil -destination x/gov/testutil/expected_keepers_mocks.go
 	$(mockgen_cmd) -source=x/photon/types/expected_keepers.go -package testutil -destination x/photon/testutil/expected_keepers_mocks.go
 	$(mockgen_cmd) -source=x/photon/ante/expected_keepers.go -package ante_test -destination x/photon/ante/expected_keepers_mocks_test.go
-	$(mockgen_cmd) -source=x/feemarket/ante/expected_keepers.go -package ante_test -destination x/feemarket/ante/expected_keepers_mocks_test.go
-	$(mockgen_cmd) -source=x/feemarket/post/expected_keepers.go -package post_test -destination x/feemarket/post/expected_keepers_mocks_test.go
-	$(mockgen_cmd) -source=x/feemarket/types/expected_keepers.go -package testutil -destination x/feemarket/testutil/expected_keepers_mocks.go
+	$(mockgen_cmd) -source=x/dynamicfee/ante/expected_keepers.go -package ante_test -destination x/dynamicfee/ante/expected_keepers_mocks_test.go
+	$(mockgen_cmd) -source=x/dynamicfee/post/expected_keepers.go -package post_test -destination x/dynamicfee/post/expected_keepers_mocks_test.go
 
 .PHONY: docker-build-debug docker-build-hermes docker-build-all mocks-gen
 
@@ -283,6 +282,16 @@ localnet-start: build
 	$(localnetd) genesis add-genesis-account user 1000000000uatone,1000000000uphoton
 	$(localnetd) genesis gentx val 1000000000uatone 
 	$(localnetd) genesis collect-gentxs
+	# Add treasury DAO address
+	$(localnetd) genesis add-genesis-account atone1qqqqqqqqqqqqqqqqqqqqqqqqqqqqp0dqtalx52 5388766663072uatone
+	# Add CP funds
+	$(localnetd) genesis add-genesis-account atone1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8flcml8 5388766663072uatone
+	jq '.app_state.distribution.fee_pool.community_pool = [ { "denom": "uatone", "amount": "5388766663072.000000000000000000" }]' $(localnet_home)/config/genesis.json > /tmp/gen
+	mv /tmp/gen $(localnet_home)/config/genesis.json
+	# Previous add-genesis-account call added the auth module account as a BaseAccount, we need to remove it
+	jq 'del(.app_state.auth.accounts[] | select(.address == "atone1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8flcml8"))' $(localnet_home)/config/genesis.json > /tmp/gen
+	mv /tmp/gen $(localnet_home)/config/genesis.json
+	# Set validator gas prices
 	sed -i.bak 's#^minimum-gas-prices = .*#minimum-gas-prices = "0.01uatone,0.01uphoton"#g' $(localnet_home)/config/app.toml
 	# enable REST API
 	$(localnetd) config set app api.enable true

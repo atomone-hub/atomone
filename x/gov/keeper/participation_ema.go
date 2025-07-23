@@ -29,9 +29,6 @@ func (k Keeper) GetLawParticipationEMA(ctx sdk.Context) math.LegacyDec {
 func (k Keeper) getParticipationEMAByKey(ctx sdk.Context, key []byte) math.LegacyDec {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(key)
-	if bz == nil {
-		return math.LegacyDec{}
-	}
 	return math.LegacyMustNewDecFromStr(string(bz))
 }
 

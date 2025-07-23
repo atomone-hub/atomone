@@ -21,15 +21,19 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Query_Constitution_FullMethodName = "/atomone.gov.v1.Query/Constitution"
-	Query_Proposal_FullMethodName     = "/atomone.gov.v1.Query/Proposal"
-	Query_Proposals_FullMethodName    = "/atomone.gov.v1.Query/Proposals"
-	Query_Vote_FullMethodName         = "/atomone.gov.v1.Query/Vote"
-	Query_Votes_FullMethodName        = "/atomone.gov.v1.Query/Votes"
-	Query_Params_FullMethodName       = "/atomone.gov.v1.Query/Params"
-	Query_Deposit_FullMethodName      = "/atomone.gov.v1.Query/Deposit"
-	Query_Deposits_FullMethodName     = "/atomone.gov.v1.Query/Deposits"
-	Query_TallyResult_FullMethodName  = "/atomone.gov.v1.Query/TallyResult"
+	Query_Constitution_FullMethodName      = "/atomone.gov.v1.Query/Constitution"
+	Query_Proposal_FullMethodName          = "/atomone.gov.v1.Query/Proposal"
+	Query_Proposals_FullMethodName         = "/atomone.gov.v1.Query/Proposals"
+	Query_Vote_FullMethodName              = "/atomone.gov.v1.Query/Vote"
+	Query_Votes_FullMethodName             = "/atomone.gov.v1.Query/Votes"
+	Query_Params_FullMethodName            = "/atomone.gov.v1.Query/Params"
+	Query_Deposit_FullMethodName           = "/atomone.gov.v1.Query/Deposit"
+	Query_Deposits_FullMethodName          = "/atomone.gov.v1.Query/Deposits"
+	Query_TallyResult_FullMethodName       = "/atomone.gov.v1.Query/TallyResult"
+	Query_MinDeposit_FullMethodName        = "/atomone.gov.v1.Query/MinDeposit"
+	Query_MinInitialDeposit_FullMethodName = "/atomone.gov.v1.Query/MinInitialDeposit"
+	Query_Quorums_FullMethodName           = "/atomone.gov.v1.Query/Quorums"
+	Query_ParticipationEMAs_FullMethodName = "/atomone.gov.v1.Query/ParticipationEMAs"
 )
 
 // QueryClient is the client API for Query service.
@@ -56,6 +60,16 @@ type QueryClient interface {
 	Deposits(ctx context.Context, in *QueryDepositsRequest, opts ...grpc.CallOption) (*QueryDepositsResponse, error)
 	// TallyResult queries the tally of a proposal vote.
 	TallyResult(ctx context.Context, in *QueryTallyResultRequest, opts ...grpc.CallOption) (*QueryTallyResultResponse, error)
+	// MinDeposit queries the minimum deposit currently
+	// required for a proposal to enter voting period.
+	MinDeposit(ctx context.Context, in *QueryMinDepositRequest, opts ...grpc.CallOption) (*QueryMinDepositResponse, error)
+	// MinInitialDeposit queries the minimum initial deposit
+	// currently required for a proposal to be submitted.
+	MinInitialDeposit(ctx context.Context, in *QueryMinInitialDepositRequest, opts ...grpc.CallOption) (*QueryMinInitialDepositResponse, error)
+	// Quorums queries the dynamically set quorums.
+	Quorums(ctx context.Context, in *QueryQuorumsRequest, opts ...grpc.CallOption) (*QueryQuorumsResponse, error)
+	// ParticipationEMAs queries the state of the proposal participation exponential moving averages.
+	ParticipationEMAs(ctx context.Context, in *QueryParticipationEMAsRequest, opts ...grpc.CallOption) (*QueryParticipationEMAsResponse, error)
 }
 
 type queryClient struct {
@@ -156,6 +170,46 @@ func (c *queryClient) TallyResult(ctx context.Context, in *QueryTallyResultReque
 	return out, nil
 }
 
+func (c *queryClient) MinDeposit(ctx context.Context, in *QueryMinDepositRequest, opts ...grpc.CallOption) (*QueryMinDepositResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(QueryMinDepositResponse)
+	err := c.cc.Invoke(ctx, Query_MinDeposit_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) MinInitialDeposit(ctx context.Context, in *QueryMinInitialDepositRequest, opts ...grpc.CallOption) (*QueryMinInitialDepositResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(QueryMinInitialDepositResponse)
+	err := c.cc.Invoke(ctx, Query_MinInitialDeposit_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) Quorums(ctx context.Context, in *QueryQuorumsRequest, opts ...grpc.CallOption) (*QueryQuorumsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(QueryQuorumsResponse)
+	err := c.cc.Invoke(ctx, Query_Quorums_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) ParticipationEMAs(ctx context.Context, in *QueryParticipationEMAsRequest, opts ...grpc.CallOption) (*QueryParticipationEMAsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(QueryParticipationEMAsResponse)
+	err := c.cc.Invoke(ctx, Query_ParticipationEMAs_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility.
@@ -180,6 +234,16 @@ type QueryServer interface {
 	Deposits(context.Context, *QueryDepositsRequest) (*QueryDepositsResponse, error)
 	// TallyResult queries the tally of a proposal vote.
 	TallyResult(context.Context, *QueryTallyResultRequest) (*QueryTallyResultResponse, error)
+	// MinDeposit queries the minimum deposit currently
+	// required for a proposal to enter voting period.
+	MinDeposit(context.Context, *QueryMinDepositRequest) (*QueryMinDepositResponse, error)
+	// MinInitialDeposit queries the minimum initial deposit
+	// currently required for a proposal to be submitted.
+	MinInitialDeposit(context.Context, *QueryMinInitialDepositRequest) (*QueryMinInitialDepositResponse, error)
+	// Quorums queries the dynamically set quorums.
+	Quorums(context.Context, *QueryQuorumsRequest) (*QueryQuorumsResponse, error)
+	// ParticipationEMAs queries the state of the proposal participation exponential moving averages.
+	ParticipationEMAs(context.Context, *QueryParticipationEMAsRequest) (*QueryParticipationEMAsResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -216,6 +280,18 @@ func (UnimplementedQueryServer) Deposits(context.Context, *QueryDepositsRequest)
 }
 func (UnimplementedQueryServer) TallyResult(context.Context, *QueryTallyResultRequest) (*QueryTallyResultResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TallyResult not implemented")
+}
+func (UnimplementedQueryServer) MinDeposit(context.Context, *QueryMinDepositRequest) (*QueryMinDepositResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MinDeposit not implemented")
+}
+func (UnimplementedQueryServer) MinInitialDeposit(context.Context, *QueryMinInitialDepositRequest) (*QueryMinInitialDepositResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MinInitialDeposit not implemented")
+}
+func (UnimplementedQueryServer) Quorums(context.Context, *QueryQuorumsRequest) (*QueryQuorumsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Quorums not implemented")
+}
+func (UnimplementedQueryServer) ParticipationEMAs(context.Context, *QueryParticipationEMAsRequest) (*QueryParticipationEMAsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ParticipationEMAs not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 func (UnimplementedQueryServer) testEmbeddedByValue()               {}
@@ -400,6 +476,78 @@ func _Query_TallyResult_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_MinDeposit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryMinDepositRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).MinDeposit(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_MinDeposit_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).MinDeposit(ctx, req.(*QueryMinDepositRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_MinInitialDeposit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryMinInitialDepositRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).MinInitialDeposit(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_MinInitialDeposit_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).MinInitialDeposit(ctx, req.(*QueryMinInitialDepositRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_Quorums_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryQuorumsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Quorums(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_Quorums_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Quorums(ctx, req.(*QueryQuorumsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_ParticipationEMAs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryParticipationEMAsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).ParticipationEMAs(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_ParticipationEMAs_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).ParticipationEMAs(ctx, req.(*QueryParticipationEMAsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -442,6 +590,22 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "TallyResult",
 			Handler:    _Query_TallyResult_Handler,
+		},
+		{
+			MethodName: "MinDeposit",
+			Handler:    _Query_MinDeposit_Handler,
+		},
+		{
+			MethodName: "MinInitialDeposit",
+			Handler:    _Query_MinInitialDeposit_Handler,
+		},
+		{
+			MethodName: "Quorums",
+			Handler:    _Query_Quorums_Handler,
+		},
+		{
+			MethodName: "ParticipationEMAs",
+			Handler:    _Query_ParticipationEMAs_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

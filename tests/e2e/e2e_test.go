@@ -14,7 +14,7 @@ var (
 	runVestingTest                = true
 	runRestInterfacesTest         = true
 	runPhotonTest                 = true
-	runFeemarketTest              = true
+	runDynamicfeeTest             = true
 )
 
 func (s *IntegrationTestSuite) TestRestInterfaces() {
@@ -62,6 +62,8 @@ func (s *IntegrationTestSuite) TestGov() {
 	s.testGovCommunityPoolSpend()
 	s.testGovParamChange()
 	s.testGovConstitutionAmendment()
+	s.testGovDynamicQuorum()
+	s.testGovTextProposal()
 }
 
 func (s *IntegrationTestSuite) TestIBC() {
@@ -107,10 +109,10 @@ func (s *IntegrationTestSuite) TestPhoton() {
 	s.testMintPhoton()
 }
 
-func (s *IntegrationTestSuite) TestFeemarket() {
-	if !runFeemarketTest {
+func (s *IntegrationTestSuite) TestDynamicfee() {
+	if !runDynamicfeeTest {
 		s.T().Skip()
 	}
-	s.testFeemarketQuery()
-	s.testFeemarketGasPriceChange()
+	s.testDynamicfeeQuery()
+	s.testDynamicfeeGasPriceChange()
 }

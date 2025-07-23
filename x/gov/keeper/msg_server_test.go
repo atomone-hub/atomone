@@ -1005,6 +1005,21 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 			expErrMsg: "quorumRange.max too large",
 		},
 		{
+			name: "max quorum < min quorum",
+			input: func() *v1.MsgUpdateParams {
+				params := v1.DefaultParams()
+				params.QuorumRange.Min = "0.6"
+				params.QuorumRange.Max = "0.5"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "quorum range max must be greater than or equal to min",
+		},
+		{
 			name: "empty threshold",
 			input: func() *v1.MsgUpdateParams {
 				params := v1.DefaultParams()
@@ -1173,6 +1188,21 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 			expErrMsg: "constitutionAmendmentQuorumRange.max too large",
 		},
 		{
+			name: "constitution amendment max quorum < constitution amendment min quorum",
+			input: func() *v1.MsgUpdateParams {
+				params := v1.DefaultParams()
+				params.ConstitutionAmendmentQuorumRange.Min = "0.6"
+				params.ConstitutionAmendmentQuorumRange.Max = "0.5"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "constitution amendment quorum range max must be greater than or equal to min",
+		},
+		{
 			name: "empty constitution amendment threshold",
 			input: func() *v1.MsgUpdateParams {
 				params := v1.DefaultParams()
@@ -1326,6 +1356,21 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 			},
 			expErr:    true,
 			expErrMsg: "lawQuorumRange.max too large",
+		},
+		{
+			name: "law max quorum < law min quorum",
+			input: func() *v1.MsgUpdateParams {
+				params := v1.DefaultParams()
+				params.LawQuorumRange.Min = "0.6"
+				params.LawQuorumRange.Max = "0.5"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "law quorum range max must be greater than or equal to min",
 		},
 		{
 			name: "negative law threshold",

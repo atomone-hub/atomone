@@ -252,6 +252,16 @@ func (p Params) ValidateBasic() error {
 		}
 	}
 
+	if math.LegacyMustNewDecFromStr(p.QuorumRange.Max).LT(math.LegacyMustNewDecFromStr(p.QuorumRange.Min)) {
+		return fmt.Errorf("quorum range max must be greater than or equal to min: %s", p.QuorumRange)
+	}
+	if math.LegacyMustNewDecFromStr(p.ConstitutionAmendmentQuorumRange.Max).LT(math.LegacyMustNewDecFromStr(p.ConstitutionAmendmentQuorumRange.Min)) {
+		return fmt.Errorf("constitution amendment quorum range max must be greater than or equal to min: %s", p.ConstitutionAmendmentQuorumRange)
+	}
+	if math.LegacyMustNewDecFromStr(p.LawQuorumRange.Max).LT(math.LegacyMustNewDecFromStr(p.LawQuorumRange.Min)) {
+		return fmt.Errorf("law quorum range max must be greater than or equal to min: %s", p.LawQuorumRange)
+	}
+
 	threshold, err := math.LegacyNewDecFromStr(p.Threshold)
 	if err != nil {
 		return fmt.Errorf("invalid threshold string: %w", err)
