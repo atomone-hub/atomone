@@ -56,13 +56,12 @@ var (
 	DefaultQuorumTimeout                                      time.Duration = DefaultVotingPeriod - (time.Hour * 24 * 1) // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
 	DefaultMaxVotingPeriodExtension                           time.Duration = DefaultVotingPeriod - DefaultQuorumTimeout // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
 	DefaultQuorumCheckCount                                   uint64        = 0                                          // disabled by default (0 means no check)
-	DefaultMinDepositFloor                                    sdk.Coins     = sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, DefaultMinDepositTokens))
 	DefaultMinDepositUpdatePeriod                             time.Duration = time.Hour * 24 * 7
 	DefaultMinDepositDecreaseSensitivityTargetDistance        uint64        = 2
 	DefaultMinDepositIncreaseRatio                                          = sdk.NewDecWithPrec(5, 2)
 	DefaultMinDepositDecreaseRatio                                          = sdk.NewDecWithPrec(25, 3)
 	DefaultTargetActiveProposals                              uint64        = 2
-	DefaultMinInitialDepositFloor                             sdk.Coins     = sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewDecWithPrec(1, 2).MulInt(DefaultMinDepositTokens).TruncateInt()))
+	DefaultMinInitialDepositFloorAmount                       sdk.Int       = sdk.NewDecWithPrec(1, 2).MulInt(DefaultMinDepositTokens).TruncateInt()
 	DefaultMinInitialDepositUpdatePeriod                      time.Duration = time.Hour * 24
 	DefaultMinInitialDepositDecreaseSensitivityTargetDistance uint64        = 2
 	DefaultMinInitialDepositIncreaseRatio                                   = sdk.NewDecWithPrec(1, 2)
@@ -166,6 +165,9 @@ func NewParams(
 
 // DefaultParams returns the default governance params
 func DefaultParams() Params {
+	DefaultMinDepositFloor := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, DefaultMinDepositTokens))
+	DefaultMinInitialDepositFloor := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewDecWithPrec(1, 2).MulInt(DefaultMinDepositTokens).TruncateInt()))
+
 	return NewParams(
 		// sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, DefaultMinDepositTokens)),
 		DefaultDepositPeriod,
