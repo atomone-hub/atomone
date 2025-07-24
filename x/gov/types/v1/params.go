@@ -165,9 +165,6 @@ func NewParams(
 
 // DefaultParams returns the default governance params
 func DefaultParams() Params {
-	DefaultMinDepositFloor := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, DefaultMinDepositTokens))
-	DefaultMinInitialDepositFloor := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewDecWithPrec(1, 2).MulInt(DefaultMinDepositTokens).TruncateInt()))
-
 	return NewParams(
 		// sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, DefaultMinDepositTokens)),
 		DefaultDepositPeriod,
@@ -182,13 +179,13 @@ func DefaultParams() Params {
 		DefaultQuorumTimeout,
 		DefaultMaxVotingPeriodExtension,
 		DefaultQuorumCheckCount,
-		DefaultMinDepositFloor,
+		GetDefaultMinDepositFloor(),
 		DefaultMinDepositUpdatePeriod,
 		DefaultMinDepositDecreaseSensitivityTargetDistance,
 		DefaultMinDepositIncreaseRatio.String(),
 		DefaultMinDepositDecreaseRatio.String(),
 		DefaultTargetActiveProposals,
-		DefaultMinInitialDepositFloor,
+		GetDefaultMinInitialDepositFloor(),
 		DefaultMinInitialDepositUpdatePeriod,
 		DefaultMinInitialDepositDecreaseSensitivityTargetDistance,
 		DefaultMinInitialDepositIncreaseRatio.String(),
@@ -481,4 +478,16 @@ func (p Params) ValidateBasic() error {
 	}
 
 	return nil
+}
+
+// GetDefaultMinDepositFloor returns the default minimum deposit floor
+// required so the correct `sdk.DefaultBondDenom` is used.
+func GetDefaultMinDepositFloor() sdk.Coins {
+	return sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, DefaultMinDepositTokens))
+}
+
+// GetDefaultMinInitialDepositFloor returns the default minimum initial deposit floor
+// required so the correct `sdk.DefaultBondDenom` is used.
+func GetDefaultMinInitialDepositFloor() sdk.Coins {
+	return sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, DefaultMinInitialDepositFloorAmount))
 }
