@@ -450,7 +450,6 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 		s.Require().Equal(quorumsAfter.Quorum, quorums.Quorum)
 		s.Require().Equal(quorumsAfter.LawQuorum, quorums.LawQuorum)
 	})
-
 }
 
 func (s *IntegrationTestSuite) submitLegacyGovProposal(chainAAPIEndpoint, sender string, proposalID int, proposalType string, submitFlags []string, depositFlags []string, voteFlags []string, voteCommand string, withDeposit bool) {

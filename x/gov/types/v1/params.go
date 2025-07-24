@@ -61,7 +61,7 @@ var (
 	DefaultMinDepositIncreaseRatio                                          = sdk.NewDecWithPrec(5, 2)
 	DefaultMinDepositDecreaseRatio                                          = sdk.NewDecWithPrec(25, 3)
 	DefaultTargetActiveProposals                              uint64        = 2
-	DefaultMinInitialDepositFloorAmount                       sdk.Int       = sdk.NewDecWithPrec(1, 2).MulInt(DefaultMinDepositTokens).TruncateInt()
+	DefaultMinInitialDepositFloorAmount                       math.Int      = sdk.NewDecWithPrec(1, 2).MulInt(DefaultMinDepositTokens).TruncateInt()
 	DefaultMinInitialDepositUpdatePeriod                      time.Duration = time.Hour * 24
 	DefaultMinInitialDepositDecreaseSensitivityTargetDistance uint64        = 2
 	DefaultMinInitialDepositIncreaseRatio                                   = sdk.NewDecWithPrec(1, 2)
