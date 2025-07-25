@@ -21,19 +21,24 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Query_Constitution_FullMethodName      = "/atomone.gov.v1.Query/Constitution"
-	Query_Proposal_FullMethodName          = "/atomone.gov.v1.Query/Proposal"
-	Query_Proposals_FullMethodName         = "/atomone.gov.v1.Query/Proposals"
-	Query_Vote_FullMethodName              = "/atomone.gov.v1.Query/Vote"
-	Query_Votes_FullMethodName             = "/atomone.gov.v1.Query/Votes"
-	Query_Params_FullMethodName            = "/atomone.gov.v1.Query/Params"
-	Query_Deposit_FullMethodName           = "/atomone.gov.v1.Query/Deposit"
-	Query_Deposits_FullMethodName          = "/atomone.gov.v1.Query/Deposits"
-	Query_TallyResult_FullMethodName       = "/atomone.gov.v1.Query/TallyResult"
-	Query_MinDeposit_FullMethodName        = "/atomone.gov.v1.Query/MinDeposit"
-	Query_MinInitialDeposit_FullMethodName = "/atomone.gov.v1.Query/MinInitialDeposit"
-	Query_Quorums_FullMethodName           = "/atomone.gov.v1.Query/Quorums"
-	Query_ParticipationEMAs_FullMethodName = "/atomone.gov.v1.Query/ParticipationEMAs"
+	Query_Constitution_FullMethodName          = "/atomone.gov.v1.Query/Constitution"
+	Query_Proposal_FullMethodName              = "/atomone.gov.v1.Query/Proposal"
+	Query_Proposals_FullMethodName             = "/atomone.gov.v1.Query/Proposals"
+	Query_Vote_FullMethodName                  = "/atomone.gov.v1.Query/Vote"
+	Query_Votes_FullMethodName                 = "/atomone.gov.v1.Query/Votes"
+	Query_Params_FullMethodName                = "/atomone.gov.v1.Query/Params"
+	Query_Deposit_FullMethodName               = "/atomone.gov.v1.Query/Deposit"
+	Query_Deposits_FullMethodName              = "/atomone.gov.v1.Query/Deposits"
+	Query_TallyResult_FullMethodName           = "/atomone.gov.v1.Query/TallyResult"
+	Query_MinDeposit_FullMethodName            = "/atomone.gov.v1.Query/MinDeposit"
+	Query_MinInitialDeposit_FullMethodName     = "/atomone.gov.v1.Query/MinInitialDeposit"
+	Query_Quorums_FullMethodName               = "/atomone.gov.v1.Query/Quorums"
+	Query_ParticipationEMAs_FullMethodName     = "/atomone.gov.v1.Query/ParticipationEMAs"
+	Query_Governor_FullMethodName              = "/atomone.gov.v1.Query/Governor"
+	Query_Governors_FullMethodName             = "/atomone.gov.v1.Query/Governors"
+	Query_GovernanceDelegations_FullMethodName = "/atomone.gov.v1.Query/GovernanceDelegations"
+	Query_GovernanceDelegation_FullMethodName  = "/atomone.gov.v1.Query/GovernanceDelegation"
+	Query_GovernorValShares_FullMethodName     = "/atomone.gov.v1.Query/GovernorValShares"
 )
 
 // QueryClient is the client API for Query service.
@@ -70,6 +75,16 @@ type QueryClient interface {
 	Quorums(ctx context.Context, in *QueryQuorumsRequest, opts ...grpc.CallOption) (*QueryQuorumsResponse, error)
 	// ParticipationEMAs queries the state of the proposal participation exponential moving averages.
 	ParticipationEMAs(ctx context.Context, in *QueryParticipationEMAsRequest, opts ...grpc.CallOption) (*QueryParticipationEMAsResponse, error)
+	// Governor queries governor information based on governor address.
+	Governor(ctx context.Context, in *QueryGovernorRequest, opts ...grpc.CallOption) (*QueryGovernorResponse, error)
+	// Governors queries all governors.
+	Governors(ctx context.Context, in *QueryGovernorsRequest, opts ...grpc.CallOption) (*QueryGovernorsResponse, error)
+	// GovernanceDelegations queries all delegations of a governor.
+	GovernanceDelegations(ctx context.Context, in *QueryGovernanceDelegationsRequest, opts ...grpc.CallOption) (*QueryGovernanceDelegationsResponse, error)
+	// GovernanceDelegation queries a delegation
+	GovernanceDelegation(ctx context.Context, in *QueryGovernanceDelegationRequest, opts ...grpc.CallOption) (*QueryGovernanceDelegationResponse, error)
+	// GovernorValShares queries all governor virtual validator shares resulting from all governance delegations.
+	GovernorValShares(ctx context.Context, in *QueryGovernorValSharesRequest, opts ...grpc.CallOption) (*QueryGovernorValSharesResponse, error)
 }
 
 type queryClient struct {
@@ -210,6 +225,56 @@ func (c *queryClient) ParticipationEMAs(ctx context.Context, in *QueryParticipat
 	return out, nil
 }
 
+func (c *queryClient) Governor(ctx context.Context, in *QueryGovernorRequest, opts ...grpc.CallOption) (*QueryGovernorResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(QueryGovernorResponse)
+	err := c.cc.Invoke(ctx, Query_Governor_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) Governors(ctx context.Context, in *QueryGovernorsRequest, opts ...grpc.CallOption) (*QueryGovernorsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(QueryGovernorsResponse)
+	err := c.cc.Invoke(ctx, Query_Governors_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) GovernanceDelegations(ctx context.Context, in *QueryGovernanceDelegationsRequest, opts ...grpc.CallOption) (*QueryGovernanceDelegationsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(QueryGovernanceDelegationsResponse)
+	err := c.cc.Invoke(ctx, Query_GovernanceDelegations_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) GovernanceDelegation(ctx context.Context, in *QueryGovernanceDelegationRequest, opts ...grpc.CallOption) (*QueryGovernanceDelegationResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(QueryGovernanceDelegationResponse)
+	err := c.cc.Invoke(ctx, Query_GovernanceDelegation_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) GovernorValShares(ctx context.Context, in *QueryGovernorValSharesRequest, opts ...grpc.CallOption) (*QueryGovernorValSharesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(QueryGovernorValSharesResponse)
+	err := c.cc.Invoke(ctx, Query_GovernorValShares_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility.
@@ -244,6 +309,16 @@ type QueryServer interface {
 	Quorums(context.Context, *QueryQuorumsRequest) (*QueryQuorumsResponse, error)
 	// ParticipationEMAs queries the state of the proposal participation exponential moving averages.
 	ParticipationEMAs(context.Context, *QueryParticipationEMAsRequest) (*QueryParticipationEMAsResponse, error)
+	// Governor queries governor information based on governor address.
+	Governor(context.Context, *QueryGovernorRequest) (*QueryGovernorResponse, error)
+	// Governors queries all governors.
+	Governors(context.Context, *QueryGovernorsRequest) (*QueryGovernorsResponse, error)
+	// GovernanceDelegations queries all delegations of a governor.
+	GovernanceDelegations(context.Context, *QueryGovernanceDelegationsRequest) (*QueryGovernanceDelegationsResponse, error)
+	// GovernanceDelegation queries a delegation
+	GovernanceDelegation(context.Context, *QueryGovernanceDelegationRequest) (*QueryGovernanceDelegationResponse, error)
+	// GovernorValShares queries all governor virtual validator shares resulting from all governance delegations.
+	GovernorValShares(context.Context, *QueryGovernorValSharesRequest) (*QueryGovernorValSharesResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -292,6 +367,21 @@ func (UnimplementedQueryServer) Quorums(context.Context, *QueryQuorumsRequest) (
 }
 func (UnimplementedQueryServer) ParticipationEMAs(context.Context, *QueryParticipationEMAsRequest) (*QueryParticipationEMAsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ParticipationEMAs not implemented")
+}
+func (UnimplementedQueryServer) Governor(context.Context, *QueryGovernorRequest) (*QueryGovernorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Governor not implemented")
+}
+func (UnimplementedQueryServer) Governors(context.Context, *QueryGovernorsRequest) (*QueryGovernorsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Governors not implemented")
+}
+func (UnimplementedQueryServer) GovernanceDelegations(context.Context, *QueryGovernanceDelegationsRequest) (*QueryGovernanceDelegationsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GovernanceDelegations not implemented")
+}
+func (UnimplementedQueryServer) GovernanceDelegation(context.Context, *QueryGovernanceDelegationRequest) (*QueryGovernanceDelegationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GovernanceDelegation not implemented")
+}
+func (UnimplementedQueryServer) GovernorValShares(context.Context, *QueryGovernorValSharesRequest) (*QueryGovernorValSharesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GovernorValShares not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 func (UnimplementedQueryServer) testEmbeddedByValue()               {}
@@ -548,6 +638,96 @@ func _Query_ParticipationEMAs_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_Governor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGovernorRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Governor(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_Governor_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Governor(ctx, req.(*QueryGovernorRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_Governors_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGovernorsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Governors(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_Governors_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Governors(ctx, req.(*QueryGovernorsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_GovernanceDelegations_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGovernanceDelegationsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).GovernanceDelegations(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_GovernanceDelegations_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).GovernanceDelegations(ctx, req.(*QueryGovernanceDelegationsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_GovernanceDelegation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGovernanceDelegationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).GovernanceDelegation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_GovernanceDelegation_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).GovernanceDelegation(ctx, req.(*QueryGovernanceDelegationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_GovernorValShares_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGovernorValSharesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).GovernorValShares(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_GovernorValShares_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).GovernorValShares(ctx, req.(*QueryGovernorValSharesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -606,6 +786,26 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ParticipationEMAs",
 			Handler:    _Query_ParticipationEMAs_Handler,
+		},
+		{
+			MethodName: "Governor",
+			Handler:    _Query_Governor_Handler,
+		},
+		{
+			MethodName: "Governors",
+			Handler:    _Query_Governors_Handler,
+		},
+		{
+			MethodName: "GovernanceDelegations",
+			Handler:    _Query_GovernanceDelegations_Handler,
+		},
+		{
+			MethodName: "GovernanceDelegation",
+			Handler:    _Query_GovernanceDelegation_Handler,
+		},
+		{
+			MethodName: "GovernorValShares",
+			Handler:    _Query_GovernorValShares_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
