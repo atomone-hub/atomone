@@ -22,7 +22,7 @@
 
 ### FEATURES
 
-- Add upgrade code to mint photon from 50% of bond denom funds of Community Pool and Treasury DAO address [#157](https://github.com/atomone-hub/atomone/pull/157) [#189](https://github.com/atomone-hub/atomone/pull/189)
+- Add upgrade code to mint photon from 50% of bond denom funds of Community Pool and 90% of Treasury DAO address [#157](https://github.com/atomone-hub/atomone/pull/157) [#189](https://github.com/atomone-hub/atomone/pull/189)
 - Make `x/gov` quorum dynamic [#135](https://github.com/atomone-hub/atomone/pull/135)
 - Add the `x/dynamicfee` module and use the EIP-15559 AIMD algorithm [#114](https://github.com/atomone-hub/atomone/pull/114) [#170](https://github.com/atomone-hub/atomone/pull/170)
 - Make `x/gov` proposals deposits dynamic [#69](https://github.com/atomone-hub/atomone/pull/69)
