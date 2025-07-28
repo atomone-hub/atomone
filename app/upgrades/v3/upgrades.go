@@ -70,9 +70,10 @@ func initGovDynamicQuorum(ctx sdk.Context, govKeeper *govkeeper.Keeper) error {
 	return nil
 }
 
-// convertFundsToPhoton converts 90% of the bond denom (uatone) funds from community pool and treasury DAO to photons (uphoton)
+// convertFundsToPhoton converts 50% of the bond denom (uatone) funds from
+// community pool and 90% from treasury DAO to photons (uphoton)
 func convertFundsToPhoton(ctx sdk.Context, keepers *keepers.AppKeepers) error {
-	ctx.Logger().Info("Converting 90% of bond denom funds to photons...")
+	ctx.Logger().Info("Converting 50% of bond denom funds from community pool and 90% from treasury DAO to photons...")
 
 	// Get bond denom
 	bondDenom, err := keepers.StakingKeeper.BondDenom(ctx)
@@ -98,7 +99,7 @@ func convertFundsToPhoton(ctx sdk.Context, keepers *keepers.AppKeepers) error {
 	return nil
 }
 
-// convertCommunityPoolFundsToPhoton converts 90% of the community pool bond denom funds to photons
+// convertCommunityPoolFundsToPhoton converts 50% of the community pool bond denom funds to photons
 func convertCommunityPoolFundsToPhoton(ctx sdk.Context, keepers *keepers.AppKeepers, bondDenom string) error {
 	feePool, err := keepers.DistrKeeper.FeePool.Get(ctx)
 	if err != nil && !errors.Is(err, collections.ErrNotFound) {
@@ -116,8 +117,8 @@ func convertCommunityPoolFundsToPhoton(ctx sdk.Context, keepers *keepers.AppKeep
 		return nil
 	}
 
-	// Calculate 90% of funds to convert
-	amountToConvert := bondDenomCoin.Mul(math.LegacyNewDecWithPrec(90, 2))
+	// Calculate 50% of funds to convert
+	amountToConvert := bondDenomCoin.Mul(math.LegacyNewDecWithPrec(50, 2))
 	coinToConvert := sdk.NewCoin(bondDenom, amountToConvert.TruncateInt())
 
 	// Send funds from community pool to photon module account

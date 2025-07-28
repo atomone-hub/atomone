@@ -1,6 +1,6 @@
 module github.com/atomone-hub/atomone
 
-go 1.24.4
+go 1.24.5
 
 replace (
 	cosmossdk.io/x/feegrant => cosmossdk.io/x/feegrant v0.1.1
