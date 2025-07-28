@@ -13,7 +13,6 @@ import (
 	ibcapi "github.com/cosmos/ibc-go/v10/modules/core/api"
 	ibcexported "github.com/cosmos/ibc-go/v10/modules/core/exported"
 	ibckeeper "github.com/cosmos/ibc-go/v10/modules/core/keeper"
-	solomachine "github.com/cosmos/ibc-go/v10/modules/light-clients/06-solomachine"
 	ibctm "github.com/cosmos/ibc-go/v10/modules/light-clients/07-tendermint"
 
 	"cosmossdk.io/log"
@@ -90,10 +89,9 @@ type AppKeepers struct {
 	DynamicfeeKeeper      *dynamicfeekeeper.Keeper
 
 	// Modules
-	ICAModule         ica.AppModule
-	TransferModule    transfer.AppModule
-	TMClientModule    ibctm.AppModule
-	SoloMachineModule solomachine.AppModule
+	ICAModule      ica.AppModule
+	TransferModule transfer.AppModule
+	TMClientModule ibctm.AppModule
 }
 
 func NewAppKeeper(
@@ -339,11 +337,7 @@ func NewAppKeeper(
 	tmLightClientModule := ibctm.NewLightClientModule(appCodec, storeProvider)
 	appKeepers.IBCKeeper.ClientKeeper.AddRoute(ibctm.ModuleName, &tmLightClientModule)
 
-	smLightClientModule := solomachine.NewLightClientModule(appCodec, storeProvider)
-	appKeepers.IBCKeeper.ClientKeeper.AddRoute(solomachine.ModuleName, &smLightClientModule)
-
 	appKeepers.TMClientModule = ibctm.NewAppModule(tmLightClientModule)
-	appKeepers.SoloMachineModule = solomachine.NewAppModule(smLightClientModule)
 
 	return appKeepers
 }
