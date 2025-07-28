@@ -5,10 +5,10 @@
 package post_test
 
 import (
+	context "context"
 	reflect "reflect"
 
 	types "github.com/atomone-hub/atomone/x/dynamicfee/types"
-	types0 "github.com/cosmos/cosmos-sdk/types"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -36,7 +36,7 @@ func (m *MockDynamicfeeKeeper) EXPECT() *MockDynamicfeeKeeperMockRecorder {
 }
 
 // GetEnabledHeight mocks base method.
-func (m *MockDynamicfeeKeeper) GetEnabledHeight(ctx types0.Context) (int64, error) {
+func (m *MockDynamicfeeKeeper) GetEnabledHeight(ctx context.Context) (int64, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetEnabledHeight", ctx)
 	ret0, _ := ret[0].(int64)
@@ -51,7 +51,7 @@ func (mr *MockDynamicfeeKeeperMockRecorder) GetEnabledHeight(ctx interface{}) *g
 }
 
 // GetMaxBlockGas mocks base method.
-func (m *MockDynamicfeeKeeper) GetMaxBlockGas(ctx types0.Context, params types.Params) uint64 {
+func (m *MockDynamicfeeKeeper) GetMaxBlockGas(ctx context.Context, params types.Params) uint64 {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetMaxBlockGas", ctx, params)
 	ret0, _ := ret[0].(uint64)
@@ -65,7 +65,7 @@ func (mr *MockDynamicfeeKeeperMockRecorder) GetMaxBlockGas(ctx, params interface
 }
 
 // GetParams mocks base method.
-func (m *MockDynamicfeeKeeper) GetParams(ctx types0.Context) (types.Params, error) {
+func (m *MockDynamicfeeKeeper) GetParams(ctx context.Context) (types.Params, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetParams", ctx)
 	ret0, _ := ret[0].(types.Params)
@@ -80,7 +80,7 @@ func (mr *MockDynamicfeeKeeperMockRecorder) GetParams(ctx interface{}) *gomock.C
 }
 
 // GetState mocks base method.
-func (m *MockDynamicfeeKeeper) GetState(ctx types0.Context) (types.State, error) {
+func (m *MockDynamicfeeKeeper) GetState(ctx context.Context) (types.State, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetState", ctx)
 	ret0, _ := ret[0].(types.State)
@@ -95,7 +95,7 @@ func (mr *MockDynamicfeeKeeperMockRecorder) GetState(ctx interface{}) *gomock.Ca
 }
 
 // SetState mocks base method.
-func (m *MockDynamicfeeKeeper) SetState(ctx types0.Context, state types.State) error {
+func (m *MockDynamicfeeKeeper) SetState(ctx context.Context, state types.State) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SetState", ctx, state)
 	ret0, _ := ret[0].(error)

@@ -1,13 +1,14 @@
 package keeper
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 
-	"github.com/cometbft/cometbft/libs/log"
+	"cosmossdk.io/log"
+	storetypes "cosmossdk.io/store/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/atomone-hub/atomone/x/dynamicfee/types"
@@ -56,8 +57,10 @@ func (k *Keeper) GetAuthority() string {
 }
 
 // GetEnabledHeight returns the height at which the dynamicfee was enabled.
-func (k *Keeper) GetEnabledHeight(ctx sdk.Context) (int64, error) {
-	store := ctx.KVStore(k.storeKey)
+func (k *Keeper) GetEnabledHeight(ctx context.Context) (int64, error) {
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+
+	store := sdkCtx.KVStore(k.storeKey)
 
 	key := types.KeyEnabledHeight
 	bz := store.Get(key)
@@ -69,8 +72,10 @@ func (k *Keeper) GetEnabledHeight(ctx sdk.Context) (int64, error) {
 }
 
 // SetEnabledHeight sets the height at which the dynamicfee was enabled.
-func (k *Keeper) SetEnabledHeight(ctx sdk.Context, height int64) {
-	store := ctx.KVStore(k.storeKey)
+func (k *Keeper) SetEnabledHeight(ctx context.Context, height int64) {
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+
+	store := sdkCtx.KVStore(k.storeKey)
 
 	bz := []byte(strconv.FormatInt(height, 10))
 
@@ -78,7 +83,7 @@ func (k *Keeper) SetEnabledHeight(ctx sdk.Context, height int64) {
 }
 
 // ResolveToDenom converts the given coin to the given denomination.
-func (k *Keeper) ResolveToDenom(ctx sdk.Context, coin sdk.DecCoin, denom string) (sdk.DecCoin, error) {
+func (k *Keeper) ResolveToDenom(ctx context.Context, coin sdk.DecCoin, denom string) (sdk.DecCoin, error) {
 	if k.resolver == nil {
 		return sdk.DecCoin{}, types.ErrResolverNotSet
 	}
@@ -92,8 +97,8 @@ func (k *Keeper) SetDenomResolver(resolver types.DenomResolver) {
 }
 
 // GetState returns the dynamicfee module's state.
-func (k *Keeper) GetState(ctx sdk.Context) (types.State, error) {
-	store := ctx.KVStore(k.storeKey)
+func (k *Keeper) GetState(ctx context.Context) (types.State, error) {
+	store := sdk.UnwrapSDKContext(ctx).KVStore(k.storeKey)
 
 	key := types.KeyState
 	bz := store.Get(key)
@@ -107,8 +112,8 @@ func (k *Keeper) GetState(ctx sdk.Context) (types.State, error) {
 }
 
 // SetState sets the dynamicfee module's state.
-func (k *Keeper) SetState(ctx sdk.Context, state types.State) error {
-	store := ctx.KVStore(k.storeKey)
+func (k *Keeper) SetState(ctx context.Context, state types.State) error {
+	store := sdk.UnwrapSDKContext(ctx).KVStore(k.storeKey)
 
 	bz, err := state.Marshal()
 	if err != nil {
@@ -121,8 +126,8 @@ func (k *Keeper) SetState(ctx sdk.Context, state types.State) error {
 }
 
 // GetParams returns the dynamicfee module's parameters.
-func (k *Keeper) GetParams(ctx sdk.Context) (types.Params, error) {
-	store := ctx.KVStore(k.storeKey)
+func (k *Keeper) GetParams(ctx context.Context) (types.Params, error) {
+	store := sdk.UnwrapSDKContext(ctx).KVStore(k.storeKey)
 
 	key := types.KeyParams
 	bz := store.Get(key)
@@ -136,8 +141,8 @@ func (k *Keeper) GetParams(ctx sdk.Context) (types.Params, error) {
 }
 
 // SetParams sets the dynamicfee module's parameters.
-func (k *Keeper) SetParams(ctx sdk.Context, params types.Params) error {
-	store := ctx.KVStore(k.storeKey)
+func (k *Keeper) SetParams(ctx context.Context, params types.Params) error {
+	store := sdk.UnwrapSDKContext(ctx).KVStore(k.storeKey)
 
 	bz, err := params.Marshal()
 	if err != nil {

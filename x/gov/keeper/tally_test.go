@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
@@ -53,8 +54,8 @@ func newTallyFixture(t *testing.T, ctx sdk.Context, proposal v1.Proposal,
 		mocks:    mocks,
 	}
 	mocks.stakingKeeper.EXPECT().TotalBondedTokens(gomock.Any()).
-		DoAndReturn(func(_ context.Context) sdkmath.Int {
-			return sdkmath.NewInt(s.totalBonded)
+		DoAndReturn(func(_ context.Context) (sdkmath.Int, error) {
+			return sdkmath.NewInt(s.totalBonded), nil
 		}).MaxTimes(1)
 	// Mocks a bunch of validators
 	for i := 0; i < len(valAddrs); i++ {
@@ -100,7 +101,7 @@ func (s *tallyFixture) delegate(delegator sdk.AccAddress, validator sdk.ValAddre
 	}
 	for i := 0; i < len(s.validators); i++ {
 		if s.validators[i].OperatorAddress == validator.String() {
-			s.validators[i], delegation.Shares = s.validators[i].AddTokensFromDel(sdk.NewInt(m))
+			s.validators[i], delegation.Shares = s.validators[i].AddTokensFromDel(math.NewInt(m))
 			break
 		}
 	}
@@ -490,8 +491,9 @@ func TestTally(t *testing.T) {
 				tt.setup(s)
 			}
 
-			pass, burn, _, tally := govKeeper.Tally(ctx, proposal)
+			pass, burn, _, tally, err := govKeeper.Tally(ctx, proposal)
 
+			require.NoError(t, err)
 			assert.Equal(t, tt.expectedPass, pass, "wrong pass")
 			assert.Equal(t, tt.expectedBurn, burn, "wrong burn")
 			assert.Equal(t, tt.expectedTally, tally)
@@ -602,8 +604,9 @@ func TestHasReachedQuorum(t *testing.T) {
 			suite := newTallyFixture(t, ctx, proposal, valAddrs, delAddrs, govKeeper, mocks)
 			tt.setup(suite)
 
-			quorum := govKeeper.HasReachedQuorum(ctx, proposal)
+			quorum, err := govKeeper.HasReachedQuorum(ctx, proposal)
 
+			require.NoError(t, err)
 			assert.Equal(t, tt.expectedQuorum, quorum)
 			if tt.expectedQuorum {
 				// Assert votes are still here after HasReachedQuorum

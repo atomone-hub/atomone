@@ -1,6 +1,7 @@
 package e2e
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -8,10 +9,11 @@ import (
 	"path/filepath"
 
 	tmcfg "github.com/cometbft/cometbft/config"
-	tmos "github.com/cometbft/cometbft/libs/os"
 	"github.com/cometbft/cometbft/p2p"
 	"github.com/cometbft/cometbft/privval"
+	cmttypes "github.com/cometbft/cometbft/types"
 
+	"cosmossdk.io/math"
 	sdkcrypto "github.com/cosmos/cosmos-sdk/crypto"
 	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
@@ -23,9 +25,8 @@ import (
 	txsigning "github.com/cosmos/cosmos-sdk/types/tx/signing"
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
+	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-
-	atomone "github.com/atomone-hub/atomone/app"
 )
 
 //
@@ -78,13 +79,15 @@ func (v *validator) init() error {
 		return err
 	}
 
-	appState, err := json.MarshalIndent(atomone.ModuleBasics.DefaultGenesis(cdc), "", " ")
+	appState, err := json.MarshalIndent(v.chain.bm.DefaultGenesis(v.chain.cdc), "", " ")
 	if err != nil {
 		return fmt.Errorf("failed to JSON encode app genesis state: %w", err)
 	}
 
+	genDoc.Consensus = &genutiltypes.ConsensusGenesis{
+		Params: cmttypes.DefaultConsensusParams(),
+	}
 	genDoc.ChainID = v.chain.id
-	genDoc.Validators = nil
 	genDoc.AppState = appState
 
 	if err = genutil.ExportGenesisFile(genDoc, config.GenesisFile()); err != nil {
@@ -119,13 +122,13 @@ func (v *validator) createConsensusKey() error {
 	config.Moniker = v.moniker
 
 	pvKeyFile := config.PrivValidatorKeyFile()
-	if err := tmos.EnsureDir(filepath.Dir(pvKeyFile), 0o777); err != nil {
-		return err
+	if err := os.MkdirAll(filepath.Dir(pvKeyFile), 0o777); err != nil {
+		return fmt.Errorf("could not create directory %q: %w", filepath.Dir(pvKeyFile), err)
 	}
 
 	pvStateFile := config.PrivValidatorStateFile()
-	if err := tmos.EnsureDir(filepath.Dir(pvStateFile), 0o777); err != nil {
-		return err
+	if err := os.MkdirAll(filepath.Dir(pvStateFile), 0o777); err != nil {
+		return fmt.Errorf("could not create directory %q: %w", filepath.Dir(pvStateFile), err)
 	}
 
 	filePV := privval.LoadOrGenFilePV(pvKeyFile, pvStateFile)
@@ -136,7 +139,7 @@ func (v *validator) createConsensusKey() error {
 
 func (v *validator) createKeyFromMnemonic(name, mnemonic string) error {
 	dir := v.configDir()
-	kb, err := keyring.New(keyringAppName, keyring.BackendTest, dir, nil, cdc)
+	kb, err := keyring.New(keyringAppName, keyring.BackendTest, dir, nil, v.chain.cdc)
 	if err != nil {
 		return err
 	}
@@ -171,7 +174,7 @@ func (v *validator) createKeyFromMnemonic(name, mnemonic string) error {
 
 func (c *chain) addAccountFromMnemonic(counts int) error {
 	val0ConfigDir := c.validators[0].configDir()
-	kb, err := keyring.New(keyringAppName, keyring.BackendTest, val0ConfigDir, nil, cdc)
+	kb, err := keyring.New(keyringAppName, keyring.BackendTest, val0ConfigDir, nil, c.cdc)
 	if err != nil {
 		return err
 	}
@@ -224,12 +227,12 @@ func (v *validator) createKey(name string) error {
 func (v *validator) buildCreateValidatorMsg(amount sdk.Coin) (sdk.Msg, error) {
 	description := stakingtypes.NewDescription(v.moniker, "", "", "", "")
 	commissionRates := stakingtypes.CommissionRates{
-		Rate:          sdk.MustNewDecFromStr("0.1"),
-		MaxRate:       sdk.MustNewDecFromStr("0.2"),
-		MaxChangeRate: sdk.MustNewDecFromStr("0.01"),
+		Rate:          math.LegacyMustNewDecFromStr("0.1"),
+		MaxRate:       math.LegacyMustNewDecFromStr("0.2"),
+		MaxChangeRate: math.LegacyMustNewDecFromStr("0.01"),
 	}
 
-	valPubKey, err := cryptocodec.FromTmPubKeyInterface(v.consensusKey.PubKey)
+	valPubKey, err := cryptocodec.FromCmtPubKeyInterface(v.consensusKey.PubKey)
 	if err != nil {
 		return nil, err
 	}
@@ -240,17 +243,17 @@ func (v *validator) buildCreateValidatorMsg(amount sdk.Coin) (sdk.Msg, error) {
 	}
 
 	return stakingtypes.NewMsgCreateValidator(
-		sdk.ValAddress(addr),
+		sdk.ValAddress(addr).String(),
 		valPubKey,
 		amount,
 		description,
 		commissionRates,
-		sdk.OneInt(),
+		math.OneInt(),
 	)
 }
 
 func (v *validator) signMsg(msgs ...sdk.Msg) (*sdktx.Tx, error) {
-	txBuilder := encodingConfig.TxConfig.NewTxBuilder()
+	txBuilder := v.chain.txConfig.NewTxBuilder()
 
 	if err := txBuilder.SetMsgs(msgs...); err != nil {
 		return nil, err
@@ -292,13 +295,15 @@ func (v *validator) signMsg(msgs ...sdk.Msg) (*sdktx.Tx, error) {
 		return nil, err
 	}
 
-	bytesToSign, err := encodingConfig.TxConfig.SignModeHandler().GetSignBytes(
+	bytesToSign, err := authsigning.GetSignBytesAdapter(
+		context.TODO(),
+		v.chain.txConfig.SignModeHandler(),
 		txsigning.SignMode_SIGN_MODE_DIRECT,
 		signerData,
 		txBuilder.GetTx(),
 	)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error getting sign bytes: %w", err)
 	}
 
 	sigBytes, err := v.privateKey.Sign(bytesToSign)
@@ -324,10 +329,10 @@ func (v *validator) signMsg(msgs ...sdk.Msg) (*sdktx.Tx, error) {
 	}
 
 	signedTx := txBuilder.GetTx()
-	bz, err := encodingConfig.TxConfig.TxEncoder()(signedTx)
+	bz, err := v.chain.txConfig.TxEncoder()(signedTx)
 	if err != nil {
 		return nil, err
 	}
 
-	return decodeTx(bz)
+	return decodeTx(v.chain.cdc, bz)
 }

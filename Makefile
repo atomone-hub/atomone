@@ -249,7 +249,6 @@ format: lint-fix
 		-not -path "*.git*" \
 		-not -name "*.pb.go" \
 		-not -name "*.pb.gw.go" \
-		-not -name "*.pulsar.go" \
 		-not -path "*client/docs/statik*" \
 		| xargs $(rundep) mvdan.cc/gofumpt -w -l
 
@@ -274,8 +273,8 @@ localnetd=./build/atomoned --home $(localnet_home)
 localnet-start: build
 	rm -rf ~/.atomone-localnet
 	$(localnetd) init localnet --default-denom uatone --chain-id localnet
-	$(localnetd) config chain-id localnet
-	$(localnetd) config keyring-backend test
+	$(localnetd) config set client chain-id localnet
+	$(localnetd) config set client keyring-backend test
 	$(localnetd) keys add val
 	$(localnetd) genesis add-genesis-account val 1000000000000uatone,1000000000uphoton 
 	$(localnetd) keys add user
@@ -294,7 +293,7 @@ localnet-start: build
 	# Set validator gas prices
 	sed -i.bak 's#^minimum-gas-prices = .*#minimum-gas-prices = "0.01uatone,0.01uphoton"#g' $(localnet_home)/config/app.toml
 	# enable REST API
-	sed -i -z 's/# Enable defines if the API server should be enabled.\nenable = false/enable = true/' $(localnet_home)/config/app.toml
+	$(localnetd) config set app api.enable true
 	# Decrease voting period to 5min
 	jq '.app_state.gov.params.voting_period = "300s"' $(localnet_home)/config/genesis.json > /tmp/gen
 	mv /tmp/gen $(localnet_home)/config/genesis.json
@@ -332,7 +331,7 @@ test-docker-push: test-docker
 ###############################################################################
 ###                                Protobuf                                 ###
 ###############################################################################
-protoVer=0.13.0
+protoVer=0.17.0
 protoImageName=ghcr.io/cosmos/proto-builder:$(protoVer)
 protoImage=$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace $(protoImageName)
 
@@ -341,10 +340,6 @@ proto-all: proto-format proto-lint proto-gen
 proto-gen:
 	@echo "--> Generating Protobuf files"
 	@$(protoImage) sh ./proto/scripts/protocgen.sh
-
-proto-pulsar-gen:
-	@echo "Generating Dep-Inj Protobuf files"
-	@$(protoImage) sh ./proto/scripts/protocgen-pulsar.sh
 
 proto-swagger-gen:
 	@echo "--> Generating Protobuf Swagger"

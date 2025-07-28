@@ -3,10 +3,11 @@
 package testutil
 
 import (
+	context "context"
+
 	math "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 
 	"github.com/atomone-hub/atomone/x/gov/types"
@@ -17,7 +18,7 @@ import (
 type AccountKeeper interface {
 	types.AccountKeeper
 
-	IterateAccounts(ctx sdk.Context, cb func(account authtypes.AccountI) (stop bool))
+	IterateAccounts(ctx context.Context, cb func(account sdk.AccountI) (stop bool)) error
 }
 
 // BankKeeper extends gov's actual expected BankKeeper with additional
@@ -31,6 +32,6 @@ type BankKeeper interface {
 type StakingKeeper interface {
 	types.StakingKeeper
 
-	BondDenom(ctx sdk.Context) string
-	TokensFromConsensusPower(ctx sdk.Context, power int64) math.Int
+	BondDenom(ctx context.Context) (string, error)
+	TokensFromConsensusPower(ctx context.Context, power int64) math.Int
 }
