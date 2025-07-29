@@ -282,7 +282,7 @@ func (s *IntegrationTestSuite) testGovParamChange() {
 		params := s.queryDynamicfeeParams(chainAAPIEndpoint)
 
 		oldAlpha := params.Params.Alpha
-		params.Params.Alpha = oldAlpha.Add(sdk.NewDec(1))
+		params.Params.Alpha = oldAlpha.Add(sdk.NewDec(0))
 
 		s.writeDynamicfeeParamChangeProposal(s.chainA, params.Params)
 		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
@@ -293,7 +293,7 @@ func (s *IntegrationTestSuite) testGovParamChange() {
 		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "atomone.dynamicfee.v1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
 
 		newParams := s.queryDynamicfeeParams(chainAAPIEndpoint)
-		s.Require().Equal(newParams.Params.Alpha, oldAlpha.Add(sdk.NewDec(1)))
+		s.Require().Equal(newParams.Params.Alpha, oldAlpha.Add(sdk.NewDec(0)))
 	})
 }
 

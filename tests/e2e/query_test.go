@@ -17,6 +17,7 @@ import (
 	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
+	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
 	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
 	govtypesv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	govtypesv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
@@ -52,6 +53,20 @@ func queryAtomOneTx(endpoint, txHash string, msgResp codec.ProtoMarshaler) (heig
 		}
 	}
 	return int(resp.TxResponse.Height), nil
+}
+
+func queryCoreDAOsParams(endpoint string) (coredaostypes.QueryParamsResponse, error) { //nolint:unused
+	body, err := httpGet(fmt.Sprintf("%s/atomone/coredaos/v1/params", endpoint))
+	if err != nil {
+		return coredaostypes.QueryParamsResponse{}, fmt.Errorf("failed to execute HTTP request: %w", err)
+	}
+
+	var params coredaostypes.QueryParamsResponse
+	if err := cdc.UnmarshalJSON(body, &params); err != nil {
+		return coredaostypes.QueryParamsResponse{}, err
+	}
+
+	return params, nil
 }
 
 // if coin is zero, return empty coin.

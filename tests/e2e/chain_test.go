@@ -25,6 +25,7 @@ import (
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
 	atomoneparams "github.com/atomone-hub/atomone/app/params"
+	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
 	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
 	govv1types "github.com/atomone-hub/atomone/x/gov/types/v1"
 	govv1beta1types "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
@@ -65,16 +66,18 @@ func init() {
 	ibctransfertypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 	photontypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 	dynamicfeetypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
+	coredaostypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 
 	cdc = encodingConfig.Marshaler
 	txConfig = encodingConfig.TxConfig
 }
 
 type chain struct {
-	dataDir    string
-	id         string
-	validators []*validator
-	accounts   []*account //nolint:unused
+	dataDir          string
+	id               string
+	validators       []*validator
+	accounts         []*account         //nolint:unused
+	multiSigAccounts []*multiSigAccount //nolint:unused
 	// initial accounts in genesis
 	genesisAccounts        []*account
 	genesisVestingAccounts map[string]sdk.AccAddress
