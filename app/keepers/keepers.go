@@ -3,9 +3,6 @@ package keepers
 import (
 	"os"
 
-	// unnamed import of statik for swagger UI support
-	_ "github.com/cosmos/cosmos-sdk/client/docs/statik"
-
 	"github.com/cometbft/cometbft/libs/log"
 
 	ica "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts"
