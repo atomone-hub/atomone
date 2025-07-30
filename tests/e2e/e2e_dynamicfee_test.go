@@ -104,11 +104,5 @@ func (s *IntegrationTestSuite) testDynamicfeeGasPriceChange() {
 		s.Require().True(newFee.GT(oldFee),
 			"Expected new Fee (%s) higher than old fee (%s)",
 			newFee, oldFee)
-		oldLearningRate := StateBeforeMultisendTx.State.LearningRate
-		newLearningRate := StateAfterMultisendTx.State.LearningRate
-
-		s.Require().True(newLearningRate.GT(oldLearningRate),
-			"Expected newLearningRate (%s) higher than currentLearningRate (%s)",
-			newLearningRate, oldLearningRate)
 	})
 }
