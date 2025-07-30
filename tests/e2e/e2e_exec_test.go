@@ -41,6 +41,7 @@ const (
 	flagBroadcastMode   = "broadcast-mode"
 	flagKeyringBackend  = "keyring-backend"
 	flagAllowedMessages = "allowed-messages"
+	flagGenerateOnly    = "generate-only"
 )
 
 type flagOption func(map[string]interface{})

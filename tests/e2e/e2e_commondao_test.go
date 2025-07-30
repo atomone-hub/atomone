@@ -1,9 +1,11 @@
 package e2e
 
 import (
+	"context"
 	"fmt"
 	"path/filepath"
 	"strconv"
+	"time"
 
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
@@ -13,9 +15,10 @@ import (
 )
 
 func (s *IntegrationTestSuite) testCoreDAOs() {
+	valIdx := 0
 	s.Run("dao parameter change", func() {
 		chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
-		senderAddress, _ := s.chainA.validators[0].keyInfo.GetAddress()
+		senderAddress, _ := s.chainA.validators[valIdx].keyInfo.GetAddress()
 		accountsNumber := 2
 		signersNumber := 3
 		thereshold := 2
@@ -43,7 +46,33 @@ func (s *IntegrationTestSuite) testCoreDAOs() {
 		s.Require().Equal(newParams.Params.SteeringDaoAddress, steeringDAOAddress.String())
 		s.Require().Equal(newParams.Params.OversightDaoAddress, oversiteDAOAddress.String())
 
+		s.execBankSend(s.chainA, 0, senderAddress.String(), steeringDAOAddress.String(), tokenAmount.String(), false)
+		s.execBankSend(s.chainA, 0, senderAddress.String(), oversiteDAOAddress.String(), tokenAmount.String(), false)
+
 	})
+	s.Run("dao annotation", func() {
+		// TODO remove the hardcode opt after refactor, all methods should accept custom flags
+		var emptyOption []flagOption
+		opts := applyOptions(s.chainA.id, emptyOption)
+
+		ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+		defer cancel()
+		atomoneCommand := []string{
+			atomonedBinary,
+			txCommand,
+			coredaostypes.ModuleName,
+			"annotate",
+			strconv.FormatInt(int64(proposalCounter-1), 10),
+			"Proposal Annotation",
+		}
+		for flag, value := range opts {
+			atomoneCommand = append(atomoneCommand, fmt.Sprintf("--%s=%v", flag, value))
+		}
+		atomoneCommand = append(atomoneCommand, fmt.Sprintf("--generate-only"))
+
+		s.executeAtomoneTxCommand(ctx, s.chainA, atomoneCommand, valIdx, s.expectErrExecValidation(s.chainA, valIdx, false))
+	})
+
 }
 
 func (s *IntegrationTestSuite) writeCoreDAOsParamChangeProposal(c *chain, params coredaostypes.Params) {
