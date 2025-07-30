@@ -18,8 +18,8 @@ following venues:
   HackenProof in order to be eligible for rewards.
 
 We will respond within 3 business days to all received reports.
-All submission channels are eligible for a reward, so it is up to you to
-choose the one that best fits your needs.
+Valid submissions from any of the above channels might be eligible for a reward,
+so it is up to you to choose the one that best fits your needs.
 
 Thank you for helping to keep our ecosystem safe!
 
