@@ -41,7 +41,8 @@ const (
 	flagBroadcastMode   = "broadcast-mode"
 	flagKeyringBackend  = "keyring-backend"
 	flagAllowedMessages = "allowed-messages"
-	flagGenerateOnly    = "generate-only"
+	flagMultisig        = "multisig"
+	flagOutputDocument  = "output-document"
 )
 
 type flagOption func(map[string]interface{})
@@ -705,6 +706,7 @@ func (s *IntegrationTestSuite) executeAtomoneTxCommand(ctx context.Context, c *c
 
 	stdOut := outBuf.Bytes()
 	stdErr := errBuf.Bytes()
+	fmt.Println(string(stdOut))
 	if !validation(stdOut, stdErr) {
 		s.Require().FailNowf("Exec validation failed", "stdout: %s, stderr: %s",
 			string(stdOut), string(stdErr))
@@ -823,6 +825,17 @@ func (s *IntegrationTestSuite) defaultExecValidation(chain *chain, valIdx int, m
 			return true
 		}
 		return false
+	}
+}
+func (s *IntegrationTestSuite) noValidationStoreOutput(chain *chain, valIdx int, filename string) func([]byte, []byte) bool {
+	return func(stdOut []byte, stdErr []byte) bool {
+		fmt.Println(string(stdErr))
+		if filename == "" {
+			return true
+		}
+		err := writeFile(filepath.Join(chain.validators[valIdx].configDir(), "config", filename), stdOut)
+		s.Require().NoError(err)
+		return true
 	}
 }
 
