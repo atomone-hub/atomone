@@ -69,12 +69,14 @@ func TestNormalizeProposalStatus(t *testing.T) {
 		{"invalid", args{"unknown"}, "unknown"},
 		{"deposit_period", args{"deposit_period"}, "PROPOSAL_STATUS_DEPOSIT_PERIOD"},
 		{"DepositPeriod", args{"DepositPeriod"}, "PROPOSAL_STATUS_DEPOSIT_PERIOD"},
-		{"voting_period", args{"deposit_period"}, "PROPOSAL_STATUS_DEPOSIT_PERIOD"},
-		{"VotingPeriod", args{"DepositPeriod"}, "PROPOSAL_STATUS_DEPOSIT_PERIOD"},
+		{"voting_period", args{"voting_period"}, "PROPOSAL_STATUS_VOTING_PERIOD"},
+		{"VotingPeriod", args{"VotingPeriod"}, "PROPOSAL_STATUS_VOTING_PERIOD"},
 		{"passed", args{"passed"}, "PROPOSAL_STATUS_PASSED"},
 		{"Passed", args{"Passed"}, "PROPOSAL_STATUS_PASSED"},
 		{"Rejected", args{"Rejected"}, "PROPOSAL_STATUS_REJECTED"},
 		{"rejected", args{"rejected"}, "PROPOSAL_STATUS_REJECTED"},
+		{"Vetoed", args{"Vetoed"}, "PROPOSAL_STATUS_VETOED"},
+		{"vetoed", args{"vetoed"}, "PROPOSAL_STATUS_VETOED"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

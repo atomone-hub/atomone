@@ -109,6 +109,18 @@ message Proposal {
   //
   // Since: cosmos-sdk 0.47
   string proposer = 13 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // endorsed is a boolean indicating whether the proposal has been endorsed
+  // by the Steering DAO.
+  bool endorsed = 14;
+
+  // annotation is an optional field that contains annotations
+  // added by the Steering DAO.
+  string annotation = 15;
+
+  // times_voting_period_extended is the number of times the voting period
+  // has been extended from one of the core DAOs.
+  uint32 times_voting_period_extended = 16;
 }
 
 // ProposalStatus enumerates the valid statuses of a proposal.
@@ -130,6 +142,9 @@ enum ProposalStatus {
   // PROPOSAL_STATUS_FAILED defines a proposal status of a proposal that has
   // failed.
   PROPOSAL_STATUS_FAILED = 5;
+  // PROPOSAL_STATUS_VETOED defines a proposal status of a proposal that has
+  // been vetoed.
+  PROPOSAL_STATUS_VETOED = 6;
 }
 
 // TallyResult defines a standard tally for a governance proposal.
