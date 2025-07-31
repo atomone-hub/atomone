@@ -40,6 +40,8 @@ Thank you for helping to keep our ecosystem safe!
 * July 2025: The security firm Zellic conducted an audit of the AtomOne code
   scheduled to be included in the v3 release and published a
   [report](docs/v3%20-%20Zellic%20Audit%20Report.pdf) on July 4, 2025.
+  Zellic has independently published this report
+  [here](https://github.com/Zellic/publications/blob/master/All%20in%20Bits%20-%20Zellic%20Audit%20Report.pdf)
   The audit was mostly focused on the new `x/dynamicfee` module (renamed from
   `x/feemarket` as referred to in the audit) and the addition of the
   [dynamic quorum](https://github.com/atomone-hub/atomone/pull/135) feature and
