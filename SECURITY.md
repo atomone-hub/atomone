@@ -31,10 +31,13 @@ Thank you for helping to keep our ecosystem safe!
   Zellic has independently published this report
   [here](https://github.com/Zellic/publications/blob/master/AtomOne%20-%20Zellic%20Audit%20Report.pdf)
   with a SHA-256 hash of 60625f148263829921f7b8cc4a065290b197ddb869ba821f7dc4cfe4a4f96ff1.
-  The audit scope was the whole codebase with a specific focus on the new
-  `x/photon` module and the
-  [dynamic deposit proposal](https://github.com/atomone-hub/atomone/pull/69)
-  from the `x/gov/` module, in anticipation of and as a prerequisite for the
+  The audit scope was the whole codebase with a specific focus on:
+  
+  * the new `x/photon` module
+  * the [dynamic deposit proposal](https://github.com/atomone-hub/atomone/pull/69)
+  from the `x/gov/` module
+
+  The audit has been carried out in anticipation of and as a prerequisite for the
   [v2.0.0](https://github.com/atomone-hub/atomone/releases/tag/v2.0.0) upgrade.
 
 * July 2025: The security firm Zellic conducted an audit of the AtomOne code
@@ -57,5 +60,5 @@ Thank you for helping to keep our ecosystem safe!
     deposit for proposals that was ultimately not included in the v2 release to
     address some issues discovered in the previous design.
 
-  The audit has been carried in anticipation of and as a prerequisite for the
+  The audit has been carried out in anticipation of and as a prerequisite for the
   [v3.0.0](https://github.com/atomone-hub/atomone/releases/tag/v3.0.0) upgrade.
