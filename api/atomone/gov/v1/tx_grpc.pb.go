@@ -29,6 +29,11 @@ const (
 	Msg_UpdateParams_FullMethodName                 = "/atomone.gov.v1.Msg/UpdateParams"
 	Msg_ProposeLaw_FullMethodName                   = "/atomone.gov.v1.Msg/ProposeLaw"
 	Msg_ProposeConstitutionAmendment_FullMethodName = "/atomone.gov.v1.Msg/ProposeConstitutionAmendment"
+	Msg_CreateGovernor_FullMethodName               = "/atomone.gov.v1.Msg/CreateGovernor"
+	Msg_EditGovernor_FullMethodName                 = "/atomone.gov.v1.Msg/EditGovernor"
+	Msg_UpdateGovernorStatus_FullMethodName         = "/atomone.gov.v1.Msg/UpdateGovernorStatus"
+	Msg_DelegateGovernor_FullMethodName             = "/atomone.gov.v1.Msg/DelegateGovernor"
+	Msg_UndelegateGovernor_FullMethodName           = "/atomone.gov.v1.Msg/UndelegateGovernor"
 )
 
 // MsgClient is the client API for Msg service.
@@ -60,6 +65,18 @@ type MsgClient interface {
 	// ProposeConstitutionAmendment defines a governance operation for proposing a
 	// new constitution amendment. The authority is defined in the keeper.
 	ProposeConstitutionAmendment(ctx context.Context, in *MsgProposeConstitutionAmendment, opts ...grpc.CallOption) (*MsgProposeConstitutionAmendmentResponse, error)
+	// CreateGovernor defines a method to create a new governor.
+	CreateGovernor(ctx context.Context, in *MsgCreateGovernor, opts ...grpc.CallOption) (*MsgCreateGovernorResponse, error)
+	// EditGovernor defines a method to edit an existing governor.
+	// It also sets its status.
+	EditGovernor(ctx context.Context, in *MsgEditGovernor, opts ...grpc.CallOption) (*MsgEditGovernorResponse, error)
+	// UpdateGovernorStatus defines a method to update the status of a governor.
+	UpdateGovernorStatus(ctx context.Context, in *MsgUpdateGovernorStatus, opts ...grpc.CallOption) (*MsgUpdateGovernorStatusResponse, error)
+	// DelegateGovernor defines a method to delegate a non-zero percentange of
+	// governance voting power from a delegator to a governor.
+	DelegateGovernor(ctx context.Context, in *MsgDelegateGovernor, opts ...grpc.CallOption) (*MsgDelegateGovernorResponse, error)
+	// UndelegateGovernor defines a method to undelegate governance voting power
+	UndelegateGovernor(ctx context.Context, in *MsgUndelegateGovernor, opts ...grpc.CallOption) (*MsgUndelegateGovernorResponse, error)
 }
 
 type msgClient struct {
@@ -150,6 +167,56 @@ func (c *msgClient) ProposeConstitutionAmendment(ctx context.Context, in *MsgPro
 	return out, nil
 }
 
+func (c *msgClient) CreateGovernor(ctx context.Context, in *MsgCreateGovernor, opts ...grpc.CallOption) (*MsgCreateGovernorResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(MsgCreateGovernorResponse)
+	err := c.cc.Invoke(ctx, Msg_CreateGovernor_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) EditGovernor(ctx context.Context, in *MsgEditGovernor, opts ...grpc.CallOption) (*MsgEditGovernorResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(MsgEditGovernorResponse)
+	err := c.cc.Invoke(ctx, Msg_EditGovernor_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UpdateGovernorStatus(ctx context.Context, in *MsgUpdateGovernorStatus, opts ...grpc.CallOption) (*MsgUpdateGovernorStatusResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(MsgUpdateGovernorStatusResponse)
+	err := c.cc.Invoke(ctx, Msg_UpdateGovernorStatus_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) DelegateGovernor(ctx context.Context, in *MsgDelegateGovernor, opts ...grpc.CallOption) (*MsgDelegateGovernorResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(MsgDelegateGovernorResponse)
+	err := c.cc.Invoke(ctx, Msg_DelegateGovernor_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UndelegateGovernor(ctx context.Context, in *MsgUndelegateGovernor, opts ...grpc.CallOption) (*MsgUndelegateGovernorResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(MsgUndelegateGovernorResponse)
+	err := c.cc.Invoke(ctx, Msg_UndelegateGovernor_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility.
@@ -179,6 +246,18 @@ type MsgServer interface {
 	// ProposeConstitutionAmendment defines a governance operation for proposing a
 	// new constitution amendment. The authority is defined in the keeper.
 	ProposeConstitutionAmendment(context.Context, *MsgProposeConstitutionAmendment) (*MsgProposeConstitutionAmendmentResponse, error)
+	// CreateGovernor defines a method to create a new governor.
+	CreateGovernor(context.Context, *MsgCreateGovernor) (*MsgCreateGovernorResponse, error)
+	// EditGovernor defines a method to edit an existing governor.
+	// It also sets its status.
+	EditGovernor(context.Context, *MsgEditGovernor) (*MsgEditGovernorResponse, error)
+	// UpdateGovernorStatus defines a method to update the status of a governor.
+	UpdateGovernorStatus(context.Context, *MsgUpdateGovernorStatus) (*MsgUpdateGovernorStatusResponse, error)
+	// DelegateGovernor defines a method to delegate a non-zero percentange of
+	// governance voting power from a delegator to a governor.
+	DelegateGovernor(context.Context, *MsgDelegateGovernor) (*MsgDelegateGovernorResponse, error)
+	// UndelegateGovernor defines a method to undelegate governance voting power
+	UndelegateGovernor(context.Context, *MsgUndelegateGovernor) (*MsgUndelegateGovernorResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -212,6 +291,21 @@ func (UnimplementedMsgServer) ProposeLaw(context.Context, *MsgProposeLaw) (*MsgP
 }
 func (UnimplementedMsgServer) ProposeConstitutionAmendment(context.Context, *MsgProposeConstitutionAmendment) (*MsgProposeConstitutionAmendmentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProposeConstitutionAmendment not implemented")
+}
+func (UnimplementedMsgServer) CreateGovernor(context.Context, *MsgCreateGovernor) (*MsgCreateGovernorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateGovernor not implemented")
+}
+func (UnimplementedMsgServer) EditGovernor(context.Context, *MsgEditGovernor) (*MsgEditGovernorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EditGovernor not implemented")
+}
+func (UnimplementedMsgServer) UpdateGovernorStatus(context.Context, *MsgUpdateGovernorStatus) (*MsgUpdateGovernorStatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateGovernorStatus not implemented")
+}
+func (UnimplementedMsgServer) DelegateGovernor(context.Context, *MsgDelegateGovernor) (*MsgDelegateGovernorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DelegateGovernor not implemented")
+}
+func (UnimplementedMsgServer) UndelegateGovernor(context.Context, *MsgUndelegateGovernor) (*MsgUndelegateGovernorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UndelegateGovernor not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 func (UnimplementedMsgServer) testEmbeddedByValue()             {}
@@ -378,6 +472,96 @@ func _Msg_ProposeConstitutionAmendment_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_CreateGovernor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCreateGovernor)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).CreateGovernor(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_CreateGovernor_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).CreateGovernor(ctx, req.(*MsgCreateGovernor))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_EditGovernor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgEditGovernor)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).EditGovernor(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_EditGovernor_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).EditGovernor(ctx, req.(*MsgEditGovernor))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UpdateGovernorStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateGovernorStatus)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateGovernorStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_UpdateGovernorStatus_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateGovernorStatus(ctx, req.(*MsgUpdateGovernorStatus))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_DelegateGovernor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgDelegateGovernor)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).DelegateGovernor(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_DelegateGovernor_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).DelegateGovernor(ctx, req.(*MsgDelegateGovernor))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UndelegateGovernor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUndelegateGovernor)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UndelegateGovernor(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_UndelegateGovernor_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UndelegateGovernor(ctx, req.(*MsgUndelegateGovernor))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Msg_ServiceDesc is the grpc.ServiceDesc for Msg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -416,6 +600,26 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ProposeConstitutionAmendment",
 			Handler:    _Msg_ProposeConstitutionAmendment_Handler,
+		},
+		{
+			MethodName: "CreateGovernor",
+			Handler:    _Msg_CreateGovernor_Handler,
+		},
+		{
+			MethodName: "EditGovernor",
+			Handler:    _Msg_EditGovernor_Handler,
+		},
+		{
+			MethodName: "UpdateGovernorStatus",
+			Handler:    _Msg_UpdateGovernorStatus_Handler,
+		},
+		{
+			MethodName: "DelegateGovernor",
+			Handler:    _Msg_DelegateGovernor_Handler,
+		},
+		{
+			MethodName: "UndelegateGovernor",
+			Handler:    _Msg_UndelegateGovernor_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

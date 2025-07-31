@@ -13,20 +13,27 @@ June 2016.
 
 The module enables Cosmos SDK based blockchain to support an on-chain governance
 system. In this system, holders of the native staking token of the chain can vote
-on proposals on a 1 token 1 vote basis. Next is a list of features the module
-currently supports:
+on proposals on a 1 token 1 vote basis. Specialized participants called
+"*governors*" can hold delegated voting power to streamline governance. Next is a
+list of features the module currently supports:
 
 * **Proposal submission:** Users can submit proposals with a deposit. Once the
-  minimum deposit is reached, the proposal enters the voting period. The deposit
-  system is dynamic and can adjust automatically to discourage excessive
-  spam or an excessive number of simultaneous active proposals.
+  minimum deposit is reached, the proposal enters the voting period. The minimum
+  deposit can be reached by collecting deposits from different users (including
+  proposer) within deposit period.The deposit system is dynamic and can adjust
+  automatically to discourage excessive spam or an excessive number of
+  simultaneous active proposals.
 * **Vote:** Participants can vote on proposals that reached the dynamic minimum
   deposit and entered the voting period.
 * **Claiming deposit:** Users that deposited on proposals can recover their
   deposits if the proposal was accepted or rejected. If the proposal never entered
   the voting period (the dynamic minimum deposit was never reached within the
-  deposit period), or if the minimum quorum has not been reached, the deposit might be burnt
-  (see [Burnable Params](#burnable-params) section).
+  deposit period), or if the minimum quorum has not been reached, the deposit might
+  be burnt (see [Burnable Params](#burnable-params) section).
+* **Governors Creation and Delegations** Users can self-elect themselves as
+  governors if certain criterias are met. Other users can delegate their voting
+  power to these governors that can vote in their stead. However delegators
+  always retain the right to vote directly.
 
 This module is in use in [AtomOne](https://github.com/atomone-hub/atomone).
 Features that may be added in the future are described in [Future Improvements](#future-improvements).
@@ -55,11 +62,12 @@ staking token of the chain.
       - [Option set](#option-set)
       - [Weighted Votes](#weighted-votes)
     - [Quorum](#quorum)
+      - [Dynamic Quorum](#dynamic-quorum)
       - [Threshold](#threshold)
-      - [No inheritance](#no-inheritance)
-      - [Validator’s punishment for non-voting](#validators-punishment-for-non-voting)
-      - [Governance address](#governance-address)
+      - [No inheritance for validartors](#no-inheritance-for-validartors)
+      - [Validator’s or governor's punishment for non-voting](#validators-or-governors-punishment-for-non-voting)
       - [Burnable Params](#burnable-params)
+    - [Governors and delegations](#governors-and-delegations)
   - [State](#state)
     - [Proposals](#proposals)
       - [Writing a module that uses governance](#writing-a-module-that-uses-governance)
@@ -68,6 +76,7 @@ staking token of the chain.
       - [VotingParams](#votingparams)
       - [TallyParams](#tallyparams)
     - [Deposit](#deposit-1)
+    - [Governors](#governors)
   - [Stores](#stores)
     - [Proposal Processing Queue](#proposal-processing-queue)
     - [Legacy Proposal](#legacy-proposal)
@@ -75,10 +84,16 @@ staking token of the chain.
     - [Constitution](#constitution)
     - [Law and Constitution Amendment Proposals](#law-and-constitution-amendment-proposals)
     - [Last Min Deposit and Last Min Initial Deposit](#last-min-deposit-and-last-min-initial-deposit)
+    - [Governance Delegations](#governance-delegations)
   - [Messages](#messages)
     - [Proposal Submission](#proposal-submission-1)
     - [Deposit](#deposit-2)
     - [Vote](#vote-1)
+    - [Governor Creation](#governor-creation)
+    - [Edit Governor](#edit-governor)
+    - [Update Governor Status](#update-governor-status)
+    - [Delegate Governance Voting Power](#delegate-governance-voting-power)
+    - [Undelegate Governance Voting Power](#undelegate-governance-voting-power)
   - [Events](#events)
     - [EndBlocker](#endblocker)
     - [Handlers](#handlers)
@@ -89,6 +104,7 @@ staking token of the chain.
   - [Parameters](#parameters)
     - [MinDepositThrottler (dynamic MinDeposit)](#mindepositthrottler-dynamic-mindeposit)
     - [MinInitialDepositThrottler (dynamic MinInitialDeposit)](#mininitialdepositthrottler-dynamic-mininitialdeposit)
+    - [QuorumRange (dynamic Quorum)](#quorumrange-dynamic-quorum)
   - [Client](#client)
     - [CLI](#cli)
       - [Query](#query)
@@ -96,6 +112,10 @@ staking token of the chain.
         - [deposits](#deposits)
         - [min deposit](#min-deposit)
         - [min initial deposit](#min-initial-deposit)
+        - [governor](#governor)
+        - [governors](#governors-1)
+        - [governance delegation](#governance-delegation)
+        - [governance delegations for a governor](#governance-delegations-for-a-governor)
         - [param](#param)
         - [params](#params)
         - [proposal](#proposal)
@@ -113,6 +133,11 @@ staking token of the chain.
         - [submit-legacy-proposal](#submit-legacy-proposal)
         - [vote](#vote-3)
         - [weighted-vote](#weighted-vote)
+        - [create-governor](#create-governor)
+        - [edit-governor](#edit-governor-1)
+        - [update-governor-status](#update-governor-status-1)
+        - [delegate-governor](#delegate-governor)
+        - [undelegate-governor](#undelegate-governor)
     - [gRPC](#grpc)
       - [Proposal](#proposal-1)
       - [Proposals](#proposals-2)
@@ -120,8 +145,12 @@ staking token of the chain.
       - [Votes](#votes-1)
       - [Params](#params-1)
       - [Deposit](#deposit-5)
-      - [deposits](#deposits-1)
+      - [Deposits](#deposits-1)
       - [TallyResult](#tallyresult)
+      - [Governor](#governor-1)
+      - [Governors](#governors-2)
+      - [Delegation](#delegation)
+      - [Delegations](#delegations)
     - [REST](#rest)
       - [proposal](#proposal-2)
       - [proposals](#proposals-3)
@@ -133,6 +162,10 @@ staking token of the chain.
       - [deposits](#deposits-2)
       - [proposal deposits](#proposal-deposits)
       - [tally](#tally-1)
+      - [governor](#governor-2)
+      - [governors](#governors-3)
+      - [delegation](#delegation-1)
+      - [delegations](#delegations-1)
   - [Metadata](#metadata)
     - [Proposal](#proposal-3)
     - [Vote](#vote-5)
@@ -348,27 +381,21 @@ which is modifiable by governance. This means that proposals are accepted if:
 * The proportion of `Yes` votes, excluding `Abstain` votes, at the end of
   the voting period is superior to 2/3.
 
-#### No inheritance
+#### No inheritance for validartors
 
 If a delegator does not vote, the vote of the delegated validator - if applicable - will not be inherited.
 
 Similarly, a validator's voting power is only equal to its own stake.
 
-#### Validator’s punishment for non-voting
+Governance delegations are allowed to active governors only.
 
-At present, validators are not punished for failing to vote.
+#### Validator’s or governor's punishment for non-voting
 
-#### Governance address
-
-Later, we may add permissioned keys that could only sign txs from certain modules.
-For the MVP, the `Governance address` will be the main validator address generated
-at account creation. This address corresponds to a different PrivKey than the CometBFT
-PrivKey which is responsible for signing consensus messages. Validators thus do not
-have to sign governance transactions with the sensitive CometBFT PrivKey.
+At present, validators or governors are not punished for failing to vote.
 
 #### Burnable Params
 
-There are three parameters that define if the deposit of a proposal should
+There are two parameters that define if the deposit of a proposal should
 be burned or returned to the depositors.
 
 * `BurnDepositNoThreshold` burns the proposal deposit at the end of the voting
@@ -378,6 +405,19 @@ be burned or returned to the depositors.
 * `BurnProposalDepositPrevote` burns the proposal deposit if it does not enter the voting phase.
 
 > Note: These parameters are modifiable via governance.
+
+### Governors and delegations
+
+A governor is a specialized role within the governance system who can
+receive delegated voting power from other users. A user can register as a
+governor by meeting certain governance self-delegation requirements, and since
+governors auto delegate their governance power to themselves that translates to
+a staking requirement.
+
+Delegators can assign their staked tokens’ governance voting power to a
+governor. During tally, direct delegator votes and governors’ aggregated votes
+are taken into account. Any direct votes from a delegator reduce the effective
+voting power of that delegator’s chosen governor by the relevant stake.
 
 ## State
 
@@ -499,6 +539,12 @@ const (
 
 ```protobuf reference
 https://github.com/atomone-hub/atomone/blob/b9631ed2e3b781cd82a14316f6086802d8cb4dcf/proto/atomone/gov/v1/gov.proto#L37-L49
+```
+
+### Governors
+
+```protobuf reference
+https://github.com/atomone-hub/atomone/blob/f25a8a4a8af752a8d04ad8ee7e850c9cf32ff447/proto/atomone/gov/v1/gov.proto#L285-331
 ```
 
 ## Stores
@@ -761,6 +807,24 @@ passage of time (for decreases) as detailed in [ADR-003](../../docs/architecture
 https://github.com/atomone-hub/atomone/blob/fb05dcaba40c7a1531a6806487fcd47a3e4aaef4/proto/atomone/gov/v1/gov.proto#L51-L60
 ```
 
+### Governance Delegations
+
+Governance delegations are tracked via the `GovernanceDelegation` object,
+and express a mapping from a delegator to a governor.
+
+```protobuf reference
+https://github.com/atomone-hub/atomone/blob/f25a8a4a8af752a8d04ad8ee7e850c9cf32ff447/proto/atomone/gov/v1/gov.proto#L349-L357
+```
+
+When a governance delegation is performed, the governance voting power of a
+governor is updated via adding the corresponding number of "virtual shares"
+that result from the underlying staking delegation from the corresponding
+validator. This is tracked via the `GovernorValShares` object.
+
+```protobuf reference
+https://github.com/atomone-hub/atomone/blob/f25a8a4a8af752a8d04ad8ee7e850c9cf32ff447/proto/atomone/gov/v1/gov.proto#L333-L347
+```
+
 ## Messages
 
 ### Proposal Submission
@@ -962,6 +1026,55 @@ Next is a pseudocode outline of the way `MsgVote` transactions are handled:
         store(Governance, <txGovVote.ProposalID|'addresses'|sender>, txGovVote.Vote)   // Voters can vote multiple times. Re-voting overrides previous vote. This is ok because tallying is done once at the end.
 ```
 
+### Governor Creation
+
+Governors can be created by sending a `MsgCreateGovernor` transaction.
+
+```protobuf reference
+https://github.com/atomone-hub/atomone/blob/539ee0ea3b33211ce90a9c6679911893f72b8d26/proto/atomone/gov/v1/tx.proto#L242-L253
+```
+
+**State modifications:**
+
+* Create a new governor account from the sender base account. The minimum self-delegation
+  required to become a governor is checked during the creation process.
+
+### Edit Governor
+
+Governors can edit their details by sending a `MsgEditGovernor` transaction.
+
+```protobuf reference
+https://github.com/atomone-hub/atomone/blob/539ee0ea3b33211ce90a9c6679911893f72b8d26/proto/atomone/gov/v1/tx.proto#L258-L269
+```
+
+### Update Governor Status
+
+Governors can set their status to inactive or active by sending a
+`MsgUpdateGovernorStatus` transaction. However for the transition to active the minimum
+self-delegation required to become a governor need also to be satisfied.
+
+```protobuf reference
+https://github.com/atomone-hub/atomone/blob/539ee0ea3b33211ce90a9c6679911893f72b8d26/proto/atomone/gov/v1/tx.proto#L274-L285
+```
+
+### Delegate Governance Voting Power
+
+Stakers can delegate their governance voting power to a governor by sending a
+`MsgDelegateGovernancePower` transaction.
+
+```protobuf reference
+https://github.com/atomone-hub/atomone/blob/539ee0ea3b33211ce90a9c6679911893f72b8d26/proto/atomone/gov/v1/tx.proto#L290-L301
+```
+
+### Undelegate Governance Voting Power
+
+Stakers can undelegate their governance voting power from a governor by sending a
+`MsgUndelegateGovernancePower` transaction.
+
+```protobuf reference
+https://github.com/atomone-hub/atomone/blob/539ee0ea3b33211ce90a9c6679911893f72b8d26/proto/atomone/gov/v1/tx.proto#L306-L315
+```
+
 ## Events
 
 The governance module emits the following events:
@@ -1055,6 +1168,8 @@ Some older fields have been deprecated but remain in `gov.proto` for backward co
 | quorum_range                        | object (QuorumRange)                      | _See below_                             |
 | constitution_amendment_quorum_range | object (QuorumRange)                      | _See below_                             |
 | law_quorum_range                    | object (QuorumRange)                      | _See below_                             |
+| governor_status_change_period       | string (time ns)                          | "24192000000000000" (2419200s)          |
+| min_governor_self_delegation        | string (int )                             | 1000000000                              |
 
 ### MinDepositThrottler (dynamic MinDeposit)
 
@@ -1179,7 +1294,6 @@ pagination:
   total: "0"
 ```
 
-
 ##### min deposit
 
 The `min-deposit` command allows users to query the
@@ -1226,6 +1340,64 @@ Example Output:
 min_initial_deposit:
 - amount: "10000000"
   denom: atone
+```
+
+##### governor
+
+The `governor` command allows users to query a governor for a given address.
+
+```bash
+atomoned query gov governor [address] [flags]
+```
+
+Example:
+
+```bash
+atomoned query gov governor atonegov1..
+```
+
+##### governors
+
+The `governors` command allows users to query all governors.
+
+```bash
+atomoned query gov governors [flags]
+```
+
+Example:
+
+```bash
+atomoned query gov governors
+```
+
+##### governance delegation
+
+The `delegation` command allows users to query a governance delegation for a
+given delegator, if it exists.
+
+```bash
+atomoned query gov delegation [delegator-addr] [flags]
+```
+
+Example:
+
+```bash
+atomoned query gov delegation atone1..
+```
+
+##### governance delegations for a governor
+
+The `delegations` command allows users to query all governance delegations for
+a given governor.
+
+```bash
+atomoned query gov delegations [governor-addr] [flags]
+```
+
+Example:
+
+```bash
+atomoned query gov delegations atonegov1..
 ```
 
 ##### param
@@ -1661,6 +1833,80 @@ Example:
 atomoned tx gov weighted-vote 1 yes=0.5,no=0.5 --from atone1..
 ```
 
+##### create-governor
+
+The `create-governor` command allows users to create a governor.
+
+```bash
+atomoned tx gov create-governor [base-address] [moniker] [identity] [website] [security-contact] [details] [flags]
+```
+
+Example:
+
+```bash
+atomoned tx gov create-governor atone1.. "NewGovernor" "ABC123DEF5678" "www.mywebsite.com" "" "-" --from atone1..
+```
+
+##### edit-governor
+
+The `edit-governor` command allows users to edit a governor.
+
+```bash
+atomoned tx gov edit-governor [base-address] [moniker] [identity] [website] [security-contact] [details] [flags]
+```
+
+Example:
+
+```bash
+atomoned tx gov edit-governor atone1.. "EditedGovernor" "ABC123DEF5678" "www.mywebsite.com" "" "-" --from atone1..
+```
+
+##### update-governor-status
+
+The `update-governor-status` command allows users to update a governor's status.
+The update from inactive to active also requires the minimum self-delegation to
+be satisfied.
+
+```bash
+atomoned tx gov update-governor-status [base-address] [status] [flags]
+```
+
+Example:
+
+```bash
+atomoned tx gov update-governor-status atone1.. active --from atone1..
+```
+
+##### delegate-governor
+
+The `delegate-governor` command allows users to delegate governance voting power
+to a governor.
+
+```bash
+atomoned tx gov delegate-governor [delegator-address] [governor-address] [flags]
+```
+
+Example:
+
+```bash
+atomoned tx gov delegate-governor atone1.. atonegov1.. --from atone1..
+```
+
+##### undelegate-governor
+
+The `undelegate-governor` command allows users to undelegate governance voting power
+and return to direct voting only.
+
+```bash
+atomoned tx gov undelegate-governor [delegator-address] [flags]
+```
+
+Example:
+
+```bash
+atomoned tx gov undelegate-governor atone1.. --from atone1..
+```
+
 ### gRPC
 
 A user can query the `gov` module using gRPC endpoints.
@@ -1759,7 +2005,6 @@ Example Output:
   }
 }
 ```
-
 
 #### Proposals
 
@@ -2183,7 +2428,7 @@ Example Output:
 }
 ```
 
-#### deposits
+#### Deposits
 
 The `Deposits` endpoint allows users to query all deposits for a given proposal.
 
@@ -2317,6 +2562,83 @@ Example Output:
     "no": "0",
   }
 }
+```
+
+#### Governor
+
+The `Governor` endpoint allows users to query a governor for a given address.
+
+using v1:
+
+```bash
+atomone.gov.v1.Query/Governor
+```
+
+Example:
+
+```bash
+grpcurl -plaintext \
+    -d '{"governor_address":"atone1.."}' \
+    localhost:9090 \
+    atomone.gov.v1.Query/Governor
+```
+
+#### Governors
+
+The `Governors` endpoint allows users to query all governors.
+
+Using legacy v1:
+
+```bash
+atomone.gov.v1beta1.Query/Governors
+```
+
+Example:
+
+```bash
+grpcurl -plaintext \
+    localhost:9090 \
+    atomone.gov.v1beta1.Query/Governors
+```
+
+#### Delegation
+
+The `Delegation` endpoint allows users to query a governance delegation for a
+given delegator.
+
+Using legacy v1:
+
+```bash
+atomone.gov.v1beta1.Query/Delegation
+```
+
+Example:
+
+```bash
+grpcurl -plaintext \
+    -d '{"delegator_address":"atone1.."}' \
+    localhost:9090 \
+    atomone.gov.v1beta1.Query/Delegation
+```
+
+#### Delegations
+
+The `Delegations` endpoint allows users to query all governance delegations for
+a given governor.
+
+Using legacy v1:
+
+```bash
+atomone.gov.v1beta1.Query/Delegations
+```
+
+Example:
+
+```bash
+grpcurl -plaintext \
+    -d '{"governor_address":"atonegov1.."}' \
+    localhost:9090 \
+    atomone.gov.v1beta1.Query/Delegations
 ```
 
 ### REST
@@ -3041,6 +3363,72 @@ Example Output:
 ```
 
 
+#### governor
+
+The `governor` endpoint allows users to query a governor for a given address.
+
+Using v1:
+
+```bash
+/atomone/gov/v1/governors/{governor_address}
+```
+
+Example:
+
+```bash
+curl localhost:1317/atomone/gov/v1/governors/atonegov1..
+```
+
+#### governors
+
+The `governors` endpoint allows users to query all governors.
+
+Using v1:
+
+```bash
+/atomone/gov/v1/governors
+```
+
+Example:
+
+```bash
+curl localhost:1317/atomone/gov/v1/governors
+```
+
+#### delegation
+
+The `delegation` endpoint allows users to query a governance delegation for a
+given delegator.
+
+Using v1:
+
+```bash
+/atomone/gov/v1/delegations/{delegator_address}
+```
+
+Example:
+
+```bash
+curl localhost:1317/atomone/gov/v1/delegations/atone1..
+```
+
+#### delegations
+
+The `delegations` endpoint allows users to query all governance delegations for
+a given governor.
+
+Using v1:
+
+```bash
+/atomone/gov/v1/governors/{governor_address}/delegations
+```
+
+Example:
+
+```bash
+curl localhost:1317/atomone/gov/v1/governors/atonegov1../delegations
+```
+
 ## Metadata
 
 The gov module has two locations for metadata where users can provide further
@@ -3103,12 +3491,6 @@ governance module. Future improvements may include:
   If a `SoftwareUpgradeProposal` linked to an open bounty is accepted by
   governance, the funds that were reserved are automatically transferred to the
   submitter.
-* **Complex delegation:** Delegators could choose other representatives than
-  their validators. Ultimately, the chain of representatives would always end
-  up to a validator, but delegators could inherit the vote of their chosen
-  representative before they inherit the vote of their validator. In other
-  words, they would only inherit the vote of their validator if their other
-  appointed representative did not vote.
 * **Better process for proposal review:** There would be two parts to
   `proposal.Deposit`, one for anti-spam (same as in MVP) and an other one to
   reward third party auditors.
