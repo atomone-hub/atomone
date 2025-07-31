@@ -176,7 +176,8 @@ type Inputs struct {
 	Cdc    codec.Codec
 	Key    *store.KVStoreKey
 
-	GovKeeper types.GovKeeper
+	GovKeeper     types.GovKeeper
+	StakingKeeper types.StakingKeeper
 }
 
 type Outputs struct {
@@ -205,6 +206,7 @@ func ProvideModule(in Inputs) Outputs {
 		in.Key,
 		authority.String(),
 		in.GovKeeper,
+		in.StakingKeeper,
 	)
 
 	m := NewAppModule(in.Cdc, *Keeper)
