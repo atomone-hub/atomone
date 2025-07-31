@@ -20,6 +20,8 @@
 
 ### DEPENDENCIES
 
+- Remove `statik` dependency in favor of `go:embed` for swagger UI assets [#193](https://github.com/atomone-hub/atomone/pull/193)
+
 ### FEATURES
 
 - Add upgrade code to mint photon from 50% of bond denom funds of Community Pool and 90% of Treasury DAO address [#157](https://github.com/atomone-hub/atomone/pull/157) [#189](https://github.com/atomone-hub/atomone/pull/189)

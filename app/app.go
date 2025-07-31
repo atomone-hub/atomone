@@ -3,16 +3,13 @@ package atomone
 import (
 	"fmt"
 	"io"
+	"io/fs"
 	"net/http"
 	"os"
 	"path/filepath"
 
 	"github.com/gorilla/mux"
-	"github.com/rakyll/statik/fs"
 	"github.com/spf13/cast"
-
-	// unnamed import of statik for swagger UI support
-	_ "github.com/atomone-hub/atomone/client/docs/statik"
 
 	dbm "github.com/cometbft/cometbft-db"
 	abci "github.com/cometbft/cometbft/abci/types"
@@ -51,6 +48,7 @@ import (
 	"github.com/atomone-hub/atomone/app/params"
 	"github.com/atomone-hub/atomone/app/upgrades"
 	v3 "github.com/atomone-hub/atomone/app/upgrades/v3"
+	"github.com/atomone-hub/atomone/client/docs"
 	atomonepost "github.com/atomone-hub/atomone/post"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 )
@@ -405,15 +403,13 @@ func (app *AtomOneApp) setupUpgradeHandlers() {
 
 // RegisterSwaggerAPI registers swagger route with API Server
 func RegisterSwaggerAPI(rtr *mux.Router) {
-	// NOTE(tb) the swagger fs has been registered under the `atomone` namespace
-	// (see `update-swagger-docs` in Makefile) to avoid conflicts with the legacy
-	// swagger fs registered in the default namespace.
-	statikFS, err := fs.NewWithNamespace("atomone")
+	// Use embedded filesystem for swagger UI
+	swaggerFS, err := fs.Sub(docs.SwaggerUI, "swagger-ui")
 	if err != nil {
 		panic(err)
 	}
 
-	staticServer := http.FileServer(statikFS)
+	staticServer := http.FileServer(http.FS(swaggerFS))
 	rtr.PathPrefix("/swagger/").Handler(http.StripPrefix("/swagger/", staticServer))
 }
 
