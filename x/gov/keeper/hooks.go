@@ -14,7 +14,7 @@ type Hooks struct {
 
 var _ stakingtypes.StakingHooks = Hooks{}
 
-// Return the slashing hooks
+// Return the staking hooks
 func (k Keeper) StakingHooks() Hooks {
 	return Hooks{k}
 }
@@ -65,12 +65,10 @@ func (h Hooks) AfterDelegationModified(ctx sdk.Context, delAddr sdk.AccAddress, 
 	return nil
 }
 
-// BeforeValidatorSlashed is called when a validator is slashed
 func (h Hooks) BeforeValidatorSlashed(ctx sdk.Context, valAddr sdk.ValAddress, fraction sdk.Dec) error {
 	return nil
 }
 
-// BeforeDelegationRemoved is called when a delegation is removed
 func (h Hooks) BeforeDelegationRemoved(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
 	return nil
 }

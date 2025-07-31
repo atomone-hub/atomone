@@ -455,7 +455,6 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 		s.Require().Equal(quorumsAfter.Quorum, quorums.Quorum)
 		s.Require().Equal(quorumsAfter.LawQuorum, quorums.LawQuorum)
 	})
-
 }
 
 // testGovGovernors tests passing a text proposal and vote with governors.
