@@ -44,6 +44,7 @@ Thank you for helping to keep our ecosystem safe!
   [here](https://github.com/Zellic/publications/blob/master/All%20in%20Bits%20-%20Zellic%20Audit%20Report.pdf)
   with a SHA-256 hash of 0e35ec86cd73e1a63bb348dd6d3e98eee0fa86bdbfd632ed31b9bbb6606fd67d.
   The audit was mostly focused on:
+
   * the new `x/dynamicfee` module (renamed from `x/feemarket` as referred to in
     the audit)
   * the addition of the
@@ -55,5 +56,6 @@ Thank you for helping to keep our ecosystem safe!
   * the [revision](https://github.com/atomone-hub/atomone/pull/105) of the dynamic
     deposit for proposals that was ultimately not included in the v2 release to
     address some issues discovered in the previous design.
+
   The audit has been carried in anticipation of and as a prerequisite for the
   [v3.0.0](https://github.com/atomone-hub/atomone/releases/tag/v3.0.0) upgrade.
