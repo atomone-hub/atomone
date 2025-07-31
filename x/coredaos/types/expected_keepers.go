@@ -3,12 +3,15 @@ package types
 import (
 	time "time"
 
+	"cosmossdk.io/math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	govtypesv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 )
 
-// GovKeeper defines the expected interface needed to retrieve account balances.
+// GovKeeper defines the expected interface needed to interact with the
+// governance module.
 type GovKeeper interface {
 	// GetProposal gets a proposal from store by ProposalID.
 	GetProposal(ctx sdk.Context, id uint64) (govtypesv1.Proposal, bool)
@@ -37,4 +40,13 @@ type GovKeeper interface {
 	UpdateMinInitialDeposit(ctx sdk.Context, checkElapsedTime bool)
 	// UpdateMinDeposit updates the minimum deposit required for a proposal
 	UpdateMinDeposit(ctx sdk.Context, checkElapsedTime bool)
+}
+
+// StakingKeeper defines the expected interface needed to interact with the
+// staking module.
+type StakingKeeper interface {
+	// GetDelegatorBonded returns the total amount a delegator has bonded.
+	GetDelegatorBonded(ctx sdk.Context, delegator sdk.AccAddress) math.Int
+	// GetDelegatorUnbonding returns the total amount a delegator has unbonding.
+	GetDelegatorUnbonding(ctx sdk.Context, delegator sdk.AccAddress) math.Int
 }

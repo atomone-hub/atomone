@@ -239,12 +239,21 @@ func NewAppKeeper(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
+	appKeepers.CoreDaosKeeper = coredaoskeeper.NewKeeper(
+		appCodec,
+		appKeepers.keys[coredaostypes.StoreKey],
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		appKeepers.GovKeeper,
+		appKeepers.StakingKeeper,
+	)
+
 	// register the staking hooks
 	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
 	appKeepers.StakingKeeper.SetHooks(
 		stakingtypes.NewMultiStakingHooks(
 			appKeepers.DistrKeeper.Hooks(),
 			appKeepers.SlashingKeeper.Hooks(),
+			appKeepers.CoreDaosKeeper.StakingHooks(),
 		),
 	)
 
@@ -336,13 +345,6 @@ func NewAppKeeper(
 		appKeepers.keys[dynamicfeetypes.StoreKey],
 		appKeepers.PhotonKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	)
-
-	appKeepers.CoreDaosKeeper = coredaoskeeper.NewKeeper(
-		appCodec,
-		appKeepers.keys[coredaostypes.StoreKey],
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		appKeepers.GovKeeper,
 	)
 
 	// Middleware Stacks
