@@ -15,7 +15,8 @@ type Keeper struct {
 	storeKey  storetypes.StoreKey
 	authority string
 
-	govKeeper types.GovKeeper
+	govKeeper     types.GovKeeper
+	stakingKeeper types.StakingKeeper
 }
 
 func NewKeeper(
@@ -23,16 +24,18 @@ func NewKeeper(
 	storeKey storetypes.StoreKey,
 	authority string,
 	govKeeper types.GovKeeper,
+	stakingKeeper types.StakingKeeper,
 ) *Keeper {
 	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
 		panic(err)
 	}
 
 	return &Keeper{
-		cdc:       cdc,
-		storeKey:  storeKey,
-		authority: authority,
-		govKeeper: govKeeper,
+		cdc:           cdc,
+		storeKey:      storeKey,
+		authority:     authority,
+		govKeeper:     govKeeper,
+		stakingKeeper: stakingKeeper,
 	}
 }
 
