@@ -173,7 +173,7 @@ func (suite *KeeperTestSuite) TestVoteReq() {
 			preRun: func() uint64 {
 				msg, err := v1.NewMsgSubmitProposal(
 					[]sdk.Msg{bankMsg},
-					v1.DefaultMinInitialDepositFloor,
+					v1.GetDefaultMinInitialDepositFloor(),
 					proposer.String(),
 					"",
 					"Proposal",
@@ -272,7 +272,7 @@ func (suite *KeeperTestSuite) TestVoteWeightedReq() {
 
 	msg, err := v1.NewMsgSubmitProposal(
 		[]sdk.Msg{bankMsg},
-		v1.DefaultMinDepositFloor,
+		v1.GetDefaultMinDepositFloor(),
 		proposer.String(),
 		"",
 		"Proposal",
@@ -293,7 +293,7 @@ func (suite *KeeperTestSuite) TestVoteWeightedReq() {
 			preRun: func() uint64 {
 				msg, err := v1.NewMsgSubmitProposal(
 					[]sdk.Msg{bankMsg},
-					v1.DefaultMinInitialDepositFloor,
+					v1.GetDefaultMinInitialDepositFloor(),
 					proposer.String(),
 					"",
 					"Proposal",
@@ -343,7 +343,7 @@ func (suite *KeeperTestSuite) TestVoteWeightedReq() {
 			preRun: func() uint64 {
 				msg, err := v1.NewMsgSubmitProposal(
 					[]sdk.Msg{bankMsg},
-					v1.DefaultMinDepositFloor,
+					v1.GetDefaultMinDepositFloor(),
 					proposer.String(),
 					"",
 					"Proposal",
@@ -392,7 +392,7 @@ func (suite *KeeperTestSuite) TestDepositReq() {
 
 	msg, err := v1.NewMsgSubmitProposal(
 		[]sdk.Msg{bankMsg},
-		v1.DefaultMinInitialDepositFloor,
+		v1.GetDefaultMinInitialDepositFloor(),
 		proposer.String(),
 		"",
 		"Proposal",
@@ -425,7 +425,7 @@ func (suite *KeeperTestSuite) TestDepositReq() {
 				return res.ProposalId
 			},
 			depositor: proposer,
-			deposit:   v1.DefaultMinDepositFloor,
+			deposit:   v1.GetDefaultMinDepositFloor(),
 			expErr:    false,
 			options:   v1.NewNonSplitVoteOption(v1.OptionYes),
 		},
@@ -437,7 +437,7 @@ func (suite *KeeperTestSuite) TestDepositReq() {
 				return res.ProposalId
 			},
 			depositor: proposer,
-			deposit:   v1.DefaultMinDepositFloor.Add(sdk.NewCoin("ibc/badcoin", sdk.NewInt(1000))),
+			deposit:   v1.GetDefaultMinDepositFloor().Add(sdk.NewCoin("ibc/badcoin", sdk.NewInt(1000))),
 			expErr:    true,
 			options:   v1.NewNonSplitVoteOption(v1.OptionYes),
 		},
@@ -472,7 +472,7 @@ func (suite *KeeperTestSuite) TestLegacyMsgSubmitProposal() {
 			preRun: func() (*v1beta1.MsgSubmitProposal, error) {
 				return v1beta1.NewMsgSubmitProposal(
 					v1beta1.NewTextProposal("test", "I am test"),
-					v1.DefaultMinInitialDepositFloor,
+					v1.GetDefaultMinInitialDepositFloor(),
 					proposer,
 				)
 			},
@@ -482,7 +482,7 @@ func (suite *KeeperTestSuite) TestLegacyMsgSubmitProposal() {
 			preRun: func() (*v1beta1.MsgSubmitProposal, error) {
 				return v1beta1.NewMsgSubmitProposal(
 					v1beta1.NewTextProposal("test", "I am test"),
-					v1.DefaultMinDepositFloor,
+					v1.GetDefaultMinInitialDepositFloor(),
 					proposer,
 				)
 			},
@@ -547,7 +547,7 @@ func (suite *KeeperTestSuite) TestLegacyMsgVote() {
 				bankMsg.Amount = suite.govKeeper.GetMinDeposit(suite.ctx)
 				msg, err := v1.NewMsgSubmitProposal(
 					[]sdk.Msg{bankMsg},
-					v1.DefaultMinInitialDepositFloor,
+					v1.GetDefaultMinInitialDepositFloor(),
 					proposer.String(),
 					"",
 					"Proposal",
@@ -634,7 +634,7 @@ func (suite *KeeperTestSuite) TestLegacyVoteWeighted() {
 
 	msg, err := v1.NewMsgSubmitProposal(
 		[]sdk.Msg{bankMsg},
-		v1.DefaultMinDepositFloor,
+		v1.GetDefaultMinDepositFloor(),
 		proposer.String(),
 		"",
 		"Proposal",
@@ -660,7 +660,7 @@ func (suite *KeeperTestSuite) TestLegacyVoteWeighted() {
 			preRun: func() uint64 {
 				msg, err := v1.NewMsgSubmitProposal(
 					[]sdk.Msg{bankMsg},
-					v1.DefaultMinInitialDepositFloor,
+					v1.GetDefaultMinInitialDepositFloor(),
 					proposer.String(),
 					"",
 					"Proposal",
@@ -693,7 +693,7 @@ func (suite *KeeperTestSuite) TestLegacyVoteWeighted() {
 			preRun: func() uint64 {
 				msg, err := v1.NewMsgSubmitProposal(
 					[]sdk.Msg{bankMsg},
-					v1.DefaultMinDepositFloor,
+					v1.GetDefaultMinDepositFloor(),
 					proposer.String(),
 					"",
 					"Proposal",
@@ -744,7 +744,7 @@ func (suite *KeeperTestSuite) TestLegacyMsgDeposit() {
 
 	msg, err := v1.NewMsgSubmitProposal(
 		[]sdk.Msg{bankMsg},
-		v1.DefaultMinInitialDepositFloor,
+		v1.GetDefaultMinInitialDepositFloor(),
 		proposer.String(),
 		"",
 		"Proposal",
@@ -777,7 +777,7 @@ func (suite *KeeperTestSuite) TestLegacyMsgDeposit() {
 				return res.ProposalId
 			},
 			depositor: proposer,
-			deposit:   v1.DefaultMinDepositFloor,
+			deposit:   v1.GetDefaultMinDepositFloor(),
 			expErr:    false,
 			options:   v1beta1.NewNonSplitVoteOption(v1beta1.OptionYes),
 		},

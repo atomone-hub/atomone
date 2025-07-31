@@ -6,7 +6,6 @@ require (
 	github.com/golang/mock v1.6.0
 	github.com/golangci/golangci-lint v1.56.0
 	github.com/goreleaser/goreleaser v1.25.1
-	github.com/rakyll/statik v0.1.7
 	golang.org/x/vuln v1.1.3
 	mvdan.cc/gofumpt v0.6.0
 )

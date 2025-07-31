@@ -250,19 +250,9 @@ format: lint-fix
 		-not -name "*.pb.go" \
 		-not -name "*.pb.gw.go" \
 		-not -name "*.pulsar.go" \
-		-not -path "*client/docs/statik*" \
 		| xargs $(rundep) mvdan.cc/gofumpt -w -l
 
 .PHONY: format lint lint-fix
-
-###############################################################################
-###                              Documentation                              ###
-###############################################################################
-
-update-swagger-docs: proto-swagger-gen
-	$(rundep) github.com/rakyll/statik -ns atomone -src=client/docs/swagger-ui -dest=client/docs -f -m
-
-.PHONY: update-swagger-docs
 
 ###############################################################################
 ###                                Localnet                                 ###

@@ -60,13 +60,12 @@ var (
 	DefaultQuorumTimeout                                      time.Duration = DefaultVotingPeriod - (time.Hour * 24 * 1) // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
 	DefaultMaxVotingPeriodExtension                           time.Duration = DefaultVotingPeriod - DefaultQuorumTimeout // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
 	DefaultQuorumCheckCount                                   uint64        = 0                                          // disabled by default (0 means no check)
-	DefaultMinDepositFloor                                    sdk.Coins     = sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, DefaultMinDepositTokens))
 	DefaultMinDepositUpdatePeriod                             time.Duration = time.Hour * 24 * 7
 	DefaultMinDepositDecreaseSensitivityTargetDistance        uint64        = 2
 	DefaultMinDepositIncreaseRatio                                          = sdk.NewDecWithPrec(5, 2)
 	DefaultMinDepositDecreaseRatio                                          = sdk.NewDecWithPrec(25, 3)
 	DefaultTargetActiveProposals                              uint64        = 2
-	DefaultMinInitialDepositFloor                             sdk.Coins     = sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewDecWithPrec(1, 2).MulInt(DefaultMinDepositTokens).TruncateInt()))
+	DefaultMinInitialDepositFloorAmount                       math.Int      = sdk.NewDecWithPrec(1, 2).MulInt(DefaultMinDepositTokens).TruncateInt()
 	DefaultMinInitialDepositUpdatePeriod                      time.Duration = time.Hour * 24
 	DefaultMinInitialDepositDecreaseSensitivityTargetDistance uint64        = 2
 	DefaultMinInitialDepositIncreaseRatio                                   = sdk.NewDecWithPrec(1, 2)
@@ -189,13 +188,13 @@ func DefaultParams() Params {
 		DefaultQuorumTimeout,
 		DefaultMaxVotingPeriodExtension,
 		DefaultQuorumCheckCount,
-		DefaultMinDepositFloor,
+		GetDefaultMinDepositFloor(),
 		DefaultMinDepositUpdatePeriod,
 		DefaultMinDepositDecreaseSensitivityTargetDistance,
 		DefaultMinDepositIncreaseRatio.String(),
 		DefaultMinDepositDecreaseRatio.String(),
 		DefaultTargetActiveProposals,
-		DefaultMinInitialDepositFloor,
+		GetDefaultMinInitialDepositFloor(),
 		DefaultMinInitialDepositUpdatePeriod,
 		DefaultMinInitialDepositDecreaseSensitivityTargetDistance,
 		DefaultMinInitialDepositIncreaseRatio.String(),
@@ -506,4 +505,16 @@ func (p Params) ValidateBasic() error {
 	}
 
 	return nil
+}
+
+// GetDefaultMinDepositFloor returns the default minimum deposit floor
+// required so the correct `sdk.DefaultBondDenom` is used.
+func GetDefaultMinDepositFloor() sdk.Coins {
+	return sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, DefaultMinDepositTokens))
+}
+
+// GetDefaultMinInitialDepositFloor returns the default minimum initial deposit floor
+// required so the correct `sdk.DefaultBondDenom` is used.
+func GetDefaultMinInitialDepositFloor() sdk.Coins {
+	return sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, DefaultMinInitialDepositFloorAmount))
 }
