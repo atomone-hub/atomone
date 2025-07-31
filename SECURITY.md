@@ -35,7 +35,7 @@ Thank you for helping to keep our ecosystem safe!
   
   * the new `x/photon` module
   * the [dynamic deposit proposal](https://github.com/atomone-hub/atomone/pull/69)
-  from the `x/gov/` module
+  from the `x/gov` module
 
   The audit has been carried out in anticipation of and as a prerequisite for the
   [v2.0.0](https://github.com/atomone-hub/atomone/releases/tag/v2.0.0) upgrade.
