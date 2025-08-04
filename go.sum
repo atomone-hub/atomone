@@ -701,10 +701,10 @@ github.com/armon/go-metrics v0.0.0-20180917152333-f0300d1749da/go.mod h1:Q73ZrmV
 github.com/armon/go-metrics v0.4.1/go.mod h1:E6amYzXo6aW1tqzoZGT755KkbgrJsSdpwZ+3JqfkOG4=
 github.com/armon/go-radix v0.0.0-20180808171621-7fddfc383310/go.mod h1:ufUuZ+zHj4x4TnLV4JWEpy2hxWSpsRywHrMgIH9cCH8=
 github.com/aryann/difflib v0.0.0-20170710044230-e206f873d14a/go.mod h1:DAHtR1m6lCRdSC2Tm3DSWRPvIPr6xNKyeHdqDQSQT+A=
-github.com/atomone-hub/cosmos-sdk v0.50.13-0.20250707084642-d4ee0ce40063 h1:QNTEiVyqyJ0tW3Ggvk4rOQMTAbAZKVMWIdU/i6Oa4+c=
-github.com/atomone-hub/cosmos-sdk v0.50.13-0.20250707084642-d4ee0ce40063/go.mod h1:hrWEFMU1eoXqLJeE6VVESpJDQH67FS1nnMrQIjO2daw=
-github.com/atomone-hub/cosmos-sdk/x/upgrade v0.1.5-0.20250707084642-d4ee0ce40063 h1:LP2l/8AFitp5TISZpgDInctUrzAR985BmwG4bA7cRTc=
-github.com/atomone-hub/cosmos-sdk/x/upgrade v0.1.5-0.20250707084642-d4ee0ce40063/go.mod h1:GdR2F3YQhICk8j5cEHOoSBdsIkKBDUcznPfjgnDHg5U=
+github.com/atomone-hub/cosmos-sdk v0.50.13-0.20250718120936-fecbfb875bd9 h1:EtOTWBzmoR0DbrdN7/zeZDWi/lDkkhkchDpksI05lDI=
+github.com/atomone-hub/cosmos-sdk v0.50.13-0.20250718120936-fecbfb875bd9/go.mod h1:hrWEFMU1eoXqLJeE6VVESpJDQH67FS1nnMrQIjO2daw=
+github.com/atomone-hub/cosmos-sdk/x/upgrade v0.1.5-0.20250718120936-fecbfb875bd9 h1:Kme3CuVgSShydV8KSoxK/c5kdIRYeE6UAUSJ27GtkAQ=
+github.com/atomone-hub/cosmos-sdk/x/upgrade v0.1.5-0.20250718120936-fecbfb875bd9/go.mod h1:GdR2F3YQhICk8j5cEHOoSBdsIkKBDUcznPfjgnDHg5U=
 github.com/aws/aws-lambda-go v1.13.3/go.mod h1:4UKl9IzQMoD+QF79YdCuzCwp8VbmG4VAQwij/eHl5CU=
 github.com/aws/aws-sdk-go v1.27.0/go.mod h1:KmX6BPdI08NWTb3/sm4ZGu5ShLoqVDhKgpiN924inxo=
 github.com/aws/aws-sdk-go v1.44.122/go.mod h1:y4AeaBuwd2Lk+GepC1E9v0qOiTws0MIWAX4oIKwKHZo=

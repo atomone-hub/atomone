@@ -8,6 +8,8 @@ import (
 
 const (
 	UpgradeName = "v4"
+
+	capabilityStoreKey = "capability"
 )
 
 var Upgrade = upgrades.Upgrade{
@@ -17,6 +19,8 @@ var Upgrade = upgrades.Upgrade{
 		Added: []string{
 			// new module added in v4
 		},
-		Deleted: []string{},
+		Deleted: []string{
+			capabilityStoreKey,
+		},
 	},
 }

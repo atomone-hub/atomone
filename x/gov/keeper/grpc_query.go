@@ -321,13 +321,23 @@ func (q Keeper) MinInitialDeposit(c context.Context, req *v1.QueryMinInitialDepo
 	return &v1.QueryMinInitialDepositResponse{MinInitialDeposit: minInitialDeposit}, nil
 }
 
-// Quorum returns the current quorum
-func (q Keeper) Quorum(c context.Context, _ *v1.QueryQuorumRequest) (*v1.QueryQuorumResponse, error) {
+// Quorums returns the current quorums
+func (q Keeper) Quorums(c context.Context, _ *v1.QueryQuorumsRequest) (*v1.QueryQuorumsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	return &v1.QueryQuorumResponse{
+	return &v1.QueryQuorumsResponse{
 		Quorum:                      q.GetQuorum(ctx).String(),
 		ConstitutionAmendmentQuorum: q.GetConstitutionAmendmentQuorum(ctx).String(),
 		LawQuorum:                   q.GetLawQuorum(ctx).String(),
+	}, nil
+}
+
+// ParticipationEMAs queries the state of the proposal participation exponential moving averages.
+func (q Keeper) ParticipationEMAs(c context.Context, _ *v1.QueryParticipationEMAsRequest) (*v1.QueryParticipationEMAsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+	return &v1.QueryParticipationEMAsResponse{
+		ParticipationEma:                      q.GetParticipationEMA(ctx).String(),
+		ConstitutionAmendmentParticipationEma: q.GetConstitutionAmendmentParticipationEMA(ctx).String(),
+		LawParticipationEma:                   q.GetLawParticipationEMA(ctx).String(),
 	}, nil
 }
 
@@ -444,7 +454,7 @@ func (q legacyQueryServer) Params(c context.Context, req *v1beta1.QueryParamsReq
 	}
 
 	if resp.TallyParams != nil {
-		quorumRes, err := q.keeper.Quorum(c, &v1.QueryQuorumRequest{})
+		quorumRes, err := q.keeper.Quorums(c, &v1.QueryQuorumsRequest{})
 		if err != nil {
 			return nil, err
 		}

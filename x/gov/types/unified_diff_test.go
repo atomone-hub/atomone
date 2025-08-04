@@ -134,6 +134,68 @@ func TestApplyUnifiedDiff(t *testing.T) {
 			expected: "",
 			wantErr:  false,
 		},
+		{
+			name: "Hunk starts beyond source length",
+			src:  "Line one\nLine two",
+			diffStr: `@@ -5,1 +5,1 @@
+ Line five
+`,
+			wantErr: true,
+		},
+		{
+			name: "Context line exceeds source length",
+			src:  "Line one",
+			diffStr: `@@ -1,2 +1,2 @@
+ Line one
+ Line two
+`,
+			wantErr: true,
+		},
+		{
+			name: "Deletion line exceeds source length",
+			src:  "Line one",
+			diffStr: `@@ -1,2 +1,1 @@
+ Line one
+-Line two
+`,
+			wantErr: true,
+		},
+		{
+			name: "Multiple hunks with second hunk beyond bounds",
+			src:  "Line one\nLine two\nLine three",
+			diffStr: `@@ -1,1 +1,1 @@
+ Line one
+@@ -10,1 +10,1 @@
+ Line ten
+`,
+			wantErr: true,
+		},
+		{
+			name: "Empty source with hunk referencing non-existent line",
+			src:  "",
+			diffStr: `@@ -2,1 +2,1 @@
+ Some line
+`,
+			wantErr: true,
+		},
+		{
+			name: "Context mismatch at boundary",
+			src:  "Line one\nLine two",
+			diffStr: `@@ -2,2 +2,2 @@
+ Line two
+ Line three
+`,
+			wantErr: true,
+		},
+		{
+			name: "Deletion at boundary",
+			src:  "Line one\nLine two",
+			diffStr: `@@ -2,2 +2,1 @@
+-Line two
+-Line three
+`,
+			wantErr: true,
+		},
 	}
 
 	for _, tt := range tests {

@@ -12,7 +12,6 @@ import (
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkgrpc "github.com/cosmos/cosmos-sdk/types/grpc"
 	"github.com/cosmos/cosmos-sdk/types/tx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	authvesting "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
@@ -20,7 +19,7 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	disttypes "github.com/atomone-hub/atomone/x/distribution/types"
-	feemarkettypes "github.com/atomone-hub/atomone/x/feemarket/types"
+	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
 	govtypesv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	govtypesv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
@@ -167,7 +166,25 @@ func (s *IntegrationTestSuite) queryGovProposal(endpoint string, proposalID int)
 	return govProposalResp, nil
 }
 
-func (s *IntegrationTestSuite) queryAccount(endpoint, address string) (acc authtypes.AccountI, err error) {
+func (s *IntegrationTestSuite) queryGovQuorums(endpoint string) govtypesv1.QueryQuorumsResponse {
+	body, err := httpGet(fmt.Sprintf("%s/atomone/gov/v1/quorums", endpoint))
+	s.Require().NoError(err)
+	var res govtypesv1.QueryQuorumsResponse
+	err = s.cdc.UnmarshalJSON(body, &res)
+	s.Require().NoError(err)
+	return res
+}
+
+func (s *IntegrationTestSuite) queryGovParams(endpoint string, param string) govtypesv1.QueryParamsResponse {
+	body, err := httpGet(fmt.Sprintf("%s/atomone/gov/v1/params/%s", endpoint, param))
+	s.Require().NoError(err)
+	var res govtypesv1.QueryParamsResponse
+	err = s.cdc.UnmarshalJSON(body, &res)
+	s.Require().NoError(err)
+	return res
+}
+
+func (s *IntegrationTestSuite) queryAccount(endpoint, address string) (acc sdk.AccountI, err error) {
 	var res authtypes.QueryAccountResponse
 	resp, err := http.Get(fmt.Sprintf("%s/cosmos/auth/v1beta1/accounts/%s", endpoint, address))
 	if err != nil {
@@ -251,17 +268,13 @@ func (s *IntegrationTestSuite) queryValidators(endpoint string) ([]stakingtypes.
 	return res.Validators, nil
 }
 
-func (s *IntegrationTestSuite) queryEvidence(endpoint, hash string) (evidencetypes.QueryEvidenceResponse, error) { //nolint:unused // this is called during e2e tests
-	var res evidencetypes.QueryEvidenceResponse
-	body, err := httpGet(fmt.Sprintf("%s/cosmos/evidence/v1beta1/evidence/%s", endpoint, hash))
-	if err != nil {
-		return res, err
-	}
-
-	if err = s.cdc.UnmarshalJSON(body, &res); err != nil {
-		return res, err
-	}
-	return res, nil
+func (s *IntegrationTestSuite) queryStakingPool(endpoint string) stakingtypes.QueryPoolResponse {
+	body, err := httpGet(fmt.Sprintf("%s/cosmos/staking/v1beta1/pool", endpoint))
+	s.Require().NoError(err)
+	var res stakingtypes.QueryPoolResponse
+	err = s.cdc.UnmarshalJSON(body, &res)
+	s.Require().NoError(err)
+	return res
 }
 
 func (s *IntegrationTestSuite) queryAllEvidence(endpoint string) (evidencetypes.QueryAllEvidenceResponse, error) {
@@ -313,47 +326,47 @@ func (s *IntegrationTestSuite) queryPhotonParams(endpoint string) photontypes.Qu
 	return res
 }
 
-func (s *IntegrationTestSuite) queryFeemarketParams(endpoint string) feemarkettypes.ParamsResponse {
-	body, err := httpGet(fmt.Sprintf("%s/atomone/feemarket/v1/params", endpoint))
+func (s *IntegrationTestSuite) queryDynamicfeeParams(endpoint string) dynamicfeetypes.ParamsResponse {
+	body, err := httpGet(fmt.Sprintf("%s/atomone/dynamicfee/v1/params", endpoint))
 	s.Require().NoError(err)
-	var res feemarkettypes.ParamsResponse
+	var res dynamicfeetypes.ParamsResponse
 	err = s.cdc.UnmarshalJSON(body, &res)
 	s.Require().NoError(err)
 	return res
 }
 
-func (s *IntegrationTestSuite) queryFeemarketState(endpoint string) feemarkettypes.StateResponse {
-	body, err := httpGet(fmt.Sprintf("%s/atomone/feemarket/v1/state", endpoint))
+func (s *IntegrationTestSuite) queryDynamicfeeState(endpoint string) dynamicfeetypes.StateResponse {
+	body, err := httpGet(fmt.Sprintf("%s/atomone/dynamicfee/v1/state", endpoint))
 	s.Require().NoError(err)
-	var res feemarkettypes.StateResponse
+	var res dynamicfeetypes.StateResponse
 	err = s.cdc.UnmarshalJSON(body, &res)
 	s.Require().NoError(err)
 	return res
 }
 
-func (s *IntegrationTestSuite) queryFeemarketStateAtHeight(endpoint string, height string) feemarkettypes.StateResponse {
-	headers := addHeader(nil, sdkgrpc.GRPCBlockHeightHeader, height)
-	body, err := httpGetWithHeader(fmt.Sprintf("%s/atomone/feemarket/v1/state", endpoint), headers)
+func (s *IntegrationTestSuite) queryDynamicfeeStateAtHeight(endpoint string, height string) dynamicfeetypes.StateResponse {
+	headers := addHeader(nil, "x-cosmos-block-height", height)
+	body, err := httpGetWithHeader(fmt.Sprintf("%s/atomone/dynamicfee/v1/state", endpoint), headers)
 	s.Require().NoError(err)
-	var res feemarkettypes.StateResponse
+	var res dynamicfeetypes.StateResponse
 	err = s.cdc.UnmarshalJSON(body, &res)
 	s.Require().NoError(err)
 	return res
 }
 
-func (s *IntegrationTestSuite) queryFeemarketGasPrice(endpoint string, denom string) feemarkettypes.GasPriceResponse {
-	body, err := httpGet(fmt.Sprintf("%s/atomone/feemarket/v1/gas_price/%s", endpoint, denom))
+func (s *IntegrationTestSuite) queryDynamicfeeGasPrice(endpoint string, denom string) dynamicfeetypes.GasPriceResponse {
+	body, err := httpGet(fmt.Sprintf("%s/atomone/dynamicfee/v1/gas_price/%s", endpoint, denom))
 	s.Require().NoError(err)
-	var res feemarkettypes.GasPriceResponse
+	var res dynamicfeetypes.GasPriceResponse
 	err = s.cdc.UnmarshalJSON(body, &res)
 	s.Require().NoError(err)
 	return res
 }
 
-func (s *IntegrationTestSuite) queryFeemarketGasPrices(endpoint string) feemarkettypes.GasPricesResponse {
-	body, err := httpGet(fmt.Sprintf("%s/atomone/feemarket/v1/gas_prices", endpoint))
+func (s *IntegrationTestSuite) queryDynamicfeeGasPrices(endpoint string) dynamicfeetypes.GasPricesResponse {
+	body, err := httpGet(fmt.Sprintf("%s/atomone/dynamicfee/v1/gas_prices", endpoint))
 	s.Require().NoError(err)
-	var res feemarkettypes.GasPricesResponse
+	var res dynamicfeetypes.GasPricesResponse
 	err = s.cdc.UnmarshalJSON(body, &res)
 	s.Require().NoError(err)
 	return res
