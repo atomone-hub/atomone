@@ -1,8 +1,8 @@
 # CHANGELOG
 
-## Unreleased
+## v3.0.0
 
-*Release date*
+*Aug 4th, 2025*
 
 ### API BREAKING
 
