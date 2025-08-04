@@ -752,9 +752,13 @@ func (s *IntegrationTestSuite) writeGovCommunitySpendProposal(c *chain, amount s
 		"summary": "summary"
 	}
 	`
+	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
+	initialDepositResp, err := queryGovMinInitialDeposit(chainAAPIEndpoint)
+	s.Require().NoError(err)
+	initialDeposit := initialDepositResp.GetMinInitialDeposit()
 	propMsgBody := fmt.Sprintf(template, govModuleAddress, recipient,
-		amount.Denom, amount.Amount.String(), initialDepositAmount.String())
-	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalCommunitySpendFilename), []byte(propMsgBody))
+		amount.Denom, amount.Amount.String(), initialDeposit[0].String())
+	err = writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalCommunitySpendFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
