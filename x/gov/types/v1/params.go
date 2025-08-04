@@ -56,13 +56,12 @@ var (
 	DefaultQuorumTimeout                                      time.Duration = DefaultVotingPeriod - (time.Hour * 24 * 1) // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
 	DefaultMaxVotingPeriodExtension                           time.Duration = DefaultVotingPeriod - DefaultQuorumTimeout // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
 	DefaultQuorumCheckCount                                   uint64        = 0                                          // disabled by default (0 means no check)
-	DefaultMinDepositFloor                                    sdk.Coins     = sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, DefaultMinDepositTokens))
 	DefaultMinDepositUpdatePeriod                             time.Duration = time.Hour * 24 * 7
 	DefaultMinDepositDecreaseSensitivityTargetDistance        uint64        = 2
 	DefaultMinDepositIncreaseRatio                                          = math.LegacyNewDecWithPrec(5, 2)
 	DefaultMinDepositDecreaseRatio                                          = math.LegacyNewDecWithPrec(25, 3)
 	DefaultTargetActiveProposals                              uint64        = 2
-	DefaultMinInitialDepositFloor                             sdk.Coins     = sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.LegacyNewDecWithPrec(1, 2).MulInt(DefaultMinDepositTokens).TruncateInt()))
+	DefaultMinInitialDepositFloorAmount                       math.Int      = math.LegacyNewDecWithPrec(1, 2).MulInt(DefaultMinDepositTokens).TruncateInt()
 	DefaultMinInitialDepositUpdatePeriod                      time.Duration = time.Hour * 24
 	DefaultMinInitialDepositDecreaseSensitivityTargetDistance uint64        = 2
 	DefaultMinInitialDepositIncreaseRatio                                   = math.LegacyNewDecWithPrec(1, 2)
@@ -180,13 +179,13 @@ func DefaultParams() Params {
 		DefaultQuorumTimeout,
 		DefaultMaxVotingPeriodExtension,
 		DefaultQuorumCheckCount,
-		DefaultMinDepositFloor,
+		GetDefaultMinDepositFloor(),
 		DefaultMinDepositUpdatePeriod,
 		DefaultMinDepositDecreaseSensitivityTargetDistance,
 		DefaultMinDepositIncreaseRatio.String(),
 		DefaultMinDepositDecreaseRatio.String(),
 		DefaultTargetActiveProposals,
-		DefaultMinInitialDepositFloor,
+		GetDefaultMinInitialDepositFloor(),
 		DefaultMinInitialDepositUpdatePeriod,
 		DefaultMinInitialDepositDecreaseSensitivityTargetDistance,
 		DefaultMinInitialDepositIncreaseRatio.String(),
@@ -250,6 +249,16 @@ func (p Params) ValidateBasic() error {
 		if quorum.GT(math.LegacyOneDec()) {
 			return fmt.Errorf("%s too large: %s", label, quorum)
 		}
+	}
+
+	if math.LegacyMustNewDecFromStr(p.QuorumRange.Max).LT(math.LegacyMustNewDecFromStr(p.QuorumRange.Min)) {
+		return fmt.Errorf("quorum range max must be greater than or equal to min: %s", p.QuorumRange)
+	}
+	if math.LegacyMustNewDecFromStr(p.ConstitutionAmendmentQuorumRange.Max).LT(math.LegacyMustNewDecFromStr(p.ConstitutionAmendmentQuorumRange.Min)) {
+		return fmt.Errorf("constitution amendment quorum range max must be greater than or equal to min: %s", p.ConstitutionAmendmentQuorumRange)
+	}
+	if math.LegacyMustNewDecFromStr(p.LawQuorumRange.Max).LT(math.LegacyMustNewDecFromStr(p.LawQuorumRange.Min)) {
+		return fmt.Errorf("law quorum range max must be greater than or equal to min: %s", p.LawQuorumRange)
 	}
 
 	threshold, err := math.LegacyNewDecFromStr(p.Threshold)
@@ -469,4 +478,16 @@ func (p Params) ValidateBasic() error {
 	}
 
 	return nil
+}
+
+// GetDefaultMinDepositFloor returns the default minimum deposit floor
+// required so the correct `sdk.DefaultBondDenom` is used.
+func GetDefaultMinDepositFloor() sdk.Coins {
+	return sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, DefaultMinDepositTokens))
+}
+
+// GetDefaultMinInitialDepositFloor returns the default minimum initial deposit floor
+// required so the correct `sdk.DefaultBondDenom` is used.
+func GetDefaultMinInitialDepositFloor() sdk.Coins {
+	return sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, DefaultMinInitialDepositFloorAmount))
 }

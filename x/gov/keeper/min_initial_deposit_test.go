@@ -32,7 +32,7 @@ func TestInactiveProposalNumber(t *testing.T) {
 
 func TestGetMinInitialDeposit(t *testing.T) {
 	var (
-		minInitialDepositFloor   = v1.DefaultMinInitialDepositFloor
+		minInitialDepositFloor   = v1.GetDefaultMinInitialDepositFloor()
 		minInitialDepositFloorX2 = minInitialDepositFloor.MulInt(math.NewInt(2))
 		updatePeriod             = v1.DefaultMinInitialDepositUpdatePeriod
 		N                        = v1.DefaultTargetProposalsInDepositPeriod

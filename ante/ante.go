@@ -12,8 +12,8 @@ import (
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 
 	atomoneerrors "github.com/atomone-hub/atomone/types/errors"
-	feemarketante "github.com/atomone-hub/atomone/x/feemarket/ante"
-	feemarketkeeper "github.com/atomone-hub/atomone/x/feemarket/keeper"
+	dynamicfeeante "github.com/atomone-hub/atomone/x/dynamicfee/ante"
+	dynamicfeekeeper "github.com/atomone-hub/atomone/x/dynamicfee/keeper"
 	photonante "github.com/atomone-hub/atomone/x/photon/ante"
 	photonkeeper "github.com/atomone-hub/atomone/x/photon/keeper"
 )
@@ -22,12 +22,12 @@ import (
 // channel keeper.
 type HandlerOptions struct {
 	ante.HandlerOptions
-	Codec           codec.BinaryCodec
-	IBCkeeper       *ibckeeper.Keeper
-	StakingKeeper   *stakingkeeper.Keeper
-	PhotonKeeper    *photonkeeper.Keeper
-	TxFeeChecker    ante.TxFeeChecker
-	FeemarketKeeper *feemarketkeeper.Keeper
+	Codec            codec.BinaryCodec
+	IBCkeeper        *ibckeeper.Keeper
+	StakingKeeper    *stakingkeeper.Keeper
+	PhotonKeeper     *photonkeeper.Keeper
+	TxFeeChecker     ante.TxFeeChecker
+	DynamicfeeKeeper *dynamicfeekeeper.Keeper
 }
 
 func NewAnteHandler(opts HandlerOptions) (sdk.AnteHandler, error) {
@@ -49,8 +49,8 @@ func NewAnteHandler(opts HandlerOptions) (sdk.AnteHandler, error) {
 	if opts.PhotonKeeper == nil {
 		return nil, errorsmod.Wrap(atomoneerrors.ErrNotFound, "photon keeper is required for AnteHandler")
 	}
-	if opts.FeemarketKeeper == nil {
-		return nil, errorsmod.Wrap(atomoneerrors.ErrNotFound, "feemarket keeper is required for AnteHandler")
+	if opts.DynamicfeeKeeper == nil {
+		return nil, errorsmod.Wrap(atomoneerrors.ErrNotFound, "dynamicfee keeper is required for AnteHandler")
 	}
 
 	sigGasConsumer := opts.SigGasConsumer
@@ -66,12 +66,12 @@ func NewAnteHandler(opts HandlerOptions) (sdk.AnteHandler, error) {
 		ante.NewConsumeGasForTxSizeDecorator(opts.AccountKeeper),
 		NewGovVoteDecorator(opts.Codec, opts.StakingKeeper),
 		photonante.NewValidateFeeDecorator(opts.PhotonKeeper),
-		feemarketante.NewFeeMarketCheckDecorator(
+		dynamicfeeante.NewDynamicfeeCheckDecorator(
 			opts.AccountKeeper,
 			opts.BankKeeper,
 			opts.FeegrantKeeper,
-			opts.FeemarketKeeper,
-			ante.NewDeductFeeDecorator( // legacy fee deduct decorator used as fallback if feemarket is disabled
+			opts.DynamicfeeKeeper,
+			ante.NewDeductFeeDecorator( // legacy fee deduct decorator used as fallback if dynamicfee is disabled
 				opts.AccountKeeper,
 				opts.BankKeeper,
 				opts.FeegrantKeeper,

@@ -8,11 +8,23 @@
 
 ### BUG FIXES
 
+- Handle `maxBlockGas` in ConsensusParam set to 0 or -1 [#180](https://github.com/atomone-hub/atomone/pull/180)
+- Remove dependency on `ConsensusParamKeeper` from `x/dynamicfee` [#179](https://github.com/atomone-hub/atomone/pull/179)
+- Remove condition returning uninitialized `math.LegacyDec` in `x/gov` [#176](https://github.com/atomone-hub/atomone/pull/176)
+- Return zero if max-min <= 0 for certain generated params in `x/gov` simulation [#168](https://github.com/atomone-hub/atomone/pull/168)
+- Gracefully handle failure to unpack a `sdk.Msg` in `ProposalKinds` for `x/gov` [#167](https://github.com/atomone-hub/atomone/pull/167)
+- Prevent setting `TargetBlockUtilization` to 0 in `x/dynamicfee` [#166](https://github.com/atomone-hub/atomone/pull/166)
+- Ensure that quorum caps are consistent (max >= min) [#163](https://github.com/atomone-hub/atomone/pull/163)
+- Change `getQuorumAndThreshold` in `x/gov` to return highest quorum and threshold [#161](https://github.com/atomone-hub/atomone/pull/161)
+- Add add boundary checks for unified diffs for constitution amendments [#147](https://github.com/atomone-hub/atomone/pull/147)
+
 ### DEPENDENCIES
 
 ### FEATURES
 
-- Add the feemarket module and use the EIP-15559 AIMD algorithm [#114](https://github.com/atomone-hub/atomone/pull/114)
+- Add upgrade code to mint photon from 90% of bond denom funds of Community Pool and Treasury DAO address [#157](https://github.com/atomone-hub/atomone/pull/157)
+- Make `x/gov` quorum dynamic [#135](https://github.com/atomone-hub/atomone/pull/135)
+- Add the `x/dynamicfee` module and use the EIP-15559 AIMD algorithm [#114](https://github.com/atomone-hub/atomone/pull/114) [#170](https://github.com/atomone-hub/atomone/pull/170)
 - Make `x/gov` proposals deposits dynamic [#69](https://github.com/atomone-hub/atomone/pull/69)
 - Burn proposals deposit if percentage of no votes > `params.BurnDepositNoThreshold` when tallying [#90](https://github.com/atomone-hub/atomone/pull/90)
 

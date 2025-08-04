@@ -1733,3 +1733,99 @@ func (suite *KeeperTestSuite) TestLegacyGRPCQueryTallyResult() {
 		})
 	}
 }
+
+func (suite *KeeperTestSuite) TestGRPCQueryParticipationEmas() {
+	queryClient := suite.queryClient
+
+	participationEmaDefault := v1.DefaultParticipationEma
+
+	var (
+		req    *v1.QueryParticipationEMAsRequest
+		expRes *v1.QueryParticipationEMAsResponse
+	)
+
+	testCases := []struct {
+		msg      string
+		malleate func(*KeeperTestSuite)
+		expPass  bool
+	}{
+		{
+			"empty request",
+			func(suite *KeeperTestSuite) {
+				req = &v1.QueryParticipationEMAsRequest{}
+				expRes = &v1.QueryParticipationEMAsResponse{
+					ParticipationEma:                      participationEmaDefault,
+					LawParticipationEma:                   participationEmaDefault,
+					ConstitutionAmendmentParticipationEma: participationEmaDefault,
+				}
+			},
+			true,
+		},
+	}
+
+	for _, testCase := range testCases {
+		suite.Run(fmt.Sprintf("Case %s", testCase.msg), func() {
+			testCase.malleate(suite)
+
+			res, err := queryClient.ParticipationEMAs(gocontext.Background(), req)
+
+			if testCase.expPass {
+				suite.Require().NoError(err)
+				suite.Require().Equal(expRes.ParticipationEma, res.ParticipationEma)
+				suite.Require().Equal(expRes.LawParticipationEma, res.LawParticipationEma)
+				suite.Require().Equal(expRes.ConstitutionAmendmentParticipationEma, res.ConstitutionAmendmentParticipationEma)
+			} else {
+				suite.Require().Error(err)
+				suite.Require().Nil(res)
+			}
+		})
+	}
+}
+
+func (suite *KeeperTestSuite) TestGRPCQueryQuorums() {
+	queryClient := suite.queryClient
+
+	defaultQuorum := "0.300000000000000000"
+
+	var (
+		req    *v1.QueryQuorumsRequest
+		expRes *v1.QueryQuorumsResponse
+	)
+
+	testCases := []struct {
+		msg      string
+		malleate func(*KeeperTestSuite)
+		expPass  bool
+	}{
+		{
+			"empty request",
+			func(suite *KeeperTestSuite) {
+				req = &v1.QueryQuorumsRequest{}
+				expRes = &v1.QueryQuorumsResponse{
+					Quorum:                      defaultQuorum,
+					ConstitutionAmendmentQuorum: defaultQuorum,
+					LawQuorum:                   defaultQuorum,
+				}
+			},
+			true,
+		},
+	}
+
+	for _, testCase := range testCases {
+		suite.Run(fmt.Sprintf("Case %s", testCase.msg), func() {
+			testCase.malleate(suite)
+
+			res, err := queryClient.Quorums(gocontext.Background(), req)
+
+			if testCase.expPass {
+				suite.Require().NoError(err)
+				suite.Require().Equal(expRes.Quorum, res.Quorum)
+				suite.Require().Equal(expRes.LawQuorum, res.LawQuorum)
+				suite.Require().Equal(expRes.ConstitutionAmendmentQuorum, res.ConstitutionAmendmentQuorum)
+			} else {
+				suite.Require().Error(err)
+				suite.Require().Nil(res)
+			}
+		})
+	}
+}

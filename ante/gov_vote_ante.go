@@ -1,6 +1,8 @@
 package ante
 
 import (
+	"errors"
+
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 
@@ -90,7 +92,9 @@ func (g GovVoteDecorator) ValidateVoteMsgs(ctx sdk.Context, msgs []sdk.Msg) erro
 				panic(err) // shouldn't happen
 			}
 			validator, err := g.stakingKeeper.GetValidator(ctx, validatorAddr)
-			if err != nil {
+			if errors.Is(err, stakingtypes.ErrNoValidatorFound) {
+				return false
+			} else if err != nil {
 				panic(err) // shouldn't happen
 			}
 

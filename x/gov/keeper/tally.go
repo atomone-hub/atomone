@@ -206,21 +206,41 @@ func (keeper Keeper) tallyVotes(
 }
 
 // getQuorumAndThreshold returns the appropriate quorum and threshold according
-// to proposal kind.
+// to proposal kind. If the proposal contains multiple kinds, the highest
+// quorum and threshold is returned.
 func (keeper Keeper) getQuorumAndThreshold(ctx sdk.Context, proposal v1.Proposal) (quorum math.LegacyDec, threshold math.LegacyDec) {
 	params := keeper.GetParams(ctx)
 	kinds := keeper.ProposalKinds(proposal)
-	if kinds.HasKindConstitutionAmendment() {
-		quorum = keeper.GetConstitutionAmendmentQuorum(ctx)
-		threshold = math.LegacyMustNewDecFromStr(params.ConstitutionAmendmentThreshold)
-		return
-	}
-	if kinds.HasKindLaw() {
-		quorum = keeper.GetLawQuorum(ctx)
-		threshold = math.LegacyMustNewDecFromStr(params.LawThreshold)
-		return
-	}
+
+	// start with the default quorum and threshold
 	quorum = keeper.GetQuorum(ctx)
 	threshold = math.LegacyMustNewDecFromStr(params.Threshold)
-	return
+
+	// Check for Constitution Amendment and update if higher
+	if kinds.HasKindConstitutionAmendment() {
+		constitutionQuorum := keeper.GetConstitutionAmendmentQuorum(ctx)
+		constitutionThreshold := math.LegacyMustNewDecFromStr(params.ConstitutionAmendmentThreshold)
+
+		if constitutionQuorum.GT(quorum) {
+			quorum = constitutionQuorum
+		}
+		if constitutionThreshold.GT(threshold) {
+			threshold = constitutionThreshold
+		}
+	}
+
+	// Check for Law and update if higher
+	if kinds.HasKindLaw() {
+		lawQuorum := keeper.GetLawQuorum(ctx)
+		lawThreshold := math.LegacyMustNewDecFromStr(params.LawThreshold)
+
+		if lawQuorum.GT(quorum) {
+			quorum = lawQuorum
+		}
+		if lawThreshold.GT(threshold) {
+			threshold = lawThreshold
+		}
+	}
+
+	return quorum, threshold
 }

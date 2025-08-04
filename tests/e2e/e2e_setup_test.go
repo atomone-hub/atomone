@@ -66,7 +66,9 @@ const (
 	proposalSoftwareUpgradeFilename       = "proposal_software_upgrade.json"
 	proposalCancelUpgradeFilename         = "proposal_cancel_uprade.json"
 	proposalParamChangeFilename           = "param_change.json"
+	proposalTextFilename                  = "proposal_text.json"
 	proposalConstitutionAmendmentFilename = "constitution_amendment.json"
+	proposalLawFilename                   = "proposal_law.json"
 	newConstitutionFilename               = "new_constitution.md"
 
 	hermesBinary              = "hermes"
@@ -445,7 +447,7 @@ func (s *IntegrationTestSuite) initGenesis(c *chain, vestingMnemonic, jailedValM
 	s.Require().NoError(err)
 
 	// set custom max gas per block in genesis consensus params,
-	// required for feemarket tests
+	// required for dynamicfee tests
 	genDoc.Consensus.Params.Block.MaxGas = 60_000_000 // 60M gas per block
 
 	appGenState = s.addGenesisVestingAndJailedAccounts(

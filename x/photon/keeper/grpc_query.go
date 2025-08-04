@@ -31,7 +31,7 @@ func (k Keeper) ConversionRate(goCtx context.Context, req *types.QueryConversion
 	}
 	stakingDenomSupply := k.bankKeeper.GetSupply(ctx, bondDenom).Amount.ToLegacyDec()
 	uphotonSupply := k.bankKeeper.GetSupply(ctx, types.Denom).Amount.ToLegacyDec()
-	cr := k.conversionRate(ctx, stakingDenomSupply, uphotonSupply)
+	cr := k.PhotonConversionRate(ctx, stakingDenomSupply, uphotonSupply)
 
 	return &types.QueryConversionRateResponse{ConversionRate: cr.String()}, nil
 }

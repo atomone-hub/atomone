@@ -174,7 +174,7 @@ func (suite *KeeperTestSuite) TestVoteReq() {
 			preRun: func() uint64 {
 				msg, err := v1.NewMsgSubmitProposal(
 					[]sdk.Msg{bankMsg},
-					v1.DefaultMinInitialDepositFloor,
+					v1.GetDefaultMinInitialDepositFloor(),
 					proposer.String(),
 					"",
 					"Proposal",
@@ -273,7 +273,7 @@ func (suite *KeeperTestSuite) TestVoteWeightedReq() {
 
 	msg, err := v1.NewMsgSubmitProposal(
 		[]sdk.Msg{bankMsg},
-		v1.DefaultMinDepositFloor,
+		v1.GetDefaultMinDepositFloor(),
 		proposer.String(),
 		"",
 		"Proposal",
@@ -294,7 +294,7 @@ func (suite *KeeperTestSuite) TestVoteWeightedReq() {
 			preRun: func() uint64 {
 				msg, err := v1.NewMsgSubmitProposal(
 					[]sdk.Msg{bankMsg},
-					v1.DefaultMinInitialDepositFloor,
+					v1.GetDefaultMinInitialDepositFloor(),
 					proposer.String(),
 					"",
 					"Proposal",
@@ -344,7 +344,7 @@ func (suite *KeeperTestSuite) TestVoteWeightedReq() {
 			preRun: func() uint64 {
 				msg, err := v1.NewMsgSubmitProposal(
 					[]sdk.Msg{bankMsg},
-					v1.DefaultMinDepositFloor,
+					v1.GetDefaultMinDepositFloor(),
 					proposer.String(),
 					"",
 					"Proposal",
@@ -393,7 +393,7 @@ func (suite *KeeperTestSuite) TestDepositReq() {
 
 	msg, err := v1.NewMsgSubmitProposal(
 		[]sdk.Msg{bankMsg},
-		v1.DefaultMinInitialDepositFloor,
+		v1.GetDefaultMinInitialDepositFloor(),
 		proposer.String(),
 		"",
 		"Proposal",
@@ -426,7 +426,7 @@ func (suite *KeeperTestSuite) TestDepositReq() {
 				return res.ProposalId
 			},
 			depositor: proposer,
-			deposit:   v1.DefaultMinDepositFloor,
+			deposit:   v1.GetDefaultMinDepositFloor(),
 			expErr:    false,
 			options:   v1.NewNonSplitVoteOption(v1.OptionYes),
 		},
@@ -438,7 +438,7 @@ func (suite *KeeperTestSuite) TestDepositReq() {
 				return res.ProposalId
 			},
 			depositor: proposer,
-			deposit:   v1.DefaultMinDepositFloor.Add(sdk.NewCoin("ibc/badcoin", math.NewInt(1000))),
+			deposit:   v1.GetDefaultMinDepositFloor().Add(sdk.NewCoin("ibc/badcoin", math.NewInt(1000))),
 			expErr:    true,
 			options:   v1.NewNonSplitVoteOption(v1.OptionYes),
 		},
@@ -473,7 +473,7 @@ func (suite *KeeperTestSuite) TestLegacyMsgSubmitProposal() {
 			preRun: func() (*v1beta1.MsgSubmitProposal, error) {
 				return v1beta1.NewMsgSubmitProposal(
 					v1beta1.NewTextProposal("test", "I am test"),
-					v1.DefaultMinInitialDepositFloor,
+					v1.GetDefaultMinInitialDepositFloor(),
 					proposer,
 				)
 			},
@@ -483,7 +483,7 @@ func (suite *KeeperTestSuite) TestLegacyMsgSubmitProposal() {
 			preRun: func() (*v1beta1.MsgSubmitProposal, error) {
 				return v1beta1.NewMsgSubmitProposal(
 					v1beta1.NewTextProposal("test", "I am test"),
-					v1.DefaultMinDepositFloor,
+					v1.GetDefaultMinInitialDepositFloor(),
 					proposer,
 				)
 			},
@@ -548,7 +548,7 @@ func (suite *KeeperTestSuite) TestLegacyMsgVote() {
 				bankMsg.Amount = suite.govKeeper.GetMinDeposit(suite.ctx)
 				msg, err := v1.NewMsgSubmitProposal(
 					[]sdk.Msg{bankMsg},
-					v1.DefaultMinInitialDepositFloor,
+					v1.GetDefaultMinInitialDepositFloor(),
 					proposer.String(),
 					"",
 					"Proposal",
@@ -635,7 +635,7 @@ func (suite *KeeperTestSuite) TestLegacyVoteWeighted() {
 
 	msg, err := v1.NewMsgSubmitProposal(
 		[]sdk.Msg{bankMsg},
-		v1.DefaultMinDepositFloor,
+		v1.GetDefaultMinDepositFloor(),
 		proposer.String(),
 		"",
 		"Proposal",
@@ -661,7 +661,7 @@ func (suite *KeeperTestSuite) TestLegacyVoteWeighted() {
 			preRun: func() uint64 {
 				msg, err := v1.NewMsgSubmitProposal(
 					[]sdk.Msg{bankMsg},
-					v1.DefaultMinInitialDepositFloor,
+					v1.GetDefaultMinInitialDepositFloor(),
 					proposer.String(),
 					"",
 					"Proposal",
@@ -694,7 +694,7 @@ func (suite *KeeperTestSuite) TestLegacyVoteWeighted() {
 			preRun: func() uint64 {
 				msg, err := v1.NewMsgSubmitProposal(
 					[]sdk.Msg{bankMsg},
-					v1.DefaultMinDepositFloor,
+					v1.GetDefaultMinDepositFloor(),
 					proposer.String(),
 					"",
 					"Proposal",
@@ -745,7 +745,7 @@ func (suite *KeeperTestSuite) TestLegacyMsgDeposit() {
 
 	msg, err := v1.NewMsgSubmitProposal(
 		[]sdk.Msg{bankMsg},
-		v1.DefaultMinInitialDepositFloor,
+		v1.GetDefaultMinInitialDepositFloor(),
 		proposer.String(),
 		"",
 		"Proposal",
@@ -778,7 +778,7 @@ func (suite *KeeperTestSuite) TestLegacyMsgDeposit() {
 				return res.ProposalId
 			},
 			depositor: proposer,
-			deposit:   v1.DefaultMinDepositFloor,
+			deposit:   v1.GetDefaultMinDepositFloor(),
 			expErr:    false,
 			options:   v1beta1.NewNonSplitVoteOption(v1beta1.OptionYes),
 		},
@@ -1005,6 +1005,21 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 			expErrMsg: "quorumRange.max too large",
 		},
 		{
+			name: "max quorum < min quorum",
+			input: func() *v1.MsgUpdateParams {
+				params := v1.DefaultParams()
+				params.QuorumRange.Min = "0.6"
+				params.QuorumRange.Max = "0.5"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "quorum range max must be greater than or equal to min",
+		},
+		{
 			name: "empty threshold",
 			input: func() *v1.MsgUpdateParams {
 				params := v1.DefaultParams()
@@ -1173,6 +1188,21 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 			expErrMsg: "constitutionAmendmentQuorumRange.max too large",
 		},
 		{
+			name: "constitution amendment max quorum < constitution amendment min quorum",
+			input: func() *v1.MsgUpdateParams {
+				params := v1.DefaultParams()
+				params.ConstitutionAmendmentQuorumRange.Min = "0.6"
+				params.ConstitutionAmendmentQuorumRange.Max = "0.5"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "constitution amendment quorum range max must be greater than or equal to min",
+		},
+		{
 			name: "empty constitution amendment threshold",
 			input: func() *v1.MsgUpdateParams {
 				params := v1.DefaultParams()
@@ -1326,6 +1356,21 @@ func (suite *KeeperTestSuite) TestMsgUpdateParams() {
 			},
 			expErr:    true,
 			expErrMsg: "lawQuorumRange.max too large",
+		},
+		{
+			name: "law max quorum < law min quorum",
+			input: func() *v1.MsgUpdateParams {
+				params := v1.DefaultParams()
+				params.LawQuorumRange.Min = "0.6"
+				params.LawQuorumRange.Max = "0.5"
+
+				return &v1.MsgUpdateParams{
+					Authority: authority,
+					Params:    params,
+				}
+			},
+			expErr:    true,
+			expErrMsg: "law quorum range max must be greater than or equal to min",
 		},
 		{
 			name: "negative law threshold",

@@ -25,9 +25,10 @@ currently supports:
 * **Claiming deposit:** Users that deposited on proposals can recover their
   deposits if the proposal was accepted or rejected. If the proposal never entered
   the voting period (the dynamic minimum deposit was never reached within the
-  deposit period), the deposit is burned.
+  deposit period), or if the minimum quorum has not been reached, the deposit might be burnt
+  (see [Burnable Params](#burnable-params) section).
 
-This module is in use in [AtomOne](https://github.com/atomone-hub/atomone)).
+This module is in use in [AtomOne](https://github.com/atomone-hub/atomone).
 Features that may be added in the future are described in [Future Improvements](#future-improvements).
 
 ## Contents
@@ -100,6 +101,7 @@ staking token of the chain.
         - [proposal](#proposal)
         - [proposals](#proposals-1)
         - [proposer](#proposer)
+        - [quorums](#quorums)
         - [tally](#tally)
         - [vote](#vote-2)
         - [votes](#votes)
@@ -194,10 +196,11 @@ lower each threshold depending on the number of concurrent proposals in that sta
   can increase significantly, discouraging spam and helping the chain governance
   remain more focused.
 
-Both dynamic deposit mechanisms have their own sets of parameters (see [Parameters](#parameters)),
-can be queried via dedicated endpoints, and are individually updated as proposals
-enter or exit the deposit or voting stages. They also continue adjusting as time
-passes, ensuring that the system remains responsive to the current state of the chain.
+Both dynamic deposit mechanisms have their own sets of parameters (see [Parameters](#parameters)).
+These parameters can be queried via dedicated endpoints, and are individually updated  
+as proposals enter or exit the deposit or voting stages. They also continue adjusting 
+as time passes, ensuring that the system remains responsive to the current state of 
+the chain.
 
 Threshold updates are triggered both by activation or deactivation of proposals (
 meaning when they enter/exit either the deposit or the voting periods) and by the
@@ -301,7 +304,34 @@ vote options, and the sum of weights of all options must be equal to 1.
 ### Quorum
 
 Quorum is defined as the minimum percentage of voting power that needs to be
-cast on a proposal for the result to be valid.
+cast on a proposal for the result to be valid. AtomOne has removed 
+delegation-based voting in favor of *direct voting* for most type of proposals,
+therefore lower participation with respect to the total voting power is to be
+expected. To address this issue, the quorums are adjusted dynamically based on 
+the actual participation.
+
+#### Dynamic Quorum
+
+In previous versions, `Quorum`, `ConstitutionAmendmentQuorum` and `LawQuorum`
+were fixed parameters. In the current version, these parameters are determined
+by a dynamic system that adapts depending on the vote participation: 
+
+- `Quorum`, the minimum percentage of voting power required for the votation on
+  a proposal to be valid, it will adjust based on vote participation.
+
+- `ConstitutionAmendmentQuorum`, the minimum percentage of voting power required 
+  for the votation on a constitution amendment proposal to be valid, it will 
+  adjust based on vote participation on constitution amendments proposals.
+
+- `LawQuorum`, the minimum percentage of voting power required 
+  for the votation on a law proposal to be valid, it will 
+  adjust based on vote participation on law proposals.
+
+Each dynamic quorum has its own sets of parameters (see [Parameters](#parameters)).
+
+Quorums updates are triggered when proposals exit the voting periods. More
+details on the mechanism are available in
+[ADR-005](../../docs/architecture/adr-005-dynamic-quorum.md). 
 
 #### Threshold
 
@@ -320,7 +350,7 @@ which is modifiable by governance. This means that proposals are accepted if:
 
 #### No inheritance
 
-If a delegator does not vote, it won't inherit its validator vote.
+If a delegator does not vote, the vote of the delegated validator - if applicable - will not be inherited.
 
 Similarly, a validator's voting power is only equal to its own stake.
 
@@ -405,7 +435,7 @@ be one active parameter set at any given time. If governance wants to change a
 parameter set, either to modify a value or add/remove a parameter field, a new
 parameter set has to be created and the previous one rendered inactive.
 
-Due to the new dynamic depositfeature, the prior `MinDeposit` parameter is
+Due to the new dynamic deposit feature, the prior `MinDeposit` parameter is
 deprecated and replaced by the dynamic mechanism defined via the
 `MinDepositThrottler` struct. The same applies to `MinInitialDepositRatio`,
 which is deprecated and replaced by a dynamic `MinInitialDeposit`
@@ -677,12 +707,12 @@ field, the related proposal will be tallied using specific quorum and threshold 
 instead of the default ones for regular proposals. More specifically, the following parameters
 are added to enable this behavior:
 
-- `constitution_amendment_quorum` which defines the quorum for constitution amendment proposals
 - `constitution_amendment_threshold` which defines the minimum proportion of Yes votes for a
   Constitution Amendment proposal to pass.
-- `law_quorum` which defines the quorum for law proposals
 - `law_threshold` which defines the minimum proportion of Yes votes for a Law proposal to pass.
 
+The law quorum and constitution amendment quorum are dynamically adjusted based
+on participation (see [Quorum](#quorum)).
 The `MsgProposeLaw` just contains for now an `authority` field indicating who will execute the
 `sdk.Msg` (which should be the governance module account), and has no effects for now. The conent
 of Laws is entirely defined in the proposal `summary`. Example: 
@@ -998,29 +1028,33 @@ The governance module emits the following events:
 
 ## Parameters
 
-Below is an updated parameter set with new fields related to **dynamic deposit**.
+Below is an updated parameter set with new fields related to **dynamic deposit**
+and **dynamic quorum**.
 Some older fields have been deprecated but remain in `gov.proto` for backward compatibility:
 
-| Key                              | Type                                      | Example                                 |
-|----------------------------------|-------------------------------------------|-----------------------------------------|
-| ~~min_deposit~~                  | ~~array (coins)~~ **(deprecated)**        | ~~[{"denom":"uatone","amount":"10000000"}]~~ |
-| max_deposit_period               | string (time ns)                          | "172800000000000" (17280s)              |
-| voting_period                    | string (time ns)                          | "172800000000000" (17280s)              |
-| quorum                           | string (dec)                              | "0.334000000000000000"                  |
-| threshold                        | string (dec)                              | "0.500000000000000000"                  |
-| burn_proposal_deposit_prevote    | bool                                      | false                                   |
-| burn_vote_quorum                 | bool                                      | false                                   |
-| ~~min_initial_deposit_ratio~~    | ~~string (dec)~~ **(deprecated)**         | ~~"0.100000000000000000"~~              |
-| min_deposit_ratio                | string (dec)                              | "0.010000000000000000"                  |
-| constitution_amendment_quorum    | string (dec)                              | "0.334000000000000000"                  |
-| constitution_amendment_threshold | string (dec)                              | "0.900000000000000000"                  |
-| law_quorum                       | string (dec)                              | "0.334000000000000000"                  |
-| law_threshold                    | string (dec)                              | "0.900000000000000000"                  |
-| quorum_timeout                   | string (time ns)                          | "172800000000000" (17280s)              |
-| max_voting_period_extension      | string (time ns)                          | "172800000000000" (17280s)              |
-| quorum_check_count               | uint64                                    | 2                                       |
-| min_deposit_throttler            | object (MinDepositThrottler)             | _See below_                             |
-| min_initial_deposit_throttler    | object (MinInitialDepositThrottler)       | _See below_                             |
+| Key                                 | Type                                      | Example                                 |
+|-------------------------------------|-------------------------------------------|-----------------------------------------|
+| ~~min_deposit~~                     | ~~array (coins)~~ **(deprecated)**        | ~~[{"denom":"uatone","amount":"10000000"}]~~ |
+| max_deposit_period                  | string (time ns)                          | "172800000000000" (17280s)              |
+| voting_period                       | string (time ns)                          | "172800000000000" (17280s)              |
+|~quorum~                             | ~string (dec)~    **(deprecated)**        | ~"0.334000000000000000"~                |
+| threshold                           | string (dec)                              | "0.500000000000000000"                  |
+| burn_proposal_deposit_prevote       | bool                                      | false                                   |
+| burn_vote_quorum                    | bool                                      | false                                   |
+| ~~min_initial_deposit_ratio~~       | ~~string (dec)~~ **(deprecated)**         | ~~"0.100000000000000000"~~              |
+| min_deposit_ratio                   | string (dec)                              | "0.010000000000000000"                  |
+|~constitution_amendment_quorum~      |~string (dec)~    **(deprecated)**         |~"0.334000000000000000"~                 |
+| constitution_amendment_threshold    | string (dec)                              | "0.900000000000000000"                  |
+| ~law_quorum~                        | ~string (dec)~   **(deprecated)**         | ~"0.334000000000000000"~                |
+| law_threshold                       | string (dec)                              | "0.900000000000000000"                  |
+| quorum_timeout                      | string (time ns)                          | "172800000000000" (17280s)              |
+| max_voting_period_extension         | string (time ns)                          | "172800000000000" (17280s)              |
+| quorum_check_count                  | uint64                                    | 2                                       |
+| min_deposit_throttler               | object (MinDepositThrottler)              | _See below_                             |
+| min_initial_deposit_throttler       | object (MinInitialDepositThrottler)       | _See below_                             |
+| quorum_range                        | object (QuorumRange)                      | _See below_                             |
+| constitution_amendment_quorum_range | object (QuorumRange)                      | _See below_                             |
+| law_quorum_range                    | object (QuorumRange)                      | _See below_                             |
 
 ### MinDepositThrottler (dynamic MinDeposit)
 
@@ -1066,6 +1100,18 @@ atomoned query gov min-initial-deposit
 
 to see the current required deposit thresholds.
 :::
+
+### QuorumRange (dynamic Quorum)
+
+The `quorum_range`, `constitution_amendment_quorum_range` and
+`law_quorum_range`, are all instances of the `QuorumRange` struct and 
+participate in the dynamic computation of (respectively)
+`Quorum`, `ConstitutionAmendmentQuorum` and `LawQuorum`.
+
+The QuorumRange struct contains:
+
+- `Min`, the minimum value of quorum that can be reached.
+- `Max`, the maximum value of quorum that can be reached.
 
 ## Client
 
@@ -1224,6 +1270,15 @@ deposit_params:
   min_deposit:
   - amount: "10000000"
     denom: atone
+  constitution_amendment_quorum_range:
+    max: "0.500000000000000000"
+    min: "0.100000000000000000"
+  law_quorum_range:
+    max: "0.500000000000000000"
+    min: "0.100000000000000000"
+  quorum_range:
+    max: "0.500000000000000000"
+    min: "0.100000000000000000"
 tally_params:
   quorum: "0.334000000000000000"
   threshold: "0.500000000000000000"
@@ -1355,6 +1410,24 @@ Example Output:
 ```bash
 proposal_id: "1"
 proposer: atone1..
+```
+
+##### quorums
+
+The `quorums` command allows users to query the state of the dynamic quorums.
+
+Example:
+
+```bash
+./build/atomoned query gov quorums
+```
+
+Example Output:
+
+```bash
+constitution_amendment_quorum: "0.300000000000000000"
+law_quorum: "0.300000000000000000"
+quorum: "0.300000000000000000"
 ```
 
 ##### tally

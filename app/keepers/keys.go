@@ -20,6 +20,7 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	distrtypes "github.com/atomone-hub/atomone/x/distribution/types"
+	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
 	feemarkettypes "github.com/atomone-hub/atomone/x/feemarket/types"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
@@ -46,7 +47,7 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 		authzkeeper.StoreKey,
 		consensusparamtypes.StoreKey,
 		photontypes.StoreKey,
-		feemarkettypes.StoreKey,
+		dynamicfeetypes.StoreKey,
 	)
 
 	// Define transient store keys

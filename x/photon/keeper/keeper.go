@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"context"
 	"fmt"
 
 	"cosmossdk.io/log"
@@ -45,9 +46,9 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-// conversionRate returns the conversion rate for converting bond denom to
+// PhotonConversionRate returns the conversion rate for converting bond denom to
 // photon.
-func (k Keeper) conversionRate(_ sdk.Context, bondDenomSupply, uphotonSupply math.LegacyDec) math.LegacyDec {
+func (k Keeper) PhotonConversionRate(_ context.Context, bondDenomSupply, uphotonSupply math.LegacyDec) math.LegacyDec {
 	remainMintableUphotons := math.LegacyNewDec(types.MaxSupply).Sub(uphotonSupply)
 	if remainMintableUphotons.IsNegative() {
 		// If for any reason the max supply is exceeded, avoid returning a negative number
