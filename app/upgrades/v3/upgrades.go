@@ -11,10 +11,10 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
-	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 
 	"github.com/atomone-hub/atomone/app/keepers"
+	distrkeeper "github.com/atomone-hub/atomone/x/distribution/keeper"
+	distrtypes "github.com/atomone-hub/atomone/x/distribution/types"
 	govkeeper "github.com/atomone-hub/atomone/x/gov/keeper"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
