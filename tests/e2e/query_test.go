@@ -20,7 +20,6 @@ import (
 
 	disttypes "github.com/atomone-hub/atomone/x/distribution/types"
 	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
-	feemarkettypes "github.com/atomone-hub/atomone/x/feemarket/types"
 	govtypesv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	govtypesv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
