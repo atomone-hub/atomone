@@ -2,13 +2,6 @@ run:
   tests: false
   # timeout for analysis, e.g. 30s, 5m, default is 1m
   timeout: 5m
-  skip-dirs:
-    - tests/
-    - client/docs/statik
-  skip-files:
-    - ".*\\.pb\\.go$"
-    - ".*\\.pb\\.gw\\.go$"
-
 linters:
   disable-all: true
   enable:
