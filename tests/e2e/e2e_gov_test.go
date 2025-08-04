@@ -703,7 +703,7 @@ func (s *IntegrationTestSuite) writeGovCommunitySpendProposal(c *chain, amount s
 	{
 		"messages":[
 		  {
-			"@type": "/cosmos.distribution.v1beta1.MsgCommunityPoolSpend",
+			"@type": "/atomone.distribution.v1beta1.MsgCommunityPoolSpend",
 			"authority": "%s",
 			"recipient": "%s",
 			"amount": [{
