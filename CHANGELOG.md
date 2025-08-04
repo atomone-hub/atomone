@@ -1,10 +1,24 @@
 # CHANGELOG
 
+## Unreleased
+
+*Release date*
+
+### API BREAKING
+
+### BUG FIXES
+
+### DEPENDENCIES
+
+### FEATURES
+
+### STATE BREAKING
+
+### IMPROVEMENTS
+
 ## v3.0.0
 
 *Aug 4th, 2025*
-
-### API BREAKING
 
 ### BUG FIXES
 
@@ -29,10 +43,6 @@
 - Add the `x/dynamicfee` module and use the EIP-15559 AIMD algorithm [#114](https://github.com/atomone-hub/atomone/pull/114) [#170](https://github.com/atomone-hub/atomone/pull/170)
 - Make `x/gov` proposals deposits dynamic [#69](https://github.com/atomone-hub/atomone/pull/69)
 - Burn proposals deposit if percentage of no votes > `params.BurnDepositNoThreshold` when tallying [#90](https://github.com/atomone-hub/atomone/pull/90)
-
-### STATE BREAKING
-
-### IMPROVEMENTS
 
 ## v2.0.0
 
