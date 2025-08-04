@@ -8,6 +8,20 @@
 
 ### BUG FIXES
 
+### DEPENDENCIES
+
+### FEATURES
+
+### STATE BREAKING
+
+### IMPROVEMENTS
+
+## v3.0.0
+
+*Aug 4th, 2025*
+
+### BUG FIXES
+
 - Handle `maxBlockGas` in ConsensusParam set to 0 or -1 [#180](https://github.com/atomone-hub/atomone/pull/180)
 - Remove dependency on `ConsensusParamKeeper` from `x/dynamicfee` [#179](https://github.com/atomone-hub/atomone/pull/179)
 - Remove condition returning uninitialized `math.LegacyDec` in `x/gov` [#176](https://github.com/atomone-hub/atomone/pull/176)
@@ -29,10 +43,6 @@
 - Add the `x/dynamicfee` module and use the EIP-15559 AIMD algorithm [#114](https://github.com/atomone-hub/atomone/pull/114) [#170](https://github.com/atomone-hub/atomone/pull/170)
 - Make `x/gov` proposals deposits dynamic [#69](https://github.com/atomone-hub/atomone/pull/69)
 - Burn proposals deposit if percentage of no votes > `params.BurnDepositNoThreshold` when tallying [#90](https://github.com/atomone-hub/atomone/pull/90)
-
-### STATE BREAKING
-
-### IMPROVEMENTS
 
 ## v2.0.0
 
