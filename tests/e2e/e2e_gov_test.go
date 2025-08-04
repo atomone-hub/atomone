@@ -453,12 +453,20 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 }
 
 func (s *IntegrationTestSuite) submitLegacyGovProposal(chainAAPIEndpoint, sender string, proposalID int, proposalType string, submitFlags []string, depositFlags []string, voteFlags []string, voteCommand string, withDeposit bool) {
-	s.T().Logf("Submitting Gov Proposal: %s", proposalType)
+	s.T().Logf("Submitting Gov Proposal: %s, proposal id: %d", proposalType, proposalID)
 	// min deposit of 1000uatone is required in e2e tests, otherwise the gov antehandler causes the proposal to be dropped
 	sflags := submitFlags
+	minInitialDeposit, err := queryGovMinInitialDeposit(chainAAPIEndpoint)
+	s.Require().NoError(err)
+	initialDeposit := minInitialDeposit.GetMinInitialDeposit()
 	if withDeposit {
-		sflags = append(sflags, "--deposit="+initialDepositAmount.String())
+		sflags = append(sflags, "--deposit="+initialDeposit[0].String())
 	}
+	s.T().Logf("Using deposit of: %s", depositFlags[1])
+	minDeposit, err := queryGovMinDeposit(chainAAPIEndpoint)
+	s.Require().NoError(err)
+	deposit := minDeposit.GetMinDeposit()
+	depositFlags[1] = deposit[0].String()
 	s.submitGovCommand(chainAAPIEndpoint, sender, proposalID, "submit-legacy-proposal", sflags, govtypesv1beta1.StatusDepositPeriod)
 	s.T().Logf("Depositing Gov Proposal: %s", proposalType)
 	s.submitGovCommand(chainAAPIEndpoint, sender, proposalID, "deposit", depositFlags, govtypesv1beta1.StatusVotingPeriod)
