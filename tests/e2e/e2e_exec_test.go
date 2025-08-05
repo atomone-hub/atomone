@@ -678,7 +678,7 @@ func (s *IntegrationTestSuite) execWithdrawReward(
 	s.T().Logf("Successfully withdrew distribution rewards for delegator %s from validator %s", delegatorAddress, validatorAddress)
 }
 
-func (s *IntegrationTestSuite) executeMultiSigTxCommand(c *chain, atomoneCommand []string, valIdx int, from *multiSigAccount) int {
+func (s *IntegrationTestSuite) executeMultiSigTxCommand(c *chain, atomoneCommand []string, valIdx int, from *multiSigAccount, expectErr bool) int {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 	offlineTxFile := "multiSigTx.json"
@@ -743,7 +743,7 @@ func (s *IntegrationTestSuite) executeMultiSigTxCommand(c *chain, atomoneCommand
 	for flag, value := range opts {
 		atomoneCommand = append(atomoneCommand, fmt.Sprintf("--%s=%v", flag, value))
 	}
-	height := s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.expectErrExecValidation(c, valIdx, false))
+	height := s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.expectErrExecValidation(c, valIdx, expectErr))
 	return height
 }
 

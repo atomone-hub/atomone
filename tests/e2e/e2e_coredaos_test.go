@@ -11,6 +11,7 @@ import (
 	govtypesv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	govtypesv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
 func (s *IntegrationTestSuite) testCoreDAOs() {
@@ -61,7 +62,7 @@ func (s *IntegrationTestSuite) testCoreDAOs() {
 			strconv.FormatInt(int64(proposalID), 10),
 			"Proposal Annotation",
 		}
-		s.executeMultiSigTxCommand(s.chainA, atomoneCommand, valIdx, steeringDAOAccount)
+		s.executeMultiSigTxCommand(s.chainA, atomoneCommand, valIdx, steeringDAOAccount, false)
 		proposal, err := queryGovProposal(chainAAPIEndpoint, proposalCounter)
 		s.Require().NoError(err)
 		s.Require().Equal("Proposal Annotation", proposal.Proposal.Annotation)
@@ -82,7 +83,7 @@ func (s *IntegrationTestSuite) testCoreDAOs() {
 			"extend-voting-period",
 			strconv.FormatInt(int64(proposalID), 10),
 		}
-		s.executeMultiSigTxCommand(s.chainA, atomoneCommand, valIdx, steeringDAOAccount)
+		s.executeMultiSigTxCommand(s.chainA, atomoneCommand, valIdx, steeringDAOAccount, false)
 		proposalAfterExtension, err := queryGovProposal(chainAAPIEndpoint, proposalID)
 		s.Require().NoError(err)
 
@@ -109,7 +110,7 @@ func (s *IntegrationTestSuite) testCoreDAOs() {
 			"endorse",
 			strconv.FormatInt(int64(proposalID), 10),
 		}
-		s.executeMultiSigTxCommand(s.chainA, atomoneCommand, valIdx, steeringDAOAccount)
+		s.executeMultiSigTxCommand(s.chainA, atomoneCommand, valIdx, steeringDAOAccount, false)
 		proposalAfterEndorsement, err := queryGovV1Proposal(chainAAPIEndpoint, proposalID)
 		s.Require().NoError(err)
 
@@ -134,12 +135,30 @@ func (s *IntegrationTestSuite) testCoreDAOs() {
 			strconv.FormatInt(int64(proposalID), 10),
 			"false",
 		}
-		s.executeMultiSigTxCommand(s.chainA, atomoneCommand, valIdx, oversiteDAOAccount)
+		s.executeMultiSigTxCommand(s.chainA, atomoneCommand, valIdx, oversiteDAOAccount, false)
 		proposalAfterVeto, err := queryGovV1Proposal(chainAAPIEndpoint, proposalID)
 		s.Require().NoError(err)
 
 		s.Require().Equal(govtypesv1.StatusVotingPeriod, proposalBeforeVeto.Proposal.Status)
 		s.Require().Equal(govtypesv1.StatusVetoed, proposalAfterVeto.Proposal.Status)
+
+	})
+
+	s.Run("coredaos cannot stake", func() {
+		oversiteDAOAccount := s.chainA.multiSigAccounts[1]
+		validatorA := s.chainA.validators[0]
+		validatorAAddr, _ := validatorA.keyInfo.GetAddress()
+		validatorAddressA := sdk.ValAddress(validatorAAddr).String()
+
+		atomoneCommand := []string{
+			atomonedBinary,
+			txCommand,
+			stakingtypes.ModuleName,
+			"delegate",
+			validatorAddressA,
+			tokenAmount.String(),
+		}
+		s.executeMultiSigTxCommand(s.chainA, atomoneCommand, valIdx, oversiteDAOAccount, true)
 
 	})
 
