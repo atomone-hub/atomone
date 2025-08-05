@@ -214,24 +214,6 @@ func NewAppKeeper(
 		authorityStr,
 	)
 
-	appKeepers.CoreDaosKeeper = coredaoskeeper.NewKeeper(
-		appCodec,
-		appKeepers.keys[coredaostypes.StoreKey],
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		appKeepers.GovKeeper,
-		appKeepers.StakingKeeper,
-	)
-
-	// register the staking hooks
-	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
-	appKeepers.StakingKeeper.SetHooks(
-		stakingtypes.NewMultiStakingHooks(
-			appKeepers.DistrKeeper.Hooks(),
-			appKeepers.SlashingKeeper.Hooks(),
-			appKeepers.CoreDaosKeeper.StakingHooks(),
-		),
-	)
-
 	// UpgradeKeeper must be created before IBCKeeper
 	appKeepers.UpgradeKeeper = upgradekeeper.NewKeeper(
 		skipUpgradeHeights,
@@ -272,6 +254,24 @@ func NewAppKeeper(
 			return params.NewParamChangeProposalHandler(appKeepers.ParamsKeeper)(ctx, content)
 		})
 	appKeepers.GovKeeper.SetLegacyRouter(govRouter)
+
+	appKeepers.CoreDaosKeeper = coredaoskeeper.NewKeeper(
+		appCodec,
+		appKeepers.keys[coredaostypes.StoreKey],
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		appKeepers.GovKeeper,
+		appKeepers.StakingKeeper,
+	)
+
+	// register the staking hooks
+	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
+	appKeepers.StakingKeeper.SetHooks(
+		stakingtypes.NewMultiStakingHooks(
+			appKeepers.DistrKeeper.Hooks(),
+			appKeepers.SlashingKeeper.Hooks(),
+			appKeepers.CoreDaosKeeper.StakingHooks(),
+		),
+	)
 
 	evidenceKeeper := evidencekeeper.NewKeeper(
 		appCodec,
