@@ -6,8 +6,7 @@ import (
 
 	tmrand "github.com/cometbft/cometbft/libs/rand"
 
-	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
-
+	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
@@ -23,6 +22,7 @@ import (
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 
 	atomoneparams "github.com/atomone-hub/atomone/app/params"
 	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
@@ -65,16 +65,18 @@ func init() {
 	ibctransfertypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 	photontypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 	dynamicfeetypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
+	coredaostypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 
 	cdc = encodingConfig.Marshaler
 	txConfig = encodingConfig.TxConfig
 }
 
 type chain struct {
-	dataDir    string
-	id         string
-	validators []*validator
-	accounts   []*account //nolint:unused
+	dataDir          string
+	id               string
+	validators       []*validator
+	accounts         []*account //nolint:unused
+	multiSigAccounts []*multiSigAccount
 	// initial accounts in genesis
 	genesisAccounts        []*account
 	genesisVestingAccounts map[string]sdk.AccAddress
