@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strings"
 
+	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/tx"
@@ -52,6 +53,20 @@ func queryAtomOneTx(endpoint, txHash string, msgResp codec.ProtoMarshaler) (heig
 		}
 	}
 	return int(resp.TxResponse.Height), nil
+}
+
+func queryCoreDAOsParams(endpoint string) (coredaostypes.QueryParamsResponse, error) { //nolint:unused
+	body, err := httpGet(fmt.Sprintf("%s/atomone/coredaos/v1/params", endpoint))
+	if err != nil {
+		return coredaostypes.QueryParamsResponse{}, fmt.Errorf("failed to execute HTTP request: %w", err)
+	}
+
+	var params coredaostypes.QueryParamsResponse
+	if err := cdc.UnmarshalJSON(body, &params); err != nil {
+		return coredaostypes.QueryParamsResponse{}, err
+	}
+
+	return params, nil
 }
 
 // if coin is zero, return empty coin.
@@ -166,6 +181,22 @@ func queryGovProposal(endpoint string, proposalID int) (govtypesv1beta1.QueryPro
 	var govProposalResp govtypesv1beta1.QueryProposalResponse
 
 	path := fmt.Sprintf("%s/atomone/gov/v1beta1/proposals/%d", endpoint, proposalID)
+
+	body, err := httpGet(path)
+	if err != nil {
+		return govProposalResp, fmt.Errorf("failed to execute HTTP request: %w", err)
+	}
+	if err := cdc.UnmarshalJSON(body, &govProposalResp); err != nil {
+		return govProposalResp, err
+	}
+
+	return govProposalResp, nil
+}
+
+func queryGovV1Proposal(endpoint string, proposalID int) (govtypesv1.QueryProposalResponse, error) {
+	var govProposalResp govtypesv1.QueryProposalResponse
+
+	path := fmt.Sprintf("%s/atomone/gov/v1/proposals/%d", endpoint, proposalID)
 
 	body, err := httpGet(path)
 	if err != nil {
