@@ -693,7 +693,6 @@ func (s *IntegrationTestSuite) executeMultiSigTxCommand(c *chain, atomoneCommand
 		atomoneCommand = append(atomoneCommand, fmt.Sprintf("--%s=%v", flag, value))
 	}
 	atomoneCommand = append(atomoneCommand, "--generate-only")
-	fmt.Println("Command sent: ", strings.Join(atomoneCommand, " "))
 	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.noValidationStoreOutput(c, valIdx, offlineTxFile))
 
 	// Sign offline tx
@@ -713,7 +712,6 @@ func (s *IntegrationTestSuite) executeMultiSigTxCommand(c *chain, atomoneCommand
 		for flag, value := range opts {
 			atomoneCommand = append(atomoneCommand, fmt.Sprintf("--%s=%v", flag, value))
 		}
-		fmt.Println("Command sent: ", strings.Join(atomoneCommand, " "))
 		s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.noValidationStoreOutput(c, valIdx, ""))
 	}
 
@@ -731,7 +729,6 @@ func (s *IntegrationTestSuite) executeMultiSigTxCommand(c *chain, atomoneCommand
 	atomoneCommand = append(atomoneCommand, fmt.Sprintf("--%s=%v", flagKeyringBackend, "test"))
 	atomoneCommand = append(atomoneCommand, fmt.Sprintf("--%s=%v", flagChainID, c.id))
 	atomoneCommand = append(atomoneCommand, fmt.Sprintf("--%s=%v", flagHome, atomoneHomePath))
-	fmt.Println("Command sent: ", strings.Join(atomoneCommand, " "))
 	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.noValidationStoreOutput(c, valIdx, fmt.Sprintf("signed_%s", offlineTxFile)))
 
 	// Broadcast tx
@@ -901,7 +898,6 @@ func (s *IntegrationTestSuite) defaultExecValidation(chain *chain, valIdx int, m
 
 func (s *IntegrationTestSuite) noValidationStoreOutput(chain *chain, valIdx int, filename string) func([]byte, []byte) bool {
 	return func(stdOut []byte, stdErr []byte) bool {
-		fmt.Println(string(stdErr))
 		if filename == "" {
 			return true
 		}
