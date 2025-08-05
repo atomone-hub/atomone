@@ -18,10 +18,6 @@ func (s *IntegrationTestSuite) testCoreDAOs() {
 	s.Run("coredaos parameter change", func() {
 		chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
 		senderAddress, _ := s.chainA.validators[valIdx].keyInfo.GetAddress()
-		accountsNumber := 2
-		signersNumber := 3
-		thereshold := 2
-		s.chainA.addMultiSigAccountFromMnemonic(accountsNumber, signersNumber, thereshold)
 
 		params, err := queryCoreDAOsParams(chainAAPIEndpoint)
 		s.Require().NoError(err)
