@@ -103,7 +103,7 @@ func (s *IntegrationTestSuite) testCoreDAOs() {
 		steeringDAOAccount := s.chainA.multiSigAccounts[0]
 
 		proposalID := s.submitVotingPeriodLawProposal(s.chainA)
-		proposalBeforeExtension, err := queryGovV1Proposal(chainAAPIEndpoint, proposalID)
+		proposalBeforeEndorsement, err := queryGovV1Proposal(chainAAPIEndpoint, proposalID)
 		s.Require().NoError(err)
 
 		atomoneCommand := []string{
@@ -114,11 +114,11 @@ func (s *IntegrationTestSuite) testCoreDAOs() {
 			strconv.FormatInt(int64(proposalID), 10),
 		}
 		s.executeMultiSigTxCommand(s.chainA, atomoneCommand, valIdx, steeringDAOAccount)
-		proposalAfterExtension, err := queryGovV1Proposal(chainAAPIEndpoint, proposalID)
+		proposalAfterEndorsement, err := queryGovV1Proposal(chainAAPIEndpoint, proposalID)
 		s.Require().NoError(err)
 
-		s.Require().False(proposalBeforeExtension.Proposal.Endorsed)
-		s.Require().True(proposalAfterExtension.Proposal.Endorsed)
+		s.Require().False(proposalBeforeEndorsement.Proposal.Endorsed)
+		s.Require().True(proposalAfterEndorsement.Proposal.Endorsed)
 
 	})
 
