@@ -35,15 +35,18 @@ func (ms MsgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdatePara
 
 	params := msg.Params
 	// check if any of the core DAOs has bonded or unbonding tokens, and if so return an error
-	if ms.k.stakingKeeper.GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(params.SteeringDaoAddress)).GT(sdk.ZeroInt()) ||
-		ms.k.stakingKeeper.GetDelegatorUnbonding(ctx, sdk.MustAccAddressFromBech32(params.SteeringDaoAddress)).GT(sdk.ZeroInt()) {
-		return nil, errors.Wrapf(types.ErrCannotStake, "cannot update params while Steering DAO have bonded or unbonding tokens")
+	if params.SteeringDaoAddress != "" {
+		if ms.k.stakingKeeper.GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(params.SteeringDaoAddress)).GT(sdk.ZeroInt()) ||
+			ms.k.stakingKeeper.GetDelegatorUnbonding(ctx, sdk.MustAccAddressFromBech32(params.SteeringDaoAddress)).GT(sdk.ZeroInt()) {
+			return nil, errors.Wrapf(types.ErrCannotStake, "cannot update params while Steering DAO have bonded or unbonding tokens")
+		}
 	}
-	if ms.k.stakingKeeper.GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(params.OversightDaoAddress)).GT(sdk.ZeroInt()) ||
-		ms.k.stakingKeeper.GetDelegatorUnbonding(ctx, sdk.MustAccAddressFromBech32(params.OversightDaoAddress)).GT(sdk.ZeroInt()) {
-		return nil, errors.Wrapf(types.ErrCannotStake, "cannot update params while Oversight DAO have bonded or unbonding tokens")
+	if params.OversightDaoAddress != "" {
+		if ms.k.stakingKeeper.GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(params.OversightDaoAddress)).GT(sdk.ZeroInt()) ||
+			ms.k.stakingKeeper.GetDelegatorUnbonding(ctx, sdk.MustAccAddressFromBech32(params.OversightDaoAddress)).GT(sdk.ZeroInt()) {
+			return nil, errors.Wrapf(types.ErrCannotStake, "cannot update params while Oversight DAO have bonded or unbonding tokens")
+		}
 	}
-
 	if err := ms.k.SetParams(ctx, params); err != nil {
 		return nil, errors.Wrapf(err, "error setting params")
 	}
