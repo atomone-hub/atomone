@@ -8,6 +8,7 @@ import (
 	reflect "reflect"
 	time "time"
 
+	math "cosmossdk.io/math"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	types "github.com/cosmos/cosmos-sdk/types"
 	gomock "github.com/golang/mock/gomock"
@@ -159,4 +160,55 @@ func (m *MockGovKeeper) UpdateMinInitialDeposit(ctx types.Context, checkElapsedT
 func (mr *MockGovKeeperMockRecorder) UpdateMinInitialDeposit(ctx, checkElapsedTime interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateMinInitialDeposit", reflect.TypeOf((*MockGovKeeper)(nil).UpdateMinInitialDeposit), ctx, checkElapsedTime)
+}
+
+// MockStakingKeeper is a mock of StakingKeeper interface.
+type MockStakingKeeper struct {
+	ctrl     *gomock.Controller
+	recorder *MockStakingKeeperMockRecorder
+}
+
+// MockStakingKeeperMockRecorder is the mock recorder for MockStakingKeeper.
+type MockStakingKeeperMockRecorder struct {
+	mock *MockStakingKeeper
+}
+
+// NewMockStakingKeeper creates a new mock instance.
+func NewMockStakingKeeper(ctrl *gomock.Controller) *MockStakingKeeper {
+	mock := &MockStakingKeeper{ctrl: ctrl}
+	mock.recorder = &MockStakingKeeperMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockStakingKeeper) EXPECT() *MockStakingKeeperMockRecorder {
+	return m.recorder
+}
+
+// GetDelegatorBonded mocks base method.
+func (m *MockStakingKeeper) GetDelegatorBonded(ctx types.Context, delegator types.AccAddress) math.Int {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetDelegatorBonded", ctx, delegator)
+	ret0, _ := ret[0].(math.Int)
+	return ret0
+}
+
+// GetDelegatorBonded indicates an expected call of GetDelegatorBonded.
+func (mr *MockStakingKeeperMockRecorder) GetDelegatorBonded(ctx, delegator interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDelegatorBonded", reflect.TypeOf((*MockStakingKeeper)(nil).GetDelegatorBonded), ctx, delegator)
+}
+
+// GetDelegatorUnbonding mocks base method.
+func (m *MockStakingKeeper) GetDelegatorUnbonding(ctx types.Context, delegator types.AccAddress) math.Int {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetDelegatorUnbonding", ctx, delegator)
+	ret0, _ := ret[0].(math.Int)
+	return ret0
+}
+
+// GetDelegatorUnbonding indicates an expected call of GetDelegatorUnbonding.
+func (mr *MockStakingKeeperMockRecorder) GetDelegatorUnbonding(ctx, delegator interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDelegatorUnbonding", reflect.TypeOf((*MockStakingKeeper)(nil).GetDelegatorUnbonding), ctx, delegator)
 }
