@@ -768,6 +768,39 @@ func (s *IntegrationTestSuite) executeHermesCommand(ctx context.Context, hermesC
 	return stdOut, nil
 }
 
+func (s *IntegrationTestSuite) executeTsRelayerCommand(ctx context.Context, cmd []string) {
+	exec, err := s.dkrPool.Client.CreateExec(docker.CreateExecOptions{
+		Context:      ctx,
+		AttachStdout: true,
+		AttachStderr: true,
+		Container:    s.tsRelayerResource.Container.ID,
+		User:         "root",
+		Cmd:          cmd,
+	})
+	s.Require().NoError(err)
+
+	var out bytes.Buffer
+	err = s.dkrPool.Client.StartExec(exec.ID, docker.StartExecOptions{
+		Context:      ctx,
+		Detach:       false,
+		OutputStream: &out,
+		ErrorStream:  &out,
+	})
+	s.Require().NoError(err, "ts-relayer startExec error: %s", out.String())
+
+	exitCode := -1
+	for {
+		inspectExec, err := s.dkrPool.Client.InspectExec(exec.ID)
+		s.Require().NoError(err, "ts-relayer inspectExec error: %s", out.String())
+
+		if !inspectExec.Running {
+			exitCode = inspectExec.ExitCode
+			break
+		}
+	}
+	s.Require().Equal(0, exitCode, "error in ts-relayer cmd '%s', err=%v, exitCode=%d, out=%s", strings.Join(cmd, " "), exitCode, err, out.String())
+}
+
 func (s *IntegrationTestSuite) expectErrExecValidation(chain *chain, valIdx int, expectErr bool) func([]byte, []byte) error {
 	return func(stdOut []byte, stdErr []byte) error {
 		err := s.defaultExecValidation(chain, valIdx, nil)(stdOut, stdErr)
