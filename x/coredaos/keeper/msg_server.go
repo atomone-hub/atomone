@@ -30,7 +30,7 @@ func (ms MsgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdatePara
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if ms.k.GetAuthority() != msg.Authority {
-		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", ms.k.GetAuthority(), msg.Authority)
+		return nil, errors.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", ms.k.GetAuthority(), msg.Authority)
 	}
 
 	params := msg.Params
@@ -77,7 +77,7 @@ func (ms MsgServer) AnnotateProposal(goCtx context.Context, msg *types.MsgAnnota
 			"got", msg.Annotator,
 		)
 
-		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", ms.k.GetAuthority(), msg.Annotator)
+		return nil, errors.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", ms.k.GetAuthority(), msg.Annotator)
 	}
 
 	proposal, found := ms.k.govKeeper.GetProposal(ctx, msg.ProposalId)
@@ -164,7 +164,7 @@ func (ms MsgServer) EndorseProposal(goCtx context.Context, msg *types.MsgEndorse
 			"got", msg.Endorser,
 		)
 
-		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", params.SteeringDaoAddress, msg.Endorser)
+		return nil, errors.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", params.SteeringDaoAddress, msg.Endorser)
 	}
 
 	proposal, found := ms.k.govKeeper.GetProposal(ctx, msg.ProposalId)
@@ -243,7 +243,7 @@ func (ms MsgServer) ExtendVotingPeriod(goCtx context.Context, msg *types.MsgExte
 			"got", msg.Extender,
 		)
 
-		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s or %s, got %s", params.SteeringDaoAddress, params.OversightDaoAddress, msg.Extender)
+		return nil, errors.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s or %s, got %s", params.SteeringDaoAddress, params.OversightDaoAddress, msg.Extender)
 	}
 
 	proposal, found := ms.k.govKeeper.GetProposal(ctx, msg.ProposalId)
@@ -331,7 +331,7 @@ func (ms MsgServer) VetoProposal(goCtx context.Context, msg *types.MsgVetoPropos
 			"got", msg.Vetoer,
 		)
 
-		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", params.OversightDaoAddress, msg.Vetoer)
+		return nil, errors.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", params.OversightDaoAddress, msg.Vetoer)
 	}
 
 	proposal, found := ms.k.govKeeper.GetProposal(ctx, msg.ProposalId)
