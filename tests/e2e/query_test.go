@@ -175,6 +175,7 @@ func queryGovProposal(endpoint string, proposalID int) (govtypesv1.QueryProposal
 
 	return govProposalResp, nil
 }
+
 func queryGovMinInitialDeposit(endpoint string) (govtypesv1.QueryMinInitialDepositResponse, error) {
 	var govMinInitialDepositResp govtypesv1.QueryMinInitialDepositResponse
 	path := fmt.Sprintf("%s/atomone/gov/v1/mininitialdeposit", endpoint)
