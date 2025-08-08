@@ -21,6 +21,7 @@ func TestMsgServerUpdateParams(t *testing.T) {
 	bondedAcc := testAcc[0].String()
 	unbondingAcc := testAcc[1].String()
 	unbondedAcc := testAcc[2].String()
+
 	tests := []struct {
 		name        string
 		msg         *types.MsgUpdateParams
@@ -382,7 +383,6 @@ func TestMsgServerAnnotateProposal(t *testing.T) {
 			require.NoError(t, err)
 		})
 	}
-
 }
 
 func TestMsgServerEndorseProposal(t *testing.T) {
@@ -803,7 +803,6 @@ func TestMsgServerVetoProposal(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			ms, k, m, ctx := testutil.SetupMsgServer(t)
 			tt.setupMocks(ctx, &m)

@@ -1,18 +1,17 @@
 package types_test
 
 import (
+	"testing"
+
 	"github.com/atomone-hub/atomone/x/coredaos/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
-var (
-	addrs = []sdk.AccAddress{
-		sdk.AccAddress("test1"),
-		sdk.AccAddress("test2"),
-	}
-)
+var addrs = []sdk.AccAddress{
+	sdk.AccAddress("test1"),
+	sdk.AccAddress("test2"),
+}
 
 func TestMsgAnnotateProposal_ValidateBasic(t *testing.T) {
 	tests := []struct {

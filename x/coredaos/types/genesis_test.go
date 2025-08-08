@@ -1,10 +1,11 @@
 package types_test
 
 import (
-	"github.com/atomone-hub/atomone/x/coredaos/types"
-	"github.com/stretchr/testify/require"
 	"testing"
 	"time"
+
+	"github.com/atomone-hub/atomone/x/coredaos/types"
+	"github.com/stretchr/testify/require"
 )
 
 func TestGenesisState_Validate(t *testing.T) {

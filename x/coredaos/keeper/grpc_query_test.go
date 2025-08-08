@@ -1,10 +1,11 @@
 package keeper_test
 
 import (
+	"testing"
+
 	"github.com/atomone-hub/atomone/x/coredaos/testutil"
 	"github.com/atomone-hub/atomone/x/coredaos/types"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestParamsQuery(t *testing.T) {
