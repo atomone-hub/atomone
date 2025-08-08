@@ -43,6 +43,8 @@ import (
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
 	atomoneappparams "github.com/atomone-hub/atomone/app/params"
+	"github.com/atomone-hub/atomone/x/coredaos"
+	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
 	"github.com/atomone-hub/atomone/x/dynamicfee"
 	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
 	"github.com/atomone-hub/atomone/x/gov"
@@ -63,6 +65,7 @@ var maccPerms = map[string][]string{
 	ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
 	photontypes.ModuleName:         {authtypes.Minter, authtypes.Burner},
 	dynamicfeetypes.ModuleName:     nil,
+	coredaostypes.ModuleName:       nil,
 }
 
 // ModuleBasics defines the module BasicManager is in charge of setting up basic,
@@ -99,6 +102,7 @@ var ModuleBasics = module.NewBasicManager(
 	ica.AppModuleBasic{},
 	consensus.AppModuleBasic{},
 	dynamicfee.AppModuleBasic{},
+	coredaos.AppModuleBasic{},
 )
 
 func appModules(
@@ -134,6 +138,7 @@ func appModules(
 		app.TransferModule,
 		app.ICAModule,
 		dynamicfee.NewAppModule(appCodec, *app.DynamicfeeKeeper),
+		coredaos.NewAppModule(appCodec, *app.CoreDaosKeeper),
 	}
 }
 
@@ -160,6 +165,7 @@ func simulationModules(
 		sdkparams.NewAppModule(app.ParamsKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
+		coredaos.NewAppModule(appCodec, *app.CoreDaosKeeper),
 		ibc.NewAppModule(app.IBCKeeper),
 		app.TransferModule,
 		app.ICAModule,
@@ -202,6 +208,7 @@ func orderBeginBlockers() []string {
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
+		coredaostypes.ModuleName,
 	}
 }
 
@@ -236,6 +243,7 @@ func orderEndBlockers() []string {
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
+		coredaostypes.ModuleName,
 	}
 }
 
@@ -270,5 +278,6 @@ func orderInitBlockers() []string {
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		dynamicfeetypes.ModuleName,
+		coredaostypes.ModuleName,
 	}
 }

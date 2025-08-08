@@ -53,6 +53,8 @@ import (
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
+	coredaoskeeper "github.com/atomone-hub/atomone/x/coredaos/keeper"
+	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
 	dynamicfeekeeper "github.com/atomone-hub/atomone/x/dynamicfee/keeper"
 	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
 	govkeeper "github.com/atomone-hub/atomone/x/gov/keeper"
@@ -90,6 +92,7 @@ type AppKeepers struct {
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
 	PhotonKeeper          *photonkeeper.Keeper
 	DynamicfeeKeeper      *dynamicfeekeeper.Keeper
+	CoreDaosKeeper        *coredaoskeeper.Keeper
 
 	// Modules
 	ICAModule      ica.AppModule
@@ -236,15 +239,6 @@ func NewAppKeeper(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	// register the staking hooks
-	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
-	appKeepers.StakingKeeper.SetHooks(
-		stakingtypes.NewMultiStakingHooks(
-			appKeepers.DistrKeeper.Hooks(),
-			appKeepers.SlashingKeeper.Hooks(),
-		),
-	)
-
 	// UpgradeKeeper must be created before IBCKeeper
 	appKeepers.UpgradeKeeper = upgradekeeper.NewKeeper(
 		skipUpgradeHeights,
@@ -292,6 +286,24 @@ func NewAppKeeper(
 
 	// Set legacy router for backwards compatibility with gov v1beta1
 	appKeepers.GovKeeper.SetLegacyRouter(govRouter)
+
+	appKeepers.CoreDaosKeeper = coredaoskeeper.NewKeeper(
+		appCodec,
+		appKeepers.keys[coredaostypes.StoreKey],
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		appKeepers.GovKeeper,
+		appKeepers.StakingKeeper,
+	)
+
+	// register the staking hooks
+	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
+	appKeepers.StakingKeeper.SetHooks(
+		stakingtypes.NewMultiStakingHooks(
+			appKeepers.DistrKeeper.Hooks(),
+			appKeepers.SlashingKeeper.Hooks(),
+			appKeepers.CoreDaosKeeper.StakingHooks(),
+		),
+	)
 
 	evidenceKeeper := evidencekeeper.NewKeeper(
 		appCodec,
