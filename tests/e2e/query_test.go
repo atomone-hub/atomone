@@ -19,7 +19,6 @@ import (
 
 	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
 	govtypesv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
-	govtypesv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
 )
 
@@ -106,15 +105,14 @@ func queryStakingParams(endpoint string) (stakingtypes.QueryParamsResponse, erro
 	return params, nil
 }
 
-func queryDelegation(endpoint string, validatorAddr string, delegatorAddr string) (stakingtypes.QueryDelegationResponse, error) {
+func (s *IntegrationTestSuite) queryDelegation(validatorAddr string, delegatorAddr string) (stakingtypes.QueryDelegationResponse, error) {
 	var res stakingtypes.QueryDelegationResponse
-
+	endpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
 	body, err := httpGet(fmt.Sprintf("%s/cosmos/staking/v1beta1/validators/%s/delegations/%s", endpoint, validatorAddr, delegatorAddr))
 	if err != nil {
 		return res, err
 	}
-
-	if err = cdc.UnmarshalJSON(body, &res); err != nil {
+	if err := cdc.UnmarshalJSON(body, &res); err != nil {
 		return res, err
 	}
 	return res, nil
@@ -162,10 +160,10 @@ func queryDelegatorTotalRewards(endpoint, delegatorAddr string) (disttypes.Query
 	return res, nil
 }
 
-func queryGovProposal(endpoint string, proposalID int) (govtypesv1beta1.QueryProposalResponse, error) {
-	var govProposalResp govtypesv1beta1.QueryProposalResponse
+func queryGovProposal(endpoint string, proposalID int) (govtypesv1.QueryProposalResponse, error) {
+	var govProposalResp govtypesv1.QueryProposalResponse
 
-	path := fmt.Sprintf("%s/atomone/gov/v1beta1/proposals/%d", endpoint, proposalID)
+	path := fmt.Sprintf("%s/atomone/gov/v1/proposals/%d", endpoint, proposalID)
 
 	body, err := httpGet(path)
 	if err != nil {
@@ -220,6 +218,54 @@ func (s *IntegrationTestSuite) queryGovParams(endpoint string, param string) gov
 	err = cdc.UnmarshalJSON(body, &res)
 	s.Require().NoError(err)
 	return res
+}
+
+func queryGovGovernor(endpoint string, govAddr string) (govtypesv1.QueryGovernorResponse, error) {
+	var resp govtypesv1.QueryGovernorResponse
+
+	path := fmt.Sprintf("%s/atomone/gov/v1/governors/%s", endpoint, govAddr)
+
+	body, err := httpGet(path)
+	if err != nil {
+		return resp, fmt.Errorf("failed to execute HTTP request: %w", err)
+	}
+	if err := cdc.UnmarshalJSON(body, &resp); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
+func queryGovGovernorDelegation(endpoint string, delAddr string) (govtypesv1.QueryGovernanceDelegationResponse, error) {
+	var resp govtypesv1.QueryGovernanceDelegationResponse
+
+	path := fmt.Sprintf("%s/atomone/gov/v1/delegations/%s", endpoint, delAddr)
+
+	body, err := httpGet(path)
+	if err != nil {
+		return resp, fmt.Errorf("failed to execute HTTP request: %w", err)
+	}
+	if err := cdc.UnmarshalJSON(body, &resp); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
+func queryGovGovernorValShares(endpoint string, govAddr string) (govtypesv1.QueryGovernorValSharesResponse, error) {
+	var resp govtypesv1.QueryGovernorValSharesResponse
+
+	path := fmt.Sprintf("%s/atomone/gov/v1/vshares/%s", endpoint, govAddr)
+
+	body, err := httpGet(path)
+	if err != nil {
+		return resp, fmt.Errorf("failed to execute HTTP request: %w", err)
+	}
+	if err := cdc.UnmarshalJSON(body, &resp); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
 }
 
 func queryAccount(endpoint, address string) (acc authtypes.AccountI, err error) {

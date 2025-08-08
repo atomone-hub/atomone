@@ -202,9 +202,11 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 	maxConstitutionAmendmentQuorum := "0.8"
 	minLawQuorum := "0.2"
 	maxLawQuorum := "0.8"
+	minGovernorSelfDelegation, _ := sdk.NewIntFromString("10000000")
 
 	maxDepositPeriod := 10 * time.Minute
 	votingPeriod := 15 * time.Second
+	governorStatusChangePeriod := 30 * time.Second
 
 	govGenState := govv1.NewGenesisState(1,
 		participationEma, participationEma, participationEma,
@@ -226,6 +228,7 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 			maxQuorum, minQuorum,
 			maxConstitutionAmendmentQuorum, minConstitutionAmendmentQuorum,
 			maxLawQuorum, minLawQuorum,
+			governorStatusChangePeriod, minGovernorSelfDelegation.String(),
 		),
 	)
 	govGenState.Constitution = "This is a test constitution"
