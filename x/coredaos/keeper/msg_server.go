@@ -77,7 +77,7 @@ func (ms MsgServer) AnnotateProposal(goCtx context.Context, msg *types.MsgAnnota
 			"got", msg.Annotator,
 		)
 
-		return nil, errors.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", ms.k.GetAuthority(), msg.Annotator)
+		return nil, errors.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", params.SteeringDaoAddress, msg.Annotator)
 	}
 
 	proposal, found := ms.k.govKeeper.GetProposal(ctx, msg.ProposalId)
@@ -99,15 +99,6 @@ func (ms MsgServer) AnnotateProposal(goCtx context.Context, msg *types.MsgAnnota
 		)
 
 		return nil, errors.Wrapf(govtypes.ErrInactiveProposal, "proposal with ID %d is not in voting period", msg.ProposalId)
-	}
-	if len(msg.Annotation) == 0 {
-		logger.Error(
-			"annotation cannot be empty",
-			"proposal", proposal.Id,
-			"authority", msg.Annotator,
-		)
-
-		return nil, errors.Wrapf(govtypes.ErrInvalidProposalContent, "annotation cannot be empty")
 	}
 
 	// Check if the proposal already has an annotation, if so, allow overwriting only if the `overwrite` flag is set to true.
@@ -236,14 +227,21 @@ func (ms MsgServer) ExtendVotingPeriod(goCtx context.Context, msg *types.MsgExte
 	}
 
 	if msg.Extender != params.SteeringDaoAddress && msg.Extender != params.OversightDaoAddress {
+		// one of the two addresses must be set otherwise it would have been caught earlier
+		addressesString := fmt.Sprintf("%s or %s", params.SteeringDaoAddress, params.OversightDaoAddress)
+		if params.SteeringDaoAddress == "" {
+			addressesString = params.OversightDaoAddress
+		} else if params.OversightDaoAddress == "" {
+			addressesString = params.SteeringDaoAddress
+		}
+
 		logger.Error(
 			"invalid authority for extending voting period",
-			"expected", params.SteeringDaoAddress,
-			"or", params.OversightDaoAddress,
+			"expected", addressesString,
 			"got", msg.Extender,
 		)
 
-		return nil, errors.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s or %s, got %s", params.SteeringDaoAddress, params.OversightDaoAddress, msg.Extender)
+		return nil, errors.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", addressesString, msg.Extender)
 	}
 
 	proposal, found := ms.k.govKeeper.GetProposal(ctx, msg.ProposalId)
