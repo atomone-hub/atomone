@@ -2,8 +2,9 @@ package e2e
 
 import (
 	"fmt"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"strconv"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func (s *IntegrationTestSuite) testDynamicfeeQuery() {
