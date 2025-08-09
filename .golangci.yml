@@ -4,7 +4,6 @@ run:
   timeout: 5m
   skip-dirs:
     - tests/
-    - client/docs/statik
   skip-files:
     - ".*\\.pb\\.go$"
     - ".*\\.pb\\.gw\\.go$"
@@ -57,9 +56,8 @@ issues:
       linters:
         - staticcheck
     - linters:
-      - gosec
-      text: 'G115: integer overflow conversion'
- 
+        - gosec
+      text: "G115: integer overflow conversion"
 
   max-issues-per-linter: 10000
   max-same-issues: 10000

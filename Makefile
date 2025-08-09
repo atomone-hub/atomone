@@ -125,7 +125,7 @@ build-ledger: # Kept for convenience
 $(BUILDDIR)/:
 	mkdir -p $(BUILDDIR)/
 
-vulncheck: 
+vulncheck:
 	$(rundep) golang.org/x/vuln/cmd/govulncheck ./...
 
 go-mod-cache: go.sum
@@ -249,19 +249,9 @@ format: lint-fix
 		-not -path "*.git*" \
 		-not -name "*.pb.go" \
 		-not -name "*.pb.gw.go" \
-		-not -path "*client/docs/statik*" \
 		| xargs $(rundep) mvdan.cc/gofumpt -w -l
 
 .PHONY: format lint lint-fix
-
-###############################################################################
-###                              Documentation                              ###
-###############################################################################
-
-update-swagger-docs: proto-swagger-gen
-	$(rundep) github.com/rakyll/statik -ns atomone -src=client/docs/swagger-ui -dest=client/docs -f -m
-
-.PHONY: update-swagger-docs
 
 ###############################################################################
 ###                                Localnet                                 ###
@@ -276,10 +266,10 @@ localnet-start: build
 	$(localnetd) config set client chain-id localnet
 	$(localnetd) config set client keyring-backend test
 	$(localnetd) keys add val
-	$(localnetd) genesis add-genesis-account val 1000000000000uatone,1000000000uphoton 
+	$(localnetd) genesis add-genesis-account val 1000000000000uatone,1000000000uphoton
 	$(localnetd) keys add user
 	$(localnetd) genesis add-genesis-account user 1000000000uatone,1000000000uphoton
-	$(localnetd) genesis gentx val 1000000000uatone 
+	$(localnetd) genesis gentx val 1000000000uatone
 	$(localnetd) genesis collect-gentxs
 	# Add treasury DAO address
 	$(localnetd) genesis add-genesis-account atone1qqqqqqqqqqqqqqqqqqqqqqqqqqqqp0dqtalx52 5388766663072uatone

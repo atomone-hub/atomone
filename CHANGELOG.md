@@ -8,6 +8,20 @@
 
 ### BUG FIXES
 
+### DEPENDENCIES
+
+### FEATURES
+
+### STATE BREAKING
+
+### IMPROVEMENTS
+
+## v3.0.0
+
+*Aug 4th, 2025*
+
+### BUG FIXES
+
 - Handle `maxBlockGas` in ConsensusParam set to 0 or -1 [#180](https://github.com/atomone-hub/atomone/pull/180)
 - Remove dependency on `ConsensusParamKeeper` from `x/dynamicfee` [#179](https://github.com/atomone-hub/atomone/pull/179)
 - Remove condition returning uninitialized `math.LegacyDec` in `x/gov` [#176](https://github.com/atomone-hub/atomone/pull/176)
@@ -20,17 +34,15 @@
 
 ### DEPENDENCIES
 
+- Remove `statik` dependency in favor of `go:embed` for swagger UI assets [#193](https://github.com/atomone-hub/atomone/pull/193)
+
 ### FEATURES
 
-- Add upgrade code to mint photon from 90% of bond denom funds of Community Pool and Treasury DAO address [#157](https://github.com/atomone-hub/atomone/pull/157)
+- Add upgrade code to mint photon from 50% of bond denom funds of Community Pool and 90% of Treasury DAO address [#157](https://github.com/atomone-hub/atomone/pull/157) [#189](https://github.com/atomone-hub/atomone/pull/189)
 - Make `x/gov` quorum dynamic [#135](https://github.com/atomone-hub/atomone/pull/135)
 - Add the `x/dynamicfee` module and use the EIP-15559 AIMD algorithm [#114](https://github.com/atomone-hub/atomone/pull/114) [#170](https://github.com/atomone-hub/atomone/pull/170)
 - Make `x/gov` proposals deposits dynamic [#69](https://github.com/atomone-hub/atomone/pull/69)
 - Burn proposals deposit if percentage of no votes > `params.BurnDepositNoThreshold` when tallying [#90](https://github.com/atomone-hub/atomone/pull/90)
-
-### STATE BREAKING
-
-### IMPROVEMENTS
 
 ## v2.0.0
 
