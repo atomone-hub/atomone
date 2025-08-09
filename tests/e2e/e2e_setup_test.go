@@ -84,13 +84,12 @@ var (
 		sdk.NewInt64Coin(uatoneDenom, 10_000_000_000_000), // 10,000,000atone
 		sdk.NewInt64Coin(uphotonDenom, 10_000_000_000),    // 10,000photon
 	)
-	initBalanceStr       = initBalance.String()
-	stakingAmountCoin    = sdk.NewInt64Coin(uatoneDenom, 6_000_000_000_000) // 6,000,000atone
-	tokenAmount          = sdk.NewInt64Coin(uatoneDenom, 100_000_000)       // 100atone
-	standardFees         = sdk.NewInt64Coin(uphotonDenom, 330_000)          // 0.33photon
-	depositAmount        = sdk.NewInt64Coin(uatoneDenom, 1_000_000_000)     // 1,000atone
-	initialDepositAmount = sdk.NewInt64Coin(uatoneDenom, 100_000_000)       // 100atone
-	proposalCounter      = 0
+	initBalanceStr    = initBalance.String()
+	stakingAmountCoin = sdk.NewInt64Coin(uatoneDenom, 6_000_000_000_000) // 6,000,000atone
+	tokenAmount       = sdk.NewInt64Coin(uatoneDenom, 100_000_000)       // 100atone
+	standardFees      = sdk.NewInt64Coin(uphotonDenom, 330_000)          // 0.33photon
+	depositAmount     = sdk.NewInt64Coin(uatoneDenom, 1_000_000_000)     // 1,000atone
+	proposalCounter   = 0
 )
 
 type IntegrationTestSuite struct {

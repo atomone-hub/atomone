@@ -741,6 +741,11 @@ func (s *IntegrationTestSuite) parseGenerateConstitutionAmendmentOutput(msg *gov
 func (s *IntegrationTestSuite) writeGovCommunitySpendProposal(c *chain, amount sdk.Coin, recipient string) {
 	govModuleAddress := authtypes.NewModuleAddress(govtypes.ModuleName).String()
 
+	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
+	initialDepositResp, err := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
+	s.Require().NoError(err)
+	initialDeposit := initialDepositResp.GetMinInitialDeposit()
+
 	template := `
 	{
 		"messages":[
@@ -762,13 +767,18 @@ func (s *IntegrationTestSuite) writeGovCommunitySpendProposal(c *chain, amount s
 	}
 	`
 	propMsgBody := fmt.Sprintf(template, govModuleAddress, recipient,
-		amount.Denom, amount.Amount.String(), initialDepositAmount.String())
-	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalCommunitySpendFilename), []byte(propMsgBody))
+		amount.Denom, amount.Amount.String(), initialDeposit[0].String())
+	err = writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalCommunitySpendFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
 func (s *IntegrationTestSuite) writeGovSoftwareUpgradeProposal(c *chain, height int64) {
 	govModuleAddress := authtypes.NewModuleAddress(govtypes.ModuleName).String()
+
+	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
+	initialDepositResp, err := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
+	s.Require().NoError(err)
+	initialDeposit := initialDepositResp.GetMinInitialDeposit()
 
 	template := `
 	{
@@ -792,13 +802,18 @@ func (s *IntegrationTestSuite) writeGovSoftwareUpgradeProposal(c *chain, height 
 		"summary": "summary"
 	}
 	`
-	propMsgBody := fmt.Sprintf(template, govModuleAddress, height, initialDepositAmount.String())
-	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalSoftwareUpgradeFilename), []byte(propMsgBody))
+	propMsgBody := fmt.Sprintf(template, govModuleAddress, height, initialDeposit[0].String())
+	err = writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalSoftwareUpgradeFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
 func (s *IntegrationTestSuite) writeGovCancelUpgradeProposal(c *chain) {
 	govModuleAddress := authtypes.NewModuleAddress(govtypes.ModuleName).String()
+
+	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
+	initialDepositResp, err := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
+	s.Require().NoError(err)
+	initialDeposit := initialDepositResp.GetMinInitialDeposit()
 
 	template := `
 	{
@@ -815,8 +830,8 @@ func (s *IntegrationTestSuite) writeGovCancelUpgradeProposal(c *chain) {
 		"summary": "summary"
 	}
 	`
-	propMsgBody := fmt.Sprintf(template, govModuleAddress, initialDepositAmount.String())
-	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalCancelUpgradeFilename), []byte(propMsgBody))
+	propMsgBody := fmt.Sprintf(template, govModuleAddress, initialDeposit[0].String())
+	err = writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalCancelUpgradeFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
