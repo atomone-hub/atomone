@@ -9,15 +9,20 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/cometbft/cometbft/libs/log"
+	"cosmossdk.io/log"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 
+	xtxsigning "cosmossdk.io/x/tx/signing"
+	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/codec/address"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/tx"
+	"github.com/cosmos/cosmos-sdk/types/tx/signing"
+	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/cosmos/gogoproto/proto"
 
 	"github.com/atomone-hub/atomone/x/dynamicfee/ante"
 	"github.com/atomone-hub/atomone/x/dynamicfee/types"
@@ -35,7 +40,7 @@ func setupMocks(t *testing.T) mocks {
 	t.Helper()
 	ctrl := gomock.NewController(t)
 	return mocks{
-		ctx:              sdk.NewContext(nil, tmproto.Header{}, false, log.TestingLogger()),
+		ctx:              sdk.NewContext(nil, tmproto.Header{}, false, log.NewTestLogger(t)),
 		AccountKeeper:    NewMockAccountKeeper(ctrl),
 		BankKeeper:       NewMockBankKeeper(ctrl),
 		FeeGrantKeeper:   NewMockFeeGrantKeeper(ctrl),
@@ -44,20 +49,33 @@ func setupMocks(t *testing.T) mocks {
 }
 
 func TestAnteHandle(t *testing.T) {
-	var (
-		addrs  = simtestutil.CreateIncrementalAccounts(3)
-		acc1   = authtypes.NewBaseAccountWithAddress(addrs[0])
-		acc2   = authtypes.NewBaseAccountWithAddress(addrs[1])
-		acc3   = authtypes.NewBaseAccountWithAddress(addrs[2])
-		txBody = &tx.TxBody{
-			Messages: []*codectypes.Any{
-				codectypes.UnsafePackAny(testdata.NewTestMsg(addrs[0], addrs[1])),
+	interfaceRegistry, _ := codectypes.NewInterfaceRegistryWithOptions(codectypes.InterfaceRegistryOptions{
+		ProtoFiles: proto.HybridResolver,
+		SigningOptions: xtxsigning.Options{
+			AddressCodec: address.Bech32Codec{
+				Bech32Prefix: sdk.GetConfig().GetBech32AccountAddrPrefix(),
 			},
-		}
+			ValidatorAddressCodec: address.Bech32Codec{
+				Bech32Prefix: sdk.GetConfig().GetBech32ValidatorAddrPrefix(),
+			},
+		},
+	})
+
+	txConfig := authtx.NewTxConfig(
+		codec.NewProtoCodec(interfaceRegistry),
+		[]signing.SignMode{signing.SignMode_SIGN_MODE_DIRECT},
 	)
+
+	var (
+		addrs = simtestutil.CreateIncrementalAccounts(3)
+		acc1  = authtypes.NewBaseAccountWithAddress(addrs[0])
+		acc2  = authtypes.NewBaseAccountWithAddress(addrs[1])
+		acc3  = authtypes.NewBaseAccountWithAddress(addrs[2])
+	)
+
 	tests := []struct {
 		name                 string
-		tx                   sdk.Tx
+		tx                   func() sdk.Tx
 		genTx                bool
 		simulate             bool
 		disableFeeGrant      bool
@@ -69,11 +87,10 @@ func TestAnteHandle(t *testing.T) {
 	}{
 		{
 			name: "ok: gentx requires no gas",
-			tx: &tx.Tx{
-				AuthInfo: &tx.AuthInfo{
-					Fee: &tx.Fee{},
-				},
-				Body: txBody,
+			tx: func() sdk.Tx {
+				txBuilder := txConfig.NewTxBuilder()
+				txBuilder.SetMsgs(testdata.NewTestMsg(addrs[0], addrs[1]))
+				return txBuilder.GetTx()
 			},
 			genTx: true,
 			setup: func(m mocks) {
@@ -85,11 +102,10 @@ func TestAnteHandle(t *testing.T) {
 		},
 		{
 			name: "fail: 0 gas given",
-			tx: &tx.Tx{
-				AuthInfo: &tx.AuthInfo{
-					Fee: &tx.Fee{},
-				},
-				Body: txBody,
+			tx: func() sdk.Tx {
+				txBuilder := txConfig.NewTxBuilder()
+				txBuilder.SetMsgs(testdata.NewTestMsg(addrs[0], addrs[1]))
+				return txBuilder.GetTx()
 			},
 			setup: func(m mocks) {
 				m.DynamicfeeKeeper.EXPECT().GetParams(m.ctx).
@@ -99,11 +115,10 @@ func TestAnteHandle(t *testing.T) {
 		},
 		{
 			name: "ok: 0 gas given with disabled dynamicfee",
-			tx: &tx.Tx{
-				AuthInfo: &tx.AuthInfo{
-					Fee: &tx.Fee{},
-				},
-				Body: txBody,
+			tx: func() sdk.Tx {
+				txBuilder := txConfig.NewTxBuilder()
+				txBuilder.SetMsgs(testdata.NewTestMsg(addrs[0], addrs[1]))
+				return txBuilder.GetTx()
 			},
 			setup: func(m mocks) {
 				params := types.DefaultParams()
@@ -113,11 +128,10 @@ func TestAnteHandle(t *testing.T) {
 		},
 		{
 			name: "ok: simulate --gas=auto behavior",
-			tx: &tx.Tx{
-				AuthInfo: &tx.AuthInfo{
-					Fee: &tx.Fee{},
-				},
-				Body: txBody,
+			tx: func() sdk.Tx {
+				txBuilder := txConfig.NewTxBuilder()
+				txBuilder.SetMsgs(testdata.NewTestMsg(addrs[0], addrs[1]))
+				return txBuilder.GetTx()
 			},
 			simulate: true,
 			setup: func(m mocks) {
@@ -136,13 +150,11 @@ func TestAnteHandle(t *testing.T) {
 		},
 		{
 			name: "fail: 0 fee given",
-			tx: &tx.Tx{
-				AuthInfo: &tx.AuthInfo{
-					Fee: &tx.Fee{
-						GasLimit: 42,
-					},
-				},
-				Body: txBody,
+			tx: func() sdk.Tx {
+				txBuilder := txConfig.NewTxBuilder()
+				txBuilder.SetMsgs(testdata.NewTestMsg(addrs[0], addrs[1]))
+				txBuilder.SetGasLimit(42)
+				return txBuilder.GetTx()
 			},
 			setup: func(m mocks) {
 				m.DynamicfeeKeeper.EXPECT().GetParams(m.ctx).
@@ -152,17 +164,15 @@ func TestAnteHandle(t *testing.T) {
 		},
 		{
 			name: "fail: too many fee coins given",
-			tx: &tx.Tx{
-				AuthInfo: &tx.AuthInfo{
-					Fee: &tx.Fee{
-						GasLimit: 42,
-						Amount: sdk.NewCoins(
-							sdk.NewInt64Coin(types.DefaultFeeDenom, 1),
-							sdk.NewInt64Coin("photon", 2),
-						),
-					},
-				},
-				Body: txBody,
+			tx: func() sdk.Tx {
+				txBuilder := txConfig.NewTxBuilder()
+				txBuilder.SetMsgs(testdata.NewTestMsg(addrs[0], addrs[1]))
+				txBuilder.SetGasLimit(42)
+				txBuilder.SetFeeAmount(sdk.NewCoins(
+					sdk.NewInt64Coin(types.DefaultFeeDenom, 1),
+					sdk.NewInt64Coin("photon", 2),
+				))
+				return txBuilder.GetTx()
 			},
 			setup: func(m mocks) {
 				m.DynamicfeeKeeper.EXPECT().GetParams(m.ctx).
@@ -172,16 +182,14 @@ func TestAnteHandle(t *testing.T) {
 		},
 		{
 			name: "fail: getMinGasPrice returns an error",
-			tx: &tx.Tx{
-				AuthInfo: &tx.AuthInfo{
-					Fee: &tx.Fee{
-						GasLimit: 42,
-						Amount: sdk.NewCoins(
-							sdk.NewInt64Coin(types.DefaultFeeDenom, 2),
-						),
-					},
-				},
-				Body: txBody,
+			tx: func() sdk.Tx {
+				txBuilder := txConfig.NewTxBuilder()
+				txBuilder.SetMsgs(testdata.NewTestMsg(addrs[0], addrs[1]))
+				txBuilder.SetGasLimit(42)
+				txBuilder.SetFeeAmount(sdk.NewCoins(
+					sdk.NewInt64Coin(types.DefaultFeeDenom, 2),
+				))
+				return txBuilder.GetTx()
 			},
 			setup: func(m mocks) {
 				m.DynamicfeeKeeper.EXPECT().GetParams(m.ctx).
@@ -193,16 +201,14 @@ func TestAnteHandle(t *testing.T) {
 		},
 		{
 			name: "fail: not enough fee",
-			tx: &tx.Tx{
-				AuthInfo: &tx.AuthInfo{
-					Fee: &tx.Fee{
-						GasLimit: 42,
-						Amount: sdk.NewCoins(
-							sdk.NewInt64Coin(types.DefaultFeeDenom, 1),
-						),
-					},
-				},
-				Body: txBody,
+			tx: func() sdk.Tx {
+				txBuilder := txConfig.NewTxBuilder()
+				txBuilder.SetMsgs(testdata.NewTestMsg(addrs[0], addrs[1]))
+				txBuilder.SetGasLimit(42)
+				txBuilder.SetFeeAmount(sdk.NewCoins(
+					sdk.NewInt64Coin(types.DefaultFeeDenom, 1),
+				))
+				return txBuilder.GetTx()
 			},
 			setup: func(m mocks) {
 				m.DynamicfeeKeeper.EXPECT().GetParams(m.ctx).
@@ -214,16 +220,14 @@ func TestAnteHandle(t *testing.T) {
 		},
 		{
 			name: "fail: unknown account",
-			tx: &tx.Tx{
-				AuthInfo: &tx.AuthInfo{
-					Fee: &tx.Fee{
-						GasLimit: 42,
-						Amount: sdk.NewCoins(
-							sdk.NewInt64Coin(types.DefaultFeeDenom, 42),
-						),
-					},
-				},
-				Body: txBody,
+			tx: func() sdk.Tx {
+				txBuilder := txConfig.NewTxBuilder()
+				txBuilder.SetMsgs(testdata.NewTestMsg(addrs[0], addrs[1]))
+				txBuilder.SetGasLimit(42)
+				txBuilder.SetFeeAmount(sdk.NewCoins(
+					sdk.NewInt64Coin(types.DefaultFeeDenom, 42),
+				))
+				return txBuilder.GetTx()
 			},
 			setup: func(m mocks) {
 				m.DynamicfeeKeeper.EXPECT().GetParams(m.ctx).
@@ -239,16 +243,14 @@ func TestAnteHandle(t *testing.T) {
 		},
 		{
 			name: "ok: enough fee",
-			tx: &tx.Tx{
-				AuthInfo: &tx.AuthInfo{
-					Fee: &tx.Fee{
-						GasLimit: 42,
-						Amount: sdk.NewCoins(
-							sdk.NewInt64Coin(types.DefaultFeeDenom, 42),
-						),
-					},
-				},
-				Body: txBody,
+			tx: func() sdk.Tx {
+				txBuilder := txConfig.NewTxBuilder()
+				txBuilder.SetMsgs(testdata.NewTestMsg(addrs[0], addrs[1]))
+				txBuilder.SetGasLimit(42)
+				txBuilder.SetFeeAmount(sdk.NewCoins(
+					sdk.NewInt64Coin(types.DefaultFeeDenom, 42),
+				))
+				return txBuilder.GetTx()
 			},
 			setup: func(m mocks) {
 				m.DynamicfeeKeeper.EXPECT().GetParams(m.ctx).
@@ -266,16 +268,14 @@ func TestAnteHandle(t *testing.T) {
 		},
 		{
 			name: "ok: more fee than gas limit increases tx priority",
-			tx: &tx.Tx{
-				AuthInfo: &tx.AuthInfo{
-					Fee: &tx.Fee{
-						GasLimit: 42,
-						Amount: sdk.NewCoins(
-							sdk.NewInt64Coin(types.DefaultFeeDenom, 420),
-						),
-					},
-				},
-				Body: txBody,
+			tx: func() sdk.Tx {
+				txBuilder := txConfig.NewTxBuilder()
+				txBuilder.SetMsgs(testdata.NewTestMsg(addrs[0], addrs[1]))
+				txBuilder.SetGasLimit(42)
+				txBuilder.SetFeeAmount(sdk.NewCoins(
+					sdk.NewInt64Coin(types.DefaultFeeDenom, 420),
+				))
+				return txBuilder.GetTx()
 			},
 			setup: func(m mocks) {
 				m.DynamicfeeKeeper.EXPECT().GetParams(m.ctx).
@@ -293,16 +293,14 @@ func TestAnteHandle(t *testing.T) {
 		},
 		{
 			name: "ok: enough fee with different denom",
-			tx: &tx.Tx{
-				AuthInfo: &tx.AuthInfo{
-					Fee: &tx.Fee{
-						GasLimit: 42,
-						Amount: sdk.NewCoins(
-							sdk.NewInt64Coin("uatone", 420),
-						),
-					},
-				},
-				Body: txBody,
+			tx: func() sdk.Tx {
+				txBuilder := txConfig.NewTxBuilder()
+				txBuilder.SetMsgs(testdata.NewTestMsg(addrs[0], addrs[1]))
+				txBuilder.SetGasLimit(42)
+				txBuilder.SetFeeAmount(sdk.NewCoins(
+					sdk.NewInt64Coin("uatone", 420),
+				))
+				return txBuilder.GetTx()
 			},
 			setup: func(m mocks) {
 				m.DynamicfeeKeeper.EXPECT().GetParams(m.ctx).
@@ -326,18 +324,15 @@ func TestAnteHandle(t *testing.T) {
 		},
 		{
 			name: "ok: enough fee with named payer",
-			tx: &tx.Tx{
-				AuthInfo: &tx.AuthInfo{
-					Fee: &tx.Fee{
-						GasLimit: 42,
-						Amount: sdk.NewCoins(
-							sdk.NewInt64Coin(types.DefaultFeeDenom, 42),
-						),
-						// payer is the second signer
-						Payer: acc2.Address,
-					},
-				},
-				Body: txBody,
+			tx: func() sdk.Tx {
+				txBuilder := txConfig.NewTxBuilder()
+				txBuilder.SetMsgs(testdata.NewTestMsg(addrs[0], addrs[1]))
+				txBuilder.SetGasLimit(42)
+				txBuilder.SetFeeAmount(sdk.NewCoins(
+					sdk.NewInt64Coin(types.DefaultFeeDenom, 42),
+				))
+				txBuilder.SetFeePayer(addrs[1])
+				return txBuilder.GetTx()
 			},
 			setup: func(m mocks) {
 				m.DynamicfeeKeeper.EXPECT().GetParams(m.ctx).
@@ -355,16 +350,14 @@ func TestAnteHandle(t *testing.T) {
 		},
 		{
 			name: "fail: enough fee with not enough funds",
-			tx: &tx.Tx{
-				AuthInfo: &tx.AuthInfo{
-					Fee: &tx.Fee{
-						GasLimit: 42,
-						Amount: sdk.NewCoins(
-							sdk.NewInt64Coin(types.DefaultFeeDenom, 42),
-						),
-					},
-				},
-				Body: txBody,
+			tx: func() sdk.Tx {
+				txBuilder := txConfig.NewTxBuilder()
+				txBuilder.SetMsgs(testdata.NewTestMsg(addrs[0], addrs[1]))
+				txBuilder.SetGasLimit(42)
+				txBuilder.SetFeeAmount(sdk.NewCoins(
+					sdk.NewInt64Coin(types.DefaultFeeDenom, 42),
+				))
+				return txBuilder.GetTx()
 			},
 			setup: func(m mocks) {
 				m.DynamicfeeKeeper.EXPECT().GetParams(m.ctx).
@@ -381,17 +374,15 @@ func TestAnteHandle(t *testing.T) {
 		},
 		{
 			name: "ok: enough fee with granter",
-			tx: &tx.Tx{
-				AuthInfo: &tx.AuthInfo{
-					Fee: &tx.Fee{
-						GasLimit: 42,
-						Amount: sdk.NewCoins(
-							sdk.NewInt64Coin(types.DefaultFeeDenom, 42),
-						),
-						Granter: acc3.Address,
-					},
-				},
-				Body: txBody,
+			tx: func() sdk.Tx {
+				txBuilder := txConfig.NewTxBuilder()
+				txBuilder.SetMsgs(testdata.NewTestMsg(addrs[0], addrs[1]))
+				txBuilder.SetGasLimit(42)
+				txBuilder.SetFeeAmount(sdk.NewCoins(
+					sdk.NewInt64Coin(types.DefaultFeeDenom, 42),
+				))
+				txBuilder.SetFeeGranter(addrs[2])
+				return txBuilder.GetTx()
 			},
 			setup: func(m mocks) {
 				m.DynamicfeeKeeper.EXPECT().GetParams(m.ctx).
@@ -413,17 +404,15 @@ func TestAnteHandle(t *testing.T) {
 		},
 		{
 			name: "fail: enough fee with granter but feegrant disabled",
-			tx: &tx.Tx{
-				AuthInfo: &tx.AuthInfo{
-					Fee: &tx.Fee{
-						GasLimit: 42,
-						Amount: sdk.NewCoins(
-							sdk.NewInt64Coin(types.DefaultFeeDenom, 42),
-						),
-						Granter: acc3.Address,
-					},
-				},
-				Body: txBody,
+			tx: func() sdk.Tx {
+				txBuilder := txConfig.NewTxBuilder()
+				txBuilder.SetMsgs(testdata.NewTestMsg(addrs[0], addrs[1]))
+				txBuilder.SetGasLimit(42)
+				txBuilder.SetFeeAmount(sdk.NewCoins(
+					sdk.NewInt64Coin(types.DefaultFeeDenom, 42),
+				))
+				txBuilder.SetFeeGranter(addrs[2])
+				return txBuilder.GetTx()
 			},
 			disableFeeGrant: true,
 			setup: func(m mocks) {
@@ -436,17 +425,15 @@ func TestAnteHandle(t *testing.T) {
 		},
 		{
 			name: "fail: enough fee with granter but not granted",
-			tx: &tx.Tx{
-				AuthInfo: &tx.AuthInfo{
-					Fee: &tx.Fee{
-						GasLimit: 42,
-						Amount: sdk.NewCoins(
-							sdk.NewInt64Coin(types.DefaultFeeDenom, 42),
-						),
-						Granter: acc3.Address,
-					},
-				},
-				Body: txBody,
+			tx: func() sdk.Tx {
+				txBuilder := txConfig.NewTxBuilder()
+				txBuilder.SetMsgs(testdata.NewTestMsg(addrs[0], addrs[1]))
+				txBuilder.SetGasLimit(42)
+				txBuilder.SetFeeAmount(sdk.NewCoins(
+					sdk.NewInt64Coin(types.DefaultFeeDenom, 42),
+				))
+				txBuilder.SetFeeGranter(addrs[2])
+				return txBuilder.GetTx()
 			},
 			setup: func(m mocks) {
 				m.DynamicfeeKeeper.EXPECT().GetParams(m.ctx).
@@ -487,7 +474,7 @@ func TestAnteHandle(t *testing.T) {
 				tt.setup(m)
 			}
 
-			newCtx, err := fmd.AnteHandle(m.ctx, tt.tx, tt.simulate, next)
+			newCtx, err := fmd.AnteHandle(m.ctx, tt.tx(), tt.simulate, next)
 
 			if tt.expectedError != "" {
 				require.EqualError(t, err, tt.expectedError)

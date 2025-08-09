@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	"cosmossdk.io/math"
 	"github.com/stretchr/testify/assert"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -32,7 +33,7 @@ func TestActiveProposalNumber(t *testing.T) {
 func TestGetMinDeposit(t *testing.T) {
 	var (
 		minDepositFloor   = v1.GetDefaultMinDepositFloor()
-		minDepositFloorX2 = minDepositFloor.MulInt(sdk.NewInt(2))
+		minDepositFloorX2 = minDepositFloor.MulInt(math.NewInt(2))
 		updatePeriod      = v1.DefaultMinDepositUpdatePeriod
 		N                 = v1.DefaultTargetActiveProposals
 

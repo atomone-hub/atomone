@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
@@ -22,10 +23,10 @@ func (s *IntegrationTestSuite) testDistribution() {
 
 		newWithdrawalAddress, _ := s.chainA.genesisAccounts[3].keyInfo.GetAddress()
 
-		beforeBalance, err := getSpecificBalance(chainEndpoint, newWithdrawalAddress.String(), uatoneDenom)
+		beforeBalance, err := s.getSpecificBalance(chainEndpoint, newWithdrawalAddress.String(), uatoneDenom)
 		s.Require().NoError(err)
 		if beforeBalance.IsNil() {
-			beforeBalance = sdk.NewCoin(uatoneDenom, sdk.NewInt(0))
+			beforeBalance = sdk.NewCoin(uatoneDenom, math.NewInt(0))
 		}
 
 		s.execSetWithdrawAddress(s.chainA, 0, delegatorAddress.String(), newWithdrawalAddress.String(), atomoneHomePath)
@@ -33,7 +34,7 @@ func (s *IntegrationTestSuite) testDistribution() {
 		// Verify
 		s.Require().Eventually(
 			func() bool {
-				res, err := queryDelegatorWithdrawalAddress(chainEndpoint, delegatorAddress.String())
+				res, err := s.queryDelegatorWithdrawalAddress(chainEndpoint, delegatorAddress.String())
 				s.Require().NoError(err)
 
 				return res.WithdrawAddress == newWithdrawalAddress.String()
@@ -45,7 +46,7 @@ func (s *IntegrationTestSuite) testDistribution() {
 		s.execWithdrawReward(s.chainA, 0, delegatorAddress.String(), valOperAddressA, atomoneHomePath)
 		s.Require().Eventually(
 			func() bool {
-				afterBalance, err := getSpecificBalance(chainEndpoint, newWithdrawalAddress.String(), uatoneDenom)
+				afterBalance, err := s.getSpecificBalance(chainEndpoint, newWithdrawalAddress.String(), uatoneDenom)
 				s.Require().NoError(err)
 
 				return afterBalance.IsGTE(beforeBalance)
@@ -69,7 +70,7 @@ func (s *IntegrationTestSuite) fundCommunityPool() {
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
 	sender, _ := s.chainA.validators[0].keyInfo.GetAddress()
 
-	beforeDistUatoneBalance, _ := getSpecificBalance(chainAAPIEndpoint, distModuleAddress, tokenAmount.Denom)
+	beforeDistUatoneBalance, _ := s.getSpecificBalance(chainAAPIEndpoint, distModuleAddress, tokenAmount.Denom)
 	if beforeDistUatoneBalance.IsNil() {
 		// Set balance to 0 if previous balance does not exist
 		beforeDistUatoneBalance = sdk.NewInt64Coin(uatoneDenom, 0)
@@ -79,7 +80,7 @@ func (s *IntegrationTestSuite) fundCommunityPool() {
 
 	s.Require().Eventually(
 		func() bool {
-			afterDistUatoneBalance, err := getSpecificBalance(chainAAPIEndpoint, distModuleAddress, tokenAmount.Denom)
+			afterDistUatoneBalance, err := s.getSpecificBalance(chainAAPIEndpoint, distModuleAddress, tokenAmount.Denom)
 			s.Require().NoErrorf(err, "Error getting balance: %s", afterDistUatoneBalance)
 
 			// check if the balance is increased by the tokenAmount
