@@ -12,13 +12,15 @@ import (
 // and concrete types on the provided LegacyAmino codec. These types are used
 // for Amino JSON serialization.
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	legacy.RegisterAminoMsg(cdc, &MsgWithdrawDelegatorReward{}, "atomone/MsgWithdrawDelegationReward")
-	legacy.RegisterAminoMsg(cdc, &MsgWithdrawValidatorCommission{}, "atomone/MsgWithdrawValCommission")
-	legacy.RegisterAminoMsg(cdc, &MsgSetWithdrawAddress{}, "atomone/MsgModifyWithdrawAddress")
-	legacy.RegisterAminoMsg(cdc, &MsgFundCommunityPool{}, "atomone/MsgFundCommunityPool")
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "atomone/distribution/MsgUpdateParams")
-	legacy.RegisterAminoMsg(cdc, &MsgCommunityPoolSpend{}, "atomone/distr/MsgCommunityPoolSpend")
-	legacy.RegisterAminoMsg(cdc, &MsgDepositValidatorRewardsPool{}, "atomone/distr/MsgDepositValRewards")
+	legacy.RegisterAminoMsg(cdc, &MsgWithdrawDelegatorReward{}, "cosmos-sdk/MsgWithdrawDelegationReward")
+	legacy.RegisterAminoMsg(cdc, &MsgWithdrawValidatorCommission{}, "cosmos-sdk/MsgWithdrawValCommission")
+	legacy.RegisterAminoMsg(cdc, &MsgSetWithdrawAddress{}, "cosmos-sdk/MsgModifyWithdrawAddress")
+	legacy.RegisterAminoMsg(cdc, &MsgFundCommunityPool{}, "cosmos-sdk/MsgFundCommunityPool")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "cosmos-sdk/distribution/MsgUpdateParams")
+	legacy.RegisterAminoMsg(cdc, &MsgCommunityPoolSpend{}, "cosmos-sdk/distr/MsgCommunityPoolSpend")
+	legacy.RegisterAminoMsg(cdc, &MsgDepositValidatorRewardsPool{}, "cosmos-sdk/distr/MsgDepositValRewards")
+
+	cdc.RegisterConcrete(Params{}, "cosmos-sdk/x/distribution/Params", nil)
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {
