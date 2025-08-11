@@ -1103,7 +1103,7 @@ var (
 
 	pattern_Query_CommunityPool_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"cosmos", "distribution", "v1beta1", "community_pool"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Eta_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"atomone", "distribution", "v1beta1", "eta"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Eta_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"cosmos", "distribution", "v1beta1", "eta"}, "", runtime.AssumeColonVerbOpt(false)))
 )
 
 var (

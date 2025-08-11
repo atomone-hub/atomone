@@ -68,7 +68,7 @@ service Query {
 
   // Eta queries the current eta parameter.
   rpc Eta(QueryEtaRequest) returns (QueryEtaResponse) {
-    option (google.api.http).get = "/atomone/distribution/v1beta1/eta";
+    option (google.api.http).get = "/cosmos/distribution/v1beta1/eta";
   }
 }
 
