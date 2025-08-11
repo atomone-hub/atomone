@@ -280,11 +280,20 @@ localnet-start: build
 	$(localnetd) genesis add-genesis-account user 1000000000uatone,1000000000uphoton
 	$(localnetd) genesis gentx val 1000000000uatone 
 	$(localnetd) genesis collect-gentxs
+	# Add treasury DAO address
+	$(localnetd) genesis add-genesis-account atone1qqqqqqqqqqqqqqqqqqqqqqqqqqqqp0dqtalx52 5388766663072uatone
+	# Add CP funds
+	$(localnetd) genesis add-genesis-account atone1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8flcml8 5388766663072uatone
 	sed -i.bak 's#^minimum-gas-prices = .*#minimum-gas-prices = "0.01uatone,0.01uphoton"#g' $(localnet_home)/config/app.toml
 	# enable REST API
 	sed -i -z 's/# Enable defines if the API server should be enabled.\nenable = false/enable = true/' $(localnet_home)/config/app.toml
 	# Decrease voting period to 5min
 	jq '.app_state.gov.params.voting_period = "300s"' $(localnet_home)/config/genesis.json > /tmp/gen
+	mv /tmp/gen $(localnet_home)/config/genesis.json
+	jq '.app_state.distribution.fee_pool.community_pool = [ { "denom": "uatone", "amount": "5388766663072.000000000000000000" }]' $(localnet_home)/config/genesis.json > /tmp/gen
+	mv /tmp/gen $(localnet_home)/config/genesis.json
+	# Previous add-genesis-account call added the auth module account as a BaseAccount, we need to remove it
+	jq 'del(.app_state.auth.accounts[] | select(.address == "atone1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8flcml8"))' $(localnet_home)/config/genesis.json > /tmp/gen
 	mv /tmp/gen $(localnet_home)/config/genesis.json
 	$(localnetd) start
 
