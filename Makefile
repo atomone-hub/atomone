@@ -299,7 +299,7 @@ localnet-submit-upgrade-proposal:
 	$(localnetd) tx gov vote 1 yes --from val -y --gas-prices 0.02uphoton
 
 localnet-submit-text-proposal:
-	$(localnetd) tx gov submit-proposal --from user contrib/localnet/proposal_text.json -y --gas-prices 0.002uphoton
+	$(localnetd) tx gov submit-proposal --from user contrib/localnet/proposal_text.json -y --gas-prices 0.02uphoton
 
 .PHONY: localnet-start localnet-restart localnet-submit-upgrade-proposal localnet-submit-text-proposal
 
