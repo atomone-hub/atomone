@@ -29,7 +29,6 @@ linters:
 issues:
   exclude-dirs:
     - tests/
-    - client/docs/statik
   exclude-files:
     - ".*\\.pb\\.go$"
     - ".*\\.pb\\.gw\\.go$"
@@ -57,7 +56,7 @@ issues:
         - staticcheck
     - linters:
         - gosec
-      text: 'G115: integer overflow conversion'
+      text: "G115: integer overflow conversion"
 
 
   max-issues-per-linter: 10000

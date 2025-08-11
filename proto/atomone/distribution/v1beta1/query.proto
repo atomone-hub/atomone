@@ -18,8 +18,7 @@ service Query {
     option (google.api.http).get = "/cosmos/distribution/v1beta1/params";
   }
 
-  // ValidatorDistributionInfo queries validator commission and self-delegation
-  // rewards for validator
+  // ValidatorDistributionInfo queries validator commission and self-delegation rewards for validator
   rpc ValidatorDistributionInfo(QueryValidatorDistributionInfoRequest) returns (QueryValidatorDistributionInfoResponse) {
     option (google.api.http).get = "/cosmos/distribution/v1beta1/validators/{validator_address}";
   }
@@ -61,6 +60,8 @@ service Query {
   }
 
   // CommunityPool queries the community pool coins.
+  //
+  // WARNING: This query will fail if an external community pool is used.
   rpc CommunityPool(QueryCommunityPoolRequest) returns (QueryCommunityPoolResponse) {
     option (google.api.http).get = "/cosmos/distribution/v1beta1/community_pool";
   }

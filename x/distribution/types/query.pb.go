@@ -1167,8 +1167,7 @@ const _ = grpc.SupportPackageIsVersion4
 type QueryClient interface {
 	// Params queries params of the distribution module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
-	// ValidatorDistributionInfo queries validator commission and self-delegation
-	// rewards for validator
+	// ValidatorDistributionInfo queries validator commission and self-delegation rewards for validator
 	ValidatorDistributionInfo(ctx context.Context, in *QueryValidatorDistributionInfoRequest, opts ...grpc.CallOption) (*QueryValidatorDistributionInfoResponse, error)
 	// ValidatorOutstandingRewards queries rewards of a validator address.
 	ValidatorOutstandingRewards(ctx context.Context, in *QueryValidatorOutstandingRewardsRequest, opts ...grpc.CallOption) (*QueryValidatorOutstandingRewardsResponse, error)
@@ -1186,6 +1185,8 @@ type QueryClient interface {
 	// DelegatorWithdrawAddress queries withdraw address of a delegator.
 	DelegatorWithdrawAddress(ctx context.Context, in *QueryDelegatorWithdrawAddressRequest, opts ...grpc.CallOption) (*QueryDelegatorWithdrawAddressResponse, error)
 	// CommunityPool queries the community pool coins.
+	//
+	// WARNING: This query will fail if an external community pool is used.
 	CommunityPool(ctx context.Context, in *QueryCommunityPoolRequest, opts ...grpc.CallOption) (*QueryCommunityPoolResponse, error)
 	// Eta queries the current eta parameter.
 	Eta(ctx context.Context, in *QueryEtaRequest, opts ...grpc.CallOption) (*QueryEtaResponse, error)
@@ -1302,8 +1303,7 @@ func (c *queryClient) Eta(ctx context.Context, in *QueryEtaRequest, opts ...grpc
 type QueryServer interface {
 	// Params queries params of the distribution module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
-	// ValidatorDistributionInfo queries validator commission and self-delegation
-	// rewards for validator
+	// ValidatorDistributionInfo queries validator commission and self-delegation rewards for validator
 	ValidatorDistributionInfo(context.Context, *QueryValidatorDistributionInfoRequest) (*QueryValidatorDistributionInfoResponse, error)
 	// ValidatorOutstandingRewards queries rewards of a validator address.
 	ValidatorOutstandingRewards(context.Context, *QueryValidatorOutstandingRewardsRequest) (*QueryValidatorOutstandingRewardsResponse, error)
@@ -1321,6 +1321,8 @@ type QueryServer interface {
 	// DelegatorWithdrawAddress queries withdraw address of a delegator.
 	DelegatorWithdrawAddress(context.Context, *QueryDelegatorWithdrawAddressRequest) (*QueryDelegatorWithdrawAddressResponse, error)
 	// CommunityPool queries the community pool coins.
+	//
+	// WARNING: This query will fail if an external community pool is used.
 	CommunityPool(context.Context, *QueryCommunityPoolRequest) (*QueryCommunityPoolResponse, error)
 	// Eta queries the current eta parameter.
 	Eta(context.Context, *QueryEtaRequest) (*QueryEtaResponse, error)

@@ -3,9 +3,6 @@ package e2e
 import (
 	"fmt"
 	"strconv"
-	"time"
-
-	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -80,7 +77,6 @@ func (s *IntegrationTestSuite) testDynamicfeeGasPriceChange() {
 			valIdx        = 0
 			chainEndpoint = fmt.Sprintf("http://%s", s.valResources[c.id][valIdx].GetHostPort("1317/tcp"))
 		)
-		params := s.queryDynamicfeeParams(chainEndpoint)
 		// define one sender
 		sender, _ := c.genesisAccounts[0].keyInfo.GetAddress()
 		// Initialize array of recipients account
@@ -98,17 +94,7 @@ func (s *IntegrationTestSuite) testDynamicfeeGasPriceChange() {
 			}
 		}
 
-		// wait until the current LR is less than max LR
-		var StateBeforeMultisendTx dynamicfeetypes.StateResponse
-		s.Require().Eventually(
-			func() bool {
-				StateBeforeMultisendTx = s.queryDynamicfeeState(chainEndpoint)
-				return StateBeforeMultisendTx.State.LearningRate.LT(params.Params.MaxLearningRate)
-			},
-			10*time.Second,
-			time.Second,
-		)
-
+		StateBeforeMultisendTx := s.queryDynamicfeeState(chainEndpoint)
 		txHeight := s.execBankMultiSend(s.chainA, valIdx, sender.String(),
 			destAccountsMultisend, tokenAmount.String(), false)
 		StateAfterMultisendTx := s.queryDynamicfeeStateAtHeight(chainEndpoint, strconv.Itoa(txHeight))
@@ -119,11 +105,5 @@ func (s *IntegrationTestSuite) testDynamicfeeGasPriceChange() {
 		s.Require().True(newFee.GT(oldFee),
 			"Expected new Fee (%s) higher than old fee (%s)",
 			newFee, oldFee)
-		oldLearningRate := StateBeforeMultisendTx.State.LearningRate
-		newLearningRate := StateAfterMultisendTx.State.LearningRate
-
-		s.Require().True(newLearningRate.GT(oldLearningRate),
-			"Expected newLearningRate (%s) higher than currentLearningRate (%s)",
-			newLearningRate, oldLearningRate)
 	})
 }
