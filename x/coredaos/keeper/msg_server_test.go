@@ -289,7 +289,7 @@ func TestMsgServerAnnotateProposal(t *testing.T) {
 				Annotator:  annotatorAcc,
 				Annotation: "Something",
 			},
-			expectedErr:    "invalid authority; expected " + steeringDAOAcc + ", got " + annotatorAcc + ": expected steeringDAO account as only signer",
+			expectedErr:    "invalid authority; expected " + steeringDAOAcc + ", got " + annotatorAcc + ": expected core DAO account as only signer for this message",
 			setupMocks:     func(ctx sdk.Context, m *testutil.Mocks) {},
 			setSteeringDAO: true,
 		},
@@ -442,7 +442,7 @@ func TestMsgServerEndorseProposal(t *testing.T) {
 			msg: &types.MsgEndorseProposal{
 				Endorser: endorserAcc,
 			},
-			expectedErr:    "invalid authority; expected " + steeringDAOAcc + ", got " + endorserAcc + ": expected steeringDAO account as only signer",
+			expectedErr:    "invalid authority; expected " + steeringDAOAcc + ", got " + endorserAcc + ": expected core DAO account as only signer for this message",
 			setupMocks:     func(ctx sdk.Context, m *testutil.Mocks) {},
 			setSteeringDAO: true,
 		},
@@ -585,7 +585,7 @@ func TestMsgServerExtendVotingPeriod(t *testing.T) {
 			msg: &types.MsgExtendVotingPeriod{
 				Extender: extenderAcc,
 			},
-			expectedErr:    "invalid authority; expected " + steeringDAOAcc + " or , got cosmos1fcunc8jhqf9et3xdsphgl24flaugqzrs40cv5l: expected Steering DAO or Oversight DAO account as only signer",
+			expectedErr:    "invalid authority; expected " + steeringDAOAcc + ", got " + extenderAcc + ": expected core DAO account as only signer for this message",
 			setupMocks:     func(ctx sdk.Context, m *testutil.Mocks) {},
 			setSteeringDAO: true,
 		},
@@ -727,7 +727,7 @@ func TestMsgServerVetoProposal(t *testing.T) {
 			msg: &types.MsgVetoProposal{
 				Vetoer: vetoerAcc,
 			},
-			expectedErr:     "invalid authority; expected " + oversightDAOAcc + ", got " + vetoerAcc + ": expected OversightDAO account as only signer",
+			expectedErr:     "invalid authority; expected " + oversightDAOAcc + ", got " + vetoerAcc + ": expected core DAO account as only signer for this message",
 			setupMocks:      func(ctx sdk.Context, m *testutil.Mocks) {},
 			setOversightDAO: true,
 		},
