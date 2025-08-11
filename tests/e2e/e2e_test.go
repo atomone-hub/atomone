@@ -15,6 +15,7 @@ var (
 	runRestInterfacesTest         = true
 	runPhotonTest                 = true
 	runDynamicfeeTest             = true
+	runCoreDAOsTest               = true
 )
 
 func (s *IntegrationTestSuite) TestRestInterfaces() {
@@ -115,4 +116,11 @@ func (s *IntegrationTestSuite) TestDynamicfee() {
 	}
 	s.testDynamicfeeQuery()
 	s.testDynamicfeeGasPriceChange()
+}
+
+func (s *IntegrationTestSuite) TestCoreDAOs() {
+	if !runCoreDAOsTest {
+		s.T().Skip()
+	}
+	s.testCoreDAOs()
 }
