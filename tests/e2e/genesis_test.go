@@ -203,6 +203,7 @@ func modifyGenesis(cdc codec.Codec, path, moniker, amountStr string, addrAll []s
 	maxConstitutionAmendmentQuorum := "0.8"
 	minLawQuorum := "0.2"
 	maxLawQuorum := "0.8"
+	initialDepositAmount := sdk.NewInt64Coin(uatoneDenom, 100_000_000) // 100atone
 
 	maxDepositPeriod := 10 * time.Minute
 	votingPeriod := 15 * time.Second
