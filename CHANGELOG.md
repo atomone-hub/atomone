@@ -22,6 +22,7 @@
 
 ### BUG FIXES
 
+- Fix wrong denom for minDeposit and minInitialDeposit [#205](https://github.com/atomone-hub/atomone/pull/205)
 - Handle `maxBlockGas` in ConsensusParam set to 0 or -1 [#180](https://github.com/atomone-hub/atomone/pull/180)
 - Remove dependency on `ConsensusParamKeeper` from `x/dynamicfee` [#179](https://github.com/atomone-hub/atomone/pull/179)
 - Remove condition returning uninitialized `math.LegacyDec` in `x/gov` [#176](https://github.com/atomone-hub/atomone/pull/176)
