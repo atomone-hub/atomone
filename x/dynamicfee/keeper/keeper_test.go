@@ -90,7 +90,7 @@ func TestEnabledHeight(t *testing.T) {
 func TestGetMaxBlockGas(t *testing.T) {
 	k, ctx := testutil.SetupKeeper(t, 0)
 	t.Run("get max block gas when 0", func(t *testing.T) {
-		ctx = ctx.WithConsensusParams(&tmproto.ConsensusParams{Block: &tmproto.BlockParams{MaxGas: int64(0)}})
+		ctx = ctx.WithConsensusParams(tmproto.ConsensusParams{Block: &tmproto.BlockParams{MaxGas: int64(0)}})
 		params := types.DefaultParams()
 
 		err := k.SetParams(ctx, params)
@@ -102,7 +102,7 @@ func TestGetMaxBlockGas(t *testing.T) {
 	})
 
 	t.Run("get max block gas when -1", func(t *testing.T) {
-		ctx = ctx.WithConsensusParams(&tmproto.ConsensusParams{Block: &tmproto.BlockParams{MaxGas: int64(-1)}})
+		ctx = ctx.WithConsensusParams(tmproto.ConsensusParams{Block: &tmproto.BlockParams{MaxGas: int64(-1)}})
 		params := types.DefaultParams()
 
 		err := k.SetParams(ctx, params)
@@ -114,7 +114,7 @@ func TestGetMaxBlockGas(t *testing.T) {
 	})
 
 	t.Run("get max block gas", func(t *testing.T) {
-		ctx = ctx.WithConsensusParams(&tmproto.ConsensusParams{Block: &tmproto.BlockParams{MaxGas: int64(42)}})
+		ctx = ctx.WithConsensusParams(tmproto.ConsensusParams{Block: &tmproto.BlockParams{MaxGas: int64(42)}})
 		params := types.DefaultParams()
 
 		err := k.SetParams(ctx, params)

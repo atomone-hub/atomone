@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"context"
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -9,12 +10,17 @@ import (
 )
 
 // ConvertToDenom returns "coin.Amount denom" for all coins that are not the denom.
-func (k Keeper) ConvertToDenom(ctx sdk.Context, coin sdk.DecCoin, denom string) (sdk.DecCoin, error) {
+func (k Keeper) ConvertToDenom(ctx context.Context, coin sdk.DecCoin, denom string) (sdk.DecCoin, error) {
 	if coin.Denom == denom {
 		return coin, nil
 	}
 
-	if denom == k.stakingKeeper.BondDenom(ctx) {
+	bondDenom, err := k.stakingKeeper.BondDenom(ctx)
+	if err != nil {
+		return sdk.DecCoin{}, err
+	}
+
+	if denom == bondDenom {
 		// use the conversion rate to convert bond denom to photon
 		bondDenomSupply := k.bankKeeper.GetSupply(ctx, denom).Amount.ToLegacyDec()
 		uphotonSupply := k.bankKeeper.GetSupply(ctx, types.Denom).Amount.ToLegacyDec()
@@ -28,8 +34,13 @@ func (k Keeper) ConvertToDenom(ctx sdk.Context, coin sdk.DecCoin, denom string) 
 	return sdk.DecCoin{}, fmt.Errorf("error resolving denom")
 }
 
-func (k Keeper) ExtraDenoms(ctx sdk.Context) ([]string, error) {
+func (k Keeper) ExtraDenoms(ctx context.Context) ([]string, error) {
+	bondDenom, err := k.stakingKeeper.BondDenom(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	return []string{
-		k.stakingKeeper.BondDenom(ctx),
+		bondDenom,
 	}, nil
 }

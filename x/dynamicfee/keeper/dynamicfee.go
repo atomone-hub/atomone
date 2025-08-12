@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"context"
+
 	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -13,13 +15,16 @@ import (
 // pricing is disabled, this function will return without updating the
 // dynamic fee pricing. This is executed in EndBlock which allows the next
 // block's base fee to be readily available for wallets to estimate gas prices.
-func (k *Keeper) UpdateDynamicfee(ctx sdk.Context) error {
+func (k *Keeper) UpdateDynamicfee(ctx context.Context) error {
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+	logger := k.Logger(sdkCtx)
+
 	params, err := k.GetParams(ctx)
 	if err != nil {
 		return err
 	}
 
-	k.Logger(ctx).Info(
+	logger.Info(
 		"updated the dynamic fee pricing",
 		"params", params,
 	)
@@ -40,11 +45,11 @@ func (k *Keeper) UpdateDynamicfee(ctx sdk.Context) error {
 	newLR := state.UpdateLearningRate(params, maxBlockGas)
 
 	// Update the base gas price based with the new learning rate.
-	newBaseGasPrice := state.UpdateBaseGasPrice(k.Logger(ctx), params, maxBlockGas)
+	newBaseGasPrice := state.UpdateBaseGasPrice(logger, params, maxBlockGas)
 
-	k.Logger(ctx).Info(
+	logger.Info(
 		"updated the dynamic fee pricing",
-		"height", ctx.BlockHeight(),
+		"height", sdkCtx.BlockHeight(),
 		"new_base_gas_price", newBaseGasPrice,
 		"new_learning_rate", newLR,
 		"average_block_gas", state.GetAverageGas(maxBlockGas),
@@ -60,8 +65,9 @@ func (k *Keeper) UpdateDynamicfee(ctx sdk.Context) error {
 // It returns the value obtained from ConsensusParams if
 // it is different from 0 or -1, otherwise it returns
 // DefaultMaxBlockGas
-func (k *Keeper) GetMaxBlockGas(ctx sdk.Context, params types.Params) uint64 {
-	maxBlockGas := ctx.ConsensusParams().Block.GetMaxGas()
+func (k *Keeper) GetMaxBlockGas(ctx context.Context, params types.Params) uint64 {
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+	maxBlockGas := sdkCtx.ConsensusParams().Block.GetMaxGas()
 	if maxBlockGas == 0 || maxBlockGas == -1 {
 		return params.DefaultMaxBlockGas
 	}
@@ -69,7 +75,7 @@ func (k *Keeper) GetMaxBlockGas(ctx sdk.Context, params types.Params) uint64 {
 }
 
 // GetBaseGasPrice returns the base fee from the dynamic fee pricing state.
-func (k *Keeper) GetBaseGasPrice(ctx sdk.Context) (math.LegacyDec, error) {
+func (k *Keeper) GetBaseGasPrice(ctx context.Context) (math.LegacyDec, error) {
 	state, err := k.GetState(ctx)
 	if err != nil {
 		return math.LegacyDec{}, err
@@ -79,7 +85,7 @@ func (k *Keeper) GetBaseGasPrice(ctx sdk.Context) (math.LegacyDec, error) {
 }
 
 // GetLearningRate returns the learning rate from the dynamic fee pricing state.
-func (k *Keeper) GetLearningRate(ctx sdk.Context) (math.LegacyDec, error) {
+func (k *Keeper) GetLearningRate(ctx context.Context) (math.LegacyDec, error) {
 	state, err := k.GetState(ctx)
 	if err != nil {
 		return math.LegacyDec{}, err
@@ -90,7 +96,7 @@ func (k *Keeper) GetLearningRate(ctx sdk.Context) (math.LegacyDec, error) {
 
 // GetMinGasPrice returns the mininum gas prices for given denom as
 // sdk.DecCoins from the dynamic fee pricing state.
-func (k *Keeper) GetMinGasPrice(ctx sdk.Context, denom string) (sdk.DecCoin, error) {
+func (k *Keeper) GetMinGasPrice(ctx context.Context, denom string) (sdk.DecCoin, error) {
 	baseGasPrice, err := k.GetBaseGasPrice(ctx)
 	if err != nil {
 		return sdk.DecCoin{}, err
@@ -117,7 +123,7 @@ func (k *Keeper) GetMinGasPrice(ctx sdk.Context, denom string) (sdk.DecCoin, err
 
 // GetMinGasPrices returns the mininum gas prices as sdk.DecCoins from the
 // dynamic fee pricing state.
-func (k *Keeper) GetMinGasPrices(ctx sdk.Context) (sdk.DecCoins, error) {
+func (k *Keeper) GetMinGasPrices(ctx context.Context) (sdk.DecCoins, error) {
 	baseGasPrice, err := k.GetBaseGasPrice(ctx)
 	if err != nil {
 		return sdk.NewDecCoins(), err
@@ -136,10 +142,11 @@ func (k *Keeper) GetMinGasPrices(ctx sdk.Context) (sdk.DecCoins, error) {
 		return sdk.NewDecCoins(), err
 	}
 
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
 	for _, denom := range extraDenoms {
 		gasPrice, err := k.ResolveToDenom(ctx, minGasPrice, denom)
 		if err != nil {
-			k.Logger(ctx).Info(
+			k.Logger(sdkCtx).Info(
 				"failed to convert gas price",
 				"min gas price", minGasPrice,
 				"denom", denom,
