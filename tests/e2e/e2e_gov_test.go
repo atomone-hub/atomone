@@ -44,7 +44,8 @@ func (s *IntegrationTestSuite) testGovSoftwareUpgrade() {
 		proposalCounter++
 
 		submitGovFlags := []string{configFile(proposalSoftwareUpgradeFilename)}
-		depositGovFlags := []string{strconv.Itoa(proposalCounter), depositAmount.String()}
+		depositGovFlags := []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
+
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes=0.8,no=0.1,abstain=0.1"}
 		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "SoftwareUpgrade", submitGovFlags, depositGovFlags, voteGovFlags, "weighted-vote", govtypesv1beta1.StatusPassed)
 
@@ -92,14 +93,14 @@ func (s *IntegrationTestSuite) testGovCancelSoftwareUpgrade() {
 		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
 		proposalCounter++
 		submitGovFlags := []string{configFile(proposalSoftwareUpgradeFilename)}
-		depositGovFlags := []string{strconv.Itoa(proposalCounter), depositAmount.String()}
+		depositGovFlags := []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
 		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "SoftwareUpgrade", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
 
 		proposalCounter++
 		s.writeGovCancelUpgradeProposal(s.chainA)
 		submitGovFlags = []string{configFile(proposalCancelUpgradeFilename)}
-		depositGovFlags = []string{strconv.Itoa(proposalCounter), depositAmount.String()}
+		depositGovFlags = []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 		voteGovFlags = []string{strconv.Itoa(proposalCounter), "yes"}
 		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "CancelUpgrade", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
 
@@ -134,7 +135,7 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
 		proposalCounter++
 		submitGovFlags := []string{configFile(proposalCommunitySpendFilename)}
-		depositGovFlags := []string{strconv.Itoa(proposalCounter)}
+		depositGovFlags := []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
 		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "CommunityPoolSpend", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
 
@@ -176,16 +177,12 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 		beforeRecipientBalance, err := s.getSpecificBalance(chainAAPIEndpoint, recipient, uatoneDenom)
 		s.Require().NoError(err)
 
-		initialDepositResp, err := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
-		s.Require().NoError(err)
-		initialDeposit := initialDepositResp.GetMinInitialDeposit()
-		depositResp, err := s.queryGovMinDeposit(chainAAPIEndpoint)
-		s.Require().NoError(err)
-		deposit := depositResp.GetMinDeposit()[0]
+		initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
+		deposit := s.queryGovMinDeposit(chainAAPIEndpoint)
 		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
 		proposalCounter++
 		submitGovFlags := []string{configFile(proposalCommunitySpendFilename)}
-		depositGovFlags := []string{strconv.Itoa(proposalCounter)}
+		depositGovFlags := []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "no"}
 		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "CommunityPoolSpend", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusRejected)
 
@@ -195,7 +192,7 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 				afterSenderBalance, err := s.getSpecificBalance(chainAAPIEndpoint, sender, uatoneDenom)
 				s.Require().NoError(err)
 
-				return afterSenderBalance.Add(deposit).Add(initialDeposit[0]).
+				return afterSenderBalance.Add(deposit).Add(initialDeposit).
 					IsEqual(beforeSenderBalance)
 			},
 			10*time.Second,
@@ -232,7 +229,7 @@ func (s *IntegrationTestSuite) testGovParamChange() {
 		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
 		proposalCounter++
 		submitGovFlags := []string{configFile(proposalParamChangeFilename)}
-		depositGovFlags := []string{strconv.Itoa(proposalCounter)}
+		depositGovFlags := []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
 		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "cosmos.staking.v1beta1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
 
@@ -255,7 +252,7 @@ func (s *IntegrationTestSuite) testGovParamChange() {
 		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
 		proposalCounter++
 		submitGovFlags := []string{configFile(proposalParamChangeFilename)}
-		depositGovFlags := []string{strconv.Itoa(proposalCounter)}
+		depositGovFlags := []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
 		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "atomone.photon.v1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
 
@@ -265,7 +262,7 @@ func (s *IntegrationTestSuite) testGovParamChange() {
 		// Revert change or mint photon test will fail
 		params.Params.MintDisabled = false
 		proposalCounter++
-		depositGovFlags = []string{strconv.Itoa(proposalCounter)}
+		depositGovFlags = []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 		voteGovFlags = []string{strconv.Itoa(proposalCounter), "yes"}
 		s.writePhotonParamChangeProposal(s.chainA, params.Params)
 		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "atomone.photon.v1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
@@ -287,7 +284,7 @@ func (s *IntegrationTestSuite) testGovParamChange() {
 		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
 		proposalCounter++
 		submitGovFlags := []string{configFile(proposalParamChangeFilename)}
-		depositGovFlags := []string{strconv.Itoa(proposalCounter)}
+		depositGovFlags := []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
 		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "atomone.dynamicfee.v1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
 
@@ -309,7 +306,7 @@ func (s *IntegrationTestSuite) testGovConstitutionAmendment() {
 		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
 		proposalCounter++
 		submitGovFlags := []string{configFile(proposalConstitutionAmendmentFilename)}
-		depositGovFlags := []string{strconv.Itoa(proposalCounter)}
+		depositGovFlags := []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
 		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "gov/MsgSubmitProposal", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
 
@@ -330,7 +327,7 @@ func (s *IntegrationTestSuite) testGovTextProposal() {
 		s.writeTextProposal(s.chainA)
 		proposalCounter++
 		submitGovFlags := []string{configFile(proposalTextFilename)}
-		depositGovFlags := []string{strconv.Itoa(proposalCounter)}
+		depositGovFlags := []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
 		senderAddress, _ := s.chainA.validators[0].keyInfo.GetAddress()
 		sender := senderAddress.String()
@@ -354,7 +351,7 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 		s.writeTextProposal(s.chainA)
 		proposalCounter++
 		submitGovFlags := []string{configFile(proposalTextFilename)}
-		depositGovFlags := []string{strconv.Itoa(proposalCounter)}
+		depositGovFlags := []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
 		senderAddress, _ := s.chainA.validators[0].keyInfo.GetAddress()
 		sender := senderAddress.String()
@@ -390,7 +387,7 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 		s.writeGovLawProposal(s.chainA)
 		proposalCounter++
 		submitGovFlags := []string{configFile(proposalLawFilename)}
-		depositGovFlags := []string{strconv.Itoa(proposalCounter)}
+		depositGovFlags := []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
 		senderAddress, _ := s.chainA.validators[0].keyInfo.GetAddress()
 		sender := senderAddress.String()
@@ -430,7 +427,7 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 		s.writeGovConstitutionAmendmentProposal(s.chainA, amendmentMsg.Amendment)
 		proposalCounter++
 		submitGovFlags := []string{configFile(proposalConstitutionAmendmentFilename)}
-		depositGovFlags := []string{strconv.Itoa(proposalCounter)}
+		depositGovFlags := []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
 		senderAddress, _ := s.chainA.validators[0].keyInfo.GetAddress()
 		sender := senderAddress.String()
@@ -451,27 +448,6 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 	})
 }
 
-func (s *IntegrationTestSuite) submitLegacyGovProposal(chainAAPIEndpoint, sender string, proposalID int, proposalType string, submitFlags []string, depositFlags []string, voteFlags []string, voteCommand string, withDeposit bool) {
-	s.T().Logf("Submitting Gov Proposal: %s", proposalType)
-	// min deposit of 1000uatone is required in e2e tests, otherwise the gov antehandler causes the proposal to be dropped
-	sflags := submitFlags
-	initialDepositResp, err := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
-	s.Require().NoError(err)
-	initialDeposit := initialDepositResp.GetMinInitialDeposit()
-	if withDeposit {
-		sflags = append(sflags, "--deposit="+initialDeposit[0].String())
-	}
-	deposit, err := s.queryGovMinDeposit(chainAAPIEndpoint)
-	s.Require().NoError(err)
-	depositString := deposit.GetMinDeposit()[0].String()
-	depositFlags = append(depositFlags, depositString)
-	s.submitGovCommand(chainAAPIEndpoint, sender, proposalID, "submit-legacy-proposal", sflags, govtypesv1beta1.StatusDepositPeriod)
-	s.T().Logf("Depositing Gov Proposal: %s", proposalType)
-	s.submitGovCommand(chainAAPIEndpoint, sender, proposalID, "deposit", depositFlags, govtypesv1beta1.StatusVotingPeriod)
-	s.T().Logf("Voting Gov Proposal: %s", proposalType)
-	s.submitGovCommand(chainAAPIEndpoint, sender, proposalID, voteCommand, voteFlags, govtypesv1beta1.StatusPassed)
-}
-
 // NOTE: in SDK >= v0.47 the submit-proposal does not have a --deposit flag
 // Instead, the deposit is added to the "deposit" field of the proposal JSON (usually stored as a file)
 // you can use `atomoned tx gov draft-proposal` to create a proposal file that you can use
@@ -479,10 +455,6 @@ func (s *IntegrationTestSuite) submitLegacyGovProposal(chainAAPIEndpoint, sender
 func (s *IntegrationTestSuite) submitGovProposal(chainAAPIEndpoint, sender string, proposalID int, proposalType string, submitFlags []string, depositFlags []string, voteFlags []string, voteCommand string, expectedStatusAfterVote govtypesv1beta1.ProposalStatus) {
 	s.T().Logf("Submitting Gov Proposal: %s", proposalType)
 	sflags := submitFlags
-	deposit, err := s.queryGovMinDeposit(chainAAPIEndpoint)
-	s.Require().NoError(err)
-	depositString := deposit.GetMinDeposit()[0].String()
-	depositFlags = append(depositFlags, depositString)
 	s.submitGovCommand(chainAAPIEndpoint, sender, proposalID, "submit-proposal", sflags, govtypesv1beta1.StatusDepositPeriod)
 	s.T().Logf("Depositing Gov Proposal: %s", proposalType)
 	s.submitGovCommand(chainAAPIEndpoint, sender, proposalID, "deposit", depositFlags, govtypesv1beta1.StatusVotingPeriod)
@@ -568,11 +540,9 @@ func (s *IntegrationTestSuite) writeStakingParamChangeProposal(c *chain, params 
 	`
 
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
-	initialDepositResp, err := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
-	s.Require().NoError(err)
-	initialDeposit := initialDepositResp.GetMinInitialDeposit()
-	propMsgBody := fmt.Sprintf(template, govModuleAddress, s.cdc.MustMarshalJSON(&params), initialDeposit[0])
-	err = writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
+	initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
+	propMsgBody := fmt.Sprintf(template, govModuleAddress, s.cdc.MustMarshalJSON(&params), initialDeposit)
+	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
@@ -595,11 +565,9 @@ func (s *IntegrationTestSuite) writeDynamicfeeParamChangeProposal(c *chain, para
 	}
 	`
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
-	initialDepositResp, err := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
-	s.Require().NoError(err)
-	initialDeposit := initialDepositResp.GetMinInitialDeposit()
-	propMsgBody := fmt.Sprintf(template, govModuleAddress, s.cdc.MustMarshalJSON(&params), initialDeposit[0])
-	err = writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
+	initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
+	propMsgBody := fmt.Sprintf(template, govModuleAddress, s.cdc.MustMarshalJSON(&params), initialDeposit)
+	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
@@ -613,11 +581,9 @@ func (s *IntegrationTestSuite) writeTextProposal(c *chain) {
 	}
 	`
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
-	initialDepositResp, err := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
-	s.Require().NoError(err)
-	initialDeposit := initialDepositResp.GetMinInitialDeposit()
-	propMsgBody := fmt.Sprintf(template, initialDeposit[0])
-	err = writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalTextFilename), []byte(propMsgBody))
+	initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
+	propMsgBody := fmt.Sprintf(template, initialDeposit)
+	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalTextFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
@@ -641,11 +607,9 @@ func (s *IntegrationTestSuite) writePhotonParamChangeProposal(c *chain, params p
 	}
 	`
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
-	initialDepositResp, err := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
-	s.Require().NoError(err)
-	initialDeposit := initialDepositResp.GetMinInitialDeposit()
-	propMsgBody := fmt.Sprintf(template, govModuleAddress, s.cdc.MustMarshalJSON(&params), initialDeposit[0])
-	err = writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
+	initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
+	propMsgBody := fmt.Sprintf(template, govModuleAddress, s.cdc.MustMarshalJSON(&params), initialDeposit)
+	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
@@ -670,11 +634,9 @@ func (s *IntegrationTestSuite) writeGovConstitutionAmendmentProposal(c *chain, a
 	}
 	`
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
-	initialDepositResp, err := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
-	s.Require().NoError(err)
-	initialDeposit := initialDepositResp.GetMinInitialDeposit()
-	propMsgBody := fmt.Sprintf(template, govModuleAddress, amendment, initialDeposit[0])
-	err = writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalConstitutionAmendmentFilename), []byte(propMsgBody))
+	initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
+	propMsgBody := fmt.Sprintf(template, govModuleAddress, amendment, initialDeposit)
+	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalConstitutionAmendmentFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
@@ -696,11 +658,9 @@ func (s *IntegrationTestSuite) writeGovLawProposal(c *chain) {
 	}
 	`
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
-	initialDepositResp, err := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
-	s.Require().NoError(err)
-	initialDeposit := initialDepositResp.GetMinInitialDeposit()
-	propMsgBody := fmt.Sprintf(template, govModuleAddress, initialDeposit[0])
-	err = writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalLawFilename), []byte(propMsgBody))
+	initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
+	propMsgBody := fmt.Sprintf(template, govModuleAddress, initialDeposit)
+	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalLawFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
@@ -742,9 +702,7 @@ func (s *IntegrationTestSuite) writeGovCommunitySpendProposal(c *chain, amount s
 	govModuleAddress := authtypes.NewModuleAddress(govtypes.ModuleName).String()
 
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
-	initialDepositResp, err := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
-	s.Require().NoError(err)
-	initialDeposit := initialDepositResp.GetMinInitialDeposit()
+	initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
 
 	template := `
 	{
@@ -767,8 +725,8 @@ func (s *IntegrationTestSuite) writeGovCommunitySpendProposal(c *chain, amount s
 	}
 	`
 	propMsgBody := fmt.Sprintf(template, govModuleAddress, recipient,
-		amount.Denom, amount.Amount.String(), initialDeposit[0].String())
-	err = writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalCommunitySpendFilename), []byte(propMsgBody))
+		amount.Denom, amount.Amount.String(), initialDeposit.String())
+	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalCommunitySpendFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
@@ -776,9 +734,7 @@ func (s *IntegrationTestSuite) writeGovSoftwareUpgradeProposal(c *chain, height 
 	govModuleAddress := authtypes.NewModuleAddress(govtypes.ModuleName).String()
 
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
-	initialDepositResp, err := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
-	s.Require().NoError(err)
-	initialDeposit := initialDepositResp.GetMinInitialDeposit()
+	initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
 
 	template := `
 	{
@@ -802,8 +758,8 @@ func (s *IntegrationTestSuite) writeGovSoftwareUpgradeProposal(c *chain, height 
 		"summary": "summary"
 	}
 	`
-	propMsgBody := fmt.Sprintf(template, govModuleAddress, height, initialDeposit[0].String())
-	err = writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalSoftwareUpgradeFilename), []byte(propMsgBody))
+	propMsgBody := fmt.Sprintf(template, govModuleAddress, height, initialDeposit.String())
+	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalSoftwareUpgradeFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
@@ -811,9 +767,7 @@ func (s *IntegrationTestSuite) writeGovCancelUpgradeProposal(c *chain) {
 	govModuleAddress := authtypes.NewModuleAddress(govtypes.ModuleName).String()
 
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
-	initialDepositResp, err := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
-	s.Require().NoError(err)
-	initialDeposit := initialDepositResp.GetMinInitialDeposit()
+	initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
 
 	template := `
 	{
@@ -830,8 +784,8 @@ func (s *IntegrationTestSuite) writeGovCancelUpgradeProposal(c *chain) {
 		"summary": "summary"
 	}
 	`
-	propMsgBody := fmt.Sprintf(template, govModuleAddress, initialDeposit[0].String())
-	err = writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalCancelUpgradeFilename), []byte(propMsgBody))
+	propMsgBody := fmt.Sprintf(template, govModuleAddress, initialDeposit.String())
+	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalCancelUpgradeFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 

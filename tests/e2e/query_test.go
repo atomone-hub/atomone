@@ -166,30 +166,24 @@ func (s *IntegrationTestSuite) queryGovProposal(endpoint string, proposalID int)
 	return govProposalResp, nil
 }
 
-func (s *IntegrationTestSuite) queryGovMinInitialDeposit(endpoint string) (govtypesv1.QueryMinInitialDepositResponse, error) {
+func (s *IntegrationTestSuite) queryGovMinInitialDeposit(endpoint string) sdk.Coin {
 	var govMinInitialDepositResp govtypesv1.QueryMinInitialDepositResponse
 	path := fmt.Sprintf("%s/atomone/gov/v1/mininitialdeposit", endpoint)
 	body, err := httpGet(path)
-	if err != nil {
-		return govMinInitialDepositResp, fmt.Errorf("failed to execute HTTP request: %w", err)
-	}
-	if err := s.cdc.UnmarshalJSON(body, &govMinInitialDepositResp); err != nil {
-		return govMinInitialDepositResp, err
-	}
-	return govMinInitialDepositResp, nil
+	s.Require().NoError(err)
+	err = s.cdc.UnmarshalJSON(body, &govMinInitialDepositResp)
+	s.Require().NoError(err)
+	return govMinInitialDepositResp.MinInitialDeposit[0]
 }
 
-func (s *IntegrationTestSuite) queryGovMinDeposit(endpoint string) (govtypesv1.QueryMinDepositResponse, error) {
+func (s *IntegrationTestSuite) queryGovMinDeposit(endpoint string) sdk.Coin {
 	var govMinDepositResp govtypesv1.QueryMinDepositResponse
 	path := fmt.Sprintf("%s/atomone/gov/v1/mindeposit", endpoint)
 	body, err := httpGet(path)
-	if err != nil {
-		return govMinDepositResp, fmt.Errorf("failed to execute HTTP request: %w", err)
-	}
-	if err := s.cdc.UnmarshalJSON(body, &govMinDepositResp); err != nil {
-		return govMinDepositResp, err
-	}
-	return govMinDepositResp, nil
+	s.Require().NoError(err)
+	err = s.cdc.UnmarshalJSON(body, &govMinDepositResp)
+	s.Require().NoError(err)
+	return govMinDepositResp.MinDeposit[0]
 }
 
 func (s *IntegrationTestSuite) queryGovQuorums(endpoint string) govtypesv1.QueryQuorumsResponse {
