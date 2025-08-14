@@ -210,8 +210,8 @@ func SimulateMsgExtendVotingPeriod(gk types.GovKeeper, sk types.StakingKeeper, a
 			return simtypes.NoOpMsg(types.ModuleName, TypeMsgExtendVotingPeriod, "cannot get proposal"), nil, nil
 		}
 
-		if proposal.Endorsed {
-			return simtypes.NoOpMsg(types.ModuleName, TypeMsgExtendVotingPeriod, "proposal already endorsed"), nil, nil
+		if proposal.TimesVotingPeriodExtended >= params.VotingPeriodExtensionsLimit {
+			return simtypes.NoOpMsg(types.ModuleName, TypeMsgExtendVotingPeriod, "proposal voting period extended too many times"), nil, nil
 		}
 
 		msg := types.NewMsgExtendVotingPeriod(

@@ -38,7 +38,7 @@ func GenVotingPeriodExtensionDuration(r *rand.Rand) time.Duration {
 	return time.Duration(simulation.RandIntBetween(r, 1, 60*60*6)) * time.Second
 }
 
-// GenSteeringDaoAddress picks a random address to be used for a DAO (from the pregenerated sim accounts)
+// GenSteeringDaoAddress picks a random address to be used for a DAO
 // with a probability of 50%, otherwise returns an empty string account (meaning that
 // the Dao is disabled
 func GenSteeringDaoAddress(r *rand.Rand, simState *module.SimulationState) string {
@@ -52,7 +52,7 @@ func GenSteeringDaoAddress(r *rand.Rand, simState *module.SimulationState) strin
 	}
 }
 
-// GenSteeringDaoAddress picks a random address to be used for a DAO (from the pregenerated sim accounts)
+// GenSteeringDaoAddress picks a random address to be used for a DAO
 // with a probability of 50%, otherwise returns an empty string account (meaning that
 // the Dao is disabled
 func GenOversightDaoAddress(r *rand.Rand, simState *module.SimulationState) string {
