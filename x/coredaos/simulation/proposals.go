@@ -31,7 +31,7 @@ func ProposalMsgs() []simtypes.WeightedProposalMsg {
 }
 
 // SimulateMsgUpdateParams returns a random MsgUpdateParams
-func SimulateMsgUpdateParams(r *rand.Rand, _ sdk.Context, _ []simtypes.Account) sdk.Msg {
+func SimulateMsgUpdateParams(r *rand.Rand, ctx sdk.Context, _ []simtypes.Account) sdk.Msg {
 	// use the default gov module account address as authority
 	var authority sdk.AccAddress = address.Module("gov")
 
@@ -40,6 +40,22 @@ func SimulateMsgUpdateParams(r *rand.Rand, _ sdk.Context, _ []simtypes.Account) 
 	params.VotingPeriodExtensionsLimit = uint32(simtypes.RandIntBetween(r, 0, 10))                       // Random limit between 0 and 9
 	votingPeriodExtensionDuration := time.Duration(simtypes.RandIntBetween(r, 1, 60*60*6)) * time.Second // Random duration between 1 second and 6 hours
 	params.VotingPeriodExtensionDuration = &votingPeriodExtensionDuration
+
+	randInt := r.Intn(2)
+	if randInt%2 == 0 {
+		SteeringDaoAccount = GenDaoAccount(r)
+		params.SteeringDaoAddress = SteeringDaoAccount.Address.String()
+	} else {
+		params.SteeringDaoAddress = ""
+	}
+
+	randInt = r.Intn(2)
+	if randInt%2 == 0 {
+		OversightDaoAccount = GenDaoAccount(r)
+		params.OversightDaoAddress = OversightDaoAccount.Address.String()
+	} else {
+		params.OversightDaoAddress = ""
+	}
 
 	return &types.MsgUpdateParams{
 		Authority: authority.String(),

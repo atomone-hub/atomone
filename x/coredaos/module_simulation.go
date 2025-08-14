@@ -26,5 +26,5 @@ func (AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.Weight
 // WeightedOperations returns the all the module operations with their respective weights.
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	return simulation.WeightedOperations(simState.AppParams, simState.Cdc,
-		am.keeper)
+		am.govKeeper, am.stakingKeeper, am.accountKeeper, am.bankKeeper, am.keeper)
 }

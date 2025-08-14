@@ -11,6 +11,8 @@ import (
 	math "cosmossdk.io/math"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	types "github.com/cosmos/cosmos-sdk/types"
+	types0 "github.com/cosmos/cosmos-sdk/x/auth/types"
+	authz "github.com/cosmos/cosmos-sdk/x/authz"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -74,6 +76,21 @@ func (m *MockGovKeeper) GetProposal(ctx types.Context, id uint64) (v1.Proposal, 
 func (mr *MockGovKeeperMockRecorder) GetProposal(ctx, id interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProposal", reflect.TypeOf((*MockGovKeeper)(nil).GetProposal), ctx, id)
+}
+
+// GetProposalID mocks base method.
+func (m *MockGovKeeper) GetProposalID(ctx types.Context) (uint64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetProposalID", ctx)
+	ret0, _ := ret[0].(uint64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetProposalID indicates an expected call of GetProposalID.
+func (mr *MockGovKeeperMockRecorder) GetProposalID(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProposalID", reflect.TypeOf((*MockGovKeeper)(nil).GetProposalID), ctx)
 }
 
 // InsertActiveProposalQueue mocks base method.
@@ -211,4 +228,113 @@ func (m *MockStakingKeeper) GetDelegatorUnbonding(ctx types.Context, delegator t
 func (mr *MockStakingKeeperMockRecorder) GetDelegatorUnbonding(ctx, delegator interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDelegatorUnbonding", reflect.TypeOf((*MockStakingKeeper)(nil).GetDelegatorUnbonding), ctx, delegator)
+}
+
+// MockAccountKeeper is a mock of AccountKeeper interface.
+type MockAccountKeeper struct {
+	ctrl     *gomock.Controller
+	recorder *MockAccountKeeperMockRecorder
+}
+
+// MockAccountKeeperMockRecorder is the mock recorder for MockAccountKeeper.
+type MockAccountKeeperMockRecorder struct {
+	mock *MockAccountKeeper
+}
+
+// NewMockAccountKeeper creates a new mock instance.
+func NewMockAccountKeeper(ctrl *gomock.Controller) *MockAccountKeeper {
+	mock := &MockAccountKeeper{ctrl: ctrl}
+	mock.recorder = &MockAccountKeeperMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockAccountKeeper) EXPECT() *MockAccountKeeperMockRecorder {
+	return m.recorder
+}
+
+// GetAccount mocks base method.
+func (m *MockAccountKeeper) GetAccount(ctx types.Context, addr types.AccAddress) types0.AccountI {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAccount", ctx, addr)
+	ret0, _ := ret[0].(types0.AccountI)
+	return ret0
+}
+
+// GetAccount indicates an expected call of GetAccount.
+func (mr *MockAccountKeeperMockRecorder) GetAccount(ctx, addr interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccount", reflect.TypeOf((*MockAccountKeeper)(nil).GetAccount), ctx, addr)
+}
+
+// MockBankKeeper is a mock of BankKeeper interface.
+type MockBankKeeper struct {
+	ctrl     *gomock.Controller
+	recorder *MockBankKeeperMockRecorder
+}
+
+// MockBankKeeperMockRecorder is the mock recorder for MockBankKeeper.
+type MockBankKeeperMockRecorder struct {
+	mock *MockBankKeeper
+}
+
+// NewMockBankKeeper creates a new mock instance.
+func NewMockBankKeeper(ctrl *gomock.Controller) *MockBankKeeper {
+	mock := &MockBankKeeper{ctrl: ctrl}
+	mock.recorder = &MockBankKeeperMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockBankKeeper) EXPECT() *MockBankKeeperMockRecorder {
+	return m.recorder
+}
+
+// SpendableCoins mocks base method.
+func (m *MockBankKeeper) SpendableCoins(ctx types.Context, addr types.AccAddress) types.Coins {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SpendableCoins", ctx, addr)
+	ret0, _ := ret[0].(types.Coins)
+	return ret0
+}
+
+// SpendableCoins indicates an expected call of SpendableCoins.
+func (mr *MockBankKeeperMockRecorder) SpendableCoins(ctx, addr interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SpendableCoins", reflect.TypeOf((*MockBankKeeper)(nil).SpendableCoins), ctx, addr)
+}
+
+// MockAuthzKeeper is a mock of AuthzKeeper interface.
+type MockAuthzKeeper struct {
+	ctrl     *gomock.Controller
+	recorder *MockAuthzKeeperMockRecorder
+}
+
+// MockAuthzKeeperMockRecorder is the mock recorder for MockAuthzKeeper.
+type MockAuthzKeeperMockRecorder struct {
+	mock *MockAuthzKeeper
+}
+
+// NewMockAuthzKeeper creates a new mock instance.
+func NewMockAuthzKeeper(ctrl *gomock.Controller) *MockAuthzKeeper {
+	mock := &MockAuthzKeeper{ctrl: ctrl}
+	mock.recorder = &MockAuthzKeeperMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockAuthzKeeper) EXPECT() *MockAuthzKeeperMockRecorder {
+	return m.recorder
+}
+
+// IterateGrants mocks base method.
+func (m *MockAuthzKeeper) IterateGrants(ctx types.Context, handler func(types.AccAddress, types.AccAddress, authz.Grant) bool) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "IterateGrants", ctx, handler)
+}
+
+// IterateGrants indicates an expected call of IterateGrants.
+func (mr *MockAuthzKeeperMockRecorder) IterateGrants(ctx, handler interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IterateGrants", reflect.TypeOf((*MockAuthzKeeper)(nil).IterateGrants), ctx, handler)
 }

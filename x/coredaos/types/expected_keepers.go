@@ -6,6 +6,8 @@ import (
 	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/cosmos/cosmos-sdk/x/authz"
 
 	govtypesv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 )
@@ -13,6 +15,8 @@ import (
 // GovKeeper defines the expected interface needed to interact with the
 // governance module.
 type GovKeeper interface {
+	// GetProposalID gets the highest proposal ID
+	GetProposalID(ctx sdk.Context) (proposalID uint64, err error)
 	// GetProposal gets a proposal from store by ProposalID.
 	GetProposal(ctx sdk.Context, id uint64) (govtypesv1.Proposal, bool)
 	// SetProposal sets a proposal in the gov store.
@@ -49,4 +53,20 @@ type StakingKeeper interface {
 	GetDelegatorBonded(ctx sdk.Context, delegator sdk.AccAddress) math.Int
 	// GetDelegatorUnbonding returns the total amount a delegator has unbonding.
 	GetDelegatorUnbonding(ctx sdk.Context, delegator sdk.AccAddress) math.Int
+}
+
+// AccountKeeper defines the expected account keeper used for simulations (noalias)
+type AccountKeeper interface {
+	GetAccount(ctx sdk.Context, addr sdk.AccAddress) authtypes.AccountI
+}
+
+// BankKeeper defines the expected account keeper used for simulations (noalias)
+type BankKeeper interface {
+	SpendableCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
+}
+
+type AuthzKeeper interface {
+	IterateGrants(ctx sdk.Context,
+		handler func(granterAddr sdk.AccAddress, granteeAddr sdk.AccAddress, grant authz.Grant) bool,
+	)
 }
