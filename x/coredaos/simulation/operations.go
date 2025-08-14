@@ -97,13 +97,13 @@ func SimulateMsgAnnotateProposal(gk types.GovKeeper, sk types.StakingKeeper, ak 
 			return simtypes.NoOpMsg(types.ModuleName, TypeMsgAnnotateProposal, "Annotations are disabled"), nil, nil
 		}
 
-		proposalID, ok := randomProposalID(r, gk, ctx, govv1.StatusVotingPeriod)
+		proposalID, ok := randomProposalID(r, gk, ctx)
 		if !ok {
 			return simtypes.NoOpMsg(types.ModuleName, TypeMsgAnnotateProposal, "unable to generate proposalID"), nil, nil
 		}
 
 		proposal, err := gk.GetProposal(ctx, proposalID)
-		if err != false {
+		if err {
 			return simtypes.NoOpMsg(types.ModuleName, TypeMsgAnnotateProposal, "cannot get proposal"), nil, nil
 		}
 		if proposal.Annotation != "" {
@@ -141,17 +141,17 @@ func SimulateMsgEndorseProposal(gk types.GovKeeper, sk types.StakingKeeper, ak t
 			return simtypes.NoOpMsg(types.ModuleName, TypeMsgEndorseProposal, "Endorsements are disabled"), nil, nil
 		}
 
-		proposalID, ok := randomProposalID(r, gk, ctx, govv1.StatusVotingPeriod)
+		proposalID, ok := randomProposalID(r, gk, ctx)
 		if !ok {
 			return simtypes.NoOpMsg(types.ModuleName, TypeMsgEndorseProposal, "unable to generate proposalID"), nil, nil
 		}
 
 		proposal, err := gk.GetProposal(ctx, proposalID)
-		if err != false {
+		if err {
 			return simtypes.NoOpMsg(types.ModuleName, TypeMsgEndorseProposal, "cannot get proposal"), nil, nil
 		}
 
-		if proposal.Endorsed == true {
+		if proposal.Endorsed {
 			return simtypes.NoOpMsg(types.ModuleName, TypeMsgEndorseProposal, "proposal already endorsed"), nil, nil
 		}
 
@@ -200,17 +200,17 @@ func SimulateMsgExtendVotingPeriod(gk types.GovKeeper, sk types.StakingKeeper, a
 			}
 		}
 
-		proposalID, ok := randomProposalID(r, gk, ctx, govv1.StatusVotingPeriod)
+		proposalID, ok := randomProposalID(r, gk, ctx)
 		if !ok {
 			return simtypes.NoOpMsg(types.ModuleName, TypeMsgExtendVotingPeriod, "unable to generate proposalID"), nil, nil
 		}
 
 		proposal, err := gk.GetProposal(ctx, proposalID)
-		if err != false {
+		if err {
 			return simtypes.NoOpMsg(types.ModuleName, TypeMsgExtendVotingPeriod, "cannot get proposal"), nil, nil
 		}
 
-		if proposal.Endorsed == true {
+		if proposal.Endorsed {
 			return simtypes.NoOpMsg(types.ModuleName, TypeMsgExtendVotingPeriod, "proposal already endorsed"), nil, nil
 		}
 
@@ -244,13 +244,13 @@ func SimulateMsgVetoProposal(gk types.GovKeeper, sk types.StakingKeeper, ak type
 			return simtypes.NoOpMsg(types.ModuleName, TypeMsgVetoProposal, "Voting period extensions are disabled"), nil, nil
 		}
 
-		proposalID, ok := randomProposalID(r, gk, ctx, govv1.StatusVotingPeriod)
+		proposalID, ok := randomProposalID(r, gk, ctx)
 		if !ok {
 			return simtypes.NoOpMsg(types.ModuleName, TypeMsgVetoProposal, "unable to generate proposalID"), nil, nil
 		}
 
 		_, err := gk.GetProposal(ctx, proposalID)
-		if err != false {
+		if err {
 			return simtypes.NoOpMsg(types.ModuleName, TypeMsgVetoProposal, "cannot get proposal"), nil, nil
 		}
 
@@ -287,9 +287,9 @@ func SimulateMsgVetoProposal(gk types.GovKeeper, sk types.StakingKeeper, ak type
 
 // Pick a random proposal ID between the initial proposal ID
 // (defined in gov GenesisState) and the latest proposal ID
-// that matches a given Status.
+// that has voting period status
 // It does not provide a default ID.
-func randomProposalID(r *rand.Rand, k types.GovKeeper, ctx sdk.Context, status govv1.ProposalStatus) (proposalID uint64, found bool) {
+func randomProposalID(r *rand.Rand, k types.GovKeeper, ctx sdk.Context) (proposalID uint64, found bool) {
 	proposalID, _ = k.GetProposalID(ctx)
 
 	switch {
@@ -304,7 +304,7 @@ func randomProposalID(r *rand.Rand, k types.GovKeeper, ctx sdk.Context, status g
 	}
 
 	proposal, ok := k.GetProposal(ctx, proposalID)
-	if !ok || proposal.Status != status {
+	if !ok || proposal.Status != govv1.StatusVotingPeriod {
 		return proposalID, false
 	}
 

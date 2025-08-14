@@ -8,7 +8,8 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/types/simulation"
-	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
+
+	"github.com/atomone-hub/atomone/x/coredaos/types"
 )
 
 const (
@@ -107,6 +108,6 @@ func RandomizedGenState(simState *module.SimulationState) {
 }
 
 func GenDaoAccount(r *rand.Rand) simulation.Account {
-	randomAccount := simtypes.RandomAccounts(r, 1)
+	randomAccount := simulation.RandomAccounts(r, 1)
 	return randomAccount[0]
 }
