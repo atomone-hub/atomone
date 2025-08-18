@@ -185,7 +185,7 @@ func SimulateMsgExtendVotingPeriod(gk types.GovKeeper, sk types.StakingKeeper, a
 		}
 
 		var fromAccount simtypes.Account
-		if params.SteeringDaoAddress == "" && params.OversightDaoAddress == "" {
+		if params.SteeringDaoAddress != "" && params.OversightDaoAddress != "" {
 			randInt := r.Intn(2)
 			if randInt%2 == 0 {
 				fromAccount = SteeringDaoAccount
