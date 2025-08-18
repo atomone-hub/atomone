@@ -7,7 +7,6 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/cosmos/cosmos-sdk/x/authz"
 
 	govtypesv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 )
@@ -63,10 +62,4 @@ type AccountKeeper interface {
 // BankKeeper defines the expected account keeper used for simulations (noalias)
 type BankKeeper interface {
 	SpendableCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
-}
-
-type AuthzKeeper interface {
-	IterateGrants(ctx sdk.Context,
-		handler func(granterAddr sdk.AccAddress, granteeAddr sdk.AccAddress, grant authz.Grant) bool,
-	)
 }

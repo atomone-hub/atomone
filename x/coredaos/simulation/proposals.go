@@ -43,7 +43,8 @@ func SimulateMsgUpdateParams(r *rand.Rand, ctx sdk.Context, _ []simtypes.Account
 
 	randInt := r.Intn(2)
 	if randInt%2 == 0 {
-		SteeringDaoAccount = GenDaoAccount(r)
+		randInt := r.Intn(DAOAccountsNumber)
+		SteeringDaoAccount := DAOAccounts[randInt]
 		params.SteeringDaoAddress = SteeringDaoAccount.Address.String()
 	} else {
 		params.SteeringDaoAddress = ""
@@ -51,7 +52,8 @@ func SimulateMsgUpdateParams(r *rand.Rand, ctx sdk.Context, _ []simtypes.Account
 
 	randInt = r.Intn(2)
 	if randInt%2 == 0 {
-		OversightDaoAccount = GenDaoAccount(r)
+		randInt := r.Intn(DAOAccountsNumber)
+		OversightDaoAccount := DAOAccounts[randInt]
 		params.OversightDaoAddress = OversightDaoAccount.Address.String()
 	} else {
 		params.OversightDaoAddress = ""

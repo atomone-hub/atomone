@@ -12,7 +12,6 @@ import (
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	types "github.com/cosmos/cosmos-sdk/types"
 	types0 "github.com/cosmos/cosmos-sdk/x/auth/types"
-	authz "github.com/cosmos/cosmos-sdk/x/authz"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -302,39 +301,4 @@ func (m *MockBankKeeper) SpendableCoins(ctx types.Context, addr types.AccAddress
 func (mr *MockBankKeeperMockRecorder) SpendableCoins(ctx, addr interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SpendableCoins", reflect.TypeOf((*MockBankKeeper)(nil).SpendableCoins), ctx, addr)
-}
-
-// MockAuthzKeeper is a mock of AuthzKeeper interface.
-type MockAuthzKeeper struct {
-	ctrl     *gomock.Controller
-	recorder *MockAuthzKeeperMockRecorder
-}
-
-// MockAuthzKeeperMockRecorder is the mock recorder for MockAuthzKeeper.
-type MockAuthzKeeperMockRecorder struct {
-	mock *MockAuthzKeeper
-}
-
-// NewMockAuthzKeeper creates a new mock instance.
-func NewMockAuthzKeeper(ctrl *gomock.Controller) *MockAuthzKeeper {
-	mock := &MockAuthzKeeper{ctrl: ctrl}
-	mock.recorder = &MockAuthzKeeperMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockAuthzKeeper) EXPECT() *MockAuthzKeeperMockRecorder {
-	return m.recorder
-}
-
-// IterateGrants mocks base method.
-func (m *MockAuthzKeeper) IterateGrants(ctx types.Context, handler func(types.AccAddress, types.AccAddress, authz.Grant) bool) {
-	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "IterateGrants", ctx, handler)
-}
-
-// IterateGrants indicates an expected call of IterateGrants.
-func (mr *MockAuthzKeeperMockRecorder) IterateGrants(ctx, handler interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IterateGrants", reflect.TypeOf((*MockAuthzKeeper)(nil).IterateGrants), ctx, handler)
 }
