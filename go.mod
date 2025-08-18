@@ -7,7 +7,7 @@ replace (
 	cosmossdk.io/x/upgrade => github.com/atomone-hub/cosmos-sdk/x/upgrade v0.1.5-atomone.1
 	github.com/cosmos/cosmos-sdk => github.com/atomone-hub/cosmos-sdk v0.50.14-atomone.1
 	github.com/cosmos/ibc-go/v10 => github.com/cosmos/ibc-go/v10 v10.2.0
-	github.com/cosmos/interchain-security/v5 => github.com/allinbits/interchain-security/v5 v5.2.1-0.20250818205642-6f8306deb72a
+	github.com/cosmos/interchain-security/v5 => github.com/allinbits/interchain-security/v5 v5.2.1-0.20250818223054-2faa826b267a
 )
 
 require (
