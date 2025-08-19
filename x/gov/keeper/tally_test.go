@@ -126,6 +126,7 @@ func TestTally(t *testing.T) {
 		expectedBurn  bool
 		expectedTally v1.TallyResult
 		expectedError string
+		endorse       bool
 	}{
 		{
 			name:         "no votes: prop fails/burn deposit",
@@ -464,6 +465,42 @@ func TestTally(t *testing.T) {
 				NoCount:      "0",
 			},
 		},
+		{
+			name: "law quorum reached and threshold not reached no endorse",
+			setup: func(s *tallyFixture) {
+				s.validatorVote(s.valAddrs[0], v1.VoteOption_VOTE_OPTION_YES)
+				s.validatorVote(s.valAddrs[1], v1.VoteOption_VOTE_OPTION_YES)
+				s.validatorVote(s.valAddrs[2], v1.VoteOption_VOTE_OPTION_YES)
+				s.validatorVote(s.valAddrs[3], v1.VoteOption_VOTE_OPTION_NO)
+			},
+			proposalMsgs: TestLawProposal,
+			expectedPass: false,
+			expectedBurn: false,
+			endorse:      false,
+			expectedTally: v1.TallyResult{
+				YesCount:     "3",
+				AbstainCount: "0",
+				NoCount:      "1",
+			},
+		},
+		{
+			name: "law quorum reached and threshold lowered with endorse",
+			setup: func(s *tallyFixture) {
+				s.validatorVote(s.valAddrs[0], v1.VoteOption_VOTE_OPTION_YES)
+				s.validatorVote(s.valAddrs[1], v1.VoteOption_VOTE_OPTION_YES)
+				s.validatorVote(s.valAddrs[2], v1.VoteOption_VOTE_OPTION_YES)
+				s.validatorVote(s.valAddrs[3], v1.VoteOption_VOTE_OPTION_NO)
+			},
+			proposalMsgs: TestLawProposal,
+			expectedPass: true,
+			expectedBurn: false,
+			endorse:      true,
+			expectedTally: v1.TallyResult{
+				YesCount:     "3",
+				AbstainCount: "0",
+				NoCount:      "1",
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -484,6 +521,9 @@ func TestTally(t *testing.T) {
 			proposal, err := govKeeper.SubmitProposal(ctx, tt.proposalMsgs, "", "title", "summary", delAddrs[0])
 			require.NoError(t, err)
 			govKeeper.ActivateVotingPeriod(ctx, proposal)
+			if tt.endorse {
+				proposal.Endorsed = true
+			}
 			// Create the test fixture
 			s := newTallyFixture(t, ctx, proposal, valAddrs, delAddrs, govKeeper, mocks)
 			if tt.setup != nil {
