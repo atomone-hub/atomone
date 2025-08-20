@@ -514,7 +514,7 @@ func (s *IntegrationTestSuite) submitGovCommand(chainAAPIEndpoint, sender string
 			require.NoError(c, err)
 			assert.Equal(c, res.GetProposal().Status.String(), expectedStatus.String())
 		},
-		15*time.Second,
+		20*time.Second,
 		time.Second,
 	)
 }

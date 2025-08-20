@@ -1,6 +1,9 @@
 ARG GO_VERSION
 
 # Compile the atomoned binary
+# we should always pass in a GO_VERSION, but we should also set a default
+# to prevent breakage. Our `make install` also runs a sanity check, so this
+# is safe and please the linter.
 FROM golang:${GO_VERSION:-1.24.5}-alpine AS atomoned-builder
 WORKDIR /src/app/
 COPY go.mod go.sum ./
