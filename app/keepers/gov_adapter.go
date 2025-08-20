@@ -1,8 +1,9 @@
 package keepers
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	ccvtypes "github.com/cosmos/interchain-security/v5/x/ccv/types"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	atomonegovkeeper "github.com/atomone-hub/atomone/x/gov/keeper"
 )
