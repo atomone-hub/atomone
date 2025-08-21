@@ -723,6 +723,11 @@ func (s *IntegrationTestSuite) executeAtomoneTxCommand(ctx context.Context, c *c
 }
 
 func (s *IntegrationTestSuite) executeHermesCommand(ctx context.Context, hermesCmd []string) ([]byte, error) {
+	// TODO improve this
+	if s.hermesResource == nil {
+		s.T().Logf("Hermes disabled, command %s ignored", hermesCmd)
+		return nil, nil
+	}
 	var outBuf bytes.Buffer
 	exec, err := s.dkrPool.Client.CreateExec(docker.CreateExecOptions{
 		Context:      ctx,
