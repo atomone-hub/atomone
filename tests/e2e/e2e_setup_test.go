@@ -75,8 +75,6 @@ const (
 	hermesConfigWithGasPrices = "/root/.hermes/config.toml"
 	hermesConfigNoGasPrices   = "/root/.hermes/config-zero.toml"
 	transferChannel           = "channel-0"
-
-	tsRelayerBinary = "ibc-v2-ts-relayer"
 )
 
 var (
@@ -91,6 +89,7 @@ var (
 	tokenAmount       = sdk.NewInt64Coin(uatoneDenom, 100_000_000)       // 100atone
 	standardFees      = sdk.NewInt64Coin(uphotonDenom, 330_000)          // 0.33photon
 	proposalCounter   = 0
+	tsRelayerBinary   = []string{"/etc/with_keyring", "ibc-v2-ts-relayer"}
 )
 
 type IntegrationTestSuite struct {
@@ -765,7 +764,8 @@ func (s *IntegrationTestSuite) runIBCTSRelayer() {
 			PortBindings: map[docker.Port][]docker.PortBinding{
 				"3031/tcp": {{HostIP: "", HostPort: "3031"}},
 			},
-			User: "root",
+			User:   "root",
+			CapAdd: []string{"IPC_LOCK"},
 		},
 		noRestart,
 	)
@@ -777,6 +777,7 @@ func (s *IntegrationTestSuite) runIBCTSRelayer() {
 	// transport errors.
 	time.Sleep(10 * time.Second)
 
+	// TODO rename or group these functions into a common struct (same for hermes)
 	s.addMnemonic(s.chainA.id, rlyA.mnemonic)
 	s.addMnemonic(s.chainB.id, rlyB.mnemonic)
 	s.addGasPrice(s.chainA.id, "0.0001uphoton")
@@ -795,13 +796,12 @@ func (s *IntegrationTestSuite) addMnemonic(chainID, mnemonic string) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	cmd := []string{
-		tsRelayerBinary,
+	args := []string{
 		"add-mnemonic",
 		"-c", chainID,
 		mnemonic,
 	}
-	s.executeTsRelayerCommand(ctx, cmd)
+	s.executeTsRelayerCommand(ctx, args)
 
 	s.T().Logf("ts-relayer: mnemonic added for chain %s", chainID)
 }
@@ -812,13 +812,12 @@ func (s *IntegrationTestSuite) addGasPrice(chainID, gasPrice string) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	cmd := []string{
-		tsRelayerBinary,
+	args := []string{
 		"add-gas-price",
 		"-c", chainID,
 		gasPrice,
 	}
-	s.executeTsRelayerCommand(ctx, cmd)
+	s.executeTsRelayerCommand(ctx, args)
 
 	s.T().Logf("ts-relayer: gas-price added for chain %s", chainID)
 }
@@ -829,15 +828,14 @@ func (s *IntegrationTestSuite) addPath(chainAID, containerAID, chainBID, contain
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	cmd := []string{
-		tsRelayerBinary,
+	args := []string{
 		"add-path",
 		"-s", chainAID,
 		"-d", chainBID,
 		"--surl", "http://" + containerAID + ":26657",
 		"--durl", "http://" + containerBID + ":26657",
 	}
-	s.executeTsRelayerCommand(ctx, cmd)
+	s.executeTsRelayerCommand(ctx, args)
 
 	s.T().Logf("ts-relayer: path added between chains %s and %s", chainAID, chainBID)
 }

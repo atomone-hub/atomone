@@ -768,7 +768,8 @@ func (s *IntegrationTestSuite) executeHermesCommand(ctx context.Context, hermesC
 	return stdOut, nil
 }
 
-func (s *IntegrationTestSuite) executeTsRelayerCommand(ctx context.Context, cmd []string) {
+func (s *IntegrationTestSuite) executeTsRelayerCommand(ctx context.Context, args []string) {
+	cmd := append(tsRelayerBinary, args...)
 	exec, err := s.dkrPool.Client.CreateExec(docker.CreateExecOptions{
 		Context:      ctx,
 		AttachStdout: true,
