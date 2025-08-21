@@ -295,7 +295,7 @@ localnet-start: build
 	# Previous add-genesis-account call added the auth module account as a BaseAccount, we need to remove it
 	jq 'del(.app_state.auth.accounts[] | select(.address == "atone1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8flcml8"))' $(localnet_home)/config/genesis.json > /tmp/gen
 	mv /tmp/gen $(localnet_home)/config/genesis.json
-	jq --rawfile data contrib/localnet/constitution.md '.app_state.gov.constitution=$$data' $(localnet_home)/config/genesis.json > /tmp/gen
+	jq --rawfile data contrib/localnet/constitution-mock.md '.app_state.gov.constitution=$$data' $(localnet_home)/config/genesis.json > /tmp/gen
 	mv /tmp/gen $(localnet_home)/config/genesis.json
 	$(localnetd) start
 
