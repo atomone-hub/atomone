@@ -5,7 +5,7 @@ const (
 	EventTypeAnnotateProposal   = "annotate_proposal"
 	EventTypeEndorseProposal    = "endorse_proposal"
 	EventTypeExtendVotingPeriod = "extend_voting_period"
-	EventTypeVetoProposal       = "veto_propos al"
+	EventTypeVetoProposal       = "veto_proposal"
 
 	AttributeKeyProposalID    = "proposal_id"
 	AttributeKeySigner        = "signer"
