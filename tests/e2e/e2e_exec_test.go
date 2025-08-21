@@ -41,6 +41,8 @@ const (
 	flagBroadcastMode   = "broadcast-mode"
 	flagKeyringBackend  = "keyring-backend"
 	flagAllowedMessages = "allowed-messages"
+	flagMultisig        = "multisig"
+	flagOutputDocument  = "output-document"
 )
 
 type flagOption func(map[string]interface{})
@@ -677,6 +679,75 @@ func (s *IntegrationTestSuite) execWithdrawReward(
 	s.T().Logf("Successfully withdrew distribution rewards for delegator %s from validator %s", delegatorAddress, validatorAddress)
 }
 
+func (s *IntegrationTestSuite) executeMultiSigTxCommand(c *chain, atomoneCommand []string, valIdx int, from *multiSigAccount, expectErr bool) int {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+	offlineTxFile := "multiSigTx.json"
+	multiSigAddress, err := from.keyInfo.GetAddress()
+	s.Require().NoError(err)
+	multiSigKeyName := from.keyInfo.Name
+
+	// Generate offline coredaos offline transaction
+	opt := []flagOption{withKeyValue(flagFrom, multiSigKeyName)}
+	opts := applyOptions(c.id, opt)
+	for flag, value := range opts {
+		atomoneCommand = append(atomoneCommand, fmt.Sprintf("--%s=%v", flag, value))
+	}
+	atomoneCommand = append(atomoneCommand, "--generate-only")
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.noValidationStoreOutput(c, valIdx, offlineTxFile))
+
+	// Sign offline tx
+	for idx, signer := range from.signers {
+		signerAddress, err := signer.keyInfo.GetAddress()
+		s.Require().NoError(err)
+		opt = []flagOption{withKeyValue(flagMultisig, multiSigAddress.String())}
+		opt = append(opt, withKeyValue(flagFrom, signerAddress.String()))
+		opt = append(opt, withKeyValue(flagOutputDocument, configFile(fmt.Sprintf("signed_%v_%s", idx, offlineTxFile))))
+		opts := applyOptions(c.id, opt)
+		atomoneCommand = []string{
+			atomonedBinary,
+			txCommand,
+			"sign",
+			configFile(offlineTxFile),
+		}
+		for flag, value := range opts {
+			atomoneCommand = append(atomoneCommand, fmt.Sprintf("--%s=%v", flag, value))
+		}
+		s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.noValidationStoreOutput(c, valIdx, ""))
+	}
+
+	// Combine signatures
+	atomoneCommand = []string{
+		atomonedBinary,
+		txCommand,
+		"multisign",
+		configFile(offlineTxFile),
+		multiSigKeyName,
+	}
+	for idx := range from.signers {
+		atomoneCommand = append(atomoneCommand, configFile(fmt.Sprintf("signed_%v_%s", idx, offlineTxFile)))
+	}
+	atomoneCommand = append(atomoneCommand, fmt.Sprintf("--%s=%v", flagKeyringBackend, "test"))
+	atomoneCommand = append(atomoneCommand, fmt.Sprintf("--%s=%v", flagChainID, c.id))
+	atomoneCommand = append(atomoneCommand, fmt.Sprintf("--%s=%v", flagHome, atomoneHomePath))
+	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.noValidationStoreOutput(c, valIdx, fmt.Sprintf("signed_%s", offlineTxFile)))
+
+	// Broadcast tx
+	opt = []flagOption{withKeyValue(flagFrom, multiSigKeyName)}
+	opts = applyOptions(c.id, opt)
+	atomoneCommand = []string{
+		atomonedBinary,
+		txCommand,
+		"broadcast",
+		configFile(fmt.Sprintf("signed_%s", offlineTxFile)),
+	}
+	for flag, value := range opts {
+		atomoneCommand = append(atomoneCommand, fmt.Sprintf("--%s=%v", flag, value))
+	}
+	height := s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.expectErrExecValidation(c, valIdx, expectErr))
+	return height
+}
+
 func (s *IntegrationTestSuite) executeAtomoneTxCommand(ctx context.Context, c *chain, atomoneCommand []string, valIdx int, validation func([]byte, []byte) error) int {
 	if validation == nil {
 		validation = s.defaultExecValidation(s.chainA, 0, nil)
@@ -796,6 +867,17 @@ func (s *IntegrationTestSuite) defaultExecValidation(chain *chain, valIdx int, m
 			}
 		}
 		return fmt.Errorf("tx error : %s", txResp.String())
+	}
+}
+
+func (s *IntegrationTestSuite) noValidationStoreOutput(chain *chain, valIdx int, filename string) func([]byte, []byte) error {
+	return func(stdOut []byte, stdErr []byte) error {
+		if filename == "" {
+			return nil
+		}
+		err := writeFile(filepath.Join(chain.validators[valIdx].configDir(), "config", filename), stdOut)
+		s.Require().NoError(err)
+		return nil
 	}
 }
 
