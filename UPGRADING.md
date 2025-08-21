@@ -7,6 +7,13 @@ upgrade successfully for the AtomOne v3 release.
 
 For more details on the release, please see the [release notes][v3].
 
+> [!IMPORTANT]
+> This release introduces the `x/dynamicfee` module which adjusts the gas
+> prices according to blockchain activity, and in a way that takes precedence
+> over the validator `minimum-gas-prices` setting. Hence, after the upgrade,
+> this setting will be ignored; in other words, validators will no longer be
+> able to set their own gas prices.
+
 ## Release Binary
 
 Please use the correct release binary: `v3.0.1`.
