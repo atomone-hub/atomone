@@ -76,7 +76,8 @@ func TestMsgServerUpdateParams(t *testing.T) {
 			},
 			expectedErr: "cannot update params while Steering DAO have bonded or unbonding tokens: core DAOs cannot stake",
 			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
-				m.StakingKeeper.EXPECT().GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(bondedAcc)).Return(math.NewInt(10))
+				m.StakingKeeper.EXPECT().GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(bondedAcc)).Return(math.NewInt(10), nil)
+				m.StakingKeeper.EXPECT().GetDelegatorUnbonding(ctx, sdk.MustAccAddressFromBech32(bondedAcc)).Return(math.NewInt(0), nil)
 			},
 		},
 		{
@@ -90,7 +91,8 @@ func TestMsgServerUpdateParams(t *testing.T) {
 			},
 			expectedErr: "cannot update params while Oversight DAO have bonded or unbonding tokens: core DAOs cannot stake",
 			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
-				m.StakingKeeper.EXPECT().GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(bondedAcc)).Return(math.NewInt(10))
+				m.StakingKeeper.EXPECT().GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(bondedAcc)).Return(math.NewInt(10), nil)
+				m.StakingKeeper.EXPECT().GetDelegatorUnbonding(ctx, sdk.MustAccAddressFromBech32(bondedAcc)).Return(math.NewInt(0), nil)
 			},
 		},
 		{
@@ -129,8 +131,8 @@ func TestMsgServerUpdateParams(t *testing.T) {
 			expectedErr: "cannot update params while Steering DAO have bonded or unbonding tokens: core DAOs cannot stake",
 			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
 				// Address is in unbonding
-				m.StakingKeeper.EXPECT().GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(unbondingAcc)).Return(math.NewInt(0))
-				m.StakingKeeper.EXPECT().GetDelegatorUnbonding(ctx, sdk.MustAccAddressFromBech32(unbondingAcc)).Return(math.NewInt(10))
+				m.StakingKeeper.EXPECT().GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(unbondingAcc)).Return(math.NewInt(0), nil)
+				m.StakingKeeper.EXPECT().GetDelegatorUnbonding(ctx, sdk.MustAccAddressFromBech32(unbondingAcc)).Return(math.NewInt(10), nil)
 			},
 		},
 		{
@@ -145,8 +147,8 @@ func TestMsgServerUpdateParams(t *testing.T) {
 			expectedErr: "cannot update params while Oversight DAO have bonded or unbonding tokens: core DAOs cannot stake",
 			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
 				// Address is in unbonding
-				m.StakingKeeper.EXPECT().GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(unbondingAcc)).Return(math.NewInt(0))
-				m.StakingKeeper.EXPECT().GetDelegatorUnbonding(ctx, sdk.MustAccAddressFromBech32(unbondingAcc)).Return(math.NewInt(10))
+				m.StakingKeeper.EXPECT().GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(unbondingAcc)).Return(math.NewInt(0), nil)
+				m.StakingKeeper.EXPECT().GetDelegatorUnbonding(ctx, sdk.MustAccAddressFromBech32(unbondingAcc)).Return(math.NewInt(10), nil)
 			},
 		},
 		{
@@ -160,8 +162,8 @@ func TestMsgServerUpdateParams(t *testing.T) {
 			},
 			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
 				// Address is not bonded or in unbonding
-				m.StakingKeeper.EXPECT().GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(unbondedAcc)).Return(math.NewInt(0))
-				m.StakingKeeper.EXPECT().GetDelegatorUnbonding(ctx, sdk.MustAccAddressFromBech32(unbondedAcc)).Return(math.NewInt(0))
+				m.StakingKeeper.EXPECT().GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(unbondedAcc)).Return(math.NewInt(0), nil)
+				m.StakingKeeper.EXPECT().GetDelegatorUnbonding(ctx, sdk.MustAccAddressFromBech32(unbondedAcc)).Return(math.NewInt(0), nil)
 			},
 		},
 		{
@@ -175,8 +177,8 @@ func TestMsgServerUpdateParams(t *testing.T) {
 			},
 			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
 				// Address is not bonded or in unbonding
-				m.StakingKeeper.EXPECT().GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(unbondedAcc)).Return(math.NewInt(0))
-				m.StakingKeeper.EXPECT().GetDelegatorUnbonding(ctx, sdk.MustAccAddressFromBech32(unbondedAcc)).Return(math.NewInt(0))
+				m.StakingKeeper.EXPECT().GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(unbondedAcc)).Return(math.NewInt(0), nil)
+				m.StakingKeeper.EXPECT().GetDelegatorUnbonding(ctx, sdk.MustAccAddressFromBech32(unbondedAcc)).Return(math.NewInt(0), nil)
 			},
 		},
 		{
@@ -191,8 +193,8 @@ func TestMsgServerUpdateParams(t *testing.T) {
 			},
 			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
 				// Address is not bonded or in unbonding
-				m.StakingKeeper.EXPECT().GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(unbondedAcc)).Return(math.NewInt(0)).Times(2)
-				m.StakingKeeper.EXPECT().GetDelegatorUnbonding(ctx, sdk.MustAccAddressFromBech32(unbondedAcc)).Return(math.NewInt(0)).Times(2)
+				m.StakingKeeper.EXPECT().GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(unbondedAcc)).Return(math.NewInt(0), nil).Times(2)
+				m.StakingKeeper.EXPECT().GetDelegatorUnbonding(ctx, sdk.MustAccAddressFromBech32(unbondedAcc)).Return(math.NewInt(0), nil).Times(2)
 			},
 		},
 	}

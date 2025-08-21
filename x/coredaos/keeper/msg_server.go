@@ -41,7 +41,7 @@ func (ms MsgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdatePara
 		if err != nil {
 			return nil, err
 		}
-		delegatorUnbonded, err := ms.k.stakingKeeper.GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(params.SteeringDaoAddress))
+		delegatorUnbonded, err := ms.k.stakingKeeper.GetDelegatorUnbonding(ctx, sdk.MustAccAddressFromBech32(params.SteeringDaoAddress))
 		if err != nil {
 			return nil, err
 		}
@@ -55,7 +55,7 @@ func (ms MsgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdatePara
 		if err != nil {
 			return nil, err
 		}
-		delegatorUnbonded, err := ms.k.stakingKeeper.GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(params.OversightDaoAddress))
+		delegatorUnbonded, err := ms.k.stakingKeeper.GetDelegatorUnbonding(ctx, sdk.MustAccAddressFromBech32(params.OversightDaoAddress))
 		if err != nil {
 			return nil, err
 		}

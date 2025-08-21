@@ -235,7 +235,7 @@ func (keeper Keeper) getQuorumAndThreshold(ctx sdk.Context, proposal v1.Proposal
 		lawThreshold := math.LegacyMustNewDecFromStr(params.LawThreshold)
 		if proposal.Endorsed {
 			// If the proposal is endorsed, we use threshold for the generic kind
-			math.LegacyMustNewDecFromStr(params.Threshold)
+			lawThreshold = math.LegacyMustNewDecFromStr(params.Threshold)
 		}
 
 		if lawQuorum.GT(quorum) {

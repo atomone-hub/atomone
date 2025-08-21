@@ -5,6 +5,7 @@
 package testutil
 
 import (
+	context "context"
 	reflect "reflect"
 	time "time"
 
@@ -186,11 +187,12 @@ func (m *MockStakingKeeper) EXPECT() *MockStakingKeeperMockRecorder {
 }
 
 // GetDelegatorBonded mocks base method.
-func (m *MockStakingKeeper) GetDelegatorBonded(ctx types.Context, delegator types.AccAddress) math.Int {
+func (m *MockStakingKeeper) GetDelegatorBonded(ctx context.Context, delegator types.AccAddress) (math.Int, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetDelegatorBonded", ctx, delegator)
 	ret0, _ := ret[0].(math.Int)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // GetDelegatorBonded indicates an expected call of GetDelegatorBonded.
@@ -200,11 +202,12 @@ func (mr *MockStakingKeeperMockRecorder) GetDelegatorBonded(ctx, delegator inter
 }
 
 // GetDelegatorUnbonding mocks base method.
-func (m *MockStakingKeeper) GetDelegatorUnbonding(ctx types.Context, delegator types.AccAddress) math.Int {
+func (m *MockStakingKeeper) GetDelegatorUnbonding(ctx context.Context, delegator types.AccAddress) (math.Int, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetDelegatorUnbonding", ctx, delegator)
 	ret0, _ := ret[0].(math.Int)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // GetDelegatorUnbonding indicates an expected call of GetDelegatorUnbonding.
