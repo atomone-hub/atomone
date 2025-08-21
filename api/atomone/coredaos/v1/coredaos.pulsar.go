@@ -3,6 +3,10 @@ package coredaosv1
 
 import (
 	fmt "fmt"
+	io "io"
+	reflect "reflect"
+	sync "sync"
+
 	_ "github.com/cosmos/cosmos-proto"
 	runtime "github.com/cosmos/cosmos-proto/runtime"
 	_ "github.com/cosmos/gogoproto/gogoproto"
@@ -10,9 +14,6 @@ import (
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	durationpb "google.golang.org/protobuf/types/known/durationpb"
-	io "io"
-	reflect "reflect"
-	sync "sync"
 )
 
 var (
@@ -52,17 +53,21 @@ func (x *Params) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_Params_messageType fastReflection_Params_messageType
-var _ protoreflect.MessageType = fastReflection_Params_messageType{}
+var (
+	_fastReflection_Params_messageType fastReflection_Params_messageType
+	_                                  protoreflect.MessageType = fastReflection_Params_messageType{}
+)
 
 type fastReflection_Params_messageType struct{}
 
 func (x fastReflection_Params_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_Params)(nil)
 }
+
 func (x fastReflection_Params_messageType) New() protoreflect.Message {
 	return new(fastReflection_Params)
 }
+
 func (x fastReflection_Params_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_Params
 }
@@ -767,11 +772,14 @@ func file_atomone_coredaos_v1_coredaos_proto_rawDescGZIP() []byte {
 	return file_atomone_coredaos_v1_coredaos_proto_rawDescData
 }
 
-var file_atomone_coredaos_v1_coredaos_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
-var file_atomone_coredaos_v1_coredaos_proto_goTypes = []interface{}{
-	(*Params)(nil),              // 0: atomone.coredaos.v1.Params
-	(*durationpb.Duration)(nil), // 1: google.protobuf.Duration
-}
+var (
+	file_atomone_coredaos_v1_coredaos_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+	file_atomone_coredaos_v1_coredaos_proto_goTypes  = []interface{}{
+		(*Params)(nil),              // 0: atomone.coredaos.v1.Params
+		(*durationpb.Duration)(nil), // 1: google.protobuf.Duration
+	}
+)
+
 var file_atomone_coredaos_v1_coredaos_proto_depIdxs = []int32{
 	1, // 0: atomone.coredaos.v1.Params.voting_period_extension_duration:type_name -> google.protobuf.Duration
 	1, // [1:1] is the sub-list for method output_type

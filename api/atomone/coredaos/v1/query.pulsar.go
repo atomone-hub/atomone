@@ -2,10 +2,15 @@
 package coredaosv1
 
 import (
+	fmt "fmt"
+	io "io"
+	reflect "reflect"
+	sync "sync"
+
 	_ "cosmossdk.io/api/amino"
 	_ "cosmossdk.io/api/cosmos/base/query/v1beta1"
 	_ "cosmossdk.io/api/cosmos/base/v1beta1"
-	fmt "fmt"
+
 	_ "github.com/cosmos/cosmos-proto"
 	runtime "github.com/cosmos/cosmos-proto/runtime"
 	_ "github.com/cosmos/gogoproto/gogoproto"
@@ -13,14 +18,9 @@ import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	io "io"
-	reflect "reflect"
-	sync "sync"
 )
 
-var (
-	md_QueryParamsRequest protoreflect.MessageDescriptor
-)
+var md_QueryParamsRequest protoreflect.MessageDescriptor
 
 func init() {
 	file_atomone_coredaos_v1_query_proto_init()
@@ -47,17 +47,21 @@ func (x *QueryParamsRequest) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_QueryParamsRequest_messageType fastReflection_QueryParamsRequest_messageType
-var _ protoreflect.MessageType = fastReflection_QueryParamsRequest_messageType{}
+var (
+	_fastReflection_QueryParamsRequest_messageType fastReflection_QueryParamsRequest_messageType
+	_                                              protoreflect.MessageType = fastReflection_QueryParamsRequest_messageType{}
+)
 
 type fastReflection_QueryParamsRequest_messageType struct{}
 
 func (x fastReflection_QueryParamsRequest_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_QueryParamsRequest)(nil)
 }
+
 func (x fastReflection_QueryParamsRequest_messageType) New() protoreflect.Message {
 	return new(fastReflection_QueryParamsRequest)
 }
+
 func (x fastReflection_QueryParamsRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_QueryParamsRequest
 }
@@ -405,17 +409,21 @@ func (x *QueryParamsResponse) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_QueryParamsResponse_messageType fastReflection_QueryParamsResponse_messageType
-var _ protoreflect.MessageType = fastReflection_QueryParamsResponse_messageType{}
+var (
+	_fastReflection_QueryParamsResponse_messageType fastReflection_QueryParamsResponse_messageType
+	_                                               protoreflect.MessageType = fastReflection_QueryParamsResponse_messageType{}
+)
 
 type fastReflection_QueryParamsResponse_messageType struct{}
 
 func (x fastReflection_QueryParamsResponse_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_QueryParamsResponse)(nil)
 }
+
 func (x fastReflection_QueryParamsResponse_messageType) New() protoreflect.Message {
 	return new(fastReflection_QueryParamsResponse)
 }
+
 func (x fastReflection_QueryParamsResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_QueryParamsResponse
 }
@@ -948,12 +956,15 @@ func file_atomone_coredaos_v1_query_proto_rawDescGZIP() []byte {
 	return file_atomone_coredaos_v1_query_proto_rawDescData
 }
 
-var file_atomone_coredaos_v1_query_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
-var file_atomone_coredaos_v1_query_proto_goTypes = []interface{}{
-	(*QueryParamsRequest)(nil),  // 0: atomone.coredaos.v1.QueryParamsRequest
-	(*QueryParamsResponse)(nil), // 1: atomone.coredaos.v1.QueryParamsResponse
-	(*Params)(nil),              // 2: atomone.coredaos.v1.Params
-}
+var (
+	file_atomone_coredaos_v1_query_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+	file_atomone_coredaos_v1_query_proto_goTypes  = []interface{}{
+		(*QueryParamsRequest)(nil),  // 0: atomone.coredaos.v1.QueryParamsRequest
+		(*QueryParamsResponse)(nil), // 1: atomone.coredaos.v1.QueryParamsResponse
+		(*Params)(nil),              // 2: atomone.coredaos.v1.Params
+	}
+)
+
 var file_atomone_coredaos_v1_query_proto_depIdxs = []int32{
 	2, // 0: atomone.coredaos.v1.QueryParamsResponse.params:type_name -> atomone.coredaos.v1.Params
 	0, // 1: atomone.coredaos.v1.Query.Params:input_type -> atomone.coredaos.v1.QueryParamsRequest

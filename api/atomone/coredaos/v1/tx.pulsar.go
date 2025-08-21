@@ -2,18 +2,20 @@
 package coredaosv1
 
 import (
+	fmt "fmt"
+	io "io"
+	reflect "reflect"
+	sync "sync"
+
 	_ "cosmossdk.io/api/amino"
 	_ "cosmossdk.io/api/cosmos/msg/v1"
-	fmt "fmt"
+
 	_ "github.com/cosmos/cosmos-proto"
 	runtime "github.com/cosmos/cosmos-proto/runtime"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	io "io"
-	reflect "reflect"
-	sync "sync"
 )
 
 var (
@@ -53,17 +55,21 @@ func (x *MsgAnnotateProposal) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_MsgAnnotateProposal_messageType fastReflection_MsgAnnotateProposal_messageType
-var _ protoreflect.MessageType = fastReflection_MsgAnnotateProposal_messageType{}
+var (
+	_fastReflection_MsgAnnotateProposal_messageType fastReflection_MsgAnnotateProposal_messageType
+	_                                               protoreflect.MessageType = fastReflection_MsgAnnotateProposal_messageType{}
+)
 
 type fastReflection_MsgAnnotateProposal_messageType struct{}
 
 func (x fastReflection_MsgAnnotateProposal_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_MsgAnnotateProposal)(nil)
 }
+
 func (x fastReflection_MsgAnnotateProposal_messageType) New() protoreflect.Message {
 	return new(fastReflection_MsgAnnotateProposal)
 }
+
 func (x fastReflection_MsgAnnotateProposal_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_MsgAnnotateProposal
 }
@@ -602,9 +608,7 @@ func (x *fastReflection_MsgAnnotateProposal) ProtoMethods() *protoiface.Methods 
 	}
 }
 
-var (
-	md_MsgAnnotateProposalResponse protoreflect.MessageDescriptor
-)
+var md_MsgAnnotateProposalResponse protoreflect.MessageDescriptor
 
 func init() {
 	file_atomone_coredaos_v1_tx_proto_init()
@@ -631,17 +635,21 @@ func (x *MsgAnnotateProposalResponse) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_MsgAnnotateProposalResponse_messageType fastReflection_MsgAnnotateProposalResponse_messageType
-var _ protoreflect.MessageType = fastReflection_MsgAnnotateProposalResponse_messageType{}
+var (
+	_fastReflection_MsgAnnotateProposalResponse_messageType fastReflection_MsgAnnotateProposalResponse_messageType
+	_                                                       protoreflect.MessageType = fastReflection_MsgAnnotateProposalResponse_messageType{}
+)
 
 type fastReflection_MsgAnnotateProposalResponse_messageType struct{}
 
 func (x fastReflection_MsgAnnotateProposalResponse_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_MsgAnnotateProposalResponse)(nil)
 }
+
 func (x fastReflection_MsgAnnotateProposalResponse_messageType) New() protoreflect.Message {
 	return new(fastReflection_MsgAnnotateProposalResponse)
 }
+
 func (x fastReflection_MsgAnnotateProposalResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_MsgAnnotateProposalResponse
 }
@@ -991,17 +999,21 @@ func (x *MsgEndorseProposal) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_MsgEndorseProposal_messageType fastReflection_MsgEndorseProposal_messageType
-var _ protoreflect.MessageType = fastReflection_MsgEndorseProposal_messageType{}
+var (
+	_fastReflection_MsgEndorseProposal_messageType fastReflection_MsgEndorseProposal_messageType
+	_                                              protoreflect.MessageType = fastReflection_MsgEndorseProposal_messageType{}
+)
 
 type fastReflection_MsgEndorseProposal_messageType struct{}
 
 func (x fastReflection_MsgEndorseProposal_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_MsgEndorseProposal)(nil)
 }
+
 func (x fastReflection_MsgEndorseProposal_messageType) New() protoreflect.Message {
 	return new(fastReflection_MsgEndorseProposal)
 }
+
 func (x fastReflection_MsgEndorseProposal_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_MsgEndorseProposal
 }
@@ -1426,9 +1438,7 @@ func (x *fastReflection_MsgEndorseProposal) ProtoMethods() *protoiface.Methods {
 	}
 }
 
-var (
-	md_MsgEndorseProposalResponse protoreflect.MessageDescriptor
-)
+var md_MsgEndorseProposalResponse protoreflect.MessageDescriptor
 
 func init() {
 	file_atomone_coredaos_v1_tx_proto_init()
@@ -1455,17 +1465,21 @@ func (x *MsgEndorseProposalResponse) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_MsgEndorseProposalResponse_messageType fastReflection_MsgEndorseProposalResponse_messageType
-var _ protoreflect.MessageType = fastReflection_MsgEndorseProposalResponse_messageType{}
+var (
+	_fastReflection_MsgEndorseProposalResponse_messageType fastReflection_MsgEndorseProposalResponse_messageType
+	_                                                      protoreflect.MessageType = fastReflection_MsgEndorseProposalResponse_messageType{}
+)
 
 type fastReflection_MsgEndorseProposalResponse_messageType struct{}
 
 func (x fastReflection_MsgEndorseProposalResponse_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_MsgEndorseProposalResponse)(nil)
 }
+
 func (x fastReflection_MsgEndorseProposalResponse_messageType) New() protoreflect.Message {
 	return new(fastReflection_MsgEndorseProposalResponse)
 }
+
 func (x fastReflection_MsgEndorseProposalResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_MsgEndorseProposalResponse
 }
@@ -1815,17 +1829,21 @@ func (x *MsgExtendVotingPeriod) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_MsgExtendVotingPeriod_messageType fastReflection_MsgExtendVotingPeriod_messageType
-var _ protoreflect.MessageType = fastReflection_MsgExtendVotingPeriod_messageType{}
+var (
+	_fastReflection_MsgExtendVotingPeriod_messageType fastReflection_MsgExtendVotingPeriod_messageType
+	_                                                 protoreflect.MessageType = fastReflection_MsgExtendVotingPeriod_messageType{}
+)
 
 type fastReflection_MsgExtendVotingPeriod_messageType struct{}
 
 func (x fastReflection_MsgExtendVotingPeriod_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_MsgExtendVotingPeriod)(nil)
 }
+
 func (x fastReflection_MsgExtendVotingPeriod_messageType) New() protoreflect.Message {
 	return new(fastReflection_MsgExtendVotingPeriod)
 }
+
 func (x fastReflection_MsgExtendVotingPeriod_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_MsgExtendVotingPeriod
 }
@@ -2250,9 +2268,7 @@ func (x *fastReflection_MsgExtendVotingPeriod) ProtoMethods() *protoiface.Method
 	}
 }
 
-var (
-	md_MsgExtendVotingPeriodResponse protoreflect.MessageDescriptor
-)
+var md_MsgExtendVotingPeriodResponse protoreflect.MessageDescriptor
 
 func init() {
 	file_atomone_coredaos_v1_tx_proto_init()
@@ -2279,17 +2295,21 @@ func (x *MsgExtendVotingPeriodResponse) slowProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_MsgExtendVotingPeriodResponse_messageType fastReflection_MsgExtendVotingPeriodResponse_messageType
-var _ protoreflect.MessageType = fastReflection_MsgExtendVotingPeriodResponse_messageType{}
+var (
+	_fastReflection_MsgExtendVotingPeriodResponse_messageType fastReflection_MsgExtendVotingPeriodResponse_messageType
+	_                                                         protoreflect.MessageType = fastReflection_MsgExtendVotingPeriodResponse_messageType{}
+)
 
 type fastReflection_MsgExtendVotingPeriodResponse_messageType struct{}
 
 func (x fastReflection_MsgExtendVotingPeriodResponse_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_MsgExtendVotingPeriodResponse)(nil)
 }
+
 func (x fastReflection_MsgExtendVotingPeriodResponse_messageType) New() protoreflect.Message {
 	return new(fastReflection_MsgExtendVotingPeriodResponse)
 }
+
 func (x fastReflection_MsgExtendVotingPeriodResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_MsgExtendVotingPeriodResponse
 }
@@ -2641,17 +2661,21 @@ func (x *MsgVetoProposal) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_MsgVetoProposal_messageType fastReflection_MsgVetoProposal_messageType
-var _ protoreflect.MessageType = fastReflection_MsgVetoProposal_messageType{}
+var (
+	_fastReflection_MsgVetoProposal_messageType fastReflection_MsgVetoProposal_messageType
+	_                                           protoreflect.MessageType = fastReflection_MsgVetoProposal_messageType{}
+)
 
 type fastReflection_MsgVetoProposal_messageType struct{}
 
 func (x fastReflection_MsgVetoProposal_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_MsgVetoProposal)(nil)
 }
+
 func (x fastReflection_MsgVetoProposal_messageType) New() protoreflect.Message {
 	return new(fastReflection_MsgVetoProposal)
 }
+
 func (x fastReflection_MsgVetoProposal_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_MsgVetoProposal
 }
@@ -3128,9 +3152,7 @@ func (x *fastReflection_MsgVetoProposal) ProtoMethods() *protoiface.Methods {
 	}
 }
 
-var (
-	md_MsgVetoProposalResponse protoreflect.MessageDescriptor
-)
+var md_MsgVetoProposalResponse protoreflect.MessageDescriptor
 
 func init() {
 	file_atomone_coredaos_v1_tx_proto_init()
@@ -3157,17 +3179,21 @@ func (x *MsgVetoProposalResponse) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_MsgVetoProposalResponse_messageType fastReflection_MsgVetoProposalResponse_messageType
-var _ protoreflect.MessageType = fastReflection_MsgVetoProposalResponse_messageType{}
+var (
+	_fastReflection_MsgVetoProposalResponse_messageType fastReflection_MsgVetoProposalResponse_messageType
+	_                                                   protoreflect.MessageType = fastReflection_MsgVetoProposalResponse_messageType{}
+)
 
 type fastReflection_MsgVetoProposalResponse_messageType struct{}
 
 func (x fastReflection_MsgVetoProposalResponse_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_MsgVetoProposalResponse)(nil)
 }
+
 func (x fastReflection_MsgVetoProposalResponse_messageType) New() protoreflect.Message {
 	return new(fastReflection_MsgVetoProposalResponse)
 }
+
 func (x fastReflection_MsgVetoProposalResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_MsgVetoProposalResponse
 }
@@ -3517,17 +3543,21 @@ func (x *MsgUpdateParams) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_MsgUpdateParams_messageType fastReflection_MsgUpdateParams_messageType
-var _ protoreflect.MessageType = fastReflection_MsgUpdateParams_messageType{}
+var (
+	_fastReflection_MsgUpdateParams_messageType fastReflection_MsgUpdateParams_messageType
+	_                                           protoreflect.MessageType = fastReflection_MsgUpdateParams_messageType{}
+)
 
 type fastReflection_MsgUpdateParams_messageType struct{}
 
 func (x fastReflection_MsgUpdateParams_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_MsgUpdateParams)(nil)
 }
+
 func (x fastReflection_MsgUpdateParams_messageType) New() protoreflect.Message {
 	return new(fastReflection_MsgUpdateParams)
 }
+
 func (x fastReflection_MsgUpdateParams_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_MsgUpdateParams
 }
@@ -3983,9 +4013,7 @@ func (x *fastReflection_MsgUpdateParams) ProtoMethods() *protoiface.Methods {
 	}
 }
 
-var (
-	md_MsgUpdateParamsResponse protoreflect.MessageDescriptor
-)
+var md_MsgUpdateParamsResponse protoreflect.MessageDescriptor
 
 func init() {
 	file_atomone_coredaos_v1_tx_proto_init()
@@ -4012,17 +4040,21 @@ func (x *MsgUpdateParamsResponse) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_MsgUpdateParamsResponse_messageType fastReflection_MsgUpdateParamsResponse_messageType
-var _ protoreflect.MessageType = fastReflection_MsgUpdateParamsResponse_messageType{}
+var (
+	_fastReflection_MsgUpdateParamsResponse_messageType fastReflection_MsgUpdateParamsResponse_messageType
+	_                                                   protoreflect.MessageType = fastReflection_MsgUpdateParamsResponse_messageType{}
+)
 
 type fastReflection_MsgUpdateParamsResponse_messageType struct{}
 
 func (x fastReflection_MsgUpdateParamsResponse_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_MsgUpdateParamsResponse)(nil)
 }
+
 func (x fastReflection_MsgUpdateParamsResponse_messageType) New() protoreflect.Message {
 	return new(fastReflection_MsgUpdateParamsResponse)
 }
+
 func (x fastReflection_MsgUpdateParamsResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_MsgUpdateParamsResponse
 }
@@ -4887,20 +4919,23 @@ func file_atomone_coredaos_v1_tx_proto_rawDescGZIP() []byte {
 	return file_atomone_coredaos_v1_tx_proto_rawDescData
 }
 
-var file_atomone_coredaos_v1_tx_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
-var file_atomone_coredaos_v1_tx_proto_goTypes = []interface{}{
-	(*MsgAnnotateProposal)(nil),           // 0: atomone.coredaos.v1.MsgAnnotateProposal
-	(*MsgAnnotateProposalResponse)(nil),   // 1: atomone.coredaos.v1.MsgAnnotateProposalResponse
-	(*MsgEndorseProposal)(nil),            // 2: atomone.coredaos.v1.MsgEndorseProposal
-	(*MsgEndorseProposalResponse)(nil),    // 3: atomone.coredaos.v1.MsgEndorseProposalResponse
-	(*MsgExtendVotingPeriod)(nil),         // 4: atomone.coredaos.v1.MsgExtendVotingPeriod
-	(*MsgExtendVotingPeriodResponse)(nil), // 5: atomone.coredaos.v1.MsgExtendVotingPeriodResponse
-	(*MsgVetoProposal)(nil),               // 6: atomone.coredaos.v1.MsgVetoProposal
-	(*MsgVetoProposalResponse)(nil),       // 7: atomone.coredaos.v1.MsgVetoProposalResponse
-	(*MsgUpdateParams)(nil),               // 8: atomone.coredaos.v1.MsgUpdateParams
-	(*MsgUpdateParamsResponse)(nil),       // 9: atomone.coredaos.v1.MsgUpdateParamsResponse
-	(*Params)(nil),                        // 10: atomone.coredaos.v1.Params
-}
+var (
+	file_atomone_coredaos_v1_tx_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+	file_atomone_coredaos_v1_tx_proto_goTypes  = []interface{}{
+		(*MsgAnnotateProposal)(nil),           // 0: atomone.coredaos.v1.MsgAnnotateProposal
+		(*MsgAnnotateProposalResponse)(nil),   // 1: atomone.coredaos.v1.MsgAnnotateProposalResponse
+		(*MsgEndorseProposal)(nil),            // 2: atomone.coredaos.v1.MsgEndorseProposal
+		(*MsgEndorseProposalResponse)(nil),    // 3: atomone.coredaos.v1.MsgEndorseProposalResponse
+		(*MsgExtendVotingPeriod)(nil),         // 4: atomone.coredaos.v1.MsgExtendVotingPeriod
+		(*MsgExtendVotingPeriodResponse)(nil), // 5: atomone.coredaos.v1.MsgExtendVotingPeriodResponse
+		(*MsgVetoProposal)(nil),               // 6: atomone.coredaos.v1.MsgVetoProposal
+		(*MsgVetoProposalResponse)(nil),       // 7: atomone.coredaos.v1.MsgVetoProposalResponse
+		(*MsgUpdateParams)(nil),               // 8: atomone.coredaos.v1.MsgUpdateParams
+		(*MsgUpdateParamsResponse)(nil),       // 9: atomone.coredaos.v1.MsgUpdateParamsResponse
+		(*Params)(nil),                        // 10: atomone.coredaos.v1.Params
+	}
+)
+
 var file_atomone_coredaos_v1_tx_proto_depIdxs = []int32{
 	10, // 0: atomone.coredaos.v1.MsgUpdateParams.params:type_name -> atomone.coredaos.v1.Params
 	0,  // 1: atomone.coredaos.v1.Msg.AnnotateProposal:input_type -> atomone.coredaos.v1.MsgAnnotateProposal

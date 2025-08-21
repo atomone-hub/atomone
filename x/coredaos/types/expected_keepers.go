@@ -1,6 +1,7 @@
 package types
 
 import (
+	"context"
 	time "time"
 
 	"cosmossdk.io/math"
@@ -46,7 +47,7 @@ type GovKeeper interface {
 // staking module.
 type StakingKeeper interface {
 	// GetDelegatorBonded returns the total amount a delegator has bonded.
-	GetDelegatorBonded(ctx sdk.Context, delegator sdk.AccAddress) math.Int
+	GetDelegatorBonded(ctx context.Context, delegator sdk.AccAddress) (math.Int, error)
 	// GetDelegatorUnbonding returns the total amount a delegator has unbonding.
-	GetDelegatorUnbonding(ctx sdk.Context, delegator sdk.AccAddress) math.Int
+	GetDelegatorUnbonding(ctx context.Context, delegator sdk.AccAddress) (math.Int, error)
 }

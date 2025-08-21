@@ -136,14 +136,6 @@ message Proposal {
     (gogoproto.nullable) = false,
     (amino.dont_omitempty) = true
   ];
-
-  // annotations is an optional field that contains annotations
-  // added by the Steering DAO.
-  string annotation = 10;
-
-  // times_voting_period_extended is the number of times the voting period
-  // has been extended from one of the core DAOs.
-  uint32 times_voting_period_extended = 11;
 }
 
 // ProposalStatus enumerates the valid statuses of a proposal.

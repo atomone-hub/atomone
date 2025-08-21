@@ -28,21 +28,6 @@ func (msg *MsgAnnotateProposal) Type() string {
 	return sdk.MsgTypeURL(msg)
 }
 
-// GetSigners implements the sdk.Msg interface.
-func (msg *MsgAnnotateProposal) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Annotator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
-// GetSignBytes implements the sdk.Msg interface.
-func (msg *MsgAnnotateProposal) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
-}
-
 // ValidateBasic implements the sdk.Msg interface.
 func (msg *MsgAnnotateProposal) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Annotator); err != nil {
@@ -72,21 +57,6 @@ func (msg *MsgEndorseProposal) Type() string {
 	return sdk.MsgTypeURL(msg)
 }
 
-// GetSigners implements the sdk.Msg interface.
-func (msg *MsgEndorseProposal) GetSigners() []sdk.AccAddress {
-	endorser, err := sdk.AccAddressFromBech32(msg.Endorser)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{endorser}
-}
-
-// GetSignBytes implements the sdk.Msg interface.
-func (msg *MsgEndorseProposal) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
-}
-
 // ValidateBasic implements the sdk.Msg interface.
 func (msg *MsgEndorseProposal) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Endorser); err != nil {
@@ -111,21 +81,6 @@ func (msg *MsgExtendVotingPeriod) Route() string {
 // Type implements the sdk.Msg interface.
 func (msg *MsgExtendVotingPeriod) Type() string {
 	return sdk.MsgTypeURL(msg)
-}
-
-// GetSigners implements the sdk.Msg interface.
-func (msg *MsgExtendVotingPeriod) GetSigners() []sdk.AccAddress {
-	extender, err := sdk.AccAddressFromBech32(msg.Extender)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{extender}
-}
-
-// GetSignBytes implements the sdk.Msg interface.
-func (msg *MsgExtendVotingPeriod) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
 }
 
 // ValidateBasic implements the sdk.Msg interface.
@@ -153,21 +108,6 @@ func (msg *MsgVetoProposal) Route() string {
 // Type implements the sdk.Msg interface.
 func (msg *MsgVetoProposal) Type() string {
 	return sdk.MsgTypeURL(msg)
-}
-
-// GetSigners implements the sdk.Msg interface.
-func (msg *MsgVetoProposal) GetSigners() []sdk.AccAddress {
-	vetoer, err := sdk.AccAddressFromBech32(msg.Vetoer)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{vetoer}
-}
-
-// GetSignBytes implements the sdk.Msg interface.
-func (msg *MsgVetoProposal) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
 }
 
 // ValidateBasic implements the sdk.Msg interface.
@@ -203,19 +143,4 @@ func (msg *MsgUpdateParams) ValidateBasic() error {
 	}
 
 	return msg.Params.ValidateBasic()
-}
-
-// GetSigners implements the sdk.Msg interface.
-func (msg *MsgUpdateParams) GetSigners() []sdk.AccAddress {
-	authority, err := sdk.AccAddressFromBech32(msg.Authority)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{authority}
-}
-
-// GetSignBytes implements the sdk.Msg interface.
-func (msg *MsgUpdateParams) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
 }

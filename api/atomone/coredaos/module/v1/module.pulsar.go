@@ -2,15 +2,17 @@
 package modulev1
 
 import (
-	_ "cosmossdk.io/api/cosmos/app/v1alpha1"
 	fmt "fmt"
+	io "io"
+	reflect "reflect"
+	sync "sync"
+
+	_ "cosmossdk.io/api/cosmos/app/v1alpha1"
+
 	runtime "github.com/cosmos/cosmos-proto/runtime"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	io "io"
-	reflect "reflect"
-	sync "sync"
 )
 
 var (
@@ -44,17 +46,21 @@ func (x *Module) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_Module_messageType fastReflection_Module_messageType
-var _ protoreflect.MessageType = fastReflection_Module_messageType{}
+var (
+	_fastReflection_Module_messageType fastReflection_Module_messageType
+	_                                  protoreflect.MessageType = fastReflection_Module_messageType{}
+)
 
 type fastReflection_Module_messageType struct{}
 
 func (x fastReflection_Module_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_Module)(nil)
 }
+
 func (x fastReflection_Module_messageType) New() protoreflect.Message {
 	return new(fastReflection_Module)
 }
+
 func (x fastReflection_Module_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_Module
 }
@@ -529,10 +535,13 @@ func file_atomone_coredaos_module_v1_module_proto_rawDescGZIP() []byte {
 	return file_atomone_coredaos_module_v1_module_proto_rawDescData
 }
 
-var file_atomone_coredaos_module_v1_module_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
-var file_atomone_coredaos_module_v1_module_proto_goTypes = []interface{}{
-	(*Module)(nil), // 0: atomone.coredaos.module.v1.Module
-}
+var (
+	file_atomone_coredaos_module_v1_module_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+	file_atomone_coredaos_module_v1_module_proto_goTypes  = []interface{}{
+		(*Module)(nil), // 0: atomone.coredaos.module.v1.Module
+	}
+)
+
 var file_atomone_coredaos_module_v1_module_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
 	0, // [0:0] is the sub-list for method input_type

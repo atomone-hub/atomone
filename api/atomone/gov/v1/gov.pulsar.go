@@ -2,9 +2,14 @@
 package govv1
 
 import (
+	fmt "fmt"
+	io "io"
+	reflect "reflect"
+	sync "sync"
+
 	_ "cosmossdk.io/api/amino"
 	v1beta1 "cosmossdk.io/api/cosmos/base/v1beta1"
-	fmt "fmt"
+
 	_ "github.com/cosmos/cosmos-proto"
 	runtime "github.com/cosmos/cosmos-proto/runtime"
 	_ "github.com/cosmos/gogoproto/gogoproto"
@@ -14,9 +19,6 @@ import (
 	anypb "google.golang.org/protobuf/types/known/anypb"
 	durationpb "google.golang.org/protobuf/types/known/durationpb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
-	io "io"
-	reflect "reflect"
-	sync "sync"
 )
 
 var (
@@ -52,17 +54,21 @@ func (x *WeightedVoteOption) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_WeightedVoteOption_messageType fastReflection_WeightedVoteOption_messageType
-var _ protoreflect.MessageType = fastReflection_WeightedVoteOption_messageType{}
+var (
+	_fastReflection_WeightedVoteOption_messageType fastReflection_WeightedVoteOption_messageType
+	_                                              protoreflect.MessageType = fastReflection_WeightedVoteOption_messageType{}
+)
 
 type fastReflection_WeightedVoteOption_messageType struct{}
 
 func (x fastReflection_WeightedVoteOption_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_WeightedVoteOption)(nil)
 }
+
 func (x fastReflection_WeightedVoteOption_messageType) New() protoreflect.Message {
 	return new(fastReflection_WeightedVoteOption)
 }
+
 func (x fastReflection_WeightedVoteOption_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_WeightedVoteOption
 }
@@ -573,17 +579,21 @@ func (x *Deposit) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_Deposit_messageType fastReflection_Deposit_messageType
-var _ protoreflect.MessageType = fastReflection_Deposit_messageType{}
+var (
+	_fastReflection_Deposit_messageType fastReflection_Deposit_messageType
+	_                                   protoreflect.MessageType = fastReflection_Deposit_messageType{}
+)
 
 type fastReflection_Deposit_messageType struct{}
 
 func (x fastReflection_Deposit_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_Deposit)(nil)
 }
+
 func (x fastReflection_Deposit_messageType) New() protoreflect.Message {
 	return new(fastReflection_Deposit)
 }
+
 func (x fastReflection_Deposit_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_Deposit
 }
@@ -1177,17 +1187,21 @@ func (x *LastMinDeposit) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_LastMinDeposit_messageType fastReflection_LastMinDeposit_messageType
-var _ protoreflect.MessageType = fastReflection_LastMinDeposit_messageType{}
+var (
+	_fastReflection_LastMinDeposit_messageType fastReflection_LastMinDeposit_messageType
+	_                                          protoreflect.MessageType = fastReflection_LastMinDeposit_messageType{}
+)
 
 type fastReflection_LastMinDeposit_messageType struct{}
 
 func (x fastReflection_LastMinDeposit_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_LastMinDeposit)(nil)
 }
+
 func (x fastReflection_LastMinDeposit_messageType) New() protoreflect.Message {
 	return new(fastReflection_LastMinDeposit)
 }
+
 func (x fastReflection_LastMinDeposit_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_LastMinDeposit
 }
@@ -1829,17 +1843,21 @@ func (x *Proposal) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_Proposal_messageType fastReflection_Proposal_messageType
-var _ protoreflect.MessageType = fastReflection_Proposal_messageType{}
+var (
+	_fastReflection_Proposal_messageType fastReflection_Proposal_messageType
+	_                                    protoreflect.MessageType = fastReflection_Proposal_messageType{}
+)
 
 type fastReflection_Proposal_messageType struct{}
 
 func (x fastReflection_Proposal_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_Proposal)(nil)
 }
+
 func (x fastReflection_Proposal_messageType) New() protoreflect.Message {
 	return new(fastReflection_Proposal)
 }
+
 func (x fastReflection_Proposal_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_Proposal
 }
@@ -3248,17 +3266,21 @@ func (x *TallyResult) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_TallyResult_messageType fastReflection_TallyResult_messageType
-var _ protoreflect.MessageType = fastReflection_TallyResult_messageType{}
+var (
+	_fastReflection_TallyResult_messageType fastReflection_TallyResult_messageType
+	_                                       protoreflect.MessageType = fastReflection_TallyResult_messageType{}
+)
 
 type fastReflection_TallyResult_messageType struct{}
 
 func (x fastReflection_TallyResult_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_TallyResult)(nil)
 }
+
 func (x fastReflection_TallyResult_messageType) New() protoreflect.Message {
 	return new(fastReflection_TallyResult)
 }
+
 func (x fastReflection_TallyResult_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_TallyResult
 }
@@ -3849,17 +3871,21 @@ func (x *Vote) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_Vote_messageType fastReflection_Vote_messageType
-var _ protoreflect.MessageType = fastReflection_Vote_messageType{}
+var (
+	_fastReflection_Vote_messageType fastReflection_Vote_messageType
+	_                                protoreflect.MessageType = fastReflection_Vote_messageType{}
+)
 
 type fastReflection_Vote_messageType struct{}
 
 func (x fastReflection_Vote_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_Vote)(nil)
 }
+
 func (x fastReflection_Vote_messageType) New() protoreflect.Message {
 	return new(fastReflection_Vote)
 }
+
 func (x fastReflection_Vote_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_Vote
 }
@@ -4466,17 +4492,21 @@ func (x *QuorumCheckQueueEntry) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_QuorumCheckQueueEntry_messageType fastReflection_QuorumCheckQueueEntry_messageType
-var _ protoreflect.MessageType = fastReflection_QuorumCheckQueueEntry_messageType{}
+var (
+	_fastReflection_QuorumCheckQueueEntry_messageType fastReflection_QuorumCheckQueueEntry_messageType
+	_                                                 protoreflect.MessageType = fastReflection_QuorumCheckQueueEntry_messageType{}
+)
 
 type fastReflection_QuorumCheckQueueEntry_messageType struct{}
 
 func (x fastReflection_QuorumCheckQueueEntry_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_QuorumCheckQueueEntry)(nil)
 }
+
 func (x fastReflection_QuorumCheckQueueEntry_messageType) New() protoreflect.Message {
 	return new(fastReflection_QuorumCheckQueueEntry)
 }
+
 func (x fastReflection_QuorumCheckQueueEntry_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_QuorumCheckQueueEntry
 }
@@ -5046,17 +5076,21 @@ func (x *DepositParams) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_DepositParams_messageType fastReflection_DepositParams_messageType
-var _ protoreflect.MessageType = fastReflection_DepositParams_messageType{}
+var (
+	_fastReflection_DepositParams_messageType fastReflection_DepositParams_messageType
+	_                                         protoreflect.MessageType = fastReflection_DepositParams_messageType{}
+)
 
 type fastReflection_DepositParams_messageType struct{}
 
 func (x fastReflection_DepositParams_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_DepositParams)(nil)
 }
+
 func (x fastReflection_DepositParams_messageType) New() protoreflect.Message {
 	return new(fastReflection_DepositParams)
 }
+
 func (x fastReflection_DepositParams_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_DepositParams
 }
@@ -5566,17 +5600,21 @@ func (x *VotingParams) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_VotingParams_messageType fastReflection_VotingParams_messageType
-var _ protoreflect.MessageType = fastReflection_VotingParams_messageType{}
+var (
+	_fastReflection_VotingParams_messageType fastReflection_VotingParams_messageType
+	_                                        protoreflect.MessageType = fastReflection_VotingParams_messageType{}
+)
 
 type fastReflection_VotingParams_messageType struct{}
 
 func (x fastReflection_VotingParams_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_VotingParams)(nil)
 }
+
 func (x fastReflection_VotingParams_messageType) New() protoreflect.Message {
 	return new(fastReflection_VotingParams)
 }
+
 func (x fastReflection_VotingParams_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_VotingParams
 }
@@ -6011,17 +6049,21 @@ func (x *TallyParams) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_TallyParams_messageType fastReflection_TallyParams_messageType
-var _ protoreflect.MessageType = fastReflection_TallyParams_messageType{}
+var (
+	_fastReflection_TallyParams_messageType fastReflection_TallyParams_messageType
+	_                                       protoreflect.MessageType = fastReflection_TallyParams_messageType{}
+)
 
 type fastReflection_TallyParams_messageType struct{}
 
 func (x fastReflection_TallyParams_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_TallyParams)(nil)
 }
+
 func (x fastReflection_TallyParams_messageType) New() protoreflect.Message {
 	return new(fastReflection_TallyParams)
 }
+
 func (x fastReflection_TallyParams_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_TallyParams
 }
@@ -6802,17 +6844,21 @@ func (x *MinDepositThrottler) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_MinDepositThrottler_messageType fastReflection_MinDepositThrottler_messageType
-var _ protoreflect.MessageType = fastReflection_MinDepositThrottler_messageType{}
+var (
+	_fastReflection_MinDepositThrottler_messageType fastReflection_MinDepositThrottler_messageType
+	_                                               protoreflect.MessageType = fastReflection_MinDepositThrottler_messageType{}
+)
 
 type fastReflection_MinDepositThrottler_messageType struct{}
 
 func (x fastReflection_MinDepositThrottler_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_MinDepositThrottler)(nil)
 }
+
 func (x fastReflection_MinDepositThrottler_messageType) New() protoreflect.Message {
 	return new(fastReflection_MinDepositThrottler)
 }
+
 func (x fastReflection_MinDepositThrottler_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_MinDepositThrottler
 }
@@ -7599,17 +7645,21 @@ func (x *MinInitialDepositThrottler) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_MinInitialDepositThrottler_messageType fastReflection_MinInitialDepositThrottler_messageType
-var _ protoreflect.MessageType = fastReflection_MinInitialDepositThrottler_messageType{}
+var (
+	_fastReflection_MinInitialDepositThrottler_messageType fastReflection_MinInitialDepositThrottler_messageType
+	_                                                      protoreflect.MessageType = fastReflection_MinInitialDepositThrottler_messageType{}
+)
 
 type fastReflection_MinInitialDepositThrottler_messageType struct{}
 
 func (x fastReflection_MinInitialDepositThrottler_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_MinInitialDepositThrottler)(nil)
 }
+
 func (x fastReflection_MinInitialDepositThrottler_messageType) New() protoreflect.Message {
 	return new(fastReflection_MinInitialDepositThrottler)
 }
+
 func (x fastReflection_MinInitialDepositThrottler_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_MinInitialDepositThrottler
 }
@@ -8428,17 +8478,21 @@ func (x *Params) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_Params_messageType fastReflection_Params_messageType
-var _ protoreflect.MessageType = fastReflection_Params_messageType{}
+var (
+	_fastReflection_Params_messageType fastReflection_Params_messageType
+	_                                  protoreflect.MessageType = fastReflection_Params_messageType{}
+)
 
 type fastReflection_Params_messageType struct{}
 
 func (x fastReflection_Params_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_Params)(nil)
 }
+
 func (x fastReflection_Params_messageType) New() protoreflect.Message {
 	return new(fastReflection_Params)
 }
+
 func (x fastReflection_Params_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_Params
 }
@@ -10300,17 +10354,21 @@ func (x *QuorumRange) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_QuorumRange_messageType fastReflection_QuorumRange_messageType
-var _ protoreflect.MessageType = fastReflection_QuorumRange_messageType{}
+var (
+	_fastReflection_QuorumRange_messageType fastReflection_QuorumRange_messageType
+	_                                       protoreflect.MessageType = fastReflection_QuorumRange_messageType{}
+)
 
 type fastReflection_QuorumRange_messageType struct{}
 
 func (x fastReflection_QuorumRange_messageType) Zero() protoreflect.Message {
 	return (*fastReflection_QuorumRange)(nil)
 }
+
 func (x fastReflection_QuorumRange_messageType) New() protoreflect.Message {
 	return new(fastReflection_QuorumRange)
 }
+
 func (x fastReflection_QuorumRange_messageType) Descriptor() protoreflect.MessageDescriptor {
 	return md_QuorumRange
 }
@@ -12438,30 +12496,33 @@ func file_atomone_gov_v1_gov_proto_rawDescGZIP() []byte {
 	return file_atomone_gov_v1_gov_proto_rawDescData
 }
 
-var file_atomone_gov_v1_gov_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_atomone_gov_v1_gov_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
-var file_atomone_gov_v1_gov_proto_goTypes = []interface{}{
-	(VoteOption)(0),                    // 0: atomone.gov.v1.VoteOption
-	(ProposalStatus)(0),                // 1: atomone.gov.v1.ProposalStatus
-	(*WeightedVoteOption)(nil),         // 2: atomone.gov.v1.WeightedVoteOption
-	(*Deposit)(nil),                    // 3: atomone.gov.v1.Deposit
-	(*LastMinDeposit)(nil),             // 4: atomone.gov.v1.LastMinDeposit
-	(*Proposal)(nil),                   // 5: atomone.gov.v1.Proposal
-	(*TallyResult)(nil),                // 6: atomone.gov.v1.TallyResult
-	(*Vote)(nil),                       // 7: atomone.gov.v1.Vote
-	(*QuorumCheckQueueEntry)(nil),      // 8: atomone.gov.v1.QuorumCheckQueueEntry
-	(*DepositParams)(nil),              // 9: atomone.gov.v1.DepositParams
-	(*VotingParams)(nil),               // 10: atomone.gov.v1.VotingParams
-	(*TallyParams)(nil),                // 11: atomone.gov.v1.TallyParams
-	(*MinDepositThrottler)(nil),        // 12: atomone.gov.v1.MinDepositThrottler
-	(*MinInitialDepositThrottler)(nil), // 13: atomone.gov.v1.MinInitialDepositThrottler
-	(*Params)(nil),                     // 14: atomone.gov.v1.Params
-	(*QuorumRange)(nil),                // 15: atomone.gov.v1.QuorumRange
-	(*v1beta1.Coin)(nil),               // 16: cosmos.base.v1beta1.Coin
-	(*timestamppb.Timestamp)(nil),      // 17: google.protobuf.Timestamp
-	(*anypb.Any)(nil),                  // 18: google.protobuf.Any
-	(*durationpb.Duration)(nil),        // 19: google.protobuf.Duration
-}
+var (
+	file_atomone_gov_v1_gov_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
+	file_atomone_gov_v1_gov_proto_msgTypes  = make([]protoimpl.MessageInfo, 14)
+	file_atomone_gov_v1_gov_proto_goTypes   = []interface{}{
+		(VoteOption)(0),                    // 0: atomone.gov.v1.VoteOption
+		(ProposalStatus)(0),                // 1: atomone.gov.v1.ProposalStatus
+		(*WeightedVoteOption)(nil),         // 2: atomone.gov.v1.WeightedVoteOption
+		(*Deposit)(nil),                    // 3: atomone.gov.v1.Deposit
+		(*LastMinDeposit)(nil),             // 4: atomone.gov.v1.LastMinDeposit
+		(*Proposal)(nil),                   // 5: atomone.gov.v1.Proposal
+		(*TallyResult)(nil),                // 6: atomone.gov.v1.TallyResult
+		(*Vote)(nil),                       // 7: atomone.gov.v1.Vote
+		(*QuorumCheckQueueEntry)(nil),      // 8: atomone.gov.v1.QuorumCheckQueueEntry
+		(*DepositParams)(nil),              // 9: atomone.gov.v1.DepositParams
+		(*VotingParams)(nil),               // 10: atomone.gov.v1.VotingParams
+		(*TallyParams)(nil),                // 11: atomone.gov.v1.TallyParams
+		(*MinDepositThrottler)(nil),        // 12: atomone.gov.v1.MinDepositThrottler
+		(*MinInitialDepositThrottler)(nil), // 13: atomone.gov.v1.MinInitialDepositThrottler
+		(*Params)(nil),                     // 14: atomone.gov.v1.Params
+		(*QuorumRange)(nil),                // 15: atomone.gov.v1.QuorumRange
+		(*v1beta1.Coin)(nil),               // 16: cosmos.base.v1beta1.Coin
+		(*timestamppb.Timestamp)(nil),      // 17: google.protobuf.Timestamp
+		(*anypb.Any)(nil),                  // 18: google.protobuf.Any
+		(*durationpb.Duration)(nil),        // 19: google.protobuf.Duration
+	}
+)
+
 var file_atomone_gov_v1_gov_proto_depIdxs = []int32{
 	0,  // 0: atomone.gov.v1.WeightedVoteOption.option:type_name -> atomone.gov.v1.VoteOption
 	16, // 1: atomone.gov.v1.Deposit.amount:type_name -> cosmos.base.v1beta1.Coin
