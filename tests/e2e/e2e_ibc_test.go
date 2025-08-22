@@ -236,7 +236,7 @@ func (s *IntegrationTestSuite) testIBCTokenTransfer() {
 			func() bool {
 				balances, err = s.queryAtomOneAllBalances(chainBAPIEndpoint, recipient)
 				s.Require().NoError(err)
-				return balances.Len() != 0
+				return balances.Len() > 2 // wait for atone, photon and the ibc denom
 			},
 			time.Minute,
 			5*time.Second,
