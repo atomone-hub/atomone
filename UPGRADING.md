@@ -1,35 +1,26 @@
 # Upgrading AtomOne
 
-This guide provides instructions for upgrading AtomOne from v1.x to v2.x.
+This guide provides instructions for upgrading AtomOne from v2.x to v3.x.
 
 This document describes the steps for validators and full node operators, to
-upgrade successfully for the AtomOne v2 release.
+upgrade successfully for the AtomOne v3 release.
 
-For more details on the release, please see the [release notes][v2].
-
-**Validators** will have to change their configuration to allow the PHOTON
-denom (`uphoton`) for the fees, **before** the upgrade, see [Validator config
-change](#validator-config-change).
-
-**Relayer Operators** will also need to update their configuration to use the
-PHOTON denom for the fees, but this time **after** the upgrade, see [Relayer
-config change](#relayer-config-change) section.
+For more details on the release, please see the [release notes][v3].
 
 > [!IMPORTANT]
-> Although the `photon` is expected to become the sole fee token, the v2
-> upgrade will implement this change gradually. Rather than immediately
-> rejecting transactions using `atone` tokens for fees, we'll provide a
-> transition period for users to switch to `photon`. During this time, both
-> `photon` and `atone` will be accepted as fee tokens. A subsequent parameter
-> change proposal will then establish `photon` as the exclusive fee token.
+> This release introduces the `x/dynamicfee` module which adjusts the gas
+> prices according to blockchain activity, and in a way that takes precedence
+> over the validator `minimum-gas-prices` setting. Hence, after the upgrade,
+> this setting will be ignored; in other words, validators will no longer be
+> able to set their own gas prices.
 
 ## Release Binary
 
-Please use the correct release binary: `v2.0.0`.
+Please use the correct release binary: `v3.0.1`.
 
-## Go version bump
+## Go version
 
-AtomOne v2 build requires a more recent version of the Go compiler: 1.22.10. If
+AtomOne v3 build requires the same version of the Go compiler: 1.22.10. If
 you already have go installed but with an other version, you can install
 go1.22.10 with the following command:
 
@@ -59,8 +50,6 @@ $ GOROOT=$(go1.22.10 env GOROOT) PATH=$GOROOT/bin:$PATH make build
     - [Current runtime](#current-runtime)
     - [Target runtime](#target-runtime)
   - [Upgrade steps](#upgrade-steps)
-    - [Validator config change](#validator-config-change)
-    - [Relayer config change](#relayer-config-change)
     - [Method I: Manual Upgrade](#method-i-manual-upgrade)
     - [Method II: Upgrade using Cosmovisor](#method-ii-upgrade-using-cosmovisor)
       - [Manually preparing the binary](#manually-preparing-the-binary)
@@ -76,7 +65,7 @@ $ GOROOT=$(go1.22.10 env GOROOT) PATH=$GOROOT/bin:$PATH make build
 
 Once a software upgrade governance proposal is submitted to the AtomOne chain,
 both a reference to this proposal and an `UPGRADE_HEIGHT` are added to the
-[release notes][v2].
+[release notes][v3].
 If and when this proposal reaches consensus, the upgrade height will be used to
 halt the "old" chain binaries. You can check the proposal on one of the block
 explorers or using the `atomoned` CLI tool.
@@ -87,7 +76,7 @@ Neither core developers nor core funding entities control the governance.
 The date/time of the upgrade is subject to change as blocks are not generated
 at a constant interval. You can stay up-to-date by checking the estimated
 estimated time until the block is produced one of the block explorers (e.g.
-https://www.mintscan.io/atomone/blocks/3318000).
+https://www.mintscan.io/atomone/blocks/6318000).
 
 ## Preparing for the upgrade
 
@@ -111,7 +100,7 @@ case the upgrade fails and the previous chain needs to be restarted.
 ### Current runtime
 
 The AtomOne mainnet network, `atomone-1`, is currently running [AtomOne
-v1.1.2][v1]. We anticipate that operators who are running on v1.1.2, will be
+v2.0.0][v2]. We anticipate that operators who are running on v2.0.0, will be
 able to upgrade successfully. Validators are expected to ensure that their
 systems are up to date and capable of performing the upgrade. This includes
 running the correct binary and if building from source, building with the
@@ -119,9 +108,9 @@ appropriate `go` version.
 
 ### Target runtime
 
-The AtomOne mainnet network, `atomone-1`, will run **[AtomOne v2.0.0][v2]**.
+The AtomOne mainnet network, `atomone-1`, will run **[AtomOne v3.0.1][v3]**.
 Operators _**MUST**_ use this version post-upgrade to remain connected to the
-network. The new version requires `go v1.21` to build successfully.
+network. The new version requires `go v1.22.10` to build successfully.
 
 ## Upgrade steps
 
@@ -135,73 +124,19 @@ There are 2 major ways to upgrade a node:
 If you prefer to use Cosmovisor to upgrade, some preparation work is needed
 before upgrade.
 
-### Validator config change
-
-**AtomOne v2.0.0** introduces `photon` as the only fee token, so it requires a
-modification of the validator configuration, namely the `minimum-gas-prices`
-which must contain the `uphoton` denom in addition to the `uatone` denom (so
-both denom). This setting is located in the `$ATOMONE_HOME/config/app.toml`
-file.
-
-For example, considering this existing setting:
-```toml
-minimum-gas-prices = "0.025uatone"
-```
-Before upgrading, the setting should be changed to:
-```toml
-minimum-gas-prices = "0.025uatone,0.225uphoton"
-```
-
-> [!TIP]
-> The expected conversion rate when burning `atone` to mint `photon` will be
-> around 9 after the upgrade. This means that you would get ~9PHOTONs for
-> burning 1ATONE. This factor should be taken into account when setting the gas
-> price in `photon`.
-
-> [!NOTE]
-> This change can be done **before** the upgrade because `minimum-gas-prices`
-> is inclusive, meaning that one token or the other can be used.
-
-### Relayer config change
-
-Similarly to the validator config change, any running relayers would have to
-change the gas price denom for the AtomOne chain, from `uatone` to `uphoton`.
-
-For Hermes relayers, this setting is located in the `~/.hermes/config.toml`
-file.
-
-For example, considerng the existing setting:
-```toml
-[[ chain ]]
-id = 'atomone-1'
-(...)
-gas_price = { price = 0.025, denom = 'uatone' }
-```
-Once the chain is upgraded, the setting should be changed to:
-```toml
-[[ chain ]]
-id = 'atomone-1'
-(...)
-gas_price = { price = 0.225, denom = 'uphoton' }
-```
-
-> [!IMPORTANT]
-> Unlike the validator config, this change should be done **after**
-> the upgrade because it is restricted to `uphoton`.
-
 ### Method I: Manual Upgrade
 
-Make sure **AtomOne v1.1.2** is installed by either downloading a [compatible
-binary][v1], or building from source. Check the required version to build this
+Make sure **AtomOne v2.0.0** is installed by either downloading a [compatible
+binary][v2], or building from source. Check the required version to build this
 binary in the `Makefile`.
 
-Run AtomOne v1.1.2 till upgrade height, the node will panic:
+Run AtomOne v2.0.0 till upgrade height, the node will panic:
 
 ```shell
-ERR UPGRADE "v2" NEEDED at height: <UPGRADE_HEIGHT>: upgrade to v2 and applying upgrade "v2" at height:<UPGRADE_HEIGHT>
+ERR UPGRADE "v3" NEEDED at height: <UPGRADE_HEIGHT>: upgrade to v3 and applying upgrade "v3" at height:<UPGRADE_HEIGHT>
 ```
 
-Stop the node, and switch the binary to **AtomOne v2.0.0** and re-start by
+Stop the node, and switch the binary to **AtomOne v3.0.1** and re-start by
 `atomoned start`.
 
 It may take several minutes to a few hours until validators with a total sum
@@ -220,7 +155,7 @@ continue to produce blocks.
 go install cosmossdk.io/tools/cosmovisor/cmd/cosmovisor@latest
 ```
 
-- Create a `cosmovisor` folder inside `$ATOMONE_HOME` and move AtomOne `v1.1.2`
+- Create a `cosmovisor` folder inside `$ATOMONE_HOME` and move AtomOne `v2.0.0`
 into `$ATOMONE_HOME/cosmovisor/genesis/bin`:
 
 ```shell
@@ -228,12 +163,12 @@ mkdir -p $ATOMONE_HOME/cosmovisor/genesis/bin
 cp $(which atomoned) $ATOMONE_HOME/cosmovisor/genesis/bin
 ```
 
-- Build AtomOne `v2.0.0`, and move atomoned `v2.0.0` to
-  `$ATOMONE_HOME/cosmovisor/upgrades/v2/bin`
+- Build AtomOne `v3.0.1`, and move atomoned `v3.0.1` to
+  `$ATOMONE_HOME/cosmovisor/upgrades/v3/bin`
 
 ```shell
-mkdir -p  $ATOMONE_HOME/cosmovisor/upgrades/v2/bin
-cp $(which atomoned) $ATOMONE_HOME/cosmovisor/upgrades/v2/bin
+mkdir -p  $ATOMONE_HOME/cosmovisor/upgrades/v3/bin
+cp $(which atomoned) $ATOMONE_HOME/cosmovisor/upgrades/v3/bin
 ```
 
 At this moment, you should have the following structure:
@@ -243,11 +178,11 @@ At this moment, you should have the following structure:
 ├── current -> genesis or upgrades/<name>
 ├── genesis
 │   └── bin
-│       └── atomoned  # old: v1.1.2
+│       └── atomoned  # old: v2.0.0
 └── upgrades
-    └── v2
+    └── v3
         └── bin
-            └── atomoned  # new: v2.0.0
+            └── atomoned  # new: v3.0.1
 ```
 
 - Export the environmental variables:
@@ -295,7 +230,7 @@ challenges, the core teams, after conferring with operators and attaining
 social consensus, may choose to declare that the upgrade will be skipped.
 
 Steps to skip this upgrade proposal are simply to resume the `atomone-1`
-network with the (downgraded) v1.1.2 binary using the following command:
+network with the (downgraded) v2.0.0 binary using the following command:
 
 ```shell
 atomoned start --unsafe-skip-upgrade <UPGRADE_HEIGHT>
@@ -329,5 +264,5 @@ repeat the upgrade procedure again during the network startup. If you discover
 a mistake in the process, the best thing to do is wait for the network to start
 before correcting it.
 
-[v1]: https://github.com/atomone-hub/atomone/releases/tag/v1.1.2
 [v2]: https://github.com/atomone-hub/atomone/releases/tag/v2.0.0
+[v3]: https://github.com/atomone-hub/atomone/releases/tag/v3.0.1
