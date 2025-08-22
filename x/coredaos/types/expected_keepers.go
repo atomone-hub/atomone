@@ -57,6 +57,8 @@ type StakingKeeper interface {
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
 type AccountKeeper interface {
 	GetAccount(ctx sdk.Context, addr sdk.AccAddress) authtypes.AccountI
+	NewAccountWithAddress(ctx sdk.Context, addr sdk.AccAddress) authtypes.AccountI
+	SetAccount(ctx sdk.Context, acc authtypes.AccountI)
 }
 
 // BankKeeper defines the expected account keeper used for simulations (noalias)

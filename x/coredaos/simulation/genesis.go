@@ -8,7 +8,6 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/types/simulation"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	"github.com/atomone-hub/atomone/x/coredaos/types"
 )
@@ -27,7 +26,6 @@ const (
 var (
 	SteeringDaoAccount  simulation.Account
 	OversightDaoAccount simulation.Account
-	DAOAccounts         []simulation.Account
 )
 
 // GenVotingPeriodExtensionsLimit generates a random voting period extensions limit
@@ -47,8 +45,7 @@ func GenVotingPeriodExtensionDuration(r *rand.Rand) time.Duration {
 func GenSteeringDaoAddress(r *rand.Rand, simState *module.SimulationState) string {
 	randInt := r.Intn(2)
 	if randInt%2 == 0 {
-		randInt := r.Intn(DAOAccountsNumber)
-		SteeringDaoAccount = DAOAccounts[randInt]
+		SteeringDaoAccount = simulation.RandomAccounts(r, 1)[0]
 		address := SteeringDaoAccount.Address.String()
 		return address
 	} else {
@@ -62,8 +59,7 @@ func GenSteeringDaoAddress(r *rand.Rand, simState *module.SimulationState) strin
 func GenOversightDaoAddress(r *rand.Rand, simState *module.SimulationState) string {
 	randInt := r.Intn(2)
 	if randInt%2 == 0 {
-		randInt := r.Intn(DAOAccountsNumber)
-		OversightDaoAccount = DAOAccounts[randInt]
+		OversightDaoAccount = simulation.RandomAccounts(r, 1)[0]
 		address := OversightDaoAccount.Address.String()
 		return address
 	} else {
@@ -73,7 +69,6 @@ func GenOversightDaoAddress(r *rand.Rand, simState *module.SimulationState) stri
 
 // RandomizedGenState generates a random GenesisState for gov
 func RandomizedGenState(simState *module.SimulationState) {
-	GenDaoAccounts(simState.Rand, simState)
 	var votingPeriodExtensionsLimit uint32
 	simState.AppParams.GetOrGenerate(
 		simState.Cdc, VotingPeriodExtensionsLimit, &votingPeriodExtensionsLimit, simState.Rand,
@@ -111,27 +106,4 @@ func RandomizedGenState(simState *module.SimulationState) {
 	}
 	fmt.Printf("Selected randomly generated coredaos parameters:\n%s\n", bz)
 	simState.GenState[types.ModuleName] = simState.Cdc.MustMarshalJSON(coredaosGenesis)
-}
-
-func GenDaoAccounts(r *rand.Rand, simState *module.SimulationState) {
-	DAOAccounts = simulation.RandomAccounts(r, DAOAccountsNumber)
-	genesisAccs := make([]authtypes.GenesisAccount, len(simState.Accounts)+DAOAccountsNumber)
-	for i, defaultAccs := range simState.Accounts {
-		genesisAccs[i] = authtypes.NewBaseAccountWithAddress(defaultAccs.Address)
-	}
-	for i, daoAccount := range DAOAccounts {
-		genesisAccs[i+len(simState.Accounts)] = authtypes.NewBaseAccountWithAddress(daoAccount.Address)
-	}
-	// Build auth genesis
-	authGenesis := authtypes.NewGenesisState(
-		authtypes.DefaultParams(),
-		genesisAccs,
-	)
-
-	// Encode into simState
-	bz, err := simState.Cdc.MarshalJSON(authGenesis)
-	if err != nil {
-		panic(err)
-	}
-	simState.GenState[authtypes.ModuleName] = bz
 }

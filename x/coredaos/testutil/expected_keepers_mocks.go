@@ -266,6 +266,32 @@ func (mr *MockAccountKeeperMockRecorder) GetAccount(ctx, addr interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccount", reflect.TypeOf((*MockAccountKeeper)(nil).GetAccount), ctx, addr)
 }
 
+// NewAccountWithAddress mocks base method.
+func (m *MockAccountKeeper) NewAccountWithAddress(ctx types.Context, addr types.AccAddress) types0.AccountI {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "NewAccountWithAddress", ctx, addr)
+	ret0, _ := ret[0].(types0.AccountI)
+	return ret0
+}
+
+// NewAccountWithAddress indicates an expected call of NewAccountWithAddress.
+func (mr *MockAccountKeeperMockRecorder) NewAccountWithAddress(ctx, addr interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NewAccountWithAddress", reflect.TypeOf((*MockAccountKeeper)(nil).NewAccountWithAddress), ctx, addr)
+}
+
+// SetAccount mocks base method.
+func (m *MockAccountKeeper) SetAccount(ctx types.Context, acc types0.AccountI) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "SetAccount", ctx, acc)
+}
+
+// SetAccount indicates an expected call of SetAccount.
+func (mr *MockAccountKeeperMockRecorder) SetAccount(ctx, acc interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetAccount", reflect.TypeOf((*MockAccountKeeper)(nil).SetAccount), ctx, acc)
+}
+
 // MockBankKeeper is a mock of BankKeeper interface.
 type MockBankKeeper struct {
 	ctrl     *gomock.Controller

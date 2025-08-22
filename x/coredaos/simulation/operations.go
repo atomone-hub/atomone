@@ -96,7 +96,7 @@ func SimulateMsgAnnotateProposal(gk types.GovKeeper, sk types.StakingKeeper, ak 
 		if params.SteeringDaoAddress == "" {
 			return simtypes.NoOpMsg(types.ModuleName, TypeMsgAnnotateProposal, "Annotations are disabled"), nil, nil
 		}
-
+		ak.SetAccount(ctx, ak.NewAccountWithAddress(ctx, sdk.AccAddress(params.SteeringDaoAddress)))
 		proposal, ok := randomProposal(r, gk, ctx)
 		if !ok {
 			return simtypes.NoOpMsg(types.ModuleName, TypeMsgAnnotateProposal, "unable to generate proposalID"), nil, nil
@@ -137,6 +137,7 @@ func SimulateMsgEndorseProposal(gk types.GovKeeper, sk types.StakingKeeper, ak t
 			return simtypes.NoOpMsg(types.ModuleName, TypeMsgEndorseProposal, "Endorsements are disabled"), nil, nil
 		}
 
+		ak.SetAccount(ctx, ak.NewAccountWithAddress(ctx, sdk.AccAddress(params.SteeringDaoAddress)))
 		proposal, ok := randomProposal(r, gk, ctx)
 		if !ok {
 			return simtypes.NoOpMsg(types.ModuleName, TypeMsgEndorseProposal, "unable to generate proposalID"), nil, nil
@@ -191,6 +192,7 @@ func SimulateMsgExtendVotingPeriod(gk types.GovKeeper, sk types.StakingKeeper, a
 			}
 		}
 
+		ak.SetAccount(ctx, ak.NewAccountWithAddress(ctx, sdk.AccAddress(fromAccount.Address)))
 		proposal, ok := randomProposal(r, gk, ctx)
 		if !ok {
 			return simtypes.NoOpMsg(types.ModuleName, TypeMsgExtendVotingPeriod, "unable to generate proposal"), nil, nil
@@ -230,6 +232,7 @@ func SimulateMsgVetoProposal(gk types.GovKeeper, sk types.StakingKeeper, ak type
 			return simtypes.NoOpMsg(types.ModuleName, TypeMsgVetoProposal, "Voting period extensions are disabled"), nil, nil
 		}
 
+		ak.SetAccount(ctx, ak.NewAccountWithAddress(ctx, sdk.AccAddress(params.OversightDaoAddress)))
 		proposal, ok := randomProposal(r, gk, ctx)
 		if !ok {
 			return simtypes.NoOpMsg(types.ModuleName, TypeMsgVetoProposal, "unable to generate proposal"), nil, nil
