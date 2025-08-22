@@ -18,7 +18,7 @@
 
 ## v3.0.1
 
-*Release date*
+*Aug 22th, 2025*
 
 ### BUG FIXES
 
