@@ -288,7 +288,7 @@ localnet-start: build
 	# Decrease voting period to 5min
 	jq '.app_state.gov.params.voting_period = "300s"' $(localnet_home)/config/genesis.json > /tmp/gen
 	mv /tmp/gen $(localnet_home)/config/genesis.json
-	jq --rawfile data contrib/localnet/constitution.md '.app_state.gov.constitution=$$data' $(localnet_home)/config/genesis.json > /tmp/gen
+	jq --rawfile data contrib/localnet/constitution-mock.md '.app_state.gov.constitution=$$data' $(localnet_home)/config/genesis.json > /tmp/gen
 	mv /tmp/gen $(localnet_home)/config/genesis.json
 	$(localnetd) start
 
