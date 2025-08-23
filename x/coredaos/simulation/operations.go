@@ -192,7 +192,7 @@ func SimulateMsgExtendVotingPeriod(gk types.GovKeeper, sk types.StakingKeeper, a
 			}
 		}
 
-		ak.SetAccount(ctx, ak.NewAccountWithAddress(ctx, sdk.AccAddress(fromAccount.Address)))
+		ak.SetAccount(ctx, ak.NewAccountWithAddress(ctx, fromAccount.Address))
 		proposal, ok := randomProposal(r, gk, ctx)
 		if !ok {
 			return simtypes.NoOpMsg(types.ModuleName, TypeMsgExtendVotingPeriod, "unable to generate proposal"), nil, nil
