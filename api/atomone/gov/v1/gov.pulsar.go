@@ -8211,6 +8211,8 @@ var (
 	fd_Params_quorum_range                        protoreflect.FieldDescriptor
 	fd_Params_constitution_amendment_quorum_range protoreflect.FieldDescriptor
 	fd_Params_law_quorum_range                    protoreflect.FieldDescriptor
+	fd_Params_governor_status_change_period       protoreflect.FieldDescriptor
+	fd_Params_min_governor_self_delegation        protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -8238,6 +8240,8 @@ func init() {
 	fd_Params_quorum_range = md_Params.Fields().ByName("quorum_range")
 	fd_Params_constitution_amendment_quorum_range = md_Params.Fields().ByName("constitution_amendment_quorum_range")
 	fd_Params_law_quorum_range = md_Params.Fields().ByName("law_quorum_range")
+	fd_Params_governor_status_change_period = md_Params.Fields().ByName("governor_status_change_period")
+	fd_Params_min_governor_self_delegation = md_Params.Fields().ByName("min_governor_self_delegation")
 }
 
 var _ protoreflect.Message = (*fastReflection_Params)(nil)
@@ -8437,6 +8441,18 @@ func (x *fastReflection_Params) Range(f func(protoreflect.FieldDescriptor, proto
 			return
 		}
 	}
+	if x.GovernorStatusChangePeriod != nil {
+		value := protoreflect.ValueOfMessage(x.GovernorStatusChangePeriod.ProtoReflect())
+		if !f(fd_Params_governor_status_change_period, value) {
+			return
+		}
+	}
+	if x.MinGovernorSelfDelegation != "" {
+		value := protoreflect.ValueOfString(x.MinGovernorSelfDelegation)
+		if !f(fd_Params_min_governor_self_delegation, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -8496,6 +8512,10 @@ func (x *fastReflection_Params) Has(fd protoreflect.FieldDescriptor) bool {
 		return x.ConstitutionAmendmentQuorumRange != nil
 	case "atomone.gov.v1.Params.law_quorum_range":
 		return x.LawQuorumRange != nil
+	case "atomone.gov.v1.Params.governor_status_change_period":
+		return x.GovernorStatusChangePeriod != nil
+	case "atomone.gov.v1.Params.min_governor_self_delegation":
+		return x.MinGovernorSelfDelegation != ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.Params"))
@@ -8556,6 +8576,10 @@ func (x *fastReflection_Params) Clear(fd protoreflect.FieldDescriptor) {
 		x.ConstitutionAmendmentQuorumRange = nil
 	case "atomone.gov.v1.Params.law_quorum_range":
 		x.LawQuorumRange = nil
+	case "atomone.gov.v1.Params.governor_status_change_period":
+		x.GovernorStatusChangePeriod = nil
+	case "atomone.gov.v1.Params.min_governor_self_delegation":
+		x.MinGovernorSelfDelegation = ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.Params"))
@@ -8641,6 +8665,12 @@ func (x *fastReflection_Params) Get(descriptor protoreflect.FieldDescriptor) pro
 	case "atomone.gov.v1.Params.law_quorum_range":
 		value := x.LawQuorumRange
 		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "atomone.gov.v1.Params.governor_status_change_period":
+		value := x.GovernorStatusChangePeriod
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "atomone.gov.v1.Params.min_governor_self_delegation":
+		value := x.MinGovernorSelfDelegation
+		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.Params"))
@@ -8707,6 +8737,10 @@ func (x *fastReflection_Params) Set(fd protoreflect.FieldDescriptor, value proto
 		x.ConstitutionAmendmentQuorumRange = value.Message().Interface().(*QuorumRange)
 	case "atomone.gov.v1.Params.law_quorum_range":
 		x.LawQuorumRange = value.Message().Interface().(*QuorumRange)
+	case "atomone.gov.v1.Params.governor_status_change_period":
+		x.GovernorStatusChangePeriod = value.Message().Interface().(*durationpb.Duration)
+	case "atomone.gov.v1.Params.min_governor_self_delegation":
+		x.MinGovernorSelfDelegation = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.Params"))
@@ -8778,6 +8812,11 @@ func (x *fastReflection_Params) Mutable(fd protoreflect.FieldDescriptor) protore
 			x.LawQuorumRange = new(QuorumRange)
 		}
 		return protoreflect.ValueOfMessage(x.LawQuorumRange.ProtoReflect())
+	case "atomone.gov.v1.Params.governor_status_change_period":
+		if x.GovernorStatusChangePeriod == nil {
+			x.GovernorStatusChangePeriod = new(durationpb.Duration)
+		}
+		return protoreflect.ValueOfMessage(x.GovernorStatusChangePeriod.ProtoReflect())
 	case "atomone.gov.v1.Params.quorum":
 		panic(fmt.Errorf("field quorum of message atomone.gov.v1.Params is not mutable"))
 	case "atomone.gov.v1.Params.threshold":
@@ -8802,6 +8841,8 @@ func (x *fastReflection_Params) Mutable(fd protoreflect.FieldDescriptor) protore
 		panic(fmt.Errorf("field quorum_check_count of message atomone.gov.v1.Params is not mutable"))
 	case "atomone.gov.v1.Params.burn_deposit_no_threshold":
 		panic(fmt.Errorf("field burn_deposit_no_threshold of message atomone.gov.v1.Params is not mutable"))
+	case "atomone.gov.v1.Params.min_governor_self_delegation":
+		panic(fmt.Errorf("field min_governor_self_delegation of message atomone.gov.v1.Params is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.Params"))
@@ -8869,6 +8910,11 @@ func (x *fastReflection_Params) NewField(fd protoreflect.FieldDescriptor) protor
 	case "atomone.gov.v1.Params.law_quorum_range":
 		m := new(QuorumRange)
 		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	case "atomone.gov.v1.Params.governor_status_change_period":
+		m := new(durationpb.Duration)
+		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	case "atomone.gov.v1.Params.min_governor_self_delegation":
+		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.Params"))
@@ -9025,6 +9071,14 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 			l = options.Size(x.LawQuorumRange)
 			n += 2 + l + runtime.Sov(uint64(l))
 		}
+		if x.GovernorStatusChangePeriod != nil {
+			l = options.Size(x.GovernorStatusChangePeriod)
+			n += 2 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.MinGovernorSelfDelegation)
+		if l > 0 {
+			n += 2 + l + runtime.Sov(uint64(l))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -9053,6 +9107,31 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.MinGovernorSelfDelegation) > 0 {
+			i -= len(x.MinGovernorSelfDelegation)
+			copy(dAtA[i:], x.MinGovernorSelfDelegation)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.MinGovernorSelfDelegation)))
+			i--
+			dAtA[i] = 0x1
+			i--
+			dAtA[i] = 0xf2
+		}
+		if x.GovernorStatusChangePeriod != nil {
+			encoded, err := options.Marshal(x.GovernorStatusChangePeriod)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x1
+			i--
+			dAtA[i] = 0xea
 		}
 		if x.LawQuorumRange != nil {
 			encoded, err := options.Marshal(x.LawQuorumRange)
@@ -10064,6 +10143,74 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
 				iNdEx = postIndex
+			case 29:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field GovernorStatusChangePeriod", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.GovernorStatusChangePeriod == nil {
+					x.GovernorStatusChangePeriod = &durationpb.Duration{}
+				}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.GovernorStatusChangePeriod); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 30:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MinGovernorSelfDelegation", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.MinGovernorSelfDelegation = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -10583,6 +10730,2340 @@ func (x *fastReflection_QuorumRange) ProtoMethods() *protoiface.Methods {
 	}
 }
 
+var (
+	md_Governor                         protoreflect.MessageDescriptor
+	fd_Governor_governor_address        protoreflect.FieldDescriptor
+	fd_Governor_status                  protoreflect.FieldDescriptor
+	fd_Governor_description             protoreflect.FieldDescriptor
+	fd_Governor_last_status_change_time protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_atomone_gov_v1_gov_proto_init()
+	md_Governor = File_atomone_gov_v1_gov_proto.Messages().ByName("Governor")
+	fd_Governor_governor_address = md_Governor.Fields().ByName("governor_address")
+	fd_Governor_status = md_Governor.Fields().ByName("status")
+	fd_Governor_description = md_Governor.Fields().ByName("description")
+	fd_Governor_last_status_change_time = md_Governor.Fields().ByName("last_status_change_time")
+}
+
+var _ protoreflect.Message = (*fastReflection_Governor)(nil)
+
+type fastReflection_Governor Governor
+
+func (x *Governor) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_Governor)(x)
+}
+
+func (x *Governor) slowProtoReflect() protoreflect.Message {
+	mi := &file_atomone_gov_v1_gov_proto_msgTypes[14]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_Governor_messageType fastReflection_Governor_messageType
+var _ protoreflect.MessageType = fastReflection_Governor_messageType{}
+
+type fastReflection_Governor_messageType struct{}
+
+func (x fastReflection_Governor_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_Governor)(nil)
+}
+func (x fastReflection_Governor_messageType) New() protoreflect.Message {
+	return new(fastReflection_Governor)
+}
+func (x fastReflection_Governor_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_Governor
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_Governor) Descriptor() protoreflect.MessageDescriptor {
+	return md_Governor
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_Governor) Type() protoreflect.MessageType {
+	return _fastReflection_Governor_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_Governor) New() protoreflect.Message {
+	return new(fastReflection_Governor)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_Governor) Interface() protoreflect.ProtoMessage {
+	return (*Governor)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_Governor) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.GovernorAddress != "" {
+		value := protoreflect.ValueOfString(x.GovernorAddress)
+		if !f(fd_Governor_governor_address, value) {
+			return
+		}
+	}
+	if x.Status != 0 {
+		value := protoreflect.ValueOfEnum((protoreflect.EnumNumber)(x.Status))
+		if !f(fd_Governor_status, value) {
+			return
+		}
+	}
+	if x.Description != nil {
+		value := protoreflect.ValueOfMessage(x.Description.ProtoReflect())
+		if !f(fd_Governor_description, value) {
+			return
+		}
+	}
+	if x.LastStatusChangeTime != nil {
+		value := protoreflect.ValueOfMessage(x.LastStatusChangeTime.ProtoReflect())
+		if !f(fd_Governor_last_status_change_time, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_Governor) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "atomone.gov.v1.Governor.governor_address":
+		return x.GovernorAddress != ""
+	case "atomone.gov.v1.Governor.status":
+		return x.Status != 0
+	case "atomone.gov.v1.Governor.description":
+		return x.Description != nil
+	case "atomone.gov.v1.Governor.last_status_change_time":
+		return x.LastStatusChangeTime != nil
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.Governor"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.Governor does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_Governor) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "atomone.gov.v1.Governor.governor_address":
+		x.GovernorAddress = ""
+	case "atomone.gov.v1.Governor.status":
+		x.Status = 0
+	case "atomone.gov.v1.Governor.description":
+		x.Description = nil
+	case "atomone.gov.v1.Governor.last_status_change_time":
+		x.LastStatusChangeTime = nil
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.Governor"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.Governor does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_Governor) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "atomone.gov.v1.Governor.governor_address":
+		value := x.GovernorAddress
+		return protoreflect.ValueOfString(value)
+	case "atomone.gov.v1.Governor.status":
+		value := x.Status
+		return protoreflect.ValueOfEnum((protoreflect.EnumNumber)(value))
+	case "atomone.gov.v1.Governor.description":
+		value := x.Description
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "atomone.gov.v1.Governor.last_status_change_time":
+		value := x.LastStatusChangeTime
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.Governor"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.Governor does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_Governor) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "atomone.gov.v1.Governor.governor_address":
+		x.GovernorAddress = value.Interface().(string)
+	case "atomone.gov.v1.Governor.status":
+		x.Status = (GovernorStatus)(value.Enum())
+	case "atomone.gov.v1.Governor.description":
+		x.Description = value.Message().Interface().(*GovernorDescription)
+	case "atomone.gov.v1.Governor.last_status_change_time":
+		x.LastStatusChangeTime = value.Message().Interface().(*timestamppb.Timestamp)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.Governor"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.Governor does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_Governor) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "atomone.gov.v1.Governor.description":
+		if x.Description == nil {
+			x.Description = new(GovernorDescription)
+		}
+		return protoreflect.ValueOfMessage(x.Description.ProtoReflect())
+	case "atomone.gov.v1.Governor.last_status_change_time":
+		if x.LastStatusChangeTime == nil {
+			x.LastStatusChangeTime = new(timestamppb.Timestamp)
+		}
+		return protoreflect.ValueOfMessage(x.LastStatusChangeTime.ProtoReflect())
+	case "atomone.gov.v1.Governor.governor_address":
+		panic(fmt.Errorf("field governor_address of message atomone.gov.v1.Governor is not mutable"))
+	case "atomone.gov.v1.Governor.status":
+		panic(fmt.Errorf("field status of message atomone.gov.v1.Governor is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.Governor"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.Governor does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_Governor) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "atomone.gov.v1.Governor.governor_address":
+		return protoreflect.ValueOfString("")
+	case "atomone.gov.v1.Governor.status":
+		return protoreflect.ValueOfEnum(0)
+	case "atomone.gov.v1.Governor.description":
+		m := new(GovernorDescription)
+		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	case "atomone.gov.v1.Governor.last_status_change_time":
+		m := new(timestamppb.Timestamp)
+		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.Governor"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.Governor does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_Governor) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in atomone.gov.v1.Governor", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_Governor) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_Governor) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_Governor) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_Governor) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*Governor)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.GovernorAddress)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.Status != 0 {
+			n += 1 + runtime.Sov(uint64(x.Status))
+		}
+		if x.Description != nil {
+			l = options.Size(x.Description)
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.LastStatusChangeTime != nil {
+			l = options.Size(x.LastStatusChangeTime)
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*Governor)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.LastStatusChangeTime != nil {
+			encoded, err := options.Marshal(x.LastStatusChangeTime)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x22
+		}
+		if x.Description != nil {
+			encoded, err := options.Marshal(x.Description)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x1a
+		}
+		if x.Status != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.Status))
+			i--
+			dAtA[i] = 0x10
+		}
+		if len(x.GovernorAddress) > 0 {
+			i -= len(x.GovernorAddress)
+			copy(dAtA[i:], x.GovernorAddress)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.GovernorAddress)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*Governor)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Governor: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Governor: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field GovernorAddress", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.GovernorAddress = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Status", wireType)
+				}
+				x.Status = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.Status |= GovernorStatus(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 3:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Description", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.Description == nil {
+					x.Description = &GovernorDescription{}
+				}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Description); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 4:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LastStatusChangeTime", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.LastStatusChangeTime == nil {
+					x.LastStatusChangeTime = &timestamppb.Timestamp{}
+				}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.LastStatusChangeTime); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_GovernorDescription                  protoreflect.MessageDescriptor
+	fd_GovernorDescription_moniker          protoreflect.FieldDescriptor
+	fd_GovernorDescription_identity         protoreflect.FieldDescriptor
+	fd_GovernorDescription_website          protoreflect.FieldDescriptor
+	fd_GovernorDescription_security_contact protoreflect.FieldDescriptor
+	fd_GovernorDescription_details          protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_atomone_gov_v1_gov_proto_init()
+	md_GovernorDescription = File_atomone_gov_v1_gov_proto.Messages().ByName("GovernorDescription")
+	fd_GovernorDescription_moniker = md_GovernorDescription.Fields().ByName("moniker")
+	fd_GovernorDescription_identity = md_GovernorDescription.Fields().ByName("identity")
+	fd_GovernorDescription_website = md_GovernorDescription.Fields().ByName("website")
+	fd_GovernorDescription_security_contact = md_GovernorDescription.Fields().ByName("security_contact")
+	fd_GovernorDescription_details = md_GovernorDescription.Fields().ByName("details")
+}
+
+var _ protoreflect.Message = (*fastReflection_GovernorDescription)(nil)
+
+type fastReflection_GovernorDescription GovernorDescription
+
+func (x *GovernorDescription) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_GovernorDescription)(x)
+}
+
+func (x *GovernorDescription) slowProtoReflect() protoreflect.Message {
+	mi := &file_atomone_gov_v1_gov_proto_msgTypes[15]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_GovernorDescription_messageType fastReflection_GovernorDescription_messageType
+var _ protoreflect.MessageType = fastReflection_GovernorDescription_messageType{}
+
+type fastReflection_GovernorDescription_messageType struct{}
+
+func (x fastReflection_GovernorDescription_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_GovernorDescription)(nil)
+}
+func (x fastReflection_GovernorDescription_messageType) New() protoreflect.Message {
+	return new(fastReflection_GovernorDescription)
+}
+func (x fastReflection_GovernorDescription_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_GovernorDescription
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_GovernorDescription) Descriptor() protoreflect.MessageDescriptor {
+	return md_GovernorDescription
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_GovernorDescription) Type() protoreflect.MessageType {
+	return _fastReflection_GovernorDescription_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_GovernorDescription) New() protoreflect.Message {
+	return new(fastReflection_GovernorDescription)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_GovernorDescription) Interface() protoreflect.ProtoMessage {
+	return (*GovernorDescription)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_GovernorDescription) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Moniker != "" {
+		value := protoreflect.ValueOfString(x.Moniker)
+		if !f(fd_GovernorDescription_moniker, value) {
+			return
+		}
+	}
+	if x.Identity != "" {
+		value := protoreflect.ValueOfString(x.Identity)
+		if !f(fd_GovernorDescription_identity, value) {
+			return
+		}
+	}
+	if x.Website != "" {
+		value := protoreflect.ValueOfString(x.Website)
+		if !f(fd_GovernorDescription_website, value) {
+			return
+		}
+	}
+	if x.SecurityContact != "" {
+		value := protoreflect.ValueOfString(x.SecurityContact)
+		if !f(fd_GovernorDescription_security_contact, value) {
+			return
+		}
+	}
+	if x.Details != "" {
+		value := protoreflect.ValueOfString(x.Details)
+		if !f(fd_GovernorDescription_details, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_GovernorDescription) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "atomone.gov.v1.GovernorDescription.moniker":
+		return x.Moniker != ""
+	case "atomone.gov.v1.GovernorDescription.identity":
+		return x.Identity != ""
+	case "atomone.gov.v1.GovernorDescription.website":
+		return x.Website != ""
+	case "atomone.gov.v1.GovernorDescription.security_contact":
+		return x.SecurityContact != ""
+	case "atomone.gov.v1.GovernorDescription.details":
+		return x.Details != ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.GovernorDescription"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.GovernorDescription does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_GovernorDescription) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "atomone.gov.v1.GovernorDescription.moniker":
+		x.Moniker = ""
+	case "atomone.gov.v1.GovernorDescription.identity":
+		x.Identity = ""
+	case "atomone.gov.v1.GovernorDescription.website":
+		x.Website = ""
+	case "atomone.gov.v1.GovernorDescription.security_contact":
+		x.SecurityContact = ""
+	case "atomone.gov.v1.GovernorDescription.details":
+		x.Details = ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.GovernorDescription"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.GovernorDescription does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_GovernorDescription) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "atomone.gov.v1.GovernorDescription.moniker":
+		value := x.Moniker
+		return protoreflect.ValueOfString(value)
+	case "atomone.gov.v1.GovernorDescription.identity":
+		value := x.Identity
+		return protoreflect.ValueOfString(value)
+	case "atomone.gov.v1.GovernorDescription.website":
+		value := x.Website
+		return protoreflect.ValueOfString(value)
+	case "atomone.gov.v1.GovernorDescription.security_contact":
+		value := x.SecurityContact
+		return protoreflect.ValueOfString(value)
+	case "atomone.gov.v1.GovernorDescription.details":
+		value := x.Details
+		return protoreflect.ValueOfString(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.GovernorDescription"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.GovernorDescription does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_GovernorDescription) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "atomone.gov.v1.GovernorDescription.moniker":
+		x.Moniker = value.Interface().(string)
+	case "atomone.gov.v1.GovernorDescription.identity":
+		x.Identity = value.Interface().(string)
+	case "atomone.gov.v1.GovernorDescription.website":
+		x.Website = value.Interface().(string)
+	case "atomone.gov.v1.GovernorDescription.security_contact":
+		x.SecurityContact = value.Interface().(string)
+	case "atomone.gov.v1.GovernorDescription.details":
+		x.Details = value.Interface().(string)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.GovernorDescription"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.GovernorDescription does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_GovernorDescription) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "atomone.gov.v1.GovernorDescription.moniker":
+		panic(fmt.Errorf("field moniker of message atomone.gov.v1.GovernorDescription is not mutable"))
+	case "atomone.gov.v1.GovernorDescription.identity":
+		panic(fmt.Errorf("field identity of message atomone.gov.v1.GovernorDescription is not mutable"))
+	case "atomone.gov.v1.GovernorDescription.website":
+		panic(fmt.Errorf("field website of message atomone.gov.v1.GovernorDescription is not mutable"))
+	case "atomone.gov.v1.GovernorDescription.security_contact":
+		panic(fmt.Errorf("field security_contact of message atomone.gov.v1.GovernorDescription is not mutable"))
+	case "atomone.gov.v1.GovernorDescription.details":
+		panic(fmt.Errorf("field details of message atomone.gov.v1.GovernorDescription is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.GovernorDescription"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.GovernorDescription does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_GovernorDescription) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "atomone.gov.v1.GovernorDescription.moniker":
+		return protoreflect.ValueOfString("")
+	case "atomone.gov.v1.GovernorDescription.identity":
+		return protoreflect.ValueOfString("")
+	case "atomone.gov.v1.GovernorDescription.website":
+		return protoreflect.ValueOfString("")
+	case "atomone.gov.v1.GovernorDescription.security_contact":
+		return protoreflect.ValueOfString("")
+	case "atomone.gov.v1.GovernorDescription.details":
+		return protoreflect.ValueOfString("")
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.GovernorDescription"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.GovernorDescription does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_GovernorDescription) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in atomone.gov.v1.GovernorDescription", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_GovernorDescription) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_GovernorDescription) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_GovernorDescription) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_GovernorDescription) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*GovernorDescription)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.Moniker)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.Identity)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.Website)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.SecurityContact)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.Details)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*GovernorDescription)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.Details) > 0 {
+			i -= len(x.Details)
+			copy(dAtA[i:], x.Details)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Details)))
+			i--
+			dAtA[i] = 0x2a
+		}
+		if len(x.SecurityContact) > 0 {
+			i -= len(x.SecurityContact)
+			copy(dAtA[i:], x.SecurityContact)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.SecurityContact)))
+			i--
+			dAtA[i] = 0x22
+		}
+		if len(x.Website) > 0 {
+			i -= len(x.Website)
+			copy(dAtA[i:], x.Website)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Website)))
+			i--
+			dAtA[i] = 0x1a
+		}
+		if len(x.Identity) > 0 {
+			i -= len(x.Identity)
+			copy(dAtA[i:], x.Identity)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Identity)))
+			i--
+			dAtA[i] = 0x12
+		}
+		if len(x.Moniker) > 0 {
+			i -= len(x.Moniker)
+			copy(dAtA[i:], x.Moniker)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Moniker)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*GovernorDescription)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: GovernorDescription: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: GovernorDescription: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Moniker", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Moniker = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Identity", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Identity = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 3:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Website", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Website = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 4:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field SecurityContact", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.SecurityContact = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 5:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Details", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Details = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_GovernorValShares                   protoreflect.MessageDescriptor
+	fd_GovernorValShares_governor_address  protoreflect.FieldDescriptor
+	fd_GovernorValShares_validator_address protoreflect.FieldDescriptor
+	fd_GovernorValShares_shares            protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_atomone_gov_v1_gov_proto_init()
+	md_GovernorValShares = File_atomone_gov_v1_gov_proto.Messages().ByName("GovernorValShares")
+	fd_GovernorValShares_governor_address = md_GovernorValShares.Fields().ByName("governor_address")
+	fd_GovernorValShares_validator_address = md_GovernorValShares.Fields().ByName("validator_address")
+	fd_GovernorValShares_shares = md_GovernorValShares.Fields().ByName("shares")
+}
+
+var _ protoreflect.Message = (*fastReflection_GovernorValShares)(nil)
+
+type fastReflection_GovernorValShares GovernorValShares
+
+func (x *GovernorValShares) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_GovernorValShares)(x)
+}
+
+func (x *GovernorValShares) slowProtoReflect() protoreflect.Message {
+	mi := &file_atomone_gov_v1_gov_proto_msgTypes[16]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_GovernorValShares_messageType fastReflection_GovernorValShares_messageType
+var _ protoreflect.MessageType = fastReflection_GovernorValShares_messageType{}
+
+type fastReflection_GovernorValShares_messageType struct{}
+
+func (x fastReflection_GovernorValShares_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_GovernorValShares)(nil)
+}
+func (x fastReflection_GovernorValShares_messageType) New() protoreflect.Message {
+	return new(fastReflection_GovernorValShares)
+}
+func (x fastReflection_GovernorValShares_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_GovernorValShares
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_GovernorValShares) Descriptor() protoreflect.MessageDescriptor {
+	return md_GovernorValShares
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_GovernorValShares) Type() protoreflect.MessageType {
+	return _fastReflection_GovernorValShares_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_GovernorValShares) New() protoreflect.Message {
+	return new(fastReflection_GovernorValShares)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_GovernorValShares) Interface() protoreflect.ProtoMessage {
+	return (*GovernorValShares)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_GovernorValShares) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.GovernorAddress != "" {
+		value := protoreflect.ValueOfString(x.GovernorAddress)
+		if !f(fd_GovernorValShares_governor_address, value) {
+			return
+		}
+	}
+	if x.ValidatorAddress != "" {
+		value := protoreflect.ValueOfString(x.ValidatorAddress)
+		if !f(fd_GovernorValShares_validator_address, value) {
+			return
+		}
+	}
+	if x.Shares != "" {
+		value := protoreflect.ValueOfString(x.Shares)
+		if !f(fd_GovernorValShares_shares, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_GovernorValShares) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "atomone.gov.v1.GovernorValShares.governor_address":
+		return x.GovernorAddress != ""
+	case "atomone.gov.v1.GovernorValShares.validator_address":
+		return x.ValidatorAddress != ""
+	case "atomone.gov.v1.GovernorValShares.shares":
+		return x.Shares != ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.GovernorValShares"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.GovernorValShares does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_GovernorValShares) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "atomone.gov.v1.GovernorValShares.governor_address":
+		x.GovernorAddress = ""
+	case "atomone.gov.v1.GovernorValShares.validator_address":
+		x.ValidatorAddress = ""
+	case "atomone.gov.v1.GovernorValShares.shares":
+		x.Shares = ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.GovernorValShares"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.GovernorValShares does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_GovernorValShares) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "atomone.gov.v1.GovernorValShares.governor_address":
+		value := x.GovernorAddress
+		return protoreflect.ValueOfString(value)
+	case "atomone.gov.v1.GovernorValShares.validator_address":
+		value := x.ValidatorAddress
+		return protoreflect.ValueOfString(value)
+	case "atomone.gov.v1.GovernorValShares.shares":
+		value := x.Shares
+		return protoreflect.ValueOfString(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.GovernorValShares"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.GovernorValShares does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_GovernorValShares) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "atomone.gov.v1.GovernorValShares.governor_address":
+		x.GovernorAddress = value.Interface().(string)
+	case "atomone.gov.v1.GovernorValShares.validator_address":
+		x.ValidatorAddress = value.Interface().(string)
+	case "atomone.gov.v1.GovernorValShares.shares":
+		x.Shares = value.Interface().(string)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.GovernorValShares"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.GovernorValShares does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_GovernorValShares) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "atomone.gov.v1.GovernorValShares.governor_address":
+		panic(fmt.Errorf("field governor_address of message atomone.gov.v1.GovernorValShares is not mutable"))
+	case "atomone.gov.v1.GovernorValShares.validator_address":
+		panic(fmt.Errorf("field validator_address of message atomone.gov.v1.GovernorValShares is not mutable"))
+	case "atomone.gov.v1.GovernorValShares.shares":
+		panic(fmt.Errorf("field shares of message atomone.gov.v1.GovernorValShares is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.GovernorValShares"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.GovernorValShares does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_GovernorValShares) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "atomone.gov.v1.GovernorValShares.governor_address":
+		return protoreflect.ValueOfString("")
+	case "atomone.gov.v1.GovernorValShares.validator_address":
+		return protoreflect.ValueOfString("")
+	case "atomone.gov.v1.GovernorValShares.shares":
+		return protoreflect.ValueOfString("")
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.GovernorValShares"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.GovernorValShares does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_GovernorValShares) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in atomone.gov.v1.GovernorValShares", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_GovernorValShares) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_GovernorValShares) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_GovernorValShares) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_GovernorValShares) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*GovernorValShares)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.GovernorAddress)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.ValidatorAddress)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.Shares)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*GovernorValShares)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.Shares) > 0 {
+			i -= len(x.Shares)
+			copy(dAtA[i:], x.Shares)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Shares)))
+			i--
+			dAtA[i] = 0x1a
+		}
+		if len(x.ValidatorAddress) > 0 {
+			i -= len(x.ValidatorAddress)
+			copy(dAtA[i:], x.ValidatorAddress)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.ValidatorAddress)))
+			i--
+			dAtA[i] = 0x12
+		}
+		if len(x.GovernorAddress) > 0 {
+			i -= len(x.GovernorAddress)
+			copy(dAtA[i:], x.GovernorAddress)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.GovernorAddress)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*GovernorValShares)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: GovernorValShares: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: GovernorValShares: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field GovernorAddress", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.GovernorAddress = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ValidatorAddress", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.ValidatorAddress = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 3:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Shares", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Shares = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_GovernanceDelegation                   protoreflect.MessageDescriptor
+	fd_GovernanceDelegation_delegator_address protoreflect.FieldDescriptor
+	fd_GovernanceDelegation_governor_address  protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_atomone_gov_v1_gov_proto_init()
+	md_GovernanceDelegation = File_atomone_gov_v1_gov_proto.Messages().ByName("GovernanceDelegation")
+	fd_GovernanceDelegation_delegator_address = md_GovernanceDelegation.Fields().ByName("delegator_address")
+	fd_GovernanceDelegation_governor_address = md_GovernanceDelegation.Fields().ByName("governor_address")
+}
+
+var _ protoreflect.Message = (*fastReflection_GovernanceDelegation)(nil)
+
+type fastReflection_GovernanceDelegation GovernanceDelegation
+
+func (x *GovernanceDelegation) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_GovernanceDelegation)(x)
+}
+
+func (x *GovernanceDelegation) slowProtoReflect() protoreflect.Message {
+	mi := &file_atomone_gov_v1_gov_proto_msgTypes[17]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_GovernanceDelegation_messageType fastReflection_GovernanceDelegation_messageType
+var _ protoreflect.MessageType = fastReflection_GovernanceDelegation_messageType{}
+
+type fastReflection_GovernanceDelegation_messageType struct{}
+
+func (x fastReflection_GovernanceDelegation_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_GovernanceDelegation)(nil)
+}
+func (x fastReflection_GovernanceDelegation_messageType) New() protoreflect.Message {
+	return new(fastReflection_GovernanceDelegation)
+}
+func (x fastReflection_GovernanceDelegation_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_GovernanceDelegation
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_GovernanceDelegation) Descriptor() protoreflect.MessageDescriptor {
+	return md_GovernanceDelegation
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_GovernanceDelegation) Type() protoreflect.MessageType {
+	return _fastReflection_GovernanceDelegation_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_GovernanceDelegation) New() protoreflect.Message {
+	return new(fastReflection_GovernanceDelegation)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_GovernanceDelegation) Interface() protoreflect.ProtoMessage {
+	return (*GovernanceDelegation)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_GovernanceDelegation) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.DelegatorAddress != "" {
+		value := protoreflect.ValueOfString(x.DelegatorAddress)
+		if !f(fd_GovernanceDelegation_delegator_address, value) {
+			return
+		}
+	}
+	if x.GovernorAddress != "" {
+		value := protoreflect.ValueOfString(x.GovernorAddress)
+		if !f(fd_GovernanceDelegation_governor_address, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_GovernanceDelegation) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "atomone.gov.v1.GovernanceDelegation.delegator_address":
+		return x.DelegatorAddress != ""
+	case "atomone.gov.v1.GovernanceDelegation.governor_address":
+		return x.GovernorAddress != ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.GovernanceDelegation"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.GovernanceDelegation does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_GovernanceDelegation) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "atomone.gov.v1.GovernanceDelegation.delegator_address":
+		x.DelegatorAddress = ""
+	case "atomone.gov.v1.GovernanceDelegation.governor_address":
+		x.GovernorAddress = ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.GovernanceDelegation"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.GovernanceDelegation does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_GovernanceDelegation) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "atomone.gov.v1.GovernanceDelegation.delegator_address":
+		value := x.DelegatorAddress
+		return protoreflect.ValueOfString(value)
+	case "atomone.gov.v1.GovernanceDelegation.governor_address":
+		value := x.GovernorAddress
+		return protoreflect.ValueOfString(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.GovernanceDelegation"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.GovernanceDelegation does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_GovernanceDelegation) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "atomone.gov.v1.GovernanceDelegation.delegator_address":
+		x.DelegatorAddress = value.Interface().(string)
+	case "atomone.gov.v1.GovernanceDelegation.governor_address":
+		x.GovernorAddress = value.Interface().(string)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.GovernanceDelegation"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.GovernanceDelegation does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_GovernanceDelegation) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "atomone.gov.v1.GovernanceDelegation.delegator_address":
+		panic(fmt.Errorf("field delegator_address of message atomone.gov.v1.GovernanceDelegation is not mutable"))
+	case "atomone.gov.v1.GovernanceDelegation.governor_address":
+		panic(fmt.Errorf("field governor_address of message atomone.gov.v1.GovernanceDelegation is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.GovernanceDelegation"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.GovernanceDelegation does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_GovernanceDelegation) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "atomone.gov.v1.GovernanceDelegation.delegator_address":
+		return protoreflect.ValueOfString("")
+	case "atomone.gov.v1.GovernanceDelegation.governor_address":
+		return protoreflect.ValueOfString("")
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.GovernanceDelegation"))
+		}
+		panic(fmt.Errorf("message atomone.gov.v1.GovernanceDelegation does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_GovernanceDelegation) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in atomone.gov.v1.GovernanceDelegation", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_GovernanceDelegation) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_GovernanceDelegation) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_GovernanceDelegation) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_GovernanceDelegation) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*GovernanceDelegation)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.DelegatorAddress)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.GovernorAddress)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*GovernanceDelegation)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.GovernorAddress) > 0 {
+			i -= len(x.GovernorAddress)
+			copy(dAtA[i:], x.GovernorAddress)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.GovernorAddress)))
+			i--
+			dAtA[i] = 0x12
+		}
+		if len(x.DelegatorAddress) > 0 {
+			i -= len(x.DelegatorAddress)
+			copy(dAtA[i:], x.DelegatorAddress)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.DelegatorAddress)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*GovernanceDelegation)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: GovernanceDelegation: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: GovernanceDelegation: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field DelegatorAddress", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.DelegatorAddress = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field GovernorAddress", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.GovernorAddress = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
 // Since: cosmos-sdk 0.46
 
 // Code generated by protoc-gen-go. DO NOT EDIT.
@@ -10723,6 +13204,59 @@ func (x ProposalStatus) Number() protoreflect.EnumNumber {
 // Deprecated: Use ProposalStatus.Descriptor instead.
 func (ProposalStatus) EnumDescriptor() ([]byte, []int) {
 	return file_atomone_gov_v1_gov_proto_rawDescGZIP(), []int{1}
+}
+
+// GovernorStatus is the status of a governor.
+type GovernorStatus int32
+
+const (
+	// UNSPECIFIED defines an invalid governor status.
+	GovernorStatus_GOVERNOR_STATUS_UNSPECIFIED GovernorStatus = 0
+	// ACTIVE defines a governor that is active.
+	GovernorStatus_GOVERNOR_STATUS_ACTIVE GovernorStatus = 1
+	// INACTIVE defines a governor that is inactive.
+	GovernorStatus_GOVERNOR_STATUS_INACTIVE GovernorStatus = 2
+)
+
+// Enum value maps for GovernorStatus.
+var (
+	GovernorStatus_name = map[int32]string{
+		0: "GOVERNOR_STATUS_UNSPECIFIED",
+		1: "GOVERNOR_STATUS_ACTIVE",
+		2: "GOVERNOR_STATUS_INACTIVE",
+	}
+	GovernorStatus_value = map[string]int32{
+		"GOVERNOR_STATUS_UNSPECIFIED": 0,
+		"GOVERNOR_STATUS_ACTIVE":      1,
+		"GOVERNOR_STATUS_INACTIVE":    2,
+	}
+)
+
+func (x GovernorStatus) Enum() *GovernorStatus {
+	p := new(GovernorStatus)
+	*p = x
+	return p
+}
+
+func (x GovernorStatus) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (GovernorStatus) Descriptor() protoreflect.EnumDescriptor {
+	return file_atomone_gov_v1_gov_proto_enumTypes[2].Descriptor()
+}
+
+func (GovernorStatus) Type() protoreflect.EnumType {
+	return &file_atomone_gov_v1_gov_proto_enumTypes[2]
+}
+
+func (x GovernorStatus) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use GovernorStatus.Descriptor instead.
+func (GovernorStatus) EnumDescriptor() ([]byte, []int) {
+	return file_atomone_gov_v1_gov_proto_rawDescGZIP(), []int{2}
 }
 
 // WeightedVoteOption defines a unit of vote for vote split.
@@ -11632,6 +14166,12 @@ type Params struct {
 	ConstitutionAmendmentQuorumRange *QuorumRange `protobuf:"bytes,27,opt,name=constitution_amendment_quorum_range,json=constitutionAmendmentQuorumRange,proto3" json:"constitution_amendment_quorum_range,omitempty"`
 	// Achievable quorum for law proposals
 	LawQuorumRange *QuorumRange `protobuf:"bytes,28,opt,name=law_quorum_range,json=lawQuorumRange,proto3" json:"law_quorum_range,omitempty"`
+	// Defines the duration of time that need to elapse between governor status changes.
+	GovernorStatusChangePeriod *durationpb.Duration `protobuf:"bytes,29,opt,name=governor_status_change_period,json=governorStatusChangePeriod,proto3" json:"governor_status_change_period,omitempty"`
+	// Defines the minimum amound of bonded tokens, aka the "self-delegation" (because active governors
+	// must have the governance VP from the base account automatically delegated to them), that a governor
+	// must have to be considered active.
+	MinGovernorSelfDelegation string `protobuf:"bytes,30,opt,name=min_governor_self_delegation,json=minGovernorSelfDelegation,proto3" json:"min_governor_self_delegation,omitempty"`
 }
 
 func (x *Params) Reset() {
@@ -11813,6 +14353,20 @@ func (x *Params) GetLawQuorumRange() *QuorumRange {
 	return nil
 }
 
+func (x *Params) GetGovernorStatusChangePeriod() *durationpb.Duration {
+	if x != nil {
+		return x.GovernorStatusChangePeriod
+	}
+	return nil
+}
+
+func (x *Params) GetMinGovernorSelfDelegation() string {
+	if x != nil {
+		return x.MinGovernorSelfDelegation
+	}
+	return ""
+}
+
 type QuorumRange struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -11854,6 +14408,246 @@ func (x *QuorumRange) GetMax() string {
 func (x *QuorumRange) GetMin() string {
 	if x != nil {
 		return x.Min
+	}
+	return ""
+}
+
+// Governor defines a governor, together with the total amount of delegated
+// validator's bond shares for a set amount of validators. When a delegator
+// delegates a percentage of its x/gov power to a governor, the resulting
+// shares from each delegators delegations in x/staking are added to the
+// governor's total shares.
+type Governor struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// governor_address defines the address of the governor; bech32-encoded.
+	GovernorAddress string `protobuf:"bytes,1,opt,name=governor_address,json=governorAddress,proto3" json:"governor_address,omitempty"`
+	// status is the status of the governor (active/inactive).
+	Status GovernorStatus `protobuf:"varint,2,opt,name=status,proto3,enum=atomone.gov.v1.GovernorStatus" json:"status,omitempty"`
+	// description defines the description terms for the governor.
+	Description *GovernorDescription `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	// last_status_change_time is the time when the governor's status was last changed.
+	LastStatusChangeTime *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=last_status_change_time,json=lastStatusChangeTime,proto3" json:"last_status_change_time,omitempty"`
+}
+
+func (x *Governor) Reset() {
+	*x = Governor{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_atomone_gov_v1_gov_proto_msgTypes[14]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Governor) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Governor) ProtoMessage() {}
+
+// Deprecated: Use Governor.ProtoReflect.Descriptor instead.
+func (*Governor) Descriptor() ([]byte, []int) {
+	return file_atomone_gov_v1_gov_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *Governor) GetGovernorAddress() string {
+	if x != nil {
+		return x.GovernorAddress
+	}
+	return ""
+}
+
+func (x *Governor) GetStatus() GovernorStatus {
+	if x != nil {
+		return x.Status
+	}
+	return GovernorStatus_GOVERNOR_STATUS_UNSPECIFIED
+}
+
+func (x *Governor) GetDescription() *GovernorDescription {
+	if x != nil {
+		return x.Description
+	}
+	return nil
+}
+
+func (x *Governor) GetLastStatusChangeTime() *timestamppb.Timestamp {
+	if x != nil {
+		return x.LastStatusChangeTime
+	}
+	return nil
+}
+
+// Description defines a governor description.
+type GovernorDescription struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// moniker defines a human-readable name for the governor.
+	Moniker string `protobuf:"bytes,1,opt,name=moniker,proto3" json:"moniker,omitempty"`
+	// identity defines an optional identity signature (ex. UPort or Keybase).
+	Identity string `protobuf:"bytes,2,opt,name=identity,proto3" json:"identity,omitempty"`
+	// website defines an optional website link.
+	Website string `protobuf:"bytes,3,opt,name=website,proto3" json:"website,omitempty"`
+	// security_contact defines an optional email for security contact.
+	SecurityContact string `protobuf:"bytes,4,opt,name=security_contact,json=securityContact,proto3" json:"security_contact,omitempty"`
+	// details define other optional details.
+	Details string `protobuf:"bytes,5,opt,name=details,proto3" json:"details,omitempty"`
+}
+
+func (x *GovernorDescription) Reset() {
+	*x = GovernorDescription{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_atomone_gov_v1_gov_proto_msgTypes[15]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GovernorDescription) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GovernorDescription) ProtoMessage() {}
+
+// Deprecated: Use GovernorDescription.ProtoReflect.Descriptor instead.
+func (*GovernorDescription) Descriptor() ([]byte, []int) {
+	return file_atomone_gov_v1_gov_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *GovernorDescription) GetMoniker() string {
+	if x != nil {
+		return x.Moniker
+	}
+	return ""
+}
+
+func (x *GovernorDescription) GetIdentity() string {
+	if x != nil {
+		return x.Identity
+	}
+	return ""
+}
+
+func (x *GovernorDescription) GetWebsite() string {
+	if x != nil {
+		return x.Website
+	}
+	return ""
+}
+
+func (x *GovernorDescription) GetSecurityContact() string {
+	if x != nil {
+		return x.SecurityContact
+	}
+	return ""
+}
+
+func (x *GovernorDescription) GetDetails() string {
+	if x != nil {
+		return x.Details
+	}
+	return ""
+}
+
+// GovernorValShares holds the number of virtual shares from the
+// specific validator that a governor can use to vote on proposals.
+type GovernorValShares struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	GovernorAddress  string `protobuf:"bytes,1,opt,name=governor_address,json=governorAddress,proto3" json:"governor_address,omitempty"`
+	ValidatorAddress string `protobuf:"bytes,2,opt,name=validator_address,json=validatorAddress,proto3" json:"validator_address,omitempty"`
+	// shares define the delegation shares available from this validator.
+	Shares string `protobuf:"bytes,3,opt,name=shares,proto3" json:"shares,omitempty"`
+}
+
+func (x *GovernorValShares) Reset() {
+	*x = GovernorValShares{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_atomone_gov_v1_gov_proto_msgTypes[16]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GovernorValShares) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GovernorValShares) ProtoMessage() {}
+
+// Deprecated: Use GovernorValShares.ProtoReflect.Descriptor instead.
+func (*GovernorValShares) Descriptor() ([]byte, []int) {
+	return file_atomone_gov_v1_gov_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *GovernorValShares) GetGovernorAddress() string {
+	if x != nil {
+		return x.GovernorAddress
+	}
+	return ""
+}
+
+func (x *GovernorValShares) GetValidatorAddress() string {
+	if x != nil {
+		return x.ValidatorAddress
+	}
+	return ""
+}
+
+func (x *GovernorValShares) GetShares() string {
+	if x != nil {
+		return x.Shares
+	}
+	return ""
+}
+
+// GovernanceDelegation defines a delegation of governance voting power from a
+// delegator to a governor.
+type GovernanceDelegation struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	DelegatorAddress string `protobuf:"bytes,1,opt,name=delegator_address,json=delegatorAddress,proto3" json:"delegator_address,omitempty"`
+	GovernorAddress  string `protobuf:"bytes,2,opt,name=governor_address,json=governorAddress,proto3" json:"governor_address,omitempty"`
+}
+
+func (x *GovernanceDelegation) Reset() {
+	*x = GovernanceDelegation{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_atomone_gov_v1_gov_proto_msgTypes[17]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GovernanceDelegation) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GovernanceDelegation) ProtoMessage() {}
+
+// Deprecated: Use GovernanceDelegation.ProtoReflect.Descriptor instead.
+func (*GovernanceDelegation) Descriptor() ([]byte, []int) {
+	return file_atomone_gov_v1_gov_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *GovernanceDelegation) GetDelegatorAddress() string {
+	if x != nil {
+		return x.DelegatorAddress
+	}
+	return ""
+}
+
+func (x *GovernanceDelegation) GetGovernorAddress() string {
+	if x != nil {
+		return x.GovernorAddress
 	}
 	return ""
 }
@@ -12073,7 +14867,7 @@ var file_atomone_gov_v1_gov_proto_rawDesc = []byte{
 	0x74, 0x79, 0x5f, 0x74, 0x61, 0x72, 0x67, 0x65, 0x74, 0x5f, 0x64, 0x69, 0x73, 0x74, 0x61, 0x6e,
 	0x63, 0x65, 0x18, 0x06, 0x20, 0x01, 0x28, 0x04, 0x52, 0x21, 0x64, 0x65, 0x63, 0x72, 0x65, 0x61,
 	0x73, 0x65, 0x53, 0x65, 0x6e, 0x73, 0x69, 0x74, 0x69, 0x76, 0x69, 0x74, 0x79, 0x54, 0x61, 0x72,
-	0x67, 0x65, 0x74, 0x44, 0x69, 0x73, 0x74, 0x61, 0x6e, 0x63, 0x65, 0x22, 0xd6, 0x0c, 0x0a, 0x06,
+	0x67, 0x65, 0x74, 0x44, 0x69, 0x73, 0x74, 0x61, 0x6e, 0x63, 0x65, 0x22, 0x8b, 0x0e, 0x0a, 0x06,
 	0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x47, 0x0a, 0x0b, 0x6d, 0x69, 0x6e, 0x5f, 0x64, 0x65,
 	0x70, 0x6f, 0x73, 0x69, 0x74, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f,
 	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61,
@@ -12175,42 +14969,117 @@ var file_atomone_gov_v1_gov_proto_rawDesc = []byte{
 	0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x52,
 	0x61, 0x6e, 0x67, 0x65, 0x42, 0x0e, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
 	0x2e, 0x44, 0x65, 0x63, 0x52, 0x0e, 0x6c, 0x61, 0x77, 0x51, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x52,
-	0x61, 0x6e, 0x67, 0x65, 0x22, 0x51, 0x0a, 0x0b, 0x51, 0x75, 0x6f, 0x72, 0x75, 0x6d, 0x52, 0x61,
-	0x6e, 0x67, 0x65, 0x12, 0x20, 0x0a, 0x03, 0x6d, 0x61, 0x78, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x42, 0x0e, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63,
-	0x52, 0x03, 0x6d, 0x61, 0x78, 0x12, 0x20, 0x0a, 0x03, 0x6d, 0x69, 0x6e, 0x18, 0x02, 0x20, 0x01,
-	0x28, 0x09, 0x42, 0x0e, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44,
-	0x65, 0x63, 0x52, 0x03, 0x6d, 0x69, 0x6e, 0x2a, 0x6b, 0x0a, 0x0a, 0x56, 0x6f, 0x74, 0x65, 0x4f,
-	0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1b, 0x0a, 0x17, 0x56, 0x4f, 0x54, 0x45, 0x5f, 0x4f, 0x50,
-	0x54, 0x49, 0x4f, 0x4e, 0x5f, 0x55, 0x4e, 0x53, 0x50, 0x45, 0x43, 0x49, 0x46, 0x49, 0x45, 0x44,
-	0x10, 0x00, 0x12, 0x13, 0x0a, 0x0f, 0x56, 0x4f, 0x54, 0x45, 0x5f, 0x4f, 0x50, 0x54, 0x49, 0x4f,
-	0x4e, 0x5f, 0x59, 0x45, 0x53, 0x10, 0x01, 0x12, 0x17, 0x0a, 0x13, 0x56, 0x4f, 0x54, 0x45, 0x5f,
-	0x4f, 0x50, 0x54, 0x49, 0x4f, 0x4e, 0x5f, 0x41, 0x42, 0x53, 0x54, 0x41, 0x49, 0x4e, 0x10, 0x02,
-	0x12, 0x12, 0x0a, 0x0e, 0x56, 0x4f, 0x54, 0x45, 0x5f, 0x4f, 0x50, 0x54, 0x49, 0x4f, 0x4e, 0x5f,
-	0x4e, 0x4f, 0x10, 0x03, 0x2a, 0xce, 0x01, 0x0a, 0x0e, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61,
-	0x6c, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x1f, 0x0a, 0x1b, 0x50, 0x52, 0x4f, 0x50, 0x4f,
-	0x53, 0x41, 0x4c, 0x5f, 0x53, 0x54, 0x41, 0x54, 0x55, 0x53, 0x5f, 0x55, 0x4e, 0x53, 0x50, 0x45,
-	0x43, 0x49, 0x46, 0x49, 0x45, 0x44, 0x10, 0x00, 0x12, 0x22, 0x0a, 0x1e, 0x50, 0x52, 0x4f, 0x50,
-	0x4f, 0x53, 0x41, 0x4c, 0x5f, 0x53, 0x54, 0x41, 0x54, 0x55, 0x53, 0x5f, 0x44, 0x45, 0x50, 0x4f,
-	0x53, 0x49, 0x54, 0x5f, 0x50, 0x45, 0x52, 0x49, 0x4f, 0x44, 0x10, 0x01, 0x12, 0x21, 0x0a, 0x1d,
-	0x50, 0x52, 0x4f, 0x50, 0x4f, 0x53, 0x41, 0x4c, 0x5f, 0x53, 0x54, 0x41, 0x54, 0x55, 0x53, 0x5f,
-	0x56, 0x4f, 0x54, 0x49, 0x4e, 0x47, 0x5f, 0x50, 0x45, 0x52, 0x49, 0x4f, 0x44, 0x10, 0x02, 0x12,
-	0x1a, 0x0a, 0x16, 0x50, 0x52, 0x4f, 0x50, 0x4f, 0x53, 0x41, 0x4c, 0x5f, 0x53, 0x54, 0x41, 0x54,
-	0x55, 0x53, 0x5f, 0x50, 0x41, 0x53, 0x53, 0x45, 0x44, 0x10, 0x03, 0x12, 0x1c, 0x0a, 0x18, 0x50,
-	0x52, 0x4f, 0x50, 0x4f, 0x53, 0x41, 0x4c, 0x5f, 0x53, 0x54, 0x41, 0x54, 0x55, 0x53, 0x5f, 0x52,
-	0x45, 0x4a, 0x45, 0x43, 0x54, 0x45, 0x44, 0x10, 0x04, 0x12, 0x1a, 0x0a, 0x16, 0x50, 0x52, 0x4f,
-	0x50, 0x4f, 0x53, 0x41, 0x4c, 0x5f, 0x53, 0x54, 0x41, 0x54, 0x55, 0x53, 0x5f, 0x46, 0x41, 0x49,
-	0x4c, 0x45, 0x44, 0x10, 0x05, 0x42, 0x9f, 0x01, 0x0a, 0x12, 0x63, 0x6f, 0x6d, 0x2e, 0x61, 0x74,
-	0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x42, 0x08, 0x47, 0x6f,
-	0x76, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x25, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
-	0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x61, 0x74, 0x6f, 0x6d, 0x6f,
-	0x6e, 0x65, 0x2f, 0x67, 0x6f, 0x76, 0x2f, 0x76, 0x31, 0x3b, 0x67, 0x6f, 0x76, 0x76, 0x31, 0xa2,
-	0x02, 0x03, 0x41, 0x47, 0x58, 0xaa, 0x02, 0x0e, 0x41, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e,
-	0x47, 0x6f, 0x76, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x0e, 0x41, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65,
-	0x5c, 0x47, 0x6f, 0x76, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x1a, 0x41, 0x74, 0x6f, 0x6d, 0x6f, 0x6e,
-	0x65, 0x5c, 0x47, 0x6f, 0x76, 0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61,
-	0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x10, 0x41, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x3a, 0x3a,
-	0x47, 0x6f, 0x76, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x61, 0x6e, 0x67, 0x65, 0x12, 0x62, 0x0a, 0x1d, 0x67, 0x6f, 0x76, 0x65, 0x72, 0x6e, 0x6f, 0x72,
+	0x5f, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x5f, 0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x5f, 0x70,
+	0x65, 0x72, 0x69, 0x6f, 0x64, 0x18, 0x1d, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x67, 0x6f,
+	0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x44, 0x75,
+	0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x42, 0x04, 0x98, 0xdf, 0x1f, 0x01, 0x52, 0x1a, 0x67, 0x6f,
+	0x76, 0x65, 0x72, 0x6e, 0x6f, 0x72, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x43, 0x68, 0x61, 0x6e,
+	0x67, 0x65, 0x50, 0x65, 0x72, 0x69, 0x6f, 0x64, 0x12, 0x4f, 0x0a, 0x1c, 0x6d, 0x69, 0x6e, 0x5f,
+	0x67, 0x6f, 0x76, 0x65, 0x72, 0x6e, 0x6f, 0x72, 0x5f, 0x73, 0x65, 0x6c, 0x66, 0x5f, 0x64, 0x65,
+	0x6c, 0x65, 0x67, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x1e, 0x20, 0x01, 0x28, 0x09, 0x42, 0x0e,
+	0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x19,
+	0x6d, 0x69, 0x6e, 0x47, 0x6f, 0x76, 0x65, 0x72, 0x6e, 0x6f, 0x72, 0x53, 0x65, 0x6c, 0x66, 0x44,
+	0x65, 0x6c, 0x65, 0x67, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x51, 0x0a, 0x0b, 0x51, 0x75, 0x6f,
+	0x72, 0x75, 0x6d, 0x52, 0x61, 0x6e, 0x67, 0x65, 0x12, 0x20, 0x0a, 0x03, 0x6d, 0x61, 0x78, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x0e, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
+	0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x03, 0x6d, 0x61, 0x78, 0x12, 0x20, 0x0a, 0x03, 0x6d, 0x69,
+	0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x0e, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x03, 0x6d, 0x69, 0x6e, 0x22, 0xa2, 0x02, 0x0a,
+	0x08, 0x47, 0x6f, 0x76, 0x65, 0x72, 0x6e, 0x6f, 0x72, 0x12, 0x29, 0x0a, 0x10, 0x67, 0x6f, 0x76,
+	0x65, 0x72, 0x6e, 0x6f, 0x72, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x0f, 0x67, 0x6f, 0x76, 0x65, 0x72, 0x6e, 0x6f, 0x72, 0x41, 0x64, 0x64,
+	0x72, 0x65, 0x73, 0x73, 0x12, 0x36, 0x0a, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x0e, 0x32, 0x1e, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67,
+	0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x47, 0x6f, 0x76, 0x65, 0x72, 0x6e, 0x6f, 0x72, 0x53, 0x74,
+	0x61, 0x74, 0x75, 0x73, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x50, 0x0a, 0x0b,
+	0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x23, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e,
+	0x76, 0x31, 0x2e, 0x47, 0x6f, 0x76, 0x65, 0x72, 0x6e, 0x6f, 0x72, 0x44, 0x65, 0x73, 0x63, 0x72,
+	0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x42, 0x09, 0xc8, 0xde, 0x1f, 0x00, 0xa8, 0xe7, 0xb0, 0x2a,
+	0x01, 0x52, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x57,
+	0x0a, 0x17, 0x6c, 0x61, 0x73, 0x74, 0x5f, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x5f, 0x63, 0x68,
+	0x61, 0x6e, 0x67, 0x65, 0x5f, 0x74, 0x69, 0x6d, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
+	0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x42, 0x04, 0x90, 0xdf, 0x1f,
+	0x01, 0x52, 0x14, 0x6c, 0x61, 0x73, 0x74, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x43, 0x68, 0x61,
+	0x6e, 0x67, 0x65, 0x54, 0x69, 0x6d, 0x65, 0x3a, 0x08, 0x88, 0xa0, 0x1f, 0x00, 0xe8, 0xa0, 0x1f,
+	0x00, 0x22, 0xb0, 0x01, 0x0a, 0x13, 0x47, 0x6f, 0x76, 0x65, 0x72, 0x6e, 0x6f, 0x72, 0x44, 0x65,
+	0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x6f, 0x6e,
+	0x69, 0x6b, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x6f, 0x6e, 0x69,
+	0x6b, 0x65, 0x72, 0x12, 0x1a, 0x0a, 0x08, 0x69, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x74, 0x79, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x69, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x74, 0x79, 0x12,
+	0x18, 0x0a, 0x07, 0x77, 0x65, 0x62, 0x73, 0x69, 0x74, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x07, 0x77, 0x65, 0x62, 0x73, 0x69, 0x74, 0x65, 0x12, 0x29, 0x0a, 0x10, 0x73, 0x65, 0x63,
+	0x75, 0x72, 0x69, 0x74, 0x79, 0x5f, 0x63, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x18, 0x04, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x0f, 0x73, 0x65, 0x63, 0x75, 0x72, 0x69, 0x74, 0x79, 0x43, 0x6f, 0x6e,
+	0x74, 0x61, 0x63, 0x74, 0x12, 0x18, 0x0a, 0x07, 0x64, 0x65, 0x74, 0x61, 0x69, 0x6c, 0x73, 0x18,
+	0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x64, 0x65, 0x74, 0x61, 0x69, 0x6c, 0x73, 0x3a, 0x04,
+	0xe8, 0xa0, 0x1f, 0x01, 0x22, 0xe3, 0x01, 0x0a, 0x11, 0x47, 0x6f, 0x76, 0x65, 0x72, 0x6e, 0x6f,
+	0x72, 0x56, 0x61, 0x6c, 0x53, 0x68, 0x61, 0x72, 0x65, 0x73, 0x12, 0x29, 0x0a, 0x10, 0x67, 0x6f,
+	0x76, 0x65, 0x72, 0x6e, 0x6f, 0x72, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x0f, 0x67, 0x6f, 0x76, 0x65, 0x72, 0x6e, 0x6f, 0x72, 0x41, 0x64,
+	0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x4e, 0x0a, 0x11, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74,
+	0x6f, 0x72, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
+	0x42, 0x21, 0xd2, 0xb4, 0x2d, 0x1d, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x56, 0x61, 0x6c,
+	0x69, 0x64, 0x61, 0x74, 0x6f, 0x72, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72,
+	0x69, 0x6e, 0x67, 0x52, 0x10, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x6f, 0x72, 0x41, 0x64,
+	0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x49, 0x0a, 0x06, 0x73, 0x68, 0x61, 0x72, 0x65, 0x73, 0x18,
+	0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
+	0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x06, 0x73, 0x68, 0x61, 0x72, 0x65, 0x73,
+	0x3a, 0x08, 0x88, 0xa0, 0x1f, 0x00, 0xe8, 0xa0, 0x1f, 0x00, 0x22, 0x92, 0x01, 0x0a, 0x14, 0x47,
+	0x6f, 0x76, 0x65, 0x72, 0x6e, 0x61, 0x6e, 0x63, 0x65, 0x44, 0x65, 0x6c, 0x65, 0x67, 0x61, 0x74,
+	0x69, 0x6f, 0x6e, 0x12, 0x45, 0x0a, 0x11, 0x64, 0x65, 0x6c, 0x65, 0x67, 0x61, 0x74, 0x6f, 0x72,
+	0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18,
+	0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65,
+	0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x10, 0x64, 0x65, 0x6c, 0x65, 0x67, 0x61,
+	0x74, 0x6f, 0x72, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x29, 0x0a, 0x10, 0x67, 0x6f,
+	0x76, 0x65, 0x72, 0x6e, 0x6f, 0x72, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x0f, 0x67, 0x6f, 0x76, 0x65, 0x72, 0x6e, 0x6f, 0x72, 0x41, 0x64,
+	0x64, 0x72, 0x65, 0x73, 0x73, 0x3a, 0x08, 0x88, 0xa0, 0x1f, 0x00, 0xe8, 0xa0, 0x1f, 0x00, 0x2a,
+	0x6b, 0x0a, 0x0a, 0x56, 0x6f, 0x74, 0x65, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1b, 0x0a,
+	0x17, 0x56, 0x4f, 0x54, 0x45, 0x5f, 0x4f, 0x50, 0x54, 0x49, 0x4f, 0x4e, 0x5f, 0x55, 0x4e, 0x53,
+	0x50, 0x45, 0x43, 0x49, 0x46, 0x49, 0x45, 0x44, 0x10, 0x00, 0x12, 0x13, 0x0a, 0x0f, 0x56, 0x4f,
+	0x54, 0x45, 0x5f, 0x4f, 0x50, 0x54, 0x49, 0x4f, 0x4e, 0x5f, 0x59, 0x45, 0x53, 0x10, 0x01, 0x12,
+	0x17, 0x0a, 0x13, 0x56, 0x4f, 0x54, 0x45, 0x5f, 0x4f, 0x50, 0x54, 0x49, 0x4f, 0x4e, 0x5f, 0x41,
+	0x42, 0x53, 0x54, 0x41, 0x49, 0x4e, 0x10, 0x02, 0x12, 0x12, 0x0a, 0x0e, 0x56, 0x4f, 0x54, 0x45,
+	0x5f, 0x4f, 0x50, 0x54, 0x49, 0x4f, 0x4e, 0x5f, 0x4e, 0x4f, 0x10, 0x03, 0x2a, 0xce, 0x01, 0x0a,
+	0x0e, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12,
+	0x1f, 0x0a, 0x1b, 0x50, 0x52, 0x4f, 0x50, 0x4f, 0x53, 0x41, 0x4c, 0x5f, 0x53, 0x54, 0x41, 0x54,
+	0x55, 0x53, 0x5f, 0x55, 0x4e, 0x53, 0x50, 0x45, 0x43, 0x49, 0x46, 0x49, 0x45, 0x44, 0x10, 0x00,
+	0x12, 0x22, 0x0a, 0x1e, 0x50, 0x52, 0x4f, 0x50, 0x4f, 0x53, 0x41, 0x4c, 0x5f, 0x53, 0x54, 0x41,
+	0x54, 0x55, 0x53, 0x5f, 0x44, 0x45, 0x50, 0x4f, 0x53, 0x49, 0x54, 0x5f, 0x50, 0x45, 0x52, 0x49,
+	0x4f, 0x44, 0x10, 0x01, 0x12, 0x21, 0x0a, 0x1d, 0x50, 0x52, 0x4f, 0x50, 0x4f, 0x53, 0x41, 0x4c,
+	0x5f, 0x53, 0x54, 0x41, 0x54, 0x55, 0x53, 0x5f, 0x56, 0x4f, 0x54, 0x49, 0x4e, 0x47, 0x5f, 0x50,
+	0x45, 0x52, 0x49, 0x4f, 0x44, 0x10, 0x02, 0x12, 0x1a, 0x0a, 0x16, 0x50, 0x52, 0x4f, 0x50, 0x4f,
+	0x53, 0x41, 0x4c, 0x5f, 0x53, 0x54, 0x41, 0x54, 0x55, 0x53, 0x5f, 0x50, 0x41, 0x53, 0x53, 0x45,
+	0x44, 0x10, 0x03, 0x12, 0x1c, 0x0a, 0x18, 0x50, 0x52, 0x4f, 0x50, 0x4f, 0x53, 0x41, 0x4c, 0x5f,
+	0x53, 0x54, 0x41, 0x54, 0x55, 0x53, 0x5f, 0x52, 0x45, 0x4a, 0x45, 0x43, 0x54, 0x45, 0x44, 0x10,
+	0x04, 0x12, 0x1a, 0x0a, 0x16, 0x50, 0x52, 0x4f, 0x50, 0x4f, 0x53, 0x41, 0x4c, 0x5f, 0x53, 0x54,
+	0x41, 0x54, 0x55, 0x53, 0x5f, 0x46, 0x41, 0x49, 0x4c, 0x45, 0x44, 0x10, 0x05, 0x2a, 0x9c, 0x01,
+	0x0a, 0x0e, 0x47, 0x6f, 0x76, 0x65, 0x72, 0x6e, 0x6f, 0x72, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73,
+	0x12, 0x30, 0x0a, 0x1b, 0x47, 0x4f, 0x56, 0x45, 0x52, 0x4e, 0x4f, 0x52, 0x5f, 0x53, 0x54, 0x41,
+	0x54, 0x55, 0x53, 0x5f, 0x55, 0x4e, 0x53, 0x50, 0x45, 0x43, 0x49, 0x46, 0x49, 0x45, 0x44, 0x10,
+	0x00, 0x1a, 0x0f, 0x8a, 0x9d, 0x20, 0x0b, 0x55, 0x6e, 0x73, 0x70, 0x65, 0x63, 0x69, 0x66, 0x69,
+	0x65, 0x64, 0x12, 0x26, 0x0a, 0x16, 0x47, 0x4f, 0x56, 0x45, 0x52, 0x4e, 0x4f, 0x52, 0x5f, 0x53,
+	0x54, 0x41, 0x54, 0x55, 0x53, 0x5f, 0x41, 0x43, 0x54, 0x49, 0x56, 0x45, 0x10, 0x01, 0x1a, 0x0a,
+	0x8a, 0x9d, 0x20, 0x06, 0x41, 0x63, 0x74, 0x69, 0x76, 0x65, 0x12, 0x2a, 0x0a, 0x18, 0x47, 0x4f,
+	0x56, 0x45, 0x52, 0x4e, 0x4f, 0x52, 0x5f, 0x53, 0x54, 0x41, 0x54, 0x55, 0x53, 0x5f, 0x49, 0x4e,
+	0x41, 0x43, 0x54, 0x49, 0x56, 0x45, 0x10, 0x02, 0x1a, 0x0c, 0x8a, 0x9d, 0x20, 0x08, 0x49, 0x6e,
+	0x61, 0x63, 0x74, 0x69, 0x76, 0x65, 0x1a, 0x04, 0x88, 0xa3, 0x1e, 0x00, 0x42, 0x9f, 0x01, 0x0a,
+	0x12, 0x63, 0x6f, 0x6d, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76,
+	0x2e, 0x76, 0x31, 0x42, 0x08, 0x47, 0x6f, 0x76, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a,
+	0x25, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x61, 0x70,
+	0x69, 0x2f, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2f, 0x67, 0x6f, 0x76, 0x2f, 0x76, 0x31,
+	0x3b, 0x67, 0x6f, 0x76, 0x76, 0x31, 0xa2, 0x02, 0x03, 0x41, 0x47, 0x58, 0xaa, 0x02, 0x0e, 0x41,
+	0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x47, 0x6f, 0x76, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x0e,
+	0x41, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x5c, 0x47, 0x6f, 0x76, 0x5c, 0x56, 0x31, 0xe2, 0x02,
+	0x1a, 0x41, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x5c, 0x47, 0x6f, 0x76, 0x5c, 0x56, 0x31, 0x5c,
+	0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x10, 0x41, 0x74,
+	0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x3a, 0x3a, 0x47, 0x6f, 0x76, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -12225,67 +15094,76 @@ func file_atomone_gov_v1_gov_proto_rawDescGZIP() []byte {
 	return file_atomone_gov_v1_gov_proto_rawDescData
 }
 
-var file_atomone_gov_v1_gov_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_atomone_gov_v1_gov_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
+var file_atomone_gov_v1_gov_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
+var file_atomone_gov_v1_gov_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
 var file_atomone_gov_v1_gov_proto_goTypes = []interface{}{
 	(VoteOption)(0),                    // 0: atomone.gov.v1.VoteOption
 	(ProposalStatus)(0),                // 1: atomone.gov.v1.ProposalStatus
-	(*WeightedVoteOption)(nil),         // 2: atomone.gov.v1.WeightedVoteOption
-	(*Deposit)(nil),                    // 3: atomone.gov.v1.Deposit
-	(*LastMinDeposit)(nil),             // 4: atomone.gov.v1.LastMinDeposit
-	(*Proposal)(nil),                   // 5: atomone.gov.v1.Proposal
-	(*TallyResult)(nil),                // 6: atomone.gov.v1.TallyResult
-	(*Vote)(nil),                       // 7: atomone.gov.v1.Vote
-	(*QuorumCheckQueueEntry)(nil),      // 8: atomone.gov.v1.QuorumCheckQueueEntry
-	(*DepositParams)(nil),              // 9: atomone.gov.v1.DepositParams
-	(*VotingParams)(nil),               // 10: atomone.gov.v1.VotingParams
-	(*TallyParams)(nil),                // 11: atomone.gov.v1.TallyParams
-	(*MinDepositThrottler)(nil),        // 12: atomone.gov.v1.MinDepositThrottler
-	(*MinInitialDepositThrottler)(nil), // 13: atomone.gov.v1.MinInitialDepositThrottler
-	(*Params)(nil),                     // 14: atomone.gov.v1.Params
-	(*QuorumRange)(nil),                // 15: atomone.gov.v1.QuorumRange
-	(*v1beta1.Coin)(nil),               // 16: cosmos.base.v1beta1.Coin
-	(*timestamppb.Timestamp)(nil),      // 17: google.protobuf.Timestamp
-	(*anypb.Any)(nil),                  // 18: google.protobuf.Any
-	(*durationpb.Duration)(nil),        // 19: google.protobuf.Duration
+	(GovernorStatus)(0),                // 2: atomone.gov.v1.GovernorStatus
+	(*WeightedVoteOption)(nil),         // 3: atomone.gov.v1.WeightedVoteOption
+	(*Deposit)(nil),                    // 4: atomone.gov.v1.Deposit
+	(*LastMinDeposit)(nil),             // 5: atomone.gov.v1.LastMinDeposit
+	(*Proposal)(nil),                   // 6: atomone.gov.v1.Proposal
+	(*TallyResult)(nil),                // 7: atomone.gov.v1.TallyResult
+	(*Vote)(nil),                       // 8: atomone.gov.v1.Vote
+	(*QuorumCheckQueueEntry)(nil),      // 9: atomone.gov.v1.QuorumCheckQueueEntry
+	(*DepositParams)(nil),              // 10: atomone.gov.v1.DepositParams
+	(*VotingParams)(nil),               // 11: atomone.gov.v1.VotingParams
+	(*TallyParams)(nil),                // 12: atomone.gov.v1.TallyParams
+	(*MinDepositThrottler)(nil),        // 13: atomone.gov.v1.MinDepositThrottler
+	(*MinInitialDepositThrottler)(nil), // 14: atomone.gov.v1.MinInitialDepositThrottler
+	(*Params)(nil),                     // 15: atomone.gov.v1.Params
+	(*QuorumRange)(nil),                // 16: atomone.gov.v1.QuorumRange
+	(*Governor)(nil),                   // 17: atomone.gov.v1.Governor
+	(*GovernorDescription)(nil),        // 18: atomone.gov.v1.GovernorDescription
+	(*GovernorValShares)(nil),          // 19: atomone.gov.v1.GovernorValShares
+	(*GovernanceDelegation)(nil),       // 20: atomone.gov.v1.GovernanceDelegation
+	(*v1beta1.Coin)(nil),               // 21: cosmos.base.v1beta1.Coin
+	(*timestamppb.Timestamp)(nil),      // 22: google.protobuf.Timestamp
+	(*anypb.Any)(nil),                  // 23: google.protobuf.Any
+	(*durationpb.Duration)(nil),        // 24: google.protobuf.Duration
 }
 var file_atomone_gov_v1_gov_proto_depIdxs = []int32{
 	0,  // 0: atomone.gov.v1.WeightedVoteOption.option:type_name -> atomone.gov.v1.VoteOption
-	16, // 1: atomone.gov.v1.Deposit.amount:type_name -> cosmos.base.v1beta1.Coin
-	16, // 2: atomone.gov.v1.LastMinDeposit.value:type_name -> cosmos.base.v1beta1.Coin
-	17, // 3: atomone.gov.v1.LastMinDeposit.time:type_name -> google.protobuf.Timestamp
-	18, // 4: atomone.gov.v1.Proposal.messages:type_name -> google.protobuf.Any
+	21, // 1: atomone.gov.v1.Deposit.amount:type_name -> cosmos.base.v1beta1.Coin
+	21, // 2: atomone.gov.v1.LastMinDeposit.value:type_name -> cosmos.base.v1beta1.Coin
+	22, // 3: atomone.gov.v1.LastMinDeposit.time:type_name -> google.protobuf.Timestamp
+	23, // 4: atomone.gov.v1.Proposal.messages:type_name -> google.protobuf.Any
 	1,  // 5: atomone.gov.v1.Proposal.status:type_name -> atomone.gov.v1.ProposalStatus
-	6,  // 6: atomone.gov.v1.Proposal.final_tally_result:type_name -> atomone.gov.v1.TallyResult
-	17, // 7: atomone.gov.v1.Proposal.submit_time:type_name -> google.protobuf.Timestamp
-	17, // 8: atomone.gov.v1.Proposal.deposit_end_time:type_name -> google.protobuf.Timestamp
-	16, // 9: atomone.gov.v1.Proposal.total_deposit:type_name -> cosmos.base.v1beta1.Coin
-	17, // 10: atomone.gov.v1.Proposal.voting_start_time:type_name -> google.protobuf.Timestamp
-	17, // 11: atomone.gov.v1.Proposal.voting_end_time:type_name -> google.protobuf.Timestamp
-	2,  // 12: atomone.gov.v1.Vote.options:type_name -> atomone.gov.v1.WeightedVoteOption
-	17, // 13: atomone.gov.v1.QuorumCheckQueueEntry.quorum_timeout_time:type_name -> google.protobuf.Timestamp
-	16, // 14: atomone.gov.v1.DepositParams.min_deposit:type_name -> cosmos.base.v1beta1.Coin
-	19, // 15: atomone.gov.v1.DepositParams.max_deposit_period:type_name -> google.protobuf.Duration
-	19, // 16: atomone.gov.v1.VotingParams.voting_period:type_name -> google.protobuf.Duration
-	16, // 17: atomone.gov.v1.MinDepositThrottler.floor_value:type_name -> cosmos.base.v1beta1.Coin
-	19, // 18: atomone.gov.v1.MinDepositThrottler.update_period:type_name -> google.protobuf.Duration
-	16, // 19: atomone.gov.v1.MinInitialDepositThrottler.floor_value:type_name -> cosmos.base.v1beta1.Coin
-	19, // 20: atomone.gov.v1.MinInitialDepositThrottler.update_period:type_name -> google.protobuf.Duration
-	16, // 21: atomone.gov.v1.Params.min_deposit:type_name -> cosmos.base.v1beta1.Coin
-	19, // 22: atomone.gov.v1.Params.max_deposit_period:type_name -> google.protobuf.Duration
-	19, // 23: atomone.gov.v1.Params.voting_period:type_name -> google.protobuf.Duration
-	19, // 24: atomone.gov.v1.Params.quorum_timeout:type_name -> google.protobuf.Duration
-	19, // 25: atomone.gov.v1.Params.max_voting_period_extension:type_name -> google.protobuf.Duration
-	12, // 26: atomone.gov.v1.Params.min_deposit_throttler:type_name -> atomone.gov.v1.MinDepositThrottler
-	13, // 27: atomone.gov.v1.Params.min_initial_deposit_throttler:type_name -> atomone.gov.v1.MinInitialDepositThrottler
-	15, // 28: atomone.gov.v1.Params.quorum_range:type_name -> atomone.gov.v1.QuorumRange
-	15, // 29: atomone.gov.v1.Params.constitution_amendment_quorum_range:type_name -> atomone.gov.v1.QuorumRange
-	15, // 30: atomone.gov.v1.Params.law_quorum_range:type_name -> atomone.gov.v1.QuorumRange
-	31, // [31:31] is the sub-list for method output_type
-	31, // [31:31] is the sub-list for method input_type
-	31, // [31:31] is the sub-list for extension type_name
-	31, // [31:31] is the sub-list for extension extendee
-	0,  // [0:31] is the sub-list for field type_name
+	7,  // 6: atomone.gov.v1.Proposal.final_tally_result:type_name -> atomone.gov.v1.TallyResult
+	22, // 7: atomone.gov.v1.Proposal.submit_time:type_name -> google.protobuf.Timestamp
+	22, // 8: atomone.gov.v1.Proposal.deposit_end_time:type_name -> google.protobuf.Timestamp
+	21, // 9: atomone.gov.v1.Proposal.total_deposit:type_name -> cosmos.base.v1beta1.Coin
+	22, // 10: atomone.gov.v1.Proposal.voting_start_time:type_name -> google.protobuf.Timestamp
+	22, // 11: atomone.gov.v1.Proposal.voting_end_time:type_name -> google.protobuf.Timestamp
+	3,  // 12: atomone.gov.v1.Vote.options:type_name -> atomone.gov.v1.WeightedVoteOption
+	22, // 13: atomone.gov.v1.QuorumCheckQueueEntry.quorum_timeout_time:type_name -> google.protobuf.Timestamp
+	21, // 14: atomone.gov.v1.DepositParams.min_deposit:type_name -> cosmos.base.v1beta1.Coin
+	24, // 15: atomone.gov.v1.DepositParams.max_deposit_period:type_name -> google.protobuf.Duration
+	24, // 16: atomone.gov.v1.VotingParams.voting_period:type_name -> google.protobuf.Duration
+	21, // 17: atomone.gov.v1.MinDepositThrottler.floor_value:type_name -> cosmos.base.v1beta1.Coin
+	24, // 18: atomone.gov.v1.MinDepositThrottler.update_period:type_name -> google.protobuf.Duration
+	21, // 19: atomone.gov.v1.MinInitialDepositThrottler.floor_value:type_name -> cosmos.base.v1beta1.Coin
+	24, // 20: atomone.gov.v1.MinInitialDepositThrottler.update_period:type_name -> google.protobuf.Duration
+	21, // 21: atomone.gov.v1.Params.min_deposit:type_name -> cosmos.base.v1beta1.Coin
+	24, // 22: atomone.gov.v1.Params.max_deposit_period:type_name -> google.protobuf.Duration
+	24, // 23: atomone.gov.v1.Params.voting_period:type_name -> google.protobuf.Duration
+	24, // 24: atomone.gov.v1.Params.quorum_timeout:type_name -> google.protobuf.Duration
+	24, // 25: atomone.gov.v1.Params.max_voting_period_extension:type_name -> google.protobuf.Duration
+	13, // 26: atomone.gov.v1.Params.min_deposit_throttler:type_name -> atomone.gov.v1.MinDepositThrottler
+	14, // 27: atomone.gov.v1.Params.min_initial_deposit_throttler:type_name -> atomone.gov.v1.MinInitialDepositThrottler
+	16, // 28: atomone.gov.v1.Params.quorum_range:type_name -> atomone.gov.v1.QuorumRange
+	16, // 29: atomone.gov.v1.Params.constitution_amendment_quorum_range:type_name -> atomone.gov.v1.QuorumRange
+	16, // 30: atomone.gov.v1.Params.law_quorum_range:type_name -> atomone.gov.v1.QuorumRange
+	24, // 31: atomone.gov.v1.Params.governor_status_change_period:type_name -> google.protobuf.Duration
+	2,  // 32: atomone.gov.v1.Governor.status:type_name -> atomone.gov.v1.GovernorStatus
+	18, // 33: atomone.gov.v1.Governor.description:type_name -> atomone.gov.v1.GovernorDescription
+	22, // 34: atomone.gov.v1.Governor.last_status_change_time:type_name -> google.protobuf.Timestamp
+	35, // [35:35] is the sub-list for method output_type
+	35, // [35:35] is the sub-list for method input_type
+	35, // [35:35] is the sub-list for extension type_name
+	35, // [35:35] is the sub-list for extension extendee
+	0,  // [0:35] is the sub-list for field type_name
 }
 
 func init() { file_atomone_gov_v1_gov_proto_init() }
@@ -12462,14 +15340,62 @@ func file_atomone_gov_v1_gov_proto_init() {
 				return nil
 			}
 		}
+		file_atomone_gov_v1_gov_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Governor); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_atomone_gov_v1_gov_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GovernorDescription); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_atomone_gov_v1_gov_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GovernorValShares); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_atomone_gov_v1_gov_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GovernanceDelegation); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_atomone_gov_v1_gov_proto_rawDesc,
-			NumEnums:      2,
-			NumMessages:   14,
+			NumEnums:      3,
+			NumMessages:   18,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

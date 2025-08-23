@@ -61,21 +61,7 @@ func (s *IntegrationTestSuite) testDelayedVestingAccount(api string) {
 		s.Require().Equal(vestingBalance.AmountOf(uatoneDenom), balance.Amount)
 
 		// Delegate coins should succeed
-		s.execDelegate(chain, valIdx, vestingDelegationAmount.String(), valOpAddr,
-			vestingDelayedAcc.String(), atomoneHomePath)
-
-		// Validate delegation successful
-		s.Require().Eventually(
-			func() bool {
-				res, err := queryDelegation(api, valOpAddr, vestingDelayedAcc.String())
-				amt := res.GetDelegationResponse().GetDelegation().GetShares()
-				s.Require().NoError(err)
-
-				return amt.Equal(sdk.NewDecFromInt(vestingDelegationAmount.Amount))
-			},
-			20*time.Second,
-			time.Second,
-		)
+		s.execDelegate(chain, valIdx, vestingDelegationAmount, valOpAddr, vestingDelayedAcc.String())
 
 		waitTime := acc.EndTime - time.Now().Unix()
 		if waitTime > vestingTxDelay {
@@ -128,21 +114,7 @@ func (s *IntegrationTestSuite) testContinuousVestingAccount(api string) {
 		s.Require().Equal(vestingBalance.AmountOf(uatoneDenom), balance.Amount)
 
 		// Delegate coins should succeed
-		s.execDelegate(chain, valIdx, vestingDelegationAmount.String(),
-			valOpAddr, continuousVestingAcc.String(), atomoneHomePath)
-
-		// Validate delegation successful
-		s.Require().Eventually(
-			func() bool {
-				res, err := queryDelegation(api, valOpAddr, continuousVestingAcc.String())
-				amt := res.GetDelegationResponse().GetDelegation().GetShares()
-				s.Require().NoError(err)
-
-				return amt.Equal(sdk.NewDecFromInt(vestingDelegationAmount.Amount))
-			},
-			20*time.Second,
-			time.Second,
-		)
+		s.execDelegate(chain, valIdx, vestingDelegationAmount, valOpAddr, continuousVestingAcc.String())
 
 		waitStartTime := acc.StartTime - time.Now().Unix()
 		if waitStartTime > vestingTxDelay {
@@ -262,21 +234,7 @@ func (s *IntegrationTestSuite) testPeriodicVestingAccount(api string) { //nolint
 		}
 
 		// Delegate coins should succeed
-		s.execDelegate(chain, valIdx, vestingDelegationAmount.String(), valOpAddr,
-			periodicVestingAddr, atomoneHomePath)
-
-		// Validate delegation successful
-		s.Require().Eventually(
-			func() bool {
-				res, err := queryDelegation(api, valOpAddr, periodicVestingAddr)
-				amt := res.GetDelegationResponse().GetDelegation().GetShares()
-				s.Require().NoError(err)
-
-				return amt.Equal(sdk.NewDecFromInt(vestingDelegationAmount.Amount))
-			},
-			20*time.Second,
-			time.Second,
-		)
+		s.execDelegate(chain, valIdx, vestingDelegationAmount, valOpAddr, periodicVestingAddr)
 
 		//	Transfer coins should succeed
 		balance, err = getSpecificBalance(api, periodicVestingAddr, uatoneDenom)

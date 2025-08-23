@@ -166,6 +166,108 @@ func (x *_GenesisState_4_list) IsValid() bool {
 	return x.list != nil
 }
 
+var _ protoreflect.List = (*_GenesisState_15_list)(nil)
+
+type _GenesisState_15_list struct {
+	list *[]*Governor
+}
+
+func (x *_GenesisState_15_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_GenesisState_15_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_GenesisState_15_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*Governor)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_GenesisState_15_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*Governor)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_GenesisState_15_list) AppendMutable() protoreflect.Value {
+	v := new(Governor)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_15_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_GenesisState_15_list) NewElement() protoreflect.Value {
+	v := new(Governor)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_15_list) IsValid() bool {
+	return x.list != nil
+}
+
+var _ protoreflect.List = (*_GenesisState_16_list)(nil)
+
+type _GenesisState_16_list struct {
+	list *[]*GovernanceDelegation
+}
+
+func (x *_GenesisState_16_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_GenesisState_16_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_GenesisState_16_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*GovernanceDelegation)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_GenesisState_16_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*GovernanceDelegation)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_GenesisState_16_list) AppendMutable() protoreflect.Value {
+	v := new(GovernanceDelegation)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_16_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_GenesisState_16_list) NewElement() protoreflect.Value {
+	v := new(GovernanceDelegation)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_16_list) IsValid() bool {
+	return x.list != nil
+}
+
 var (
 	md_GenesisState                                          protoreflect.MessageDescriptor
 	fd_GenesisState_starting_proposal_id                     protoreflect.FieldDescriptor
@@ -182,6 +284,8 @@ var (
 	fd_GenesisState_participation_ema                        protoreflect.FieldDescriptor
 	fd_GenesisState_constitution_amendment_participation_ema protoreflect.FieldDescriptor
 	fd_GenesisState_law_participation_ema                    protoreflect.FieldDescriptor
+	fd_GenesisState_governors                                protoreflect.FieldDescriptor
+	fd_GenesisState_governance_delegations                   protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -201,6 +305,8 @@ func init() {
 	fd_GenesisState_participation_ema = md_GenesisState.Fields().ByName("participation_ema")
 	fd_GenesisState_constitution_amendment_participation_ema = md_GenesisState.Fields().ByName("constitution_amendment_participation_ema")
 	fd_GenesisState_law_participation_ema = md_GenesisState.Fields().ByName("law_participation_ema")
+	fd_GenesisState_governors = md_GenesisState.Fields().ByName("governors")
+	fd_GenesisState_governance_delegations = md_GenesisState.Fields().ByName("governance_delegations")
 }
 
 var _ protoreflect.Message = (*fastReflection_GenesisState)(nil)
@@ -352,6 +458,18 @@ func (x *fastReflection_GenesisState) Range(f func(protoreflect.FieldDescriptor,
 			return
 		}
 	}
+	if len(x.Governors) != 0 {
+		value := protoreflect.ValueOfList(&_GenesisState_15_list{list: &x.Governors})
+		if !f(fd_GenesisState_governors, value) {
+			return
+		}
+	}
+	if len(x.GovernanceDelegations) != 0 {
+		value := protoreflect.ValueOfList(&_GenesisState_16_list{list: &x.GovernanceDelegations})
+		if !f(fd_GenesisState_governance_delegations, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -395,6 +513,10 @@ func (x *fastReflection_GenesisState) Has(fd protoreflect.FieldDescriptor) bool 
 		return x.ConstitutionAmendmentParticipationEma != ""
 	case "atomone.gov.v1.GenesisState.law_participation_ema":
 		return x.LawParticipationEma != ""
+	case "atomone.gov.v1.GenesisState.governors":
+		return len(x.Governors) != 0
+	case "atomone.gov.v1.GenesisState.governance_delegations":
+		return len(x.GovernanceDelegations) != 0
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.GenesisState"))
@@ -439,6 +561,10 @@ func (x *fastReflection_GenesisState) Clear(fd protoreflect.FieldDescriptor) {
 		x.ConstitutionAmendmentParticipationEma = ""
 	case "atomone.gov.v1.GenesisState.law_participation_ema":
 		x.LawParticipationEma = ""
+	case "atomone.gov.v1.GenesisState.governors":
+		x.Governors = nil
+	case "atomone.gov.v1.GenesisState.governance_delegations":
+		x.GovernanceDelegations = nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.GenesisState"))
@@ -506,6 +632,18 @@ func (x *fastReflection_GenesisState) Get(descriptor protoreflect.FieldDescripto
 	case "atomone.gov.v1.GenesisState.law_participation_ema":
 		value := x.LawParticipationEma
 		return protoreflect.ValueOfString(value)
+	case "atomone.gov.v1.GenesisState.governors":
+		if len(x.Governors) == 0 {
+			return protoreflect.ValueOfList(&_GenesisState_15_list{})
+		}
+		listValue := &_GenesisState_15_list{list: &x.Governors}
+		return protoreflect.ValueOfList(listValue)
+	case "atomone.gov.v1.GenesisState.governance_delegations":
+		if len(x.GovernanceDelegations) == 0 {
+			return protoreflect.ValueOfList(&_GenesisState_16_list{})
+		}
+		listValue := &_GenesisState_16_list{list: &x.GovernanceDelegations}
+		return protoreflect.ValueOfList(listValue)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.GenesisState"))
@@ -560,6 +698,14 @@ func (x *fastReflection_GenesisState) Set(fd protoreflect.FieldDescriptor, value
 		x.ConstitutionAmendmentParticipationEma = value.Interface().(string)
 	case "atomone.gov.v1.GenesisState.law_participation_ema":
 		x.LawParticipationEma = value.Interface().(string)
+	case "atomone.gov.v1.GenesisState.governors":
+		lv := value.List()
+		clv := lv.(*_GenesisState_15_list)
+		x.Governors = *clv.list
+	case "atomone.gov.v1.GenesisState.governance_delegations":
+		lv := value.List()
+		clv := lv.(*_GenesisState_16_list)
+		x.GovernanceDelegations = *clv.list
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.GenesisState"))
@@ -628,6 +774,18 @@ func (x *fastReflection_GenesisState) Mutable(fd protoreflect.FieldDescriptor) p
 			x.LastMinInitialDeposit = new(LastMinDeposit)
 		}
 		return protoreflect.ValueOfMessage(x.LastMinInitialDeposit.ProtoReflect())
+	case "atomone.gov.v1.GenesisState.governors":
+		if x.Governors == nil {
+			x.Governors = []*Governor{}
+		}
+		value := &_GenesisState_15_list{list: &x.Governors}
+		return protoreflect.ValueOfList(value)
+	case "atomone.gov.v1.GenesisState.governance_delegations":
+		if x.GovernanceDelegations == nil {
+			x.GovernanceDelegations = []*GovernanceDelegation{}
+		}
+		value := &_GenesisState_16_list{list: &x.GovernanceDelegations}
+		return protoreflect.ValueOfList(value)
 	case "atomone.gov.v1.GenesisState.starting_proposal_id":
 		panic(fmt.Errorf("field starting_proposal_id of message atomone.gov.v1.GenesisState is not mutable"))
 	case "atomone.gov.v1.GenesisState.constitution":
@@ -688,6 +846,12 @@ func (x *fastReflection_GenesisState) NewField(fd protoreflect.FieldDescriptor) 
 		return protoreflect.ValueOfString("")
 	case "atomone.gov.v1.GenesisState.law_participation_ema":
 		return protoreflect.ValueOfString("")
+	case "atomone.gov.v1.GenesisState.governors":
+		list := []*Governor{}
+		return protoreflect.ValueOfList(&_GenesisState_15_list{list: &list})
+	case "atomone.gov.v1.GenesisState.governance_delegations":
+		list := []*GovernanceDelegation{}
+		return protoreflect.ValueOfList(&_GenesisState_16_list{list: &list})
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: atomone.gov.v1.GenesisState"))
@@ -818,6 +982,18 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
+		if len(x.Governors) > 0 {
+			for _, e := range x.Governors {
+				l = options.Size(e)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
+		if len(x.GovernanceDelegations) > 0 {
+			for _, e := range x.GovernanceDelegations {
+				l = options.Size(e)
+				n += 2 + l + runtime.Sov(uint64(l))
+			}
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -846,6 +1022,40 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.GovernanceDelegations) > 0 {
+			for iNdEx := len(x.GovernanceDelegations) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.GovernanceDelegations[iNdEx])
+				if err != nil {
+					return protoiface.MarshalOutput{
+						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+						Buf:               input.Buf,
+					}, err
+				}
+				i -= len(encoded)
+				copy(dAtA[i:], encoded)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i--
+				dAtA[i] = 0x1
+				i--
+				dAtA[i] = 0x82
+			}
+		}
+		if len(x.Governors) > 0 {
+			for iNdEx := len(x.Governors) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.Governors[iNdEx])
+				if err != nil {
+					return protoiface.MarshalOutput{
+						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+						Buf:               input.Buf,
+					}, err
+				}
+				i -= len(encoded)
+				copy(dAtA[i:], encoded)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i--
+				dAtA[i] = 0x7a
+			}
 		}
 		if len(x.LawParticipationEma) > 0 {
 			i -= len(x.LawParticipationEma)
@@ -1526,6 +1736,74 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 				}
 				x.LawParticipationEma = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
+			case 15:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Governors", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Governors = append(x.Governors, &Governor{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Governors[len(x.Governors)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 16:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field GovernanceDelegations", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.GovernanceDelegations = append(x.GovernanceDelegations, &GovernanceDelegation{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.GovernanceDelegations[len(x.GovernanceDelegations)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -1629,6 +1907,10 @@ type GenesisState struct {
 	// If unset or set to 0, the quorum for the next law proposal will be set to
 	// the params.LawMinQuorum value.
 	LawParticipationEma string `protobuf:"bytes,14,opt,name=law_participation_ema,json=lawParticipationEma,proto3" json:"law_participation_ema,omitempty"`
+	// governors defines all the governors present at genesis.
+	Governors []*Governor `protobuf:"bytes,15,rep,name=governors,proto3" json:"governors,omitempty"`
+	// governance_delegations defines all the governance delegations present at genesis.
+	GovernanceDelegations []*GovernanceDelegation `protobuf:"bytes,16,rep,name=governance_delegations,json=governanceDelegations,proto3" json:"governance_delegations,omitempty"`
 }
 
 func (x *GenesisState) Reset() {
@@ -1752,6 +2034,20 @@ func (x *GenesisState) GetLawParticipationEma() string {
 	return ""
 }
 
+func (x *GenesisState) GetGovernors() []*Governor {
+	if x != nil {
+		return x.Governors
+	}
+	return nil
+}
+
+func (x *GenesisState) GetGovernanceDelegations() []*GovernanceDelegation {
+	if x != nil {
+		return x.GovernanceDelegations
+	}
+	return nil
+}
+
 var File_atomone_gov_v1_genesis_proto protoreflect.FileDescriptor
 
 var file_atomone_gov_v1_genesis_proto_rawDesc = []byte{
@@ -1761,7 +2057,7 @@ var file_atomone_gov_v1_genesis_proto_rawDesc = []byte{
 	0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2f, 0x67, 0x6f, 0x76, 0x2f, 0x76, 0x31, 0x2f, 0x67,
 	0x6f, 0x76, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x19, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
 	0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x22, 0x8f, 0x07, 0x0a, 0x0c, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x53,
+	0x6f, 0x74, 0x6f, 0x22, 0xa4, 0x08, 0x0a, 0x0c, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x53,
 	0x74, 0x61, 0x74, 0x65, 0x12, 0x30, 0x0a, 0x14, 0x73, 0x74, 0x61, 0x72, 0x74, 0x69, 0x6e, 0x67,
 	0x5f, 0x70, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x61, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
 	0x28, 0x04, 0x52, 0x12, 0x73, 0x74, 0x61, 0x72, 0x74, 0x69, 0x6e, 0x67, 0x50, 0x72, 0x6f, 0x70,
@@ -1818,18 +2114,27 @@ var file_atomone_gov_v1_genesis_proto_rawDesc = []byte{
 	0x70, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x65, 0x6d, 0x61, 0x18, 0x0e, 0x20, 0x01, 0x28, 0x09,
 	0x42, 0x0e, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63,
 	0x52, 0x13, 0x6c, 0x61, 0x77, 0x50, 0x61, 0x72, 0x74, 0x69, 0x63, 0x69, 0x70, 0x61, 0x74, 0x69,
-	0x6f, 0x6e, 0x45, 0x6d, 0x61, 0x42, 0xa3, 0x01, 0x0a, 0x12, 0x63, 0x6f, 0x6d, 0x2e, 0x61, 0x74,
-	0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x42, 0x0c, 0x47, 0x65,
-	0x6e, 0x65, 0x73, 0x69, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x25, 0x63, 0x6f,
-	0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x61,
-	0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2f, 0x67, 0x6f, 0x76, 0x2f, 0x76, 0x31, 0x3b, 0x67, 0x6f,
-	0x76, 0x76, 0x31, 0xa2, 0x02, 0x03, 0x41, 0x47, 0x58, 0xaa, 0x02, 0x0e, 0x41, 0x74, 0x6f, 0x6d,
-	0x6f, 0x6e, 0x65, 0x2e, 0x47, 0x6f, 0x76, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x0e, 0x41, 0x74, 0x6f,
-	0x6d, 0x6f, 0x6e, 0x65, 0x5c, 0x47, 0x6f, 0x76, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x1a, 0x41, 0x74,
-	0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x5c, 0x47, 0x6f, 0x76, 0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50, 0x42,
-	0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x10, 0x41, 0x74, 0x6f, 0x6d, 0x6f,
-	0x6e, 0x65, 0x3a, 0x3a, 0x47, 0x6f, 0x76, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x33,
+	0x6f, 0x6e, 0x45, 0x6d, 0x61, 0x12, 0x36, 0x0a, 0x09, 0x67, 0x6f, 0x76, 0x65, 0x72, 0x6e, 0x6f,
+	0x72, 0x73, 0x18, 0x0f, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f,
+	0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x47, 0x6f, 0x76, 0x65, 0x72, 0x6e,
+	0x6f, 0x72, 0x52, 0x09, 0x67, 0x6f, 0x76, 0x65, 0x72, 0x6e, 0x6f, 0x72, 0x73, 0x12, 0x5b, 0x0a,
+	0x16, 0x67, 0x6f, 0x76, 0x65, 0x72, 0x6e, 0x61, 0x6e, 0x63, 0x65, 0x5f, 0x64, 0x65, 0x6c, 0x65,
+	0x67, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x10, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x24, 0x2e,
+	0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76, 0x31, 0x2e, 0x47,
+	0x6f, 0x76, 0x65, 0x72, 0x6e, 0x61, 0x6e, 0x63, 0x65, 0x44, 0x65, 0x6c, 0x65, 0x67, 0x61, 0x74,
+	0x69, 0x6f, 0x6e, 0x52, 0x15, 0x67, 0x6f, 0x76, 0x65, 0x72, 0x6e, 0x61, 0x6e, 0x63, 0x65, 0x44,
+	0x65, 0x6c, 0x65, 0x67, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x42, 0xa3, 0x01, 0x0a, 0x12, 0x63,
+	0x6f, 0x6d, 0x2e, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x67, 0x6f, 0x76, 0x2e, 0x76,
+	0x31, 0x42, 0x0c, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50,
+	0x01, 0x5a, 0x25, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f,
+	0x61, 0x70, 0x69, 0x2f, 0x61, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2f, 0x67, 0x6f, 0x76, 0x2f,
+	0x76, 0x31, 0x3b, 0x67, 0x6f, 0x76, 0x76, 0x31, 0xa2, 0x02, 0x03, 0x41, 0x47, 0x58, 0xaa, 0x02,
+	0x0e, 0x41, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x2e, 0x47, 0x6f, 0x76, 0x2e, 0x56, 0x31, 0xca,
+	0x02, 0x0e, 0x41, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x5c, 0x47, 0x6f, 0x76, 0x5c, 0x56, 0x31,
+	0xe2, 0x02, 0x1a, 0x41, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x5c, 0x47, 0x6f, 0x76, 0x5c, 0x56,
+	0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x10,
+	0x41, 0x74, 0x6f, 0x6d, 0x6f, 0x6e, 0x65, 0x3a, 0x3a, 0x47, 0x6f, 0x76, 0x3a, 0x3a, 0x56, 0x31,
+	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1846,31 +2151,35 @@ func file_atomone_gov_v1_genesis_proto_rawDescGZIP() []byte {
 
 var file_atomone_gov_v1_genesis_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_atomone_gov_v1_genesis_proto_goTypes = []interface{}{
-	(*GenesisState)(nil),   // 0: atomone.gov.v1.GenesisState
-	(*Deposit)(nil),        // 1: atomone.gov.v1.Deposit
-	(*Vote)(nil),           // 2: atomone.gov.v1.Vote
-	(*Proposal)(nil),       // 3: atomone.gov.v1.Proposal
-	(*DepositParams)(nil),  // 4: atomone.gov.v1.DepositParams
-	(*VotingParams)(nil),   // 5: atomone.gov.v1.VotingParams
-	(*TallyParams)(nil),    // 6: atomone.gov.v1.TallyParams
-	(*Params)(nil),         // 7: atomone.gov.v1.Params
-	(*LastMinDeposit)(nil), // 8: atomone.gov.v1.LastMinDeposit
+	(*GenesisState)(nil),         // 0: atomone.gov.v1.GenesisState
+	(*Deposit)(nil),              // 1: atomone.gov.v1.Deposit
+	(*Vote)(nil),                 // 2: atomone.gov.v1.Vote
+	(*Proposal)(nil),             // 3: atomone.gov.v1.Proposal
+	(*DepositParams)(nil),        // 4: atomone.gov.v1.DepositParams
+	(*VotingParams)(nil),         // 5: atomone.gov.v1.VotingParams
+	(*TallyParams)(nil),          // 6: atomone.gov.v1.TallyParams
+	(*Params)(nil),               // 7: atomone.gov.v1.Params
+	(*LastMinDeposit)(nil),       // 8: atomone.gov.v1.LastMinDeposit
+	(*Governor)(nil),             // 9: atomone.gov.v1.Governor
+	(*GovernanceDelegation)(nil), // 10: atomone.gov.v1.GovernanceDelegation
 }
 var file_atomone_gov_v1_genesis_proto_depIdxs = []int32{
-	1, // 0: atomone.gov.v1.GenesisState.deposits:type_name -> atomone.gov.v1.Deposit
-	2, // 1: atomone.gov.v1.GenesisState.votes:type_name -> atomone.gov.v1.Vote
-	3, // 2: atomone.gov.v1.GenesisState.proposals:type_name -> atomone.gov.v1.Proposal
-	4, // 3: atomone.gov.v1.GenesisState.deposit_params:type_name -> atomone.gov.v1.DepositParams
-	5, // 4: atomone.gov.v1.GenesisState.voting_params:type_name -> atomone.gov.v1.VotingParams
-	6, // 5: atomone.gov.v1.GenesisState.tally_params:type_name -> atomone.gov.v1.TallyParams
-	7, // 6: atomone.gov.v1.GenesisState.params:type_name -> atomone.gov.v1.Params
-	8, // 7: atomone.gov.v1.GenesisState.last_min_deposit:type_name -> atomone.gov.v1.LastMinDeposit
-	8, // 8: atomone.gov.v1.GenesisState.last_min_initial_deposit:type_name -> atomone.gov.v1.LastMinDeposit
-	9, // [9:9] is the sub-list for method output_type
-	9, // [9:9] is the sub-list for method input_type
-	9, // [9:9] is the sub-list for extension type_name
-	9, // [9:9] is the sub-list for extension extendee
-	0, // [0:9] is the sub-list for field type_name
+	1,  // 0: atomone.gov.v1.GenesisState.deposits:type_name -> atomone.gov.v1.Deposit
+	2,  // 1: atomone.gov.v1.GenesisState.votes:type_name -> atomone.gov.v1.Vote
+	3,  // 2: atomone.gov.v1.GenesisState.proposals:type_name -> atomone.gov.v1.Proposal
+	4,  // 3: atomone.gov.v1.GenesisState.deposit_params:type_name -> atomone.gov.v1.DepositParams
+	5,  // 4: atomone.gov.v1.GenesisState.voting_params:type_name -> atomone.gov.v1.VotingParams
+	6,  // 5: atomone.gov.v1.GenesisState.tally_params:type_name -> atomone.gov.v1.TallyParams
+	7,  // 6: atomone.gov.v1.GenesisState.params:type_name -> atomone.gov.v1.Params
+	8,  // 7: atomone.gov.v1.GenesisState.last_min_deposit:type_name -> atomone.gov.v1.LastMinDeposit
+	8,  // 8: atomone.gov.v1.GenesisState.last_min_initial_deposit:type_name -> atomone.gov.v1.LastMinDeposit
+	9,  // 9: atomone.gov.v1.GenesisState.governors:type_name -> atomone.gov.v1.Governor
+	10, // 10: atomone.gov.v1.GenesisState.governance_delegations:type_name -> atomone.gov.v1.GovernanceDelegation
+	11, // [11:11] is the sub-list for method output_type
+	11, // [11:11] is the sub-list for method input_type
+	11, // [11:11] is the sub-list for extension type_name
+	11, // [11:11] is the sub-list for extension extendee
+	0,  // [0:11] is the sub-list for field type_name
 }
 
 func init() { file_atomone_gov_v1_genesis_proto_init() }
