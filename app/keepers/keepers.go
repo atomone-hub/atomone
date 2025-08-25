@@ -14,6 +14,9 @@ import (
 	ibcexported "github.com/cosmos/ibc-go/v10/modules/core/exported"
 	ibckeeper "github.com/cosmos/ibc-go/v10/modules/core/keeper"
 	ibctm "github.com/cosmos/ibc-go/v10/modules/light-clients/07-tendermint"
+	icsprovider "github.com/cosmos/interchain-security/v5/x/ccv/provider"
+	icsproviderkeeper "github.com/cosmos/interchain-security/v5/x/ccv/provider/keeper"
+	providertypes "github.com/cosmos/interchain-security/v5/x/ccv/provider/types"
 
 	"cosmossdk.io/log"
 	storetypes "cosmossdk.io/store/types"
@@ -87,11 +90,13 @@ type AppKeepers struct {
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
 	PhotonKeeper          *photonkeeper.Keeper
 	DynamicfeeKeeper      *dynamicfeekeeper.Keeper
+	ProviderKeeper        icsproviderkeeper.Keeper
 
 	// Modules
 	ICAModule      ica.AppModule
 	TransferModule transfer.AppModule
 	TMClientModule ibctm.AppModule
+	ProviderModule icsprovider.AppModule
 }
 
 func NewAppKeeper(
@@ -211,15 +216,6 @@ func NewAppKeeper(
 		authorityStr,
 	)
 
-	// register the staking hooks
-	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
-	appKeepers.StakingKeeper.SetHooks(
-		stakingtypes.NewMultiStakingHooks(
-			appKeepers.DistrKeeper.Hooks(),
-			appKeepers.SlashingKeeper.Hooks(),
-		),
-	)
-
 	// UpgradeKeeper must be created before IBCKeeper
 	appKeepers.UpgradeKeeper = upgradekeeper.NewKeeper(
 		skipUpgradeHeights,
@@ -304,9 +300,41 @@ func NewAppKeeper(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
+	// Initialize ProviderKeeper
+	appKeepers.ProviderKeeper = icsproviderkeeper.NewKeeper(
+		appCodec,
+		appKeepers.keys[providertypes.StoreKey],
+		appKeepers.GetSubspace(providertypes.ModuleName),
+		appKeepers.IBCKeeper.ChannelKeeper,
+		appKeepers.IBCKeeper.ConnectionKeeper,
+		appKeepers.IBCKeeper.ClientKeeper,
+		appKeepers.StakingKeeper,
+		appKeepers.SlashingKeeper,
+		appKeepers.AccountKeeper,
+		appKeepers.DistrKeeper,
+		appKeepers.BankKeeper,
+		NewGovKeeperAdapter(appKeepers.GovKeeper), // inline the adapter creation
+		authorityStr,
+		addresscodec.NewBech32Codec(sdk.GetConfig().GetBech32ValidatorAddrPrefix()),
+		addresscodec.NewBech32Codec(sdk.GetConfig().GetBech32ConsensusAddrPrefix()),
+		authtypes.FeeCollectorName,
+	)
+
+	// Register the staking hooks
+	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
+	// This includes hooks from distribution, slashing, and provider modules
+	appKeepers.StakingKeeper.SetHooks(
+		stakingtypes.NewMultiStakingHooks(
+			appKeepers.DistrKeeper.Hooks(),
+			appKeepers.SlashingKeeper.Hooks(),
+			appKeepers.ProviderKeeper.Hooks(),
+		),
+	)
+
 	// Middleware Stacks
 	appKeepers.ICAModule = ica.NewAppModule(nil, &appKeepers.ICAHostKeeper)
 	appKeepers.TransferModule = transfer.NewAppModule(appKeepers.TransferKeeper)
+	appKeepers.ProviderModule = icsprovider.NewAppModule(&appKeepers.ProviderKeeper, appKeepers.GetSubspace(providertypes.ModuleName))
 
 	// create IBC module from bottom to top of stack
 	var (
@@ -366,6 +394,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName)
 	paramsKeeper.Subspace(ibcexported.ModuleName)
 	paramsKeeper.Subspace(icahosttypes.SubModuleName)
+	paramsKeeper.Subspace(providertypes.ModuleName)
 
 	return paramsKeeper
 }
