@@ -11,8 +11,6 @@ import "amino/amino.proto";
 
 option go_package = "github.com/atomone-hub/atomone/x/gov/types/v1beta1";
 
-option (gogoproto.goproto_stringer_all) = false;
-option (gogoproto.stringer_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 // VoteOption enumerates the valid vote options for a given governance proposal.
@@ -45,7 +43,7 @@ message WeightedVoteOption {
   // weight is the vote weight associated with the vote option.
   string weight = 2 [
     (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
 }
@@ -176,28 +174,28 @@ message TallyResult {
   // yes is the number of yes votes on a proposal.
   string yes = 1 [
     (cosmos_proto.scalar) = "cosmos.Int",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
 
   // abstain is the number of abstain votes on a proposal.
   string abstain = 2 [
     (cosmos_proto.scalar) = "cosmos.Int",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
 
   // no is the number of no votes on a proposal.
   string no = 3 [
     (cosmos_proto.scalar) = "cosmos.Int",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
 
   // no_with_veto is the number of no with veto votes on a proposal.
   string no_with_veto = 4 [
     (cosmos_proto.scalar) = "cosmos.Int",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
 }
@@ -205,7 +203,6 @@ message TallyResult {
 // Vote defines a vote on a governance proposal.
 // A Vote consists of a proposal ID, the voter, and the vote option.
 message Vote {
-  option (gogoproto.goproto_stringer) = false;
   option (gogoproto.equal) = false;
 
   // proposal_id defines the unique id of the proposal.
@@ -262,7 +259,7 @@ message TallyParams {
   // Minimum percentage of total stake needed to vote for a result to be
   // considered valid.
   bytes quorum = 1 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false,
     (gogoproto.jsontag) = "quorum,omitempty",
     deprecated = true
@@ -270,7 +267,7 @@ message TallyParams {
 
   // Minimum proportion of Yes votes for proposal to pass. Default value: 2/3.
   bytes threshold = 2 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false,
     (gogoproto.jsontag) = "threshold,omitempty"
   ];
@@ -278,7 +275,7 @@ message TallyParams {
   // Minimum value of Veto votes to Total votes ratio for proposal to be
   // vetoed. Default value: 0 (disabled).
   bytes veto_threshold = 3 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false,
     (gogoproto.jsontag) = "veto_threshold,omitempty"
   ];

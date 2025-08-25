@@ -7,7 +7,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/cometbft/cometbft/libs/log"
+	"cosmossdk.io/log"
+	storetypes "cosmossdk.io/store/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -26,7 +27,7 @@ func setupMocks(t *testing.T) mocks {
 	t.Helper()
 	ctrl := gomock.NewController(t)
 	return mocks{
-		ctx:              sdk.NewContext(nil, tmproto.Header{}, false, log.TestingLogger()),
+		ctx:              sdk.NewContext(nil, tmproto.Header{}, false, log.NewTestLogger(t)),
 		DynamicfeeKeeper: NewMockDynamicfeeKeeper(ctrl),
 	}
 }
@@ -69,7 +70,7 @@ func TestPostHandle(t *testing.T) {
 				m.DynamicfeeKeeper.EXPECT().GetState(m.ctx).
 					Return(types.DefaultState(), nil)
 
-				gasConsumed := sdk.Gas(1000)
+				gasConsumed := storetypes.Gas(1000)
 				m.ctx.GasMeter().ConsumeGas(gasConsumed, "")
 
 				expectedState := types.DefaultState()
@@ -89,7 +90,7 @@ func TestPostHandle(t *testing.T) {
 				m.DynamicfeeKeeper.EXPECT().GetState(m.ctx).
 					Return(types.DefaultState(), nil)
 
-				gasConsumed := sdk.Gas(1000)
+				gasConsumed := storetypes.Gas(1000)
 				m.ctx.GasMeter().ConsumeGas(gasConsumed, "")
 
 				expectedState := types.DefaultState()
@@ -111,8 +112,6 @@ func TestPostHandle(t *testing.T) {
 					return ctx, nil
 				}
 			)
-			maxBlockGas := testutil.MaxBlockGas
-			m.ctx = m.ctx.WithConsensusParams(&tmproto.ConsensusParams{Block: &tmproto.BlockParams{MaxGas: int64(maxBlockGas)}})
 			if tt.genTx {
 				m.ctx = m.ctx.WithBlockHeight(0)
 			} else {

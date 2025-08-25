@@ -1,13 +1,18 @@
 package v3
 
 import (
+	"context"
+	"errors"
 	"fmt"
+
+	"cosmossdk.io/collections"
+	"cosmossdk.io/math"
+	upgradetypes "cosmossdk.io/x/upgrade/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
 	"github.com/atomone-hub/atomone/app/keepers"
 	govkeeper "github.com/atomone-hub/atomone/x/gov/keeper"
@@ -21,22 +26,24 @@ func CreateUpgradeHandler(
 	configurator module.Configurator,
 	keepers *keepers.AppKeepers,
 ) upgradetypes.UpgradeHandler {
-	return func(ctx sdk.Context, plan upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
-		ctx.Logger().Info("Starting module migrations...")
-		// RunMigrations will detect the add of the dynamicfee module, will initiate
+	return func(ctx context.Context, plan upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
+		sdkCtx := sdk.UnwrapSDKContext(ctx)
+
+		sdkCtx.Logger().Info("Starting module migrations...")
+		// RunMigrations will detect the add of the feemarket module, will initiate
 		// its genesis and will fill the versionMap with its consensus version.
 		vm, err := mm.RunMigrations(ctx, configurator, vm)
 		if err != nil {
 			return vm, err
 		}
-		if err := initGovDynamicQuorum(ctx, keepers.GovKeeper); err != nil {
-			return vm, err
-		}
-		if err := convertFundsToPhoton(ctx, keepers); err != nil {
+		if err := initGovDynamicQuorum(sdkCtx, keepers.GovKeeper); err != nil {
 			return vm, err
 		}
 
-		ctx.Logger().Info("Upgrade complete")
+		if err := convertFundsToPhoton(sdkCtx, keepers); err != nil {
+			return vm, err
+		}
+
 		return vm, nil
 	}
 }
@@ -55,7 +62,7 @@ func initGovDynamicQuorum(ctx sdk.Context, govKeeper *govkeeper.Keeper) error {
 		return fmt.Errorf("set gov params: %w", err)
 	}
 	// NOTE(tb): Disregarding whales' votes, the current participation is less than 12%
-	initParticipationEma := sdk.NewDecWithPrec(12, 2)
+	initParticipationEma := math.LegacyNewDecWithPrec(12, 2)
 	govKeeper.SetParticipationEMA(ctx, initParticipationEma)
 	govKeeper.SetConstitutionAmendmentParticipationEMA(ctx, initParticipationEma)
 	govKeeper.SetLawParticipationEMA(ctx, initParticipationEma)
@@ -69,7 +76,10 @@ func convertFundsToPhoton(ctx sdk.Context, keepers *keepers.AppKeepers) error {
 	ctx.Logger().Info("Converting 50% of bond denom funds from community pool and 90% from treasury DAO to photons...")
 
 	// Get bond denom
-	bondDenom := keepers.StakingKeeper.BondDenom(ctx)
+	bondDenom, err := keepers.StakingKeeper.BondDenom(ctx)
+	if err != nil {
+		return fmt.Errorf("failed to get bond denom: %w", err)
+	}
 
 	// Get treasury DAO address
 	treasuryAddrBz := []byte("\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xbd\xa0")
@@ -91,8 +101,15 @@ func convertFundsToPhoton(ctx sdk.Context, keepers *keepers.AppKeepers) error {
 
 // convertCommunityPoolFundsToPhoton converts 50% of the community pool bond denom funds to photons
 func convertCommunityPoolFundsToPhoton(ctx sdk.Context, keepers *keepers.AppKeepers, bondDenom string) error {
+	feePool, err := keepers.DistrKeeper.FeePool.Get(ctx)
+	if err != nil && !errors.Is(err, collections.ErrNotFound) {
+		return fmt.Errorf("failed to get fee pool: %w", err)
+	} else if errors.Is(err, collections.ErrNotFound) {
+		return nil
+	}
+
 	// Get community pool funds
-	communityPoolCoins := keepers.DistrKeeper.GetFeePoolCommunityCoins(ctx)
+	communityPoolCoins := feePool.CommunityPool
 	bondDenomCoin := communityPoolCoins.AmountOf(bondDenom)
 
 	if bondDenomCoin.IsZero() {
@@ -101,12 +118,11 @@ func convertCommunityPoolFundsToPhoton(ctx sdk.Context, keepers *keepers.AppKeep
 	}
 
 	// Calculate 50% of funds to convert
-	amountToConvert := bondDenomCoin.Mul(sdk.NewDecWithPrec(50, 2))
+	amountToConvert := bondDenomCoin.Mul(math.LegacyNewDecWithPrec(50, 2))
 	coinToConvert := sdk.NewCoin(bondDenom, amountToConvert.TruncateInt())
 
 	// Send funds from community pool to photon module account
-	err := sendCommunityPoolFundsToModuleAccount(ctx, keepers.BankKeeper, keepers.DistrKeeper, sdk.NewCoins(coinToConvert), photontypes.ModuleName)
-	if err != nil {
+	if err := sendCommunityPoolFundsToModuleAccount(ctx, keepers.BankKeeper, keepers.DistrKeeper, sdk.NewCoins(coinToConvert), photontypes.ModuleName); err != nil {
 		return fmt.Errorf("failed to distribute from community pool: %w", err)
 	}
 
@@ -165,7 +181,7 @@ func convertTreasuryDAOFundsToPhoton(ctx sdk.Context, keepers *keepers.AppKeeper
 	}
 
 	// Calculate 90% of funds
-	amountToConvert := balance.Amount.ToLegacyDec().Mul(sdk.NewDecWithPrec(90, 2)).TruncateInt()
+	amountToConvert := balance.Amount.ToLegacyDec().Mul(math.LegacyNewDecWithPrec(90, 2)).TruncateInt()
 	coinToConvert := sdk.NewCoin(bondDenom, amountToConvert)
 
 	// Send bond denom to photon module account for burning
@@ -216,7 +232,12 @@ func convertTreasuryDAOFundsToPhoton(ctx sdk.Context, keepers *keepers.AppKeeper
 // It is a modified version of the original `DistributeFromFeePool` function that uses `SendCoinsFromModuleToModule`
 // instead of `SendCoinsFromModuleToAccount` to send the funds to the photon module.
 func sendCommunityPoolFundsToModuleAccount(ctx sdk.Context, bankKeeper distrtypes.BankKeeper, distrKeeper distrkeeper.Keeper, amount sdk.Coins, receiverModuleName string) error {
-	feePool := distrKeeper.GetFeePool(ctx)
+	feePool, err := distrKeeper.FeePool.Get(ctx)
+	if err != nil && !errors.Is(err, collections.ErrNotFound) {
+		return fmt.Errorf("failed to get fee pool: %w", err)
+	} else if errors.Is(err, collections.ErrNotFound) {
+		return nil
+	}
 
 	// NOTE the community pool isn't a module account, however its coins
 	// are held in the distribution module account. Thus the community pool
@@ -228,11 +249,13 @@ func sendCommunityPoolFundsToModuleAccount(ctx sdk.Context, bankKeeper distrtype
 
 	feePool.CommunityPool = newPool
 
-	err := bankKeeper.SendCoinsFromModuleToModule(ctx, distrtypes.ModuleName, receiverModuleName, amount)
-	if err != nil {
+	if err := bankKeeper.SendCoinsFromModuleToModule(ctx, distrtypes.ModuleName, receiverModuleName, amount); err != nil {
 		return err
 	}
 
-	distrKeeper.SetFeePool(ctx, feePool)
+	if err := distrKeeper.FeePool.Set(ctx, feePool); err != nil {
+		return err
+	}
+
 	return nil
 }

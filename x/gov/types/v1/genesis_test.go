@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	"cosmossdk.io/math"
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -56,7 +57,7 @@ func TestValidateGenesis(t *testing.T) {
 				minDepositThrottler1 := *params.MinDepositThrottler
 				minDepositThrottler1.FloorValue = sdk.Coins{{
 					Denom:  sdk.DefaultBondDenom,
-					Amount: sdk.NewInt(-100),
+					Amount: math.NewInt(-100),
 				}}
 				params.MinDepositThrottler = &minDepositThrottler1
 

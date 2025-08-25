@@ -7,8 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
-
+	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -25,7 +24,7 @@ import (
 func TestImportExportQueues_ErrorUnconsistentState(t *testing.T) {
 	suite := createTestSuite(t)
 	app := suite.App
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false)
 	expectedGenState := v1.DefaultGenesisState()
 	expectedGenState.LastMinDeposit = &v1.LastMinDeposit{
 		Value: sdk.NewCoins(expectedGenState.Params.MinDepositThrottler.FloorValue...),
@@ -44,7 +43,7 @@ func TestImportExportQueues_ErrorUnconsistentState(t *testing.T) {
 					Amount: sdk.Coins{
 						sdk.NewCoin(
 							"stake",
-							sdk.NewInt(1234),
+							math.NewInt(1234),
 						),
 					},
 				},
@@ -318,7 +317,7 @@ func TestInitGenesis(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			suite := createTestSuite(t)
 			app := suite.App
-			ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+			ctx := app.BaseApp.NewContext(false)
 			if tt.moduleBalance.IsAllPositive() {
 				err := suite.BankKeeper.MintCoins(ctx, minttypes.ModuleName, tt.moduleBalance)
 				require.NoError(t, err)

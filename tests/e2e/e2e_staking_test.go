@@ -25,13 +25,13 @@ func (s *IntegrationTestSuite) testStaking() {
 
 		delegatorAddress, _ := s.chainA.genesisAccounts[2].keyInfo.GetAddress()
 
-		existingDelegation := sdk.ZeroDec()
-		res, err := queryDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
+		existingDelegation := math.LegacyZeroDec()
+		res, err := s.queryDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
 		if err == nil {
 			existingDelegation = res.GetDelegationResponse().GetDelegation().GetShares()
 		}
 
-		delegationAmount := sdk.NewInt(500000000)
+		delegationAmount := math.NewInt(500000000)
 		delegation := sdk.NewCoin(uatoneDenom, delegationAmount) // 500 atom
 
 		// Alice delegate uatone to Validator A
@@ -40,17 +40,17 @@ func (s *IntegrationTestSuite) testStaking() {
 		// Validate delegation successful
 		s.Require().Eventually(
 			func() bool {
-				res, err := queryDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
+				res, err := s.queryDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
 				amt := res.GetDelegationResponse().GetDelegation().GetShares()
 				s.Require().NoError(err)
 
-				return amt.Equal(existingDelegation.Add(sdk.NewDecFromInt(delegationAmount)))
+				return amt.Equal(existingDelegation.Add(math.LegacyNewDecFromInt(delegationAmount)))
 			},
 			20*time.Second,
 			time.Second,
 		)
 
-		redelegationAmount := delegationAmount.Quo(sdk.NewInt(2))
+		redelegationAmount := delegationAmount.Quo(math.NewInt(2))
 		redelegation := sdk.NewCoin(uatoneDenom, redelegationAmount) // 250 atom
 
 		// Alice re-delegate half of her uatone delegation from Validator A to Validator B
@@ -59,11 +59,11 @@ func (s *IntegrationTestSuite) testStaking() {
 		// Validate re-delegation successful
 		s.Require().Eventually(
 			func() bool {
-				res, err := queryDelegation(chainEndpoint, validatorAddressB, delegatorAddress.String())
+				res, err := s.queryDelegation(chainEndpoint, validatorAddressB, delegatorAddress.String())
 				amt := res.GetDelegationResponse().GetDelegation().GetShares()
 				s.Require().NoError(err)
 
-				return amt.Equal(sdk.NewDecFromInt(redelegationAmount))
+				return amt.Equal(math.LegacyNewDecFromInt(redelegationAmount))
 			},
 			20*time.Second,
 			time.Second,
@@ -77,7 +77,7 @@ func (s *IntegrationTestSuite) testStaking() {
 		// query alice's current delegation from validator A
 		s.Require().Eventually(
 			func() bool {
-				res, err := queryDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
+				res, err := s.queryDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
 				amt := res.GetDelegationResponse().GetDelegation().GetShares()
 				s.Require().NoError(err)
 
@@ -98,7 +98,7 @@ func (s *IntegrationTestSuite) testStaking() {
 		// validate unbonding delegations
 		s.Require().Eventually(
 			func() bool {
-				res, err := queryUnbondingDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
+				res, err := s.queryUnbondingDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
 				s.Require().NoError(err)
 
 				s.Require().Len(res.GetUnbond().Entries, 1)
@@ -124,16 +124,16 @@ func (s *IntegrationTestSuite) testStaking() {
 		// validate that unbonding delegation was successfully canceled
 		s.Require().Eventually(
 			func() bool {
-				resDel, err := queryDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
+				resDel, err := s.queryDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
 				amt := resDel.GetDelegationResponse().GetDelegation().GetShares()
 				s.Require().NoError(err)
 
 				// expect that no unbonding delegations are found for validator A
-				_, err = queryUnbondingDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
+				_, err = s.queryUnbondingDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
 				s.Require().Error(err)
 
 				// expect to get the delegation back
-				return amt.Equal(sdk.NewDecFromInt(currDelegationAmount))
+				return amt.Equal(math.LegacyNewDecFromInt(currDelegationAmount))
 			},
 			20*time.Second,
 			time.Second,

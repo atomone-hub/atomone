@@ -4,13 +4,15 @@ run:
   timeout: 5m
   skip-dirs:
     - tests/
+  skip-files:
+    - ".*\\.pb\\.go$"
+    - ".*\\.pb\\.gw\\.go$"
 
 linters:
   disable-all: true
   enable:
     - dogsled
     - errcheck
-    - exportloopref
     - gci
     - goconst
     - gocritic
@@ -32,27 +34,30 @@ linters:
 
 issues:
   exclude-rules:
-    - text: 'Use of weak random number generator'
+    - text: "Use of weak random number generator"
       linters:
         - gosec
-    - text: 'comment on exported var'
+    - text: "comment on exported var"
       linters:
         - golint
     - text: "don't use an underscore in package name"
       linters:
         - golint
-    - text: 'ST1003:'
+    - text: "ST1003:"
       linters:
         - stylecheck
     # FIXME: Disabled until golangci-lint updates stylecheck with this fix:
     # https://github.com/dominikh/go-tools/issues/389
-    - text: 'ST1016:'
+    - text: "ST1016:"
       linters:
         - stylecheck
-    - path: 'migrations'
-      text: 'SA1019:'
+    - path: "migrations"
+      text: "SA1019:"
       linters:
         - staticcheck
+    - linters:
+        - gosec
+      text: "G115: integer overflow conversion"
 
   max-issues-per-linter: 10000
   max-same-issues: 10000

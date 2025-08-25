@@ -6,7 +6,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/testutil/configurator"
 
-	govmodulev1 "github.com/atomone-hub/atomone/api/atomone/gov/module/v1"
+	govmodulev1 "github.com/atomone-hub/atomone/x/gov/types/module"
 )
 
 func GovModule() configurator.ModuleOption {

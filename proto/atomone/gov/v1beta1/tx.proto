@@ -38,8 +38,6 @@ message MsgSubmitProposal {
   option (amino.name) = "atomone/MsgSubmitProposal";
 
   option (gogoproto.equal) = false;
-  option (gogoproto.goproto_stringer) = false;
-  option (gogoproto.stringer) = false;
   option (gogoproto.goproto_getters) = false;
 
   // content is the proposal's content.
@@ -70,8 +68,6 @@ message MsgVote {
   option (amino.name) = "atomone/MsgVote";
 
   option (gogoproto.equal) = false;
-  option (gogoproto.goproto_stringer) = false;
-  option (gogoproto.stringer) = false;
   option (gogoproto.goproto_getters) = false;
 
   // proposal_id defines the unique id of the proposal.
@@ -95,8 +91,6 @@ message MsgVoteWeighted {
   option (amino.name) = "atomone/MsgVoteWeighted";
 
   option (gogoproto.equal) = false;
-  option (gogoproto.goproto_stringer) = false;
-  option (gogoproto.stringer) = false;
   option (gogoproto.goproto_getters) = false;
 
   // proposal_id defines the unique id of the proposal.
@@ -122,7 +116,6 @@ message MsgDeposit {
   option (amino.name) = "atomone/MsgDeposit";
 
   option (gogoproto.equal) = false;
-  option (gogoproto.goproto_stringer) = false;
   option (gogoproto.stringer) = false;
   option (gogoproto.goproto_getters) = false;
 

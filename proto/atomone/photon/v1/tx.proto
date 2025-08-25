@@ -35,6 +35,8 @@ message MsgMintPhoton {
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
+// MsgMintPhotonResponse defines the response structure for executing a
+// MsgMintPhoton message.
 message MsgMintPhotonResponse {
   cosmos.base.v1beta1.Coin minted = 1 [
     (gogoproto.nullable) = false,

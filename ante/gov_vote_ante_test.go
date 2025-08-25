@@ -28,16 +28,18 @@ func TestVoteSpamDecoratorGovV1Beta1(t *testing.T) {
 	stakingKeeper := atomoneApp.StakingKeeper
 
 	// Get validator
-	valAddr1 := stakingKeeper.GetAllValidators(ctx)[0].GetOperator()
+	valAddrs, err := stakingKeeper.GetAllValidators(ctx)
+	require.NoError(t, err)
+	valAddr1, err := stakingKeeper.ValidatorAddressCodec().StringToBytes(valAddrs[0].OperatorAddress)
+	require.NoError(t, err)
 
 	// Create one more validator
 	pk := ed25519.GenPrivKeyFromSecret([]byte{uint8(13)}).PubKey()
 	validator2, err := stakingtypes.NewValidator(
-		sdk.ValAddress(pk.Address()),
+		sdk.ValAddress(pk.Address()).String(),
 		pk,
 		stakingtypes.Description{},
 	)
-	valAddr2 := validator2.GetOperator()
 	require.NoError(t, err)
 	// Make sure the validator is bonded so it's not removed on Undelegate
 	validator2.Status = stakingtypes.Bonded
@@ -45,12 +47,15 @@ func TestVoteSpamDecoratorGovV1Beta1(t *testing.T) {
 	err = stakingKeeper.SetValidatorByConsAddr(ctx, validator2)
 	require.NoError(t, err)
 	stakingKeeper.SetNewValidatorByPowerIndex(ctx, validator2)
-	err = stakingKeeper.Hooks().AfterValidatorCreated(ctx, validator2.GetOperator())
+
+	valAddr2, err := stakingKeeper.ValidatorAddressCodec().StringToBytes(validator2.OperatorAddress)
+	require.NoError(t, err)
+
+	err = stakingKeeper.Hooks().AfterValidatorCreated(ctx, valAddr2)
 	require.NoError(t, err)
 
 	// Get delegator (this account was created during setup)
-	addr := atomoneApp.AccountKeeper.GetAccountAddressByID(ctx, 0)
-	delegator, err := sdk.AccAddressFromBech32(addr)
+	delegator, err := atomoneApp.AccountKeeper.Accounts.Indexes.Number.MatchExact(ctx, 0)
 	require.NoError(t, err)
 
 	tests := []struct {
@@ -61,37 +66,37 @@ func TestVoteSpamDecoratorGovV1Beta1(t *testing.T) {
 	}{
 		{
 			name:       "delegate 0 atone",
-			bondAmt:    sdk.ZeroInt(),
+			bondAmt:    math.ZeroInt(),
 			validators: []sdk.ValAddress{valAddr1},
 			expectPass: false,
 		},
 		{
 			name:       "delegate 0.1 atone",
-			bondAmt:    sdk.NewInt(100000),
+			bondAmt:    math.NewInt(100000),
 			validators: []sdk.ValAddress{valAddr1},
 			expectPass: false,
 		},
 		{
 			name:       "delegate 1 atone",
-			bondAmt:    sdk.NewInt(1000000),
+			bondAmt:    math.NewInt(1000000),
 			validators: []sdk.ValAddress{valAddr1},
 			expectPass: true,
 		},
 		{
 			name:       "delegate 1 atom to two validators",
-			bondAmt:    sdk.NewInt(1000000),
+			bondAmt:    math.NewInt(1000000),
 			validators: []sdk.ValAddress{valAddr1, valAddr2},
 			expectPass: true,
 		},
 		{
 			name:       "delegate 0.9 atom to two validators",
-			bondAmt:    sdk.NewInt(900000),
+			bondAmt:    math.NewInt(900000),
 			validators: []sdk.ValAddress{valAddr1, valAddr2},
 			expectPass: false,
 		},
 		{
 			name:       "delegate 10 atone",
-			bondAmt:    sdk.NewInt(10000000),
+			bondAmt:    math.NewInt(10000000),
 			validators: []sdk.ValAddress{valAddr1},
 			expectPass: true,
 		},
@@ -99,19 +104,23 @@ func TestVoteSpamDecoratorGovV1Beta1(t *testing.T) {
 
 	for _, tc := range tests {
 		// Unbond all tokens for this delegator
-		delegations := stakingKeeper.GetAllDelegatorDelegations(ctx, delegator)
+		delegations, err := stakingKeeper.GetAllDelegatorDelegations(ctx, delegator)
+		require.NoError(t, err)
 		for _, del := range delegations {
-			_, err := stakingKeeper.Undelegate(ctx, delegator, del.GetValidatorAddr(), del.GetShares())
+			delValAddr, err := stakingKeeper.ValidatorAddressCodec().StringToBytes(del.GetValidatorAddr())
+			require.NoError(t, err)
+
+			_, _, err = stakingKeeper.Undelegate(ctx, delegator, delValAddr, del.GetShares())
 			require.NoError(t, err)
 		}
 
 		// Delegate tokens
 		if !tc.bondAmt.IsZero() {
-			amt := tc.bondAmt.Quo(sdk.NewInt(int64(len(tc.validators))))
+			amt := tc.bondAmt.Quo(math.NewInt(int64(len(tc.validators))))
 			for _, valAddr := range tc.validators {
-				val, found := stakingKeeper.GetValidator(ctx, valAddr)
-				require.True(t, found)
-				_, err := stakingKeeper.Delegate(ctx, delegator, amt, stakingtypes.Unbonded, val, true)
+				val, err := stakingKeeper.GetValidator(ctx, valAddr)
+				require.NoError(t, err)
+				_, err = stakingKeeper.Delegate(ctx, delegator, amt, stakingtypes.Unbonded, val, true)
 				require.NoError(t, err)
 			}
 		}
@@ -124,7 +133,7 @@ func TestVoteSpamDecoratorGovV1Beta1(t *testing.T) {
 		)
 
 		// Validate vote message
-		err := decorator.ValidateVoteMsgs(ctx, []sdk.Msg{msg})
+		err = decorator.ValidateVoteMsgs(ctx, []sdk.Msg{msg})
 		if tc.expectPass {
 			require.NoError(t, err, "expected %v to pass", tc.name)
 		} else {
@@ -142,16 +151,23 @@ func TestVoteSpamDecoratorGovV1(t *testing.T) {
 	stakingKeeper := atomoneApp.StakingKeeper
 
 	// Get validator
-	valAddr1 := stakingKeeper.GetAllValidators(ctx)[0].GetOperator()
+	vals, err := stakingKeeper.GetAllValidators(ctx)
+	require.NoError(t, err)
+
+	valAddr1, err := stakingKeeper.ValidatorAddressCodec().StringToBytes(vals[0].OperatorAddress)
+	require.NoError(t, err)
 
 	// Create one more validator
 	pk := ed25519.GenPrivKeyFromSecret([]byte{uint8(13)}).PubKey()
+	valAddr2 := sdk.ValAddress(pk.Address())
+	valAddr2Str, err := stakingKeeper.ValidatorAddressCodec().BytesToString(valAddr2)
+	require.NoError(t, err)
+
 	validator2, err := stakingtypes.NewValidator(
-		sdk.ValAddress(pk.Address()),
+		valAddr2Str,
 		pk,
 		stakingtypes.Description{},
 	)
-	valAddr2 := validator2.GetOperator()
 	require.NoError(t, err)
 	// Make sure the validator is bonded so it's not removed on Undelegate
 	validator2.Status = stakingtypes.Bonded
@@ -159,12 +175,11 @@ func TestVoteSpamDecoratorGovV1(t *testing.T) {
 	err = stakingKeeper.SetValidatorByConsAddr(ctx, validator2)
 	require.NoError(t, err)
 	stakingKeeper.SetNewValidatorByPowerIndex(ctx, validator2)
-	err = stakingKeeper.Hooks().AfterValidatorCreated(ctx, validator2.GetOperator())
+	err = stakingKeeper.Hooks().AfterValidatorCreated(ctx, valAddr2)
 	require.NoError(t, err)
 
 	// Get delegator (this account was created during setup)
-	addr := atomoneApp.AccountKeeper.GetAccountAddressByID(ctx, 0)
-	delegator, err := sdk.AccAddressFromBech32(addr)
+	delegator, err := atomoneApp.AccountKeeper.Accounts.Indexes.Number.MatchExact(ctx, 0)
 	require.NoError(t, err)
 
 	tests := []struct {
@@ -175,37 +190,37 @@ func TestVoteSpamDecoratorGovV1(t *testing.T) {
 	}{
 		{
 			name:       "delegate 0 atone",
-			bondAmt:    sdk.ZeroInt(),
+			bondAmt:    math.ZeroInt(),
 			validators: []sdk.ValAddress{valAddr1},
 			expectPass: false,
 		},
 		{
 			name:       "delegate 0.1 atone",
-			bondAmt:    sdk.NewInt(100000),
+			bondAmt:    math.NewInt(100000),
 			validators: []sdk.ValAddress{valAddr1},
 			expectPass: false,
 		},
 		{
 			name:       "delegate 1 atone",
-			bondAmt:    sdk.NewInt(1000000),
+			bondAmt:    math.NewInt(1000000),
 			validators: []sdk.ValAddress{valAddr1},
 			expectPass: true,
 		},
 		{
 			name:       "delegate 1 atom to two validators",
-			bondAmt:    sdk.NewInt(1000000),
+			bondAmt:    math.NewInt(1000000),
 			validators: []sdk.ValAddress{valAddr1, valAddr2},
 			expectPass: true,
 		},
 		{
 			name:       "delegate 0.9 atom to two validators",
-			bondAmt:    sdk.NewInt(900000),
+			bondAmt:    math.NewInt(900000),
 			validators: []sdk.ValAddress{valAddr1, valAddr2},
 			expectPass: false,
 		},
 		{
 			name:       "delegate 10 atone",
-			bondAmt:    sdk.NewInt(10000000),
+			bondAmt:    math.NewInt(10000000),
 			validators: []sdk.ValAddress{valAddr1},
 			expectPass: true,
 		},
@@ -213,19 +228,24 @@ func TestVoteSpamDecoratorGovV1(t *testing.T) {
 
 	for _, tc := range tests {
 		// Unbond all tokens for this delegator
-		delegations := stakingKeeper.GetAllDelegatorDelegations(ctx, delegator)
+		delegations, err := stakingKeeper.GetAllDelegatorDelegations(ctx, delegator)
+		require.NoError(t, err)
+
 		for _, del := range delegations {
-			_, err := stakingKeeper.Undelegate(ctx, delegator, del.GetValidatorAddr(), del.GetShares())
+			delValAddr, err := stakingKeeper.ValidatorAddressCodec().StringToBytes(del.GetValidatorAddr())
+			require.NoError(t, err)
+
+			_, _, err = stakingKeeper.Undelegate(ctx, delegator, delValAddr, del.GetShares())
 			require.NoError(t, err)
 		}
 
 		// Delegate tokens
 		if !tc.bondAmt.IsZero() {
-			amt := tc.bondAmt.Quo(sdk.NewInt(int64(len(tc.validators))))
+			amt := tc.bondAmt.Quo(math.NewInt(int64(len(tc.validators))))
 			for _, valAddr := range tc.validators {
-				val, found := stakingKeeper.GetValidator(ctx, valAddr)
-				require.True(t, found)
-				_, err := stakingKeeper.Delegate(ctx, delegator, amt, stakingtypes.Unbonded, val, true)
+				val, err := stakingKeeper.GetValidator(ctx, valAddr)
+				require.NoError(t, err)
+				_, err = stakingKeeper.Delegate(ctx, delegator, amt, stakingtypes.Unbonded, val, true)
 				require.NoError(t, err)
 			}
 		}
@@ -239,7 +259,7 @@ func TestVoteSpamDecoratorGovV1(t *testing.T) {
 		)
 
 		// Validate vote message
-		err := decorator.ValidateVoteMsgs(ctx, []sdk.Msg{msg})
+		err = decorator.ValidateVoteMsgs(ctx, []sdk.Msg{msg})
 		if tc.expectPass {
 			require.NoError(t, err, "expected %v to pass", tc.name)
 		} else {

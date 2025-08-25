@@ -4,31 +4,15 @@ import (
 	"fmt"
 	"os"
 
+	"cosmossdk.io/log"
+	atomone "github.com/atomone-hub/atomone/app"
 	tmrand "github.com/cometbft/cometbft/libs/rand"
 
-	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
-
+	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
-	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/tx"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	authvesting "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	distribtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
-	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
-	"github.com/cosmos/cosmos-sdk/x/feegrant"
-	paramsproptypes "github.com/cosmos/cosmos-sdk/x/params/types/proposal"
-	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
-
-	atomoneparams "github.com/atomone-hub/atomone/app/params"
-	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
-	govv1types "github.com/atomone-hub/atomone/x/gov/types/v1"
-	govv1beta1types "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
-	photontypes "github.com/atomone-hub/atomone/x/photon/types"
+	"github.com/cosmos/cosmos-sdk/types/module"
 )
 
 const (
@@ -36,48 +20,20 @@ const (
 	keyringAppName    = "testnet"
 )
 
-var (
-	encodingConfig atomoneparams.EncodingConfig
-	cdc            codec.Codec
-	txConfig       client.TxConfig
-)
-
-func init() {
-	encodingConfig = atomoneparams.MakeEncodingConfig()
-	sdk.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	tx.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	banktypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	authtypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	authvesting.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	stakingtypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	slashingtypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	evidencetypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	cryptocodec.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	feegrant.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	govv1types.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	govv1beta1types.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	paramsproptypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	paramsproptypes.RegisterLegacyAminoCodec(encodingConfig.Amino)
-	feegrant.RegisterLegacyAminoCodec(encodingConfig.Amino)
-	slashingtypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	upgradetypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	distribtypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	ibctransfertypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	photontypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	dynamicfeetypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-
-	cdc = encodingConfig.Marshaler
-	txConfig = encodingConfig.TxConfig
-}
-
 type chain struct {
 	dataDir    string
 	id         string
 	validators []*validator
 	accounts   []*account //nolint:unused
+
 	// initial accounts in genesis
 	genesisAccounts        []*account
 	genesisVestingAccounts map[string]sdk.AccAddress
+
+	// codecs and chain config
+	cdc      codec.Codec
+	txConfig client.TxConfig
+	bm       module.BasicManager
 }
 
 func newChain() (*chain, error) {
@@ -86,9 +42,14 @@ func newChain() (*chain, error) {
 		return nil, err
 	}
 
+	tempApp := atomone.NewAtomOneApp(log.NewNopLogger(), dbm.NewMemDB(), nil, false, atomone.EmptyAppOptions{})
+
 	return &chain{
-		id:      "chain-" + tmrand.Str(6),
-		dataDir: tmpDir,
+		id:       "chain-" + tmrand.Str(6),
+		dataDir:  tmpDir,
+		cdc:      tempApp.AppCodec(),
+		txConfig: tempApp.GetTxConfig(),
+		bm:       tempApp.BasicModuleManager(),
 	}, nil
 }
 
@@ -109,33 +70,6 @@ func (c *chain) createAndInitValidators(count int) error {
 
 		// create keys
 		if err := node.createKey("val"); err != nil {
-			return err
-		}
-		if err := node.createNodeKey(); err != nil {
-			return err
-		}
-		if err := node.createConsensusKey(); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (c *chain) createAndInitValidatorsWithMnemonics(count int, mnemonics []string) error { //nolint:unused // this is called during e2e tests
-	for i := 0; i < count; i++ {
-		// create node
-		node := c.createValidator(i)
-
-		// generate genesis files
-		if err := node.init(); err != nil {
-			return err
-		}
-
-		c.validators = append(c.validators, node)
-
-		// create keys
-		if err := node.createKeyFromMnemonic("val", mnemonics[i]); err != nil {
 			return err
 		}
 		if err := node.createNodeKey(); err != nil {

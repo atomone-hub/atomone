@@ -129,7 +129,7 @@ func (s *IntegrationTestSuite) hermesPendingPackets(chainID, channelID string) (
 func (s *IntegrationTestSuite) queryRelayerWalletsBalances() (sdk.Coin, sdk.Coin) {
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
 	acctAddrChainA, _ := s.chainA.genesisAccounts[relayerAccountIndexHermes].keyInfo.GetAddress()
-	scrRelayerBalance, err := getSpecificBalance(
+	scrRelayerBalance, err := s.getSpecificBalance(
 		chainAAPIEndpoint,
 		acctAddrChainA.String(),
 		uatoneDenom)
@@ -137,7 +137,7 @@ func (s *IntegrationTestSuite) queryRelayerWalletsBalances() (sdk.Coin, sdk.Coin
 
 	chainBAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainB.id][0].GetHostPort("1317/tcp"))
 	acctAddrChainB, _ := s.chainB.genesisAccounts[relayerAccountIndexHermes].keyInfo.GetAddress()
-	dstRelayerBalance, err := getSpecificBalance(
+	dstRelayerBalance, err := s.getSpecificBalance(
 		chainBAPIEndpoint,
 		acctAddrChainB.String(),
 		uatoneDenom)
@@ -213,7 +213,7 @@ func (s *IntegrationTestSuite) testIBCTokenTransfer() {
 
 		s.Require().Eventually(
 			func() bool {
-				balances, err = queryAtomOneAllBalances(chainBAPIEndpoint, recipient)
+				balances, err = s.queryAtomOneAllBalances(chainBAPIEndpoint, recipient)
 				s.Require().NoError(err)
 				return balances.Len() != 0
 			},
@@ -234,7 +234,7 @@ func (s *IntegrationTestSuite) testIBCTokenTransfer() {
 
 		s.Require().Eventually(
 			func() bool {
-				balances, err = queryAtomOneAllBalances(chainBAPIEndpoint, recipient)
+				balances, err = s.queryAtomOneAllBalances(chainBAPIEndpoint, recipient)
 				s.Require().NoError(err)
 				return balances.Len() != 0
 			},
