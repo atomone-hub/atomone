@@ -14,6 +14,8 @@ import (
 // GovKeeper defines the expected interface needed to interact with the
 // governance module.
 type GovKeeper interface {
+	// GetProposalID gets the highest proposal ID
+	GetProposalID(ctx sdk.Context) (proposalID uint64, err error)
 	// GetProposal gets a proposal from store by ProposalID.
 	GetProposal(ctx sdk.Context, id uint64) (govtypesv1.Proposal, bool)
 	// SetProposal sets a proposal in the gov store.
@@ -50,4 +52,16 @@ type StakingKeeper interface {
 	GetDelegatorBonded(ctx context.Context, delegator sdk.AccAddress) (math.Int, error)
 	// GetDelegatorUnbonding returns the total amount a delegator has unbonding.
 	GetDelegatorUnbonding(ctx context.Context, delegator sdk.AccAddress) (math.Int, error)
+}
+
+// AccountKeeper defines the expected account keeper used for simulations (noalias)
+type AccountKeeper interface {
+	GetAccount(ctx context.Context, addr sdk.AccAddress) sdk.AccountI
+	NewAccountWithAddress(ctx context.Context, addr sdk.AccAddress) sdk.AccountI
+	SetAccount(ctx context.Context, acc sdk.AccountI)
+}
+
+// BankKeeper defines the expected account keeper used for simulations (noalias)
+type BankKeeper interface {
+	SpendableCoins(ctx context.Context, addr sdk.AccAddress) sdk.Coins
 }

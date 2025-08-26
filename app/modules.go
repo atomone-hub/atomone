@@ -99,7 +99,8 @@ func appModules(
 		sdkparams.NewAppModule(app.ParamsKeeper),
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
 		dynamicfee.NewAppModule(appCodec, *app.DynamicfeeKeeper),
-		coredaos.NewAppModule(appCodec, *app.CoreDaosKeeper),
+		coredaos.NewAppModule(appCodec, *app.CoreDaosKeeper, app.GovKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
+
 		app.TransferModule,
 		app.ICAModule,
 		app.TMClientModule,
