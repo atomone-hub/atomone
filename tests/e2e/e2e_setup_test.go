@@ -211,6 +211,8 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 	}
 
 	if s.initializedForIBC {
+		s.tearDownHermesRelayer()
+		s.tearDownTsRelayer()
 		os.RemoveAll(s.chainB.dataDir)
 	}
 
