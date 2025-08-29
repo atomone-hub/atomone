@@ -2,9 +2,11 @@ package e2e
 
 import (
 	"context"
+	"crypto/sha256"
 	"fmt"
-	"strings"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -60,13 +62,6 @@ func (s *IntegrationTestSuite) queryRelayerWalletsBalances() (sdk.Coins, sdk.Coi
 func (s *IntegrationTestSuite) testIBCTokenTransfer() {
 	s.Run("send_uatom_to_chainB", func() {
 		// require the recipient account receives the IBC tokens (IBC packets ACKd)
-		var (
-			balances      sdk.Coins
-			err           error
-			beforeBalance int64
-			ibcStakeDenom string
-		)
-
 		address, _ := s.chainA.validators[0].keyInfo.GetAddress()
 		sender := address.String()
 
@@ -75,21 +70,11 @@ func (s *IntegrationTestSuite) testIBCTokenTransfer() {
 
 		chainBAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainB.id][0].GetHostPort("1317/tcp"))
 
-		s.Require().Eventually(
-			func() bool {
-				balances, err = s.queryAllBalances(chainBAPIEndpoint, recipient)
-				s.Require().NoError(err)
-				return balances.Len() != 0
-			},
-			time.Minute,
-			5*time.Second,
-		)
-		for _, c := range balances {
-			if strings.Contains(c.Denom, "ibc/") {
-				beforeBalance = c.Amount.Int64()
-				break
-			}
-		}
+		// Determine ibc denom trace which is "ibc/"+HEX(SHA256({port}/{channel}/{denom}))
+		bz := sha256.Sum256([]byte("transfer/channel-0/" + tokenAmount.Denom))
+		ibcDenom := fmt.Sprintf("ibc/%X", bz)
+		// Get balance before test
+		beforeBalance := s.queryBalance(chainBAPIEndpoint, recipient, ibcDenom)
 
 		s.sendIBC(s.chainA, 0, sender, recipient, tokenAmount.String(), "")
 
@@ -98,24 +83,17 @@ func (s *IntegrationTestSuite) testIBCTokenTransfer() {
 			pass := s.hermesClearPacket(hermesConfigWithGasPrices, s.chainA.id, transferChannel)
 			s.Require().True(pass)
 		}
-
-		s.Require().Eventually(
-			func() bool {
-				balances, err = s.queryAllBalances(chainBAPIEndpoint, recipient)
-				s.Require().NoError(err)
-				return balances.Len() > 2 // wait for atone, photon and the ibc denom
+		// Assert new balance to be equal to beforeBalance+tokenAmount
+		s.Require().EventuallyWithT(
+			func(c *assert.CollectT) {
+				newBalance := s.queryBalance(chainBAPIEndpoint, recipient, ibcDenom)
+				assert.Equal(c,
+					beforeBalance.Amount.Int64()+tokenAmount.Amount.Int64(), newBalance.Amount.Int64(),
+					"before(%s)+transfered(%s) != %s", beforeBalance, tokenAmount, newBalance,
+				)
 			},
 			time.Minute,
-			5*time.Second,
+			time.Second,
 		)
-		for _, c := range balances {
-			if strings.Contains(c.Denom, "ibc/") {
-				ibcStakeDenom = c.Denom
-				s.Require().Equal(tokenAmount.Amount.Int64()+beforeBalance, c.Amount.Int64())
-				break
-			}
-		}
-
-		s.Require().NotEmpty(ibcStakeDenom)
 	})
 }

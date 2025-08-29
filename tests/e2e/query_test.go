@@ -56,19 +56,16 @@ func (s *IntegrationTestSuite) queryAtomOneTx(endpoint, txHash string, msgResp c
 	return int(resp.TxResponse.Height), nil
 }
 
-// if coin is zero, return empty coin.
-func (s *IntegrationTestSuite) getSpecificBalance(endpoint, addr, denom string) (amt sdk.Coin, err error) {
+// if denom not found, return 0 denom.
+func (s *IntegrationTestSuite) queryBalance(endpoint, addr, denom string) sdk.Coin {
 	balances, err := s.queryAllBalances(endpoint, addr)
-	if err != nil {
-		return amt, err
-	}
+	s.Require().NoError(err)
 	for _, c := range balances {
 		if strings.Contains(c.Denom, denom) {
-			amt = c
-			break
+			return c
 		}
 	}
-	return amt, nil
+	return sdk.NewInt64Coin(denom, 0)
 }
 
 func (s *IntegrationTestSuite) queryAllBalances(endpoint, addr string) (sdk.Coins, error) {
