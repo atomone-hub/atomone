@@ -2,7 +2,6 @@ package e2e
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -40,157 +39,22 @@ func (s *IntegrationTestSuite) sendIBC(c *chain, valIdx int, sender, recipient, 
 	s.T().Log("successfully sent IBC tokens")
 }
 
-func (s *IntegrationTestSuite) hermesTransfer(configPath, srcChainID, dstChainID, srcChannelID, denom string, sendAmt, timeOutOffset, numMsg int) (success bool) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
-	defer cancel()
-
-	hermesCmd := []string{
-		hermesBinary,
-		"--json",
-		fmt.Sprintf("--config=%s", configPath),
-		"tx",
-		"ft-transfer",
-		fmt.Sprintf("--dst-chain=%s", dstChainID),
-		fmt.Sprintf("--src-chain=%s", srcChainID),
-		fmt.Sprintf("--src-channel=%s", srcChannelID),
-		fmt.Sprintf("--src-port=%s", "transfer"),
-		fmt.Sprintf("--amount=%v", sendAmt),
-		fmt.Sprintf("--denom=%s", denom),
-		fmt.Sprintf("--timeout-height-offset=%v", timeOutOffset),
-		fmt.Sprintf("--number-msgs=%v", numMsg),
-	}
-
-	if _, err := s.executeHermesCommand(ctx, hermesCmd); err != nil {
-		return false
-	}
-
-	return true
-}
-
-func (s *IntegrationTestSuite) hermesClearPacket(configPath, chainID, channelID string) (success bool) { //nolint:unparam
-	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
-	defer cancel()
-
-	hermesCmd := []string{
-		hermesBinary,
-		"--json",
-		fmt.Sprintf("--config=%s", configPath),
-		"clear",
-		"packets",
-		fmt.Sprintf("--chain=%s", chainID),
-		fmt.Sprintf("--channel=%s", channelID),
-		fmt.Sprintf("--port=%s", "transfer"),
-	}
-
-	if _, err := s.executeHermesCommand(ctx, hermesCmd); err != nil {
-		return false
-	}
-
-	return true
-}
-
-type RelayerPacketsOutput struct {
-	Result struct {
-		Dst struct {
-			UnreceivedPackets []uint64 `json:"unreceived_packets"`
-		} `json:"dst"`
-		Src struct {
-			UnreceivedPackets []uint64 `json:"unreceived_packets"`
-		} `json:"src"`
-	} `json:"result"`
-	Status string `json:"status"`
-}
-
-func (s *IntegrationTestSuite) hermesPendingPackets(chainID, channelID string) (pendingPackets bool) { //nolint:unparam
-	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
-	defer cancel()
-	hermesCmd := []string{
-		hermesBinary,
-		"--json",
-		"query",
-		"packet",
-		"pending",
-		fmt.Sprintf("--chain=%s", chainID),
-		fmt.Sprintf("--channel=%s", channelID),
-		fmt.Sprintf("--port=%s", "transfer"),
-	}
-
-	stdout, err := s.executeHermesCommand(ctx, hermesCmd)
-	s.Require().NoError(err)
-
-	var relayerPacketsOutput RelayerPacketsOutput
-	err = json.Unmarshal(stdout, &relayerPacketsOutput)
-	s.Require().NoError(err)
-
-	// Check if "unreceived_packets" exists in "src"
-	return len(relayerPacketsOutput.Result.Src.UnreceivedPackets) != 0
-}
-
-func (s *IntegrationTestSuite) queryRelayerWalletsBalances() (sdk.Coin, sdk.Coin) {
+func (s *IntegrationTestSuite) queryRelayerWalletsBalances() (sdk.Coins, sdk.Coins) {
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
-	acctAddrChainA, _ := s.chainA.genesisAccounts[relayerAccountIndexHermes].keyInfo.GetAddress()
-	scrRelayerBalance, err := s.getSpecificBalance(
+	acctAddrChainA, _ := s.chainA.genesisAccounts[relayerAccountIndex].keyInfo.GetAddress()
+	scrRelayerBalance, err := s.queryAllBalances(
 		chainAAPIEndpoint,
-		acctAddrChainA.String(),
-		uatoneDenom)
+		acctAddrChainA.String())
 	s.Require().NoError(err)
 
 	chainBAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainB.id][0].GetHostPort("1317/tcp"))
-	acctAddrChainB, _ := s.chainB.genesisAccounts[relayerAccountIndexHermes].keyInfo.GetAddress()
-	dstRelayerBalance, err := s.getSpecificBalance(
+	acctAddrChainB, _ := s.chainB.genesisAccounts[relayerAccountIndex].keyInfo.GetAddress()
+	dstRelayerBalance, err := s.queryAllBalances(
 		chainBAPIEndpoint,
-		acctAddrChainB.String(),
-		uatoneDenom)
+		acctAddrChainB.String())
 	s.Require().NoError(err)
 
 	return scrRelayerBalance, dstRelayerBalance
-}
-
-func (s *IntegrationTestSuite) createConnection() {
-	s.T().Logf("connecting %s and %s chains via IBC", s.chainA.id, s.chainB.id)
-
-	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
-	defer cancel()
-
-	hermesCmd := []string{
-		hermesBinary,
-		"--json",
-		"create",
-		"connection",
-		"--a-chain",
-		s.chainA.id,
-		"--b-chain",
-		s.chainB.id,
-	}
-
-	_, err := s.executeHermesCommand(ctx, hermesCmd)
-	s.Require().NoError(err, "failed to connect chains: %s", err)
-
-	s.T().Logf("connected %s and %s chains via IBC", s.chainA.id, s.chainB.id)
-}
-
-func (s *IntegrationTestSuite) createChannel() {
-	s.T().Logf("creating IBC transfer channel created between chains %s and %s", s.chainA.id, s.chainB.id)
-
-	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
-	defer cancel()
-	hermesCmd := []string{
-		hermesBinary,
-		"--json",
-		"create",
-		"channel",
-		"--a-chain", s.chainA.id,
-		"--a-connection", "connection-0",
-		"--a-port", "transfer",
-		"--b-port", "transfer",
-		"--channel-version", "ics20-1",
-		"--order", "unordered",
-	}
-
-	_, err := s.executeHermesCommand(ctx, hermesCmd)
-	s.Require().NoError(err, "failed to create IBC transfer channel between chains: %s", err)
-
-	s.T().Logf("IBC transfer channel created between chains %s and %s", s.chainA.id, s.chainB.id)
 }
 
 func (s *IntegrationTestSuite) testIBCTokenTransfer() {
@@ -213,7 +77,7 @@ func (s *IntegrationTestSuite) testIBCTokenTransfer() {
 
 		s.Require().Eventually(
 			func() bool {
-				balances, err = s.queryAtomOneAllBalances(chainBAPIEndpoint, recipient)
+				balances, err = s.queryAllBalances(chainBAPIEndpoint, recipient)
 				s.Require().NoError(err)
 				return balances.Len() != 0
 			},
@@ -229,12 +93,15 @@ func (s *IntegrationTestSuite) testIBCTokenTransfer() {
 
 		s.sendIBC(s.chainA, 0, sender, recipient, tokenAmount.String(), "")
 
-		pass := s.hermesClearPacket(hermesConfigWithGasPrices, s.chainA.id, transferChannel)
-		s.Require().True(pass)
+		if s.hermesResource != nil {
+			// Test is using hermes relayer, call the required function
+			pass := s.hermesClearPacket(hermesConfigWithGasPrices, s.chainA.id, transferChannel)
+			s.Require().True(pass)
+		}
 
 		s.Require().Eventually(
 			func() bool {
-				balances, err = s.queryAtomOneAllBalances(chainBAPIEndpoint, recipient)
+				balances, err = s.queryAllBalances(chainBAPIEndpoint, recipient)
 				s.Require().NoError(err)
 				return balances.Len() > 2 // wait for atone, photon and the ibc denom
 			},

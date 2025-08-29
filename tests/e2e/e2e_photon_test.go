@@ -15,7 +15,7 @@ func (s *IntegrationTestSuite) testMintPhoton() {
 				chainEndpoint = fmt.Sprintf("http://%s", s.valResources[c.id][valIdx].GetHostPort("1317/tcp"))
 			)
 			alice, _ := c.genesisAccounts[1].keyInfo.GetAddress()
-			beforeBalance, err := s.queryAtomOneAllBalances(chainEndpoint, alice.String())
+			beforeBalance, err := s.queryAllBalances(chainEndpoint, alice.String())
 			s.Require().NoError(err)
 			beforeSupply := s.queryBankSupply(chainEndpoint)
 			conversionRate := s.queryPhotonConversionRate(chainEndpoint)
@@ -31,7 +31,7 @@ func (s *IntegrationTestSuite) testMintPhoton() {
 				Add(resp.Minted).    // add minted photons
 				Sub(fees)            // remove fees
 
-			afterBalance, err := s.queryAtomOneAllBalances(chainEndpoint, alice.String())
+			afterBalance, err := s.queryAllBalances(chainEndpoint, alice.String())
 			s.Require().NoError(err)
 			s.Require().Equal(expectedBalance.String(), afterBalance.String())
 			var (
@@ -63,14 +63,14 @@ func (s *IntegrationTestSuite) testMintPhoton() {
 		)
 		alice, _ := c.genesisAccounts[1].keyInfo.GetAddress()
 
-		beforeBalance, err := s.queryAtomOneAllBalances(chainEndpoint, alice.String())
+		beforeBalance, err := s.queryAllBalances(chainEndpoint, alice.String())
 		s.Require().NoError(err)
 
 		// Issue an incorrect transaction with wrong Denom
 		_ = s.execPhotonMint(s.chainA, valIdx, alice.String(), "1000wrongDenom",
 			true, withKeyValue(flagGas, "200000"))
 
-		afterBalance, err := s.queryAtomOneAllBalances(chainEndpoint, alice.String())
+		afterBalance, err := s.queryAllBalances(chainEndpoint, alice.String())
 
 		var (
 			_, beforeUphotonBalance = beforeBalance.Find(uphotonDenom)

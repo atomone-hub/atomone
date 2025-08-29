@@ -66,11 +66,24 @@ func (s *IntegrationTestSuite) TestGov() {
 	s.testGovTextProposal()
 }
 
-func (s *IntegrationTestSuite) TestIBC() {
+func (s *IntegrationTestSuite) TestIBC_hermesRelayer() {
 	if !runIBCTest {
 		s.T().Skip()
 	}
 	s.ensureIBCSetup()
+	s.runIBCHermesRelayer()
+	defer s.tearDownHermesRelayer()
+
+	s.testIBCTokenTransfer()
+}
+
+func (s *IntegrationTestSuite) TestIBC_TSRelayer() {
+	if !runIBCTest {
+		s.T().Skip()
+	}
+	s.ensureIBCSetup()
+	s.runIBCTSRelayer()
+	defer s.tearDownTsRelayer()
 
 	s.testIBCTokenTransfer()
 }

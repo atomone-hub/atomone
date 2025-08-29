@@ -1,10 +1,8 @@
 package e2e
 
 import (
-	"bufio"
 	"bytes"
 	"context"
-	"encoding/json"
 	"fmt"
 	"path/filepath"
 	"strings"
@@ -720,91 +718,6 @@ func (s *IntegrationTestSuite) executeAtomoneTxCommand(ctx context.Context, c *c
 			err, string(stdOut), string(stdErr))
 	}
 	return height
-}
-
-func (s *IntegrationTestSuite) executeHermesCommand(ctx context.Context, hermesCmd []string) ([]byte, error) {
-	// TODO improve this
-	if s.hermesResource == nil {
-		s.T().Logf("Hermes disabled, command %s ignored", hermesCmd)
-		return nil, nil
-	}
-	var outBuf bytes.Buffer
-	exec, err := s.dkrPool.Client.CreateExec(docker.CreateExecOptions{
-		Context:      ctx,
-		AttachStdout: true,
-		AttachStderr: true,
-		Container:    s.hermesResource.Container.ID,
-		User:         "root",
-		Cmd:          hermesCmd,
-	})
-	s.Require().NoError(err)
-
-	err = s.dkrPool.Client.StartExec(exec.ID, docker.StartExecOptions{
-		Context:      ctx,
-		Detach:       false,
-		OutputStream: &outBuf,
-	})
-	s.Require().NoError(err)
-
-	// Check that the stdout output contains the expected status
-	// and look for errors, e.g "insufficient fees"
-	stdOut := []byte{}
-	scanner := bufio.NewScanner(&outBuf)
-	for scanner.Scan() {
-		stdOut = scanner.Bytes()
-		var out map[string]interface{}
-		err = json.Unmarshal(stdOut, &out)
-		s.Require().NoError(err)
-		if err != nil {
-			return nil, fmt.Errorf("hermes relayer command returned failed with error: %s", err)
-		}
-		// errors are catched by observing the logs level in the stderr output
-		if lvl := out["level"]; lvl != nil && strings.ToLower(lvl.(string)) == "error" {
-			fields := out["fields"].(map[string]any)
-			errMsg := fields["message"]
-			resp := fields["response"]
-			return nil, fmt.Errorf("hermes relayer command failed: %s: %s", errMsg, resp)
-		}
-		if s := out["status"]; s != nil && s != "success" {
-			return nil, fmt.Errorf("hermes relayer command returned failed with status: %s", s)
-		}
-	}
-
-	return stdOut, nil
-}
-
-func (s *IntegrationTestSuite) executeTsRelayerCommand(ctx context.Context, args []string) {
-	cmd := append(tsRelayerBinary, args...)
-	exec, err := s.dkrPool.Client.CreateExec(docker.CreateExecOptions{
-		Context:      ctx,
-		AttachStdout: true,
-		AttachStderr: true,
-		Container:    s.tsRelayerResource.Container.ID,
-		User:         "root",
-		Cmd:          cmd,
-	})
-	s.Require().NoError(err)
-
-	var out bytes.Buffer
-	err = s.dkrPool.Client.StartExec(exec.ID, docker.StartExecOptions{
-		Context:      ctx,
-		Detach:       false,
-		OutputStream: &out,
-		ErrorStream:  &out,
-	})
-	s.Require().NoError(err, "ts-relayer startExec error: %s", out.String())
-
-	exitCode := -1
-	for {
-		inspectExec, err := s.dkrPool.Client.InspectExec(exec.ID)
-		s.Require().NoError(err, "ts-relayer inspectExec error: %s", out.String())
-
-		if !inspectExec.Running {
-			exitCode = inspectExec.ExitCode
-			break
-		}
-	}
-	s.Require().Equal(0, exitCode, "error in ts-relayer cmd '%s', err=%v, exitCode=%d, out=%s", strings.Join(cmd, " "), exitCode, err, out.String())
 }
 
 func (s *IntegrationTestSuite) expectErrExecValidation(chain *chain, valIdx int, expectErr bool) func([]byte, []byte) error {

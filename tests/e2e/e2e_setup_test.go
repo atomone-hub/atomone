@@ -7,7 +7,6 @@ import (
 	"math/rand"
 	"os"
 	"os/exec"
-	"path"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -46,19 +45,19 @@ import (
 )
 
 const (
-	atomonedBinary                  = "atomoned"
-	txCommand                       = "tx"
-	queryCommand                    = "query"
-	keysCommand                     = "keys"
-	atomoneHomePath                 = "/home/nonroot/.atomone"
-	uatoneDenom                     = appparams.BondDenom
-	uphotonDenom                    = photontypes.Denom
-	minGasPrice                     = "0.00001"
-	gas                             = 200000
-	govProposalBlockBuffer    int64 = 35
-	relayerAccountIndexHermes       = 0
-	numberOfEvidences               = 10
-	slashingShares            int64 = 10000
+	atomonedBinary               = "atomoned"
+	txCommand                    = "tx"
+	queryCommand                 = "query"
+	keysCommand                  = "keys"
+	atomoneHomePath              = "/home/nonroot/.atomone"
+	uatoneDenom                  = appparams.BondDenom
+	uphotonDenom                 = photontypes.Denom
+	minGasPrice                  = "0.00001"
+	gas                          = 200000
+	govProposalBlockBuffer int64 = 35
+	relayerAccountIndex          = 0
+	numberOfEvidences            = 10
+	slashingShares         int64 = 10000
 
 	proposalBypassMsgFilename             = "proposal_bypass_msg.json"
 	proposalMaxTotalBypassFilename        = "proposal_max_total_bypass.json"
@@ -160,7 +159,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	// 1. Initialize AtomOne validator nodes.
 	// 2. Create and initialize AtomOne validator genesis files (both chains)
 	// 3. Start both networks.
-	// 4. Create and run IBC relayer (Hermes) containers.
+	// 4. Create and run IBC relayer (Hermes and TSRelayer) containers.
 
 	s.T().Logf("starting e2e infrastructure for chain A; chain-id: %s; datadir: %s", s.chainA.id, s.chainA.dataDir)
 	s.initNodes(s.chainA)
@@ -184,9 +183,6 @@ func (s *IntegrationTestSuite) SetupIBCSuite() {
 	s.initGenesis(s.chainB, vestingMnemonic, jailedValMnemonic)
 	s.initValidatorConfigs(s.chainB)
 	s.runValidators(s.chainB, 10)
-
-	// s.runIBCHermesRelayer()
-	s.runIBCTSRelayer()
 }
 
 func (s *IntegrationTestSuite) ensureIBCSetup() {
@@ -215,7 +211,7 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 	}
 
 	if s.initializedForIBC {
-		s.TearDownIBCSuite()
+		os.RemoveAll(s.chainB.dataDir)
 	}
 
 	s.Require().NoError(s.dkrPool.RemoveNetwork(s.dkrNet))
@@ -225,16 +221,6 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 	for _, td := range s.tmpDirs {
 		os.RemoveAll(td)
 	}
-}
-
-func (s *IntegrationTestSuite) TearDownIBCSuite() {
-	if s.hermesResource != nil {
-		s.Require().NoError(s.dkrPool.Purge(s.hermesResource))
-	}
-	if s.tsRelayerResource != nil {
-		s.Require().NoError(s.dkrPool.Purge(s.tsRelayerResource))
-	}
-	os.RemoveAll(s.chainB.dataDir)
 }
 
 func (s *IntegrationTestSuite) initNodes(c *chain) {
@@ -674,168 +660,4 @@ func noRestart(config *docker.HostConfig) {
 	config.RestartPolicy = docker.RestartPolicy{
 		Name: "no",
 	}
-}
-
-// runIBCHermesRelayer bootstraps an IBC Hermes relayer by creating an IBC connection and
-// a transfer channel between chainA and chainB.
-func (s *IntegrationTestSuite) runIBCHermesRelayer() {
-	s.T().Log("starting Hermes relayer container")
-
-	tmpDir, err := os.MkdirTemp("", "atomone-e2e-testnet-hermes-")
-	s.Require().NoError(err)
-	s.tmpDirs = append(s.tmpDirs, tmpDir)
-
-	rlyA := s.chainA.genesisAccounts[relayerAccountIndexHermes]
-	rlyB := s.chainB.genesisAccounts[relayerAccountIndexHermes]
-
-	hermesCfgPath := path.Join(tmpDir, "hermes")
-
-	s.Require().NoError(os.MkdirAll(hermesCfgPath, 0o755))
-	_, err = copyFile(
-		filepath.Join("./scripts/", "hermes_bootstrap.sh"),
-		filepath.Join(hermesCfgPath, "hermes_bootstrap.sh"),
-	)
-	s.Require().NoError(err)
-
-	s.hermesResource, err = s.dkrPool.RunWithOptions(
-		&dockertest.RunOptions{
-			Name:       fmt.Sprintf("%s-%s-relayer", s.chainA.id, s.chainB.id),
-			Repository: "ghcr.io/cosmos/hermes-e2e",
-			Tag:        "1.0.0",
-			NetworkID:  s.dkrNet.Network.ID,
-			Mounts: []string{
-				fmt.Sprintf("%s/:/root/hermes", hermesCfgPath),
-			},
-			PortBindings: map[docker.Port][]docker.PortBinding{
-				"3031/tcp": {{HostIP: "", HostPort: "3031"}},
-			},
-			Env: []string{
-				fmt.Sprintf("ATOMONE_A_E2E_CHAIN_ID=%s", s.chainA.id),
-				fmt.Sprintf("ATOMONE_B_E2E_CHAIN_ID=%s", s.chainB.id),
-				fmt.Sprintf("ATOMONE_A_E2E_RLY_MNEMONIC=%s", rlyA.mnemonic),
-				fmt.Sprintf("ATOMONE_B_E2E_RLY_MNEMONIC=%s", rlyB.mnemonic),
-				fmt.Sprintf("ATOMONE_A_E2E_VAL_HOST=%s", s.valResources[s.chainA.id][0].Container.Name[1:]),
-				fmt.Sprintf("ATOMONE_B_E2E_VAL_HOST=%s", s.valResources[s.chainB.id][0].Container.Name[1:]),
-			},
-			User: "root",
-			Entrypoint: []string{
-				"sh",
-				"-c",
-				"chmod +x /root/hermes/hermes_bootstrap.sh && /root/hermes/hermes_bootstrap.sh && tail -f /dev/null",
-			},
-		},
-		noRestart,
-	)
-	s.Require().NoError(err)
-
-	s.T().Logf("started Hermes relayer container: %s", s.hermesResource.Container.ID)
-
-	// XXX: Give time to both networks to start, otherwise we might see gRPC
-	// transport errors.
-	time.Sleep(10 * time.Second)
-
-	// create the client, connection and channel between the two AtomOne chains
-	s.createConnection()
-	s.createChannel()
-}
-
-// runIBCTSRelayer bootstraps an IBC ts-relayer by creating an IBC connection and
-// a transfer channel between chainA and chainB.
-func (s *IntegrationTestSuite) runIBCTSRelayer() {
-	s.T().Log("starting ts-relayer container")
-
-	tmpDir, err := os.MkdirTemp("", "atomone-e2e-testnet-ts-relayer-")
-	s.Require().NoError(err)
-	s.tmpDirs = append(s.tmpDirs, tmpDir)
-
-	rlyA := s.chainA.genesisAccounts[relayerAccountIndexHermes]
-	rlyB := s.chainB.genesisAccounts[relayerAccountIndexHermes]
-
-	cfgPath := path.Join(tmpDir, "ts-relayer")
-
-	s.Require().NoError(os.MkdirAll(cfgPath, 0o755))
-
-	s.tsRelayerResource, err = s.dkrPool.RunWithOptions(
-		&dockertest.RunOptions{
-			Name:       fmt.Sprintf("%s-%s-ts-relayer", s.chainA.id, s.chainB.id),
-			Repository: "ts-relayer",
-			Tag:        "latest",
-			NetworkID:  s.dkrNet.Network.ID,
-			PortBindings: map[docker.Port][]docker.PortBinding{
-				"3031/tcp": {{HostIP: "", HostPort: "3031"}},
-			},
-			User:   "root",
-			CapAdd: []string{"IPC_LOCK"},
-		},
-		noRestart,
-	)
-	s.Require().NoError(err)
-
-	s.T().Logf("started ts-relayer container: %s", s.tsRelayerResource.Container.ID)
-
-	// XXX: Give time to both networks to start, otherwise we might see gRPC
-	// transport errors.
-	time.Sleep(10 * time.Second)
-
-	// TODO rename or group these functions into a common struct (same for hermes)
-	s.addMnemonic(s.chainA.id, rlyA.mnemonic)
-	s.addMnemonic(s.chainB.id, rlyB.mnemonic)
-	s.addGasPrice(s.chainA.id, "0.0001uphoton")
-	s.addGasPrice(s.chainB.id, "0.0001uphoton")
-
-	// create the client between the two AtomOne chains
-	s.addPath(
-		s.chainA.id, s.valResources[s.chainA.id][0].Container.Name[1:],
-		s.chainB.id, s.valResources[s.chainB.id][0].Container.Name[1:],
-	)
-}
-
-func (s *IntegrationTestSuite) addMnemonic(chainID, mnemonic string) {
-	s.T().Logf("ts-relayer: adding mnemonic for chain %s", chainID)
-
-	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
-	defer cancel()
-
-	args := []string{
-		"add-mnemonic",
-		"-c", chainID,
-		mnemonic,
-	}
-	s.executeTsRelayerCommand(ctx, args)
-
-	s.T().Logf("ts-relayer: mnemonic added for chain %s", chainID)
-}
-
-func (s *IntegrationTestSuite) addGasPrice(chainID, gasPrice string) {
-	s.T().Logf("ts-relayer: adding gas-price for chain %s", chainID)
-
-	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
-	defer cancel()
-
-	args := []string{
-		"add-gas-price",
-		"-c", chainID,
-		gasPrice,
-	}
-	s.executeTsRelayerCommand(ctx, args)
-
-	s.T().Logf("ts-relayer: gas-price added for chain %s", chainID)
-}
-
-func (s *IntegrationTestSuite) addPath(chainAID, containerAID, chainBID, containerBID string) {
-	s.T().Logf("ts-relayer: adding path between chains %s and %s", chainAID, chainBID)
-
-	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
-	defer cancel()
-
-	args := []string{
-		"add-path",
-		"-s", chainAID,
-		"-d", chainBID,
-		"--surl", "http://" + containerAID + ":26657",
-		"--durl", "http://" + containerBID + ":26657",
-	}
-	s.executeTsRelayerCommand(ctx, args)
-
-	s.T().Logf("ts-relayer: path added between chains %s and %s", chainAID, chainBID)
 }
