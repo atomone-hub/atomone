@@ -21,11 +21,11 @@ const (
 )
 
 type chain struct {
-	dataDir    string
-	id         string
-	validators []*validator
-	accounts   []*account //nolint:unused
-
+	dataDir          string
+	id               string
+	validators       []*validator
+	accounts         []*account //nolint:unused
+	multiSigAccounts []*multiSigAccount
 	// initial accounts in genesis
 	genesisAccounts        []*account
 	genesisVestingAccounts map[string]sdk.AccAddress

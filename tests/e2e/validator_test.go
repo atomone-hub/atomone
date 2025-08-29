@@ -18,6 +18,7 @@ import (
 	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/multisig"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	"github.com/cosmos/cosmos-sdk/server"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -48,6 +49,11 @@ type account struct {
 	mnemonic   string
 	keyInfo    keyring.Record
 	privateKey cryptotypes.PrivKey
+}
+
+type multiSigAccount struct {
+	keyInfo keyring.Record
+	signers []account
 }
 
 func (v *validator) instanceName() string {
@@ -212,6 +218,74 @@ func (c *chain) addAccountFromMnemonic(counts int) error {
 		c.genesisAccounts = append(c.genesisAccounts, &acct)
 	}
 
+	return nil
+}
+
+func (c *chain) addMultiSigAccountFromMnemonic(counts int, sigNumber int, thereshold int) error {
+	if thereshold < 1 || thereshold > sigNumber {
+		return fmt.Errorf("Signature thereshold has to be between 1 and sigNumber")
+	}
+
+	val0ConfigDir := c.validators[0].configDir()
+	kb, err := keyring.New(keyringAppName, keyring.BackendTest, val0ConfigDir, nil, c.cdc)
+	if err != nil {
+		return err
+	}
+
+	keyringAlgos, _ := kb.SupportedAlgorithms()
+	algo, err := keyring.NewSigningAlgoFromString(string(hd.Secp256k1Type), keyringAlgos)
+	if err != nil {
+		return err
+	}
+
+	for multiSigCount := 0; multiSigCount < counts; multiSigCount++ {
+		multisigName := fmt.Sprintf("multisig-%d", multiSigCount)
+		var pubkeys []cryptotypes.PubKey
+		var signers []account
+		for sigCount := 0; sigCount < sigNumber; sigCount++ {
+			name := fmt.Sprintf("multisig-%d-acct-%d", multiSigCount, sigCount)
+			mnemonic, err := createMnemonic()
+			if err != nil {
+				return err
+			}
+			info, err := kb.NewAccount(name, mnemonic, "", sdk.FullFundraiserPath, algo)
+			if err != nil {
+				return err
+			}
+
+			privKeyArmor, err := kb.ExportPrivKeyArmor(name, keyringPassphrase)
+			if err != nil {
+				return err
+			}
+
+			privKey, _, err := sdkcrypto.UnarmorDecryptPrivKey(privKeyArmor, keyringPassphrase)
+			if err != nil {
+				return err
+			}
+
+			acct := account{}
+			acct.keyInfo = *info
+			acct.mnemonic = mnemonic
+			acct.privateKey = privKey
+			c.accounts = append(c.accounts, &acct)
+			signers = append(signers, acct)
+
+			pubKey, err := info.GetPubKey()
+			if err != nil {
+				return err
+			}
+			pubkeys = append(pubkeys, pubKey)
+		}
+		multiPubKey := multisig.NewLegacyAminoPubKey(thereshold, pubkeys)
+		infoMutisig, err := kb.SaveMultisig(multisigName, multiPubKey)
+		if err != nil {
+			return err
+		}
+		acct := multiSigAccount{}
+		acct.keyInfo = *infoMutisig
+		acct.signers = signers
+		c.multiSigAccounts = append(c.multiSigAccounts, &acct)
+	}
 	return nil
 }
 
