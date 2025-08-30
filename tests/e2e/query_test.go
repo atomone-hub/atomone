@@ -56,22 +56,19 @@ func (s *IntegrationTestSuite) queryAtomOneTx(endpoint, txHash string, msgResp c
 	return int(resp.TxResponse.Height), nil
 }
 
-// if coin is zero, return empty coin.
-func (s *IntegrationTestSuite) getSpecificBalance(endpoint, addr, denom string) (amt sdk.Coin, err error) {
-	balances, err := s.queryAtomOneAllBalances(endpoint, addr)
-	if err != nil {
-		return amt, err
-	}
+// if denom not found, return 0 denom.
+func (s *IntegrationTestSuite) queryBalance(endpoint, addr, denom string) sdk.Coin {
+	balances, err := s.queryAllBalances(endpoint, addr)
+	s.Require().NoError(err)
 	for _, c := range balances {
 		if strings.Contains(c.Denom, denom) {
-			amt = c
-			break
+			return c
 		}
 	}
-	return amt, nil
+	return sdk.NewInt64Coin(denom, 0)
 }
 
-func (s *IntegrationTestSuite) queryAtomOneAllBalances(endpoint, addr string) (sdk.Coins, error) {
+func (s *IntegrationTestSuite) queryAllBalances(endpoint, addr string) (sdk.Coins, error) {
 	body, err := httpGet(fmt.Sprintf("%s/cosmos/bank/v1beta1/balances/%s", endpoint, addr))
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute HTTP request: %w", err)

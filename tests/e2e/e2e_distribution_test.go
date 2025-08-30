@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"time"
 
-	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
@@ -23,11 +22,7 @@ func (s *IntegrationTestSuite) testDistribution() {
 
 		newWithdrawalAddress, _ := s.chainA.genesisAccounts[3].keyInfo.GetAddress()
 
-		beforeBalance, err := s.getSpecificBalance(chainEndpoint, newWithdrawalAddress.String(), uatoneDenom)
-		s.Require().NoError(err)
-		if beforeBalance.IsNil() {
-			beforeBalance = sdk.NewCoin(uatoneDenom, math.NewInt(0))
-		}
+		beforeBalance := s.queryBalance(chainEndpoint, newWithdrawalAddress.String(), uatoneDenom)
 
 		s.execSetWithdrawAddress(s.chainA, 0, delegatorAddress.String(), newWithdrawalAddress.String(), atomoneHomePath)
 
@@ -46,9 +41,7 @@ func (s *IntegrationTestSuite) testDistribution() {
 		s.execWithdrawReward(s.chainA, 0, delegatorAddress.String(), valOperAddressA, atomoneHomePath)
 		s.Require().Eventually(
 			func() bool {
-				afterBalance, err := s.getSpecificBalance(chainEndpoint, newWithdrawalAddress.String(), uatoneDenom)
-				s.Require().NoError(err)
-
+				afterBalance := s.queryBalance(chainEndpoint, newWithdrawalAddress.String(), uatoneDenom)
 				return afterBalance.IsGTE(beforeBalance)
 			},
 			10*time.Second,
@@ -70,19 +63,13 @@ func (s *IntegrationTestSuite) fundCommunityPool() {
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
 	sender, _ := s.chainA.validators[0].keyInfo.GetAddress()
 
-	beforeDistUatoneBalance, _ := s.getSpecificBalance(chainAAPIEndpoint, distModuleAddress, tokenAmount.Denom)
-	if beforeDistUatoneBalance.IsNil() {
-		// Set balance to 0 if previous balance does not exist
-		beforeDistUatoneBalance = sdk.NewInt64Coin(uatoneDenom, 0)
-	}
+	beforeDistUatoneBalance := s.queryBalance(chainAAPIEndpoint, distModuleAddress, tokenAmount.Denom)
 
 	s.execDistributionFundCommunityPool(s.chainA, 0, sender.String(), tokenAmount.String())
 
 	s.Require().Eventually(
 		func() bool {
-			afterDistUatoneBalance, err := s.getSpecificBalance(chainAAPIEndpoint, distModuleAddress, tokenAmount.Denom)
-			s.Require().NoErrorf(err, "Error getting balance: %s", afterDistUatoneBalance)
-
+			afterDistUatoneBalance := s.queryBalance(chainAAPIEndpoint, distModuleAddress, tokenAmount.Denom)
 			// check if the balance is increased by the tokenAmount
 			return beforeDistUatoneBalance.Add(tokenAmount).IsLT(afterDistUatoneBalance)
 		},

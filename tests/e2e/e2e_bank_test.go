@@ -10,7 +10,6 @@ import (
 func (s *IntegrationTestSuite) testBankTokenTransfer() {
 	s.Run("send tokens between accounts", func() {
 		var (
-			err           error
 			valIdx        = 0
 			c             = s.chainA
 			chainEndpoint = fmt.Sprintf("http://%s", s.valResources[c.id][valIdx].GetHostPort("1317/tcp"))
@@ -31,14 +30,9 @@ func (s *IntegrationTestSuite) testBankTokenTransfer() {
 		// get balances of sender and recipient accounts
 		s.Require().Eventually(
 			func() bool {
-				beforeAliceUAtoneBalance, err = s.getSpecificBalance(chainEndpoint, alice.String(), uatoneDenom)
-				s.Require().NoError(err)
-
-				beforeBobUAtoneBalance, err = s.getSpecificBalance(chainEndpoint, bob.String(), uatoneDenom)
-				s.Require().NoError(err)
-
-				beforeCharlieUAtoneBalance, err = s.getSpecificBalance(chainEndpoint, charlie.String(), uatoneDenom)
-				s.Require().NoError(err)
+				beforeAliceUAtoneBalance = s.queryBalance(chainEndpoint, alice.String(), uatoneDenom)
+				beforeBobUAtoneBalance = s.queryBalance(chainEndpoint, bob.String(), uatoneDenom)
+				beforeCharlieUAtoneBalance = s.queryBalance(chainEndpoint, charlie.String(), uatoneDenom)
 
 				return beforeAliceUAtoneBalance.IsValid() && beforeBobUAtoneBalance.IsValid() && beforeCharlieUAtoneBalance.IsValid()
 			},
@@ -52,11 +46,8 @@ func (s *IntegrationTestSuite) testBankTokenTransfer() {
 		// check that the transfer was successful
 		s.Require().Eventually(
 			func() bool {
-				afterAliceUAtoneBalance, err = s.getSpecificBalance(chainEndpoint, alice.String(), uatoneDenom)
-				s.Require().NoError(err)
-
-				afterBobUAtoneBalance, err = s.getSpecificBalance(chainEndpoint, bob.String(), uatoneDenom)
-				s.Require().NoError(err)
+				afterAliceUAtoneBalance = s.queryBalance(chainEndpoint, alice.String(), uatoneDenom)
+				afterBobUAtoneBalance = s.queryBalance(chainEndpoint, bob.String(), uatoneDenom)
 
 				decremented := beforeAliceUAtoneBalance.Sub(tokenAmount).IsEqual(afterAliceUAtoneBalance)
 				incremented := beforeBobUAtoneBalance.Add(tokenAmount).IsEqual(afterBobUAtoneBalance)
@@ -76,14 +67,9 @@ func (s *IntegrationTestSuite) testBankTokenTransfer() {
 
 		s.Require().Eventually(
 			func() bool {
-				afterAliceUAtoneBalance, err = s.getSpecificBalance(chainEndpoint, alice.String(), uatoneDenom)
-				s.Require().NoError(err)
-
-				afterBobUAtoneBalance, err = s.getSpecificBalance(chainEndpoint, bob.String(), uatoneDenom)
-				s.Require().NoError(err)
-
-				afterCharlieUAtoneBalance, err = s.getSpecificBalance(chainEndpoint, charlie.String(), uatoneDenom)
-				s.Require().NoError(err)
+				afterAliceUAtoneBalance = s.queryBalance(chainEndpoint, alice.String(), uatoneDenom)
+				afterBobUAtoneBalance = s.queryBalance(chainEndpoint, bob.String(), uatoneDenom)
+				afterCharlieUAtoneBalance = s.queryBalance(chainEndpoint, charlie.String(), uatoneDenom)
 
 				// assert alice's account gets decremented the amount of tokens twice
 				decremented := beforeAliceUAtoneBalance.Sub(tokenAmount).Sub(tokenAmount).IsEqual(afterAliceUAtoneBalance)
