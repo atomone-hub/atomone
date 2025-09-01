@@ -6,8 +6,8 @@ import (
 	"github.com/stretchr/testify/require"
 	"pgregory.net/rapid"
 
+	"cosmossdk.io/log"
 	"cosmossdk.io/math"
-	"github.com/cometbft/cometbft/libs/log"
 
 	"github.com/atomone-hub/atomone/x/dynamicfee/types"
 )

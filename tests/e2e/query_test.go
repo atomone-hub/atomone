@@ -7,6 +7,9 @@ import (
 	"net/http"
 	"strings"
 
+	"cosmossdk.io/math"
+	evidencetypes "cosmossdk.io/x/evidence/types"
+	upgradetypes "cosmossdk.io/x/upgrade/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/tx"
@@ -14,7 +17,6 @@ import (
 	authvesting "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	disttypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
-	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
@@ -23,14 +25,14 @@ import (
 )
 
 // queryAtomOneTx returns an error if the tx is not found or is failed.
-func queryAtomOneTx(endpoint, txHash string, msgResp codec.ProtoMarshaler) (height int, err error) {
+func (s *IntegrationTestSuite) queryAtomOneTx(endpoint, txHash string, msgResp codec.ProtoMarshaler) (height int, err error) {
 	body, err := httpGet(fmt.Sprintf("%s/cosmos/tx/v1beta1/txs/%s", endpoint, txHash))
 	if err != nil {
 		return 0, err
 	}
 
 	var resp tx.GetTxResponse
-	if err := cdc.UnmarshalJSON(body, &resp); err != nil {
+	if err := s.cdc.UnmarshalJSON(body, &resp); err != nil {
 		return 0, fmt.Errorf("failed to read response body: %w", err)
 	}
 	if resp.TxResponse.Code != 0 {
@@ -43,10 +45,10 @@ func queryAtomOneTx(endpoint, txHash string, msgResp codec.ProtoMarshaler) (heig
 			return 0, err
 		}
 		var txMsgData sdk.TxMsgData
-		if err := cdc.Unmarshal(data, &txMsgData); err != nil {
+		if err := s.cdc.Unmarshal(data, &txMsgData); err != nil {
 			return 0, err
 		}
-		if err := cdc.Unmarshal(txMsgData.MsgResponses[0].Value, msgResp); err != nil {
+		if err := s.cdc.Unmarshal(txMsgData.MsgResponses[0].Value, msgResp); err != nil {
 			return 0, err
 		}
 	}
@@ -54,8 +56,8 @@ func queryAtomOneTx(endpoint, txHash string, msgResp codec.ProtoMarshaler) (heig
 }
 
 // if coin is zero, return empty coin.
-func getSpecificBalance(endpoint, addr, denom string) (amt sdk.Coin, err error) {
-	balances, err := queryAtomOneAllBalances(endpoint, addr)
+func (s *IntegrationTestSuite) getSpecificBalance(endpoint, addr, denom string) (amt sdk.Coin, err error) {
+	balances, err := s.queryAtomOneAllBalances(endpoint, addr)
 	if err != nil {
 		return amt, err
 	}
@@ -68,14 +70,14 @@ func getSpecificBalance(endpoint, addr, denom string) (amt sdk.Coin, err error) 
 	return amt, nil
 }
 
-func queryAtomOneAllBalances(endpoint, addr string) (sdk.Coins, error) {
+func (s *IntegrationTestSuite) queryAtomOneAllBalances(endpoint, addr string) (sdk.Coins, error) {
 	body, err := httpGet(fmt.Sprintf("%s/cosmos/bank/v1beta1/balances/%s", endpoint, addr))
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute HTTP request: %w", err)
 	}
 
 	var balancesResp banktypes.QueryAllBalancesResponse
-	if err := cdc.UnmarshalJSON(body, &balancesResp); err != nil {
+	if err := s.cdc.UnmarshalJSON(body, &balancesResp); err != nil {
 		return nil, err
 	}
 
@@ -86,52 +88,38 @@ func (s *IntegrationTestSuite) queryBankSupply(endpoint string) sdk.Coins {
 	body, err := httpGet(fmt.Sprintf("%s/cosmos/bank/v1beta1/supply", endpoint))
 	s.Require().NoError(err)
 	var resp banktypes.QueryTotalSupplyResponse
-	err = cdc.UnmarshalJSON(body, &resp)
+	err = s.cdc.UnmarshalJSON(body, &resp)
 	s.Require().NoError(err)
 	return resp.Supply
 }
 
-func queryStakingParams(endpoint string) (stakingtypes.QueryParamsResponse, error) { //nolint:unused
-	body, err := httpGet(fmt.Sprintf("%s/cosmos/staking/v1beta1/params", endpoint))
-	if err != nil {
-		return stakingtypes.QueryParamsResponse{}, fmt.Errorf("failed to execute HTTP request: %w", err)
-	}
-
-	var params stakingtypes.QueryParamsResponse
-	if err := cdc.UnmarshalJSON(body, &params); err != nil {
-		return stakingtypes.QueryParamsResponse{}, err
-	}
-
-	return params, nil
-}
-
-func (s *IntegrationTestSuite) queryDelegation(validatorAddr string, delegatorAddr string) (stakingtypes.QueryDelegationResponse, error) {
+func (s *IntegrationTestSuite) queryDelegation(endpoint string, validatorAddr string, delegatorAddr string) (stakingtypes.QueryDelegationResponse, error) {
 	var res stakingtypes.QueryDelegationResponse
-	endpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
 	body, err := httpGet(fmt.Sprintf("%s/cosmos/staking/v1beta1/validators/%s/delegations/%s", endpoint, validatorAddr, delegatorAddr))
 	if err != nil {
 		return res, err
 	}
-	if err := cdc.UnmarshalJSON(body, &res); err != nil {
+
+	if err = s.cdc.UnmarshalJSON(body, &res); err != nil {
 		return res, err
 	}
 	return res, nil
 }
 
-func queryUnbondingDelegation(endpoint string, validatorAddr string, delegatorAddr string) (stakingtypes.QueryUnbondingDelegationResponse, error) {
+func (s *IntegrationTestSuite) queryUnbondingDelegation(endpoint string, validatorAddr string, delegatorAddr string) (stakingtypes.QueryUnbondingDelegationResponse, error) {
 	var res stakingtypes.QueryUnbondingDelegationResponse
 	body, err := httpGet(fmt.Sprintf("%s/cosmos/staking/v1beta1/validators/%s/delegations/%s/unbonding_delegation", endpoint, validatorAddr, delegatorAddr))
 	if err != nil {
 		return res, err
 	}
 
-	if err = cdc.UnmarshalJSON(body, &res); err != nil {
+	if err = s.cdc.UnmarshalJSON(body, &res); err != nil {
 		return res, err
 	}
 	return res, nil
 }
 
-func queryDelegatorWithdrawalAddress(endpoint string, delegatorAddr string) (disttypes.QueryDelegatorWithdrawAddressResponse, error) {
+func (s *IntegrationTestSuite) queryDelegatorWithdrawalAddress(endpoint string, delegatorAddr string) (disttypes.QueryDelegatorWithdrawAddressResponse, error) {
 	var res disttypes.QueryDelegatorWithdrawAddressResponse
 
 	body, err := httpGet(fmt.Sprintf("%s/cosmos/distribution/v1beta1/delegators/%s/withdraw_address", endpoint, delegatorAddr))
@@ -139,13 +127,13 @@ func queryDelegatorWithdrawalAddress(endpoint string, delegatorAddr string) (dis
 		return res, err
 	}
 
-	if err = cdc.UnmarshalJSON(body, &res); err != nil {
+	if err = s.cdc.UnmarshalJSON(body, &res); err != nil {
 		return res, err
 	}
 	return res, nil
 }
 
-func queryDelegatorTotalRewards(endpoint, delegatorAddr string) (disttypes.QueryDelegationTotalRewardsResponse, error) { //nolint:unused
+func (s *IntegrationTestSuite) queryDelegatorTotalRewards(endpoint, delegatorAddr string) (disttypes.QueryDelegationTotalRewardsResponse, error) { //nolint:unused
 	var res disttypes.QueryDelegationTotalRewardsResponse
 
 	body, err := httpGet(fmt.Sprintf("%s/cosmos/distribution/v1beta1/delegators/%s/rewards", endpoint, delegatorAddr))
@@ -153,14 +141,14 @@ func queryDelegatorTotalRewards(endpoint, delegatorAddr string) (disttypes.Query
 		return res, err
 	}
 
-	if err = cdc.UnmarshalJSON(body, &res); err != nil {
+	if err = s.cdc.UnmarshalJSON(body, &res); err != nil {
 		return res, err
 	}
 
 	return res, nil
 }
 
-func queryGovProposal(endpoint string, proposalID int) (govtypesv1.QueryProposalResponse, error) {
+func (s *IntegrationTestSuite) queryGovProposal(endpoint string, proposalID int) (govtypesv1.QueryProposalResponse, error) {
 	var govProposalResp govtypesv1.QueryProposalResponse
 
 	path := fmt.Sprintf("%s/atomone/gov/v1/proposals/%d", endpoint, proposalID)
@@ -169,44 +157,38 @@ func queryGovProposal(endpoint string, proposalID int) (govtypesv1.QueryProposal
 	if err != nil {
 		return govProposalResp, fmt.Errorf("failed to execute HTTP request: %w", err)
 	}
-	if err := cdc.UnmarshalJSON(body, &govProposalResp); err != nil {
+	if err := s.cdc.UnmarshalJSON(body, &govProposalResp); err != nil {
 		return govProposalResp, err
 	}
 
 	return govProposalResp, nil
 }
 
-func queryGovMinInitialDeposit(endpoint string) (govtypesv1.QueryMinInitialDepositResponse, error) {
+func (s *IntegrationTestSuite) queryGovMinInitialDeposit(endpoint string) sdk.Coin {
 	var govMinInitialDepositResp govtypesv1.QueryMinInitialDepositResponse
 	path := fmt.Sprintf("%s/atomone/gov/v1/mininitialdeposit", endpoint)
 	body, err := httpGet(path)
-	if err != nil {
-		return govMinInitialDepositResp, fmt.Errorf("failed to execute HTTP request: %w", err)
-	}
-	if err := cdc.UnmarshalJSON(body, &govMinInitialDepositResp); err != nil {
-		return govMinInitialDepositResp, err
-	}
-	return govMinInitialDepositResp, nil
+	s.Require().NoError(err)
+	err = s.cdc.UnmarshalJSON(body, &govMinInitialDepositResp)
+	s.Require().NoError(err)
+	return govMinInitialDepositResp.MinInitialDeposit[0]
 }
 
-func queryGovMinDeposit(endpoint string) (govtypesv1.QueryMinDepositResponse, error) {
+func (s *IntegrationTestSuite) queryGovMinDeposit(endpoint string) sdk.Coin {
 	var govMinDepositResp govtypesv1.QueryMinDepositResponse
 	path := fmt.Sprintf("%s/atomone/gov/v1/mindeposit", endpoint)
 	body, err := httpGet(path)
-	if err != nil {
-		return govMinDepositResp, fmt.Errorf("failed to execute HTTP request: %w", err)
-	}
-	if err := cdc.UnmarshalJSON(body, &govMinDepositResp); err != nil {
-		return govMinDepositResp, err
-	}
-	return govMinDepositResp, nil
+	s.Require().NoError(err)
+	err = s.cdc.UnmarshalJSON(body, &govMinDepositResp)
+	s.Require().NoError(err)
+	return govMinDepositResp.MinDeposit[0]
 }
 
 func (s *IntegrationTestSuite) queryGovQuorums(endpoint string) govtypesv1.QueryQuorumsResponse {
 	body, err := httpGet(fmt.Sprintf("%s/atomone/gov/v1/quorums", endpoint))
 	s.Require().NoError(err)
 	var res govtypesv1.QueryQuorumsResponse
-	err = cdc.UnmarshalJSON(body, &res)
+	err = s.cdc.UnmarshalJSON(body, &res)
 	s.Require().NoError(err)
 	return res
 }
@@ -215,12 +197,12 @@ func (s *IntegrationTestSuite) queryGovParams(endpoint string, param string) gov
 	body, err := httpGet(fmt.Sprintf("%s/atomone/gov/v1/params/%s", endpoint, param))
 	s.Require().NoError(err)
 	var res govtypesv1.QueryParamsResponse
-	err = cdc.UnmarshalJSON(body, &res)
+	err = s.cdc.UnmarshalJSON(body, &res)
 	s.Require().NoError(err)
 	return res
 }
 
-func queryGovGovernor(endpoint string, govAddr string) (govtypesv1.QueryGovernorResponse, error) {
+func (s *IntegrationTestSuite) queryGovGovernor(endpoint string, govAddr string) (govtypesv1.QueryGovernorResponse, error) {
 	var resp govtypesv1.QueryGovernorResponse
 
 	path := fmt.Sprintf("%s/atomone/gov/v1/governors/%s", endpoint, govAddr)
@@ -229,14 +211,14 @@ func queryGovGovernor(endpoint string, govAddr string) (govtypesv1.QueryGovernor
 	if err != nil {
 		return resp, fmt.Errorf("failed to execute HTTP request: %w", err)
 	}
-	if err := cdc.UnmarshalJSON(body, &resp); err != nil {
+	if err := s.cdc.UnmarshalJSON(body, &resp); err != nil {
 		return resp, err
 	}
 
 	return resp, nil
 }
 
-func queryGovGovernorDelegation(endpoint string, delAddr string) (govtypesv1.QueryGovernanceDelegationResponse, error) {
+func (s *IntegrationTestSuite) queryGovGovernorDelegation(endpoint string, delAddr string) (govtypesv1.QueryGovernanceDelegationResponse, error) {
 	var resp govtypesv1.QueryGovernanceDelegationResponse
 
 	path := fmt.Sprintf("%s/atomone/gov/v1/delegations/%s", endpoint, delAddr)
@@ -245,14 +227,14 @@ func queryGovGovernorDelegation(endpoint string, delAddr string) (govtypesv1.Que
 	if err != nil {
 		return resp, fmt.Errorf("failed to execute HTTP request: %w", err)
 	}
-	if err := cdc.UnmarshalJSON(body, &resp); err != nil {
+	if err := s.cdc.UnmarshalJSON(body, &resp); err != nil {
 		return resp, err
 	}
 
 	return resp, nil
 }
 
-func queryGovGovernorValShares(endpoint string, govAddr string) (govtypesv1.QueryGovernorValSharesResponse, error) {
+func (s *IntegrationTestSuite) queryGovGovernorValShares(endpoint string, govAddr string) (govtypesv1.QueryGovernorValSharesResponse, error) {
 	var resp govtypesv1.QueryGovernorValSharesResponse
 
 	path := fmt.Sprintf("%s/atomone/gov/v1/vshares/%s", endpoint, govAddr)
@@ -261,14 +243,14 @@ func queryGovGovernorValShares(endpoint string, govAddr string) (govtypesv1.Quer
 	if err != nil {
 		return resp, fmt.Errorf("failed to execute HTTP request: %w", err)
 	}
-	if err := cdc.UnmarshalJSON(body, &resp); err != nil {
+	if err := s.cdc.UnmarshalJSON(body, &resp); err != nil {
 		return resp, err
 	}
 
 	return resp, nil
 }
 
-func queryAccount(endpoint, address string) (acc authtypes.AccountI, err error) {
+func (s *IntegrationTestSuite) queryAccount(endpoint, address string) (acc sdk.AccountI, err error) {
 	var res authtypes.QueryAccountResponse
 	resp, err := http.Get(fmt.Sprintf("%s/cosmos/auth/v1beta1/accounts/%s", endpoint, address))
 	if err != nil {
@@ -280,14 +262,14 @@ func queryAccount(endpoint, address string) (acc authtypes.AccountI, err error) 
 	if err != nil {
 		return nil, err
 	}
-	if err := cdc.UnmarshalJSON(bz, &res); err != nil {
+	if err := s.cdc.UnmarshalJSON(bz, &res); err != nil {
 		return nil, err
 	}
-	return acc, cdc.UnpackAny(res.Account, &acc)
+	return acc, s.cdc.UnpackAny(res.Account, &acc)
 }
 
-func queryDelayedVestingAccount(endpoint, address string) (authvesting.DelayedVestingAccount, error) {
-	baseAcc, err := queryAccount(endpoint, address)
+func (s *IntegrationTestSuite) queryDelayedVestingAccount(endpoint, address string) (authvesting.DelayedVestingAccount, error) {
+	baseAcc, err := s.queryAccount(endpoint, address)
 	if err != nil {
 		return authvesting.DelayedVestingAccount{}, err
 	}
@@ -299,8 +281,8 @@ func queryDelayedVestingAccount(endpoint, address string) (authvesting.DelayedVe
 	return *acc, nil
 }
 
-func queryContinuousVestingAccount(endpoint, address string) (authvesting.ContinuousVestingAccount, error) {
-	baseAcc, err := queryAccount(endpoint, address)
+func (s *IntegrationTestSuite) queryContinuousVestingAccount(endpoint, address string) (authvesting.ContinuousVestingAccount, error) {
+	baseAcc, err := s.queryAccount(endpoint, address)
 	if err != nil {
 		return authvesting.ContinuousVestingAccount{}, err
 	}
@@ -312,8 +294,8 @@ func queryContinuousVestingAccount(endpoint, address string) (authvesting.Contin
 	return *acc, nil
 }
 
-func queryPeriodicVestingAccount(endpoint, address string) (authvesting.PeriodicVestingAccount, error) { //nolint:unused // this is called during e2e tests
-	baseAcc, err := queryAccount(endpoint, address)
+func (s *IntegrationTestSuite) queryPeriodicVestingAccount(endpoint, address string) (authvesting.PeriodicVestingAccount, error) { //nolint:unused // this is called during e2e tests
+	baseAcc, err := s.queryAccount(endpoint, address)
 	if err != nil {
 		return authvesting.PeriodicVestingAccount{}, err
 	}
@@ -325,7 +307,7 @@ func queryPeriodicVestingAccount(endpoint, address string) (authvesting.Periodic
 	return *acc, nil
 }
 
-func queryValidator(endpoint, address string) (stakingtypes.Validator, error) {
+func (s *IntegrationTestSuite) queryValidator(endpoint, address string) (stakingtypes.Validator, error) {
 	var res stakingtypes.QueryValidatorResponse
 
 	body, err := httpGet(fmt.Sprintf("%s/cosmos/staking/v1beta1/validators/%s", endpoint, address))
@@ -333,20 +315,20 @@ func queryValidator(endpoint, address string) (stakingtypes.Validator, error) {
 		return stakingtypes.Validator{}, fmt.Errorf("failed to execute HTTP request: %w", err)
 	}
 
-	if err := cdc.UnmarshalJSON(body, &res); err != nil {
+	if err := s.cdc.UnmarshalJSON(body, &res); err != nil {
 		return stakingtypes.Validator{}, err
 	}
 	return res.Validator, nil
 }
 
-func queryValidators(endpoint string) (stakingtypes.Validators, error) {
+func (s *IntegrationTestSuite) queryValidators(endpoint string) ([]stakingtypes.Validator, error) {
 	var res stakingtypes.QueryValidatorsResponse
 	body, err := httpGet(fmt.Sprintf("%s/cosmos/staking/v1beta1/validators", endpoint))
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute HTTP request: %w", err)
 	}
 
-	if err := cdc.UnmarshalJSON(body, &res); err != nil {
+	if err := s.cdc.UnmarshalJSON(body, &res); err != nil {
 		return nil, err
 	}
 	return res.Validators, nil
@@ -356,32 +338,19 @@ func (s *IntegrationTestSuite) queryStakingPool(endpoint string) stakingtypes.Qu
 	body, err := httpGet(fmt.Sprintf("%s/cosmos/staking/v1beta1/pool", endpoint))
 	s.Require().NoError(err)
 	var res stakingtypes.QueryPoolResponse
-	err = cdc.UnmarshalJSON(body, &res)
+	err = s.cdc.UnmarshalJSON(body, &res)
 	s.Require().NoError(err)
 	return res
 }
 
-func queryEvidence(endpoint, hash string) (evidencetypes.QueryEvidenceResponse, error) { //nolint:unused // this is called during e2e tests
-	var res evidencetypes.QueryEvidenceResponse
-	body, err := httpGet(fmt.Sprintf("%s/cosmos/evidence/v1beta1/evidence/%s", endpoint, hash))
-	if err != nil {
-		return res, err
-	}
-
-	if err = cdc.UnmarshalJSON(body, &res); err != nil {
-		return res, err
-	}
-	return res, nil
-}
-
-func queryAllEvidence(endpoint string) (evidencetypes.QueryAllEvidenceResponse, error) {
+func (s *IntegrationTestSuite) queryAllEvidence(endpoint string) (evidencetypes.QueryAllEvidenceResponse, error) {
 	var res evidencetypes.QueryAllEvidenceResponse
 	body, err := httpGet(fmt.Sprintf("%s/cosmos/evidence/v1beta1/evidence", endpoint))
 	if err != nil {
 		return res, err
 	}
 
-	if err = cdc.UnmarshalJSON(body, &res); err != nil {
+	if err = s.cdc.UnmarshalJSON(body, &res); err != nil {
 		return res, err
 	}
 	return res, nil
@@ -391,7 +360,7 @@ func (s *IntegrationTestSuite) queryStakingParams(endpoint string) stakingtypes.
 	var res stakingtypes.QueryParamsResponse
 	body, err := httpGet(fmt.Sprintf("%s/cosmos/staking/v1beta1/params", endpoint))
 	s.Require().NoError(err)
-	err = cdc.UnmarshalJSON(body, &res)
+	err = s.cdc.UnmarshalJSON(body, &res)
 	s.Require().NoError(err)
 	return res
 }
@@ -400,25 +369,25 @@ func (s *IntegrationTestSuite) queryConstitution(endpoint string) govtypesv1.Que
 	var res govtypesv1.QueryConstitutionResponse
 	body, err := httpGet(fmt.Sprintf("%s/atomone/gov/v1/constitution", endpoint))
 	s.Require().NoError(err)
-	err = cdc.UnmarshalJSON(body, &res)
+	err = s.cdc.UnmarshalJSON(body, &res)
 	s.Require().NoError(err)
 	return res
 }
 
-func (s *IntegrationTestSuite) queryPhotonConversionRate(endpoint string) sdk.Dec {
+func (s *IntegrationTestSuite) queryPhotonConversionRate(endpoint string) math.LegacyDec {
 	body, err := httpGet(fmt.Sprintf("%s/atomone/photon/v1/conversion_rate", endpoint))
 	s.Require().NoError(err)
 	var resp photontypes.QueryConversionRateResponse
-	err = cdc.UnmarshalJSON(body, &resp)
+	err = s.cdc.UnmarshalJSON(body, &resp)
 	s.Require().NoError(err)
-	return sdk.MustNewDecFromStr(resp.ConversionRate)
+	return math.LegacyMustNewDecFromStr(resp.ConversionRate)
 }
 
 func (s *IntegrationTestSuite) queryPhotonParams(endpoint string) photontypes.QueryParamsResponse {
 	body, err := httpGet(fmt.Sprintf("%s/atomone/photon/v1/params", endpoint))
 	s.Require().NoError(err)
 	var res photontypes.QueryParamsResponse
-	err = cdc.UnmarshalJSON(body, &res)
+	err = s.cdc.UnmarshalJSON(body, &res)
 	s.Require().NoError(err)
 	return res
 }
@@ -427,7 +396,7 @@ func (s *IntegrationTestSuite) queryDynamicfeeParams(endpoint string) dynamicfee
 	body, err := httpGet(fmt.Sprintf("%s/atomone/dynamicfee/v1/params", endpoint))
 	s.Require().NoError(err)
 	var res dynamicfeetypes.ParamsResponse
-	err = cdc.UnmarshalJSON(body, &res)
+	err = s.cdc.UnmarshalJSON(body, &res)
 	s.Require().NoError(err)
 	return res
 }
@@ -436,7 +405,7 @@ func (s *IntegrationTestSuite) queryDynamicfeeState(endpoint string) dynamicfeet
 	body, err := httpGet(fmt.Sprintf("%s/atomone/dynamicfee/v1/state", endpoint))
 	s.Require().NoError(err)
 	var res dynamicfeetypes.StateResponse
-	err = cdc.UnmarshalJSON(body, &res)
+	err = s.cdc.UnmarshalJSON(body, &res)
 	s.Require().NoError(err)
 	return res
 }
@@ -446,7 +415,7 @@ func (s *IntegrationTestSuite) queryDynamicfeeStateAtHeight(endpoint string, hei
 	body, err := httpGetWithHeader(fmt.Sprintf("%s/atomone/dynamicfee/v1/state", endpoint), headers)
 	s.Require().NoError(err)
 	var res dynamicfeetypes.StateResponse
-	err = cdc.UnmarshalJSON(body, &res)
+	err = s.cdc.UnmarshalJSON(body, &res)
 	s.Require().NoError(err)
 	return res
 }
@@ -455,7 +424,7 @@ func (s *IntegrationTestSuite) queryDynamicfeeGasPrice(endpoint string, denom st
 	body, err := httpGet(fmt.Sprintf("%s/atomone/dynamicfee/v1/gas_price/%s", endpoint, denom))
 	s.Require().NoError(err)
 	var res dynamicfeetypes.GasPriceResponse
-	err = cdc.UnmarshalJSON(body, &res)
+	err = s.cdc.UnmarshalJSON(body, &res)
 	s.Require().NoError(err)
 	return res
 }
@@ -464,7 +433,16 @@ func (s *IntegrationTestSuite) queryDynamicfeeGasPrices(endpoint string) dynamic
 	body, err := httpGet(fmt.Sprintf("%s/atomone/dynamicfee/v1/gas_prices", endpoint))
 	s.Require().NoError(err)
 	var res dynamicfeetypes.GasPricesResponse
-	err = cdc.UnmarshalJSON(body, &res)
+	err = s.cdc.UnmarshalJSON(body, &res)
+	s.Require().NoError(err)
+	return res
+}
+
+func (s *IntegrationTestSuite) queryUpgradePlan(endpoint string) upgradetypes.QueryCurrentPlanResponse {
+	body, err := httpGet(fmt.Sprintf("%s/cosmos/upgrade/v1beta1/current_plan", endpoint))
+	s.Require().NoError(err)
+	var res upgradetypes.QueryCurrentPlanResponse
+	err = s.cdc.UnmarshalJSON(body, &res)
 	s.Require().NoError(err)
 	return res
 }

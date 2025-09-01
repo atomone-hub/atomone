@@ -1,8 +1,7 @@
 package v2
 
 import (
-	store "github.com/cosmos/cosmos-sdk/store/types"
-	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
+	store "cosmossdk.io/store/types"
 
 	"github.com/atomone-hub/atomone/app/upgrades"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
@@ -21,7 +20,7 @@ var Upgrade = upgrades.Upgrade{
 			photontypes.ModuleName,
 		},
 		Deleted: []string{
-			crisistypes.ModuleName,
+			"crisis",
 		},
 	},
 }

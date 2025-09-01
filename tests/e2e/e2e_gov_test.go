@@ -8,10 +8,13 @@ import (
 	"strings"
 	"time"
 
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
 	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
@@ -34,26 +37,23 @@ func (s *IntegrationTestSuite) testGovSoftwareUpgrade() {
 		senderAddress, _ := s.chainA.validators[0].keyInfo.GetAddress()
 		sender := senderAddress.String()
 		height := s.getLatestBlockHeight(s.chainA, 0)
-		proposalHeight := height + govProposalBlockBuffer
+		upgradeHeight := height + govProposalBlockBuffer
+		s.writeGovSoftwareUpgradeProposal(s.chainA, upgradeHeight)
 		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
 		proposalCounter++
 
-		submitGovFlags := []string{
-			"software-upgrade",
-			"Upgrade-0",
-			"--title='Upgrade V0'",
-			"--description='Software Upgrade'",
-			"--no-validate",
-			fmt.Sprintf("--upgrade-height=%d", proposalHeight),
-			"--upgrade-info=my-info",
-		}
+		submitGovFlags := []string{configFile(proposalSoftwareUpgradeFilename)}
+		depositGovFlags := []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 
-		depositGovFlags := []string{strconv.Itoa(proposalCounter)}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes=0.8,no=0.1,abstain=0.1"}
-		s.submitLegacyGovProposal(chainAAPIEndpoint, sender, proposalCounter, upgradetypes.ProposalTypeSoftwareUpgrade, submitGovFlags, depositGovFlags, voteGovFlags, "weighted-vote", true)
+		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "SoftwareUpgrade", submitGovFlags, depositGovFlags, voteGovFlags, "weighted-vote", govtypesv1beta1.StatusPassed)
 
-		s.verifyChainHaltedAtUpgradeHeight(s.chainA, 0, proposalHeight)
-		s.T().Logf("Successfully halted chain at  height %d", proposalHeight)
+		res := s.queryUpgradePlan(chainAAPIEndpoint)
+		s.Require().Equal("v2", res.Plan.Name)
+		s.Require().Equal(upgradeHeight, res.Plan.Height)
+
+		s.verifyChainHaltedAtUpgradeHeight(s.chainA, 0, upgradeHeight)
+		s.T().Logf("Successfully halted chain at height %d", upgradeHeight)
 
 		s.TearDownSuite()
 
@@ -87,27 +87,21 @@ func (s *IntegrationTestSuite) testGovCancelSoftwareUpgrade() {
 		sender := senderAddress.String()
 		height := s.getLatestBlockHeight(s.chainA, 0)
 		proposalHeight := height + 50
+		s.writeGovSoftwareUpgradeProposal(s.chainA, proposalHeight)
 
 		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
 		proposalCounter++
-		submitGovFlags := []string{
-			"software-upgrade",
-			"Upgrade-1",
-			"--title='Upgrade V1'",
-			"--description='Software Upgrade'",
-			"--no-validate",
-			fmt.Sprintf("--upgrade-height=%d", proposalHeight),
-		}
-
-		depositGovFlags := []string{strconv.Itoa(proposalCounter)}
+		submitGovFlags := []string{configFile(proposalSoftwareUpgradeFilename)}
+		depositGovFlags := []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
-		s.submitLegacyGovProposal(chainAAPIEndpoint, sender, proposalCounter, upgradetypes.ProposalTypeSoftwareUpgrade, submitGovFlags, depositGovFlags, voteGovFlags, "vote", true)
+		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "SoftwareUpgrade", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
 
 		proposalCounter++
-		submitGovFlags = []string{"cancel-software-upgrade", "--title='Upgrade V1'", "--description='Software Upgrade'"}
-		depositGovFlags = []string{strconv.Itoa(proposalCounter)}
+		s.writeGovCancelUpgradeProposal(s.chainA)
+		submitGovFlags = []string{configFile(proposalCancelUpgradeFilename)}
+		depositGovFlags = []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 		voteGovFlags = []string{strconv.Itoa(proposalCounter), "yes"}
-		s.submitLegacyGovProposal(chainAAPIEndpoint, sender, proposalCounter, upgradetypes.ProposalTypeCancelSoftwareUpgrade, submitGovFlags, depositGovFlags, voteGovFlags, "vote", true)
+		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "CancelUpgrade", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
 
 		s.verifyChainPassesUpgradeHeight(s.chainA, 0, proposalHeight)
 		s.T().Logf("Successfully canceled upgrade at height %d", proposalHeight)
@@ -132,22 +126,22 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 		sendAmount := sdk.NewInt64Coin(uatoneDenom, 10_000_000) // 10atone
 		s.writeGovCommunitySpendProposal(s.chainA, sendAmount, recipient)
 
-		beforeSenderBalance, err := getSpecificBalance(chainAAPIEndpoint, sender, uatoneDenom)
+		beforeSenderBalance, err := s.getSpecificBalance(chainAAPIEndpoint, sender, uatoneDenom)
 		s.Require().NoError(err)
-		beforeRecipientBalance, err := getSpecificBalance(chainAAPIEndpoint, recipient, uatoneDenom)
+		beforeRecipientBalance, err := s.getSpecificBalance(chainAAPIEndpoint, recipient, uatoneDenom)
 		s.Require().NoError(err)
 
 		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
 		proposalCounter++
 		submitGovFlags := []string{configFile(proposalCommunitySpendFilename)}
-		depositGovFlags := []string{strconv.Itoa(proposalCounter)}
+		depositGovFlags := []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
 		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "CommunityPoolSpend", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1.StatusPassed)
 
 		// Check that sender is refunded with the proposal deposit
 		s.Require().Eventually(
 			func() bool {
-				afterSenderBalance, err := getSpecificBalance(chainAAPIEndpoint, sender, uatoneDenom)
+				afterSenderBalance, err := s.getSpecificBalance(chainAAPIEndpoint, sender, uatoneDenom)
 				s.Require().NoError(err)
 
 				return afterSenderBalance.IsEqual(beforeSenderBalance)
@@ -158,7 +152,7 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 		// Check that recipient received the community pool spend
 		s.Require().Eventually(
 			func() bool {
-				afterRecipientBalance, err := getSpecificBalance(chainAAPIEndpoint, recipient, uatoneDenom)
+				afterRecipientBalance, err := s.getSpecificBalance(chainAAPIEndpoint, recipient, uatoneDenom)
 				s.Require().NoError(err)
 
 				return afterRecipientBalance.Sub(sendAmount).IsEqual(beforeRecipientBalance)
@@ -177,31 +171,27 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 		sendAmount := sdk.NewInt64Coin(uatoneDenom, 10_000_000) // 10atone
 		s.writeGovCommunitySpendProposal(s.chainA, sendAmount, recipient)
 
-		beforeSenderBalance, err := getSpecificBalance(chainAAPIEndpoint, sender, uatoneDenom)
+		beforeSenderBalance, err := s.getSpecificBalance(chainAAPIEndpoint, sender, uatoneDenom)
 		s.Require().NoError(err)
-		beforeRecipientBalance, err := getSpecificBalance(chainAAPIEndpoint, recipient, uatoneDenom)
+		beforeRecipientBalance, err := s.getSpecificBalance(chainAAPIEndpoint, recipient, uatoneDenom)
 		s.Require().NoError(err)
 
-		initialDepositResp, err := queryGovMinInitialDeposit(chainAAPIEndpoint)
-		s.Require().NoError(err)
-		initialDeposit := initialDepositResp.GetMinInitialDeposit()
-		depositResp, err := queryGovMinDeposit(chainAAPIEndpoint)
-		s.Require().NoError(err)
-		deposit := depositResp.GetMinDeposit()[0]
+		initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
+		deposit := s.queryGovMinDeposit(chainAAPIEndpoint)
 		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
 		proposalCounter++
 		submitGovFlags := []string{configFile(proposalCommunitySpendFilename)}
-		depositGovFlags := []string{strconv.Itoa(proposalCounter)}
+		depositGovFlags := []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "no"}
 		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "CommunityPoolSpend", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1.StatusRejected)
 
 		// Check that sender is not refunded with the proposal deposit
 		s.Require().Eventually(
 			func() bool {
-				afterSenderBalance, err := getSpecificBalance(chainAAPIEndpoint, sender, uatoneDenom)
+				afterSenderBalance, err := s.getSpecificBalance(chainAAPIEndpoint, sender, uatoneDenom)
 				s.Require().NoError(err)
 
-				return afterSenderBalance.Add(deposit).Add(initialDeposit[0]).
+				return afterSenderBalance.Add(deposit).Add(initialDeposit).
 					IsEqual(beforeSenderBalance)
 			},
 			10*time.Second,
@@ -211,7 +201,7 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 		// proposal was rejected
 		s.Require().Eventually(
 			func() bool {
-				afterRecipientBalance, err := getSpecificBalance(chainAAPIEndpoint, recipient, uatoneDenom)
+				afterRecipientBalance, err := s.getSpecificBalance(chainAAPIEndpoint, recipient, uatoneDenom)
 				s.Require().NoError(err)
 
 				return afterRecipientBalance.IsEqual(beforeRecipientBalance)
@@ -238,7 +228,7 @@ func (s *IntegrationTestSuite) testGovParamChange() {
 		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
 		proposalCounter++
 		submitGovFlags := []string{configFile(proposalParamChangeFilename)}
-		depositGovFlags := []string{strconv.Itoa(proposalCounter)}
+		depositGovFlags := []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
 		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "cosmos.staking.v1beta1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1.StatusPassed)
 
@@ -261,7 +251,7 @@ func (s *IntegrationTestSuite) testGovParamChange() {
 		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
 		proposalCounter++
 		submitGovFlags := []string{configFile(proposalParamChangeFilename)}
-		depositGovFlags := []string{strconv.Itoa(proposalCounter)}
+		depositGovFlags := []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
 		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "atomone.photon.v1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1.StatusPassed)
 
@@ -271,7 +261,7 @@ func (s *IntegrationTestSuite) testGovParamChange() {
 		// Revert change or mint photon test will fail
 		params.Params.MintDisabled = false
 		proposalCounter++
-		depositGovFlags = []string{strconv.Itoa(proposalCounter)}
+		depositGovFlags = []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 		voteGovFlags = []string{strconv.Itoa(proposalCounter), "yes"}
 		s.writePhotonParamChangeProposal(s.chainA, params.Params)
 		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "atomone.photon.v1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1.StatusPassed)
@@ -287,18 +277,18 @@ func (s *IntegrationTestSuite) testGovParamChange() {
 		params := s.queryDynamicfeeParams(chainAAPIEndpoint)
 
 		oldAlpha := params.Params.Alpha
-		params.Params.Alpha = oldAlpha.Add(sdk.NewDec(1))
+		params.Params.Alpha = oldAlpha.Add(math.LegacyNewDec(1))
 
 		s.writeDynamicfeeParamChangeProposal(s.chainA, params.Params)
 		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
 		proposalCounter++
 		submitGovFlags := []string{configFile(proposalParamChangeFilename)}
-		depositGovFlags := []string{strconv.Itoa(proposalCounter)}
+		depositGovFlags := []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
 		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "atomone.dynamicfee.v1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1.StatusPassed)
 
 		newParams := s.queryDynamicfeeParams(chainAAPIEndpoint)
-		s.Require().Equal(newParams.Params.Alpha, oldAlpha.Add(sdk.NewDec(1)))
+		s.Require().Equal(newParams.Params.Alpha, oldAlpha.Add(math.LegacyNewDec(1)))
 	})
 }
 
@@ -315,7 +305,7 @@ func (s *IntegrationTestSuite) testGovConstitutionAmendment() {
 		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
 		proposalCounter++
 		submitGovFlags := []string{configFile(proposalConstitutionAmendmentFilename)}
-		depositGovFlags := []string{strconv.Itoa(proposalCounter)}
+		depositGovFlags := []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
 		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "gov/MsgSubmitProposal", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1.StatusPassed)
 
@@ -336,7 +326,7 @@ func (s *IntegrationTestSuite) testGovTextProposal() {
 		s.writeTextProposal(s.chainA)
 		proposalCounter++
 		submitGovFlags := []string{configFile(proposalTextFilename)}
-		depositGovFlags := []string{strconv.Itoa(proposalCounter)}
+		depositGovFlags := []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
 		senderAddress, _ := s.chainA.validators[0].keyInfo.GetAddress()
 		sender := senderAddress.String()
@@ -353,23 +343,23 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 		params := s.queryGovParams(chainAAPIEndpoint, "tallying")
 		quorums := s.queryGovQuorums(chainAAPIEndpoint)
 		quorumRange := params.GetParams().QuorumRange
-		quorumMin := sdk.MustNewDecFromStr(quorumRange.Min)
-		quorumMax := sdk.MustNewDecFromStr(quorumRange.Max)
-		currentQuorum := sdk.MustNewDecFromStr(quorums.GetQuorum())
+		quorumMin := math.LegacyMustNewDecFromStr(quorumRange.Min)
+		quorumMax := math.LegacyMustNewDecFromStr(quorumRange.Max)
+		currentQuorum := math.LegacyMustNewDecFromStr(quorums.GetQuorum())
 		quorumPEma := (currentQuorum.Sub(quorumMin)).Quo(quorumMax.Sub(quorumMin))
 		s.writeTextProposal(s.chainA)
 		proposalCounter++
 		submitGovFlags := []string{configFile(proposalTextFilename)}
-		depositGovFlags := []string{strconv.Itoa(proposalCounter)}
+		depositGovFlags := []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
 		senderAddress, _ := s.chainA.validators[0].keyInfo.GetAddress()
 		sender := senderAddress.String()
 		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "Text", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1.StatusPassed)
 		quorumsAfter := s.queryGovQuorums(chainAAPIEndpoint)
-		endQuorum := sdk.MustNewDecFromStr(quorumsAfter.GetQuorum())
+		endQuorum := math.LegacyMustNewDecFromStr(quorumsAfter.GetQuorum())
 		endQuorumPEma := (endQuorum.Sub(quorumMin)).Quo(quorumMax.Sub(quorumMin))
-		expectedParticipation := endQuorumPEma.Sub(quorumPEma.Mul(sdk.MustNewDecFromStr("0.8"))).Quo(sdk.MustNewDecFromStr("0.2"))
-		proposal, _ := queryGovProposal(chainAAPIEndpoint, proposalCounter)
+		expectedParticipation := endQuorumPEma.Sub(quorumPEma.Mul(math.LegacyMustNewDecFromStr("0.8"))).Quo(math.LegacyMustNewDecFromStr("0.2"))
+		proposal, _ := s.queryGovProposal(chainAAPIEndpoint, proposalCounter)
 		stakingPool := s.queryStakingPool(chainAAPIEndpoint)
 		yesCount, ok := sdk.NewIntFromString(proposal.Proposal.FinalTallyResult.YesCount)
 		s.Require().True(ok, "Failed to parse yes count from proposal tally result")
@@ -391,14 +381,14 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 		params := s.queryGovParams(chainAAPIEndpoint, "tallying")
 		quorums := s.queryGovQuorums(chainAAPIEndpoint)
 		lawQuorumRange := params.GetParams().LawQuorumRange
-		lawQuorumMin := sdk.MustNewDecFromStr(lawQuorumRange.Min)
-		lawQuorumMax := sdk.MustNewDecFromStr(lawQuorumRange.Max)
-		currentLawQuorum := sdk.MustNewDecFromStr(quorums.GetLawQuorum())
+		lawQuorumMin := math.LegacyMustNewDecFromStr(lawQuorumRange.Min)
+		lawQuorumMax := math.LegacyMustNewDecFromStr(lawQuorumRange.Max)
+		currentLawQuorum := math.LegacyMustNewDecFromStr(quorums.GetLawQuorum())
 		lawQuorumPEma := (currentLawQuorum.Sub(lawQuorumMin)).Quo(lawQuorumMax.Sub(lawQuorumMin))
 		s.writeGovLawProposal(s.chainA)
 		proposalCounter++
 		submitGovFlags := []string{configFile(proposalLawFilename)}
-		depositGovFlags := []string{strconv.Itoa(proposalCounter)}
+		depositGovFlags := []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
 		senderAddress, _ := s.chainA.validators[0].keyInfo.GetAddress()
 		sender := senderAddress.String()
@@ -406,10 +396,10 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 			"gov/MsgSubmitProposal", submitGovFlags, depositGovFlags, voteGovFlags,
 			"vote", govtypesv1.StatusPassed)
 		quorumsAfter := s.queryGovQuorums(chainAAPIEndpoint)
-		endLawQuorum := sdk.MustNewDecFromStr(quorumsAfter.GetLawQuorum())
+		endLawQuorum := math.LegacyMustNewDecFromStr(quorumsAfter.GetLawQuorum())
 		endLawQuorumPEma := (endLawQuorum.Sub(lawQuorumMin)).Quo(lawQuorumMax.Sub(lawQuorumMin))
-		expectedParticipation := endLawQuorumPEma.Sub(lawQuorumPEma.Mul(sdk.MustNewDecFromStr("0.8"))).Quo(sdk.MustNewDecFromStr("0.2"))
-		proposal, _ := queryGovProposal(chainAAPIEndpoint, proposalCounter)
+		expectedParticipation := endLawQuorumPEma.Sub(lawQuorumPEma.Mul(math.LegacyMustNewDecFromStr("0.8"))).Quo(math.LegacyMustNewDecFromStr("0.2"))
+		proposal, _ := s.queryGovProposal(chainAAPIEndpoint, proposalCounter)
 		stakingPool := s.queryStakingPool(chainAAPIEndpoint)
 		yesCount, ok := sdk.NewIntFromString(proposal.Proposal.FinalTallyResult.YesCount)
 		s.Require().True(ok, "Failed to parse yes count from proposal tally result")
@@ -431,25 +421,25 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 		params := s.queryGovParams(chainAAPIEndpoint, "tallying")
 		quorums := s.queryGovQuorums(chainAAPIEndpoint)
 		constitutionAmendmentQuorumRange := params.GetParams().ConstitutionAmendmentQuorumRange
-		constitutionAmendmentQuorumMin := sdk.MustNewDecFromStr(constitutionAmendmentQuorumRange.Min)
-		constitutionAmendmentQuorumMax := sdk.MustNewDecFromStr(constitutionAmendmentQuorumRange.Max)
-		currentConstitutionAmendmentQuorum := sdk.MustNewDecFromStr(quorums.GetConstitutionAmendmentQuorum())
+		constitutionAmendmentQuorumMin := math.LegacyMustNewDecFromStr(constitutionAmendmentQuorumRange.Min)
+		constitutionAmendmentQuorumMax := math.LegacyMustNewDecFromStr(constitutionAmendmentQuorumRange.Max)
+		currentConstitutionAmendmentQuorum := math.LegacyMustNewDecFromStr(quorums.GetConstitutionAmendmentQuorum())
 		constitutionAmendmentQuorumPEma := (currentConstitutionAmendmentQuorum.Sub(constitutionAmendmentQuorumMin)).Quo(constitutionAmendmentQuorumMax.Sub(constitutionAmendmentQuorumMin))
 		newConstitution := "New test constitution 2"
 		amendmentMsg := s.generateConstitutionAmendment(s.chainA, newConstitution)
 		s.writeGovConstitutionAmendmentProposal(s.chainA, amendmentMsg.Amendment)
 		proposalCounter++
 		submitGovFlags := []string{configFile(proposalConstitutionAmendmentFilename)}
-		depositGovFlags := []string{strconv.Itoa(proposalCounter)}
+		depositGovFlags := []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
 		senderAddress, _ := s.chainA.validators[0].keyInfo.GetAddress()
 		sender := senderAddress.String()
 		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "gov/MsgSubmitProposal", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1.StatusPassed)
 		quorumsAfter := s.queryGovQuorums(chainAAPIEndpoint)
-		endConstitutionAmendmentQuorum := sdk.MustNewDecFromStr(quorumsAfter.GetConstitutionAmendmentQuorum())
+		endConstitutionAmendmentQuorum := math.LegacyMustNewDecFromStr(quorumsAfter.GetConstitutionAmendmentQuorum())
 		endConstitutionAmendmentQuorumPEma := (endConstitutionAmendmentQuorum.Sub(constitutionAmendmentQuorumMin)).Quo(constitutionAmendmentQuorumMax.Sub(constitutionAmendmentQuorumMin))
-		expectedParticipation := endConstitutionAmendmentQuorumPEma.Sub(constitutionAmendmentQuorumPEma.Mul(sdk.MustNewDecFromStr("0.8"))).Quo(sdk.MustNewDecFromStr("0.2"))
-		proposal, _ := queryGovProposal(chainAAPIEndpoint, proposalCounter)
+		expectedParticipation := endConstitutionAmendmentQuorumPEma.Sub(constitutionAmendmentQuorumPEma.Mul(math.LegacyMustNewDecFromStr("0.8"))).Quo(math.LegacyMustNewDecFromStr("0.2"))
+		proposal, _ := s.queryGovProposal(chainAAPIEndpoint, proposalCounter)
 		stakingPool := s.queryStakingPool(chainAAPIEndpoint)
 		yesCount, ok := sdk.NewIntFromString(proposal.Proposal.FinalTallyResult.YesCount)
 		s.Require().True(ok, "Failed to parse yes count from proposal tally result")
@@ -589,10 +579,10 @@ func (s *IntegrationTestSuite) submitGovProposal(chainAAPIEndpoint, sender strin
 }
 
 func (s *IntegrationTestSuite) verifyChainHaltedAtUpgradeHeight(c *chain, valIdx int, upgradeHeight int64) {
+	s.T().Logf("Waiting chain halt at height %d", upgradeHeight)
 	s.Require().Eventually(
 		func() bool {
 			currentHeight := s.getLatestBlockHeight(c, valIdx)
-
 			return currentHeight == upgradeHeight
 		},
 		30*time.Second,
@@ -630,14 +620,15 @@ func (s *IntegrationTestSuite) verifyChainPassesUpgradeHeight(c *chain, valIdx i
 	)
 }
 
-func (s *IntegrationTestSuite) submitGovCommand(chainAAPIEndpoint, sender string, proposalID int, govCommand string, proposalFlags []string, expectedSuccessStatus govtypesv1.ProposalStatus) {
+func (s *IntegrationTestSuite) submitGovCommand(chainAAPIEndpoint, sender string, proposalID int, govCommand string, proposalFlags []string, expectedStatus govtypesv1.ProposalStatus) {
 	s.runGovExec(s.chainA, 0, sender, govCommand, proposalFlags)
 
-	s.Require().Eventually(
-		func() bool {
-			proposal, err := queryGovProposal(chainAAPIEndpoint, proposalID)
-			s.Require().NoError(err)
-			return proposal.GetProposal().Status == expectedSuccessStatus
+	s.T().Logf("Waiting for proposal status %s", expectedStatus.String())
+	s.Require().EventuallyWithT(
+		func(c *assert.CollectT) {
+			res, err := s.queryGovProposal(chainAAPIEndpoint, proposalID)
+			require.NoError(c, err)
+			assert.Equal(c, res.GetProposal().Status.String(), expectedStatus.String())
 		},
 		15*time.Second,
 		time.Second,
@@ -665,11 +656,9 @@ func (s *IntegrationTestSuite) writeStakingParamChangeProposal(c *chain, params 
 	`
 
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
-	initialDepositResp, err := queryGovMinInitialDeposit(chainAAPIEndpoint)
-	s.Require().NoError(err)
-	initialDeposit := initialDepositResp.GetMinInitialDeposit()
-	propMsgBody := fmt.Sprintf(template, govModuleAddress, cdc.MustMarshalJSON(&params), initialDeposit[0])
-	err = writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
+	initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
+	propMsgBody := fmt.Sprintf(template, govModuleAddress, s.cdc.MustMarshalJSON(&params), initialDeposit)
+	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
@@ -692,11 +681,9 @@ func (s *IntegrationTestSuite) writeDynamicfeeParamChangeProposal(c *chain, para
 	}
 	`
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
-	initialDepositResp, err := queryGovMinInitialDeposit(chainAAPIEndpoint)
-	s.Require().NoError(err)
-	initialDeposit := initialDepositResp.GetMinInitialDeposit()
-	propMsgBody := fmt.Sprintf(template, govModuleAddress, cdc.MustMarshalJSON(&params), initialDeposit[0])
-	err = writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
+	initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
+	propMsgBody := fmt.Sprintf(template, govModuleAddress, s.cdc.MustMarshalJSON(&params), initialDeposit)
+	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
@@ -710,11 +697,9 @@ func (s *IntegrationTestSuite) writeTextProposal(c *chain) {
 	}
 	`
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
-	initialDepositResp, err := queryGovMinInitialDeposit(chainAAPIEndpoint)
-	s.Require().NoError(err)
-	initialDeposit := initialDepositResp.GetMinInitialDeposit()
-	propMsgBody := fmt.Sprintf(template, initialDeposit[0])
-	err = writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalTextFilename), []byte(propMsgBody))
+	initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
+	propMsgBody := fmt.Sprintf(template, initialDeposit)
+	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalTextFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
@@ -738,11 +723,9 @@ func (s *IntegrationTestSuite) writePhotonParamChangeProposal(c *chain, params p
 	}
 	`
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
-	initialDepositResp, err := queryGovMinInitialDeposit(chainAAPIEndpoint)
-	s.Require().NoError(err)
-	initialDeposit := initialDepositResp.GetMinInitialDeposit()
-	propMsgBody := fmt.Sprintf(template, govModuleAddress, cdc.MustMarshalJSON(&params), initialDeposit[0])
-	err = writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
+	initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
+	propMsgBody := fmt.Sprintf(template, govModuleAddress, s.cdc.MustMarshalJSON(&params), initialDeposit)
+	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
@@ -782,11 +765,9 @@ func (s *IntegrationTestSuite) writeGovConstitutionAmendmentProposal(c *chain, a
 	}
 	`
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
-	initialDepositResp, err := queryGovMinInitialDeposit(chainAAPIEndpoint)
-	s.Require().NoError(err)
-	initialDeposit := initialDepositResp.GetMinInitialDeposit()
-	propMsgBody := fmt.Sprintf(template, govModuleAddress, amendment, initialDeposit[0])
-	err = writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalConstitutionAmendmentFilename), []byte(propMsgBody))
+	initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
+	propMsgBody := fmt.Sprintf(template, govModuleAddress, amendment, initialDeposit)
+	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalConstitutionAmendmentFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
@@ -808,11 +789,9 @@ func (s *IntegrationTestSuite) writeGovLawProposal(c *chain) {
 	}
 	`
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
-	initialDepositResp, err := queryGovMinInitialDeposit(chainAAPIEndpoint)
-	s.Require().NoError(err)
-	initialDeposit := initialDepositResp.GetMinInitialDeposit()
-	propMsgBody := fmt.Sprintf(template, govModuleAddress, initialDeposit[0])
-	err = writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalLawFilename), []byte(propMsgBody))
+	initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
+	propMsgBody := fmt.Sprintf(template, govModuleAddress, initialDeposit)
+	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalLawFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
@@ -841,16 +820,107 @@ func (s *IntegrationTestSuite) generateConstitutionAmendment(c *chain, newConsti
 	return msg
 }
 
-func (s *IntegrationTestSuite) parseGenerateConstitutionAmendmentOutput(msg *govtypesv1.MsgProposeConstitutionAmendment) func([]byte, []byte) bool {
-	return func(stdOut []byte, stdErr []byte) bool {
+func (s *IntegrationTestSuite) parseGenerateConstitutionAmendmentOutput(msg *govtypesv1.MsgProposeConstitutionAmendment) func([]byte, []byte) error {
+	return func(stdOut []byte, stdErr []byte) error {
 		if len(stdErr) > 0 {
-			s.T().Logf("Error: %s", string(stdErr))
-			return false
+			return fmt.Errorf("stdErr: %s", string(stdErr))
 		}
-
-		err := cdc.UnmarshalJSON(stdOut, msg)
-		s.Require().NoError(err)
-
-		return true
+		return s.cdc.UnmarshalJSON(stdOut, msg)
 	}
+}
+
+func (s *IntegrationTestSuite) writeGovCommunitySpendProposal(c *chain, amount sdk.Coin, recipient string) {
+	govModuleAddress := authtypes.NewModuleAddress(govtypes.ModuleName).String()
+
+	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
+	initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
+
+	template := `
+	{
+		"messages":[
+		  {
+			"@type": "/cosmos.distribution.v1beta1.MsgCommunityPoolSpend",
+			"authority": "%s",
+			"recipient": "%s",
+			"amount": [{
+				"denom": "%s",
+				"amount": "%s"
+			}]
+		  }
+		],
+		"deposit": "%s",
+		"proposer": "Proposing validator address",
+		"metadata": "Community Pool Spend",
+		"title": "Fund Team!",
+		"summary": "summary"
+	}
+	`
+	propMsgBody := fmt.Sprintf(template, govModuleAddress, recipient,
+		amount.Denom, amount.Amount.String(), initialDeposit.String())
+	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalCommunitySpendFilename), []byte(propMsgBody))
+	s.Require().NoError(err)
+}
+
+func (s *IntegrationTestSuite) writeGovSoftwareUpgradeProposal(c *chain, height int64) {
+	govModuleAddress := authtypes.NewModuleAddress(govtypes.ModuleName).String()
+
+	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
+	initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
+
+	template := `
+	{
+		"messages":[
+		  {
+			"@type": "/cosmos.upgrade.v1beta1.MsgSoftwareUpgrade",
+			"authority": "%s",
+			"plan": {
+				"name": "v2",
+				"time": "0001-01-01T00:00:00Z",
+				"height": "%d",
+				"info": "",
+				"upgraded_client_state": null
+			}
+		  }
+		],
+		"deposit": "%s",
+		"proposer": "Proposing validator address",
+		"metadata": "Software Upgrade Proposal",
+		"title": "Upgrade Team!",
+		"summary": "summary"
+	}
+	`
+	propMsgBody := fmt.Sprintf(template, govModuleAddress, height, initialDeposit.String())
+	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalSoftwareUpgradeFilename), []byte(propMsgBody))
+	s.Require().NoError(err)
+}
+
+func (s *IntegrationTestSuite) writeGovCancelUpgradeProposal(c *chain) {
+	govModuleAddress := authtypes.NewModuleAddress(govtypes.ModuleName).String()
+
+	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
+	initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
+
+	template := `
+	{
+		"messages":[
+		  {
+			"@type": "/cosmos.upgrade.v1beta1.MsgCancelUpgrade",
+			"authority": "%s"
+		  }
+		],
+		"deposit": "%s",
+		"proposer": "Proposing validator address",
+		"metadata": "Cancel Upgrade Proposal",
+		"title": "Cancel Team!",
+		"summary": "summary"
+	}
+	`
+	propMsgBody := fmt.Sprintf(template, govModuleAddress, initialDeposit.String())
+	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalCancelUpgradeFilename), []byte(propMsgBody))
+	s.Require().NoError(err)
+}
+
+func configFile(filename string) string {
+	filepath := filepath.Join(atomoneConfigPath, filename)
+	return filepath
 }

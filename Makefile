@@ -125,7 +125,7 @@ build-ledger: # Kept for convenience
 $(BUILDDIR)/:
 	mkdir -p $(BUILDDIR)/
 
-vulncheck: 
+vulncheck:
 	$(rundep) golang.org/x/vuln/cmd/govulncheck ./...
 
 go-mod-cache: go.sum
@@ -249,7 +249,6 @@ format: lint-fix
 		-not -path "*.git*" \
 		-not -name "*.pb.go" \
 		-not -name "*.pb.gw.go" \
-		-not -name "*.pulsar.go" \
 		| xargs $(rundep) mvdan.cc/gofumpt -w -l
 
 .PHONY: format lint lint-fix
@@ -264,13 +263,13 @@ localnetd=./build/atomoned --home $(localnet_home)
 localnet-start: build
 	rm -rf ~/.atomone-localnet
 	$(localnetd) init localnet --default-denom uatone --chain-id localnet
-	$(localnetd) config chain-id localnet
-	$(localnetd) config keyring-backend test
+	$(localnetd) config set client chain-id localnet
+	$(localnetd) config set client keyring-backend test
 	$(localnetd) keys add val
-	$(localnetd) genesis add-genesis-account val 1000000000000uatone,1000000000uphoton 
+	$(localnetd) genesis add-genesis-account val 1000000000000uatone,1000000000uphoton
 	$(localnetd) keys add user
 	$(localnetd) genesis add-genesis-account user 1000000000uatone,1000000000uphoton
-	$(localnetd) genesis gentx val 1000000000uatone 
+	$(localnetd) genesis gentx val 1000000000uatone
 	$(localnetd) genesis collect-gentxs
 	# Add treasury DAO address
 	$(localnetd) genesis add-genesis-account atone1qqqqqqqqqqqqqqqqqqqqqqqqqqqqp0dqtalx52 5388766663072uatone
@@ -284,9 +283,11 @@ localnet-start: build
 	# Set validator gas prices
 	sed -i.bak 's#^minimum-gas-prices = .*#minimum-gas-prices = "0.01uatone,0.01uphoton"#g' $(localnet_home)/config/app.toml
 	# enable REST API
-	sed -i -z 's/# Enable defines if the API server should be enabled.\nenable = false/enable = true/' $(localnet_home)/config/app.toml
+	$(localnetd) config set app api.enable true
 	# Decrease voting period to 5min
 	jq '.app_state.gov.params.voting_period = "300s"' $(localnet_home)/config/genesis.json > /tmp/gen
+	mv /tmp/gen $(localnet_home)/config/genesis.json
+	jq --rawfile data contrib/localnet/constitution-mock.md '.app_state.gov.constitution=$$data' $(localnet_home)/config/genesis.json > /tmp/gen
 	mv /tmp/gen $(localnet_home)/config/genesis.json
 	$(localnetd) start
 
@@ -299,7 +300,7 @@ localnet-submit-upgrade-proposal:
 	$(localnetd) tx gov vote 1 yes --from val -y --gas-prices 0.02uphoton
 
 localnet-submit-text-proposal:
-	$(localnetd) tx gov submit-proposal --from user contrib/localnet/proposal_text.json -y --gas-prices 0.002uphoton
+	$(localnetd) tx gov submit-proposal --from user contrib/localnet/proposal_text.json -y --gas-prices 0.02uphoton
 
 .PHONY: localnet-start localnet-restart localnet-submit-upgrade-proposal localnet-submit-text-proposal
 
@@ -322,7 +323,7 @@ test-docker-push: test-docker
 ###############################################################################
 ###                                Protobuf                                 ###
 ###############################################################################
-protoVer=0.13.0
+protoVer=0.17.0
 protoImageName=ghcr.io/cosmos/proto-builder:$(protoVer)
 protoImage=$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace $(protoImageName)
 
@@ -331,10 +332,6 @@ proto-all: proto-format proto-lint proto-gen
 proto-gen:
 	@echo "--> Generating Protobuf files"
 	@$(protoImage) sh ./proto/scripts/protocgen.sh
-
-proto-pulsar-gen:
-	@echo "Generating Dep-Inj Protobuf files"
-	@$(protoImage) sh ./proto/scripts/protocgen-pulsar.sh
 
 proto-swagger-gen:
 	@echo "--> Generating Protobuf Swagger"

@@ -25,13 +25,32 @@ func (s *IntegrationTestSuite) testStaking() {
 
 		delegatorAddress, _ := s.chainA.genesisAccounts[2].keyInfo.GetAddress()
 
-		delegationAmount := sdk.NewInt(500000000)
+		existingDelegation := math.LegacyZeroDec()
+		res, err := s.queryDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
+		if err == nil {
+			existingDelegation = res.GetDelegationResponse().GetDelegation().GetShares()
+		}
+
+		delegationAmount := math.NewInt(500000000)
 		delegation := sdk.NewCoin(uatoneDenom, delegationAmount) // 500 atom
 
 		// Alice delegate uatone to Validator A
-		s.execDelegate(s.chainA, 0, delegation, validatorAddressA, delegatorAddress.String())
+		s.execDelegate(s.chainA, 0, delegation.String(), validatorAddressA, delegatorAddress.String(), atomoneHomePath)
 
-		redelegationAmount := delegationAmount.Quo(sdk.NewInt(2))
+		// Validate delegation successful
+		s.Require().Eventually(
+			func() bool {
+				res, err := s.queryDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
+				amt := res.GetDelegationResponse().GetDelegation().GetShares()
+				s.Require().NoError(err)
+
+				return amt.Equal(existingDelegation.Add(math.LegacyNewDecFromInt(delegationAmount)))
+			},
+			20*time.Second,
+			time.Second,
+		)
+
+		redelegationAmount := delegationAmount.Quo(math.NewInt(2))
 		redelegation := sdk.NewCoin(uatoneDenom, redelegationAmount) // 250 atom
 
 		// Alice re-delegate half of her uatone delegation from Validator A to Validator B
@@ -40,11 +59,11 @@ func (s *IntegrationTestSuite) testStaking() {
 		// Validate re-delegation successful
 		s.Require().Eventually(
 			func() bool {
-				res, err := s.queryDelegation(validatorAddressB, delegatorAddress.String())
+				res, err := s.queryDelegation(chainEndpoint, validatorAddressB, delegatorAddress.String())
 				s.Require().NoError(err)
 				amt := res.GetDelegationResponse().GetDelegation().GetShares()
 
-				return amt.Equal(sdk.NewDecFromInt(redelegationAmount))
+				return amt.Equal(math.LegacyNewDecFromInt(redelegationAmount))
 			},
 			20*time.Second,
 			time.Second,
@@ -58,7 +77,7 @@ func (s *IntegrationTestSuite) testStaking() {
 		// query alice's current delegation from validator A
 		s.Require().Eventually(
 			func() bool {
-				res, err := s.queryDelegation(validatorAddressA, delegatorAddress.String())
+				res, err := s.queryDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
 				s.Require().NoError(err)
 				amt := res.GetDelegationResponse().GetDelegation().GetShares()
 
@@ -79,7 +98,7 @@ func (s *IntegrationTestSuite) testStaking() {
 		// validate unbonding delegations
 		s.Require().Eventually(
 			func() bool {
-				res, err := queryUnbondingDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
+				res, err := s.queryUnbondingDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
 				s.Require().NoError(err)
 
 				s.Require().Len(res.GetUnbond().Entries, 1)
@@ -105,16 +124,16 @@ func (s *IntegrationTestSuite) testStaking() {
 		// validate that unbonding delegation was successfully canceled
 		s.Require().Eventually(
 			func() bool {
-				resDel, err := s.queryDelegation(validatorAddressA, delegatorAddress.String())
+				resDel, err := s.queryDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
 				s.Require().NoError(err)
 				amt := resDel.GetDelegationResponse().GetDelegation().GetShares()
 
 				// expect that no unbonding delegations are found for validator A
-				_, err = queryUnbondingDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
+				_, err = s.queryUnbondingDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
 				s.Require().Error(err)
 
 				// expect to get the delegation back
-				return amt.Equal(sdk.NewDecFromInt(currDelegationAmount))
+				return amt.Equal(math.LegacyNewDecFromInt(currDelegationAmount))
 			},
 			20*time.Second,
 			time.Second,

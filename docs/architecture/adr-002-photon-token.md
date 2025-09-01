@@ -50,7 +50,7 @@ features:
 
 ### `ConversionRate` query
 
-The `ConversionRate` query returns a `sdk.Dec` which represents the current
+The `ConversionRate` query returns a `math.LegacyDec` which represents the current
 conversion rate of ATONE to PHOTON. This conversion rate is computed as the
 following:
 

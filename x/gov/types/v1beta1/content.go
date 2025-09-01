@@ -2,7 +2,6 @@ package v1beta1
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkgovtypes "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 )
 
 // Content defines an interface that a proposal must implement. It contains
@@ -23,7 +22,7 @@ type Content interface {
 type Handler func(ctx sdk.Context, content Content) error
 
 // WrapSDKHandler converts a Cosmos SDK gov Handler to GovGen gov Handler
-func WrapSDKHandler(sdkHandler sdkgovtypes.Handler) Handler {
+func WrapSDKHandler(sdkHandler Handler) Handler {
 	return func(ctx sdk.Context, content Content) error {
 		return sdkHandler(ctx, content)
 	}

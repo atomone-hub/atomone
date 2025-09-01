@@ -7,23 +7,21 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 
-	abci "github.com/cometbft/cometbft/abci/types"
-
 	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/depinject"
+	store "cosmossdk.io/store/types"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	store "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	modulev1 "github.com/atomone-hub/atomone/api/atomone/dynamicfee/module/v1"
 	"github.com/atomone-hub/atomone/x/dynamicfee/client/cli"
 	"github.com/atomone-hub/atomone/x/dynamicfee/keeper"
 	"github.com/atomone-hub/atomone/x/dynamicfee/types"
+	modulev1 "github.com/atomone-hub/atomone/x/dynamicfee/types/module"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 )
 
@@ -35,7 +33,8 @@ var (
 	_ module.HasGenesis     = AppModule{}
 	_ module.HasServices    = AppModule{}
 
-	_ appmodule.AppModule = AppModule{}
+	_ appmodule.AppModule     = AppModule{}
+	_ appmodule.HasEndBlocker = AppModule{}
 )
 
 // AppModuleBasic defines the base interface that the x/dynamicfee module exposes to the application.
@@ -95,9 +94,9 @@ func NewAppModule(cdc codec.Codec, k keeper.Keeper) AppModule {
 	}
 }
 
-// EndBlock returns an endblocker for the x/dynamicfee module.
-func (am AppModule) EndBlock(ctx sdk.Context, req abci.RequestEndBlock) []abci.ValidatorUpdate {
-	return am.k.EndBlock(ctx, req)
+// EndBlock returns an endblocker for the x/feemarket module.
+func (am AppModule) EndBlock(ctx context.Context) error {
+	return am.k.EndBlock(ctx)
 }
 
 // IsAppModule implements the appmodule.AppModule interface.
@@ -133,20 +132,17 @@ func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, _ client.TxEncodingCo
 
 // InitGenesis performs the genesis initialization for the x/dynamicfee module. This method returns
 // no validator set updates. This method panics on any errors.
-func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, bz json.RawMessage) []abci.ValidatorUpdate {
+func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, bz json.RawMessage) {
 	var gs types.GenesisState
-	cdc.MustUnmarshalJSON(bz, &gs)
-
+	am.cdc.MustUnmarshalJSON(bz, &gs)
 	am.k.InitGenesis(ctx, gs)
-
-	return []abci.ValidatorUpdate{}
 }
 
 // ExportGenesis returns the dynamicfee module's exported genesis state as raw
 // JSON bytes. This method panics on any error.
 func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.RawMessage {
 	gs := am.k.ExportGenesis(ctx)
-	return cdc.MustMarshalJSON(gs)
+	return am.cdc.MustMarshalJSON(gs)
 }
 
 func init() {

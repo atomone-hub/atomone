@@ -19,25 +19,6 @@ func NewMsgMintPhoton(toAddr sdk.AccAddress, amount sdk.Coin) *MsgMintPhoton {
 	}
 }
 
-func (msg *MsgMintPhoton) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgMintPhoton) Type() string { return sdk.MsgTypeURL(msg) }
-
-func (msg *MsgMintPhoton) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.ToAddress)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
-func (msg *MsgMintPhoton) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
-}
-
 func (msg *MsgMintPhoton) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.ToAddress); err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid toAddress: %s", err)
@@ -68,16 +49,4 @@ func (msg MsgUpdateParams) ValidateBasic() error {
 	}
 
 	return msg.Params.ValidateBasic()
-}
-
-// GetSignBytes returns the message bytes to sign over.
-func (msg MsgUpdateParams) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(&msg)
-	return sdk.MustSortJSON(bz)
-}
-
-// GetSigners returns the expected signers for a MsgUpdateParams.
-func (msg MsgUpdateParams) GetSigners() []sdk.AccAddress {
-	authority, _ := sdk.AccAddressFromBech32(msg.Authority)
-	return []sdk.AccAddress{authority}
 }

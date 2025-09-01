@@ -37,7 +37,7 @@ func TestMsgServerMintPhoton(t *testing.T) {
 			params: types.Params{MintDisabled: false},
 			msg:    &types.MsgMintPhoton{},
 			setup: func(ctx sdk.Context, m testutil.Mocks) {
-				m.StakingKeeper.EXPECT().BondDenom(ctx).Return(appparams.BondDenom)
+				m.StakingKeeper.EXPECT().BondDenom(ctx).Return(appparams.BondDenom, nil)
 			},
 			expectedErr: "invalid burned amount denom: expected bond denom",
 		},
@@ -48,7 +48,7 @@ func TestMsgServerMintPhoton(t *testing.T) {
 				Amount: sdk.NewInt64Coin("xxx", 42),
 			},
 			setup: func(ctx sdk.Context, m testutil.Mocks) {
-				m.StakingKeeper.EXPECT().BondDenom(ctx).Return(appparams.BondDenom)
+				m.StakingKeeper.EXPECT().BondDenom(ctx).Return(appparams.BondDenom, nil)
 			},
 			expectedErr: "invalid burned amount denom: expected bond denom",
 		},
@@ -60,7 +60,7 @@ func TestMsgServerMintPhoton(t *testing.T) {
 				Amount:    sdk.NewInt64Coin(appparams.BondDenom, 1),
 			},
 			setup: func(ctx sdk.Context, m testutil.Mocks) {
-				m.StakingKeeper.EXPECT().BondDenom(ctx).Return(appparams.BondDenom)
+				m.StakingKeeper.EXPECT().BondDenom(ctx).Return(appparams.BondDenom, nil)
 				m.BankKeeper.EXPECT().GetSupply(ctx, appparams.BondDenom).
 					Return(sdk.NewInt64Coin(appparams.BondDenom, atoneSupply))
 				m.BankKeeper.EXPECT().GetSupply(ctx, types.Denom).Return(sdk.NewInt64Coin(types.Denom, types.MaxSupply))
@@ -75,7 +75,7 @@ func TestMsgServerMintPhoton(t *testing.T) {
 				Amount:    sdk.NewInt64Coin(appparams.BondDenom, 1),
 			},
 			setup: func(ctx sdk.Context, m testutil.Mocks) {
-				m.StakingKeeper.EXPECT().BondDenom(ctx).Return(appparams.BondDenom)
+				m.StakingKeeper.EXPECT().BondDenom(ctx).Return(appparams.BondDenom, nil)
 				m.BankKeeper.EXPECT().GetSupply(ctx, appparams.BondDenom).
 					Return(sdk.NewInt64Coin(appparams.BondDenom, math.MaxInt))
 				m.BankKeeper.EXPECT().GetSupply(ctx, types.Denom).Return(sdk.NewInt64Coin(types.Denom, 0))
@@ -90,7 +90,7 @@ func TestMsgServerMintPhoton(t *testing.T) {
 				Amount:    sdk.NewInt64Coin(appparams.BondDenom, 1),
 			},
 			setup: func(ctx sdk.Context, m testutil.Mocks) {
-				m.StakingKeeper.EXPECT().BondDenom(ctx).Return(appparams.BondDenom)
+				m.StakingKeeper.EXPECT().BondDenom(ctx).Return(appparams.BondDenom, nil)
 				m.BankKeeper.EXPECT().GetSupply(ctx, appparams.BondDenom).
 					Return(sdk.NewInt64Coin(appparams.BondDenom, atoneSupply))
 				m.BankKeeper.EXPECT().GetSupply(ctx, types.Denom).Return(sdk.NewInt64Coin(types.Denom, 0))

@@ -108,7 +108,7 @@ func (keeper Keeper) UpdateMinDeposit(ctx sdk.Context, checkElapsedTime bool) {
 			// no time-based increases
 			return
 		}
-		alpha = sdk.MustNewDecFromStr(params.MinDepositThrottler.IncreaseRatio)
+		alpha = math.LegacyMustNewDecFromStr(params.MinDepositThrottler.IncreaseRatio)
 	} else {
 		distance := numActiveProposals.Sub(targetActiveProposals)
 		if !checkElapsedTime {
@@ -116,7 +116,7 @@ func (keeper Keeper) UpdateMinDeposit(ctx sdk.Context, checkElapsedTime bool) {
 			// and if the number of active proposals is below the target
 			return
 		}
-		alpha = sdk.MustNewDecFromStr(params.MinDepositThrottler.DecreaseRatio)
+		alpha = math.LegacyMustNewDecFromStr(params.MinDepositThrottler.DecreaseRatio)
 		// ApproxRoot is here being called on a relatively small positive
 		// integer (when distance < 0, ApproxRoot will return
 		// `|distance|.ApproxRoot(k) * -1`) with a value of k expected to also

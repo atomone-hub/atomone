@@ -42,36 +42,36 @@ func init() {
 // Default governance params
 var (
 	minVotingPeriod, _                    = time.ParseDuration(MinVotingPeriod)
-	DefaultMinDepositTokens               = sdk.NewInt(10000000)
-	DefaultMaxQuorum                      = sdk.NewDecWithPrec(50, 2)
-	DefaultMinQuorum                      = sdk.NewDecWithPrec(10, 2)
-	DefaultThreshold                      = sdk.NewDecWithPrec(667, 3)
+	DefaultMinDepositTokens               = math.NewInt(10000000)
+	DefaultMaxQuorum                      = math.LegacyNewDecWithPrec(50, 2)
+	DefaultMinQuorum                      = math.LegacyNewDecWithPrec(10, 2)
+	DefaultThreshold                      = math.LegacyNewDecWithPrec(667, 3)
 	DefaultMaxConstitutionAmendmentQuorum = DefaultMaxQuorum
 	DefaultMinConstitutionAmendmentQuorum = DefaultMinQuorum
-	DefaultConstitutionAmendmentThreshold = sdk.NewDecWithPrec(9, 1)
+	DefaultConstitutionAmendmentThreshold = math.LegacyNewDecWithPrec(9, 1)
 	DefaultMaxLawQuorum                   = DefaultMaxQuorum
 	DefaultMinLawQuorum                   = DefaultMinQuorum
-	DefaultLawThreshold                   = sdk.NewDecWithPrec(9, 1)
-	// DefaultMinInitialDepositRatio         = sdk.ZeroDec()
-	DefaultBurnProposalPrevote = false                    // set to false to replicate behavior of when this change was made (0.47)
-	DefaultBurnVoteQuorom      = false                    // set to false to  replicate behavior of when this change was made (0.47)
-	DefaultMinDepositRatio     = sdk.NewDecWithPrec(1, 2) // NOTE: backport from v50
+	DefaultLawThreshold                   = math.LegacyNewDecWithPrec(9, 1)
+	// DefaultMinInitialDepositRatio         = math.LegacyZeroDec()
+	DefaultBurnProposalPrevote = false                           // set to false to replicate behavior of when this change was made (0.47)
+	DefaultBurnVoteQuorom      = false                           // set to false to  replicate behavior of when this change was made (0.47)
+	DefaultMinDepositRatio     = math.LegacyNewDecWithPrec(1, 2) // NOTE: backport from v50
 
 	DefaultQuorumTimeout                                      time.Duration = DefaultVotingPeriod - (time.Hour * 24 * 1) // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
 	DefaultMaxVotingPeriodExtension                           time.Duration = DefaultVotingPeriod - DefaultQuorumTimeout // disabled by default (DefaultQuorumCheckCount must be set to a non-zero value to enable)
 	DefaultQuorumCheckCount                                   uint64        = 0                                          // disabled by default (0 means no check)
 	DefaultMinDepositUpdatePeriod                             time.Duration = time.Hour * 24 * 7
 	DefaultMinDepositDecreaseSensitivityTargetDistance        uint64        = 2
-	DefaultMinDepositIncreaseRatio                                          = sdk.NewDecWithPrec(5, 2)
-	DefaultMinDepositDecreaseRatio                                          = sdk.NewDecWithPrec(25, 3)
+	DefaultMinDepositIncreaseRatio                                          = math.LegacyNewDecWithPrec(5, 2)
+	DefaultMinDepositDecreaseRatio                                          = math.LegacyNewDecWithPrec(25, 3)
 	DefaultTargetActiveProposals                              uint64        = 2
-	DefaultMinInitialDepositFloorAmount                       math.Int      = sdk.NewDecWithPrec(1, 2).MulInt(DefaultMinDepositTokens).TruncateInt()
+	DefaultMinInitialDepositFloorAmount                       math.Int      = math.LegacyNewDecWithPrec(1, 2).MulInt(DefaultMinDepositTokens).TruncateInt()
 	DefaultMinInitialDepositUpdatePeriod                      time.Duration = time.Hour * 24
 	DefaultMinInitialDepositDecreaseSensitivityTargetDistance uint64        = 2
-	DefaultMinInitialDepositIncreaseRatio                                   = sdk.NewDecWithPrec(1, 2)
-	DefaultMinInitialDepositDecreaseRatio                                   = sdk.NewDecWithPrec(5, 3)
+	DefaultMinInitialDepositIncreaseRatio                                   = math.LegacyNewDecWithPrec(1, 2)
+	DefaultMinInitialDepositDecreaseRatio                                   = math.LegacyNewDecWithPrec(5, 3)
 	DefaultTargetProposalsInDepositPeriod                     uint64        = 5
-	DefaultBurnDepositNoThreshold                                           = sdk.NewDecWithPrec(80, 2)
+	DefaultBurnDepositNoThreshold                                           = math.LegacyNewDecWithPrec(80, 2)
 	DefaultMaxGovernors                                       uint64        = 100
 	DefaultMinGovernorSelfDelegation                                        = sdk.NewInt(1000_000000)
 )
@@ -250,7 +250,7 @@ func (p Params) ValidateBasic() error {
 		"lawQuorumRange.min":                   p.LawQuorumRange.Min,
 		"lawQuorumRange.max":                   p.LawQuorumRange.Max,
 	} {
-		quorum, err := sdk.NewDecFromStr(q)
+		quorum, err := math.LegacyNewDecFromStr(q)
 		if err != nil {
 			return fmt.Errorf("invalid %s string: %w", label, err)
 		}
@@ -262,17 +262,17 @@ func (p Params) ValidateBasic() error {
 		}
 	}
 
-	if sdk.MustNewDecFromStr(p.QuorumRange.Max).LT(sdk.MustNewDecFromStr(p.QuorumRange.Min)) {
+	if math.LegacyMustNewDecFromStr(p.QuorumRange.Max).LT(math.LegacyMustNewDecFromStr(p.QuorumRange.Min)) {
 		return fmt.Errorf("quorum range max must be greater than or equal to min: %s", p.QuorumRange)
 	}
-	if sdk.MustNewDecFromStr(p.ConstitutionAmendmentQuorumRange.Max).LT(sdk.MustNewDecFromStr(p.ConstitutionAmendmentQuorumRange.Min)) {
+	if math.LegacyMustNewDecFromStr(p.ConstitutionAmendmentQuorumRange.Max).LT(math.LegacyMustNewDecFromStr(p.ConstitutionAmendmentQuorumRange.Min)) {
 		return fmt.Errorf("constitution amendment quorum range max must be greater than or equal to min: %s", p.ConstitutionAmendmentQuorumRange)
 	}
-	if sdk.MustNewDecFromStr(p.LawQuorumRange.Max).LT(sdk.MustNewDecFromStr(p.LawQuorumRange.Min)) {
+	if math.LegacyMustNewDecFromStr(p.LawQuorumRange.Max).LT(math.LegacyMustNewDecFromStr(p.LawQuorumRange.Min)) {
 		return fmt.Errorf("law quorum range max must be greater than or equal to min: %s", p.LawQuorumRange)
 	}
 
-	threshold, err := sdk.NewDecFromStr(p.Threshold)
+	threshold, err := math.LegacyNewDecFromStr(p.Threshold)
 	if err != nil {
 		return fmt.Errorf("invalid threshold string: %w", err)
 	}
@@ -283,7 +283,7 @@ func (p Params) ValidateBasic() error {
 		return fmt.Errorf("vote threshold too large: %s", threshold)
 	}
 
-	amendmentThreshold, err := sdk.NewDecFromStr(p.ConstitutionAmendmentThreshold)
+	amendmentThreshold, err := math.LegacyNewDecFromStr(p.ConstitutionAmendmentThreshold)
 	if err != nil {
 		return fmt.Errorf("invalid constitution amendment threshold string: %w", err)
 	}
@@ -297,7 +297,7 @@ func (p Params) ValidateBasic() error {
 		return fmt.Errorf("constitution amendment threshold must be greater than or equal to governance threshold: %s", amendmentThreshold)
 	}
 
-	lawThreshold, err := sdk.NewDecFromStr(p.LawThreshold)
+	lawThreshold, err := math.LegacyNewDecFromStr(p.LawThreshold)
 	if err != nil {
 		return fmt.Errorf("invalid law threshold string: %w", err)
 	}
@@ -395,7 +395,7 @@ func (p Params) ValidateBasic() error {
 		return fmt.Errorf("minimum deposit sensitivity target distance must be less than or equal to %d: %d", MaxDecreaseSensitivityTargetDistanceDepositThrottler, p.MinDepositThrottler.DecreaseSensitivityTargetDistance)
 	}
 
-	minDepositIncreaseRatio, err := sdk.NewDecFromStr(p.MinDepositThrottler.IncreaseRatio)
+	minDepositIncreaseRatio, err := math.LegacyNewDecFromStr(p.MinDepositThrottler.IncreaseRatio)
 	if err != nil {
 		return fmt.Errorf("invalid minimum deposit increase ratio: %w", err)
 	}
@@ -406,7 +406,7 @@ func (p Params) ValidateBasic() error {
 		return fmt.Errorf("minimum deposit increase ratio too large: %s", minDepositIncreaseRatio)
 	}
 
-	minDepositDecreaseRatio, err := sdk.NewDecFromStr(p.MinDepositThrottler.DecreaseRatio)
+	minDepositDecreaseRatio, err := math.LegacyNewDecFromStr(p.MinDepositThrottler.DecreaseRatio)
 	if err != nil {
 		return fmt.Errorf("invalid minimum deposit decrease ratio: %w", err)
 	}
@@ -445,7 +445,7 @@ func (p Params) ValidateBasic() error {
 		return fmt.Errorf("minimum initial deposit sensitivity target distance must be less than or equal to %d: %d", MaxDecreaseSensitivityTargetDistanceDepositThrottler, p.MinInitialDepositThrottler.DecreaseSensitivityTargetDistance)
 	}
 
-	minInitialDepositIncreaseRatio, err := sdk.NewDecFromStr(p.MinInitialDepositThrottler.IncreaseRatio)
+	minInitialDepositIncreaseRatio, err := math.LegacyNewDecFromStr(p.MinInitialDepositThrottler.IncreaseRatio)
 	if err != nil {
 		return fmt.Errorf("invalid minimum initial deposit increase ratio: %w", err)
 	}
@@ -458,7 +458,7 @@ func (p Params) ValidateBasic() error {
 		return fmt.Errorf("minimum initial deposit increase ratio too large: %s", minInitialDepositIncreaseRatio)
 	}
 
-	minInitialDepositDecreaseRatio, err := sdk.NewDecFromStr(p.MinInitialDepositThrottler.DecreaseRatio)
+	minInitialDepositDecreaseRatio, err := math.LegacyNewDecFromStr(p.MinInitialDepositThrottler.DecreaseRatio)
 	if err != nil {
 		return fmt.Errorf("invalid minimum initial deposit decrease ratio: %w", err)
 	}
@@ -471,7 +471,7 @@ func (p Params) ValidateBasic() error {
 		return fmt.Errorf("minimum initial deposit decrease ratio too large: %s", minInitialDepositDecreaseRatio)
 	}
 
-	burnDepositNoThreshold, err := sdk.NewDecFromStr(p.BurnDepositNoThreshold)
+	burnDepositNoThreshold, err := math.LegacyNewDecFromStr(p.BurnDepositNoThreshold)
 	if err != nil {
 		return fmt.Errorf("invalid burnDepositNoThreshold string: %w", err)
 	}

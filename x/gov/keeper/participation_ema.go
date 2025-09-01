@@ -71,7 +71,7 @@ func (k Keeper) UpdateParticipationEMA(ctx sdk.Context, proposal v1.Proposal, pa
 func (k Keeper) updateParticipationEMAByKey(ctx sdk.Context, key []byte, participation math.LegacyDec) {
 	old_participationEma := k.getParticipationEMAByKey(ctx, key)
 	// new_participationEma = 0.8 * old_participationEma + 0.2 * participation
-	new_participationEma := old_participationEma.Mul(sdk.NewDecWithPrec(8, 1)).Add(participation.Mul(sdk.NewDecWithPrec(2, 1)))
+	new_participationEma := old_participationEma.Mul(math.LegacyNewDecWithPrec(8, 1)).Add(participation.Mul(math.LegacyNewDecWithPrec(2, 1)))
 	k.setParticipationEMAByKey(ctx, key, new_participationEma)
 }
 
@@ -107,7 +107,7 @@ func (k Keeper) GetLawQuorum(ctx sdk.Context) math.LegacyDec {
 
 // computeQuorum returns the dynamic quorum for governance proposals calculated
 // based on the participation EMA, min and max quorum.
-func computeQuorum(participationEma, minQuorum, maxQuorum sdk.Dec) math.LegacyDec {
+func computeQuorum(participationEma, minQuorum, maxQuorum math.LegacyDec) math.LegacyDec {
 	// quorum = min_quorum + (max_quorum - min_quorum) * participationEma
 	return minQuorum.Add(maxQuorum.Sub(minQuorum).Mul(participationEma))
 }

@@ -16,6 +16,14 @@
 
 ### IMPROVEMENTS
 
+## v3.0.1
+
+*Aug 22th, 2025*
+
+### BUG FIXES
+
+- Fix wrong denom for minDeposit and minInitialDeposit [#205](https://github.com/atomone-hub/atomone/pull/205)
+
 ## v3.0.0
 
 *Aug 4th, 2025*

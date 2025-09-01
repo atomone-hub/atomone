@@ -6,11 +6,12 @@ import (
 	"os"
 	"time"
 
-	tmtypes "github.com/cometbft/cometbft/types"
+	"cosmossdk.io/math"
 
-	icagen "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/genesis/types"
-	icatypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/types"
+	icagen "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/genesis/types"
+	icatypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/types"
 
+	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/server"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -25,31 +26,31 @@ import (
 	govv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 )
 
-func getGenDoc(path string) (*tmtypes.GenesisDoc, error) {
+func getGenDoc(path string) (*genutiltypes.AppGenesis, error) {
 	serverCtx := server.NewDefaultContext()
 	config := serverCtx.Config
 	config.SetRoot(path)
 
 	genFile := config.GenesisFile()
-	doc := &tmtypes.GenesisDoc{}
 
 	if _, err := os.Stat(genFile); err != nil {
 		if !os.IsNotExist(err) {
 			return nil, err
 		}
-	} else {
-		var err error
 
-		doc, err = tmtypes.GenesisDocFromFile(genFile)
-		if err != nil {
-			return nil, fmt.Errorf("failed to read genesis doc from file: %w", err)
-		}
+		return &genutiltypes.AppGenesis{}, nil
+	}
+
+	var err error
+	doc, err := genutiltypes.AppGenesisFromFile(genFile)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read genesis doc from file: %w", err)
 	}
 
 	return doc, nil
 }
 
-func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, denom string) error {
+func modifyGenesis(cdc codec.Codec, path, moniker, amountStr string, addrAll []sdk.AccAddress, denom string) error {
 	serverCtx := server.NewDefaultContext()
 	config := serverCtx.Config
 	config.SetRoot(path)
@@ -202,7 +203,9 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 	maxConstitutionAmendmentQuorum := "0.8"
 	minLawQuorum := "0.2"
 	maxLawQuorum := "0.8"
-	minGovernorSelfDelegation, _ := sdk.NewIntFromString("10000000")
+	minGovernorSelfDelegation, _ := math.NewIntFromString("10000000")
+	depositAmount := sdk.NewInt64Coin(uatoneDenom, 1_000_000_000)      // 1,000atone
+	initialDepositAmount := sdk.NewInt64Coin(uatoneDenom, 100_000_000) // 100atone
 
 	maxDepositPeriod := 10 * time.Minute
 	votingPeriod := 15 * time.Second
@@ -242,7 +245,7 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, de
 	// Modifying dynamicfee genesis
 
 	dynamicfeeGenState := dynamicfeetypes.GetGenesisStateFromAppState(cdc, appState)
-	baseGasPrice := sdk.MustNewDecFromStr("0.00001")
+	baseGasPrice := math.LegacyMustNewDecFromStr("0.00001")
 	dynamicfeeGenState.Params.MinBaseGasPrice = baseGasPrice
 	dynamicfeeGenState.State.BaseGasPrice = baseGasPrice
 	dynamicfeeGenStateBz, err := cdc.MarshalJSON(&dynamicfeeGenState)

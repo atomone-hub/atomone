@@ -1,11 +1,13 @@
 package keeper
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"time"
 
 	sdkerrors "cosmossdk.io/errors"
+	storetypes "cosmossdk.io/store/types"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -42,18 +44,23 @@ func (keeper Keeper) SubmitProposal(ctx sdk.Context, messages []sdk.Msg, metadat
 		msgsStr += fmt.Sprintf(",%s", sdk.MsgTypeURL(msg))
 
 		// perform a basic validation of the message
-		if err := msg.ValidateBasic(); err != nil {
-			return v1.Proposal{}, sdkerrors.Wrap(types.ErrInvalidProposalMsg, err.Error())
+		if m, ok := msg.(sdk.HasValidateBasic); ok {
+			if err := m.ValidateBasic(); err != nil {
+				return v1.Proposal{}, sdkerrors.Wrap(types.ErrInvalidProposalMsg, err.Error())
+			}
 		}
 
-		signers := msg.GetSigners()
+		signers, _, err := keeper.cdc.GetMsgV1Signers(msg)
+		if err != nil {
+			return v1.Proposal{}, err
+		}
 		if len(signers) != 1 {
 			return v1.Proposal{}, types.ErrInvalidSigner
 		}
 
 		// assert that the governance module account is the only signer of the messages
-		if !signers[0].Equals(keeper.GetGovernanceAccount(ctx).GetAddress()) {
-			return v1.Proposal{}, sdkerrors.Wrapf(types.ErrInvalidSigner, signers[0].String())
+		if !bytes.Equal(signers[0], keeper.GetGovernanceAccount(ctx).GetAddress()) {
+			return v1.Proposal{}, sdkerrors.Wrap(types.ErrInvalidSigner, sdk.AccAddress(signers[0]).String())
 		}
 
 		// use the msg service router to see that there is a valid route for that message.
@@ -187,7 +194,7 @@ func (keeper Keeper) DeleteProposal(ctx sdk.Context, proposalID uint64) {
 func (keeper Keeper) IterateProposals(ctx sdk.Context, cb func(proposal v1.Proposal) (stop bool)) {
 	store := ctx.KVStore(keeper.storeKey)
 
-	iterator := sdk.KVStorePrefixIterator(store, types.ProposalsKeyPrefix)
+	iterator := storetypes.KVStorePrefixIterator(store, types.ProposalsKeyPrefix)
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {

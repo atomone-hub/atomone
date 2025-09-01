@@ -196,7 +196,7 @@ func (dfd dynamicfeeCheckDecorator) DeductFees(ctx sdk.Context, sdkTx sdk.Tx, pr
 			if !providedFee.IsNil() {
 				err := dfd.feegrantKeeper.UseGrantedFees(ctx, feeGranter, feePayer, sdk.NewCoins(providedFee), sdkTx.GetMsgs())
 				if err != nil {
-					return errorsmod.Wrapf(err, "%s does not allow to pay fees for %s", feeGranter, feePayer)
+					return errorsmod.Wrapf(err, "%s does not allow to pay fees for %s", sdk.AccAddress(feeGranter).String(), sdk.AccAddress(feePayer).String())
 				}
 			}
 		}
@@ -206,19 +206,19 @@ func (dfd dynamicfeeCheckDecorator) DeductFees(ctx sdk.Context, sdkTx sdk.Tx, pr
 
 	deductFeesFromAcc := dfd.accountKeeper.GetAccount(ctx, deductFeesFrom)
 	if deductFeesFromAcc == nil {
-		return sdkerrors.ErrUnknownAddress.Wrapf("fee payer address: %s does not exist", deductFeesFrom)
+		return sdkerrors.ErrUnknownAddress.Wrapf("fee payer address: %s does not exist", sdk.AccAddress(deductFeesFrom).String())
 	}
 
 	err := dfd.bankKeeper.SendCoinsFromAccountToModule(ctx, deductFeesFromAcc.GetAddress(), authtypes.FeeCollectorName, sdk.NewCoins(providedFee))
 	if err != nil {
-		return errorsmod.Wrapf(sdkerrors.ErrInsufficientFunds, err.Error())
+		return errorsmod.Wrap(sdkerrors.ErrInsufficientFunds, err.Error())
 	}
 
 	events := sdk.Events{
 		sdk.NewEvent(
 			sdk.EventTypeTx,
 			sdk.NewAttribute(sdk.AttributeKeyFee, providedFee.String()),
-			sdk.NewAttribute(sdk.AttributeKeyFeePayer, deductFeesFrom.String()),
+			sdk.NewAttribute(sdk.AttributeKeyFeePayer, sdk.AccAddress(deductFeesFrom).String()),
 		),
 	}
 	ctx.EventManager().EmitEvents(events)

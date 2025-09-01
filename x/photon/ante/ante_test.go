@@ -8,12 +8,14 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/cometbft/cometbft/libs/log"
+	"cosmossdk.io/log"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 
+	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/tx"
+	"github.com/cosmos/cosmos-sdk/types/tx/signing"
+	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 
 	appparams "github.com/atomone-hub/atomone/app/params"
 	"github.com/atomone-hub/atomone/x/photon/ante"
@@ -29,47 +31,41 @@ func setupMocks(t *testing.T) mocks {
 	t.Helper()
 	ctrl := gomock.NewController(t)
 	return mocks{
-		ctx:          sdk.NewContext(nil, tmproto.Header{}, false, log.TestingLogger()),
+		ctx:          sdk.NewContext(nil, tmproto.Header{}, false, log.NewNopLogger()),
 		PhotonKeeper: NewMockPhotonKeeper(ctrl),
 	}
 }
 
 func TestValidateFeeDecorator(t *testing.T) {
+	txConfig := authtx.NewTxConfig(
+		codec.NewProtoCodec(codectypes.NewInterfaceRegistry()),
+		[]signing.SignMode{signing.SignMode_SIGN_MODE_DIRECT},
+	)
+
 	tests := []struct {
 		name          string
-		tx            sdk.Tx
+		tx            func() sdk.Tx
 		setup         func(mocks)
 		expectedError string
 	}{
 		{
 			name: "ok: no fee",
-			tx: &tx.Tx{
-				AuthInfo: &tx.AuthInfo{
-					Fee: &tx.Fee{},
-				},
-				Body: &tx.TxBody{
-					Messages: []*codectypes.Any{
-						codectypes.UnsafePackAny(&types.MsgMintPhoton{}),
-					},
-				},
+			tx: func() sdk.Tx {
+				txBuilder := txConfig.NewTxBuilder()
+				txBuilder.SetMsgs(&types.MsgMintPhoton{})
+				return txBuilder.GetTx()
 			},
 		},
 		{
 			name: "ok: tx MsgMintPhoton accepts any fee denom bc declared in txFeeExceptions",
-			tx: &tx.Tx{
-				AuthInfo: &tx.AuthInfo{
-					Fee: &tx.Fee{
-						Amount: sdk.NewCoins(
-							sdk.NewInt64Coin(appparams.BondDenom, 1),
-							sdk.NewInt64Coin("xxx", 1),
-						),
-					},
-				},
-				Body: &tx.TxBody{
-					Messages: []*codectypes.Any{
-						codectypes.UnsafePackAny(&types.MsgMintPhoton{}),
-					},
-				},
+			tx: func() sdk.Tx {
+				txBuilder := txConfig.NewTxBuilder()
+				txBuilder.SetMsgs(&types.MsgMintPhoton{})
+				txBuilder.SetFeeAmount(sdk.NewCoins(
+					sdk.NewInt64Coin(appparams.BondDenom, 1),
+					sdk.NewInt64Coin("xxx", 1),
+				))
+				return txBuilder.GetTx()
 			},
 			setup: func(m mocks) {
 				m.PhotonKeeper.EXPECT().GetParams(m.ctx).
@@ -78,17 +74,11 @@ func TestValidateFeeDecorator(t *testing.T) {
 		},
 		{
 			name: "ok: MsgUpdateParams fee uphoton",
-			tx: &tx.Tx{
-				AuthInfo: &tx.AuthInfo{
-					Fee: &tx.Fee{
-						Amount: sdk.NewCoins(sdk.NewInt64Coin(types.Denom, 1)),
-					},
-				},
-				Body: &tx.TxBody{
-					Messages: []*codectypes.Any{
-						codectypes.UnsafePackAny(&types.MsgUpdateParams{}),
-					},
-				},
+			tx: func() sdk.Tx {
+				txBuilder := txConfig.NewTxBuilder()
+				txBuilder.SetMsgs(&types.MsgUpdateParams{})
+				txBuilder.SetFeeAmount(sdk.NewCoins(sdk.NewInt64Coin(types.Denom, 1)))
+				return txBuilder.GetTx()
 			},
 			setup: func(m mocks) {
 				m.PhotonKeeper.EXPECT().GetParams(m.ctx).
@@ -97,17 +87,11 @@ func TestValidateFeeDecorator(t *testing.T) {
 		},
 		{
 			name: "fail: MsgUpdateParams fee uatone",
-			tx: &tx.Tx{
-				AuthInfo: &tx.AuthInfo{
-					Fee: &tx.Fee{
-						Amount: sdk.NewCoins(sdk.NewInt64Coin(appparams.BondDenom, 1)),
-					},
-				},
-				Body: &tx.TxBody{
-					Messages: []*codectypes.Any{
-						codectypes.UnsafePackAny(&types.MsgUpdateParams{}),
-					},
-				},
+			tx: func() sdk.Tx {
+				txBuilder := txConfig.NewTxBuilder()
+				txBuilder.SetMsgs(&types.MsgUpdateParams{})
+				txBuilder.SetFeeAmount(sdk.NewCoins(sdk.NewInt64Coin(appparams.BondDenom, 1)))
+				return txBuilder.GetTx()
 			},
 			setup: func(m mocks) {
 				m.PhotonKeeper.EXPECT().GetParams(m.ctx).
@@ -121,17 +105,11 @@ func TestValidateFeeDecorator(t *testing.T) {
 		},
 		{
 			name: "fail: MsgUpdateParams fee xxx",
-			tx: &tx.Tx{
-				AuthInfo: &tx.AuthInfo{
-					Fee: &tx.Fee{
-						Amount: sdk.NewCoins(sdk.NewInt64Coin("xxx", 1)),
-					},
-				},
-				Body: &tx.TxBody{
-					Messages: []*codectypes.Any{
-						codectypes.UnsafePackAny(&types.MsgUpdateParams{}),
-					},
-				},
+			tx: func() sdk.Tx {
+				txBuilder := txConfig.NewTxBuilder()
+				txBuilder.SetMsgs(&types.MsgUpdateParams{})
+				txBuilder.SetFeeAmount(sdk.NewCoins(sdk.NewInt64Coin("xxx", 1)))
+				return txBuilder.GetTx()
 			},
 			setup: func(m mocks) {
 				m.PhotonKeeper.EXPECT().GetParams(m.ctx).
@@ -145,20 +123,14 @@ func TestValidateFeeDecorator(t *testing.T) {
 		},
 		{
 			name: "fail: MsgUpdateParams multiple fee denom",
-			tx: &tx.Tx{
-				AuthInfo: &tx.AuthInfo{
-					Fee: &tx.Fee{
-						Amount: sdk.NewCoins(
-							sdk.NewInt64Coin(appparams.BondDenom, 1),
-							sdk.NewInt64Coin("xxx", 1),
-						),
-					},
-				},
-				Body: &tx.TxBody{
-					Messages: []*codectypes.Any{
-						codectypes.UnsafePackAny(&types.MsgUpdateParams{}),
-					},
-				},
+			tx: func() sdk.Tx {
+				txBuilder := txConfig.NewTxBuilder()
+				txBuilder.SetMsgs(&types.MsgUpdateParams{})
+				txBuilder.SetFeeAmount(sdk.NewCoins(
+					sdk.NewInt64Coin(appparams.BondDenom, 1),
+					sdk.NewInt64Coin("xxx", 1),
+				))
+				return txBuilder.GetTx()
 			},
 			setup: func(m mocks) {
 				m.PhotonKeeper.EXPECT().GetParams(m.ctx).
@@ -182,7 +154,7 @@ func TestValidateFeeDecorator(t *testing.T) {
 			}
 
 			vfd := ante.NewValidateFeeDecorator(m.PhotonKeeper)
-			_, err := vfd.AnteHandle(m.ctx, tt.tx, false, next)
+			_, err := vfd.AnteHandle(m.ctx, tt.tx(), false, next)
 
 			if tt.expectedError != "" {
 				require.EqualError(t, err, tt.expectedError)
@@ -195,83 +167,73 @@ func TestValidateFeeDecorator(t *testing.T) {
 }
 
 func TestAllowsAnyTxFee(t *testing.T) {
+	txConfig := authtx.NewTxConfig(
+		codec.NewProtoCodec(codectypes.NewInterfaceRegistry()),
+		[]signing.SignMode{signing.SignMode_SIGN_MODE_DIRECT},
+	)
+
 	tests := []struct {
 		name            string
-		tx              sdk.Tx
+		tx              func() sdk.Tx
 		txFeeExceptions []string
 		expectedRes     bool
 	}{
 		{
 			name: "wildcard fee execptions",
-			tx: &tx.Tx{
-				Body: &tx.TxBody{
-					Messages: []*codectypes.Any{
-						codectypes.UnsafePackAny(&types.MsgUpdateParams{}),
-					},
-				},
+			tx: func() sdk.Tx {
+				txBuilder := txConfig.NewTxBuilder()
+				txBuilder.SetMsgs(&types.MsgUpdateParams{})
+				return txBuilder.GetTx()
 			},
 			txFeeExceptions: []string{"*"},
 			expectedRes:     true,
 		},
 		{
 			name: "empty fee execptions",
-			tx: &tx.Tx{
-				Body: &tx.TxBody{
-					Messages: []*codectypes.Any{
-						codectypes.UnsafePackAny(&types.MsgMintPhoton{}),
-					},
-				},
+			tx: func() sdk.Tx {
+				txBuilder := txConfig.NewTxBuilder()
+				txBuilder.SetMsgs(&types.MsgMintPhoton{})
+				return txBuilder.GetTx()
 			},
 			txFeeExceptions: nil,
 			expectedRes:     false,
 		},
 		{
 			name: "one message match txFeeExceptions",
-			tx: &tx.Tx{
-				Body: &tx.TxBody{
-					Messages: []*codectypes.Any{
-						codectypes.UnsafePackAny(&types.MsgMintPhoton{}),
-					},
-				},
+			tx: func() sdk.Tx {
+				txBuilder := txConfig.NewTxBuilder()
+				txBuilder.SetMsgs(&types.MsgMintPhoton{})
+				return txBuilder.GetTx()
 			},
 			txFeeExceptions: []string{sdk.MsgTypeURL(&types.MsgMintPhoton{})},
 			expectedRes:     true,
 		},
 		{
 			name: "multiple messages not all match txFeeExceptions",
-			tx: &tx.Tx{
-				Body: &tx.TxBody{
-					Messages: []*codectypes.Any{
-						codectypes.UnsafePackAny(&types.MsgUpdateParams{}),
-						codectypes.UnsafePackAny(&types.MsgMintPhoton{}),
-					},
-				},
+			tx: func() sdk.Tx {
+				txBuilder := txConfig.NewTxBuilder()
+				txBuilder.SetMsgs(&types.MsgUpdateParams{}, &types.MsgMintPhoton{})
+				return txBuilder.GetTx()
 			},
 			txFeeExceptions: []string{sdk.MsgTypeURL(&types.MsgMintPhoton{})},
 			expectedRes:     false,
 		},
 		{
 			name: "multiple same messages match txFeeExceptions",
-			tx: &tx.Tx{
-				Body: &tx.TxBody{
-					Messages: []*codectypes.Any{
-						codectypes.UnsafePackAny(&types.MsgMintPhoton{}),
-						codectypes.UnsafePackAny(&types.MsgMintPhoton{}),
-					},
-				},
+			tx: func() sdk.Tx {
+				txBuilder := txConfig.NewTxBuilder()
+				txBuilder.SetMsgs(&types.MsgMintPhoton{}, &types.MsgMintPhoton{})
+				return txBuilder.GetTx()
 			},
 			txFeeExceptions: []string{sdk.MsgTypeURL(&types.MsgMintPhoton{})},
 			expectedRes:     true,
 		},
 		{
 			name: "multiple different messages match txFeeExceptions",
-			tx: &tx.Tx{
-				Body: &tx.TxBody{
-					Messages: []*codectypes.Any{
-						codectypes.UnsafePackAny(&types.MsgMintPhoton{}),
-						codectypes.UnsafePackAny(&types.MsgUpdateParams{}),
-					},
-				},
+			tx: func() sdk.Tx {
+				txBuilder := txConfig.NewTxBuilder()
+				txBuilder.SetMsgs(&types.MsgMintPhoton{}, &types.MsgUpdateParams{})
+				return txBuilder.GetTx()
 			},
 			txFeeExceptions: []string{
 				sdk.MsgTypeURL(&types.MsgMintPhoton{}),
@@ -282,7 +244,7 @@ func TestAllowsAnyTxFee(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			res := ante.AllowsAnyTxFee(tt.tx, tt.txFeeExceptions)
+			res := ante.AllowsAnyTxFee(tt.tx(), tt.txFeeExceptions)
 
 			assert.Equal(t, tt.expectedRes, res)
 		})

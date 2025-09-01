@@ -1,10 +1,12 @@
 package v5
 
 import (
+	storetypes "cosmossdk.io/store/types"
+
 	"github.com/cosmos/cosmos-sdk/codec"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
+	appparams "github.com/atomone-hub/atomone/app/params"
 	govv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 )
 
@@ -21,7 +23,9 @@ func MigrateStore(ctx sdk.Context, storeKey storetypes.StoreKey, cdc codec.Binar
 
 	defaultParams := govv1.DefaultParams()
 	params.MinDepositThrottler = defaultParams.MinDepositThrottler
+	params.MinDepositThrottler.FloorValue[0].Denom = appparams.BondDenom
 	params.MinInitialDepositThrottler = defaultParams.MinInitialDepositThrottler
+	params.MinInitialDepositThrottler.FloorValue[0].Denom = appparams.BondDenom
 	params.BurnDepositNoThreshold = defaultParams.BurnDepositNoThreshold
 
 	bz, err := cdc.Marshal(&params)

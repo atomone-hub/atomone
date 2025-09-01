@@ -1,7 +1,7 @@
 package v3
 
 import (
-	store "github.com/cosmos/cosmos-sdk/store/types"
+	storetypes "cosmossdk.io/store/types"
 
 	"github.com/atomone-hub/atomone/app/upgrades"
 	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
@@ -14,7 +14,7 @@ const (
 var Upgrade = upgrades.Upgrade{
 	UpgradeName:          UpgradeName,
 	CreateUpgradeHandler: CreateUpgradeHandler,
-	StoreUpgrades: store.StoreUpgrades{
+	StoreUpgrades: storetypes.StoreUpgrades{
 		Added: []string{
 			// new module added in v3
 			dynamicfeetypes.ModuleName,

@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"testing"
 
+	"cosmossdk.io/math"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	"github.com/stretchr/testify/assert"
 
@@ -18,17 +19,17 @@ func TestGetSetParticipationEma(t *testing.T) {
 	assert.Equal(v1.DefaultParticipationEma, k.GetConstitutionAmendmentParticipationEMA(ctx).String())
 	assert.Equal(v1.DefaultParticipationEma, k.GetLawParticipationEMA(ctx).String())
 
-	k.SetParticipationEMA(ctx, sdk.NewDecWithPrec(1, 2))
-	k.SetConstitutionAmendmentParticipationEMA(ctx, sdk.NewDecWithPrec(2, 2))
-	k.SetLawParticipationEMA(ctx, sdk.NewDecWithPrec(3, 2))
+	k.SetParticipationEMA(ctx, math.LegacyNewDecWithPrec(1, 2))
+	k.SetConstitutionAmendmentParticipationEMA(ctx, math.LegacyNewDecWithPrec(2, 2))
+	k.SetLawParticipationEMA(ctx, math.LegacyNewDecWithPrec(3, 2))
 
-	assert.Equal(sdk.NewDecWithPrec(1, 2).String(), k.GetParticipationEMA(ctx).String())
-	assert.Equal(sdk.NewDecWithPrec(2, 2).String(), k.GetConstitutionAmendmentParticipationEMA(ctx).String())
-	assert.Equal(sdk.NewDecWithPrec(3, 2).String(), k.GetLawParticipationEMA(ctx).String())
+	assert.Equal(math.LegacyNewDecWithPrec(1, 2).String(), k.GetParticipationEMA(ctx).String())
+	assert.Equal(math.LegacyNewDecWithPrec(2, 2).String(), k.GetConstitutionAmendmentParticipationEMA(ctx).String())
+	assert.Equal(math.LegacyNewDecWithPrec(3, 2).String(), k.GetLawParticipationEMA(ctx).String())
 
-	assert.Equal(sdk.NewDecWithPrec(104, 3).String(), k.GetQuorum(ctx).String())
-	assert.Equal(sdk.NewDecWithPrec(108, 3).String(), k.GetConstitutionAmendmentQuorum(ctx).String())
-	assert.Equal(sdk.NewDecWithPrec(112, 3).String(), k.GetLawQuorum(ctx).String())
+	assert.Equal(math.LegacyNewDecWithPrec(104, 3).String(), k.GetQuorum(ctx).String())
+	assert.Equal(math.LegacyNewDecWithPrec(108, 3).String(), k.GetConstitutionAmendmentQuorum(ctx).String())
+	assert.Equal(math.LegacyNewDecWithPrec(112, 3).String(), k.GetLawQuorum(ctx).String())
 }
 
 func TestUpdateParticipationEma(t *testing.T) {
@@ -42,7 +43,7 @@ func TestUpdateParticipationEma(t *testing.T) {
 		{
 			name:                     "proposal w/o message",
 			proposal:                 v1.Proposal{},
-			expectedParticipationEma: sdk.NewDecWithPrec(41, 2).String(),
+			expectedParticipationEma: math.LegacyNewDecWithPrec(41, 2).String(),
 			expectedConstitutionAmdmentParticipationEma: v1.DefaultParticipationEma,
 			expectedLawParticipationEma:                 v1.DefaultParticipationEma,
 		},
@@ -51,13 +52,13 @@ func TestUpdateParticipationEma(t *testing.T) {
 			proposal:                 v1.Proposal{Messages: setMsgs(t, []sdk.Msg{&v1.MsgProposeLaw{}})},
 			expectedParticipationEma: v1.DefaultParticipationEma,
 			expectedConstitutionAmdmentParticipationEma: v1.DefaultParticipationEma,
-			expectedLawParticipationEma:                 sdk.NewDecWithPrec(41, 2).String(),
+			expectedLawParticipationEma:                 math.LegacyNewDecWithPrec(41, 2).String(),
 		},
 		{
 			name:                     "proposal with propose constitution amendment message",
 			proposal:                 v1.Proposal{Messages: setMsgs(t, []sdk.Msg{&v1.MsgProposeConstitutionAmendment{}})},
 			expectedParticipationEma: v1.DefaultParticipationEma,
-			expectedConstitutionAmdmentParticipationEma: sdk.NewDecWithPrec(41, 2).String(),
+			expectedConstitutionAmdmentParticipationEma: math.LegacyNewDecWithPrec(41, 2).String(),
 			expectedLawParticipationEma:                 v1.DefaultParticipationEma,
 		},
 		{
@@ -67,9 +68,9 @@ func TestUpdateParticipationEma(t *testing.T) {
 				&v1.MsgProposeLaw{},
 				&banktypes.MsgSend{},
 			})},
-			expectedParticipationEma:                    sdk.NewDecWithPrec(41, 2).String(),
-			expectedConstitutionAmdmentParticipationEma: sdk.NewDecWithPrec(41, 2).String(),
-			expectedLawParticipationEma:                 sdk.NewDecWithPrec(41, 2).String(),
+			expectedParticipationEma:                    math.LegacyNewDecWithPrec(41, 2).String(),
+			expectedConstitutionAmdmentParticipationEma: math.LegacyNewDecWithPrec(41, 2).String(),
+			expectedLawParticipationEma:                 math.LegacyNewDecWithPrec(41, 2).String(),
 		},
 	}
 	for _, tt := range tests {
@@ -79,7 +80,7 @@ func TestUpdateParticipationEma(t *testing.T) {
 			assert.Equal(v1.DefaultParticipationEma, k.GetParticipationEMA(ctx).String())
 			assert.Equal(v1.DefaultParticipationEma, k.GetConstitutionAmendmentParticipationEMA(ctx).String())
 			assert.Equal(v1.DefaultParticipationEma, k.GetLawParticipationEMA(ctx).String())
-			newParticipation := sdk.NewDecWithPrec(5, 2) // 5% participation
+			newParticipation := math.LegacyNewDecWithPrec(5, 2) // 5% participation
 
 			k.UpdateParticipationEMA(ctx, tt.proposal, newParticipation)
 

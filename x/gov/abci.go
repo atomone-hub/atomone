@@ -1,6 +1,7 @@
 package gov
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -14,7 +15,9 @@ import (
 )
 
 // EndBlocker called every block, process inflation, update validator set.
-func EndBlocker(ctx sdk.Context, keeper *keeper.Keeper) {
+func EndBlocker(goCtx context.Context, keeper *keeper.Keeper) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
 	defer telemetry.ModuleMeasureSince(types.ModuleName, time.Now(), telemetry.MetricKeyEndBlocker)
 
 	logger := keeper.Logger(ctx)
@@ -69,7 +72,16 @@ func EndBlocker(ctx sdk.Context, keeper *keeper.Keeper) {
 			// remove from queue
 			keeper.RemoveFromQuorumCheckQueue(ctx, proposal.Id, endTime)
 			// check if proposal passed quorum
-			quorum := keeper.HasReachedQuorum(ctx, proposal)
+			quorum, err := keeper.HasReachedQuorum(ctx, proposal)
+			if err != nil {
+				logger.Error(
+					"proposal quorum check",
+					"proposal", proposal.Id,
+					"title", proposal.Title,
+					"error", err,
+				)
+				return false
+			}
 			logMsg := "proposal did not pass quorum after timeout, but was removed from quorum check queue"
 			tagValue := types.AttributeValueProposalQuorumNotMet
 
@@ -136,8 +148,15 @@ func EndBlocker(ctx sdk.Context, keeper *keeper.Keeper) {
 	keeper.IterateActiveProposalsQueue(ctx, ctx.BlockHeader().Time, func(proposal v1.Proposal) bool {
 		var tagValue, logMsg string
 
-		passes, burnDeposits, participation, tallyResults := keeper.Tally(ctx, proposal)
-
+		passes, burnDeposits, participation, tallyResults, err := keeper.Tally(ctx, proposal)
+		if err != nil {
+			logger.Error(
+				"proposal tally",
+				"proposal", proposal.Id,
+				"error", err,
+			)
+			// NOTE: do not return here as we want the proposal to be rejected
+		}
 		if burnDeposits {
 			keeper.DeleteAndBurnDeposits(ctx, proposal.Id)
 		} else {

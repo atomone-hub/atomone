@@ -2,8 +2,6 @@ package atomone
 
 import (
 	"encoding/json"
-
-	"github.com/atomone-hub/atomone/app/params"
 )
 
 // The genesis state of the blockchain is represented here as a map of raw json
@@ -14,8 +12,3 @@ import (
 // the ModuleBasicManager which populates json from each BasicModule
 // object provided to it during init.
 type GenesisState map[string]json.RawMessage
-
-// NewDefaultGenesisState generates the default state for the application.
-func NewDefaultGenesisState(encConfig params.EncodingConfig) GenesisState {
-	return ModuleBasics.DefaultGenesis(encConfig.Marshaler)
-}
