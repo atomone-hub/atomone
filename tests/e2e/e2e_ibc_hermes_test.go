@@ -18,7 +18,8 @@ import (
 
 // runIBCHermesRelayer bootstraps an IBC Hermes relayer by creating an IBC connection and
 // a transfer channel between chainA and chainB.
-func (s *IntegrationTestSuite) runIBCHermesRelayer() {
+// Returns the channelID.
+func (s *IntegrationTestSuite) runIBCHermesRelayer() string {
 	s.T().Log("starting Hermes relayer container")
 
 	tmpDir, err := os.MkdirTemp("", "atomone-e2e-testnet-hermes-")
@@ -75,8 +76,8 @@ func (s *IntegrationTestSuite) runIBCHermesRelayer() {
 	time.Sleep(10 * time.Second)
 
 	// create the client, connection and channel between the two AtomOne chains
-	s.hermesCreateConnection()
-	s.hermesCreateChannel()
+	connectionID := s.hermesCreateConnection()
+	return s.hermesCreateChannel(connectionID)
 }
 
 func (s *IntegrationTestSuite) tearDownHermesRelayer() {
@@ -219,7 +220,8 @@ func (s *IntegrationTestSuite) hermesPendingPackets(chainID, channelID string) (
 	return len(relayerPacketsOutput.Result.Src.UnreceivedPackets) != 0
 }
 
-func (s *IntegrationTestSuite) hermesCreateConnection() {
+// hermesCreateConnection returns the connectionID.
+func (s *IntegrationTestSuite) hermesCreateConnection() string {
 	s.T().Logf("connecting %s and %s chains via IBC", s.chainA.id, s.chainB.id)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
@@ -236,13 +238,30 @@ func (s *IntegrationTestSuite) hermesCreateConnection() {
 		s.chainB.id,
 	}
 
-	_, err := s.executeHermesCommand(ctx, hermesCmd)
+	out, err := s.executeHermesCommand(ctx, hermesCmd)
 	s.Require().NoError(err, "failed to connect chains: %s", err)
+	// Output: {"result":{"a_side":{"client_id":"07-tendermint-0","connection_id":"connection-0"},"b_side":{"client_id":"07-tendermint-0","connection_id":"connection-0"},"delay_period":{"nanos":0,"secs":0}},"status":"success"}
+	var res struct {
+		Result struct {
+			ASide struct {
+				ClientID     string `json:"client_id"`
+				ConnectionID string `json:"connection_id"`
+			} `json:"a_side"`
+			BSide struct {
+				ClientID     string `json:"client_id"`
+				ConnectionID string `json:"connection_id"`
+			} `json:"b_side"`
+		} `json:"result"`
+		Status string `json:"status"`
+	}
+	err = json.Unmarshal(out, &res)
+	s.Require().NoError(err, "failed to parse hermes create connection output %s: %s", string(out), err)
 
-	s.T().Logf("connected %s and %s chains via IBC", s.chainA.id, s.chainB.id)
+	s.T().Logf("IBC connection %s created between chain %s and %s", res.Result.ASide.ConnectionID, s.chainA.id, s.chainB.id)
+	return res.Result.ASide.ConnectionID
 }
 
-func (s *IntegrationTestSuite) hermesCreateChannel() {
+func (s *IntegrationTestSuite) hermesCreateChannel(connectionID string) string {
 	s.T().Logf("creating IBC transfer channel created between chains %s and %s", s.chainA.id, s.chainB.id)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
@@ -253,15 +272,38 @@ func (s *IntegrationTestSuite) hermesCreateChannel() {
 		"create",
 		"channel",
 		"--a-chain", s.chainA.id,
-		"--a-connection", "connection-0",
+		"--a-connection", connectionID,
 		"--a-port", "transfer",
 		"--b-port", "transfer",
 		"--channel-version", "ics20-1",
 		"--order", "unordered",
 	}
 
-	_, err := s.executeHermesCommand(ctx, hermesCmd)
+	out, err := s.executeHermesCommand(ctx, hermesCmd)
 	s.Require().NoError(err, "failed to create IBC transfer channel between chains: %s", err)
+	// Output {"result":{"a_side":{"channel_id":"channel-0","client_id":"07-tendermint-0","connection_id":"connection-0","port_id":"transfer","version":"ics20-1"},"b_side":{"channel_id":"channel-0","client_id":"07-tendermint-0","connection_id":"connection-0","port_id":"transfer","version":"ics20-1"},"connection_delay":{"nanos":0,"secs":0},"ordering":"Unordered"},"status":"success"}
+	var res struct {
+		Result struct {
+			ASide struct {
+				ChannelID    string `json:"channel_id"`
+				ClientID     string `json:"client_id"`
+				ConnectionID string `json:"connection_id"`
+				PortID       string `json:"port_id"`
+				Version      string `json:"version"`
+			} `json:"a_side"`
+			BSide struct {
+				ChannelID    string `json:"channel_id"`
+				ClientID     string `json:"client_id"`
+				ConnectionID string `json:"connection_id"`
+				PortID       string `json:"port_id"`
+				Version      string `json:"version"`
+			} `json:"b_side"`
+		} `json:"result"`
+		Status string `json:"status"`
+	}
+	err = json.Unmarshal(out, &res)
+	s.Require().NoError(err, "failed to parse hermes create channel output %s: %s", string(out), err)
 
-	s.T().Logf("IBC transfer channel created between chains %s and %s", s.chainA.id, s.chainB.id)
+	s.T().Logf("IBC transfer channel %s created between chains %s and %s", res.Result.ASide.ChannelID, s.chainA.id, s.chainB.id)
+	return res.Result.ASide.ChannelID
 }

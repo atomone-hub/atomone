@@ -13,7 +13,7 @@ import (
 )
 
 //nolint:unparam
-func (s *IntegrationTestSuite) sendIBC(c *chain, valIdx int, sender, recipient, token, note string) {
+func (s *IntegrationTestSuite) transferIBC(c *chain, valIdx int, channelID, sender, recipient, token, note string) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
@@ -23,7 +23,7 @@ func (s *IntegrationTestSuite) sendIBC(c *chain, valIdx int, sender, recipient, 
 		"ibc-transfer",
 		"transfer",
 		"transfer",
-		"channel-0",
+		channelID,
 		recipient,
 		token,
 		fmt.Sprintf("--from=%s", sender),
@@ -36,9 +36,9 @@ func (s *IntegrationTestSuite) sendIBC(c *chain, valIdx int, sender, recipient, 
 		"--output=json",
 		"-y",
 	}
-	s.T().Logf("sending %s from %s (%s) to %s (%s) with memo %s", token, s.chainA.id, sender, s.chainB.id, recipient, note)
+	s.T().Logf("transfering %s from %s (%s) to %s (%s) using %s", token, s.chainA.id, sender, s.chainB.id, recipient, channelID)
 	s.executeAtomoneTxCommand(ctx, c, ibcCmd, valIdx, s.defaultExecValidation(c, valIdx, nil))
-	s.T().Log("successfully sent IBC tokens")
+	s.T().Log("successfully transfered IBC tokens")
 }
 
 func (s *IntegrationTestSuite) queryRelayerWalletsBalances() (sdk.Coins, sdk.Coins) {
@@ -59,7 +59,7 @@ func (s *IntegrationTestSuite) queryRelayerWalletsBalances() (sdk.Coins, sdk.Coi
 	return scrRelayerBalance, dstRelayerBalance
 }
 
-func (s *IntegrationTestSuite) testIBCTokenTransfer() {
+func (s *IntegrationTestSuite) testIBCTokenTransfer(channelID string) {
 	s.Run("send_to_chainB", func() {
 		address, _ := s.chainA.validators[0].keyInfo.GetAddress()
 		sender := address.String()
@@ -71,7 +71,7 @@ func (s *IntegrationTestSuite) testIBCTokenTransfer() {
 		chainBAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainB.id][0].GetHostPort("1317/tcp"))
 
 		// Determine ibc denom trace which is "ibc/"+HEX(SHA256({port}/{channel}/{denom}))
-		bz := sha256.Sum256([]byte("transfer/channel-0/" + uatoneDenom))
+		bz := sha256.Sum256([]byte(fmt.Sprintf("transfer/%s/%s", channelID, uatoneDenom)))
 		ibcDenom := fmt.Sprintf("ibc/%X", bz)
 
 		tokenChainA := sdk.NewInt64Coin(uatoneDenom, 1_000_000_000) // 1,000 atone
@@ -81,11 +81,11 @@ func (s *IntegrationTestSuite) testIBCTokenTransfer() {
 		beforeChainABalance := s.queryBalance(chainAAPIEndpoint, sender, uatoneDenom)
 		beforeChainBBalance := s.queryBalance(chainBAPIEndpoint, recipient, ibcDenom)
 
-		s.sendIBC(s.chainA, 0, sender, recipient, tokenChainA.String(), "")
+		s.transferIBC(s.chainA, 0, channelID, sender, recipient, tokenChainA.String(), "")
 
 		if s.hermesResource != nil {
 			// Test is using hermes relayer, call the required function
-			pass := s.hermesClearPacket(hermesConfigWithGasPrices, s.chainA.id, transferChannel)
+			pass := s.hermesClearPacket(hermesConfigWithGasPrices, s.chainA.id, channelID)
 			s.Require().True(pass)
 		}
 		s.Require().EventuallyWithT(
@@ -106,7 +106,6 @@ func (s *IntegrationTestSuite) testIBCTokenTransfer() {
 			time.Minute,
 			time.Second,
 		)
-		beforeChainBBalance = s.queryBalance(chainBAPIEndpoint, recipient, ibcDenom)
 
 		// Now try to send back the tokens to chainA
 		s.Run("send_back_to_chainA", func() {
@@ -114,11 +113,11 @@ func (s *IntegrationTestSuite) testIBCTokenTransfer() {
 			beforeChainABalance := s.queryBalance(chainAAPIEndpoint, sender, uatoneDenom)
 			beforeChainBBalance := s.queryBalance(chainBAPIEndpoint, recipient, ibcDenom)
 
-			s.sendIBC(s.chainB, 0, recipient, sender, tokenChainB.String(), "")
+			s.transferIBC(s.chainB, 0, channelID, recipient, sender, tokenChainB.String(), "")
 
 			if s.hermesResource != nil {
 				// Test is using hermes relayer, call the required function
-				pass := s.hermesClearPacket(hermesConfigWithGasPrices, s.chainA.id, transferChannel)
+				pass := s.hermesClearPacket(hermesConfigWithGasPrices, s.chainA.id, channelID)
 				s.Require().True(pass)
 			}
 			s.Require().EventuallyWithT(

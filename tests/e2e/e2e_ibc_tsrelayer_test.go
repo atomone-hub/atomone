@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"regexp"
 	"strings"
 	"time"
 
@@ -15,7 +16,8 @@ import (
 
 // runIBCTSRelayer bootstraps an IBC ts-relayer by creating an IBC connection and
 // a transfer channel between chainA and chainB.
-func (s *IntegrationTestSuite) runIBCTSRelayer() {
+// Return the channelID.
+func (s *IntegrationTestSuite) runIBCTSRelayer() string {
 	s.T().Log("starting ts-relayer container")
 
 	tmpDir, err := os.MkdirTemp("", "atomone-e2e-testnet-ts-relayer-")
@@ -57,7 +59,7 @@ func (s *IntegrationTestSuite) runIBCTSRelayer() {
 	s.tsRelayerAddGasPrice(s.chainB.id, "0.0001uphoton")
 
 	// create the client between the two AtomOne chains
-	s.tsRelayerAddPath(
+	return s.tsRelayerAddPath(
 		s.chainA.id, s.valResources[s.chainA.id][0].Container.Name[1:],
 		s.chainB.id, s.valResources[s.chainB.id][0].Container.Name[1:],
 	)
@@ -71,7 +73,7 @@ func (s *IntegrationTestSuite) tearDownTsRelayer() {
 	}
 }
 
-func (s *IntegrationTestSuite) executeTsRelayerCommand(ctx context.Context, args []string) {
+func (s *IntegrationTestSuite) executeTsRelayerCommand(ctx context.Context, args []string) string {
 	cmd := append(tsRelayerBinary, args...)
 	exec, err := s.dkrPool.Client.CreateExec(docker.CreateExecOptions{
 		Context:      ctx,
@@ -103,6 +105,7 @@ func (s *IntegrationTestSuite) executeTsRelayerCommand(ctx context.Context, args
 		}
 	}
 	s.Require().Equal(0, exitCode, "error in ts-relayer cmd '%s', err=%v, exitCode=%d, out=%s", strings.Join(cmd, " "), exitCode, err, out.String())
+	return out.String()
 }
 
 func (s *IntegrationTestSuite) tsRelayerAddMnemonic(chainID, mnemonic string) {
@@ -137,7 +140,7 @@ func (s *IntegrationTestSuite) tsRelayerAddGasPrice(chainID, gasPrice string) {
 	s.T().Logf("ts-relayer: gas-price added for chain %s", chainID)
 }
 
-func (s *IntegrationTestSuite) tsRelayerAddPath(chainAID, containerAID, chainBID, containerBID string) {
+func (s *IntegrationTestSuite) tsRelayerAddPath(chainAID, containerAID, chainBID, containerBID string) string {
 	s.T().Logf("ts-relayer: adding path between chains %s and %s", chainAID, chainBID)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
@@ -150,7 +153,15 @@ func (s *IntegrationTestSuite) tsRelayerAddPath(chainAID, containerAID, chainBID
 		"--surl", "http://" + containerAID + ":26657",
 		"--durl", "http://" + containerBID + ":26657",
 	}
-	s.executeTsRelayerCommand(ctx, args)
+	out := s.executeTsRelayerCommand(ctx, args)
 
-	s.T().Logf("ts-relayer: path added between chains %s and %s", chainAID, chainBID)
+	// Parsing channelId from logs, format is:
+	// "Chanel open confirm for port transfer: channel-0 => channel-0"
+	regex := regexp.MustCompile(`Chanel open confirm for port transfer: channel-(\d+) => channel-`)
+	matches := regex.FindStringSubmatch(out)
+	s.Require().NotNil(matches, "unable to parse ts-relayer output")
+	channelId := "channel-" + matches[1]
+
+	s.T().Logf("ts-relayer: path added between chains %s and %s (channel %s)", chainAID, chainBID, channelId)
+	return channelId
 }

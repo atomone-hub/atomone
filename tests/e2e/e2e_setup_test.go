@@ -73,7 +73,6 @@ const (
 	hermesBinary              = "hermes"
 	hermesConfigWithGasPrices = "/root/.hermes/config.toml"
 	hermesConfigNoGasPrices   = "/root/.hermes/config-zero.toml"
-	transferChannel           = "channel-0"
 )
 
 var (

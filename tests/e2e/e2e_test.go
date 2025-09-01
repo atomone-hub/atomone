@@ -71,21 +71,21 @@ func (s *IntegrationTestSuite) TestIBC_hermesRelayer() {
 		s.T().Skip()
 	}
 	s.ensureIBCSetup()
-	s.runIBCHermesRelayer()
+	channelID := s.runIBCHermesRelayer()
 	defer s.tearDownHermesRelayer()
 
-	s.testIBCTokenTransfer()
+	s.testIBCTokenTransfer(channelID)
 }
 
-func (s *IntegrationTestSuite) TestIBC_TSRelayer() {
+func (s *IntegrationTestSuite) TestIBC_tsRelayer() {
 	if !runIBCTest {
 		s.T().Skip()
 	}
 	s.ensureIBCSetup()
-	s.runIBCTSRelayer()
+	channelID := s.runIBCTSRelayer()
 	defer s.tearDownTsRelayer()
 
-	s.testIBCTokenTransfer()
+	s.testIBCTokenTransfer(channelID)
 }
 
 func (s *IntegrationTestSuite) TestSlashing() {
