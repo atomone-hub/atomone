@@ -4,6 +4,8 @@ package atomone.coredaos.module.v1;
 
 import "cosmos/app/v1alpha1/module.proto";
 
+option go_package = "github.com/atomone-hub/atomone/x/coredaos/types/module";
+
 // Module is the config object of the builder module.
 message Module {
   option (cosmos.app.v1alpha1.module) = {

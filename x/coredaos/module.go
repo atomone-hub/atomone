@@ -8,8 +8,6 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 
-	abci "github.com/cometbft/cometbft/abci/types"
-
 	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/depinject"
 	store "cosmossdk.io/store/types"
@@ -21,10 +19,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	modulev1 "github.com/atomone-hub/atomone/api/atomone/coredaos/module/v1"
 	"github.com/atomone-hub/atomone/x/coredaos/client/cli"
 	"github.com/atomone-hub/atomone/x/coredaos/keeper"
 	"github.com/atomone-hub/atomone/x/coredaos/types"
+	modulev1 "github.com/atomone-hub/atomone/x/coredaos/types/module"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 )
 
@@ -34,6 +32,7 @@ const ConsensusVersion = 1
 var (
 	_ module.AppModuleBasic = AppModuleBasic{}
 	_ module.HasServices    = AppModule{}
+	_ module.HasGenesis     = AppModule{}
 
 	_ appmodule.AppModule = AppModule{}
 )
@@ -140,14 +139,14 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 func (am AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
 
 // InitGenesis performs the module's genesis initialization. It returns no validator updates.
-func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, gs json.RawMessage) []abci.ValidatorUpdate {
+func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, gs json.RawMessage) {
 	var genState types.GenesisState
 	// Initialize global index to index in genesis state
 	cdc.MustUnmarshalJSON(gs, &genState)
 
 	InitGenesis(ctx, am.keeper, genState)
 
-	return []abci.ValidatorUpdate{}
+	return
 }
 
 // ExportGenesis returns the module's exported genesis state as raw JSON bytes.
