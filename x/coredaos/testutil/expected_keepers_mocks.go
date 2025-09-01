@@ -62,6 +62,18 @@ func (mr *MockGovKeeperMockRecorder) DeleteAndBurnDeposits(ctx, proposalID inter
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAndBurnDeposits", reflect.TypeOf((*MockGovKeeper)(nil).DeleteAndBurnDeposits), ctx, proposalID)
 }
 
+// DeleteVotes mocks base method.
+func (m *MockGovKeeper) DeleteVotes(ctx types.Context, proposalID uint64) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "DeleteVotes", ctx, proposalID)
+}
+
+// DeleteVotes indicates an expected call of DeleteVotes.
+func (mr *MockGovKeeperMockRecorder) DeleteVotes(ctx, proposalID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteVotes", reflect.TypeOf((*MockGovKeeper)(nil).DeleteVotes), ctx, proposalID)
+}
+
 // GetProposal mocks base method.
 func (m *MockGovKeeper) GetProposal(ctx types.Context, id uint64) (v1.Proposal, bool) {
 	m.ctrl.T.Helper()

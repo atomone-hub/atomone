@@ -43,6 +43,9 @@ type GovKeeper interface {
 	UpdateMinInitialDeposit(ctx sdk.Context, checkElapsedTime bool)
 	// UpdateMinDeposit updates the minimum deposit required for a proposal
 	UpdateMinDeposit(ctx sdk.Context, checkElapsedTime bool)
+
+	// DeleteVotes deletes all votes from a proposal with given proposalID
+	DeleteVotes(ctx sdk.Context, proposalID uint64)
 }
 
 // StakingKeeper defines the expected interface needed to interact with the

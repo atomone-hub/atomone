@@ -383,6 +383,7 @@ func (ms MsgServer) VetoProposal(goCtx context.Context, msg *types.MsgVetoPropos
 	proposal.FinalTallyResult = &emptyTally
 
 	ms.k.govKeeper.SetProposal(ctx, proposal)
+	ms.k.govKeeper.DeleteVotes(ctx, proposal.Id)
 	ms.k.govKeeper.RemoveFromActiveProposalQueue(ctx, proposal.Id, *proposal.VotingEndTime)
 	ms.k.govKeeper.DecrementActiveProposalsNumber(ctx)
 
