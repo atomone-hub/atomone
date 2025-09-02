@@ -60,7 +60,7 @@ func (s *IntegrationTestSuite) queryRelayerWalletsBalances() (sdk.Coins, sdk.Coi
 }
 
 func (s *IntegrationTestSuite) testIBCTokenTransfer(channelID string) {
-	s.Run("send_to_chainB", func() {
+	s.Run("transfer_to_chainB", func() {
 		address, _ := s.chainA.validators[0].keyInfo.GetAddress()
 		sender := address.String()
 
@@ -108,7 +108,7 @@ func (s *IntegrationTestSuite) testIBCTokenTransfer(channelID string) {
 		)
 
 		// Now try to send back the tokens to chainA
-		s.Run("send_back_to_chainA", func() {
+		s.Run("transfer_back_to_chainA", func() {
 			// Get balance before test
 			beforeChainABalance := s.queryBalance(chainAAPIEndpoint, sender, uatoneDenom)
 			beforeChainBBalance := s.queryBalance(chainBAPIEndpoint, recipient, ibcDenom)
