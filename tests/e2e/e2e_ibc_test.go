@@ -59,7 +59,7 @@ func (s *IntegrationTestSuite) queryRelayerWalletsBalances() (sdk.Coins, sdk.Coi
 	return scrRelayerBalance, dstRelayerBalance
 }
 
-func (s *IntegrationTestSuite) testIBCTokenTransfer(channelID string) {
+func (s *IntegrationTestSuite) testIBCTokenTransfer(channelIdA, channelIdB string) {
 	s.Run("transfer_to_chainB", func() {
 		address, _ := s.chainA.validators[0].keyInfo.GetAddress()
 		sender := address.String()
@@ -71,7 +71,7 @@ func (s *IntegrationTestSuite) testIBCTokenTransfer(channelID string) {
 		chainBAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainB.id][0].GetHostPort("1317/tcp"))
 
 		// Determine ibc denom trace which is "ibc/"+HEX(SHA256({port}/{channel}/{denom}))
-		bz := sha256.Sum256([]byte(fmt.Sprintf("transfer/%s/%s", channelID, uatoneDenom)))
+		bz := sha256.Sum256([]byte(fmt.Sprintf("transfer/%s/%s", channelIdA, uatoneDenom)))
 		ibcDenom := fmt.Sprintf("ibc/%X", bz)
 
 		tokenChainA := sdk.NewInt64Coin(uatoneDenom, 1_000_000_000) // 1,000 atone
@@ -81,11 +81,11 @@ func (s *IntegrationTestSuite) testIBCTokenTransfer(channelID string) {
 		beforeChainABalance := s.queryBalance(chainAAPIEndpoint, sender, uatoneDenom)
 		beforeChainBBalance := s.queryBalance(chainBAPIEndpoint, recipient, ibcDenom)
 
-		s.transferIBC(s.chainA, 0, channelID, sender, recipient, tokenChainA.String(), "")
+		s.transferIBC(s.chainA, 0, channelIdA, sender, recipient, tokenChainA.String(), "")
 
 		if s.hermesResource != nil {
 			// Test is using hermes relayer, call the required function
-			pass := s.hermesClearPacket(hermesConfigWithGasPrices, s.chainA.id, channelID)
+			pass := s.hermesClearPacket(hermesConfigWithGasPrices, s.chainA.id, channelIdA)
 			s.Require().True(pass)
 		}
 		s.Require().EventuallyWithT(
@@ -107,17 +107,17 @@ func (s *IntegrationTestSuite) testIBCTokenTransfer(channelID string) {
 			time.Second,
 		)
 
-		// Now try to send back the tokens to chainA
+		// Now try to send back the tokens to chainA (unwind)
 		s.Run("transfer_back_to_chainA", func() {
 			// Get balance before test
 			beforeChainABalance := s.queryBalance(chainAAPIEndpoint, sender, uatoneDenom)
 			beforeChainBBalance := s.queryBalance(chainBAPIEndpoint, recipient, ibcDenom)
 
-			s.transferIBC(s.chainB, 0, channelID, recipient, sender, tokenChainB.String(), "")
+			s.transferIBC(s.chainB, 0, channelIdB, recipient, sender, tokenChainB.String(), "")
 
 			if s.hermesResource != nil {
 				// Test is using hermes relayer, call the required function
-				pass := s.hermesClearPacket(hermesConfigWithGasPrices, s.chainA.id, channelID)
+				pass := s.hermesClearPacket(hermesConfigWithGasPrices, s.chainA.id, channelIdB)
 				s.Require().True(pass)
 			}
 			s.Require().EventuallyWithT(

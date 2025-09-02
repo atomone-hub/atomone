@@ -18,8 +18,8 @@ import (
 
 // runIBCHermesRelayer bootstraps an IBC Hermes relayer by creating an IBC connection and
 // a transfer channel between chainA and chainB.
-// Returns the channelID.
-func (s *IntegrationTestSuite) runIBCHermesRelayer() string {
+// Returns the channel-ids of both side.
+func (s *IntegrationTestSuite) runIBCHermesRelayer() (string, string) {
 	s.T().Log("starting Hermes relayer container")
 
 	tmpDir, err := os.MkdirTemp("", "atomone-e2e-testnet-hermes-")
@@ -261,7 +261,8 @@ func (s *IntegrationTestSuite) hermesCreateConnection() string {
 	return res.Result.ASide.ConnectionID
 }
 
-func (s *IntegrationTestSuite) hermesCreateChannel(connectionID string) string {
+// Returns the channel-ids of both side
+func (s *IntegrationTestSuite) hermesCreateChannel(connectionID string) (string, string) {
 	s.T().Logf("creating IBC transfer channel created between chains %s and %s", s.chainA.id, s.chainB.id)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
@@ -305,5 +306,5 @@ func (s *IntegrationTestSuite) hermesCreateChannel(connectionID string) string {
 	s.Require().NoError(err, "failed to parse hermes create channel output %s: %s", string(out), err)
 
 	s.T().Logf("IBC transfer channel %s created between chains %s and %s", res.Result.ASide.ChannelID, s.chainA.id, s.chainB.id)
-	return res.Result.ASide.ChannelID
+	return res.Result.ASide.ChannelID, res.Result.BSide.ChannelID
 }

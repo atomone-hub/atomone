@@ -18,6 +18,7 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	disttypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	channeltypes "github.com/cosmos/ibc-go/v10/modules/core/04-channel/types"
 
 	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
 	govtypesv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
@@ -393,6 +394,15 @@ func (s *IntegrationTestSuite) queryUpgradePlan(endpoint string) upgradetypes.Qu
 	body, err := httpGet(fmt.Sprintf("%s/cosmos/upgrade/v1beta1/current_plan", endpoint))
 	s.Require().NoError(err)
 	var res upgradetypes.QueryCurrentPlanResponse
+	err = s.cdc.UnmarshalJSON(body, &res)
+	s.Require().NoError(err)
+	return res
+}
+
+func (s *IntegrationTestSuite) queryIBCConnectionChannels(endpoint, connectionID string) channeltypes.QueryConnectionChannelsResponse {
+	body, err := httpGet(fmt.Sprintf("%s/ibc/core/channel/v1/connections/%s/channels", endpoint, connectionID))
+	s.Require().NoError(err)
+	var res channeltypes.QueryConnectionChannelsResponse
 	err = s.cdc.UnmarshalJSON(body, &res)
 	s.Require().NoError(err)
 	return res
