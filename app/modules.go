@@ -5,6 +5,7 @@ import (
 	ibctransfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
 	ibc "github.com/cosmos/ibc-go/v10/modules/core"
 	ibcexported "github.com/cosmos/ibc-go/v10/modules/core/exported"
+	providertypes "github.com/cosmos/interchain-security/v5/x/ccv/provider/types"
 
 	"cosmossdk.io/x/evidence"
 	evidencetypes "cosmossdk.io/x/evidence/types"
@@ -48,16 +49,18 @@ import (
 )
 
 var maccPerms = map[string][]string{
-	authtypes.FeeCollectorName:     nil,
-	distrtypes.ModuleName:          nil,
-	icatypes.ModuleName:            nil,
-	minttypes.ModuleName:           {authtypes.Minter},
-	stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
-	stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
-	govtypes.ModuleName:            {authtypes.Burner},
-	ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
-	photontypes.ModuleName:         {authtypes.Minter, authtypes.Burner},
-	dynamicfeetypes.ModuleName:     nil,
+	authtypes.FeeCollectorName:        nil,
+	distrtypes.ModuleName:             nil,
+	icatypes.ModuleName:               nil,
+	minttypes.ModuleName:              {authtypes.Minter},
+	stakingtypes.BondedPoolName:       {authtypes.Burner, authtypes.Staking},
+	stakingtypes.NotBondedPoolName:    {authtypes.Burner, authtypes.Staking},
+	govtypes.ModuleName:               {authtypes.Burner},
+	ibctransfertypes.ModuleName:       {authtypes.Minter, authtypes.Burner},
+	photontypes.ModuleName:            {authtypes.Minter, authtypes.Burner},
+	dynamicfeetypes.ModuleName:        nil,
+	providertypes.ConsumerRewardsPool: nil,
+	providertypes.ModuleName:          nil,
 }
 
 func appModules(
@@ -99,6 +102,7 @@ func appModules(
 		app.TransferModule,
 		app.ICAModule,
 		app.TMClientModule,
+		app.ProviderModule,
 	}
 }
 
@@ -127,6 +131,7 @@ func orderBeginBlockers() []string {
 		banktypes.ModuleName,
 		photontypes.ModuleName,
 		govtypes.ModuleName,
+		providertypes.ModuleName,
 		ibcexported.ModuleName,
 		ibctransfertypes.ModuleName,
 		icatypes.ModuleName,
@@ -152,6 +157,7 @@ func orderEndBlockers() []string {
 		dynamicfeetypes.ModuleName,
 		govtypes.ModuleName,
 		stakingtypes.ModuleName,
+		providertypes.ModuleName, // provider.EndBlock must be after staking.EndBlock
 		ibcexported.ModuleName,
 		ibctransfertypes.ModuleName,
 		icatypes.ModuleName,
@@ -193,6 +199,7 @@ func orderInitBlockers() []string {
 		ibctransfertypes.ModuleName,
 		ibcexported.ModuleName,
 		icatypes.ModuleName,
+		providertypes.ModuleName,
 		evidencetypes.ModuleName,
 		authz.ModuleName,
 		feegrant.ModuleName,
