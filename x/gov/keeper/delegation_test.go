@@ -3,10 +3,9 @@ package keeper_test
 import (
 	"testing"
 
+	"cosmossdk.io/math"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	"github.com/stretchr/testify/assert"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func TestGovernanceDelegate(t *testing.T) {
@@ -70,7 +69,7 @@ func TestGovernanceDelegate(t *testing.T) {
 		assert.Equal(valShare1, v1.GovernorValShares{
 			GovernorAddress:  s.activeGovernors[0].GovernorAddress,
 			ValidatorAddress: s.valAddrs[0].String(),
-			Shares:           sdk.NewDec(1 + 5),
+			Shares:           math.LegacyNewDec(1 + 5),
 		})
 	}
 	valShare2, found := govKeeper.GetGovernorValShares(ctx, s.activeGovernors[0].GetAddress(), s.valAddrs[1])
@@ -78,7 +77,7 @@ func TestGovernanceDelegate(t *testing.T) {
 		assert.Equal(valShare2, v1.GovernorValShares{
 			GovernorAddress:  s.activeGovernors[0].GovernorAddress,
 			ValidatorAddress: s.valAddrs[1].String(),
-			Shares:           sdk.NewDec(2),
+			Shares:           math.LegacyNewDec(2),
 		})
 	}
 	_, found = govKeeper.GetGovernorValShares(ctx, s.inactiveGovernor.GetAddress(), s.valAddrs[0])
@@ -88,7 +87,7 @@ func TestGovernanceDelegate(t *testing.T) {
 		assert.Equal(valShare3, v1.GovernorValShares{
 			GovernorAddress:  s.inactiveGovernor.GovernorAddress,
 			ValidatorAddress: s.valAddrs[1].String(),
-			Shares:           sdk.NewDec(8),
+			Shares:           math.LegacyNewDec(8),
 		})
 	}
 
@@ -124,7 +123,7 @@ func TestGovernanceDelegate(t *testing.T) {
 		assert.Equal(valShare1, v1.GovernorValShares{
 			GovernorAddress:  s.activeGovernors[0].GovernorAddress,
 			ValidatorAddress: s.valAddrs[0].String(),
-			Shares:           sdk.NewDec(5),
+			Shares:           math.LegacyNewDec(5),
 		})
 	}
 	_, found = govKeeper.GetGovernorValShares(ctx, s.activeGovernors[0].GetAddress(), s.valAddrs[1])
@@ -134,7 +133,7 @@ func TestGovernanceDelegate(t *testing.T) {
 		assert.Equal(valShare2, v1.GovernorValShares{
 			GovernorAddress:  s.inactiveGovernor.GovernorAddress,
 			ValidatorAddress: s.valAddrs[0].String(),
-			Shares:           sdk.NewDec(1),
+			Shares:           math.LegacyNewDec(1),
 		})
 	}
 	valShare3, found = govKeeper.GetGovernorValShares(ctx, s.inactiveGovernor.GetAddress(), s.valAddrs[1])
@@ -142,7 +141,7 @@ func TestGovernanceDelegate(t *testing.T) {
 		assert.Equal(valShare3, v1.GovernorValShares{
 			GovernorAddress:  s.inactiveGovernor.GovernorAddress,
 			ValidatorAddress: s.valAddrs[1].String(),
-			Shares:           sdk.NewDec(10),
+			Shares:           math.LegacyNewDec(10),
 		})
 	}
 
@@ -158,7 +157,7 @@ func TestGovernanceDelegate(t *testing.T) {
 		assert.Equal(valShare1, v1.GovernorValShares{
 			GovernorAddress:  s.activeGovernors[0].GovernorAddress,
 			ValidatorAddress: s.valAddrs[0].String(),
-			Shares:           sdk.NewDec(5),
+			Shares:           math.LegacyNewDec(5),
 		})
 	}
 	_, found = govKeeper.GetGovernorValShares(ctx, s.activeGovernors[0].GetAddress(), s.valAddrs[1])
@@ -170,7 +169,7 @@ func TestGovernanceDelegate(t *testing.T) {
 		assert.Equal(valShare3, v1.GovernorValShares{
 			GovernorAddress:  s.inactiveGovernor.GovernorAddress,
 			ValidatorAddress: s.valAddrs[1].String(),
-			Shares:           sdk.NewDec(8),
+			Shares:           math.LegacyNewDec(8),
 		})
 	}
 }

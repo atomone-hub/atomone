@@ -8,7 +8,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 
-	sdkmath "cosmossdk.io/math"
+	"cosmossdk.io/math"
 
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -64,8 +64,8 @@ func newFixture(t *testing.T, ctx sdk.Context, numVals, numDelegators,
 		}
 	)
 	mocks.stakingKeeper.EXPECT().TotalBondedTokens(gomock.Any()).
-		DoAndReturn(func(_ context.Context) sdkmath.Int {
-			return sdkmath.NewInt(s.totalBonded)
+		DoAndReturn(func(_ context.Context) (math.Int, error) {
+			return math.NewInt(s.totalBonded), nil
 		}).MaxTimes(1)
 
 	// Mocks a bunch of validators
@@ -73,8 +73,8 @@ func newFixture(t *testing.T, ctx sdk.Context, numVals, numDelegators,
 		s.validators = append(s.validators, stakingtypes.Validator{
 			OperatorAddress: valAddrs[i].String(),
 			Status:          stakingtypes.Bonded,
-			Tokens:          sdkmath.ZeroInt(),
-			DelegatorShares: sdkmath.LegacyZeroDec(),
+			Tokens:          math.ZeroInt(),
+			DelegatorShares: math.LegacyZeroDec(),
 		})
 		// validator self delegation
 		s.delegate(sdk.AccAddress(valAddrs[i]), valAddrs[i], 1)
@@ -148,7 +148,7 @@ func (s *fixture) delegate(delegator sdk.AccAddress, validator sdk.ValAddress, m
 	// Increase validator shares and tokens, compute delegation.Shares
 	for i := 0; i < len(s.validators); i++ {
 		if s.validators[i].OperatorAddress == validator.String() {
-			s.validators[i], delegation.Shares = s.validators[i].AddTokensFromDel(sdk.NewInt(m))
+			s.validators[i], delegation.Shares = s.validators[i].AddTokensFromDel(math.NewInt(m))
 			break
 		}
 	}

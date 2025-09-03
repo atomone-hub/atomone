@@ -5,6 +5,7 @@ package keeper
 import (
 	"fmt"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
@@ -70,18 +71,18 @@ func GovernorsDelegationsInvariant(keeper *Keeper, sk types.StakingKeeper) sdk.I
 				}
 			}
 
-			valShares := make(map[string]sdk.Dec)
+			valShares := make(map[string]math.LegacyDec)
 			valSharesKeys := make([]string, 0)
 			keeper.IterateGovernorDelegations(ctx, governor.GetAddress(), func(index int64, delegation v1.GovernanceDelegation) bool {
 				delAddr := sdk.MustAccAddressFromBech32(delegation.DelegatorAddress)
 				keeper.sk.IterateDelegations(ctx, delAddr, func(_ int64, delegation stakingtypes.DelegationI) (stop bool) {
 					validatorAddr := delegation.GetValidatorAddr()
 					shares := delegation.GetShares()
-					if _, ok := valShares[validatorAddr.String()]; !ok {
-						valShares[validatorAddr.String()] = sdk.ZeroDec()
-						valSharesKeys = append(valSharesKeys, validatorAddr.String())
+					if _, ok := valShares[validatorAddr]; !ok {
+						valShares[validatorAddr] = math.LegacyZeroDec()
+						valSharesKeys = append(valSharesKeys, validatorAddr)
 					}
-					valShares[validatorAddr.String()] = valShares[validatorAddr.String()].Add(shares)
+					valShares[validatorAddr] = valShares[validatorAddr].Add(shares)
 					return false
 				})
 				return false
@@ -106,7 +107,7 @@ func GovernorsDelegationsInvariant(keeper *Keeper, sk types.StakingKeeper) sdk.I
 			}
 
 			keeper.IterateGovernorValShares(ctx, governor.GetAddress(), func(index int64, shares v1.GovernorValShares) bool {
-				if _, ok := valShares[shares.ValidatorAddress]; !ok && shares.Shares.GT(sdk.ZeroDec()) {
+				if _, ok := valShares[shares.ValidatorAddress]; !ok && shares.Shares.GT(math.LegacyZeroDec()) {
 					invariantStr = sdk.FormatInvariant(types.ModuleName, fmt.Sprintf("governor %s delegations", governor.GetAddress().String()),
 						fmt.Sprintf("non-zero (%s) shares stored for validator %s where there should be none", shares.Shares, shares.ValidatorAddress))
 					broken = true

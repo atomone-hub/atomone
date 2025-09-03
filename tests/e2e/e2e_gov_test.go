@@ -46,7 +46,7 @@ func (s *IntegrationTestSuite) testGovSoftwareUpgrade() {
 		depositGovFlags := []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes=0.8,no=0.1,abstain=0.1"}
-		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "SoftwareUpgrade", submitGovFlags, depositGovFlags, voteGovFlags, "weighted-vote", govtypesv1beta1.StatusPassed)
+		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "SoftwareUpgrade", submitGovFlags, depositGovFlags, voteGovFlags, "weighted-vote", govtypesv1.StatusPassed)
 
 		res := s.queryUpgradePlan(chainAAPIEndpoint)
 		s.Require().Equal("v2", res.Plan.Name)
@@ -94,14 +94,14 @@ func (s *IntegrationTestSuite) testGovCancelSoftwareUpgrade() {
 		submitGovFlags := []string{configFile(proposalSoftwareUpgradeFilename)}
 		depositGovFlags := []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
-		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "SoftwareUpgrade", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
+		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "SoftwareUpgrade", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1.StatusPassed)
 
 		proposalCounter++
 		s.writeGovCancelUpgradeProposal(s.chainA)
 		submitGovFlags = []string{configFile(proposalCancelUpgradeFilename)}
 		depositGovFlags = []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 		voteGovFlags = []string{strconv.Itoa(proposalCounter), "yes"}
-		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "CancelUpgrade", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
+		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "CancelUpgrade", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1.StatusPassed)
 
 		s.verifyChainPassesUpgradeHeight(s.chainA, 0, proposalHeight)
 		s.T().Logf("Successfully canceled upgrade at height %d", proposalHeight)
@@ -181,7 +181,7 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
 		proposalCounter++
 		submitGovFlags := []string{configFile(proposalCommunitySpendFilename)}
-		depositGovFlags := []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
+		depositGovFlags := []string{strconv.Itoa(proposalCounter), deposit.String()}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "no"}
 		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "CommunityPoolSpend", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1.StatusRejected)
 
@@ -361,7 +361,7 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 		expectedParticipation := endQuorumPEma.Sub(quorumPEma.Mul(math.LegacyMustNewDecFromStr("0.8"))).Quo(math.LegacyMustNewDecFromStr("0.2"))
 		proposal, _ := s.queryGovProposal(chainAAPIEndpoint, proposalCounter)
 		stakingPool := s.queryStakingPool(chainAAPIEndpoint)
-		yesCount, ok := sdk.NewIntFromString(proposal.Proposal.FinalTallyResult.YesCount)
+		yesCount, ok := math.NewIntFromString(proposal.Proposal.FinalTallyResult.YesCount)
 		s.Require().True(ok, "Failed to parse yes count from proposal tally result")
 		votes := yesCount.ToLegacyDec()
 		totalVP := stakingPool.Pool.BondedTokens.ToLegacyDec()
@@ -401,7 +401,7 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 		expectedParticipation := endLawQuorumPEma.Sub(lawQuorumPEma.Mul(math.LegacyMustNewDecFromStr("0.8"))).Quo(math.LegacyMustNewDecFromStr("0.2"))
 		proposal, _ := s.queryGovProposal(chainAAPIEndpoint, proposalCounter)
 		stakingPool := s.queryStakingPool(chainAAPIEndpoint)
-		yesCount, ok := sdk.NewIntFromString(proposal.Proposal.FinalTallyResult.YesCount)
+		yesCount, ok := math.NewIntFromString(proposal.Proposal.FinalTallyResult.YesCount)
 		s.Require().True(ok, "Failed to parse yes count from proposal tally result")
 		votes := yesCount.ToLegacyDec()
 		totalVP := stakingPool.Pool.BondedTokens.ToLegacyDec()
@@ -441,7 +441,7 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 		expectedParticipation := endConstitutionAmendmentQuorumPEma.Sub(constitutionAmendmentQuorumPEma.Mul(math.LegacyMustNewDecFromStr("0.8"))).Quo(math.LegacyMustNewDecFromStr("0.2"))
 		proposal, _ := s.queryGovProposal(chainAAPIEndpoint, proposalCounter)
 		stakingPool := s.queryStakingPool(chainAAPIEndpoint)
-		yesCount, ok := sdk.NewIntFromString(proposal.Proposal.FinalTallyResult.YesCount)
+		yesCount, ok := math.NewIntFromString(proposal.Proposal.FinalTallyResult.YesCount)
 		s.Require().True(ok, "Failed to parse yes count from proposal tally result")
 		votes := yesCount.ToLegacyDec()
 		totalVP := stakingPool.Pool.BondedTokens.ToLegacyDec()
@@ -477,7 +477,7 @@ func (s *IntegrationTestSuite) testGovGovernors() {
 		// check governor is created
 		s.Require().Eventually(
 			func() bool {
-				governor, err := queryGovGovernor(chainAAPIEndpoint, governorAddr)
+				governor, err := s.queryGovGovernor(chainAAPIEndpoint, governorAddr)
 				s.Require().NoError(err)
 				return governor.Governor != nil
 			},
@@ -498,7 +498,7 @@ func (s *IntegrationTestSuite) testGovGovernors() {
 		// check governor delegation is created
 		s.Require().Eventually(
 			func() bool {
-				resp, err := queryGovGovernorDelegation(chainAAPIEndpoint, delegatorAddr)
+				resp, err := s.queryGovGovernorDelegation(chainAAPIEndpoint, delegatorAddr)
 				s.Require().NoError(err)
 				return resp.GovernorAddress == governorAddr
 			},
@@ -506,12 +506,12 @@ func (s *IntegrationTestSuite) testGovGovernors() {
 			time.Second,
 		)
 		// assert governor valshares
-		resp, err := queryGovGovernorValShares(chainAAPIEndpoint, governorAddr)
+		resp, err := s.queryGovGovernorValShares(chainAAPIEndpoint, governorAddr)
 		s.Require().NoError(err)
 		s.Require().Len(resp.ValShares, 1, "expected 1 valshare")
 		s.Require().Equal(governorAddr, resp.ValShares[0].GovernorAddress)
 		s.Require().Equal(validatorAddr, resp.ValShares[0].ValidatorAddress)
-		validator, err := queryValidator(chainAAPIEndpoint, validatorAddr)
+		validator, err := s.queryValidator(chainAAPIEndpoint, validatorAddr)
 		s.Require().NoError(err)
 		totalDelegations := delDelegation.Add(govDelegation)
 		expectedShares, err := validator.SharesFromTokens(totalDelegations.Amount)
@@ -528,7 +528,7 @@ func (s *IntegrationTestSuite) testGovGovernors() {
 		s.submitGovCommand(chainAAPIEndpoint, govDelegatorAddr, proposalCounter, "vote", voteFlags, govtypesv1.StatusRejected)
 
 		// assert tally result
-		prop, err := queryGovProposal(chainAAPIEndpoint, proposalCounter)
+		prop, err := s.queryGovProposal(chainAAPIEndpoint, proposalCounter)
 		s.Require().NoError(err)
 		expectedTally := &govtypesv1.TallyResult{
 			YesCount:     totalDelegations.Amount.String(),
@@ -543,15 +543,12 @@ func (s *IntegrationTestSuite) submitLegacyGovProposal(chainAAPIEndpoint, sender
 	s.T().Logf("Submitting Gov Proposal: %s", proposalType)
 	// min deposit of 1000uatone is required in e2e tests, otherwise the gov antehandler causes the proposal to be dropped
 	sflags := submitFlags
-	initialDepositResp, err := queryGovMinInitialDeposit(chainAAPIEndpoint)
-	s.Require().NoError(err)
-	initialDeposit := initialDepositResp.GetMinInitialDeposit()
+	initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
 	if withDeposit {
-		sflags = append(sflags, "--deposit="+initialDeposit[0].String())
+		sflags = append(sflags, "--deposit="+initialDeposit.String())
 	}
-	deposit, err := queryGovMinDeposit(chainAAPIEndpoint)
-	s.Require().NoError(err)
-	depositString := deposit.GetMinDeposit()[0].String()
+	deposit := s.queryGovMinDeposit(chainAAPIEndpoint)
+	depositString := deposit.String()
 	depositFlags = append(depositFlags, depositString)
 	s.submitGovCommand(chainAAPIEndpoint, sender, proposalID, "submit-legacy-proposal", sflags, govtypesv1.StatusDepositPeriod)
 	s.T().Logf("Depositing Gov Proposal: %s", proposalType)
@@ -567,10 +564,6 @@ func (s *IntegrationTestSuite) submitLegacyGovProposal(chainAAPIEndpoint, sender
 func (s *IntegrationTestSuite) submitGovProposal(chainAAPIEndpoint, sender string, proposalID int, proposalType string, submitFlags []string, depositFlags []string, voteFlags []string, voteCommand string, expectedStatusAfterVote govtypesv1.ProposalStatus) {
 	s.T().Logf("Submitting Gov Proposal: %s", proposalType)
 	sflags := submitFlags
-	deposit, err := queryGovMinDeposit(chainAAPIEndpoint)
-	s.Require().NoError(err)
-	depositString := deposit.GetMinDeposit()[0].String()
-	depositFlags = append(depositFlags, depositString)
 	s.submitGovCommand(chainAAPIEndpoint, sender, proposalID, "submit-proposal", sflags, govtypesv1.StatusDepositPeriod)
 	s.T().Logf("Depositing Gov Proposal: %s", proposalType)
 	s.submitGovCommand(chainAAPIEndpoint, sender, proposalID, "deposit", depositFlags, govtypesv1.StatusVotingPeriod)
@@ -739,7 +732,9 @@ func (s *IntegrationTestSuite) writeGovTextProposal(c *chain) {
 		"summary": "The summary"
 	}
 	`
-	propMsgBody := fmt.Sprintf(template, depositAmount)
+	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
+	deposit := s.queryGovMinDeposit(chainAAPIEndpoint)
+	propMsgBody := fmt.Sprintf(template, deposit)
 	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalTextFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }

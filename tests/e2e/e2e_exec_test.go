@@ -479,8 +479,9 @@ func (s *IntegrationTestSuite) execDelegate(c *chain, valIdx int, amount sdk.Coi
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
+	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
 	existingDelegation := math.LegacyZeroDec()
-	res, err := s.queryDelegation(valOperAddress, delegatorAddr)
+	res, err := s.queryDelegation(chainAAPIEndpoint, valOperAddress, delegatorAddr)
 	if err == nil {
 		existingDelegation = res.GetDelegationResponse().GetDelegation().GetShares()
 	}
@@ -496,7 +497,7 @@ func (s *IntegrationTestSuite) execDelegate(c *chain, valIdx int, amount sdk.Coi
 		amount.String(),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, delegatorAddr),
 		fmt.Sprintf("--%s=%s", flags.FlagChainID, c.id),
-		fmt.Sprintf("--%s=%s", flags.FlagGas, "210000"), // default 200000 isn't enough
+		fmt.Sprintf("--%s=%s", flags.FlagGas, "250000"), // default 200000 isn't enough
 		fmt.Sprintf("--%s=%s", flags.FlagFees, standardFees.String()),
 		"--keyring-backend=test",
 		"--output=json",
@@ -506,9 +507,10 @@ func (s *IntegrationTestSuite) execDelegate(c *chain, valIdx int, amount sdk.Coi
 	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx, nil))
 
 	// Validate delegation successful
+	chainAAPIEndpoint = fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
 	s.Require().Eventually(
 		func() bool {
-			res, err := s.queryDelegation(valOperAddress, delegatorAddr)
+			res, err := s.queryDelegation(chainAAPIEndpoint, valOperAddress, delegatorAddr)
 			s.Require().NoError(err)
 			amt := res.GetDelegationResponse().GetDelegation().GetShares()
 
@@ -592,7 +594,7 @@ func (s *IntegrationTestSuite) execRedelegate(c *chain, valIdx int, amount, orig
 		amount,
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, delegatorAddr),
 		fmt.Sprintf("--%s=%s", flags.FlagChainID, c.id),
-		fmt.Sprintf("--%s=%s", flags.FlagGas, "310000"), // default 200000 isn't enough
+		fmt.Sprintf("--%s=%s", flags.FlagGas, "350000"), // default 200000 isn't enough
 		fmt.Sprintf("--%s=%s", flags.FlagFees, standardFees.String()),
 		"--keyring-backend=test",
 		fmt.Sprintf("--%s=%s", flags.FlagHome, home),

@@ -1,122 +1,18 @@
 package keeper_test
 
 import (
-	"context"
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"cosmossdk.io/math"
-	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	"github.com/atomone-hub/atomone/x/gov/keeper"
 	"github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 )
-
-type tallyFixture struct {
-	t *testing.T
-
-	proposal    v1.Proposal
-	valAddrs    []sdk.ValAddress
-	delAddrs    []sdk.AccAddress
-	totalBonded int64
-	validators  []stakingtypes.Validator
-	delegations []stakingtypes.Delegation
-
-	keeper *keeper.Keeper
-	ctx    sdk.Context
-	mocks  mocks
-}
-
-// newTallyFixture returns a configured fixture for testing the govKeeper.Tally
-// method.
-// - setup TotalBondedTokens call
-// - initiates the validators with a self delegation of 1:
-//   - setup IterateBondedValidatorsByPower call
-//   - setup IterateDelegations call for validators
-func newTallyFixture(t *testing.T, ctx sdk.Context, proposal v1.Proposal,
-	valAddrs []sdk.ValAddress, delAddrs []sdk.AccAddress, govKeeper *keeper.Keeper,
-	mocks mocks,
-) *tallyFixture {
-	s := &tallyFixture{
-		t:        t,
-		ctx:      ctx,
-		proposal: proposal,
-		valAddrs: valAddrs,
-		delAddrs: delAddrs,
-		keeper:   govKeeper,
-		mocks:    mocks,
-	}
-	mocks.stakingKeeper.EXPECT().TotalBondedTokens(gomock.Any()).
-		DoAndReturn(func(_ context.Context) (sdkmath.Int, error) {
-			return sdkmath.NewInt(s.totalBonded), nil
-		}).MaxTimes(1)
-	// Mocks a bunch of validators
-	for i := 0; i < len(valAddrs); i++ {
-		s.validators = append(s.validators, stakingtypes.Validator{
-			OperatorAddress: valAddrs[i].String(),
-			Status:          stakingtypes.Bonded,
-			Tokens:          sdkmath.ZeroInt(),
-			DelegatorShares: sdkmath.LegacyZeroDec(),
-		})
-		// validator self delegation
-		s.delegate(sdk.AccAddress(valAddrs[i]), valAddrs[i], 1)
-	}
-	mocks.stakingKeeper.EXPECT().
-		IterateBondedValidatorsByPower(ctx, gomock.Any()).
-		DoAndReturn(
-			func(ctx context.Context, fn func(index int64, validator stakingtypes.ValidatorI) bool) error {
-				for i := 0; i < len(valAddrs); i++ {
-					fn(int64(i), s.validators[i])
-				}
-				return nil
-			})
-	mocks.stakingKeeper.EXPECT().
-		IterateDelegations(ctx, gomock.Any(), gomock.Any()).
-		DoAndReturn(
-			func(ctx context.Context, voter sdk.AccAddress, fn func(index int64, d stakingtypes.DelegationI) bool) error {
-				for i, d := range s.delegations {
-					if d.DelegatorAddress == voter.String() {
-						fn(int64(i), d)
-					}
-				}
-				return nil
-			}).AnyTimes()
-	return s
-}
-
-// delegate updates the tallyFixture delegations and validators fields.
-func (s *tallyFixture) delegate(delegator sdk.AccAddress, validator sdk.ValAddress, m int64) {
-	// Increment total bonded according to each delegations
-	s.totalBonded += m
-	delegation := stakingtypes.Delegation{
-		DelegatorAddress: delegator.String(),
-		ValidatorAddress: validator.String(),
-	}
-	for i := 0; i < len(s.validators); i++ {
-		if s.validators[i].OperatorAddress == validator.String() {
-			s.validators[i], delegation.Shares = s.validators[i].AddTokensFromDel(math.NewInt(m))
-			break
-		}
-	}
-	s.delegations = append(s.delegations, delegation)
-}
-
-// vote calls govKeeper.Vote()
-func (s *tallyFixture) vote(voter sdk.AccAddress, vote v1.VoteOption) {
-	err := s.keeper.AddVote(s.ctx, s.proposal.Id, voter, v1.NewNonSplitVoteOption(vote), "")
-	require.NoError(s.t, err)
-}
-
-func (s *tallyFixture) validatorVote(voter sdk.ValAddress, vote v1.VoteOption) {
-	s.vote(sdk.AccAddress(voter), vote)
-}
 
 func TestTally(t *testing.T) {
 	tests := []struct {

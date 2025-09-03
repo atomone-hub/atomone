@@ -353,13 +353,13 @@ func RandomizedGenState(simState *module.SimulationState) {
 
 	var governorStatusChangePeriod time.Duration
 	simState.AppParams.GetOrGenerate(
-		simState.Cdc, GovernorStatusChangePeriod, &governorStatusChangePeriod, simState.Rand,
+		GovernorStatusChangePeriod, &governorStatusChangePeriod, simState.Rand,
 		func(r *rand.Rand) { governorStatusChangePeriod = GenDepositParamsDepositPeriod(r) },
 	)
 
 	var minGovernorSelfDelegation math.Int
 	simState.AppParams.GetOrGenerate(
-		simState.Cdc, MinGovernorSelfDelegation, &minGovernorSelfDelegation, simState.Rand,
+		MinGovernorSelfDelegation, &minGovernorSelfDelegation, simState.Rand,
 		func(r *rand.Rand) { minGovernorSelfDelegation = GenMinGovernorSelfDelegation(r) },
 	)
 

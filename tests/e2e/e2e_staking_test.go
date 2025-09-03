@@ -35,7 +35,7 @@ func (s *IntegrationTestSuite) testStaking() {
 		delegation := sdk.NewCoin(uatoneDenom, delegationAmount) // 500 atom
 
 		// Alice delegate uatone to Validator A
-		s.execDelegate(s.chainA, 0, delegation.String(), validatorAddressA, delegatorAddress.String(), atomoneHomePath)
+		s.execDelegate(s.chainA, 0, delegation, validatorAddressA, delegatorAddress.String())
 
 		// Validate delegation successful
 		s.Require().Eventually(

@@ -73,7 +73,7 @@ var (
 	DefaultTargetProposalsInDepositPeriod                     uint64        = 5
 	DefaultBurnDepositNoThreshold                                           = math.LegacyNewDecWithPrec(80, 2)
 	DefaultMaxGovernors                                       uint64        = 100
-	DefaultMinGovernorSelfDelegation                                        = sdk.NewInt(1000_000000)
+	DefaultMinGovernorSelfDelegation                                        = math.NewInt(1000_000000)
 )
 
 // Deprecated: NewDepositParams creates a new DepositParams object

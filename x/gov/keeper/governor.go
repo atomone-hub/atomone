@@ -3,6 +3,7 @@ package keeper
 import (
 	"cosmossdk.io/math"
 
+	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
@@ -32,7 +33,7 @@ func (k Keeper) SetGovernor(ctx sdk.Context, governor v1.Governor) {
 func (k Keeper) GetAllGovernors(ctx sdk.Context) (governors []*v1.Governor) {
 	store := ctx.KVStore(k.storeKey)
 
-	iterator := sdk.KVStorePrefixIterator(store, types.GovernorKeyPrefix)
+	iterator := storetypes.KVStorePrefixIterator(store, types.GovernorKeyPrefix)
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
@@ -47,7 +48,7 @@ func (k Keeper) GetAllGovernors(ctx sdk.Context) (governors []*v1.Governor) {
 func (k Keeper) GetAllActiveGovernors(ctx sdk.Context) (governors []*v1.Governor) {
 	store := ctx.KVStore(k.storeKey)
 
-	iterator := sdk.KVStorePrefixIterator(store, types.GovernorKeyPrefix)
+	iterator := storetypes.KVStorePrefixIterator(store, types.GovernorKeyPrefix)
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
@@ -64,7 +65,7 @@ func (k Keeper) GetAllActiveGovernors(ctx sdk.Context) (governors []*v1.Governor
 func (k Keeper) IterateGovernors(ctx sdk.Context, cb func(index int64, governor v1.GovernorI) (stop bool)) {
 	store := ctx.KVStore(k.storeKey)
 
-	iterator := sdk.KVStorePrefixIterator(store, types.GovernorKeyPrefix)
+	iterator := storetypes.KVStorePrefixIterator(store, types.GovernorKeyPrefix)
 	defer iterator.Close()
 
 	for i := int64(0); iterator.Valid(); iterator.Next() {
@@ -77,10 +78,13 @@ func (k Keeper) IterateGovernors(ctx sdk.Context, cb func(index int64, governor 
 }
 
 func (k Keeper) getGovernorBondedTokens(ctx sdk.Context, govAddr types.GovernorAddress) (bondedTokens math.Int) {
-	bondedTokens = sdk.ZeroInt()
+	bondedTokens = math.ZeroInt()
 	addr := sdk.AccAddress(govAddr)
 	k.sk.IterateDelegations(ctx, addr, func(_ int64, delegation stakingtypes.DelegationI) (stop bool) {
-		validatorAddr := delegation.GetValidatorAddr()
+		validatorAddr, err := sdk.ValAddressFromBech32(delegation.GetValidatorAddr())
+		if err != nil {
+			panic(err) // This should never happen
+		}
 		validator, _ := k.sk.GetValidator(ctx, validatorAddr)
 		shares := delegation.GetShares()
 		bt := shares.MulInt(validator.GetBondedTokens()).Quo(validator.GetDelegatorShares()).TruncateInt()
