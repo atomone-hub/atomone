@@ -28,8 +28,8 @@ type tsRelayerPath struct {
 	ChainTypeB string
 	ClientB    string
 	ClientA    string
-	ChannelIdA string // empty for IBCv2 path
-	ChannelIdB string // empty for IBCv2 path
+	ChannelA   string // empty for IBCv2 path
+	ChannelB   string // empty for IBCv2 path
 	NodeA      string
 	NodeB      string
 }
