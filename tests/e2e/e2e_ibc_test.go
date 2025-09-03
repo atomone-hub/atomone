@@ -6,15 +6,12 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/spf13/cobra"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	transfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
 	channeltypesv2 "github.com/cosmos/ibc-go/v10/modules/core/04-channel/v2/types"
 )
@@ -62,49 +59,36 @@ func (s *IntegrationTestSuite) transferIBCv2(c *chain, clientID, sender,
 		transfertypes.PortID, transfertypes.PortID, transfertypes.V1,
 		transfertypes.EncodingProtobuf, bz,
 	)
-	timeoutTimestamp := uint64(time.Now().Add(time.Hour).UnixNano())
+	timeoutTimestamp := uint64(time.Now().Add(time.Hour).Unix())
 	msg := channeltypesv2.NewMsgSendPacket(
 		clientID, timeoutTimestamp, sender, payload,
 	)
-	_ = msg
-
-	// Initialize the client context
-	// https://github.com/cosmos/cosmos-sdk/issues/8986
-	// TODO use rpcClient?
-	// TODO create apiClient!
-	k, err := senderKeying.KeyByAddress(sdk.MustAccAddressFromBech32(sender))
+	endpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
+	acc, err := s.queryAccount(endpoint, sender)
 	s.Require().NoError(err)
 
-	uri := "tcp://" + s.valResources[c.id][0].GetHostPort("26657/tcp")
-	cli, err := client.NewClientFromNode(uri)
+	// TODO externalize signMsg so it can be used by multiple account type?
+	tx, err := s.chainA.validators[0].signMsg(acc.GetAccountNumber(), acc.GetSequence(), msg)
 	s.Require().NoError(err)
-	clientCtx := client.Context{}.
-		WithCodec(c.cdc).
-		WithInterfaceRegistry(c.cdc.InterfaceRegistry()).
-		WithChainID(c.id).
-		WithTxConfig(c.txConfig).
-		WithNodeURI(uri).
-		WithFromAddress(sdk.MustAccAddressFromBech32(sender)).
-		WithFromName(k.Name).
-		WithClient(cli).
-		WithAccountRetriever(authtypes.AccountRetriever{}).
-		WithSkipConfirmation(true).
-		WithKeyring(senderKeying).
-		WithBroadcastMode(flags.BroadcastSync)
-
-	cmd := &cobra.Command{}
-	flags.AddTxFlagsToCmd(cmd)
-	fs := cmd.Flags()
-	s.Require().NoError(fs.Set(flags.FlagChainID, c.id))
-	s.Require().NoError(fs.Set(flags.FlagFrom, sender))
-	s.Require().NoError(fs.Set(flags.FlagKeyringBackend, "test"))
-	s.Require().NoError(fs.Set(flags.FlagFees, standardFees.String()))
-	s.Require().NoError(fs.Set(flags.FlagOutput, "json"))
-	f, err := fs.GetString(flags.FlagFees)
-	fmt.Println("FEE", f, err)
-
-	err = tx.GenerateOrBroadcastTxCLI(clientCtx, fs, msg)
+	bz, err = tx.Marshal()
 	s.Require().NoError(err)
+	res, err := s.rpcClient(c, 0).BroadcastTxSync(context.Background(), bz)
+	s.Require().NoError(err)
+	var msgRes channeltypesv2.MsgSendPacketResponse
+	for i := 0; i < 15; i++ {
+		time.Sleep(time.Second)
+		h, err := s.queryAtomOneTx(endpoint, res.Hash.String(), &msgRes)
+		fmt.Println("QUERYTX", res.Hash.String(), h, err)
+		if err != nil {
+			if isErrNotFound(err) {
+				continue
+			}
+			s.Require().NoError(err)
+		}
+		break
+	}
+	spew.Dump("RESPONSE", msgRes)
+
 	s.T().Log("successfully transfered IBCv2 tokens")
 
 	// s.T().Logf("sending %s from %s (%s) to %s (%s) ", token, s.chainA.id, sender, s.chainB.id, recipient)

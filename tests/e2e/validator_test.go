@@ -137,13 +137,16 @@ func (v *validator) createConsensusKey() error {
 	return nil
 }
 
-func (v *validator) createKeyFromMnemonic(name, mnemonic string) error {
-	dir := v.configDir()
-	kb, err := keyring.New(keyringAppName, keyring.BackendTest, dir, nil, v.chain.cdc)
+func (v *validator) keyring() keyring.Keyring {
+	kb, err := keyring.New(keyringAppName, keyring.BackendTest, v.configDir(), nil, v.chain.cdc)
 	if err != nil {
-		return err
+		panic(err)
 	}
+	return kb
+}
 
+func (v *validator) createKeyFromMnemonic(name, mnemonic string) error {
+	kb := v.keyring()
 	keyringAlgos, _ := kb.SupportedAlgorithms()
 	algo, err := keyring.NewSigningAlgoFromString(string(hd.Secp256k1Type), keyringAlgos)
 	if err != nil {
@@ -173,11 +176,7 @@ func (v *validator) createKeyFromMnemonic(name, mnemonic string) error {
 }
 
 func (c *chain) addAccountFromMnemonic(counts int) error {
-	val0ConfigDir := c.validators[0].configDir()
-	kb, err := keyring.New(keyringAppName, keyring.BackendTest, val0ConfigDir, nil, c.cdc)
-	if err != nil {
-		return err
-	}
+	kb := c.validators[0].keyring()
 
 	keyringAlgos, _ := kb.SupportedAlgorithms()
 	algo, err := keyring.NewSigningAlgoFromString(string(hd.Secp256k1Type), keyringAlgos)
@@ -252,7 +251,7 @@ func (v *validator) buildCreateValidatorMsg(amount sdk.Coin) (sdk.Msg, error) {
 	)
 }
 
-func (v *validator) signMsg(msgs ...sdk.Msg) (*sdktx.Tx, error) {
+func (v *validator) signMsg(accountNum, sequence uint64, msgs ...sdk.Msg) (*sdktx.Tx, error) {
 	txBuilder := v.chain.txConfig.NewTxBuilder()
 
 	if err := txBuilder.SetMsgs(msgs...); err != nil {
@@ -260,13 +259,13 @@ func (v *validator) signMsg(msgs ...sdk.Msg) (*sdktx.Tx, error) {
 	}
 
 	txBuilder.SetMemo(fmt.Sprintf("%s@%s:26656", v.nodeKey.ID(), v.instanceName()))
-	txBuilder.SetFeeAmount(sdk.NewCoins())
+	txBuilder.SetFeeAmount(sdk.NewCoins(standardFees))
 	txBuilder.SetGasLimit(200000)
 
 	signerData := authsigning.SignerData{
 		ChainID:       v.chain.id,
-		AccountNumber: 0,
-		Sequence:      0,
+		AccountNumber: accountNum,
+		Sequence:      sequence,
 	}
 
 	// For SIGN_MODE_DIRECT, calling SetSignatures calls setSignerInfos on
@@ -288,7 +287,7 @@ func (v *validator) signMsg(msgs ...sdk.Msg) (*sdktx.Tx, error) {
 			SignMode:  txsigning.SignMode_SIGN_MODE_DIRECT,
 			Signature: nil,
 		},
-		Sequence: 0,
+		Sequence: sequence,
 	}
 
 	if err := txBuilder.SetSignatures(sig); err != nil {
@@ -322,7 +321,7 @@ func (v *validator) signMsg(msgs ...sdk.Msg) (*sdktx.Tx, error) {
 			SignMode:  txsigning.SignMode_SIGN_MODE_DIRECT,
 			Signature: sigBytes,
 		},
-		Sequence: 0,
+		Sequence: sequence,
 	}
 	if err := txBuilder.SetSignatures(sig); err != nil {
 		return nil, err

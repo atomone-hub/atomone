@@ -478,7 +478,7 @@ func (s *IntegrationTestSuite) initGenesis(c *chain, vestingMnemonic, jailedValM
 	for i, val := range c.validators {
 		createValmsg, err := val.buildCreateValidatorMsg(stakingAmountCoin)
 		s.Require().NoError(err)
-		signedTx, err := val.signMsg(createValmsg)
+		signedTx, err := val.signMsg(0, 0, createValmsg)
 
 		s.Require().NoError(err)
 
