@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"strings"
+	"time"
 
 	"cosmossdk.io/math"
 	evidencetypes "cosmossdk.io/x/evidence/types"
@@ -25,6 +26,17 @@ import (
 	govtypesv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
 )
+
+func (s *IntegrationTestSuite) waitAtomOneTx(endpoint, txHash string, msgResp codec.ProtoMarshaler) (err error) {
+	for i := 0; i < 15; i++ {
+		time.Sleep(time.Second)
+		_, err = s.queryAtomOneTx(endpoint, txHash, msgResp)
+		if isErrNotFound(err) {
+			continue
+		}
+	}
+	return err
+}
 
 // queryAtomOneTx returns an error if the tx is not found or is failed.
 func (s *IntegrationTestSuite) queryAtomOneTx(endpoint, txHash string, msgResp codec.ProtoMarshaler) (height int, err error) {

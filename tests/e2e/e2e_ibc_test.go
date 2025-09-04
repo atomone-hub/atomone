@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -74,26 +73,9 @@ func (s *IntegrationTestSuite) transferIBCv2(c *chain, clientID, sender,
 	s.Require().NoError(err)
 	res, err := s.rpcClient(c, 0).BroadcastTxSync(context.Background(), bz)
 	s.Require().NoError(err)
-	var msgRes channeltypesv2.MsgSendPacketResponse
-	for i := 0; i < 15; i++ {
-		time.Sleep(time.Second)
-		h, err := s.queryAtomOneTx(endpoint, res.Hash.String(), &msgRes)
-		fmt.Println("QUERYTX", res.Hash.String(), h, err)
-		if err != nil {
-			if isErrNotFound(err) {
-				continue
-			}
-			s.Require().NoError(err)
-		}
-		break
-	}
-	spew.Dump("RESPONSE", msgRes)
-
+	err = s.waitAtomOneTx(endpoint, res.Hash.String(), nil)
+	s.Require().NoError(err)
 	s.T().Log("successfully transfered IBCv2 tokens")
-
-	// s.T().Logf("sending %s from %s (%s) to %s (%s) ", token, s.chainA.id, sender, s.chainB.id, recipient)
-	// s.executeAtomoneTxCommand(ctx, c, ibcCmd, valIdx, s.defaultExecValidation(c, valIdx, nil))
-	// s.T().Log("successfully sent IBC tokens")
 }
 
 func (s *IntegrationTestSuite) queryRelayerWalletsBalances() (sdk.Coins, sdk.Coins) {

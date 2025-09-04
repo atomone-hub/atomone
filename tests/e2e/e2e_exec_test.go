@@ -738,14 +738,7 @@ func (s *IntegrationTestSuite) defaultExecValidation(chain *chain, valIdx int, m
 		}
 		if strings.Contains(txResp.String(), "code: 0") || txResp.Code == 0 {
 			endpoint := fmt.Sprintf("http://%s", s.valResources[chain.id][valIdx].GetHostPort("1317/tcp"))
-			for i := 0; i < 15; i++ {
-				time.Sleep(time.Second)
-				_, err := s.queryAtomOneTx(endpoint, txResp.TxHash, msgResp)
-				if isErrNotFound(err) {
-					continue
-				}
-				return err
-			}
+			return s.waitAtomOneTx(endpoint, txResp.TxHash, msgResp)
 		}
 		return fmt.Errorf("tx error : %s", txResp.String())
 	}
