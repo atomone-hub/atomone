@@ -241,7 +241,10 @@ func (k msgServer) CreateGovernor(goCtx context.Context, msg *v1.MsgCreateGovern
 	}
 
 	minSelfDelegation, _ := math.NewIntFromString(k.GetParams(ctx).MinGovernorSelfDelegation)
-	bondedTokens := k.getGovernorBondedTokens(ctx, govAddr)
+	bondedTokens, err := k.getGovernorBondedTokens(ctx, govAddr)
+	if err != nil {
+		return nil, err
+	}
 	if bondedTokens.LT(minSelfDelegation) {
 		return nil, govtypes.ErrInsufficientGovernorDelegation.Wrapf("minimum self-delegation required: %s, total bonded tokens: %s", minSelfDelegation, bondedTokens)
 	}
@@ -254,7 +257,10 @@ func (k msgServer) CreateGovernor(goCtx context.Context, msg *v1.MsgCreateGovern
 	k.SetGovernor(ctx, governor)
 
 	// a base account automatically creates a governance delegation to itself
-	k.DelegateToGovernor(ctx, addr, govAddr)
+	err = k.DelegateToGovernor(ctx, addr, govAddr)
+	if err != nil {
+		return nil, err
+	}
 
 	return &v1.MsgCreateGovernorResponse{}, nil
 }
@@ -316,7 +322,10 @@ func (k msgServer) UpdateGovernorStatus(goCtx context.Context, msg *v1.MsgUpdate
 	// if status changes to active, create governance self-delegation
 	// in case it didn't exist
 	if governor.IsActive() {
-		k.RedelegateToGovernor(ctx, addr, govAddr)
+		err := k.RedelegateToGovernor(ctx, addr, govAddr)
+		if err != nil {
+			return nil, err
+		}
 	}
 	return &v1.MsgUpdateGovernorStatusResponse{}, nil
 }
@@ -339,10 +348,16 @@ func (k msgServer) DelegateGovernor(goCtx context.Context, msg *v1.MsgDelegateGo
 	}
 	// redelegate if a delegation to another governor already exists
 	if found {
-		k.RedelegateToGovernor(ctx, delAddr, govAddr)
+		err := k.RedelegateToGovernor(ctx, delAddr, govAddr)
+		if err != nil {
+			return nil, err
+		}
 	} else {
 		// Create the delegation
-		k.DelegateToGovernor(ctx, delAddr, govAddr)
+		err := k.DelegateToGovernor(ctx, delAddr, govAddr)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return &v1.MsgDelegateGovernorResponse{}, nil
@@ -360,7 +375,10 @@ func (k msgServer) UndelegateGovernor(goCtx context.Context, msg *v1.MsgUndelega
 	}
 
 	// Remove the delegation
-	k.UndelegateFromGovernor(ctx, delAddr)
+	err := k.UndelegateFromGovernor(ctx, delAddr)
+	if err != nil {
+		return nil, err
+	}
 
 	return &v1.MsgUndelegateGovernorResponse{}, nil
 }

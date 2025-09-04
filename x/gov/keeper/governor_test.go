@@ -114,7 +114,8 @@ func TestValidateGovernorMinSelfDelegation(t *testing.T) {
 			setup: func(s *fixture) v1.Governor {
 				govAddr := s.activeGovernors[0].GetAddress()
 				delAddr := sdk.AccAddress(govAddr)
-				s.keeper.DelegateToGovernor(s.ctx, delAddr, govAddr)
+				err := s.keeper.DelegateToGovernor(s.ctx, delAddr, govAddr)
+				require.NoError(s.t, err)
 				return s.activeGovernors[0]
 			},
 			expectedPanic: false,
@@ -125,7 +126,8 @@ func TestValidateGovernorMinSelfDelegation(t *testing.T) {
 			setup: func(s *fixture) v1.Governor {
 				govAddr := s.activeGovernors[0].GetAddress()
 				delAddr := sdk.AccAddress(govAddr)
-				s.keeper.DelegateToGovernor(s.ctx, delAddr, govAddr)
+				err := s.keeper.DelegateToGovernor(s.ctx, delAddr, govAddr)
+				require.NoError(s.t, err)
 				s.delegate(delAddr, s.valAddrs[0], 1)
 				return s.activeGovernors[0]
 			},
@@ -137,7 +139,8 @@ func TestValidateGovernorMinSelfDelegation(t *testing.T) {
 			setup: func(s *fixture) v1.Governor {
 				govAddr := s.activeGovernors[0].GetAddress()
 				delAddr := sdk.AccAddress(govAddr)
-				s.keeper.DelegateToGovernor(s.ctx, delAddr, govAddr)
+				err := s.keeper.DelegateToGovernor(s.ctx, delAddr, govAddr)
+				require.NoError(s.t, err)
 				s.delegate(delAddr, s.valAddrs[0], v1.DefaultMinGovernorSelfDelegation.Int64())
 				return s.activeGovernors[0]
 			},

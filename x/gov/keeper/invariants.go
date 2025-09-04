@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"cosmossdk.io/math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
@@ -75,7 +76,7 @@ func GovernorsDelegationsInvariant(keeper *Keeper, sk types.StakingKeeper) sdk.I
 			valSharesKeys := make([]string, 0)
 			keeper.IterateGovernorDelegations(ctx, governor.GetAddress(), func(index int64, delegation v1.GovernanceDelegation) bool {
 				delAddr := sdk.MustAccAddressFromBech32(delegation.DelegatorAddress)
-				keeper.sk.IterateDelegations(ctx, delAddr, func(_ int64, delegation stakingtypes.DelegationI) (stop bool) {
+				err := keeper.sk.IterateDelegations(ctx, delAddr, func(_ int64, delegation stakingtypes.DelegationI) (stop bool) {
 					validatorAddr := delegation.GetValidatorAddr()
 					shares := delegation.GetShares()
 					if _, ok := valShares[validatorAddr]; !ok {
@@ -85,6 +86,12 @@ func GovernorsDelegationsInvariant(keeper *Keeper, sk types.StakingKeeper) sdk.I
 					valShares[validatorAddr] = valShares[validatorAddr].Add(shares)
 					return false
 				})
+				if err != nil {
+					invariantStr = sdk.FormatInvariant(types.ModuleName, fmt.Sprintf("governor %s delegations", governor.GetAddress().String()),
+						fmt.Sprintf("failed to iterate delegations: %v", err))
+					broken = true
+					return true
+				}
 				return false
 			})
 

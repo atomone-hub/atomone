@@ -120,7 +120,10 @@ func InitGenesis(ctx sdk.Context, ak types.AccountKeeper, bk types.BankKeeper, k
 
 		k.SetGovernor(ctx, *governor)
 		if governor.IsActive() {
-			k.DelegateToGovernor(ctx, accAddr, governor.GetAddress())
+			err := k.DelegateToGovernor(ctx, accAddr, governor.GetAddress())
+			if err != nil {
+				panic(fmt.Sprintf("failed to delegate to governor %s: %v", governor.GetAddress().String(), err))
+			}
 		}
 	}
 	// set governance delegations
@@ -144,7 +147,10 @@ func InitGenesis(ctx sdk.Context, ak types.AccountKeeper, bk types.BankKeeper, k
 			panic(fmt.Sprintf("account %s is an active governor and cannot delegate", delAddr.String()))
 		}
 
-		k.DelegateToGovernor(ctx, delAddr, govAddr)
+		err := k.DelegateToGovernor(ctx, delAddr, govAddr)
+		if err != nil {
+			panic(fmt.Sprintf("failed to delegate to governor %s: %v", govAddr.String(), err))
+		}
 	}
 }
 

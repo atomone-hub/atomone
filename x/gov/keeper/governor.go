@@ -1,10 +1,12 @@
 package keeper
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
-
 	storetypes "cosmossdk.io/store/types"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	"github.com/atomone-hub/atomone/x/gov/types"
@@ -77,10 +79,10 @@ func (k Keeper) IterateGovernors(ctx sdk.Context, cb func(index int64, governor 
 	}
 }
 
-func (k Keeper) getGovernorBondedTokens(ctx sdk.Context, govAddr types.GovernorAddress) (bondedTokens math.Int) {
+func (k Keeper) getGovernorBondedTokens(ctx sdk.Context, govAddr types.GovernorAddress) (bondedTokens math.Int, err error) {
 	bondedTokens = math.ZeroInt()
 	addr := sdk.AccAddress(govAddr)
-	k.sk.IterateDelegations(ctx, addr, func(_ int64, delegation stakingtypes.DelegationI) (stop bool) {
+	err = k.sk.IterateDelegations(ctx, addr, func(_ int64, delegation stakingtypes.DelegationI) (stop bool) {
 		validatorAddr, err := sdk.ValAddressFromBech32(delegation.GetValidatorAddr())
 		if err != nil {
 			panic(err) // This should never happen
@@ -92,8 +94,11 @@ func (k Keeper) getGovernorBondedTokens(ctx sdk.Context, govAddr types.GovernorA
 
 		return false
 	})
+	if err != nil {
+		return math.ZeroInt(), errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "failed to iterate delegations: %v", err)
+	}
 
-	return bondedTokens
+	return bondedTokens, nil
 }
 
 func (k Keeper) ValidateGovernorMinSelfDelegation(ctx sdk.Context, governor v1.Governor) bool {
@@ -102,7 +107,10 @@ func (k Keeper) ValidateGovernorMinSelfDelegation(ctx sdk.Context, governor v1.G
 		return false
 	}
 	minGovernorSelfDelegation, _ := math.NewIntFromString(k.GetParams(ctx).MinGovernorSelfDelegation)
-	bondedTokens := k.getGovernorBondedTokens(ctx, governor.GetAddress())
+	bondedTokens, err := k.getGovernorBondedTokens(ctx, governor.GetAddress())
+	if err != nil {
+		return false
+	}
 	delAddr := sdk.AccAddress(governor.GetAddress())
 
 	if del, found := k.GetGovernanceDelegation(ctx, delAddr); !found || governor.GovernorAddress != del.GovernorAddress {

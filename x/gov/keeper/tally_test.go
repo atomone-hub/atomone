@@ -99,7 +99,8 @@ func TestTally(t *testing.T) {
 				// del0 VP=5 del=gov0 didn't vote
 				s.delegate(s.delAddrs[0], s.valAddrs[0], 2)
 				s.delegate(s.delAddrs[0], s.valAddrs[1], 3)
-				s.keeper.DelegateToGovernor(s.ctx, s.delAddrs[0], s.govAddrs[0])
+				err := s.keeper.DelegateToGovernor(s.ctx, s.delAddrs[0], s.govAddrs[0])
+				require.NoError(s.t, err)
 				// gov0 VP=3 vote=yes
 				s.governorVote(s.govAddrs[0], v1.VoteOption_VOTE_OPTION_YES)
 			},
@@ -118,7 +119,8 @@ func TestTally(t *testing.T) {
 				// del0 VP=5 del=gov2(inactive) didn't vote
 				s.delegate(s.delAddrs[0], s.valAddrs[0], 2)
 				s.delegate(s.delAddrs[0], s.valAddrs[1], 3)
-				s.keeper.DelegateToGovernor(s.ctx, s.delAddrs[0], s.govAddrs[2])
+				err := s.keeper.DelegateToGovernor(s.ctx, s.delAddrs[0], s.govAddrs[2])
+				require.NoError(s.t, err)
 				// gov2(inactive) VP=3 vote=yes
 				s.governorVote(s.govAddrs[2], v1.VoteOption_VOTE_OPTION_YES)
 			},
@@ -138,7 +140,8 @@ func TestTally(t *testing.T) {
 				s.delegate(s.delAddrs[0], s.valAddrs[0], 2)
 				s.delegate(s.delAddrs[0], s.valAddrs[1], 3)
 				s.vote(s.delAddrs[0], v1.VoteOption_VOTE_OPTION_YES)
-				s.keeper.DelegateToGovernor(s.ctx, s.delAddrs[0], s.govAddrs[0])
+				err := s.keeper.DelegateToGovernor(s.ctx, s.delAddrs[0], s.govAddrs[0])
+				require.NoError(s.t, err)
 				// gov0 VP=3 vote=yes
 				s.governorVote(s.govAddrs[0], v1.VoteOption_VOTE_OPTION_YES)
 			},
@@ -158,7 +161,8 @@ func TestTally(t *testing.T) {
 				s.delegate(s.delAddrs[0], s.valAddrs[0], 2)
 				s.delegate(s.delAddrs[0], s.valAddrs[1], 3)
 				s.vote(s.delAddrs[0], v1.VoteOption_VOTE_OPTION_NO)
-				s.keeper.DelegateToGovernor(s.ctx, s.delAddrs[0], s.govAddrs[0])
+				err := s.keeper.DelegateToGovernor(s.ctx, s.delAddrs[0], s.govAddrs[0])
+				require.NoError(s.t, err)
 				// gov0 VP=3 vote=yes
 				s.governorVote(s.govAddrs[0], v1.VoteOption_VOTE_OPTION_YES)
 			},
@@ -181,7 +185,8 @@ func TestTally(t *testing.T) {
 				s.delegate(s.delAddrs[0], s.valAddrs[0], 2)
 				s.delegate(s.delAddrs[0], s.valAddrs[1], 3)
 				s.vote(s.delAddrs[0], v1.VoteOption_VOTE_OPTION_NO)
-				s.keeper.DelegateToGovernor(s.ctx, s.delAddrs[0], s.govAddrs[0])
+				err := s.keeper.DelegateToGovernor(s.ctx, s.delAddrs[0], s.govAddrs[0])
+				require.NoError(s.t, err)
 			},
 			proposalMsgs: TestProposal,
 			expectedPass: false,
@@ -197,27 +202,33 @@ func TestTally(t *testing.T) {
 			setup: func(s *fixture) {
 				// del0 VP=2 del=gov0 vote=no
 				s.delegate(s.delAddrs[0], s.valAddrs[0], 2)
-				s.keeper.DelegateToGovernor(s.ctx, s.delAddrs[0], s.govAddrs[0])
+				err := s.keeper.DelegateToGovernor(s.ctx, s.delAddrs[0], s.govAddrs[0])
+				require.NoError(s.t, err)
 				s.vote(s.delAddrs[0], v1.VoteOption_VOTE_OPTION_NO)
 				// del1 VP=3 del=gov0 didn't vote (so VP goes to gov0's vote)
 				s.delegate(s.delAddrs[1], s.valAddrs[1], 3)
-				s.keeper.DelegateToGovernor(s.ctx, s.delAddrs[1], s.govAddrs[0])
+				err = s.keeper.DelegateToGovernor(s.ctx, s.delAddrs[1], s.govAddrs[0])
+				require.NoError(s.t, err)
 				// del2 VP=4 del=gov0 vote=abstain
 				s.delegate(s.delAddrs[2], s.valAddrs[0], 4)
-				s.keeper.DelegateToGovernor(s.ctx, s.delAddrs[2], s.govAddrs[0])
+				err = s.keeper.DelegateToGovernor(s.ctx, s.delAddrs[2], s.govAddrs[0])
+				require.NoError(s.t, err)
 				s.vote(s.delAddrs[2], v1.VoteOption_VOTE_OPTION_ABSTAIN)
 				// del3 VP=5 del=gov0 vote=yes
 				s.delegate(s.delAddrs[3], s.valAddrs[1], 2)
 				s.delegate(s.delAddrs[3], s.valAddrs[2], 3)
-				s.keeper.DelegateToGovernor(s.ctx, s.delAddrs[3], s.govAddrs[0])
+				err = s.keeper.DelegateToGovernor(s.ctx, s.delAddrs[3], s.govAddrs[0])
+				require.NoError(s.t, err)
 				s.vote(s.delAddrs[3], v1.VoteOption_VOTE_OPTION_YES)
 				// del4 VP=4 del=gov1 vote=no
 				s.delegate(s.delAddrs[4], s.valAddrs[3], 4)
-				s.keeper.DelegateToGovernor(s.ctx, s.delAddrs[4], s.govAddrs[1])
+				err = s.keeper.DelegateToGovernor(s.ctx, s.delAddrs[4], s.govAddrs[1])
+				require.NoError(s.t, err)
 				s.vote(s.delAddrs[4], v1.VoteOption_VOTE_OPTION_NO)
 				// del5 VP=6 del=gov1 didn't vote (so VP does to gov1's vote)
 				s.delegate(s.delAddrs[5], s.valAddrs[3], 6)
-				s.keeper.DelegateToGovernor(s.ctx, s.delAddrs[5], s.govAddrs[1])
+				err = s.keeper.DelegateToGovernor(s.ctx, s.delAddrs[5], s.govAddrs[1])
+				require.NoError(s.t, err)
 				// gov0 VP=3 vote=yes
 				s.governorVote(s.govAddrs[0], v1.VoteOption_VOTE_OPTION_YES)
 			},
@@ -235,27 +246,33 @@ func TestTally(t *testing.T) {
 			setup: func(s *fixture) {
 				// del0 VP=2 del=gov0 vote=no
 				s.delegate(s.delAddrs[0], s.valAddrs[0], 2)
-				s.keeper.DelegateToGovernor(s.ctx, s.delAddrs[0], s.govAddrs[0])
+				err := s.keeper.DelegateToGovernor(s.ctx, s.delAddrs[0], s.govAddrs[0])
+				require.NoError(s.t, err)
 				s.vote(s.delAddrs[0], v1.VoteOption_VOTE_OPTION_NO)
 				// del1 VP=3 del=gov0 didn't vote (so VP goes to gov0's vote)
 				s.delegate(s.delAddrs[1], s.valAddrs[1], 3)
-				s.keeper.DelegateToGovernor(s.ctx, s.delAddrs[1], s.govAddrs[0])
+				err = s.keeper.DelegateToGovernor(s.ctx, s.delAddrs[1], s.govAddrs[0])
+				require.NoError(s.t, err)
 				// del2 VP=4 del=gov0 vote=abstain
 				s.delegate(s.delAddrs[2], s.valAddrs[0], 4)
-				s.keeper.DelegateToGovernor(s.ctx, s.delAddrs[2], s.govAddrs[0])
+				err = s.keeper.DelegateToGovernor(s.ctx, s.delAddrs[2], s.govAddrs[0])
+				require.NoError(s.t, err)
 				s.vote(s.delAddrs[2], v1.VoteOption_VOTE_OPTION_ABSTAIN)
 				// del3 VP=5 del=gov0 vote=yes
 				s.delegate(s.delAddrs[3], s.valAddrs[1], 2)
 				s.delegate(s.delAddrs[3], s.valAddrs[2], 3)
-				s.keeper.DelegateToGovernor(s.ctx, s.delAddrs[3], s.govAddrs[0])
+				err = s.keeper.DelegateToGovernor(s.ctx, s.delAddrs[3], s.govAddrs[0])
+				require.NoError(s.t, err)
 				s.vote(s.delAddrs[3], v1.VoteOption_VOTE_OPTION_YES)
 				// del4 VP=4 del=gov1 vote=no
 				s.delegate(s.delAddrs[4], s.valAddrs[3], 4)
-				s.keeper.DelegateToGovernor(s.ctx, s.delAddrs[4], s.govAddrs[1])
+				err = s.keeper.DelegateToGovernor(s.ctx, s.delAddrs[4], s.govAddrs[1])
+				require.NoError(s.t, err)
 				s.vote(s.delAddrs[4], v1.VoteOption_VOTE_OPTION_NO)
 				// del5 VP=6 del=gov1 didn't vote (so VP does to gov1's vote)
 				s.delegate(s.delAddrs[5], s.valAddrs[3], 6)
-				s.keeper.DelegateToGovernor(s.ctx, s.delAddrs[5], s.govAddrs[1])
+				err = s.keeper.DelegateToGovernor(s.ctx, s.delAddrs[5], s.govAddrs[1])
+				require.NoError(s.t, err)
 				// gov0 VP=3 vote=yes
 				s.governorVote(s.govAddrs[0], v1.VoteOption_VOTE_OPTION_YES)
 				// gov1 VP=3 vote=abstain
@@ -577,7 +594,8 @@ func TestTally(t *testing.T) {
 				accAddr := sdk.AccAddress(govAddr)
 				s.delegate(accAddr, s.valAddrs[0], 1)
 				s.delegate(accAddr, s.valAddrs[1], 2)
-				govKeeper.DelegateToGovernor(ctx, accAddr, govAddr)
+				err := govKeeper.DelegateToGovernor(ctx, accAddr, govAddr)
+				require.NoError(t, err)
 			}
 			// Submit and activate a proposal
 			proposal, err := govKeeper.SubmitProposal(ctx, tt.proposalMsgs, "", "title", "summary", s.delAddrs[0])

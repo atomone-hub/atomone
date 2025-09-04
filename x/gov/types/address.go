@@ -162,11 +162,20 @@ func (ga GovernorAddress) String() string {
 func (ga GovernorAddress) Format(s fmt.State, verb rune) {
 	switch verb {
 	case 's':
-		s.Write([]byte(ga.String()))
+		_, err := s.Write([]byte(ga.String()))
+		if err != nil {
+			panic(err)
+		}
 	case 'p':
-		s.Write([]byte(fmt.Sprintf("%p", ga)))
+		_, err := s.Write([]byte(fmt.Sprintf("%p", ga)))
+		if err != nil {
+			panic(err)
+		}
 	default:
-		s.Write([]byte(fmt.Sprintf("%X", []byte(ga))))
+		_, err := s.Write([]byte(fmt.Sprintf("%X", []byte(ga))))
+		if err != nil {
+			panic(err)
+		}
 	}
 }
 

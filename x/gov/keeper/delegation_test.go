@@ -19,10 +19,13 @@ func TestGovernanceDelegate(t *testing.T) {
 	s.delegate(s.delAddrs[2], s.valAddrs[1], 8)
 
 	// Delegate to active governor
-	govKeeper.DelegateToGovernor(ctx, s.delAddrs[0], s.activeGovernors[0].GetAddress())
-	govKeeper.DelegateToGovernor(ctx, s.delAddrs[1], s.activeGovernors[0].GetAddress())
+	err := govKeeper.DelegateToGovernor(ctx, s.delAddrs[0], s.activeGovernors[0].GetAddress())
+	assert.NoError(err)
+	err = govKeeper.DelegateToGovernor(ctx, s.delAddrs[1], s.activeGovernors[0].GetAddress())
+	assert.NoError(err)
 	// Delegate to inactive governor
-	govKeeper.DelegateToGovernor(ctx, s.delAddrs[2], s.inactiveGovernor.GetAddress())
+	err = govKeeper.DelegateToGovernor(ctx, s.delAddrs[2], s.inactiveGovernor.GetAddress())
+	assert.NoError(err)
 
 	// Assert GetGovernanceDelegation
 	deleg1, found := govKeeper.GetGovernanceDelegation(ctx, s.delAddrs[0])
@@ -112,7 +115,8 @@ func TestGovernanceDelegate(t *testing.T) {
 	assert.ElementsMatch(valShares, inactiveGovValShares)
 
 	// Assert RedelegateToGovernor
-	govKeeper.RedelegateToGovernor(ctx, s.delAddrs[0], s.inactiveGovernor.GetAddress())
+	err = govKeeper.RedelegateToGovernor(ctx, s.delAddrs[0], s.inactiveGovernor.GetAddress())
+	assert.NoError(err)
 	allDelegs = govKeeper.GetAllGovernanceDelegationsByGovernor(ctx, s.activeGovernors[0].GetAddress())
 	assert.ElementsMatch(allDelegs, []*v1.GovernanceDelegation{&deleg2})
 	allDelegs = govKeeper.GetAllGovernanceDelegationsByGovernor(ctx, s.inactiveGovernor.GetAddress())
@@ -146,7 +150,8 @@ func TestGovernanceDelegate(t *testing.T) {
 	}
 
 	// Assert UndelegateFromGovernor
-	govKeeper.UndelegateFromGovernor(ctx, s.delAddrs[0])
+	err = govKeeper.UndelegateFromGovernor(ctx, s.delAddrs[0])
+	assert.NoError(err)
 	allDelegs = govKeeper.GetAllGovernanceDelegationsByGovernor(ctx, s.activeGovernors[0].GetAddress())
 	assert.ElementsMatch(allDelegs, []*v1.GovernanceDelegation{&deleg2})
 	allDelegs = govKeeper.GetAllGovernanceDelegationsByGovernor(ctx, s.inactiveGovernor.GetAddress())

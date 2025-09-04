@@ -1,9 +1,12 @@
 package keeper
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	"github.com/atomone-hub/atomone/x/gov/types"
@@ -172,14 +175,14 @@ func (k Keeper) DecreaseGovernorShares(ctx sdk.Context, governorAddr types.Gover
 
 // UndelegateFromGovernor decreases all governor validator shares in the store
 // and then removes the governor delegation for the given delegator
-func (k Keeper) UndelegateFromGovernor(ctx sdk.Context, delegatorAddr sdk.AccAddress) {
+func (k Keeper) UndelegateFromGovernor(ctx sdk.Context, delegatorAddr sdk.AccAddress) error {
 	delegation, found := k.GetGovernanceDelegation(ctx, delegatorAddr)
 	if !found {
-		return
+		return errorsmod.Wrapf(sdkerrors.ErrNotFound, "governance delegation for delegator %s not found", delegatorAddr.String())
 	}
 	govAddr := types.MustGovernorAddressFromBech32(delegation.GovernorAddress)
 	// iterate all delegations of delegator and decrease shares
-	k.sk.IterateDelegations(ctx, delegatorAddr, func(_ int64, delegation stakingtypes.DelegationI) (stop bool) {
+	err := k.sk.IterateDelegations(ctx, delegatorAddr, func(_ int64, delegation stakingtypes.DelegationI) (stop bool) {
 		valAddr, err := sdk.ValAddressFromBech32(delegation.GetValidatorAddr())
 		if err != nil {
 			panic(err) // This should never happen
@@ -187,17 +190,21 @@ func (k Keeper) UndelegateFromGovernor(ctx sdk.Context, delegatorAddr sdk.AccAdd
 		k.DecreaseGovernorShares(ctx, govAddr, valAddr, delegation.GetShares())
 		return false
 	})
+	if err != nil {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "failed to iterate delegations: %v", err)
+	}
 	// remove the governor delegation
 	k.RemoveGovernanceDelegation(ctx, delegatorAddr)
+	return nil
 }
 
 // DelegateGovernor creates a governor delegation for the given delegator
 // and increases all governor validator shares in the store
-func (k Keeper) DelegateToGovernor(ctx sdk.Context, delegatorAddr sdk.AccAddress, governorAddr types.GovernorAddress) {
+func (k Keeper) DelegateToGovernor(ctx sdk.Context, delegatorAddr sdk.AccAddress, governorAddr types.GovernorAddress) error {
 	delegation := v1.NewGovernanceDelegation(delegatorAddr, governorAddr)
 	k.SetGovernanceDelegation(ctx, delegation)
 	// iterate all delegations of delegator and increase shares
-	k.sk.IterateDelegations(ctx, delegatorAddr, func(_ int64, delegation stakingtypes.DelegationI) (stop bool) {
+	err := k.sk.IterateDelegations(ctx, delegatorAddr, func(_ int64, delegation stakingtypes.DelegationI) (stop bool) {
 		valAddr, err := sdk.ValAddressFromBech32(delegation.GetValidatorAddr())
 		if err != nil {
 			panic(err) // This should never happen
@@ -205,12 +212,18 @@ func (k Keeper) DelegateToGovernor(ctx sdk.Context, delegatorAddr sdk.AccAddress
 		k.IncreaseGovernorShares(ctx, governorAddr, valAddr, delegation.GetShares())
 		return false
 	})
+	if err != nil {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "failed to iterate delegations: %v", err)
+	}
+	return nil
 }
 
 // RedelegateGovernor re-delegates all governor validator shares from one governor to another
-func (k Keeper) RedelegateToGovernor(ctx sdk.Context, delegatorAddr sdk.AccAddress, dstGovernorAddr types.GovernorAddress) {
+func (k Keeper) RedelegateToGovernor(ctx sdk.Context, delegatorAddr sdk.AccAddress, dstGovernorAddr types.GovernorAddress) error {
 	// undelegate from the source governor
-	k.UndelegateFromGovernor(ctx, delegatorAddr)
+	if err := k.UndelegateFromGovernor(ctx, delegatorAddr); err != nil {
+		return err
+	}
 	// delegate to the destination governor
-	k.DelegateToGovernor(ctx, delegatorAddr, dstGovernorAddr)
+	return k.DelegateToGovernor(ctx, delegatorAddr, dstGovernorAddr)
 }
