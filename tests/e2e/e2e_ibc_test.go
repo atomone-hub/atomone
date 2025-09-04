@@ -9,7 +9,6 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	transfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
 	channeltypesv2 "github.com/cosmos/ibc-go/v10/modules/core/04-channel/v2/types"
@@ -45,7 +44,7 @@ func (s *IntegrationTestSuite) transferIBC(c *chain, valIdx int, channelID, send
 }
 
 func (s *IntegrationTestSuite) transferIBCv2(c *chain, clientID, sender,
-	recipient string, senderKeying keyring.Keyring, token sdk.Coin,
+	recipient string, token sdk.Coin,
 ) {
 	s.T().Logf("transfering v2 %s from %s (%s) to %s (%s) using %s", token, s.chainA.id, sender, s.chainB.id, recipient, clientID)
 	// NOTE(tb): There is currently no CLI command for the transfer app in IBCv2
@@ -62,17 +61,18 @@ func (s *IntegrationTestSuite) transferIBCv2(c *chain, clientID, sender,
 	msg := channeltypesv2.NewMsgSendPacket(
 		clientID, timeoutTimestamp, sender, payload,
 	)
-	endpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
-	acc, err := s.queryAccount(endpoint, sender)
-	s.Require().NoError(err)
+	endpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
+	acc := s.queryAccount(endpoint, sender)
 
 	// TODO externalize signMsg so it can be used by multiple account type?
-	tx, err := s.chainA.validators[0].signMsg(acc.GetAccountNumber(), acc.GetSequence(), msg)
+	// with account/sequence fetching, sign, broadcast and err check all together
+	tx, err := c.validators[0].signMsg(acc.GetAccountNumber(), acc.GetSequence(), msg)
 	s.Require().NoError(err)
 	bz, err = tx.Marshal()
 	s.Require().NoError(err)
 	res, err := s.rpcClient(c, 0).BroadcastTxSync(context.Background(), bz)
 	s.Require().NoError(err)
+	s.Require().Zero(res.Code, "TX error: %s", res.Log)
 	err = s.waitAtomOneTx(endpoint, res.Hash.String(), nil)
 	s.Require().NoError(err)
 	s.T().Log("successfully transfered IBCv2 tokens")
@@ -115,8 +115,8 @@ func (s *IntegrationTestSuite) testIBCTokenTransfer(channelIdA, channelIdB strin
 		tokenChainB := sdk.NewCoin(ibcDenom, tokenChainA.Amount)    // 1,000 ibc/{port}/{channel}/{denom}
 
 		// Get balance before test
-		beforeChainABalance := s.queryBalance(chainAAPIEndpoint, sender, uatoneDenom)
-		beforeChainBBalance := s.queryBalance(chainBAPIEndpoint, recipient, ibcDenom)
+		beforeBalanceChainA := s.queryBalance(chainAAPIEndpoint, sender, uatoneDenom)
+		beforeBalanceChainB := s.queryBalance(chainBAPIEndpoint, recipient, ibcDenom)
 
 		s.transferIBC(s.chainA, 0, channelIdA, sender, recipient, tokenChainA.String(), "")
 
@@ -125,30 +125,16 @@ func (s *IntegrationTestSuite) testIBCTokenTransfer(channelIdA, channelIdB strin
 			pass := s.hermesClearPacket(hermesConfigWithGasPrices, s.chainA.id, channelIdA)
 			s.Require().True(pass)
 		}
-		s.Require().EventuallyWithT(
-			func(c *assert.CollectT) {
-				// Assert new balance of chainA to be equal to beforeBalance-tokenChainA
-				newChainABalance := s.queryBalance(chainAAPIEndpoint, sender, tokenChainA.Denom)
-				assert.Equal(c,
-					beforeChainABalance.Sub(tokenChainA).String(), newChainABalance.String(),
-					"wrong chainA balance: before(%s) - transfered(%s) != %s", beforeChainABalance, tokenChainA, newChainABalance,
-				)
-				// Assert new balance of chainB to be equal to beforeBalance+tokenChainB
-				newChainBBalance := s.queryBalance(chainBAPIEndpoint, recipient, ibcDenom)
-				assert.Equal(c,
-					beforeChainBBalance.Add(tokenChainB).String(), newChainBBalance.String(),
-					"wrong chainB balance: before(%s) + transfered(%s) != %s", beforeChainBBalance, tokenChainB, newChainBBalance,
-				)
-			},
-			time.Minute,
-			time.Second,
-		)
+		// Assert new balance of chainA to be equal to beforeBalance-tokenChainA
+		s.assertCoinBalance(s.chainA, sender, beforeBalanceChainA.Sub(tokenChainA))
+		// Assert new balance of chainB to be equal to beforeBalance+tokenChainB
+		s.assertCoinBalance(s.chainB, recipient, beforeBalanceChainB.Add(tokenChainB))
 
 		// Now try to send back the tokens to chainA (unwind)
 		s.Run("transfer_back_to_chainA", func() {
 			// Get balance before test
-			beforeChainABalance := s.queryBalance(chainAAPIEndpoint, sender, uatoneDenom)
-			beforeChainBBalance := s.queryBalance(chainBAPIEndpoint, recipient, ibcDenom)
+			beforeBalanceChainA := s.queryBalance(chainAAPIEndpoint, sender, uatoneDenom)
+			beforeBalanceChainB := s.queryBalance(chainBAPIEndpoint, recipient, ibcDenom)
 
 			s.transferIBC(s.chainB, 0, channelIdB, recipient, sender, tokenChainB.String(), "")
 
@@ -157,24 +143,10 @@ func (s *IntegrationTestSuite) testIBCTokenTransfer(channelIdA, channelIdB strin
 				pass := s.hermesClearPacket(hermesConfigWithGasPrices, s.chainA.id, channelIdB)
 				s.Require().True(pass)
 			}
-			s.Require().EventuallyWithT(
-				func(c *assert.CollectT) {
-					// Assert new balance of chainA to be equal to beforeBalance+tokenChainA
-					newChainABalance := s.queryBalance(chainAAPIEndpoint, sender, uatoneDenom)
-					assert.Equal(c,
-						beforeChainABalance.Add(tokenChainA).String(), newChainABalance.String(),
-						"wrong chainA balance: before(%s) + transfered(%s) != %s", beforeChainABalance, tokenChainA, newChainABalance,
-					)
-					// Assert new balance of chainB to be equal to beforeBalance-tokenChainB
-					newChainBBalance := s.queryBalance(chainBAPIEndpoint, recipient, ibcDenom)
-					assert.Equal(c,
-						beforeChainBBalance.Sub(tokenChainB).String(), newChainBBalance.String(),
-						"wrong chainB balancebefore(%s) + transfered(%s) != %s", beforeChainBBalance, tokenChainB, newChainBBalance,
-					)
-				},
-				time.Minute,
-				time.Second,
-			)
+			// Assert new balance of chainA to be equal to beforeBalance+tokenChainA
+			s.assertCoinBalance(s.chainA, sender, beforeBalanceChainA.Add(tokenChainA))
+			// Assert new balance of chainB to be equal to beforeBalance-tokenChainB
+			s.assertCoinBalance(s.chainB, recipient, beforeBalanceChainB.Sub(tokenChainB))
 		})
 	})
 }
@@ -183,7 +155,6 @@ func (s *IntegrationTestSuite) testIBCv2TokenTransfer(clientIdA, clientIdB strin
 	s.Run("transferv2_to_chainB", func() {
 		address, _ := s.chainA.validators[0].keyInfo.GetAddress()
 		sender := address.String()
-		senderName := s.chainA.validators[0].keyInfo.Name
 		address, _ = s.chainB.validators[0].keyInfo.GetAddress()
 		recipient := address.String()
 
@@ -198,30 +169,43 @@ func (s *IntegrationTestSuite) testIBCv2TokenTransfer(clientIdA, clientIdB strin
 		tokenChainB := sdk.NewCoin(ibcDenom, tokenChainA.Amount)    // 1,000 ibc/{port}/{channel}/{denom}
 
 		// Get balance before test
-		beforeChainABalance := s.queryBalance(chainAAPIEndpoint, sender, uatoneDenom)
-		beforeChainBBalance := s.queryBalance(chainBAPIEndpoint, recipient, ibcDenom)
-		senderKeyring := s.chainA.validators[0].keyring()
+		beforeBalanceChainA := s.queryBalance(chainAAPIEndpoint, sender, uatoneDenom)
+		beforeBalanceChainB := s.queryBalance(chainBAPIEndpoint, recipient, ibcDenom)
 
-		_ = senderName
-		s.transferIBCv2(s.chainA, clientIdA, sender, recipient, senderKeyring, tokenChainA)
+		s.transferIBCv2(s.chainA, clientIdA, sender, recipient, tokenChainA)
 
-		s.Require().EventuallyWithT(
-			func(c *assert.CollectT) {
-				// Assert new balance of chainA to be equal to beforeBalance-tokenChainA
-				newChainABalance := s.queryBalance(chainAAPIEndpoint, sender, tokenChainA.Denom)
-				assert.Equal(c,
-					beforeChainABalance.Sub(tokenChainA).String(), newChainABalance.String(),
-					"wrong chainA balance: before(%s) - transfered(%s) != %s", beforeChainABalance, tokenChainA, newChainABalance,
-				)
-				// Assert new balance of chainB to be equal to beforeBalance+tokenChainB
-				newChainBBalance := s.queryBalance(chainBAPIEndpoint, recipient, ibcDenom)
-				assert.Equal(c,
-					beforeChainBBalance.Add(tokenChainB).String(), newChainBBalance.String(),
-					"wrong chainB balance: before(%s) + transfered(%s) != %s", beforeChainBBalance, tokenChainB, newChainBBalance,
-				)
-			},
-			time.Minute,
-			time.Second,
-		)
+		// Assert new balance of chainA to be equal to beforeBalance-tokenChainA
+		s.assertCoinBalance(s.chainA, sender, beforeBalanceChainA.Sub(tokenChainA))
+		// Assert new balance of chainB to be equal to beforeBalance+tokenChainB
+		s.assertCoinBalance(s.chainB, recipient, beforeBalanceChainB.Add(tokenChainB))
+
+		// Now try to send back the tokens to chainA (unwind)
+		s.Run("transferv2_back_to_chainA", func() {
+			// Get balance before test
+			beforeBalanceChainA := s.queryBalance(chainAAPIEndpoint, sender, uatoneDenom)
+			beforeBalanceChainB := s.queryBalance(chainBAPIEndpoint, recipient, ibcDenom)
+
+			s.transferIBCv2(s.chainB, clientIdB, recipient, sender, tokenChainB)
+
+			// Assert new balance of chainA to be equal to beforeBalance+tokenChainA
+			s.assertCoinBalance(s.chainA, sender, beforeBalanceChainA.Add(tokenChainA))
+			// Assert new balance of chainB to be equal to beforeBalance-tokenChainB
+			s.assertCoinBalance(s.chainB, recipient, beforeBalanceChainB.Sub(tokenChainB))
+		})
 	})
+}
+
+func (s *IntegrationTestSuite) assertCoinBalance(c *chain, addr string, expected sdk.Coin) {
+	endpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
+	s.Require().EventuallyWithT(
+		func(c *assert.CollectT) {
+			current := s.queryBalance(endpoint, addr, expected.Denom)
+			assert.Equal(c,
+				expected.String(), current.String(),
+				"wrong coin balance: expected %s got %s", expected, current,
+			)
+		},
+		time.Minute,
+		time.Second,
+	)
 }

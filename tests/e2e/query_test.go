@@ -34,8 +34,9 @@ func (s *IntegrationTestSuite) waitAtomOneTx(endpoint, txHash string, msgResp co
 		if isErrNotFound(err) {
 			continue
 		}
+		return
 	}
-	return err
+	return
 }
 
 // queryAtomOneTx returns an error if the tx is not found or is failed.
@@ -214,29 +215,23 @@ func (s *IntegrationTestSuite) queryGovParams(endpoint string, param string) gov
 	return res
 }
 
-func (s *IntegrationTestSuite) queryAccount(endpoint, address string) (acc sdk.AccountI, err error) {
-	var res authtypes.QueryAccountResponse
+func (s *IntegrationTestSuite) queryAccount(endpoint, address string) (acc sdk.AccountI) {
 	resp, err := http.Get(fmt.Sprintf("%s/cosmos/auth/v1beta1/accounts/%s", endpoint, address))
-	if err != nil {
-		return nil, fmt.Errorf("failed to execute HTTP request: %w", err)
-	}
+	s.Require().NoError(err)
 	defer resp.Body.Close()
 
 	bz, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	if err := s.cdc.UnmarshalJSON(bz, &res); err != nil {
-		return nil, err
-	}
-	return acc, s.cdc.UnpackAny(res.Account, &acc)
+	s.Require().NoError(err)
+	var res authtypes.QueryAccountResponse
+	err = s.cdc.UnmarshalJSON(bz, &res)
+	s.Require().NoError(err, "unexpected response for queryAccount: %s", string(bz))
+	err = s.cdc.UnpackAny(res.Account, &acc)
+	s.Require().NoError(err)
+	return acc
 }
 
 func (s *IntegrationTestSuite) queryDelayedVestingAccount(endpoint, address string) (authvesting.DelayedVestingAccount, error) {
-	baseAcc, err := s.queryAccount(endpoint, address)
-	if err != nil {
-		return authvesting.DelayedVestingAccount{}, err
-	}
+	baseAcc := s.queryAccount(endpoint, address)
 	acc, ok := baseAcc.(*authvesting.DelayedVestingAccount)
 	if !ok {
 		return authvesting.DelayedVestingAccount{},
@@ -246,10 +241,7 @@ func (s *IntegrationTestSuite) queryDelayedVestingAccount(endpoint, address stri
 }
 
 func (s *IntegrationTestSuite) queryContinuousVestingAccount(endpoint, address string) (authvesting.ContinuousVestingAccount, error) {
-	baseAcc, err := s.queryAccount(endpoint, address)
-	if err != nil {
-		return authvesting.ContinuousVestingAccount{}, err
-	}
+	baseAcc := s.queryAccount(endpoint, address)
 	acc, ok := baseAcc.(*authvesting.ContinuousVestingAccount)
 	if !ok {
 		return authvesting.ContinuousVestingAccount{},
@@ -259,10 +251,7 @@ func (s *IntegrationTestSuite) queryContinuousVestingAccount(endpoint, address s
 }
 
 func (s *IntegrationTestSuite) queryPeriodicVestingAccount(endpoint, address string) (authvesting.PeriodicVestingAccount, error) { //nolint:unused // this is called during e2e tests
-	baseAcc, err := s.queryAccount(endpoint, address)
-	if err != nil {
-		return authvesting.PeriodicVestingAccount{}, err
-	}
+	baseAcc := s.queryAccount(endpoint, address)
 	acc, ok := baseAcc.(*authvesting.PeriodicVestingAccount)
 	if !ok {
 		return authvesting.PeriodicVestingAccount{},
