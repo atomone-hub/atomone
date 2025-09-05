@@ -61,20 +61,7 @@ func (s *IntegrationTestSuite) transferIBCv2(c *chain, clientID, sender, recipie
 	msg := channeltypesv2.NewMsgSendPacket(
 		clientID, timeoutTimestamp, sender, payload,
 	)
-	endpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
-	acc := s.queryAccount(endpoint, sender)
-
-	// TODO externalize signMsg so it can be used by multiple account type?
-	// with account/sequence fetching, sign, broadcast and err check all together
-	tx := s.signMsg(c, c.validators[0].keyInfo, acc.GetAccountNumber(), acc.GetSequence(), "", msg)
-
-	bz, err := tx.Marshal()
-	s.Require().NoError(err)
-	res, err := s.rpcClient(c, 0).BroadcastTxSync(context.Background(), bz)
-	s.Require().NoError(err)
-	s.Require().Zero(res.Code, "TX error: %s", res.Log)
-	err = s.waitAtomOneTx(endpoint, res.Hash.String(), nil)
-	s.Require().NoError(err)
+	s.signAndBroadcastMsg(c, c.validators[0].keyInfo, msg)
 	s.T().Log("successfully transfered IBCv2 tokens")
 }
 

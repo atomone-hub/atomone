@@ -58,8 +58,27 @@ func concatFlags(originalCollection []string, commandFlags []string, generalFlag
 	return originalCollection
 }
 
-// func (c *chain) signAndBroadcastMsg(keyring keyring.Keyring, accountNum, sequence uint64, memo string, msgs ...sdk.Msg) (*sdktx.Tx, error) {
-// }
+func (s *IntegrationTestSuite) signAndBroadcastMsg(c *chain, key keyring.Record, msgs ...sdk.Msg) {
+	// Fetch account
+	endpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
+	addr, err := key.GetAddress()
+	s.Require().NoError(err)
+	acc := s.queryAccount(endpoint, addr.String())
+
+	// Sign tx
+	tx := s.signMsg(c, key, acc.GetAccountNumber(), acc.GetSequence(), "", msgs...)
+
+	// Broadcast tx
+	bz, err := tx.Marshal()
+	s.Require().NoError(err)
+	res, err := s.rpcClient(c, 0).BroadcastTxSync(context.Background(), bz)
+	s.Require().NoError(err, "broadcast TX error")
+	s.Require().Zero(res.Code, "check TX error: %s", res.Log)
+
+	// Ensure tx success
+	err = s.waitAtomOneTx(endpoint, res.Hash.String(), nil)
+	s.Require().NoError(err, "run TX error")
+}
 
 func (s *IntegrationTestSuite) signMsg(c *chain, key keyring.Record,
 	accountNum, sequence uint64, memo string, msgs ...sdk.Msg,
