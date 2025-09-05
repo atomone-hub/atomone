@@ -656,6 +656,24 @@ func (s *IntegrationTestSuite) saveChainLogs(c *chain) {
 	}
 }
 
+func (s *IntegrationTestSuite) saveTsRelayerLogs() {
+	f, err := os.CreateTemp("", "ts-relayer")
+	if err != nil {
+		s.T().Fatal(err)
+	}
+	defer f.Close()
+	err = s.dkrPool.Client.Logs(docker.LogsOptions{
+		Container:    s.tsRelayerResource.Container.ID,
+		OutputStream: f,
+		ErrorStream:  f,
+		Stdout:       true,
+		Stderr:       true,
+	})
+	if err == nil {
+		s.T().Logf("See ts-relayer log file %s", f.Name())
+	}
+}
+
 func noRestart(config *docker.HostConfig) {
 	// in this case we don't want the nodes to restart on failure
 	config.RestartPolicy = docker.RestartPolicy{

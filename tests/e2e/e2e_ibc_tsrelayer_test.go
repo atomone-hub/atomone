@@ -93,10 +93,10 @@ func (s *IntegrationTestSuite) runIBCTSRelayer() (ibcV1Path tsRelayerPath, ibcV2
 	// Populate channel-ids for ibcV1Path
 	chainAAPI := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
 	res := s.queryIBCConnectionChannels(chainAAPI, ibcV1Path.ClientA)
-	ibcV1Path.ChannelIdA = res.Channels[0].ChannelId
+	ibcV1Path.ChannelA = res.Channels[0].ChannelId
 	chainBAPI := fmt.Sprintf("http://%s", s.valResources[s.chainB.id][0].GetHostPort("1317/tcp"))
 	res = s.queryIBCConnectionChannels(chainBAPI, ibcV1Path.ClientB)
-	ibcV1Path.ChannelIdB = res.Channels[0].ChannelId
+	ibcV1Path.ChannelB = res.Channels[0].ChannelId
 
 	return
 }

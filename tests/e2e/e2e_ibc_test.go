@@ -8,6 +8,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"cosmossdk.io/math"
+
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	transfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
@@ -43,12 +45,10 @@ func (s *IntegrationTestSuite) transferIBC(c *chain, valIdx int, channelID, send
 	s.T().Log("successfully transfered IBC tokens")
 }
 
-func (s *IntegrationTestSuite) transferIBCv2(c *chain, clientID, sender,
-	recipient string, token sdk.Coin,
-) {
+func (s *IntegrationTestSuite) transferIBCv2(c *chain, clientID, sender, recipient string, token sdk.Coin) {
 	s.T().Logf("transfering v2 %s from %s (%s) to %s (%s) using %s", token, s.chainA.id, sender, s.chainB.id, recipient, clientID)
 	// NOTE(tb): There is currently no CLI command for the transfer app in IBCv2
-	// We have to forge everything by hand.
+	// so we have to forge everything by hand.
 	packetData := transfertypes.NewFungibleTokenPacketData(
 		token.Denom, token.Amount.String(), sender, recipient, "",
 	)
@@ -107,9 +107,9 @@ func (s *IntegrationTestSuite) testIBCTokenTransfer(channelIdA, channelIdB strin
 		chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
 		chainBAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainB.id][0].GetHostPort("1317/tcp"))
 
-		// Determine ibc denom trace which is "ibc/"+HEX(SHA256({port}/{channel}/{denom}))
-		bz := sha256.Sum256([]byte(fmt.Sprintf("transfer/%s/%s", channelIdA, uatoneDenom)))
-		ibcDenom := fmt.Sprintf("ibc/%X", bz)
+		// Determine ibc denom which is "ibc/"+HEX(SHA256({port}/{channel}/{denom}))
+		ibcTrace := fmt.Sprintf("transfer/%s/%s", channelIdA, uatoneDenom)
+		ibcDenom := fmt.Sprintf("ibc/%X", sha256.Sum256([]byte(ibcTrace)))
 
 		tokenChainA := sdk.NewInt64Coin(uatoneDenom, 1_000_000_000) // 1,000 atone
 		tokenChainB := sdk.NewCoin(ibcDenom, tokenChainA.Amount)    // 1,000 ibc/{port}/{channel}/{denom}
@@ -152,6 +152,7 @@ func (s *IntegrationTestSuite) testIBCTokenTransfer(channelIdA, channelIdB strin
 }
 
 func (s *IntegrationTestSuite) testIBCv2TokenTransfer(clientIdA, clientIdB string) {
+	defer s.saveTsRelayerLogs() // TODO remove when flakyness is fixed
 	s.Run("transferv2_to_chainB", func() {
 		address, _ := s.chainA.validators[0].keyInfo.GetAddress()
 		sender := address.String()
@@ -161,9 +162,9 @@ func (s *IntegrationTestSuite) testIBCv2TokenTransfer(clientIdA, clientIdB strin
 		chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
 		chainBAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainB.id][0].GetHostPort("1317/tcp"))
 
-		// Determine ibc denom trace which is "ibc/"+HEX(SHA256({port}/{channel}/{denom}))
-		bz := sha256.Sum256([]byte(fmt.Sprintf("transfer/%s/%s", clientIdA, uatoneDenom)))
-		ibcDenom := fmt.Sprintf("ibc/%X", bz)
+		// Determine ibc denom which is "ibc/"+HEX(SHA256({port}/{channel}/{denom}))
+		ibcTrace := fmt.Sprintf("transfer/%s/%s", clientIdA, uatoneDenom)
+		ibcDenom := fmt.Sprintf("ibc/%X", sha256.Sum256([]byte(ibcTrace)))
 
 		tokenChainA := sdk.NewInt64Coin(uatoneDenom, 1_000_000_000) // 1,000 atone
 		tokenChainB := sdk.NewCoin(ibcDenom, tokenChainA.Amount)    // 1,000 ibc/{port}/{channel}/{denom}
@@ -184,8 +185,10 @@ func (s *IntegrationTestSuite) testIBCv2TokenTransfer(clientIdA, clientIdB strin
 			// Get balance before test
 			beforeBalanceChainA := s.queryBalance(chainAAPIEndpoint, sender, uatoneDenom)
 			beforeBalanceChainB := s.queryBalance(chainBAPIEndpoint, recipient, ibcDenom)
+			// Unwinding in IBCv2 requires to us the trace in plain text as denom
+			tokenTransfer := sdk.NewCoin(ibcTrace, tokenChainB.Amount)
 
-			s.transferIBCv2(s.chainB, clientIdB, recipient, sender, tokenChainB)
+			s.transferIBCv2(s.chainB, clientIdB, recipient, sender, tokenTransfer)
 
 			// Assert new balance of chainA to be equal to beforeBalance+tokenChainA
 			s.assertCoinBalance(s.chainA, sender, beforeBalanceChainA.Add(tokenChainA))
@@ -196,13 +199,23 @@ func (s *IntegrationTestSuite) testIBCv2TokenTransfer(clientIdA, clientIdB strin
 }
 
 func (s *IntegrationTestSuite) assertCoinBalance(c *chain, addr string, expected sdk.Coin) {
+	s.T().Logf("asserting balance of %s has %s ", addr, expected)
 	endpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
 	s.Require().EventuallyWithT(
 		func(c *assert.CollectT) {
-			current := s.queryBalance(endpoint, addr, expected.Denom)
+			// TODO use s.queryBalance when flakyness is fixed
+			balances, err := s.queryAllBalances(endpoint, addr)
+			if err != nil {
+				panic(err)
+			}
+			// current := s.queryBalance(endpoint, addr, expected.Denom)
+			ok, current := balances.Find(expected.Denom)
+			if !ok {
+				current = sdk.NewCoin(expected.Denom, math.ZeroInt())
+			}
 			assert.Equal(c,
 				expected.String(), current.String(),
-				"wrong coin balance: expected %s got %s", expected, current,
+				"wrong coin balance for %s: %s", addr, balances,
 			)
 		},
 		time.Minute,

@@ -82,10 +82,11 @@ func (s *IntegrationTestSuite) TestIBC_tsRelayer() {
 		s.T().Skip()
 	}
 	s.ensureIBCSetup()
-	ibcV1Path, _ := s.runIBCTSRelayer()
+	ibcV1Path, ibcV2Path := s.runIBCTSRelayer()
 	defer s.tearDownTsRelayer()
 
-	s.testIBCTokenTransfer(ibcV1Path.ChannelIdA, ibcV1Path.ChannelIdB)
+	s.testIBCTokenTransfer(ibcV1Path.ChannelA, ibcV1Path.ChannelB)
+	s.testIBCv2TokenTransfer(ibcV2Path.ClientA, ibcV2Path.ClientB)
 }
 
 func (s *IntegrationTestSuite) TestSlashing() {
