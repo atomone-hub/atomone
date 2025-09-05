@@ -478,9 +478,8 @@ func (s *IntegrationTestSuite) initGenesis(c *chain, vestingMnemonic, jailedValM
 	for i, val := range c.validators {
 		createValmsg, err := val.buildCreateValidatorMsg(stakingAmountCoin)
 		s.Require().NoError(err)
-		signedTx, err := val.signMsg(0, 0, createValmsg)
-
-		s.Require().NoError(err)
+		memo := fmt.Sprintf("%s@%s:26656", val.nodeKey.ID(), val.instanceName())
+		signedTx := s.signMsg(c, val.keyInfo, 0, 0, memo, createValmsg)
 
 		txRaw, err := s.cdc.MarshalJSON(signedTx)
 		s.Require().NoError(err)

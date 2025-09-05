@@ -1,7 +1,6 @@
 package e2e
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -21,9 +20,6 @@ import (
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	"github.com/cosmos/cosmos-sdk/server"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdktx "github.com/cosmos/cosmos-sdk/types/tx"
-	txsigning "github.com/cosmos/cosmos-sdk/types/tx/signing"
-	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
@@ -249,89 +245,4 @@ func (v *validator) buildCreateValidatorMsg(amount sdk.Coin) (sdk.Msg, error) {
 		commissionRates,
 		math.OneInt(),
 	)
-}
-
-func (v *validator) signMsg(accountNum, sequence uint64, msgs ...sdk.Msg) (*sdktx.Tx, error) {
-	txBuilder := v.chain.txConfig.NewTxBuilder()
-
-	if err := txBuilder.SetMsgs(msgs...); err != nil {
-		return nil, err
-	}
-
-	txBuilder.SetMemo(fmt.Sprintf("%s@%s:26656", v.nodeKey.ID(), v.instanceName()))
-	txBuilder.SetFeeAmount(sdk.NewCoins(standardFees))
-	txBuilder.SetGasLimit(200000)
-
-	signerData := authsigning.SignerData{
-		ChainID:       v.chain.id,
-		AccountNumber: accountNum,
-		Sequence:      sequence,
-	}
-
-	// For SIGN_MODE_DIRECT, calling SetSignatures calls setSignerInfos on
-	// TxBuilder under the hood, and SignerInfos is needed to generate the sign
-	// bytes. This is the reason for setting SetSignatures here, with a nil
-	// signature.
-	//
-	// Note: This line is not needed for SIGN_MODE_LEGACY_AMINO, but putting it
-	// also doesn't affect its generated sign bytes, so for code's simplicity
-	// sake, we put it here.
-	pk, err := v.keyInfo.GetPubKey()
-	if err != nil {
-		return nil, err
-	}
-
-	sig := txsigning.SignatureV2{
-		PubKey: pk,
-		Data: &txsigning.SingleSignatureData{
-			SignMode:  txsigning.SignMode_SIGN_MODE_DIRECT,
-			Signature: nil,
-		},
-		Sequence: sequence,
-	}
-
-	if err := txBuilder.SetSignatures(sig); err != nil {
-		return nil, err
-	}
-
-	bytesToSign, err := authsigning.GetSignBytesAdapter(
-		context.TODO(),
-		v.chain.txConfig.SignModeHandler(),
-		txsigning.SignMode_SIGN_MODE_DIRECT,
-		signerData,
-		txBuilder.GetTx(),
-	)
-	if err != nil {
-		return nil, fmt.Errorf("error getting sign bytes: %w", err)
-	}
-
-	sigBytes, err := v.privateKey.Sign(bytesToSign)
-	if err != nil {
-		return nil, err
-	}
-
-	pk, err = v.keyInfo.GetPubKey()
-	if err != nil {
-		return nil, err
-	}
-
-	sig = txsigning.SignatureV2{
-		PubKey: pk,
-		Data: &txsigning.SingleSignatureData{
-			SignMode:  txsigning.SignMode_SIGN_MODE_DIRECT,
-			Signature: sigBytes,
-		},
-		Sequence: sequence,
-	}
-	if err := txBuilder.SetSignatures(sig); err != nil {
-		return nil, err
-	}
-
-	signedTx := txBuilder.GetTx()
-	bz, err := v.chain.txConfig.TxEncoder()(signedTx)
-	if err != nil {
-		return nil, err
-	}
-
-	return decodeTx(v.chain.cdc, bz)
 }

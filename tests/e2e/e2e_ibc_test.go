@@ -47,8 +47,8 @@ func (s *IntegrationTestSuite) transferIBC(c *chain, valIdx int, channelID, send
 
 func (s *IntegrationTestSuite) transferIBCv2(c *chain, clientID, sender, recipient string, token sdk.Coin) {
 	s.T().Logf("transfering v2 %s from %s (%s) to %s (%s) using %s", token, s.chainA.id, sender, s.chainB.id, recipient, clientID)
-	// NOTE(tb): There is currently no CLI command for the transfer app in IBCv2
-	// so we have to forge everything by hand.
+	// NOTE: There is currently no CLI command for the transfer app in IBCv2 so
+	// we have to forge everything by hand.
 	packetData := transfertypes.NewFungibleTokenPacketData(
 		token.Denom, token.Amount.String(), sender, recipient, "",
 	)
@@ -66,9 +66,9 @@ func (s *IntegrationTestSuite) transferIBCv2(c *chain, clientID, sender, recipie
 
 	// TODO externalize signMsg so it can be used by multiple account type?
 	// with account/sequence fetching, sign, broadcast and err check all together
-	tx, err := c.validators[0].signMsg(acc.GetAccountNumber(), acc.GetSequence(), msg)
-	s.Require().NoError(err)
-	bz, err = tx.Marshal()
+	tx := s.signMsg(c, c.validators[0].keyInfo, acc.GetAccountNumber(), acc.GetSequence(), "", msg)
+
+	bz, err := tx.Marshal()
 	s.Require().NoError(err)
 	res, err := s.rpcClient(c, 0).BroadcastTxSync(context.Background(), bz)
 	s.Require().NoError(err)
