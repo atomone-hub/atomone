@@ -54,7 +54,7 @@ func (s *IntegrationTestSuite) runIBCTSRelayer() (ibcV1Path tsRelayerPath, ibcV2
 	s.tsRelayerResource, err = s.dkrPool.RunWithOptions(
 		&dockertest.RunOptions{
 			Name:       fmt.Sprintf("%s-%s-ts-relayer", s.chainA.id, s.chainB.id),
-			Repository: "ghcr.io/allinbits/ibc-v2-ts-relayer:latest",
+			Repository: "ghcr.io/allinbits/ibc-v2-ts-relayer",
 			Tag:        "latest",
 			NetworkID:  s.dkrNet.Network.ID,
 			PortBindings: map[docker.Port][]docker.PortBinding{
