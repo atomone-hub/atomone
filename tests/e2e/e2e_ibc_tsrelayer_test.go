@@ -110,6 +110,7 @@ func (s *IntegrationTestSuite) tearDownTsRelayer() {
 }
 
 func (s *IntegrationTestSuite) executeTsRelayerCommand(ctx context.Context, args []string) []byte {
+	tsRelayerBinary := []string{"/bin/with_keyring", "ibc-v2-ts-relayer"}
 	cmd := append(tsRelayerBinary, args...)
 	exec, err := s.dkrPool.Client.CreateExec(docker.CreateExecOptions{
 		Context:      ctx,

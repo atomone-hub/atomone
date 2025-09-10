@@ -87,7 +87,6 @@ var (
 	tokenAmount       = sdk.NewInt64Coin(uatoneDenom, 100_000_000)       // 100atone
 	standardFees      = sdk.NewInt64Coin(uphotonDenom, 330_000)          // 0.33photon
 	proposalCounter   = 0
-	tsRelayerBinary   = []string{"/etc/with_keyring", "ibc-v2-ts-relayer"}
 )
 
 type IntegrationTestSuite struct {
