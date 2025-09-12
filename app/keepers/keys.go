@@ -4,6 +4,7 @@ import (
 	icahosttypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/host/types"
 	ibctransfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
 	ibcexported "github.com/cosmos/ibc-go/v10/modules/core/exported"
+	providertypes "github.com/cosmos/interchain-security/v5/x/ccv/provider/types"
 
 	storetypes "cosmossdk.io/store/types"
 	evidencetypes "cosmossdk.io/x/evidence/types"
@@ -47,6 +48,7 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 		consensusparamtypes.StoreKey,
 		photontypes.StoreKey,
 		dynamicfeetypes.StoreKey,
+		providertypes.StoreKey,
 	)
 
 	// Define transient store keys
