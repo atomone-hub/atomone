@@ -48,7 +48,7 @@ func (s *IntegrationTestSuite) transferIBC(c *chain, valIdx int, channelID, send
 func (s *IntegrationTestSuite) transferIBCv2(c *chain, clientID, sender, recipient string, token sdk.Coin) {
 	s.T().Logf("transfering v2 %s from %s (%s) to %s (%s) using %s", token, s.chainA.id, sender, s.chainB.id, recipient, clientID)
 	// NOTE: There is currently no CLI command for the transfer app in IBCv2 so
-	// we have to forge everything by hand.
+	// we have to create everything by hand.
 	packetData := transfertypes.NewFungibleTokenPacketData(
 		token.Denom, token.Amount.String(), sender, recipient, "",
 	)
