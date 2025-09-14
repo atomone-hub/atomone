@@ -42,7 +42,7 @@ func (s *IntegrationTestSuite) transferIBC(c *chain, valIdx int, channelID, send
 		"-y",
 	}
 	s.executeAtomoneTxCommand(ctx, c, ibcCmd, valIdx, s.defaultExecValidation(c, valIdx, nil))
-	s.T().Log("successfully transfered IBC tokens")
+	s.T().Log("successfully transferred IBC tokens")
 }
 
 func (s *IntegrationTestSuite) transferIBCv2(c *chain, clientID, sender, recipient string, token sdk.Coin) {
