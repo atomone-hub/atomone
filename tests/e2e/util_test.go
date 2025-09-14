@@ -58,7 +58,7 @@ func concatFlags(originalCollection []string, commandFlags []string, generalFlag
 	return originalCollection
 }
 
-func (s *IntegrationTestSuite) signAndBroadcastMsg(c *chain, key keyring.Record, msgs ...sdk.Msg) {
+func (s *IntegrationTestSuite) signAndBroadcastTx(c *chain, key keyring.Record, msgs ...sdk.Msg) {
 	// Fetch account
 	endpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
 	addr, err := key.GetAddress()

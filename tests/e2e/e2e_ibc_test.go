@@ -61,7 +61,7 @@ func (s *IntegrationTestSuite) transferIBCv2(c *chain, clientID, sender, recipie
 	msg := channeltypesv2.NewMsgSendPacket(
 		clientID, timeoutTimestamp, sender, payload,
 	)
-	s.signAndBroadcastMsg(c, c.validators[0].keyInfo, msg)
+	s.signAndBroadcastTx(c, c.validators[0].keyInfo, msg)
 	s.T().Log("successfully transfered IBCv2 tokens")
 }
 
