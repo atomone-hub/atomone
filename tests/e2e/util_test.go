@@ -66,7 +66,7 @@ func (s *IntegrationTestSuite) signAndBroadcastTx(c *chain, key keyring.Record, 
 	acc := s.queryAccount(endpoint, addr.String())
 
 	// Sign tx
-	tx := s.signMsg(c, key, acc.GetAccountNumber(), acc.GetSequence(), "", msgs...)
+	tx := s.signTx(c, key, acc.GetAccountNumber(), acc.GetSequence(), "", msgs...)
 
 	// Broadcast tx
 	bz, err := tx.Marshal()
@@ -80,7 +80,7 @@ func (s *IntegrationTestSuite) signAndBroadcastTx(c *chain, key keyring.Record, 
 	s.Require().NoError(err, "run TX error")
 }
 
-func (s *IntegrationTestSuite) signMsg(c *chain, key keyring.Record,
+func (s *IntegrationTestSuite) signTx(c *chain, key keyring.Record,
 	accountNum, sequence uint64, memo string, msgs ...sdk.Msg,
 ) *sdktx.Tx {
 	txBuilder := c.txConfig.NewTxBuilder()
