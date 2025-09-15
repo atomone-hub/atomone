@@ -57,18 +57,15 @@ func (s *IntegrationTestSuite) queryAtomOneTx(endpoint, txHash string, msgResp c
 	return int(resp.TxResponse.Height), nil
 }
 
-func (s *IntegrationTestSuite) queryCoreDAOsParams(endpoint string) (coredaostypes.QueryParamsResponse, error) { //nolint:unused
+func (s *IntegrationTestSuite) queryCoreDAOsParams(endpoint string) coredaostypes.QueryParamsResponse { //nolint:unused
 	body, err := httpGet(fmt.Sprintf("%s/atomone/coredaos/v1/params", endpoint))
-	if err != nil {
-		return coredaostypes.QueryParamsResponse{}, fmt.Errorf("failed to execute HTTP request: %w", err)
-	}
+	s.Require().NoError(err, "failed to execute HTTP request")
 
 	var params coredaostypes.QueryParamsResponse
-	if err := s.cdc.UnmarshalJSON(body, &params); err != nil {
-		return coredaostypes.QueryParamsResponse{}, err
-	}
+	err = s.cdc.UnmarshalJSON(body, &params)
+	s.Require().NoError(err)
 
-	return params, nil
+	return params
 }
 
 // if coin is zero, return empty coin.
@@ -181,20 +178,14 @@ func (s *IntegrationTestSuite) queryGovProposal(endpoint string, proposalID int)
 	return govProposalResp, nil
 }
 
-func (s *IntegrationTestSuite) queryGovV1Proposal(endpoint string, proposalID int) (govtypesv1.QueryProposalResponse, error) {
+func (s *IntegrationTestSuite) queryGovV1Proposal(endpoint string, proposalID int) govtypesv1.QueryProposalResponse {
 	var govProposalResp govtypesv1.QueryProposalResponse
-
 	path := fmt.Sprintf("%s/atomone/gov/v1/proposals/%d", endpoint, proposalID)
-
 	body, err := httpGet(path)
-	if err != nil {
-		return govProposalResp, fmt.Errorf("failed to execute HTTP request: %w", err)
-	}
-	if err := s.cdc.UnmarshalJSON(body, &govProposalResp); err != nil {
-		return govProposalResp, err
-	}
-
-	return govProposalResp, nil
+	s.Require().NoError(err, "failed to execute HTTP request")
+	err = s.cdc.UnmarshalJSON(body, &govProposalResp)
+	s.Require().NoError(err)
+	return govProposalResp
 }
 
 func (s *IntegrationTestSuite) queryGovMinInitialDeposit(endpoint string) sdk.Coin {
