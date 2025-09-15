@@ -37,10 +37,13 @@ func (s *IntegrationTestSuite) testCoreDAOs() {
 	s.Require().Equal(newParams.Params.OversightDaoAddress, oversiteDAOAddress.String())
 
 	s.execBankMultiSend(s.chainA, valIdx, senderAddress.String(),
-		[]string{steeringDAOAddress.String(), oversiteDAOAddress.String()}, tokenAmount.String(), false)
-
-	s.execBankMultiSend(s.chainA, valIdx, senderAddress.String(),
-		[]string{steeringDAOAddress.String(), oversiteDAOAddress.String()}, sdk.NewInt64Coin(uphotonDenom, 100_000_000).String(), false)
+		[]string{steeringDAOAddress.String(), oversiteDAOAddress.String()},
+		sdk.NewCoins(
+			tokenAmount,
+			sdk.NewInt64Coin(uphotonDenom, 100_000_000),
+		).String(),
+		false,
+	)
 
 	s.Run("coredaos annotation", func() {
 		chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
