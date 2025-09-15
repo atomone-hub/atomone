@@ -1,8 +1,9 @@
 package keeper
 
 import (
+	"cosmossdk.io/collections"
+	"cosmossdk.io/core/store"
 	"cosmossdk.io/log"
-	storetypes "cosmossdk.io/store/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -11,17 +12,20 @@ import (
 )
 
 type Keeper struct {
-	cdc       codec.BinaryCodec
-	storeKey  storetypes.StoreKey
-	authority string
+	cdc          codec.BinaryCodec
+	storeService store.KVStoreService
+	authority    string
 
 	govKeeper     types.GovKeeper
 	stakingKeeper types.StakingKeeper
+
+	Schema collections.Schema
+	Params collections.Item[types.Params]
 }
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
-	storeKey storetypes.StoreKey,
+	storeService store.KVStoreService,
 	authority string,
 	govKeeper types.GovKeeper,
 	stakingKeeper types.StakingKeeper,
@@ -30,13 +34,22 @@ func NewKeeper(
 		panic(err)
 	}
 
-	return &Keeper{
+	sb := collections.NewSchemaBuilder(storeService)
+	k := &Keeper{
 		cdc:           cdc,
-		storeKey:      storeKey,
+		storeService:  storeService,
 		authority:     authority,
 		govKeeper:     govKeeper,
 		stakingKeeper: stakingKeeper,
+		Params:        collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
 	}
+
+	schema, err := sb.Build()
+	if err != nil {
+		panic(err)
+	}
+	k.Schema = schema
+	return k
 }
 
 // Logger returns a coredaos module-specific logger.

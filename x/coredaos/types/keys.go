@@ -1,5 +1,7 @@
 package types
 
+import "cosmossdk.io/collections"
+
 const (
 	// ModuleName defines the module name
 	ModuleName = "coredaos"
@@ -11,4 +13,4 @@ const (
 	RouterKey = ModuleName
 )
 
-var ParamsKey = []byte{0x00}
+var ParamsKey = collections.NewPrefix(0)

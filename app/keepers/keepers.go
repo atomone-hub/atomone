@@ -257,7 +257,7 @@ func NewAppKeeper(
 
 	appKeepers.CoreDaosKeeper = coredaoskeeper.NewKeeper(
 		appCodec,
-		appKeepers.keys[coredaostypes.StoreKey],
+		runtime.NewKVStoreService(appKeepers.keys[coredaostypes.StoreKey]),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		appKeepers.GovKeeper,
 		appKeepers.StakingKeeper,

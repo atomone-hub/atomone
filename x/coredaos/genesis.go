@@ -15,7 +15,7 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 		panic(err)
 	}
 
-	if err := k.SetParams(ctx, genState.Params); err != nil {
+	if err := k.Params.Set(ctx, genState.Params); err != nil {
 		panic(fmt.Sprintf("%s module params has not been set", types.ModuleName))
 	}
 }

@@ -203,7 +203,7 @@ func TestMsgServerUpdateParams(t *testing.T) {
 			ms, k, m, ctx := testutil.SetupMsgServer(t)
 			tt.setupMocks(ctx, &m)
 			params := types.DefaultParams()
-			k.SetParams(ctx, params)
+			k.Params.Set(ctx, params)
 
 			if err := tt.msg.ValidateBasic(); err != nil {
 				if tt.expectedErr != "" {
@@ -369,7 +369,7 @@ func TestMsgServerAnnotateProposal(t *testing.T) {
 			if tt.setSteeringDAO {
 				params.SteeringDaoAddress = steeringDAOAcc
 			}
-			k.SetParams(ctx, params)
+			k.Params.Set(ctx, params)
 			if err := tt.msg.ValidateBasic(); err != nil {
 				if tt.expectedErr != "" {
 					require.EqualError(t, err, tt.expectedErr)
@@ -504,7 +504,7 @@ func TestMsgServerEndorseProposal(t *testing.T) {
 			if tt.setSteeringDAO {
 				params.SteeringDaoAddress = steeringDAOAcc
 			}
-			k.SetParams(ctx, params)
+			k.Params.Set(ctx, params)
 			if err := tt.msg.ValidateBasic(); err != nil {
 				if tt.expectedErr != "" {
 					require.EqualError(t, err, tt.expectedErr)
@@ -649,7 +649,7 @@ func TestMsgServerExtendVotingPeriod(t *testing.T) {
 			if tt.setSteeringDAO {
 				params.SteeringDaoAddress = steeringDAOAcc
 			}
-			k.SetParams(ctx, params)
+			k.Params.Set(ctx, params)
 			if err := tt.msg.ValidateBasic(); err != nil {
 				if tt.expectedErr != "" {
 					require.EqualError(t, err, tt.expectedErr)
@@ -814,7 +814,7 @@ func TestMsgServerVetoProposal(t *testing.T) {
 			if tt.setOversightDAO {
 				params.OversightDaoAddress = oversightDAOAcc
 			}
-			k.SetParams(ctx, params)
+			k.Params.Set(ctx, params)
 			if err := tt.msg.ValidateBasic(); err != nil {
 				if tt.expectedErr != "" {
 					require.EqualError(t, err, tt.expectedErr)

@@ -64,7 +64,7 @@ func (ms MsgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdatePara
 			return nil, errors.Wrapf(types.ErrCannotStake, "cannot update params while Oversight DAO have bonded or unbonding tokens")
 		}
 	}
-	if err := ms.k.SetParams(ctx, params); err != nil {
+	if err := ms.k.Params.Set(ctx, params); err != nil {
 		return nil, errors.Wrapf(err, "error setting params")
 	}
 

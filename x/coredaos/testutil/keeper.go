@@ -10,6 +10,7 @@ import (
 
 	storetypes "cosmossdk.io/store/types"
 
+	"github.com/cosmos/cosmos-sdk/runtime"
 	"github.com/cosmos/cosmos-sdk/testutil"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
@@ -44,10 +45,11 @@ func SetupCoredaosKeeper(t *testing.T) (
 	}
 
 	key := storetypes.NewKVStoreKey(types.StoreKey)
+	storeService := runtime.NewKVStoreService(key)
 	testCtx := testutil.DefaultContextWithDB(t, key, storetypes.NewTransientStoreKey("transient_test"))
 	ctx := testCtx.Ctx.WithBlockHeader(tmproto.Header{Time: tmtime.Now()})
 	encCfg := moduletestutil.MakeTestEncodingConfig()
 	types.RegisterInterfaces(encCfg.InterfaceRegistry)
 	authority := authtypes.NewModuleAddress(govtypes.ModuleName).String()
-	return keeper.NewKeeper(encCfg.Codec, key, authority, m.GovKeeper, m.StakingKeeper), m, ctx
+	return keeper.NewKeeper(encCfg.Codec, storeService, authority, m.GovKeeper, m.StakingKeeper), m, ctx
 }

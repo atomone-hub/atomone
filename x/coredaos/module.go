@@ -9,8 +9,8 @@ import (
 	"github.com/spf13/cobra"
 
 	"cosmossdk.io/core/appmodule"
+	"cosmossdk.io/core/store"
 	"cosmossdk.io/depinject"
-	store "cosmossdk.io/store/types"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -132,7 +132,7 @@ func NewAppModule(
 // RegisterServices registers a gRPC query service to respond to the module-specific gRPC queries
 func (am AppModule) RegisterServices(cfg module.Configurator) {
 	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServer(&am.keeper))
-	types.RegisterQueryServer(cfg.QueryServer(), am.keeper)
+	types.RegisterQueryServer(cfg.QueryServer(), keeper.NewQuerier(am.keeper))
 }
 
 // RegisterInvariants registers the invariants of the module. If an invariant deviates from its predicted value, the InvariantRegistry triggers appropriate logic (most often the chain will be halted)
@@ -172,9 +172,9 @@ func init() {
 type Inputs struct {
 	depinject.In
 
-	Config *modulev1.Module
-	Cdc    codec.Codec
-	Key    *store.KVStoreKey
+	Config       *modulev1.Module
+	StoreService store.KVStoreService
+	Cdc          codec.Codec
 
 	GovKeeper     types.GovKeeper
 	StakingKeeper types.StakingKeeper
@@ -205,7 +205,7 @@ func ProvideModule(in Inputs) Outputs {
 
 	Keeper := keeper.NewKeeper(
 		in.Cdc,
-		in.Key,
+		in.StoreService,
 		authority.String(),
 		in.GovKeeper,
 		in.StakingKeeper,

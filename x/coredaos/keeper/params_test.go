@@ -12,7 +12,7 @@ func TestGetParams(t *testing.T) {
 	k, _, ctx := testutil.SetupCoredaosKeeper(t)
 	params := types.DefaultParams()
 
-	k.SetParams(ctx, params)
+	k.Params.Set(ctx, params)
 	got := k.GetParams(ctx)
 
 	require.EqualValues(t, params, got)

@@ -11,9 +11,17 @@ import (
 	"github.com/atomone-hub/atomone/x/coredaos/types"
 )
 
-var _ types.QueryServer = Keeper{}
+var _ types.QueryServer = Querier{}
 
-func (k Keeper) Params(goCtx context.Context, req *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
+type Querier struct {
+	Keeper
+}
+
+func NewQuerier(keeper Keeper) Querier {
+	return Querier{Keeper: keeper}
+}
+
+func (k Querier) Params(goCtx context.Context, req *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
