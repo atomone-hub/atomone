@@ -87,3 +87,26 @@ func TestVotes(t *testing.T) {
 	require.Equal(t, votes[1].Options[1].Weight, math.LegacyNewDecWithPrec(30, 2).String())
 	require.Equal(t, votes[1].Options[2].Weight, math.LegacyNewDecWithPrec(5, 2).String())
 }
+
+func TestDeleteVotes(t *testing.T) {
+	govKeeper, mocks, _, ctx := setupGovKeeper(t)
+	bankKeeper, stakingKeeper := mocks.bankKeeper, mocks.stakingKeeper
+	addrs := simtestutil.AddTestAddrsIncremental(bankKeeper, stakingKeeper, ctx, 2, sdkmath.NewInt(10000000))
+
+	tp := TestProposal
+	proposal, err := govKeeper.SubmitProposal(ctx, tp, "", "title", "description", sdk.AccAddress("cosmos1ghekyjucln7y67ntx7cf27m9dpuxxemn4c8g4r"))
+	proposalID := proposal.Id
+	metadata := "metadata"
+	require.NoError(t, err)
+	proposal.Status = v1.StatusVotingPeriod
+	govKeeper.SetProposal(ctx, proposal)
+	govKeeper.AddVote(ctx, proposalID, addrs[0], v1.NewNonSplitVoteOption(v1.OptionYes), metadata)
+	govKeeper.AddVote(ctx, proposalID, addrs[1], v1.NewNonSplitVoteOption(v1.OptionYes), metadata)
+
+	votesBefore := govKeeper.GetVotes(ctx, proposalID)
+	require.Len(t, votesBefore, 2)
+
+	govKeeper.DeleteVotes(ctx, proposalID)
+	votesAfter := govKeeper.GetVotes(ctx, proposalID)
+	require.Len(t, votesAfter, 0)
+}

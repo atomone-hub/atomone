@@ -90,7 +90,7 @@ Where:
 
 - $D_{t+1}$ is the new deposit value, $D_{\min}$ is the floor deposit value and $D_t$ the deposit at time $t$
 - $n_t$ is the number of active proposals at time $t$ and $N$ the target number of proposals
-- $k$ is a positive integer that expresses the *sensitivity* of the rate of decrease to the distance of the number of active proposals $n_t$ with respect to the target $N$. Since the rate of decrease is proportional to this distance, $\k$ can be used to tune how much getting further away from $N$ affects the speed of decrease.
+- $k$ is a positive integer that expresses the *sensitivity* of the rate of decrease to the distance of the number of active proposals $n_t$ with respect to the target $N$. Since the rate of decrease is proportional to this distance, $k$ can be used to tune how much getting further away from $N$ affects the speed of decrease.
 - $\alpha_{up}$ is the base rate of increase for each new proposal activation when the number of proposals equal or bigger than the target, and is a positive number between 0 and 1 (excluded)
 - $\alpha_{down}$ is the base rate of decrease when the number of proposals is below target, and is a positive number between 0 and 1 (excluded)
 - $\alpha_{down}  \lt \alpha_{up}$ implies that the rate of decrease will be slower than the rate of increase. A typical value might be $\alpha_{down} = \frac{\alpha_{up}}{2}$
@@ -109,7 +109,7 @@ What does this mean in practice?
 
 1. The deposit value need to only be actually updated in state when $n_t$ changes, i.e. when proposals actually enter or exit the voting period. Time-based updates can be avoided in principle, and the current value can be calculated on-demand. To further simplify the computation, the value of $1+\alpha \times \sigma$ could also be computed at this time (and maybe cached by nodes in memory instead of being stored in blockchain state) since it also won’t change until $n_t$ also changes again.
 2. If the current deposit value at a certain time $t$ is requested - say $t_1$ was the last time the min deposit was actually updated in state due to a change of the total active proposals $n_t$, it can be computed lazily as
-$D_t = \max( D_{\min}, D_{t_1} \times \gamma^\tau)$, where again $\tau = \lfloor \frac{t - t_1}{T} \rfloor$ - i.e. how many ticks have passed since $t_1$, and $\gamma = 1 + \alpha \times \sigma}$ 
+$D_t = \max( D_{\min}, D_{t_1} \times \gamma^\tau)$, where again $\tau = \lfloor \frac{t - t_1}{T} \rfloor$ - i.e. how many ticks have passed since $t_1$, and $\gamma = 1 + \alpha \times \sigma$ 
 
 ### Implementation
 

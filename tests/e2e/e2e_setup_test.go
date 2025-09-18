@@ -232,6 +232,7 @@ func (s *IntegrationTestSuite) initNodes(c *chain) {
 	c.genesisAccounts[3]: Test Account 2
 	*/
 	s.Require().NoError(c.addAccountFromMnemonic(7))
+	s.Require().NoError(c.addMultiSigAccountFromMnemonic(2, 3, 2))
 	// Initialize a genesis file for the first validator
 	val0ConfigDir := c.validators[0].configDir()
 	var addrAll []sdk.AccAddress
@@ -245,6 +246,17 @@ func (s *IntegrationTestSuite) initNodes(c *chain) {
 		acctAddr, err := addr.keyInfo.GetAddress()
 		s.Require().NoError(err)
 		addrAll = append(addrAll, acctAddr)
+	}
+
+	for _, addrMultiSig := range c.multiSigAccounts {
+		acctAddr, err := addrMultiSig.keyInfo.GetAddress()
+		s.Require().NoError(err)
+		addrAll = append(addrAll, acctAddr)
+		for _, signer := range addrMultiSig.signers {
+			acctSigner, err := signer.keyInfo.GetAddress()
+			s.Require().NoError(err)
+			addrAll = append(addrAll, acctSigner)
+		}
 	}
 
 	s.Require().NoError(
