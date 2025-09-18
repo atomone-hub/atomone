@@ -39,6 +39,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
+	"github.com/atomone-hub/atomone/x/coredaos"
+	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
 	"github.com/atomone-hub/atomone/x/dynamicfee"
 	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
 	"github.com/atomone-hub/atomone/x/gov"
@@ -58,6 +60,7 @@ var maccPerms = map[string][]string{
 	ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
 	photontypes.ModuleName:         {authtypes.Minter, authtypes.Burner},
 	dynamicfeetypes.ModuleName:     nil,
+	coredaostypes.ModuleName:       nil,
 }
 
 func appModules(
@@ -96,6 +99,8 @@ func appModules(
 		sdkparams.NewAppModule(app.ParamsKeeper),
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
 		dynamicfee.NewAppModule(appCodec, *app.DynamicfeeKeeper),
+		coredaos.NewAppModule(appCodec, *app.CoreDaosKeeper, app.GovKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
+
 		app.TransferModule,
 		app.ICAModule,
 		app.TMClientModule,
@@ -136,6 +141,7 @@ func orderBeginBlockers() []string {
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
+		coredaostypes.ModuleName,
 	}
 }
 
@@ -169,6 +175,7 @@ func orderEndBlockers() []string {
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
+		coredaostypes.ModuleName,
 	}
 }
 
@@ -201,5 +208,6 @@ func orderInitBlockers() []string {
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		dynamicfeetypes.ModuleName,
+		coredaostypes.ModuleName,
 	}
 }

@@ -1,0 +1,125 @@
+syntax = "proto3";
+package atomone.coredaos.v1;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+import "cosmos/msg/v1/msg.proto";
+import "amino/amino.proto";
+import "atomone/coredaos/v1/coredaos.proto";
+
+option go_package = "github.com/atomone-hub/atomone/x/coredaos/types";
+
+// Msg defines the Msg service.
+service Msg {
+    option (cosmos.msg.v1.service) = true;
+
+    // AnnotateProposal defines a method to annotate a proposal with additional information.
+    // It is only available to the Steering DAO.
+    rpc AnnotateProposal(MsgAnnotateProposal) returns (MsgAnnotateProposalResponse);
+
+    // EndorseProposal defines a method to endorse a proposal, and for law proposals this also
+    // results in the lowering of the passing threshold to the passing threshold of regular proposals.
+    // It is only available to the Steering DAO.
+    rpc EndorseProposal(MsgEndorseProposal) returns (MsgEndorseProposalResponse);
+
+    // ExtendVotingPeriod defines a method to extend the voting period of a proposal.
+    // It is available to both the Steering DAO and the Oversight DAO.
+    rpc ExtendVotingPeriod(MsgExtendVotingPeriod) returns (MsgExtendVotingPeriodResponse);
+
+    // VetoProposal defines a method to veto a proposal.
+    // It is only available to the Oversight DAO.
+    rpc VetoProposal(MsgVetoProposal) returns (MsgVetoProposalResponse);
+
+    // UpdateParams defines a governance operation for updating the x/coredaos
+    // module parameters. The authority is defined in the keeper.
+    rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+}
+
+// MsgAnnotateProposal defines a message for annotating a proposal.
+message MsgAnnotateProposal {
+    option (cosmos.msg.v1.signer) = "annotator";
+    option (amino.name) = "atomone/coredaos/v1/MsgAnnotateProposal";
+
+    // annotator is the address of the dao annotating the proposal.
+    string annotator = 1;
+
+    // proposal_id is the ID of the proposal to annotate.
+    uint64 proposal_id = 2;
+
+    // annotation is the annotation to add to the proposal.
+    string annotation = 3;
+
+    // overwrite is a boolean indicating whether to overwrite the existing annotation.
+    // Must be set to true if the proposal already has an annotation.
+    // Ignored if the proposal does not have yet an annotation.
+    bool overwrite = 4;
+}
+
+// MsgAnnotateProposalResponse defines the response for MsgAnnotateProposal.
+message MsgAnnotateProposalResponse {}
+
+// MsgEndorseProposal defines a message for endorsing a proposal.
+message MsgEndorseProposal {
+    option (cosmos.msg.v1.signer) = "endorser";
+    option (amino.name) = "atomone/coredaos/v1/MsgEndorseProposal";
+
+    // endorser is the address of the dao endorsing the proposal.
+    string endorser = 1;
+
+    // proposal_id is the ID of the proposal to endorse.
+    uint64 proposal_id = 2;
+}
+
+// MsgEndorseProposalResponse defines the response for MsgEndorseProposal.
+message MsgEndorseProposalResponse {}
+
+// MsgExtendVotingPeriod defines a message for extending the voting period of a proposal.
+message MsgExtendVotingPeriod {
+    option (cosmos.msg.v1.signer) = "extender";
+    option (amino.name) = "atomone/coredaos/v1/MsgExtendVotingPeriod";
+
+    // extender is the address of the dao extending the voting period.
+    string extender = 1;
+
+    // proposal_id is the ID of the proposal to extend.
+    uint64 proposal_id = 2;
+}
+
+// MsgExtendVotingPeriodResponse defines the response for MsgExtendVotingPeriod.
+message MsgExtendVotingPeriodResponse {}
+
+// MsgVetoProposal defines a message for vetoing a proposal.
+message MsgVetoProposal {
+    option (cosmos.msg.v1.signer) = "vetoer";
+    option (amino.name) = "atomone/coredaos/v1/MsgVetoProposal";
+
+    // vetoer is the address of the dao vetoing the proposal.
+    string vetoer = 1;
+
+    // proposal_id is the ID of the proposal to veto.
+    uint64 proposal_id = 2;
+
+    // burn_deposit is a boolean indicating whether to burn the deposit of the proposal.
+    // If true, the deposit is burned and not refunded.
+    bool burn_deposit = 3;
+}
+
+// MsgVetoProposalResponse defines the response for MsgVetoProposal.
+message MsgVetoProposalResponse {}
+
+// MsgUpdateParams is the Msg/UpdateParams request type.
+message MsgUpdateParams {
+		option (cosmos.msg.v1.signer) = "authority";
+    // authority is the address that controls the module (defaults to x/gov unless
+    // overwritten).
+    string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+    // params defines the x/coredaos parameters to update.
+    //
+    // NOTE: All parameters must be supplied.
+    Params params = 2 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
+}
+
+// MsgUpdateParamsResponse defines the response structure for executing a
+// MsgUpdateParams message.
+message MsgUpdateParamsResponse {}

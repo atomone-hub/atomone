@@ -12,6 +12,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"cosmossdk.io/math"
+	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
@@ -539,6 +540,31 @@ func (s *IntegrationTestSuite) writeStakingParamChangeProposal(c *chain, params 
 	}
 	`
 
+	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
+	initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
+	propMsgBody := fmt.Sprintf(template, govModuleAddress, s.cdc.MustMarshalJSON(&params), initialDeposit)
+	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
+	s.Require().NoError(err)
+}
+
+func (s *IntegrationTestSuite) writeCoreDAOsParamChangeProposal(c *chain, params coredaostypes.Params) {
+	govModuleAddress := authtypes.NewModuleAddress(govtypes.ModuleName).String()
+
+	template := `
+	{ 
+		"messages": [
+		{
+		 "@type": "/atomone.coredaos.v1.MsgUpdateParams",
+		 "authority": "%s",
+		 "params": %s
+		}
+		],
+		"deposit": "%s",
+		"metadata": "",
+		"title": "Set DAO params",
+		"summary": "Set DAO params"
+	}
+	`
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
 	initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
 	propMsgBody := fmt.Sprintf(template, govModuleAddress, s.cdc.MustMarshalJSON(&params), initialDeposit)

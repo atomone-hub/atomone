@@ -10,6 +10,7 @@ import (
 	"cosmossdk.io/math"
 	evidencetypes "cosmossdk.io/x/evidence/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
+	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/tx"
@@ -54,6 +55,17 @@ func (s *IntegrationTestSuite) queryAtomOneTx(endpoint, txHash string, msgResp c
 		}
 	}
 	return int(resp.TxResponse.Height), nil
+}
+
+func (s *IntegrationTestSuite) queryCoreDAOsParams(endpoint string) coredaostypes.QueryParamsResponse { //nolint:unused
+	body, err := httpGet(fmt.Sprintf("%s/atomone/coredaos/v1/params", endpoint))
+	s.Require().NoError(err, "failed to execute HTTP request")
+
+	var params coredaostypes.QueryParamsResponse
+	err = s.cdc.UnmarshalJSON(body, &params)
+	s.Require().NoError(err)
+
+	return params
 }
 
 // if coin is zero, return empty coin.
@@ -164,6 +176,16 @@ func (s *IntegrationTestSuite) queryGovProposal(endpoint string, proposalID int)
 	}
 
 	return govProposalResp, nil
+}
+
+func (s *IntegrationTestSuite) queryGovV1Proposal(endpoint string, proposalID int) govtypesv1.QueryProposalResponse {
+	var govProposalResp govtypesv1.QueryProposalResponse
+	path := fmt.Sprintf("%s/atomone/gov/v1/proposals/%d", endpoint, proposalID)
+	body, err := httpGet(path)
+	s.Require().NoError(err, "failed to execute HTTP request")
+	err = s.cdc.UnmarshalJSON(body, &govProposalResp)
+	s.Require().NoError(err)
+	return govProposalResp
 }
 
 func (s *IntegrationTestSuite) queryGovMinInitialDeposit(endpoint string) sdk.Coin {

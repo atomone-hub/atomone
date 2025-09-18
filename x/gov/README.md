@@ -55,6 +55,7 @@ staking token of the chain.
       - [Option set](#option-set)
       - [Weighted Votes](#weighted-votes)
     - [Quorum](#quorum)
+      - [Dynamic Quorum](#dynamic-quorum)
       - [Threshold](#threshold)
       - [No inheritance](#no-inheritance)
       - [Validator’s punishment for non-voting](#validators-punishment-for-non-voting)
@@ -89,6 +90,7 @@ staking token of the chain.
   - [Parameters](#parameters)
     - [MinDepositThrottler (dynamic MinDeposit)](#mindepositthrottler-dynamic-mindeposit)
     - [MinInitialDepositThrottler (dynamic MinInitialDeposit)](#mininitialdepositthrottler-dynamic-mininitialdeposit)
+    - [QuorumRange (dynamic Quorum)](#quorumrange-dynamic-quorum)
   - [Client](#client)
     - [CLI](#cli)
       - [Query](#query)
@@ -492,6 +494,7 @@ const (
     StatusPassed        ProposalStatus = 0x03  // Proposal passed and successfully executed
     StatusRejected      ProposalStatus = 0x04  // Proposal has been rejected
     StatusFailed        ProposalStatus = 0x05  // Proposal passed but failed execution
+    StatusVetoed        ProposalStatus = 0x06  // Proposal has been vetoed
 )
 ```
 
