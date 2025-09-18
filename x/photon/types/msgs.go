@@ -7,7 +7,6 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/atomone-hub/atomone/app/params"
-	"github.com/atomone-hub/atomone/x/gov/types"
 )
 
 var _, _ sdk.Msg = &MsgMintPhoton{}, &MsgUpdateParams{}

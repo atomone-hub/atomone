@@ -60,8 +60,8 @@ import (
 	"github.com/atomone-hub/atomone/client/docs"
 	atomonepost "github.com/atomone-hub/atomone/post"
 	"github.com/atomone-hub/atomone/x/gov"
-	govclient "github.com/atomone-hub/atomone/x/gov/client"
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
+	govclient "github.com/cosmos/cosmos-sdk/x/gov/client"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 )
 
 var (

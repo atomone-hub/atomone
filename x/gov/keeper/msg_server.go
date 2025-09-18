@@ -12,74 +12,27 @@ import (
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
+	sdkgovv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 )
 
 type msgServer struct {
-	*Keeper
+	sdkgovv1.MsgServer
 }
 
 // NewMsgServerImpl returns an implementation of the gov MsgServer interface
 // for the provided Keeper.
-func NewMsgServerImpl(keeper *Keeper) v1.MsgServer {
-	return &msgServer{Keeper: keeper}
+func NewMsgServerImpl(msgServer sdkgovv1.MsgServer) v1.MsgServer {
+	return &msgServer{msgServer}
 }
 
 var _ v1.MsgServer = msgServer{}
 
 // SubmitProposal implements the MsgServer.SubmitProposal method.
-func (k msgServer) SubmitProposal(goCtx context.Context, msg *v1.MsgSubmitProposal) (*v1.MsgSubmitProposalResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	initialDeposit := msg.GetInitialDeposit()
-
-	if err := k.validateInitialDeposit(ctx, initialDeposit); err != nil {
-		return nil, err
-	}
-
-	proposalMsgs, err := msg.GetMsgs()
+func (k msgServer) SubmitProposal(c context.Context, msg *v1.MsgSubmitProposal) (*v1.MsgSubmitProposalResponse, error) {
+	resp, err := k.MsgServer.SubmitProposal(c, mapSubmitProposalMsg(msg))
 	if err != nil {
 		return nil, err
 	}
-
-	proposer, err := sdk.AccAddressFromBech32(msg.GetProposer())
-	if err != nil {
-		return nil, err
-	}
-
-	proposal, err := k.Keeper.SubmitProposal(ctx, proposalMsgs, msg.Metadata, msg.Title, msg.Summary, proposer)
-	if err != nil {
-		return nil, err
-	}
-
-	bytes, err := proposal.Marshal()
-	if err != nil {
-		return nil, err
-	}
-
-	// ref: https://github.com/cosmos/cosmos-sdk/issues/9683
-	ctx.GasMeter().ConsumeGas(
-		3*ctx.KVGasConfig().WriteCostPerByte*uint64(len(bytes)),
-		"submit proposal",
-	)
-
-	// skip min deposit ratio check since for proposal submissions the initial deposit is the threshold
-	// to check against.
-	votingStarted, err := k.Keeper.AddDeposit(ctx, proposal.Id, proposer, msg.GetInitialDeposit(), true)
-	if err != nil {
-		return nil, err
-	}
-
-	if votingStarted {
-		ctx.EventManager().EmitEvent(
-			sdk.NewEvent(govtypes.EventTypeSubmitProposal,
-				sdk.NewAttribute(govtypes.AttributeKeyVotingPeriodStart, fmt.Sprintf("%d", proposal.Id)),
-			),
-		)
-	}
-
-	return &v1.MsgSubmitProposalResponse{
-		ProposalId: proposal.Id,
-	}, nil
 }
 
 // ExecLegacyContent implements the MsgServer.ExecLegacyContent method.
