@@ -128,10 +128,8 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 		sendAmount := sdk.NewInt64Coin(uatoneDenom, 10_000_000) // 10atone
 		s.writeGovCommunitySpendProposal(s.chainA, sendAmount, recipient)
 
-		beforeSenderBalance, err := s.getSpecificBalance(chainAAPIEndpoint, sender, uatoneDenom)
-		s.Require().NoError(err)
-		beforeRecipientBalance, err := s.getSpecificBalance(chainAAPIEndpoint, recipient, uatoneDenom)
-		s.Require().NoError(err)
+		beforeSenderBalance := s.queryBalance(chainAAPIEndpoint, sender, uatoneDenom)
+		beforeRecipientBalance := s.queryBalance(chainAAPIEndpoint, recipient, uatoneDenom)
 
 		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
 		proposalCounter++
@@ -143,9 +141,7 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 		// Check that sender is refunded with the proposal deposit
 		s.Require().Eventually(
 			func() bool {
-				afterSenderBalance, err := s.getSpecificBalance(chainAAPIEndpoint, sender, uatoneDenom)
-				s.Require().NoError(err)
-
+				afterSenderBalance := s.queryBalance(chainAAPIEndpoint, sender, uatoneDenom)
 				return afterSenderBalance.IsEqual(beforeSenderBalance)
 			},
 			10*time.Second,
@@ -154,9 +150,7 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 		// Check that recipient received the community pool spend
 		s.Require().Eventually(
 			func() bool {
-				afterRecipientBalance, err := s.getSpecificBalance(chainAAPIEndpoint, recipient, uatoneDenom)
-				s.Require().NoError(err)
-
+				afterRecipientBalance := s.queryBalance(chainAAPIEndpoint, recipient, uatoneDenom)
 				return afterRecipientBalance.Sub(sendAmount).IsEqual(beforeRecipientBalance)
 			},
 			10*time.Second,
@@ -173,10 +167,8 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 		sendAmount := sdk.NewInt64Coin(uatoneDenom, 10_000_000) // 10atone
 		s.writeGovCommunitySpendProposal(s.chainA, sendAmount, recipient)
 
-		beforeSenderBalance, err := s.getSpecificBalance(chainAAPIEndpoint, sender, uatoneDenom)
-		s.Require().NoError(err)
-		beforeRecipientBalance, err := s.getSpecificBalance(chainAAPIEndpoint, recipient, uatoneDenom)
-		s.Require().NoError(err)
+		beforeSenderBalance := s.queryBalance(chainAAPIEndpoint, sender, uatoneDenom)
+		beforeRecipientBalance := s.queryBalance(chainAAPIEndpoint, recipient, uatoneDenom)
 
 		initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
 		deposit := s.queryGovMinDeposit(chainAAPIEndpoint)
@@ -190,9 +182,7 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 		// Check that sender is not refunded with the proposal deposit
 		s.Require().Eventually(
 			func() bool {
-				afterSenderBalance, err := s.getSpecificBalance(chainAAPIEndpoint, sender, uatoneDenom)
-				s.Require().NoError(err)
-
+				afterSenderBalance := s.queryBalance(chainAAPIEndpoint, sender, uatoneDenom)
 				return afterSenderBalance.Add(deposit).Add(initialDeposit).
 					IsEqual(beforeSenderBalance)
 			},
@@ -203,9 +193,7 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 		// proposal was rejected
 		s.Require().Eventually(
 			func() bool {
-				afterRecipientBalance, err := s.getSpecificBalance(chainAAPIEndpoint, recipient, uatoneDenom)
-				s.Require().NoError(err)
-
+				afterRecipientBalance := s.queryBalance(chainAAPIEndpoint, recipient, uatoneDenom)
 				return afterRecipientBalance.IsEqual(beforeRecipientBalance)
 			},
 			10*time.Second,

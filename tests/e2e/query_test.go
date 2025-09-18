@@ -6,11 +6,13 @@ import (
 	"io"
 	"net/http"
 	"strings"
+	"time"
+
+	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
 
 	"cosmossdk.io/math"
 	evidencetypes "cosmossdk.io/x/evidence/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
-	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/tx"
@@ -19,12 +21,25 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	disttypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	channeltypes "github.com/cosmos/ibc-go/v10/modules/core/04-channel/types"
 
 	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
 	govtypesv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	govtypesv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
 )
+
+func (s *IntegrationTestSuite) waitAtomOneTx(endpoint, txHash string, msgResp codec.ProtoMarshaler) (err error) {
+	for i := 0; i < 15; i++ {
+		time.Sleep(time.Second)
+		_, err = s.queryAtomOneTx(endpoint, txHash, msgResp)
+		if isErrNotFound(err) {
+			continue
+		}
+		return
+	}
+	return
+}
 
 // queryAtomOneTx returns an error if the tx is not found or is failed.
 func (s *IntegrationTestSuite) queryAtomOneTx(endpoint, txHash string, msgResp codec.ProtoMarshaler) (height int, err error) {
@@ -57,33 +72,19 @@ func (s *IntegrationTestSuite) queryAtomOneTx(endpoint, txHash string, msgResp c
 	return int(resp.TxResponse.Height), nil
 }
 
-func (s *IntegrationTestSuite) queryCoreDAOsParams(endpoint string) coredaostypes.QueryParamsResponse { //nolint:unused
-	body, err := httpGet(fmt.Sprintf("%s/atomone/coredaos/v1/params", endpoint))
-	s.Require().NoError(err, "failed to execute HTTP request")
-
-	var params coredaostypes.QueryParamsResponse
-	err = s.cdc.UnmarshalJSON(body, &params)
+// if denom not found, return 0 denom.
+func (s *IntegrationTestSuite) queryBalance(endpoint, addr, denom string) sdk.Coin {
+	balances, err := s.queryAllBalances(endpoint, addr)
 	s.Require().NoError(err)
-
-	return params
-}
-
-// if coin is zero, return empty coin.
-func (s *IntegrationTestSuite) getSpecificBalance(endpoint, addr, denom string) (amt sdk.Coin, err error) {
-	balances, err := s.queryAtomOneAllBalances(endpoint, addr)
-	if err != nil {
-		return amt, err
-	}
 	for _, c := range balances {
 		if strings.Contains(c.Denom, denom) {
-			amt = c
-			break
+			return c
 		}
 	}
-	return amt, nil
+	return sdk.NewInt64Coin(denom, 0)
 }
 
-func (s *IntegrationTestSuite) queryAtomOneAllBalances(endpoint, addr string) (sdk.Coins, error) {
+func (s *IntegrationTestSuite) queryAllBalances(endpoint, addr string) (sdk.Coins, error) {
 	body, err := httpGet(fmt.Sprintf("%s/cosmos/bank/v1beta1/balances/%s", endpoint, addr))
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute HTTP request: %w", err)
@@ -95,6 +96,17 @@ func (s *IntegrationTestSuite) queryAtomOneAllBalances(endpoint, addr string) (s
 	}
 
 	return balancesResp.Balances, nil
+}
+
+func (s *IntegrationTestSuite) queryCoreDAOsParams(endpoint string) coredaostypes.QueryParamsResponse { //nolint:unused
+	body, err := httpGet(fmt.Sprintf("%s/atomone/coredaos/v1/params", endpoint))
+	s.Require().NoError(err, "failed to execute HTTP request")
+
+	var params coredaostypes.QueryParamsResponse
+	err = s.cdc.UnmarshalJSON(body, &params)
+	s.Require().NoError(err)
+
+	return params
 }
 
 func (s *IntegrationTestSuite) queryBankSupply(endpoint string) sdk.Coins {
@@ -226,29 +238,23 @@ func (s *IntegrationTestSuite) queryGovParams(endpoint string, param string) gov
 	return res
 }
 
-func (s *IntegrationTestSuite) queryAccount(endpoint, address string) (acc sdk.AccountI, err error) {
-	var res authtypes.QueryAccountResponse
+func (s *IntegrationTestSuite) queryAccount(endpoint, address string) (acc sdk.AccountI) {
 	resp, err := http.Get(fmt.Sprintf("%s/cosmos/auth/v1beta1/accounts/%s", endpoint, address))
-	if err != nil {
-		return nil, fmt.Errorf("failed to execute HTTP request: %w", err)
-	}
+	s.Require().NoError(err)
 	defer resp.Body.Close()
 
 	bz, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	if err := s.cdc.UnmarshalJSON(bz, &res); err != nil {
-		return nil, err
-	}
-	return acc, s.cdc.UnpackAny(res.Account, &acc)
+	s.Require().NoError(err)
+	var res authtypes.QueryAccountResponse
+	err = s.cdc.UnmarshalJSON(bz, &res)
+	s.Require().NoError(err, "unexpected response for queryAccount: %s", string(bz))
+	err = s.cdc.UnpackAny(res.Account, &acc)
+	s.Require().NoError(err)
+	return acc
 }
 
 func (s *IntegrationTestSuite) queryDelayedVestingAccount(endpoint, address string) (authvesting.DelayedVestingAccount, error) {
-	baseAcc, err := s.queryAccount(endpoint, address)
-	if err != nil {
-		return authvesting.DelayedVestingAccount{}, err
-	}
+	baseAcc := s.queryAccount(endpoint, address)
 	acc, ok := baseAcc.(*authvesting.DelayedVestingAccount)
 	if !ok {
 		return authvesting.DelayedVestingAccount{},
@@ -258,10 +264,7 @@ func (s *IntegrationTestSuite) queryDelayedVestingAccount(endpoint, address stri
 }
 
 func (s *IntegrationTestSuite) queryContinuousVestingAccount(endpoint, address string) (authvesting.ContinuousVestingAccount, error) {
-	baseAcc, err := s.queryAccount(endpoint, address)
-	if err != nil {
-		return authvesting.ContinuousVestingAccount{}, err
-	}
+	baseAcc := s.queryAccount(endpoint, address)
 	acc, ok := baseAcc.(*authvesting.ContinuousVestingAccount)
 	if !ok {
 		return authvesting.ContinuousVestingAccount{},
@@ -271,10 +274,7 @@ func (s *IntegrationTestSuite) queryContinuousVestingAccount(endpoint, address s
 }
 
 func (s *IntegrationTestSuite) queryPeriodicVestingAccount(endpoint, address string) (authvesting.PeriodicVestingAccount, error) { //nolint:unused // this is called during e2e tests
-	baseAcc, err := s.queryAccount(endpoint, address)
-	if err != nil {
-		return authvesting.PeriodicVestingAccount{}, err
-	}
+	baseAcc := s.queryAccount(endpoint, address)
 	acc, ok := baseAcc.(*authvesting.PeriodicVestingAccount)
 	if !ok {
 		return authvesting.PeriodicVestingAccount{},
@@ -418,6 +418,15 @@ func (s *IntegrationTestSuite) queryUpgradePlan(endpoint string) upgradetypes.Qu
 	body, err := httpGet(fmt.Sprintf("%s/cosmos/upgrade/v1beta1/current_plan", endpoint))
 	s.Require().NoError(err)
 	var res upgradetypes.QueryCurrentPlanResponse
+	err = s.cdc.UnmarshalJSON(body, &res)
+	s.Require().NoError(err)
+	return res
+}
+
+func (s *IntegrationTestSuite) queryIBCConnectionChannels(endpoint, connectionID string) channeltypes.QueryConnectionChannelsResponse {
+	body, err := httpGet(fmt.Sprintf("%s/ibc/core/channel/v1/connections/%s/channels", endpoint, connectionID))
+	s.Require().NoError(err)
+	var res channeltypes.QueryConnectionChannelsResponse
 	err = s.cdc.UnmarshalJSON(body, &res)
 	s.Require().NoError(err)
 	return res

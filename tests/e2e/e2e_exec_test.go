@@ -1,10 +1,8 @@
 package e2e
 
 import (
-	"bufio"
 	"bytes"
 	"context"
-	"encoding/json"
 	"fmt"
 	"path/filepath"
 	"strings"
@@ -793,52 +791,6 @@ func (s *IntegrationTestSuite) executeAtomoneTxCommand(ctx context.Context, c *c
 	return height
 }
 
-func (s *IntegrationTestSuite) executeHermesCommand(ctx context.Context, hermesCmd []string) ([]byte, error) {
-	var outBuf bytes.Buffer
-	exec, err := s.dkrPool.Client.CreateExec(docker.CreateExecOptions{
-		Context:      ctx,
-		AttachStdout: true,
-		AttachStderr: true,
-		Container:    s.hermesResource.Container.ID,
-		User:         "root",
-		Cmd:          hermesCmd,
-	})
-	s.Require().NoError(err)
-
-	err = s.dkrPool.Client.StartExec(exec.ID, docker.StartExecOptions{
-		Context:      ctx,
-		Detach:       false,
-		OutputStream: &outBuf,
-	})
-	s.Require().NoError(err)
-
-	// Check that the stdout output contains the expected status
-	// and look for errors, e.g "insufficient fees"
-	stdOut := []byte{}
-	scanner := bufio.NewScanner(&outBuf)
-	for scanner.Scan() {
-		stdOut = scanner.Bytes()
-		var out map[string]interface{}
-		err = json.Unmarshal(stdOut, &out)
-		s.Require().NoError(err)
-		if err != nil {
-			return nil, fmt.Errorf("hermes relayer command returned failed with error: %s", err)
-		}
-		// errors are catched by observing the logs level in the stderr output
-		if lvl := out["level"]; lvl != nil && strings.ToLower(lvl.(string)) == "error" {
-			fields := out["fields"].(map[string]any)
-			errMsg := fields["message"]
-			resp := fields["response"]
-			return nil, fmt.Errorf("hermes relayer command failed: %s: %s", errMsg, resp)
-		}
-		if s := out["status"]; s != nil && s != "success" {
-			return nil, fmt.Errorf("hermes relayer command returned failed with status: %s", s)
-		}
-	}
-
-	return stdOut, nil
-}
-
 func (s *IntegrationTestSuite) expectErrExecValidation(chain *chain, valIdx int, expectErr bool) func([]byte, []byte) error {
 	return func(stdOut []byte, stdErr []byte) error {
 		err := s.defaultExecValidation(chain, valIdx, nil)(stdOut, stdErr)
@@ -857,14 +809,7 @@ func (s *IntegrationTestSuite) defaultExecValidation(chain *chain, valIdx int, m
 		}
 		if strings.Contains(txResp.String(), "code: 0") || txResp.Code == 0 {
 			endpoint := fmt.Sprintf("http://%s", s.valResources[chain.id][valIdx].GetHostPort("1317/tcp"))
-			for i := 0; i < 15; i++ {
-				time.Sleep(time.Second)
-				_, err := s.queryAtomOneTx(endpoint, txResp.TxHash, msgResp)
-				if isErrNotFound(err) {
-					continue
-				}
-				return err
-			}
+			return s.waitAtomOneTx(endpoint, txResp.TxHash, msgResp)
 		}
 		return fmt.Errorf("tx error : %s", txResp.String())
 	}

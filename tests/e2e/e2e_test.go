@@ -67,13 +67,27 @@ func (s *IntegrationTestSuite) TestGov() {
 	s.testGovTextProposal()
 }
 
-func (s *IntegrationTestSuite) TestIBC() {
+func (s *IntegrationTestSuite) TestIBC_hermesRelayer() {
 	if !runIBCTest {
 		s.T().Skip()
 	}
 	s.ensureIBCSetup()
+	channelIdA, channelIdB := s.runIBCHermesRelayer()
+	defer s.tearDownHermesRelayer()
 
-	s.testIBCTokenTransfer()
+	s.testIBCTokenTransfer(channelIdA, channelIdB)
+}
+
+func (s *IntegrationTestSuite) TestIBC_tsRelayer() {
+	if !runIBCTest {
+		s.T().Skip()
+	}
+	s.ensureIBCSetup()
+	ibcV1Path, ibcV2Path := s.runIBCTSRelayer()
+	defer s.tearDownTsRelayer()
+
+	s.testIBCTokenTransfer(ibcV1Path.ChannelA, ibcV1Path.ChannelB)
+	s.testIBCv2TokenTransfer(ibcV2Path.ClientA, ibcV2Path.ClientB)
 }
 
 func (s *IntegrationTestSuite) TestSlashing() {
