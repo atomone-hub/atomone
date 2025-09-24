@@ -9,6 +9,7 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	"github.com/atomone-hub/atomone/x/gov/types"
+	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 )
 
 // Hooks wrapper struct for gov keeper
@@ -61,21 +62,62 @@ func (h Hooks) AfterDelegationModified(ctx context.Context, delAddr sdk.AccAddre
 		return err
 	}
 
-	governor, _ := h.k.GetGovernor(sdkCtx, types.MustGovernorAddressFromBech32(govDelegation.GovernorAddress))
+	govAddr := types.MustGovernorAddressFromBech32(govDelegation.GovernorAddress)
 
 	// Calculate the new shares and update the Governor's shares
 	shares := delegation.Shares
 
-	h.k.IncreaseGovernorShares(sdkCtx, governor.GetAddress(), valAddr, shares)
+	h.k.IncreaseGovernorShares(sdkCtx, govAddr, valAddr, shares)
+
+	// if the delegator is also an active governor, ensure min self-delegation requirement is met,
+	// otherwise set governor to inactive
+	delGovAddr := types.GovernorAddress(delAddr.Bytes())
+	if governor, found := h.k.GetGovernor(sdkCtx, delGovAddr); found && governor.IsActive() {
+		if governor.GetAddress().String() != govDelegation.GovernorAddress {
+			panic("active governor delegating to another governor")
+		}
+		// if the governor no longer meets the min self-delegation, set to inactive
+		if !h.k.ValidateGovernorMinSelfDelegation(sdkCtx, governor) {
+			governor.Status = v1.Inactive
+			now := sdkCtx.BlockTime()
+			governor.LastStatusChangeTime = &now
+			h.k.SetGovernor(sdkCtx, governor)
+		}
+	}
+
+	return nil
+}
+
+// BeforeDelegationRemoved is called when a delegation is removed
+// We verify if the delegator is also an active governor and if so check
+// that the min self-delegation requirement is still met, otherwise set governor
+// status to inactive
+func (h Hooks) BeforeDelegationRemoved(ctx context.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+	// if the delegator is also an active governor, ensure min self-delegation requirement is met,
+	// otherwise set governor to inactive
+	delGovAddr := types.GovernorAddress(delAddr.Bytes())
+	if governor, found := h.k.GetGovernor(sdkCtx, delGovAddr); found && governor.IsActive() {
+		govDelegation, found := h.k.GetGovernanceDelegation(sdkCtx, delAddr)
+		if !found {
+			panic("active governor without governance self-delegation")
+		}
+		if governor.GetAddress().String() != govDelegation.GovernorAddress {
+			panic("active governor delegating to another governor")
+		}
+		// if the governor no longer meets the min self-delegation, set to inactive
+		if !h.k.ValidateGovernorMinSelfDelegation(sdkCtx, governor) {
+			governor.Status = v1.Inactive
+			now := sdkCtx.BlockTime()
+			governor.LastStatusChangeTime = &now
+			h.k.SetGovernor(sdkCtx, governor)
+		}
+	}
 
 	return nil
 }
 
 func (h Hooks) BeforeValidatorSlashed(ctx context.Context, valAddr sdk.ValAddress, fraction math.LegacyDec) error {
-	return nil
-}
-
-func (h Hooks) BeforeDelegationRemoved(ctx context.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
 	return nil
 }
 

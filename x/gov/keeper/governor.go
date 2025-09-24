@@ -31,6 +31,12 @@ func (k Keeper) SetGovernor(ctx sdk.Context, governor v1.Governor) {
 	store.Set(types.GovernorKey(governor.GetAddress()), bz)
 }
 
+// RemoveGovernor removes the governor from the store
+func (k Keeper) RemoveGovernor(ctx sdk.Context, addr types.GovernorAddress) {
+	store := ctx.KVStore(k.storeKey)
+	store.Delete(types.GovernorKey(addr))
+}
+
 // GetAllGovernors returns all governors
 func (k Keeper) GetAllGovernors(ctx sdk.Context) (governors []*v1.Governor) {
 	store := ctx.KVStore(k.storeKey)

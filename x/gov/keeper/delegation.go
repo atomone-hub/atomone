@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
 
@@ -178,7 +177,7 @@ func (k Keeper) DecreaseGovernorShares(ctx sdk.Context, governorAddr types.Gover
 func (k Keeper) UndelegateFromGovernor(ctx sdk.Context, delegatorAddr sdk.AccAddress) error {
 	delegation, found := k.GetGovernanceDelegation(ctx, delegatorAddr)
 	if !found {
-		return errorsmod.Wrapf(sdkerrors.ErrNotFound, "governance delegation for delegator %s not found", delegatorAddr.String())
+		return types.ErrGovernanceDelegationNotFound.Wrapf("governance delegation for delegator %s does not exist", delegatorAddr.String())
 	}
 	govAddr := types.MustGovernorAddressFromBech32(delegation.GovernorAddress)
 	// iterate all delegations of delegator and decrease shares
@@ -191,7 +190,7 @@ func (k Keeper) UndelegateFromGovernor(ctx sdk.Context, delegatorAddr sdk.AccAdd
 		return false
 	})
 	if err != nil {
-		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "failed to iterate delegations: %v", err)
+		return sdkerrors.ErrInvalidRequest.Wrapf("failed to iterate delegations: %v", err)
 	}
 	// remove the governor delegation
 	k.RemoveGovernanceDelegation(ctx, delegatorAddr)
@@ -213,7 +212,7 @@ func (k Keeper) DelegateToGovernor(ctx sdk.Context, delegatorAddr sdk.AccAddress
 		return false
 	})
 	if err != nil {
-		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "failed to iterate delegations: %v", err)
+		return sdkerrors.ErrInvalidRequest.Wrapf("failed to iterate delegations: %v", err)
 	}
 	return nil
 }
