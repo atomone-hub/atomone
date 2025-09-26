@@ -1,7 +1,6 @@
 package e2e
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -18,12 +17,10 @@ import (
 	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/multisig"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	"github.com/cosmos/cosmos-sdk/server"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdktx "github.com/cosmos/cosmos-sdk/types/tx"
-	txsigning "github.com/cosmos/cosmos-sdk/types/tx/signing"
-	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
@@ -48,6 +45,11 @@ type account struct {
 	mnemonic   string
 	keyInfo    keyring.Record
 	privateKey cryptotypes.PrivKey
+}
+
+type multiSigAccount struct {
+	keyInfo keyring.Record
+	signers []account
 }
 
 func (v *validator) instanceName() string {
@@ -137,13 +139,16 @@ func (v *validator) createConsensusKey() error {
 	return nil
 }
 
-func (v *validator) createKeyFromMnemonic(name, mnemonic string) error {
-	dir := v.configDir()
-	kb, err := keyring.New(keyringAppName, keyring.BackendTest, dir, nil, v.chain.cdc)
+func (v *validator) keyring() keyring.Keyring {
+	kb, err := keyring.New(keyringAppName, keyring.BackendTest, v.configDir(), nil, v.chain.cdc)
 	if err != nil {
-		return err
+		panic(err)
 	}
+	return kb
+}
 
+func (v *validator) createKeyFromMnemonic(name, mnemonic string) error {
+	kb := v.keyring()
 	keyringAlgos, _ := kb.SupportedAlgorithms()
 	algo, err := keyring.NewSigningAlgoFromString(string(hd.Secp256k1Type), keyringAlgos)
 	if err != nil {
@@ -173,11 +178,7 @@ func (v *validator) createKeyFromMnemonic(name, mnemonic string) error {
 }
 
 func (c *chain) addAccountFromMnemonic(counts int) error {
-	val0ConfigDir := c.validators[0].configDir()
-	kb, err := keyring.New(keyringAppName, keyring.BackendTest, val0ConfigDir, nil, c.cdc)
-	if err != nil {
-		return err
-	}
+	kb := c.validators[0].keyring()
 
 	keyringAlgos, _ := kb.SupportedAlgorithms()
 	algo, err := keyring.NewSigningAlgoFromString(string(hd.Secp256k1Type), keyringAlgos)
@@ -212,6 +213,74 @@ func (c *chain) addAccountFromMnemonic(counts int) error {
 		c.genesisAccounts = append(c.genesisAccounts, &acct)
 	}
 
+	return nil
+}
+
+func (c *chain) addMultiSigAccountFromMnemonic(counts int, sigNumber int, thereshold int) error {
+	if thereshold < 1 || thereshold > sigNumber {
+		return fmt.Errorf("Signature thereshold has to be between 1 and sigNumber")
+	}
+
+	val0ConfigDir := c.validators[0].configDir()
+	kb, err := keyring.New(keyringAppName, keyring.BackendTest, val0ConfigDir, nil, c.cdc)
+	if err != nil {
+		return err
+	}
+
+	keyringAlgos, _ := kb.SupportedAlgorithms()
+	algo, err := keyring.NewSigningAlgoFromString(string(hd.Secp256k1Type), keyringAlgos)
+	if err != nil {
+		return err
+	}
+
+	for multiSigCount := 0; multiSigCount < counts; multiSigCount++ {
+		multisigName := fmt.Sprintf("multisig-%d", multiSigCount)
+		var pubkeys []cryptotypes.PubKey
+		var signers []account
+		for sigCount := 0; sigCount < sigNumber; sigCount++ {
+			name := fmt.Sprintf("multisig-%d-acct-%d", multiSigCount, sigCount)
+			mnemonic, err := createMnemonic()
+			if err != nil {
+				return err
+			}
+			info, err := kb.NewAccount(name, mnemonic, "", sdk.FullFundraiserPath, algo)
+			if err != nil {
+				return err
+			}
+
+			privKeyArmor, err := kb.ExportPrivKeyArmor(name, keyringPassphrase)
+			if err != nil {
+				return err
+			}
+
+			privKey, _, err := sdkcrypto.UnarmorDecryptPrivKey(privKeyArmor, keyringPassphrase)
+			if err != nil {
+				return err
+			}
+
+			acct := account{}
+			acct.keyInfo = *info
+			acct.mnemonic = mnemonic
+			acct.privateKey = privKey
+			c.accounts = append(c.accounts, &acct)
+			signers = append(signers, acct)
+
+			pubKey, err := info.GetPubKey()
+			if err != nil {
+				return err
+			}
+			pubkeys = append(pubkeys, pubKey)
+		}
+		multiPubKey := multisig.NewLegacyAminoPubKey(thereshold, pubkeys)
+		infoMutisig, err := kb.SaveMultisig(multisigName, multiPubKey)
+		if err != nil {
+			return err
+		}
+		acct := multiSigAccount{}
+		acct.keyInfo = *infoMutisig
+		acct.signers = signers
+		c.multiSigAccounts = append(c.multiSigAccounts, &acct)
+	}
 	return nil
 }
 
@@ -250,89 +319,4 @@ func (v *validator) buildCreateValidatorMsg(amount sdk.Coin) (sdk.Msg, error) {
 		commissionRates,
 		math.OneInt(),
 	)
-}
-
-func (v *validator) signMsg(msgs ...sdk.Msg) (*sdktx.Tx, error) {
-	txBuilder := v.chain.txConfig.NewTxBuilder()
-
-	if err := txBuilder.SetMsgs(msgs...); err != nil {
-		return nil, err
-	}
-
-	txBuilder.SetMemo(fmt.Sprintf("%s@%s:26656", v.nodeKey.ID(), v.instanceName()))
-	txBuilder.SetFeeAmount(sdk.NewCoins())
-	txBuilder.SetGasLimit(200000)
-
-	signerData := authsigning.SignerData{
-		ChainID:       v.chain.id,
-		AccountNumber: 0,
-		Sequence:      0,
-	}
-
-	// For SIGN_MODE_DIRECT, calling SetSignatures calls setSignerInfos on
-	// TxBuilder under the hood, and SignerInfos is needed to generate the sign
-	// bytes. This is the reason for setting SetSignatures here, with a nil
-	// signature.
-	//
-	// Note: This line is not needed for SIGN_MODE_LEGACY_AMINO, but putting it
-	// also doesn't affect its generated sign bytes, so for code's simplicity
-	// sake, we put it here.
-	pk, err := v.keyInfo.GetPubKey()
-	if err != nil {
-		return nil, err
-	}
-
-	sig := txsigning.SignatureV2{
-		PubKey: pk,
-		Data: &txsigning.SingleSignatureData{
-			SignMode:  txsigning.SignMode_SIGN_MODE_DIRECT,
-			Signature: nil,
-		},
-		Sequence: 0,
-	}
-
-	if err := txBuilder.SetSignatures(sig); err != nil {
-		return nil, err
-	}
-
-	bytesToSign, err := authsigning.GetSignBytesAdapter(
-		context.TODO(),
-		v.chain.txConfig.SignModeHandler(),
-		txsigning.SignMode_SIGN_MODE_DIRECT,
-		signerData,
-		txBuilder.GetTx(),
-	)
-	if err != nil {
-		return nil, fmt.Errorf("error getting sign bytes: %w", err)
-	}
-
-	sigBytes, err := v.privateKey.Sign(bytesToSign)
-	if err != nil {
-		return nil, err
-	}
-
-	pk, err = v.keyInfo.GetPubKey()
-	if err != nil {
-		return nil, err
-	}
-
-	sig = txsigning.SignatureV2{
-		PubKey: pk,
-		Data: &txsigning.SingleSignatureData{
-			SignMode:  txsigning.SignMode_SIGN_MODE_DIRECT,
-			Signature: sigBytes,
-		},
-		Sequence: 0,
-	}
-	if err := txBuilder.SetSignatures(sig); err != nil {
-		return nil, err
-	}
-
-	signedTx := txBuilder.GetTx()
-	bz, err := v.chain.txConfig.TxEncoder()(signedTx)
-	if err != nil {
-		return nil, err
-	}
-
-	return decodeTx(v.chain.cdc, bz)
 }

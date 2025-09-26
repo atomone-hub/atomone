@@ -39,8 +39,7 @@ func (s *IntegrationTestSuite) testFeeGrant() {
 			withKeyValue(flagAllowedMessages, sdk.MsgTypeURL(&banktypes.MsgSend{})),
 		)
 
-		bobBalance, err := s.getSpecificBalance(api, bob.String(), uatoneDenom)
-		s.Require().NoError(err)
+		bobBalance := s.queryBalance(api, bob.String(), uatoneDenom)
 
 		// withdrawal all balance + fee + fee granter flag should succeed
 		s.execBankSend(
@@ -55,8 +54,7 @@ func (s *IntegrationTestSuite) testFeeGrant() {
 
 		// check if the bob balance was subtracted without the fees
 		expectedBobBalance := bobBalance.Sub(tokenAmount)
-		bobBalance, err = s.getSpecificBalance(api, bob.String(), uatoneDenom)
-		s.Require().NoError(err)
+		bobBalance = s.queryBalance(api, bob.String(), uatoneDenom)
 		s.Require().Equal(expectedBobBalance, bobBalance)
 
 		// tx should fail after spend limit reach

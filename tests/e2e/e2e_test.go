@@ -15,6 +15,7 @@ var (
 	runRestInterfacesTest         = true
 	runPhotonTest                 = true
 	runDynamicfeeTest             = true
+	runCoreDAOsTest               = true
 )
 
 func (s *IntegrationTestSuite) TestRestInterfaces() {
@@ -67,13 +68,27 @@ func (s *IntegrationTestSuite) TestGov() {
 	s.testGovGovernors()
 }
 
-func (s *IntegrationTestSuite) TestIBC() {
+func (s *IntegrationTestSuite) TestIBC_hermesRelayer() {
 	if !runIBCTest {
 		s.T().Skip()
 	}
 	s.ensureIBCSetup()
+	channelIdA, channelIdB := s.runIBCHermesRelayer()
+	defer s.tearDownHermesRelayer()
 
-	s.testIBCTokenTransfer()
+	s.testIBCTokenTransfer(channelIdA, channelIdB)
+}
+
+func (s *IntegrationTestSuite) TestIBC_tsRelayer() {
+	if !runIBCTest {
+		s.T().Skip()
+	}
+	s.ensureIBCSetup()
+	ibcV1Path, ibcV2Path := s.runIBCTSRelayer()
+	defer s.tearDownTsRelayer()
+
+	s.testIBCTokenTransfer(ibcV1Path.ChannelA, ibcV1Path.ChannelB)
+	s.testIBCv2TokenTransfer(ibcV2Path.ClientA, ibcV2Path.ClientB)
 }
 
 func (s *IntegrationTestSuite) TestSlashing() {
@@ -116,4 +131,11 @@ func (s *IntegrationTestSuite) TestDynamicfee() {
 	}
 	s.testDynamicfeeQuery()
 	s.testDynamicfeeGasPriceChange()
+}
+
+func (s *IntegrationTestSuite) TestCoreDAOs() {
+	if !runCoreDAOsTest {
+		s.T().Skip()
+	}
+	s.testCoreDAOs()
 }
