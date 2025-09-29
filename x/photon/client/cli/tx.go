@@ -28,20 +28,24 @@ func GetTxCmd() *cobra.Command {
 
 func GetTxMintPhotonCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "mint [amount]",
-		Short: "Broadcast MintPhoton message which burns [amount] and mint photons.",
-		Args:  cobra.ExactArgs(1),
+		Use:   "mint [to_address] [amount]",
+		Short: "Broadcast MintPhoton message which burns [amount] and mint photons to be sent to [to_address].",
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
-			toBurn, err := sdk.ParseCoinNormalized(args[0])
+			toAddr, err := sdk.AccAddressFromBech32(args[0])
+			if err != nil {
+				return err
+			}
+			toBurn, err := sdk.ParseCoinNormalized(args[1])
 			if err != nil {
 				return err
 			}
 			msg := types.NewMsgMintPhoton(
-				clientCtx.GetFromAddress(),
+				toAddr,
 				toBurn,
 			)
 			if err := msg.ValidateBasic(); err != nil {

@@ -22,7 +22,7 @@ func (s *IntegrationTestSuite) testMintPhoton() {
 			s.Require().Positive(conversionRate.MustFloat64())
 			burnedAtoneAmt := sdk.NewInt64Coin(uatoneDenom, 1_000_000)
 
-			resp := s.execPhotonMint(s.chainA, valIdx, alice.String(), burnedAtoneAmt.String(),
+			resp := s.execPhotonMint(s.chainA, valIdx, alice.String(), alice.String(), burnedAtoneAmt.String(),
 				false, withKeyValue(flagFees, fees),
 			)
 
@@ -67,7 +67,7 @@ func (s *IntegrationTestSuite) testMintPhoton() {
 		s.Require().NoError(err)
 
 		// Issue an incorrect transaction with wrong Denom
-		_ = s.execPhotonMint(s.chainA, valIdx, alice.String(), "1000wrongDenom",
+		_ = s.execPhotonMint(s.chainA, valIdx, alice.String(), alice.String(), "1000wrongDenom",
 			true, withKeyValue(flagGas, "200000"))
 
 		afterBalance, err := queryAtomOneAllBalances(chainEndpoint, alice.String())
