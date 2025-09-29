@@ -855,6 +855,7 @@ func (s *IntegrationTestSuite) execPhotonMint(
 	c *chain,
 	valIdx int,
 	from,
+	to,
 	amt string,
 	expectFail bool,
 	opt ...flagOption,
@@ -865,13 +866,14 @@ func (s *IntegrationTestSuite) execPhotonMint(
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	s.T().Logf("minting photon from %s from %s on chain %s", amt, from, c.id)
+	s.T().Logf("minting photon from %s from %s to %s on chain %s", amt, from, to, c.id)
 
 	atomoneCommand := []string{
 		atomonedBinary,
 		txCommand,
 		photontypes.ModuleName,
 		"mint",
+		to,
 		amt,
 		"-y",
 	}
