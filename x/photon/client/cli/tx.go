@@ -45,16 +45,12 @@ Note, the '--from' flag is ignored as it is implied from [to_key_or_address].`,
 			if err != nil {
 				return err
 			}
-			toAddr, err := sdk.AccAddressFromBech32(args[0])
-			if err != nil {
-				return err
-			}
 			toBurn, err := sdk.ParseCoinNormalized(args[1])
 			if err != nil {
 				return err
 			}
 			msg := types.NewMsgMintPhoton(
-				toAddr,
+				clientCtx.GetFromAddress(),
 				toBurn,
 			)
 			if err := msg.ValidateBasic(); err != nil {
