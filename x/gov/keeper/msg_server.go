@@ -249,6 +249,9 @@ func (k msgServer) CreateGovernor(goCtx context.Context, msg *v1.MsgCreateGovern
 	// validate min self-delegation
 	minSelfDelegation, _ := math.NewIntFromString(k.GetParams(ctx).MinGovernorSelfDelegation)
 	bondedTokens, err := k.getGovernorBondedTokens(ctx, govAddr)
+	if err != nil {
+		return nil, err
+	}
 	if bondedTokens.LT(minSelfDelegation) {
 		return nil, govtypes.ErrInsufficientGovernorDelegation.Wrapf("minimum self-delegation required: %s, total bonded tokens: %s", minSelfDelegation, bondedTokens)
 	}
