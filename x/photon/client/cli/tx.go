@@ -37,7 +37,10 @@ Note, the '--from' flag is ignored as it is implied from [to_key_or_address].`,
 		Example: fmt.Sprintf(`%s tx photon mint atom1... 1000000uatone`, version.AppName),
 		Args:    cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			cmd.Flags().Set(flags.FlagFrom, args[0])
+			err = cmd.Flags().Set(flags.FlagFrom, args[0])
+			if err != nil {
+				return err
+			}
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
