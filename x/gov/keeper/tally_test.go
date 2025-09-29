@@ -580,6 +580,7 @@ func TestTally(t *testing.T) {
 				s.validatorVote(s.valAddrs[1], v1.VoteOption_VOTE_OPTION_YES)
 				s.validatorVote(s.valAddrs[2], v1.VoteOption_VOTE_OPTION_YES)
 				s.validatorVote(s.valAddrs[3], v1.VoteOption_VOTE_OPTION_NO)
+				s.validatorVote(s.valAddrs[4], v1.VoteOption_VOTE_OPTION_ABSTAIN)
 			},
 			proposalMsgs: TestLawProposal,
 			expectedPass: false,
@@ -587,7 +588,7 @@ func TestTally(t *testing.T) {
 			endorse:      false,
 			expectedTally: v1.TallyResult{
 				YesCount:     "3",
-				AbstainCount: "0",
+				AbstainCount: "1",
 				NoCount:      "1",
 			},
 		},
@@ -598,6 +599,7 @@ func TestTally(t *testing.T) {
 				s.validatorVote(s.valAddrs[1], v1.VoteOption_VOTE_OPTION_YES)
 				s.validatorVote(s.valAddrs[2], v1.VoteOption_VOTE_OPTION_YES)
 				s.validatorVote(s.valAddrs[3], v1.VoteOption_VOTE_OPTION_NO)
+				s.validatorVote(s.valAddrs[4], v1.VoteOption_VOTE_OPTION_ABSTAIN)
 			},
 			proposalMsgs: TestLawProposal,
 			expectedPass: true,
@@ -605,7 +607,7 @@ func TestTally(t *testing.T) {
 			endorse:      true,
 			expectedTally: v1.TallyResult{
 				YesCount:     "3",
-				AbstainCount: "0",
+				AbstainCount: "1",
 				NoCount:      "1",
 			},
 		},
