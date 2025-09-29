@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"cosmossdk.io/errors"
+	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -246,8 +247,10 @@ func (k msgServer) CreateGovernor(goCtx context.Context, msg *v1.MsgCreateGovern
 	}
 
 	// validate min self-delegation
-	if k.ValidateGovernorMinSelfDelegation(ctx, governor) {
-		return nil, govtypes.ErrInsufficientGovernorDelegation.Wrap("minimum self-delegation not met")
+	minSelfDelegation, _ := math.NewIntFromString(k.GetParams(ctx).MinGovernorSelfDelegation)
+	bondedTokens, err := k.getGovernorBondedTokens(ctx, govAddr)
+	if bondedTokens.LT(minSelfDelegation) {
+		return nil, govtypes.ErrInsufficientGovernorDelegation.Wrapf("minimum self-delegation required: %s, total bonded tokens: %s", minSelfDelegation, bondedTokens)
 	}
 
 	k.SetGovernor(ctx, governor)
