@@ -46,11 +46,18 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 
 // PhotonConversionRate returns the conversion rate for converting bond denom to
 // photon.
+// NOTE: bondDenomSupply cannot be zero when the chain is producing blocks (thus it can never be zero).
+// This is because the only way for validators to be able to participate in block production is to have
+// staked bond denom, which therefore is locked and cannot be burned. Although this condition is logically
+// impossible, we still add a panic here to be defensive.
 func (k Keeper) PhotonConversionRate(_ sdk.Context, bondDenomSupply, uphotonSupply sdk.Dec) sdk.Dec {
 	remainMintableUphotons := sdk.NewDec(types.MaxSupply).Sub(uphotonSupply)
 	if remainMintableUphotons.IsNegative() {
 		// If for any reason the max supply is exceeded, avoid returning a negative number
 		return sdk.ZeroDec()
+	}
+	if bondDenomSupply.IsZero() {
+		panic("bond denom supply cannot be zero")
 	}
 	return remainMintableUphotons.Quo(bondDenomSupply)
 }
