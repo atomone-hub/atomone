@@ -16,6 +16,14 @@
 
 ### IMPROVEMENTS
 
+## v3.0.2
+
+*Oct 1st, 2025*
+
+### API BREAKING
+
+- CLI: the `photon mint` command now takes the `to_address` as first argument [#223](https://github.com/atomone-hub/atomone/pull/223)
+
 ## v3.0.1
 
 *Aug 22th, 2025*
