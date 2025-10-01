@@ -9,6 +9,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/version"
 
 	"github.com/atomone-hub/atomone/x/photon/types"
 )
@@ -28,15 +29,23 @@ func GetTxCmd() *cobra.Command {
 
 func GetTxMintPhotonCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "mint [amount]",
+		Use:   "mint [to_key_or_address] [amount]",
 		Short: "Broadcast MintPhoton message which burns [amount] and mint photons.",
-		Args:  cobra.ExactArgs(1),
+		Long: `Mint photons by burning the specified [amount].
+The amount to burn must be specified in the bond denomination.
+Note, the '--from' flag is ignored as it is implied from [to_key_or_address].`,
+		Example: fmt.Sprintf(`%s tx photon mint atom1... 1000000uatone`, version.AppName),
+		Args:    cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			err = cmd.Flags().Set(flags.FlagFrom, args[0])
+			if err != nil {
+				return err
+			}
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
-			toBurn, err := sdk.ParseCoinNormalized(args[0])
+			toBurn, err := sdk.ParseCoinNormalized(args[1])
 			if err != nil {
 				return err
 			}

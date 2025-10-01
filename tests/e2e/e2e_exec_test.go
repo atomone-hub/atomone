@@ -853,24 +853,24 @@ func (s *IntegrationTestSuite) executeValidatorBond(c *chain, valIdx int, valOpe
 func (s *IntegrationTestSuite) execPhotonMint(
 	c *chain,
 	valIdx int,
-	from,
+	to,
 	amt string,
 	expectFail bool,
 	opt ...flagOption,
 ) (resp photontypes.MsgMintPhotonResponse) {
-	opt = append(opt, withKeyValue(flagFrom, from))
 	opts := applyOptions(c.id, opt)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	s.T().Logf("minting photon from %s from %s on chain %s", amt, from, c.id)
+	s.T().Logf("minting photon from %s for %s on chain %s", amt, to, c.id)
 
 	atomoneCommand := []string{
 		atomonedBinary,
 		txCommand,
 		photontypes.ModuleName,
 		"mint",
+		to,
 		amt,
 		"-y",
 	}
