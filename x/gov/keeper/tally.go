@@ -6,6 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
+	"github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 )
 
@@ -83,33 +84,10 @@ func (keeper Keeper) HasReachedQuorum(ctx sdk.Context, proposal v1.Proposal) (bo
 		return false, nil
 	}
 
-	/* DISABLED on AtomOne - no possible increase of computation speed by
-	 iterating over validators since vote inheritance is disabled.
-	 Keeping as comment because this should be adapted with governors loop
-
-	// we check first if voting power of validators alone is enough to pass quorum
-	// and if so, we return true skipping the iteration over all votes
-	// can speed up computation in case quorum is already reached by validator votes alone
-	approxTotalVotingPower := math.LegacyZeroDec()
-	for _, val := range currValidators {
-		_, ok := keeper.GetVote(ctx, proposal.Id, sdk.AccAddress(val.GetOperator()))
-		if ok {
-			approxTotalVotingPower = approxTotalVotingPower.Add(math.LegacyNewDecFromInt(val.GetBondedTokens()))
-		}
-	}
-	// check and return whether or not the proposal has reached quorum
-	approxPercentVoting := approxTotalVotingPower.Quo(math.LegacyNewDecFromInt(totalBonded))
-	if approxPercentVoting.GTE(quorum) {
-		return true, nil
-	}
-	*/
-
-	// voting power of validators does not reach quorum, let's tally all votes
 	currValidators, err := keeper.getBondedValidatorsByAddress(ctx)
 	if err != nil {
 		return false, err
 	}
-
 	totalVotingPower, _, err := keeper.tallyVotes(ctx, proposal, currValidators, false)
 	if err != nil {
 		return false, err
@@ -141,6 +119,9 @@ func (keeper Keeper) tallyVotes(
 	currValidators map[string]stakingtypes.ValidatorI, isFinal bool,
 ) (totalVotingPower math.LegacyDec, results map[v1.VoteOption]math.LegacyDec, err error) {
 	totalVotingPower = math.LegacyZeroDec()
+	// keeps track of governors that voted or have delegators that voted
+	allGovernors := make(map[string]v1.GovernorGovInfo)
+
 	if isFinal {
 		results = make(map[v1.VoteOption]math.LegacyDec)
 		results[v1.OptionYes] = math.LegacyZeroDec()
@@ -149,23 +130,51 @@ func (keeper Keeper) tallyVotes(
 	}
 
 	keeper.IterateVotes(ctx, proposal.Id, func(vote v1.Vote) bool {
+		var governor v1.GovernorGovInfo
+
 		voter := sdk.MustAccAddressFromBech32(vote.Voter)
+
+		gd, hasGovernor := keeper.GetGovernanceDelegation(ctx, voter)
+		if hasGovernor {
+			if gi, ok := allGovernors[gd.GovernorAddress]; ok {
+				governor = gi
+			} else {
+				govAddr := types.MustGovernorAddressFromBech32(gd.GovernorAddress)
+				governor = v1.NewGovernorGovInfo(
+					govAddr,
+					keeper.GetAllGovernorValShares(ctx, govAddr),
+					v1.WeightedVoteOptions{},
+				)
+			}
+			if gd.GovernorAddress == types.GovernorAddress(voter).String() {
+				// voter and governor are the same account, record his vote
+				governor.Vote = vote.Options
+			}
+			// Ensure allGovernors contains the updated governor
+			allGovernors[gd.GovernorAddress] = governor
+		}
+
 		// iterate over all delegations from voter, deduct from any delegated-to validators
 		err = keeper.sk.IterateDelegations(ctx, voter, func(index int64, delegation stakingtypes.DelegationI) (stop bool) {
 			valAddrStr := delegation.GetValidatorAddr()
+			votingPower := math.LegacyZeroDec()
 
 			if val, ok := currValidators[valAddrStr]; ok {
 				// delegation shares * bonded / total shares
-				votingPower := delegation.GetShares().MulInt(val.GetBondedTokens()).Quo(val.GetDelegatorShares())
+				votingPower = votingPower.Add(delegation.GetShares().MulInt(val.GetBondedTokens()).Quo(val.GetDelegatorShares()))
 
-				if isFinal {
-					for _, option := range vote.Options {
-						weight, _ := math.LegacyNewDecFromStr(option.Weight)
-						subPower := votingPower.Mul(weight)
-						results[option.Option] = results[option.Option].Add(subPower)
-					}
+				// remove the delegation shares from the governor
+				if hasGovernor {
+					governor.ValSharesDeductions[valAddrStr] = governor.ValSharesDeductions[valAddrStr].Add(delegation.GetShares())
 				}
-				totalVotingPower = totalVotingPower.Add(votingPower)
+			}
+
+			totalVotingPower = totalVotingPower.Add(votingPower)
+			if isFinal {
+				for _, option := range vote.Options {
+					subPower := option.Power(votingPower)
+					results[option.Option] = results[option.Option].Add(subPower)
+				}
 			}
 
 			return false
@@ -183,25 +192,24 @@ func (keeper Keeper) tallyVotes(
 		return totalVotingPower, results, err
 	}
 
-	/* DISABLED on AtomOne - Voting can only be done with your own stake
-	// iterate over the validators again to tally their voting power
-	for _, val := range currValidators {
-		if len(val.Vote) == 0 {
-			continue
-		}
+	// get only the voting governors that are active and have the niminum self-delegation requirement met.
+	currGovernors := keeper.getCurrGovernors(ctx, allGovernors)
 
-		sharesAfterDeductions := val.DelegatorShares.Sub(val.DelegatorDeductions)
-		votingPower := sharesAfterDeductions.MulInt(val.BondedTokens).Quo(val.DelegatorShares)
+	// iterate over the governors again to tally their voting power
+	// As active governor are simply voters that need to have 100% of their bonded tokens
+	// delegated to them and their shares were deducted when iterating over votes
+	// we don't need to handle special cases.
+	for _, gov := range currGovernors {
+		votingPower := getGovernorVotingPower(gov, currValidators)
 
-		for _, option := range val.Vote {
-			weight, _ := math.LegacyNewDecFromStr(option.Weight)
-			subPower := votingPower.Mul(weight)
-			results[option.Option] = results[option.Option].Add(subPower)
+		if isFinal {
+			for _, option := range gov.Vote {
+				subPower := option.Power(votingPower)
+				results[option.Option] = results[option.Option].Add(subPower)
+			}
 		}
 		totalVotingPower = totalVotingPower.Add(votingPower)
 	}
-	*/
-
 	return totalVotingPower, results, nil
 }
 
@@ -247,4 +255,29 @@ func (keeper Keeper) getQuorumAndThreshold(ctx sdk.Context, proposal v1.Proposal
 	}
 
 	return quorum, threshold
+}
+
+// getCurrGovernors returns the governors that voted, are active and meet the minimum self-delegation requirement
+func (k Keeper) getCurrGovernors(ctx sdk.Context, allGovernors map[string]v1.GovernorGovInfo) (governors []v1.GovernorGovInfo) {
+	governorsInfos := make([]v1.GovernorGovInfo, 0)
+	for _, govInfo := range allGovernors {
+		governor, _ := k.GetGovernor(ctx, govInfo.Address)
+
+		if k.ValidateGovernorMinSelfDelegation(ctx, governor) && len(govInfo.Vote) > 0 {
+			governorsInfos = append(governorsInfos, govInfo)
+		}
+	}
+
+	return governorsInfos
+}
+
+func getGovernorVotingPower(governor v1.GovernorGovInfo, currValidators map[string]stakingtypes.ValidatorI) (votingPower math.LegacyDec) {
+	votingPower = math.LegacyZeroDec()
+	for valAddrStr, shares := range governor.ValShares {
+		if val, ok := currValidators[valAddrStr]; ok {
+			sharesAfterDeductions := shares.Sub(governor.ValSharesDeductions[valAddrStr])
+			votingPower = votingPower.Add(sharesAfterDeductions.MulInt(val.GetBondedTokens()).Quo(val.GetDelegatorShares()))
+		}
+	}
+	return votingPower
 }
