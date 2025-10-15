@@ -14,7 +14,8 @@ option go_package = "github.com/atomone-hub/atomone/x/dynamicfee/types";
 service Msg {
   option (cosmos.msg.v1.service) = true;
 
-  // UpdateParams defines a method for updating the dynamicfee module parameters.
+  // UpdateParams defines a method for updating the dynamicfee module
+  // parameters.
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
 }
 

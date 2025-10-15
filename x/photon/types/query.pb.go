@@ -113,7 +113,8 @@ func (m *QueryParamsResponse) GetParams() Params {
 	return Params{}
 }
 
-// QueryConversionRateRequest is request type for the Query/ConversionRate RPC method.
+// QueryConversionRateRequest is request type for the Query/ConversionRate RPC
+// method.
 type QueryConversionRateRequest struct {
 }
 
@@ -150,7 +151,8 @@ func (m *QueryConversionRateRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryConversionRateRequest proto.InternalMessageInfo
 
-// QueryConversionRateResponse is response type for the Query/ConversionRate RPC method.
+// QueryConversionRateResponse is response type for the Query/ConversionRate RPC
+// method.
 type QueryConversionRateResponse struct {
 	// conversion_rate represents the factor used to convert atone to photon.
 	ConversionRate string `protobuf:"bytes,1,opt,name=conversion_rate,json=conversionRate,proto3" json:"conversion_rate,omitempty"`
