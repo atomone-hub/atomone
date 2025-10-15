@@ -1,5 +1,6 @@
-package tendermint
+/* DONE */
+package gno
 
 const (
-	ModuleName = "07-tendermint"
+	ModuleName = "10-gno"
 )

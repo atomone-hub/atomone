@@ -1,7 +1,8 @@
-package tendermint
+package gno
 
 import (
 	"bytes"
+	"errors"
 	"reflect"
 	"time"
 
@@ -11,10 +12,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	cmttypes "github.com/cometbft/cometbft/types"
-
 	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
 	"github.com/cosmos/ibc-go/v10/modules/core/exported"
+	bfttypes "github.com/gnolang/gno/tm2/pkg/bft/types"
+	"github.com/gnolang/gno/tm2/pkg/crypto"
 )
 
 // CheckForMisbehaviour detects duplicate height misbehaviour and BFT time violation misbehaviour
@@ -22,16 +23,16 @@ import (
 func (ClientState) CheckForMisbehaviour(ctx sdk.Context, cdc codec.BinaryCodec, clientStore storetypes.KVStore, msg exported.ClientMessage) bool {
 	switch msg := msg.(type) {
 	case *Header:
-		tmHeader := msg
-		consState := tmHeader.ConsensusState()
+		header := msg
+		consState := header.ConsensusState()
 
 		// Check if the Client store already has a consensus state for the header's height
 		// If the consensus state exists, and it matches the header then we return early
 		// since header has already been submitted in a previous UpdateClient.
-		if existingConsState, found := GetConsensusState(clientStore, cdc, tmHeader.GetHeight()); found {
+		if existingConsState, found := GetConsensusState(clientStore, cdc, header.GetHeight()); found {
 			// This header has already been submitted and the necessary state is already stored
 			// in client store, thus we can return early without further validation.
-			if reflect.DeepEqual(existingConsState, tmHeader.ConsensusState()) { //nolint:gosimple
+			if reflect.DeepEqual(existingConsState, header.ConsensusState()) { //nolint:gosimple
 				return false
 			}
 
@@ -41,8 +42,8 @@ func (ClientState) CheckForMisbehaviour(ctx sdk.Context, cdc codec.BinaryCodec, 
 		}
 
 		// Check that consensus state timestamps are monotonic
-		prevCons, prevOk := GetPreviousConsensusState(clientStore, cdc, tmHeader.GetHeight())
-		nextCons, nextOk := GetNextConsensusState(clientStore, cdc, tmHeader.GetHeight())
+		prevCons, prevOk := GetPreviousConsensusState(clientStore, cdc, header.GetHeight())
+		nextCons, nextOk := GetNextConsensusState(clientStore, cdc, header.GetHeight())
 		// if previous consensus state exists, check consensus state time is greater than previous consensus state time
 		// if previous consensus state is not before current consensus state return true
 		if prevOk && !prevCons.Timestamp.Before(consState.Timestamp) {
@@ -57,13 +58,19 @@ func (ClientState) CheckForMisbehaviour(ctx sdk.Context, cdc codec.BinaryCodec, 
 		// if heights are equal check that this is valid misbehaviour of a fork
 		// otherwise if heights are unequal check that this is valid misbehavior of BFT time violation
 		if msg.Header1.GetHeight().EQ(msg.Header2.GetHeight()) {
-			blockID1, err := cmttypes.BlockIDFromProto(&msg.Header1.Commit.BlockID)
-			if err != nil {
+
+			blockID1 := bfttypes.BlockID{
+				Hash:        msg.Header1.SignedHeader.Header.LastBlockId.Hash,
+				PartsHeader: bfttypes.PartSetHeader{Total: int(msg.Header1.SignedHeader.Header.LastBlockId.PartsHeader.Total), Hash: msg.Header1.SignedHeader.Header.LastBlockId.PartsHeader.Hash},
+			}
+			if blockID1.ValidateBasic() != nil {
 				return false
 			}
-
-			blockID2, err := cmttypes.BlockIDFromProto(&msg.Header2.Commit.BlockID)
-			if err != nil {
+			blockID2 := bfttypes.BlockID{
+				Hash:        msg.Header2.SignedHeader.Header.LastBlockId.Hash,
+				PartsHeader: bfttypes.PartSetHeader{Total: int(msg.Header2.SignedHeader.Header.LastBlockId.PartsHeader.Total), Hash: msg.Header2.SignedHeader.Header.LastBlockId.PartsHeader.Hash},
+			}
+			if blockID2.ValidateBasic() != nil {
 				return false
 			}
 
@@ -72,7 +79,7 @@ func (ClientState) CheckForMisbehaviour(ctx sdk.Context, cdc codec.BinaryCodec, 
 				return true
 			}
 
-		} else if !msg.Header1.Header.Time.After(msg.Header2.Header.Time) {
+		} else if !msg.Header1.SignedHeader.Header.Time.After(msg.Header2.SignedHeader.Header.Time) {
 			// Header1 is at greater height than Header2, therefore Header1 time must be less than or equal to
 			// Header2 time in order to be valid misbehaviour (violation of monotonic time).
 			return true
@@ -128,14 +135,49 @@ func (cs *ClientState) verifyMisbehaviour(ctx sdk.Context, clientStore storetype
 func checkMisbehaviourHeader(
 	clientState *ClientState, consState *ConsensusState, header *Header, currentTimestamp time.Time,
 ) error {
-	tmTrustedValset, err := cmttypes.ValidatorSetFromProto(header.TrustedValidators)
-	if err != nil {
-		return errorsmod.Wrap(err, "trusted validator set is not tendermint validator set type")
+	gnoTrustedValset := bfttypes.ValidatorSet{
+		Validators: make([]*bfttypes.Validator, len(header.TrustedValidators.Validators)),
+		Proposer:   nil,
+	}
+	for i, val := range header.TrustedValidators.Validators {
+		key, err := crypto.PubKeyFromBytes(val.PubKey.Value)
+		if err != nil {
+			return errorsmod.Wrap(err, "validator set is not gno validator set")
+		}
+		gnoTrustedValset.Validators[i] = &bfttypes.Validator{
+			Address:          crypto.MustAddressFromString(val.Address),
+			PubKey:           key,
+			VotingPower:      val.VotingPower,
+			ProposerPriority: val.ProposerPriority,
+		}
+	}
+	gnoTrustedValset.TotalVotingPower() // ensure TotalVotingPower is set
+	if gnoTrustedValset.IsNilOrEmpty() {
+		return errorsmod.Wrap(errors.New("Empty trusted validator set"), "trusted validator set is not gno validator set type")
 	}
 
-	tmCommit, err := cmttypes.CommitFromProto(header.Commit)
+	gnoCommit := bfttypes.Commit{
+		BlockID:    bfttypes.BlockID{Hash: header.SignedHeader.Commit.BlockId.Hash, PartsHeader: bfttypes.PartSetHeader{Total: int(header.SignedHeader.Commit.BlockId.PartsHeader.Total), Hash: header.SignedHeader.Commit.BlockId.PartsHeader.Hash}},
+		Precommits: make([]*bfttypes.CommitSig, len(header.SignedHeader.Commit.Precommits)),
+	}
+	for i, sig := range header.SignedHeader.Commit.Precommits {
+		if sig == nil {
+			continue
+		}
+		gnoCommit.Precommits[i] = &bfttypes.CommitSig{
+			ValidatorIndex:   int(sig.ValidatorIndex),
+			Signature:        sig.Signature,
+			BlockID:          bfttypes.BlockID{Hash: sig.BlockId.Hash, PartsHeader: bfttypes.PartSetHeader{Total: int(sig.BlockId.PartsHeader.Total), Hash: sig.BlockId.PartsHeader.Hash}},
+			Type:             bfttypes.SignedMsgType(sig.Type),
+			Height:           sig.Height,
+			Round:            int(sig.Round),
+			Timestamp:        sig.Timestamp,
+			ValidatorAddress: crypto.MustAddressFromString(sig.ValidatorAddress),
+		}
+	}
+	err := gnoCommit.ValidateBasic()
 	if err != nil {
-		return errorsmod.Wrap(err, "commit is not tendermint commit type")
+		return errorsmod.Wrap(err, "commit is not gno commit type")
 	}
 
 	// check the trusted fields for the header against ConsensusState
@@ -161,11 +203,11 @@ func checkMisbehaviourHeader(
 		chainID, _ = clienttypes.SetRevisionNumber(chainID, header.GetHeight().GetRevisionNumber())
 	}
 
-	// - ValidatorSet must have TrustLevel similarity with trusted FromValidatorSet
-	// - ValidatorSets on both headers are valid given the last trusted ValidatorSet
-	if err := tmTrustedValset.VerifyCommitLightTrusting(
-		chainID, tmCommit, clientState.TrustLevel.ToTendermint(),
-	); err != nil {
+	// - ValidatorSet must have 2/3 similarity with trusted ValidatorSet
+	// - TODO: re-check
+	err = gnoTrustedValset.VerifyCommit(chainID, gnoCommit.BlockID, header.SignedHeader.Header.Height, &gnoCommit)
+
+	if err != nil {
 		return errorsmod.Wrapf(clienttypes.ErrInvalidMisbehaviour, "validator set in header has too much change from trusted validator set: %v", err)
 	}
 	return nil

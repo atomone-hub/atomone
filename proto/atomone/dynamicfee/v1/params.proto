@@ -58,7 +58,7 @@ message Params {
     (gogoproto.nullable) = false
   ];
 
-  // DefaultMaxBlockGas is the default max block gas. 
+  // DefaultMaxBlockGas is the default max block gas.
   // This parameter is used by the dynamicfee module
   // in the case consensus_params.block.max_gas returns 0 or -1.
   uint64 default_max_block_gas = 7;

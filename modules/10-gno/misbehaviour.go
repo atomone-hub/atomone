@@ -1,16 +1,15 @@
-package tendermint
+package gno
 
 import (
 	"time"
 
 	errorsmod "cosmossdk.io/errors"
 
-	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
-	cmttypes "github.com/cometbft/cometbft/types"
-
 	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
 	host "github.com/cosmos/ibc-go/v10/modules/core/24-host"
 	"github.com/cosmos/ibc-go/v10/modules/core/exported"
+	bfttypes "github.com/gnolang/gno/tm2/pkg/bft/types"
+	"github.com/gnolang/gno/tm2/pkg/crypto"
 )
 
 var _ exported.ClientMessage = (*Misbehaviour)(nil)
@@ -63,7 +62,7 @@ func (misbehaviour Misbehaviour) ValidateBasic() error {
 	if misbehaviour.Header2.TrustedValidators == nil {
 		return errorsmod.Wrap(ErrInvalidValidatorSet, "trusted validator set in Header2 cannot be empty")
 	}
-	if misbehaviour.Header1.Header.ChainID != misbehaviour.Header2.Header.ChainID {
+	if misbehaviour.Header1.SignedHeader.Header.ChainId != misbehaviour.Header2.SignedHeader.Header.ChainId {
 		return errorsmod.Wrap(clienttypes.ErrInvalidMisbehaviour, "headers must have identical chainIDs")
 	}
 
@@ -89,35 +88,85 @@ func (misbehaviour Misbehaviour) ValidateBasic() error {
 		return errorsmod.Wrapf(clienttypes.ErrInvalidMisbehaviour, "Header1 height is less than Header2 height (%s < %s)", misbehaviour.Header1.GetHeight(), misbehaviour.Header2.GetHeight())
 	}
 
-	blockID1, err := cmttypes.BlockIDFromProto(&misbehaviour.Header1.Commit.BlockID)
+	blockId1 := bfttypes.BlockID{
+		Hash:        misbehaviour.Header1.SignedHeader.Header.LastBlockId.Hash,
+		PartsHeader: bfttypes.PartSetHeader{Total: int(misbehaviour.Header1.SignedHeader.Header.LastBlockId.PartsHeader.Total), Hash: misbehaviour.Header1.SignedHeader.Header.LastBlockId.PartsHeader.Hash},
+	}
+	err := blockId1.ValidateBasic()
 	if err != nil {
 		return errorsmod.Wrap(err, "invalid block ID from header 1 in misbehaviour")
 	}
-	blockID2, err := cmttypes.BlockIDFromProto(&misbehaviour.Header2.Commit.BlockID)
+	blockId2 := bfttypes.BlockID{
+		Hash:        misbehaviour.Header2.SignedHeader.Header.LastBlockId.Hash,
+		PartsHeader: bfttypes.PartSetHeader{Total: int(misbehaviour.Header2.SignedHeader.Header.LastBlockId.PartsHeader.Total), Hash: misbehaviour.Header2.SignedHeader.Header.LastBlockId.PartsHeader.Hash},
+	}
+	err = blockId2.ValidateBasic()
 	if err != nil {
 		return errorsmod.Wrap(err, "invalid block ID from header 2 in misbehaviour")
 	}
 
-	if err := validCommit(misbehaviour.Header1.Header.ChainID, *blockID1,
-		misbehaviour.Header1.Commit, misbehaviour.Header1.ValidatorSet); err != nil {
+	if err := validCommit(misbehaviour.Header1.SignedHeader.Header.ChainId, blockId1,
+		*misbehaviour.Header1.SignedHeader.Commit, misbehaviour.Header1.ValidatorSet); err != nil {
 		return err
 	}
-	return validCommit(misbehaviour.Header2.Header.ChainID, *blockID2,
-		misbehaviour.Header2.Commit, misbehaviour.Header2.ValidatorSet)
+	return validCommit(misbehaviour.Header2.SignedHeader.Header.ChainId, blockId2,
+		*misbehaviour.Header2.SignedHeader.Commit, misbehaviour.Header2.ValidatorSet)
 }
 
 // validCommit checks if the given commit is a valid commit from the passed-in validatorset
-func validCommit(chainID string, blockID cmttypes.BlockID, commit *cmtproto.Commit, valSet *cmtproto.ValidatorSet) (err error) {
-	tmCommit, err := cmttypes.CommitFromProto(commit)
+func validCommit(chainID string, blockID bfttypes.BlockID, commit Commit, valSet *ValidatorSet) (err error) {
+
+	err = blockID.ValidateBasic()
+	if err != nil {
+		return errorsmod.Wrap(err, "block ID is not gno block ID type")
+	}
+	gnoCommit := bfttypes.Commit{
+		BlockID:    bfttypes.BlockID{Hash: commit.BlockId.Hash, PartsHeader: bfttypes.PartSetHeader{Total: int(commit.BlockId.PartsHeader.Total), Hash: commit.BlockId.PartsHeader.Hash}},
+		Precommits: make([]*bfttypes.CommitSig, len(commit.Precommits)),
+	}
+	for i, sig := range commit.Precommits {
+		if sig == nil {
+			continue
+		}
+		gnoCommit.Precommits[i] = &bfttypes.CommitSig{
+			ValidatorIndex:   int(sig.ValidatorIndex),
+			Signature:        sig.Signature,
+			BlockID:          bfttypes.BlockID{Hash: sig.BlockId.Hash, PartsHeader: bfttypes.PartSetHeader{Total: int(sig.BlockId.PartsHeader.Total), Hash: sig.BlockId.PartsHeader.Hash}},
+			Type:             bfttypes.SignedMsgType(sig.Type),
+			Height:           sig.Height,
+			Round:            int(sig.Round),
+			Timestamp:        sig.Timestamp,
+			ValidatorAddress: crypto.MustAddressFromString(sig.ValidatorAddress),
+		}
+	}
+	err = gnoCommit.ValidateBasic()
 	if err != nil {
 		return errorsmod.Wrap(err, "commit is not tendermint commit type")
 	}
-	tmValset, err := cmttypes.ValidatorSetFromProto(valSet)
-	if err != nil {
-		return errorsmod.Wrap(err, "validator set is not tendermint validator set type")
+
+	gnoValset := bfttypes.ValidatorSet{
+		Validators: make([]*bfttypes.Validator, len(valSet.Validators)),
+		Proposer:   nil,
+	}
+	for i, val := range valSet.Validators {
+		key, err := crypto.PubKeyFromBytes(val.PubKey.Value)
+		if err != nil {
+			return errorsmod.Wrap(err, "validator set is not gno validator set")
+		}
+		gnoValset.Validators[i] = &bfttypes.Validator{
+			Address:          crypto.MustAddressFromString(val.Address),
+			PubKey:           key,
+			VotingPower:      val.VotingPower,
+			ProposerPriority: val.ProposerPriority,
+		}
+	}
+	gnoValset.TotalVotingPower() // ensure TotalVotingPower is set
+	empty := gnoValset.IsNilOrEmpty()
+	if empty {
+		return errorsmod.Wrap(err, "validator set is not gno validator set type")
 	}
 
-	if err := tmValset.VerifyCommitLight(chainID, blockID, tmCommit.Height, tmCommit); err != nil {
+	if err := gnoValset.VerifyCommit(chainID, blockID, gnoCommit.Height(), &gnoCommit); err != nil {
 		return errorsmod.Wrap(clienttypes.ErrInvalidMisbehaviour, "validator set did not commit to header")
 	}
 

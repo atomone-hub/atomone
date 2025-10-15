@@ -1,4 +1,4 @@
-package tendermint
+package gno
 
 import (
 	"time"
@@ -29,9 +29,9 @@ func NewConsensusState(
 	}
 }
 
-// ClientType returns Tendermint
+// ClientType returns Gno
 func (ConsensusState) ClientType() string {
-	return exported.Tendermint
+	return Gno
 }
 
 // GetRoot returns the commitment Root for the specific

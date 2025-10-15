@@ -1,4 +1,4 @@
-package tendermint
+package gno
 
 import (
 	cmtmath "github.com/cometbft/cometbft/libs/math"

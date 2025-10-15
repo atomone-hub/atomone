@@ -6,16 +6,16 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
+	ibcgno "github.com/atomone-hub/atomone/modules/10-gno"
 	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
 	"github.com/cosmos/ibc-go/v10/modules/core/exported"
-	ibctm "github.com/cosmos/ibc-go/v10/modules/light-clients/07-tendermint"
 )
 
-// PruneExpiredConsensusStates prunes all expired tendermint consensus states. This function
+// PruneExpiredConsensusStates prunes all expired GNO consensus states. This function
 // may optionally be called during in-place store migrations. The ibc store key must be provided.
 func PruneExpiredConsensusStates(ctx sdk.Context, cdc codec.BinaryCodec, clientKeeper ClientKeeper) (int, error) {
 	var clientIDs []string
-	clientKeeper.IterateClientStates(ctx, []byte(exported.Tendermint), func(clientID string, _ exported.ClientState) bool {
+	clientKeeper.IterateClientStates(ctx, []byte(ibcgno.Gno), func(clientID string, _ exported.ClientState) bool {
 		clientIDs = append(clientIDs, clientID)
 		return false
 	})
@@ -32,15 +32,15 @@ func PruneExpiredConsensusStates(ctx sdk.Context, cdc codec.BinaryCodec, clientK
 			return 0, errorsmod.Wrapf(clienttypes.ErrClientNotFound, "clientID %s", clientID)
 		}
 
-		tmClientState, ok := clientState.(*ibctm.ClientState)
+		gnoClientState, ok := clientState.(*ibcgno.ClientState)
 		if !ok {
-			return 0, errorsmod.Wrap(clienttypes.ErrInvalidClient, "client state is not tendermint even though client id contains 07-tendermint")
+			return 0, errorsmod.Wrap(clienttypes.ErrInvalidClient, "client state is not GNO even though client id contains 10-gno")
 		}
 
-		totalPruned += ibctm.PruneAllExpiredConsensusStates(ctx, clientStore, cdc, tmClientState)
+		totalPruned += ibcgno.PruneAllExpiredConsensusStates(ctx, clientStore, cdc, gnoClientState)
 	}
 
-	clientKeeper.Logger(ctx).Info("pruned expired tendermint consensus states", "total", totalPruned)
+	clientKeeper.Logger(ctx).Info("pruned expired gno consensus states", "total", totalPruned)
 
 	return totalPruned, nil
 }

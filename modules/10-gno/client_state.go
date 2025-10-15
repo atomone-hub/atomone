@@ -1,4 +1,4 @@
-package tendermint
+package gno
 
 import (
 	"strings"
@@ -13,7 +13,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/cometbft/cometbft/light"
-	cmttypes "github.com/cometbft/cometbft/types"
+	bfttypes "github.com/gnolang/gno/tm2/pkg/bft/types"
 
 	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
 	commitmenttypes "github.com/cosmos/ibc-go/v10/modules/core/23-commitment/types"
@@ -49,9 +49,9 @@ func (cs ClientState) GetChainID() string {
 	return cs.ChainId
 }
 
-// ClientType is tendermint.
+// ClientType is gno.
 func (ClientState) ClientType() string {
-	return exported.Tendermint
+	return Gno
 }
 
 // getTimestampAtHeight returns the timestamp in nanoseconds of the consensus state at the given height.
@@ -68,7 +68,7 @@ func (ClientState) getTimestampAtHeight(
 	return consState.GetTimestamp(), nil
 }
 
-// status returns the status of the tendermint client.
+// status returns the status of the gno client.
 // The client may be:
 // - Active: FrozenHeight is zero and client is not expired
 // - Frozen: Frozen Height is not zero
@@ -113,13 +113,13 @@ func (cs ClientState) Validate() error {
 		return errorsmod.Wrap(ErrInvalidChainID, "chain id cannot be empty string")
 	}
 
-	// NOTE: the value of cmttypes.MaxChainIDLen may change in the future.
+	// NOTE: the value of bfttypes.MaxChainIDLen may change in the future.
 	// If this occurs, the code here must account for potential difference
-	// between the tendermint version being run by the counterparty chain
-	// and the tendermint version used by this light client.
+	// between the gno/tm2 version being run by the counterparty chain
+	// and the gno/tm2 version used by this light client.
 	// https://github.com/cosmos/ibc-go/issues/177
-	if len(cs.ChainId) > cmttypes.MaxChainIDLen {
-		return errorsmod.Wrapf(ErrInvalidChainID, "chainID is too long; got: %d, max: %d", len(cs.ChainId), cmttypes.MaxChainIDLen)
+	if len(cs.ChainId) > bfttypes.MaxChainIDLen {
+		return errorsmod.Wrapf(ErrInvalidChainID, "chainID is too long; got: %d, max: %d", len(cs.ChainId), bfttypes.MaxChainIDLen)
 	}
 
 	if err := light.ValidateTrustLevel(cs.TrustLevel.ToTendermint()); err != nil {
@@ -151,7 +151,7 @@ func (cs ClientState) Validate() error {
 	}
 
 	if cs.ProofSpecs == nil {
-		return errorsmod.Wrap(ErrInvalidProofSpecs, "proof specs cannot be nil for tm client")
+		return errorsmod.Wrap(ErrInvalidProofSpecs, "proof specs cannot be nil for gno client")
 	}
 	for i, spec := range cs.ProofSpecs {
 		if spec == nil {
@@ -184,7 +184,7 @@ func (cs ClientState) ZeroCustomFields() *ClientState {
 	}
 }
 
-// initialize checks that the initial consensus state is an 07-tendermint consensus state and
+// initialize checks that the initial consensus state is an 10-gno consensus state and
 // sets the client state, consensus state and associated metadata in the provided client store.
 func (cs ClientState) initialize(ctx sdk.Context, cdc codec.BinaryCodec, clientStore storetypes.KVStore, consState exported.ConsensusState) error {
 	consensusState, ok := consState.(*ConsensusState)

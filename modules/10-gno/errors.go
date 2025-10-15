@@ -1,4 +1,4 @@
-package tendermint
+package gno
 
 import (
 	errorsmod "cosmossdk.io/errors"

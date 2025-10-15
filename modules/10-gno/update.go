@@ -1,7 +1,8 @@
-package tendermint
+package gno
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
@@ -12,11 +13,13 @@ import (
 
 	"github.com/cometbft/cometbft/light"
 	cmttypes "github.com/cometbft/cometbft/types"
+	bfttypes "github.com/gnolang/gno/tm2/pkg/bft/types"
 
 	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
 	commitmenttypes "github.com/cosmos/ibc-go/v10/modules/core/23-commitment/types"
 	host "github.com/cosmos/ibc-go/v10/modules/core/24-host"
 	"github.com/cosmos/ibc-go/v10/modules/core/exported"
+	"github.com/gnolang/gno/tm2/pkg/crypto"
 )
 
 // VerifyClientMessage checks if the clientMessage is of type Header or Misbehaviour and verifies the message
@@ -68,19 +71,89 @@ func (cs *ClientState) verifyHeader(
 		)
 	}
 
-	tmTrustedValidators, err := cmttypes.ValidatorSetFromProto(header.TrustedValidators)
-	if err != nil {
-		return errorsmod.Wrap(err, "trusted validator set in not tendermint validator set type")
+	gnoTrustedValidators := bfttypes.ValidatorSet{
+		Validators: make([]*bfttypes.Validator, len(header.TrustedValidators.Validators)),
+		Proposer:   nil,
+	}
+	for i, val := range header.TrustedValidators.Validators {
+		key, err := crypto.PubKeyFromBytes(val.PubKey.Value)
+		if err != nil {
+			return errorsmod.Wrap(err, "validator set is not gno validator set")
+		}
+		gnoTrustedValidators.Validators[i] = &bfttypes.Validator{
+			Address:          crypto.MustAddressFromString(val.Address),
+			PubKey:           key,
+			VotingPower:      val.VotingPower,
+			ProposerPriority: val.ProposerPriority,
+		}
+	}
+	gnoTrustedValidators.TotalVotingPower() // ensure TotalVotingPower is set
+	if gnoTrustedValidators.IsNilOrEmpty() {
+		return errorsmod.Wrap(errors.New("Not gno validators"), "trusted validator set in not gno validator set type")
 	}
 
-	tmSignedHeader, err := cmttypes.SignedHeaderFromProto(header.SignedHeader)
+	gnoHeader := bfttypes.Header{
+		Version:            header.SignedHeader.Header.Version,
+		ChainID:            header.SignedHeader.Header.ChainId,
+		Height:             header.SignedHeader.Header.Height,
+		Time:               header.SignedHeader.Header.Time,
+		LastBlockID:        bfttypes.BlockID{Hash: header.SignedHeader.Header.LastBlockId.Hash, PartsHeader: bfttypes.PartSetHeader{Total: int(header.SignedHeader.Header.LastBlockId.PartsHeader.Total), Hash: header.SignedHeader.Header.LastBlockId.PartsHeader.Hash}},
+		LastCommitHash:     header.SignedHeader.Header.LastCommitHash,
+		DataHash:           header.SignedHeader.Header.DataHash,
+		ValidatorsHash:     header.SignedHeader.Header.ValidatorsHash,
+		NextValidatorsHash: header.SignedHeader.Header.NextValidatorsHash,
+		ConsensusHash:      header.SignedHeader.Header.ConsensusHash,
+		AppHash:            header.SignedHeader.Header.AppHash,
+		LastResultsHash:    header.SignedHeader.Header.LastResultsHash,
+		ProposerAddress:    crypto.MustAddressFromString(header.SignedHeader.Header.ProposerAddress),
+	}
+	gnoCommit := bfttypes.Commit{
+		BlockID:    bfttypes.BlockID{Hash: header.SignedHeader.Commit.BlockId.Hash, PartsHeader: bfttypes.PartSetHeader{Total: int(header.SignedHeader.Commit.BlockId.PartsHeader.Total), Hash: header.SignedHeader.Commit.BlockId.PartsHeader.Hash}},
+		Precommits: make([]*bfttypes.CommitSig, len(header.SignedHeader.Commit.Precommits)),
+	}
+	for i, sig := range header.SignedHeader.Commit.Precommits {
+		if sig == nil {
+			continue
+		}
+		gnoCommit.Precommits[i] = &bfttypes.CommitSig{
+			ValidatorIndex:   int(sig.ValidatorIndex),
+			Signature:        sig.Signature,
+			BlockID:          bfttypes.BlockID{Hash: sig.BlockId.Hash, PartsHeader: bfttypes.PartSetHeader{Total: int(sig.BlockId.PartsHeader.Total), Hash: sig.BlockId.PartsHeader.Hash}},
+			Type:             bfttypes.SignedMsgType(sig.Type),
+			Height:           sig.Height,
+			Round:            int(sig.Round),
+			Timestamp:        sig.Timestamp,
+			ValidatorAddress: crypto.MustAddressFromString(sig.ValidatorAddress),
+		}
+	}
+	gnoSignedHeader := bfttypes.SignedHeader{
+		Header: &gnoHeader,
+		Commit: &gnoCommit,
+	}
+	err := gnoSignedHeader.ValidateBasic(header.SignedHeader.Header.ChainId) // ensure signed header is valid
 	if err != nil {
-		return errorsmod.Wrap(err, "signed header in not tendermint signed header type")
+		return errorsmod.Wrap(err, "signed header in not gno signed header type")
 	}
 
-	tmValidatorSet, err := cmttypes.ValidatorSetFromProto(header.ValidatorSet)
-	if err != nil {
-		return errorsmod.Wrap(err, "validator set in not tendermint validator set type")
+	gnoValidatorSet := bfttypes.ValidatorSet{
+		Validators: make([]*bfttypes.Validator, len(header.ValidatorSet.Validators)),
+		Proposer:   nil,
+	}
+	for i, val := range header.ValidatorSet.Validators {
+		key, err := crypto.PubKeyFromBytes(val.PubKey.Value)
+		if err != nil {
+			return errorsmod.Wrap(err, "validator set is not gno validator set")
+		}
+		gnoValidatorSet.Validators[i] = &bfttypes.Validator{
+			Address:          crypto.MustAddressFromString(val.Address),
+			PubKey:           key,
+			VotingPower:      val.VotingPower,
+			ProposerPriority: val.ProposerPriority,
+		}
+	}
+	gnoValidatorSet.TotalVotingPower() // ensure TotalVotingPower is set
+	if gnoValidatorSet.IsNilOrEmpty() {
+		return errorsmod.Wrap(errors.New("Not gno validators"), "trusted validator set in not gno validator set type")
 	}
 
 	// assert header height is newer than consensus state
@@ -109,6 +182,8 @@ func (cs *ClientState) verifyHeader(
 	// - assert header timestamp is not past the trusting period
 	// - assert header timestamp is past latest stored consensus state timestamp
 	// - assert that a TrustLevel proportion of TrustedValidators signed new Commit
+
+	// TODO: replace with gno light client verification
 	err = light.Verify(
 		&signedHeader,
 		tmTrustedValidators, tmSignedHeader, tmValidatorSet,
@@ -161,8 +236,8 @@ func (cs ClientState) UpdateState(ctx sdk.Context, cdc codec.BinaryCodec, client
 
 	consensusState := &ConsensusState{
 		Timestamp:          header.GetTime(),
-		Root:               commitmenttypes.NewMerkleRoot(header.Header.GetAppHash()),
-		NextValidatorsHash: header.Header.NextValidatorsHash,
+		Root:               commitmenttypes.NewMerkleRoot(header.SignedHeader.Header.AppHash),
+		NextValidatorsHash: header.SignedHeader.Header.NextValidatorsHash,
 	}
 
 	// set client state, consensus state and associated metadata
@@ -216,14 +291,31 @@ func (cs ClientState) UpdateStateOnMisbehaviour(ctx sdk.Context, cdc codec.Binar
 
 // checkTrustedHeader checks that consensus state matches trusted fields of Header
 func checkTrustedHeader(header *Header, consState *ConsensusState) error {
-	tmTrustedValidators, err := cmttypes.ValidatorSetFromProto(header.TrustedValidators)
-	if err != nil {
-		return errorsmod.Wrap(err, "trusted validator set in not tendermint validator set type")
+
+	gnoTrustedValset := bfttypes.ValidatorSet{
+		Validators: make([]*bfttypes.Validator, len(header.TrustedValidators.Validators)),
+		Proposer:   nil,
+	}
+	for i, val := range header.TrustedValidators.Validators {
+		key, err := crypto.PubKeyFromBytes(val.PubKey.Value)
+		if err != nil {
+			return errorsmod.Wrap(err, "validator set is not gno validator set")
+		}
+		gnoTrustedValset.Validators[i] = &bfttypes.Validator{
+			Address:          crypto.MustAddressFromString(val.Address),
+			PubKey:           key,
+			VotingPower:      val.VotingPower,
+			ProposerPriority: val.ProposerPriority,
+		}
+	}
+	gnoTrustedValset.TotalVotingPower() // ensure TotalVotingPower is set
+	if gnoTrustedValset.IsNilOrEmpty() {
+		return errorsmod.Wrap(errors.New("Empty trusted validator set"), "trusted validator set is not gno validator set type")
 	}
 
 	// assert that trustedVals is NextValidators of last trusted header
 	// to do this, we check that trustedVals.Hash() == consState.NextValidatorsHash
-	tvalHash := tmTrustedValidators.Hash()
+	tvalHash := gnoTrustedValset.Hash()
 	if !bytes.Equal(consState.NextValidatorsHash, tvalHash) {
 		return errorsmod.Wrapf(
 			ErrInvalidValidatorSet,
