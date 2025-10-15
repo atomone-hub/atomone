@@ -11,8 +11,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cometbft/cometbft/light"
-	cmttypes "github.com/cometbft/cometbft/types"
 	bfttypes "github.com/gnolang/gno/tm2/pkg/bft/types"
 
 	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
@@ -167,13 +165,13 @@ func (cs *ClientState) verifyHeader(
 	// Construct a trusted header using the fields in consensus state
 	// Only Height, Time, and NextValidatorsHash are necessary for verification
 	// NOTE: updates must be within the same revision
-	trustedHeader := cmttypes.Header{
+	trustedHeader := bfttypes.Header{
 		ChainID:            cs.GetChainID(),
 		Height:             int64(header.TrustedHeight.RevisionHeight),
 		Time:               consState.Timestamp,
 		NextValidatorsHash: consState.NextValidatorsHash,
 	}
-	signedHeader := cmttypes.SignedHeader{
+	signedHeader := bfttypes.SignedHeader{
 		Header: &trustedHeader,
 	}
 
@@ -184,9 +182,9 @@ func (cs *ClientState) verifyHeader(
 	// - assert that a TrustLevel proportion of TrustedValidators signed new Commit
 
 	// TODO: replace with gno light client verification
-	err = light.Verify(
+	err = Verify(
 		&signedHeader,
-		tmTrustedValidators, tmSignedHeader, tmValidatorSet,
+		&gnoTrustedValidators, &gnoSignedHeader, &gnoValidatorSet,
 		cs.TrustingPeriod, currentTimestamp, cs.MaxClockDrift, cs.TrustLevel.ToTendermint(),
 	)
 	if err != nil {

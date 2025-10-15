@@ -20,4 +20,6 @@ var (
 	ErrInvalidProofSpecs       = errorsmod.Register(ModuleName, 13, "invalid proof specs")
 	ErrInvalidValidatorSet     = errorsmod.Register(ModuleName, 14, "invalid validator set")
 	ErrInvalidTrustLevel       = errorsmod.Register(ModuleName, 15, "invalid trust level")
+	ErrOldHeaderExpired        = errorsmod.Register(ModuleName, 16, "old header has expired")
+	ErrNewValSetCantBeTrusted  = errorsmod.Register(ModuleName, 17, "new val set cannot be trusted")
 )

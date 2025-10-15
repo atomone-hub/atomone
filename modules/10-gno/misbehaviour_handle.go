@@ -203,9 +203,9 @@ func checkMisbehaviourHeader(
 		chainID, _ = clienttypes.SetRevisionNumber(chainID, header.GetHeight().GetRevisionNumber())
 	}
 
-	// - ValidatorSet must have 2/3 similarity with trusted ValidatorSet
+	// - ValidatorSet must have TrustLevel similarity with trusted ValidatorSet
 	// - TODO: re-check
-	err = gnoTrustedValset.VerifyCommit(chainID, gnoCommit.BlockID, header.SignedHeader.Header.Height, &gnoCommit)
+	err = VerifyLightCommit(&gnoTrustedValset, chainID, gnoCommit.BlockID, header.SignedHeader.Header.Height, &gnoCommit, LCDefaultTrustLevel)
 
 	if err != nil {
 		return errorsmod.Wrapf(clienttypes.ErrInvalidMisbehaviour, "validator set in header has too much change from trusted validator set: %v", err)
