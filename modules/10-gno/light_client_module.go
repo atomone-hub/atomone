@@ -21,7 +21,7 @@ type LightClientModule struct {
 	storeProvider clienttypes.StoreProvider
 }
 
-// NewLightClientModule creates and returns a new 07-tendermint LightClientModule.
+// NewLightClientModule creates and returns a new 10-gno LightClientModule.
 func NewLightClientModule(cdc codec.BinaryCodec, storeProvider clienttypes.StoreProvider) LightClientModule {
 	return LightClientModule{
 		cdc:           cdc,
@@ -176,7 +176,7 @@ func (l LightClientModule) TimestampAtHeight(
 	return clientState.getTimestampAtHeight(clientStore, l.cdc, height)
 }
 
-// RecoverClient asserts that the substitute client is a tendermint client. It obtains the client state associated with the
+// RecoverClient asserts that the substitute client is a gno client. It obtains the client state associated with the
 // subject client and calls into the subjectClientState.CheckSubstituteAndUpdateState method.
 func (l LightClientModule) RecoverClient(ctx sdk.Context, clientID, substituteClientID string) error {
 	substituteClientType, _, err := clienttypes.ParseClientIdentifier(substituteClientID)
@@ -184,8 +184,8 @@ func (l LightClientModule) RecoverClient(ctx sdk.Context, clientID, substituteCl
 		return err
 	}
 
-	if substituteClientType != exported.Tendermint {
-		return errorsmod.Wrapf(clienttypes.ErrInvalidClientType, "expected: %s, got: %s", exported.Tendermint, substituteClientType)
+	if substituteClientType != Gno {
+		return errorsmod.Wrapf(clienttypes.ErrInvalidClientType, "expected: %s, got: %s", Gno, substituteClientType)
 	}
 
 	clientStore := l.storeProvider.ClientStore(ctx, clientID)

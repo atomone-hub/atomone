@@ -20,16 +20,16 @@ import (
 
 // VerifyUpgradeAndUpdateState checks if the upgraded client has been committed by the current client
 // It will zero out all client-specific fields and verify all data in client state that must
-// be the same across all valid Tendermint clients for the new chain.
+// be the same across all valid gno clients for the new chain.
 // Note, if there is a decrease in the UnbondingPeriod, then the TrustingPeriod, despite being a client-specific field
 // is scaled down by the same ratio.
 // VerifyUpgrade will return an error if:
-// - the upgradedClient is not a Tendermint ClientState
+// - the upgradedClient is not a gno ClientState
 // - the latest height of the client state does not have the same revision number or has a greater
 // height than the committed client.
 //   - the height of upgraded client is not greater than that of current client
 //   - the latest height of the new client does not match or is greater than the height in committed client
-//   - any Tendermint chain specified parameter in upgraded client such as ChainID, UnbondingPeriod,
+//   - any gno chain specified parameter in upgraded client such as ChainID, UnbondingPeriod,
 //     and ProofSpecs do not match parameters set by committed client
 func (cs ClientState) VerifyUpgradeAndUpdateState(
 	ctx sdk.Context, cdc codec.BinaryCodec, clientStore storetypes.KVStore,
@@ -40,18 +40,18 @@ func (cs ClientState) VerifyUpgradeAndUpdateState(
 		return errorsmod.Wrap(clienttypes.ErrInvalidUpgradeClient, "cannot upgrade client, no upgrade path set")
 	}
 
-	// upgraded client state and consensus state must be IBC tendermint client state and consensus state
-	// this may be modified in the future to upgrade to a new IBC tendermint type
+	// upgraded client state and consensus state must be IBC gno client state and consensus state
+	// this may be modified in the future to upgrade to a new IBC gno type
 	// counterparty must also commit to the upgraded consensus state at a sub-path under the upgrade path specified
 	tmUpgradeClient, ok := upgradedClient.(*ClientState)
 	if !ok {
-		return errorsmod.Wrapf(clienttypes.ErrInvalidClientType, "upgraded client must be Tendermint client. expected: %T got: %T",
+		return errorsmod.Wrapf(clienttypes.ErrInvalidClientType, "upgraded client must be gno client. expected: %T got: %T",
 			&ClientState{}, upgradedClient)
 	}
 
 	tmUpgradeConsState, ok := upgradedConsState.(*ConsensusState)
 	if !ok {
-		return errorsmod.Wrapf(clienttypes.ErrInvalidConsensus, "upgraded consensus state must be Tendermint consensus state. expected %T, got: %T",
+		return errorsmod.Wrapf(clienttypes.ErrInvalidConsensus, "upgraded consensus state must be gno consensus state. expected %T, got: %T",
 			&ConsensusState{}, upgradedConsState)
 	}
 

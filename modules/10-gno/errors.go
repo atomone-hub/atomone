@@ -4,7 +4,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 )
 
-// IBC tendermint client sentinel errors
+// IBC gno client sentinel errors
 var (
 	ErrInvalidChainID          = errorsmod.Register(ModuleName, 2, "invalid chain-id")
 	ErrInvalidTrustingPeriod   = errorsmod.Register(ModuleName, 3, "invalid trusting period")

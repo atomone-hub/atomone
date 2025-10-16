@@ -32,7 +32,7 @@ func (AppModuleBasic) IsOnePerModuleType() {}
 // IsAppModule implements the appmodule.AppModule interface.
 func (AppModuleBasic) IsAppModule() {}
 
-// Name returns the tendermint module name.
+// Name returns the gno module name.
 func (AppModuleBasic) Name() string {
 	return ModuleName
 }

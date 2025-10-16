@@ -26,9 +26,9 @@ func NewMisbehaviour(clientID string, header1, header2 *Header) *Misbehaviour {
 	}
 }
 
-// ClientType is Tendermint light client
+// ClientType is Gno light client
 func (Misbehaviour) ClientType() string {
-	return exported.Tendermint
+	return Gno
 }
 
 // GetTime returns the timestamp at which misbehaviour occurred. It uses the
@@ -141,7 +141,7 @@ func validCommit(chainID string, blockID bfttypes.BlockID, commit Commit, valSet
 	}
 	err = gnoCommit.ValidateBasic()
 	if err != nil {
-		return errorsmod.Wrap(err, "commit is not tendermint commit type")
+		return errorsmod.Wrap(err, "commit is not gno commit type")
 	}
 
 	gnoValset := bfttypes.ValidatorSet{

@@ -1,6 +1,7 @@
 package keepers
 
 import (
+	ibcgno "github.com/atomone-hub/atomone/modules/10-gno"
 	ica "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts"
 	icahost "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/host"
 	icahostkeeper "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/host/keeper"
@@ -95,6 +96,7 @@ type AppKeepers struct {
 	ICAModule      ica.AppModule
 	TransferModule transfer.AppModule
 	TMClientModule ibctm.AppModule
+	GnoModule      ibcgno.AppModule
 }
 
 func NewAppKeeper(
@@ -347,10 +349,14 @@ func NewAppKeeper(
 	storeProvider := clientKeeper.GetStoreProvider()
 
 	tmLightClientModule := ibctm.NewLightClientModule(appCodec, storeProvider)
+
+	gnoLightClientModule := ibcgno.NewLightClientModule(appCodec, storeProvider)
+
 	appKeepers.IBCKeeper.ClientKeeper.AddRoute(ibctm.ModuleName, &tmLightClientModule)
+	appKeepers.IBCKeeper.ClientKeeper.AddRoute(ibcgno.ModuleName, &tmLightClientModule)
 
 	appKeepers.TMClientModule = ibctm.NewAppModule(tmLightClientModule)
-
+	appKeepers.GnoModule = ibcgno.NewAppModule(gnoLightClientModule)
 	return appKeepers
 }
 

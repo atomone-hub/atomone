@@ -104,6 +104,7 @@ func appModules(
 		app.TransferModule,
 		app.ICAModule,
 		app.TMClientModule,
+		app.GnoModule,
 	}
 }
 

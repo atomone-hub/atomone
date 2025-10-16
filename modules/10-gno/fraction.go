@@ -4,7 +4,7 @@ import (
 	cmtmath "github.com/cometbft/cometbft/libs/math"
 )
 
-// DefaultTrustLevel is the tendermint light client default trust level
+// DefaultTrustLevel is the Gno light client default trust level
 var DefaultTrustLevel = NewFractionFromTm(LCDefaultTrustLevel)
 
 // NewFractionFromTm returns a new Fraction instance from a tmmath.Fraction

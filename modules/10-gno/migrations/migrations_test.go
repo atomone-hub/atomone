@@ -6,11 +6,11 @@ import (
 
 	testifysuite "github.com/stretchr/testify/suite"
 
+	ibcgno "github.com/atomone-hub/atomone/modules/10-gno"
+	ibcgnomigrations "github.com/atomone-hub/atomone/modules/10-gno/migrations"
 	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
 	host "github.com/cosmos/ibc-go/v10/modules/core/24-host"
 	"github.com/cosmos/ibc-go/v10/modules/core/exported"
-	ibctm "github.com/cosmos/ibc-go/v10/modules/light-clients/07-tendermint"
-	ibctmmigrations "github.com/cosmos/ibc-go/v10/modules/light-clients/07-tendermint/migrations"
 	ibctesting "github.com/cosmos/ibc-go/v10/testing"
 )
 
@@ -30,15 +30,15 @@ func (suite *MigrationsTestSuite) SetupTest() {
 	suite.chainB = suite.coordinator.GetChain(ibctesting.GetChainID(2))
 }
 
-func TestTendermintTestSuite(t *testing.T) {
+func TestGnoTestSuite(t *testing.T) {
 	testifysuite.Run(t, new(MigrationsTestSuite))
 }
 
-// test pruning of multiple expired tendermint consensus states
+// test pruning of multiple expired gno consensus states
 func (suite *MigrationsTestSuite) TestPruneExpiredConsensusStates() {
-	// create multiple tendermint clients and a solo machine client
+	// create multiple gno clients and a solo machine client
 	// the solo machine is used to verify this pruning function only modifies
-	// the tendermint store.
+	// the gno store.
 
 	numTMClients := 3
 	paths := make([]*ibctesting.Path, numTMClients)
@@ -88,15 +88,15 @@ func (suite *MigrationsTestSuite) TestPruneExpiredConsensusStates() {
 			ctx := suite.chainA.GetContext()
 			clientStore := suite.chainA.App.GetIBCKeeper().ClientKeeper.ClientStore(ctx, path.EndpointA.ClientID)
 
-			processedTime, ok := ibctm.GetProcessedTime(clientStore, pruneHeight)
+			processedTime, ok := ibcgno.GetProcessedTime(clientStore, pruneHeight)
 			suite.Require().True(ok)
 			suite.Require().NotNil(processedTime)
 
-			processedHeight, ok := ibctm.GetProcessedHeight(clientStore, pruneHeight)
+			processedHeight, ok := ibcgno.GetProcessedHeight(clientStore, pruneHeight)
 			suite.Require().True(ok)
 			suite.Require().NotNil(processedHeight)
 
-			expectedConsKey := ibctm.GetIterationKey(clientStore, pruneHeight)
+			expectedConsKey := ibcgno.GetIterationKey(clientStore, pruneHeight)
 			suite.Require().NotNil(expectedConsKey)
 		}
 		pruneHeightMap[path] = pruneHeights
@@ -123,7 +123,7 @@ func (suite *MigrationsTestSuite) TestPruneExpiredConsensusStates() {
 	// This will cause the consensus states created before the first time increment
 	// to be expired
 	suite.coordinator.IncrementTimeBy(7 * 24 * time.Hour)
-	totalPruned, err := ibctmmigrations.PruneExpiredConsensusStates(suite.chainA.GetContext(), suite.chainA.App.AppCodec(), suite.chainA.GetSimApp().IBCKeeper.ClientKeeper)
+	totalPruned, err := ibcgnomigrations.PruneExpiredConsensusStates(suite.chainA.GetContext(), suite.chainA.App.AppCodec(), suite.chainA.GetSimApp().IBCKeeper.ClientKeeper)
 	suite.Require().NoError(err)
 	suite.Require().NotZero(totalPruned)
 
@@ -137,15 +137,15 @@ func (suite *MigrationsTestSuite) TestPruneExpiredConsensusStates() {
 			suite.Require().False(ok, i)
 			suite.Require().Nil(consState, i)
 
-			processedTime, ok := ibctm.GetProcessedTime(clientStore, pruneHeight)
+			processedTime, ok := ibcgno.GetProcessedTime(clientStore, pruneHeight)
 			suite.Require().False(ok, i)
 			suite.Require().Equal(uint64(0), processedTime, i)
 
-			processedHeight, ok := ibctm.GetProcessedHeight(clientStore, pruneHeight)
+			processedHeight, ok := ibcgno.GetProcessedHeight(clientStore, pruneHeight)
 			suite.Require().False(ok, i)
 			suite.Require().Nil(processedHeight, i)
 
-			expectedConsKey := ibctm.GetIterationKey(clientStore, pruneHeight)
+			expectedConsKey := ibcgno.GetIterationKey(clientStore, pruneHeight)
 			suite.Require().Nil(expectedConsKey, i)
 		}
 
@@ -155,15 +155,15 @@ func (suite *MigrationsTestSuite) TestPruneExpiredConsensusStates() {
 			suite.Require().True(ok)
 			suite.Require().NotNil(consState)
 
-			processedTime, ok := ibctm.GetProcessedTime(clientStore, height)
+			processedTime, ok := ibcgno.GetProcessedTime(clientStore, height)
 			suite.Require().True(ok)
 			suite.Require().NotEqual(uint64(0), processedTime)
 
-			processedHeight, ok := ibctm.GetProcessedHeight(clientStore, height)
+			processedHeight, ok := ibcgno.GetProcessedHeight(clientStore, height)
 			suite.Require().True(ok)
 			suite.Require().NotEqual(clienttypes.ZeroHeight(), processedHeight)
 
-			consKey := ibctm.GetIterationKey(clientStore, height)
+			consKey := ibcgno.GetIterationKey(clientStore, height)
 			suite.Require().Equal(host.ConsensusStateKey(height), consKey)
 		}
 	}

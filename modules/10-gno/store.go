@@ -105,7 +105,7 @@ func ProcessedTimeKey(height exported.Height) []byte {
 }
 
 // SetProcessedTime stores the time at which a header was processed and the corresponding consensus state was created.
-// This is useful when validating whether a packet has reached the time specified delay period in the tendermint client's
+// This is useful when validating whether a packet has reached the time specified delay period in the gno client's
 // verification functions
 func SetProcessedTime(clientStore storetypes.KVStore, height exported.Height, timeNs uint64) {
 	key := ProcessedTimeKey(height)
@@ -113,7 +113,7 @@ func SetProcessedTime(clientStore storetypes.KVStore, height exported.Height, ti
 	clientStore.Set(key, val)
 }
 
-// GetProcessedTime gets the time (in nanoseconds) at which this chain received and processed a tendermint header.
+// GetProcessedTime gets the time (in nanoseconds) at which this chain received and processed a gno header.
 // This is used to validate that a received packet has passed the time delay period.
 func GetProcessedTime(clientStore storetypes.KVStore, height exported.Height) (uint64, bool) {
 	key := ProcessedTimeKey(height)
@@ -136,7 +136,7 @@ func ProcessedHeightKey(height exported.Height) []byte {
 }
 
 // SetProcessedHeight stores the height at which a header was processed and the corresponding consensus state was created.
-// This is useful when validating whether a packet has reached the specified block delay period in the tendermint client's
+// This is useful when validating whether a packet has reached the specified block delay period in the gno client's
 // verification functions
 func SetProcessedHeight(clientStore storetypes.KVStore, consHeight, processedHeight exported.Height) {
 	key := ProcessedHeightKey(consHeight)
@@ -144,7 +144,7 @@ func SetProcessedHeight(clientStore storetypes.KVStore, consHeight, processedHei
 	clientStore.Set(key, val)
 }
 
-// GetProcessedHeight gets the height at which this chain received and processed a tendermint header.
+// GetProcessedHeight gets the height at which this chain received and processed a gno header.
 // This is used to validate that a received packet has passed the block delay period.
 func GetProcessedHeight(clientStore storetypes.KVStore, height exported.Height) (exported.Height, bool) {
 	key := ProcessedHeightKey(height)
@@ -318,7 +318,7 @@ func bigEndianHeightBytes(height exported.Height) []byte {
 }
 
 // setConsensusMetadata sets context time as processed time and set context height as processed height
-// as this is internal tendermint light client logic.
+// as this is internal gno light client logic.
 // client state and consensus state will be set by client keeper
 // set iteration key to provide ability for efficient ordered iteration of consensus states.
 func setConsensusMetadata(ctx sdk.Context, clientStore storetypes.KVStore, height exported.Height) {

@@ -98,7 +98,7 @@ func (m *ClientState) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ClientState proto.InternalMessageInfo
 
-// ConsensusState defines the consensus state from Tendermint.
+// ConsensusState defines the consensus state from Gno.
 type ConsensusState struct {
 	// timestamp that corresponds to the block height in which the ConsensusState
 	// was stored.
@@ -183,9 +183,9 @@ func (m *Misbehaviour) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Misbehaviour proto.InternalMessageInfo
 
-// Header defines the Tendermint client consensus Header.
+// Header defines the Gno client consensus Header.
 // It encapsulates all the information necessary to update from a trusted
-// Tendermint ConsensusState. The inclusion of TrustedHeight and
+// Gno ConsensusState. The inclusion of TrustedHeight and
 // TrustedValidators allows this update to process correctly, so long as the
 // ConsensusState for the TrustedHeight exists, this removes race conditions
 // among relayers The SignedHeader and ValidatorSet are the new untrusted update

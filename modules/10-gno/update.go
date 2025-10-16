@@ -36,7 +36,7 @@ func (cs *ClientState) VerifyClientMessage(
 }
 
 // verifyHeader returns an error if:
-// - the client or header provided are not parseable to tendermint types
+// - the client or header provided are not parseable to gno types
 // - the header is invalid
 // - header height is less than or equal to the trusted header height
 // - header revision is not equal to trusted header revision
