@@ -353,7 +353,7 @@ func NewAppKeeper(
 	gnoLightClientModule := ibcgno.NewLightClientModule(appCodec, storeProvider)
 
 	appKeepers.IBCKeeper.ClientKeeper.AddRoute(ibctm.ModuleName, &tmLightClientModule)
-	appKeepers.IBCKeeper.ClientKeeper.AddRoute(ibcgno.ModuleName, &tmLightClientModule)
+	appKeepers.IBCKeeper.ClientKeeper.AddRoute(ibcgno.ModuleName, &gnoLightClientModule)
 
 	appKeepers.TMClientModule = ibctm.NewAppModule(tmLightClientModule)
 	appKeepers.GnoModule = ibcgno.NewAppModule(gnoLightClientModule)
