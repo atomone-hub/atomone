@@ -1,0 +1,236 @@
+package gno_test
+
+import (
+	"time"
+
+	ibcgno "github.com/atomone-hub/atomone/modules/10-gno"
+	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
+	"github.com/cosmos/ibc-go/v10/modules/core/exported"
+	ibctesting "github.com/cosmos/ibc-go/v10/testing"
+)
+
+var frozenHeight = clienttypes.NewHeight(0, 1)
+
+func (suite *GnoTestSuite) TestCheckSubstituteUpdateStateBasic() {
+	var (
+		substituteClientState exported.ClientState
+		substitutePath        *ibctesting.Path
+	)
+	testCases := []struct {
+		name     string
+		malleate func()
+	}{
+		{
+			"solo machine used for substitute", func() {
+				substituteClientState = ibctesting.NewSolomachine(suite.T(), suite.cdc, "solo machine", "", 1).ClientState()
+			},
+		},
+		{
+			"non-matching substitute", func() {
+				substitutePath.SetupClients()
+				substituteClientState, ok := suite.chainA.GetClientState(substitutePath.EndpointA.ClientID).(*ibcgno.ClientState)
+				suite.Require().True(ok)
+				// change trusting period so that test should fail
+				substituteClientState.TrustingPeriod = time.Hour * 24 * 7
+
+				tmClientState := substituteClientState
+				tmClientState.ChainId += "different chain"
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		suite.Run(tc.name, func() {
+			suite.SetupTest() // reset
+			subjectPath := ibctesting.NewPath(suite.chainA, suite.chainB)
+			substitutePath = ibctesting.NewPath(suite.chainA, suite.chainB)
+
+			subjectPath.SetupClients()
+			subjectClientState, ok := suite.chainA.GetClientState(subjectPath.EndpointA.ClientID).(*ibcgno.ClientState)
+			suite.Require().True(ok)
+
+			// expire subject client
+			suite.coordinator.IncrementTimeBy(subjectClientState.TrustingPeriod)
+			suite.coordinator.CommitBlock(suite.chainA, suite.chainB)
+
+			tc.malleate()
+
+			subjectClientStore := suite.chainA.App.GetIBCKeeper().ClientKeeper.ClientStore(suite.chainA.GetContext(), subjectPath.EndpointA.ClientID)
+			substituteClientStore := suite.chainA.App.GetIBCKeeper().ClientKeeper.ClientStore(suite.chainA.GetContext(), substitutePath.EndpointA.ClientID)
+
+			err := subjectClientState.CheckSubstituteAndUpdateState(suite.chainA.GetContext(), suite.chainA.App.AppCodec(), subjectClientStore, substituteClientStore, substituteClientState)
+			suite.Require().Error(err)
+		})
+	}
+}
+
+func (suite *GnoTestSuite) TestCheckSubstituteAndUpdateState() {
+	testCases := []struct {
+		name         string
+		FreezeClient bool
+		expError     error
+	}{
+		{
+			name:         "PASS: update checks are deprecated, client is not frozen",
+			FreezeClient: false,
+			expError:     nil,
+		},
+		{
+			name:         "PASS: update checks are deprecated, client is frozen",
+			FreezeClient: true,
+			expError:     nil,
+		},
+	}
+
+	for _, tc := range testCases {
+		suite.Run(tc.name, func() {
+			suite.SetupTest() // reset
+
+			// construct subject using test case parameters
+			subjectPath := ibctesting.NewPath(suite.chainA, suite.chainB)
+			subjectPath.SetupClients()
+			subjectClientState, ok := suite.chainA.GetClientState(subjectPath.EndpointA.ClientID).(*ibcgno.ClientState)
+			suite.Require().True(ok)
+
+			if tc.FreezeClient {
+				subjectClientState.FrozenHeight = frozenHeight
+			}
+
+			// construct the substitute to match the subject client
+
+			substitutePath := ibctesting.NewPath(suite.chainA, suite.chainB)
+			substitutePath.SetupClients()
+			substituteClientState, ok := suite.chainA.GetClientState(substitutePath.EndpointA.ClientID).(*ibcgno.ClientState)
+			suite.Require().True(ok)
+			// update trusting period of substitute client state
+			substituteClientState.TrustingPeriod = time.Hour * 24 * 7
+			suite.chainA.App.GetIBCKeeper().ClientKeeper.SetClientState(suite.chainA.GetContext(), substitutePath.EndpointA.ClientID, substituteClientState)
+
+			// update substitute a few times
+			for range 3 {
+				err := substitutePath.EndpointA.UpdateClient()
+				suite.Require().NoError(err)
+				// skip a block
+				suite.coordinator.CommitBlock(suite.chainA, suite.chainB)
+			}
+
+			// get updated substitute
+			substituteClientState, ok = suite.chainA.GetClientState(substitutePath.EndpointA.ClientID).(*ibcgno.ClientState)
+			suite.Require().True(ok)
+
+			// test that subject gets updated chain-id
+			newChainID := "new-chain-id"
+			substituteClientState.ChainId = newChainID
+
+			subjectClientStore := suite.chainA.App.GetIBCKeeper().ClientKeeper.ClientStore(suite.chainA.GetContext(), subjectPath.EndpointA.ClientID)
+			substituteClientStore := suite.chainA.App.GetIBCKeeper().ClientKeeper.ClientStore(suite.chainA.GetContext(), substitutePath.EndpointA.ClientID)
+
+			expectedConsState := substitutePath.EndpointA.GetConsensusState(substituteClientState.LatestHeight)
+			expectedProcessedTime, found := ibcgno.GetProcessedTime(substituteClientStore, substituteClientState.LatestHeight)
+			suite.Require().True(found)
+			expectedProcessedHeight, found := ibcgno.GetProcessedTime(substituteClientStore, substituteClientState.LatestHeight)
+			suite.Require().True(found)
+			expectedIterationKey := ibcgno.GetIterationKey(substituteClientStore, substituteClientState.LatestHeight)
+
+			err := subjectClientState.CheckSubstituteAndUpdateState(suite.chainA.GetContext(), suite.chainA.App.AppCodec(), subjectClientStore, substituteClientStore, substituteClientState)
+
+			if tc.expError == nil {
+				suite.Require().NoError(err)
+
+				updatedClient, ok := subjectPath.EndpointA.GetClientState().(*ibcgno.ClientState)
+				suite.Require().True(ok)
+				suite.Require().Equal(clienttypes.ZeroHeight(), updatedClient.FrozenHeight)
+
+				subjectClientStore := suite.chainA.App.GetIBCKeeper().ClientKeeper.ClientStore(suite.chainA.GetContext(), subjectPath.EndpointA.ClientID)
+
+				// check that the correct consensus state was copied over
+				suite.Require().Equal(substituteClientState.LatestHeight, updatedClient.LatestHeight)
+				subjectConsState := subjectPath.EndpointA.GetConsensusState(updatedClient.LatestHeight)
+				subjectProcessedTime, found := ibcgno.GetProcessedTime(subjectClientStore, updatedClient.LatestHeight)
+				suite.Require().True(found)
+				subjectProcessedHeight, found := ibcgno.GetProcessedTime(substituteClientStore, updatedClient.LatestHeight)
+				suite.Require().True(found)
+				subjectIterationKey := ibcgno.GetIterationKey(substituteClientStore, updatedClient.LatestHeight)
+
+				suite.Require().Equal(expectedConsState, subjectConsState)
+				suite.Require().Equal(expectedProcessedTime, subjectProcessedTime)
+				suite.Require().Equal(expectedProcessedHeight, subjectProcessedHeight)
+				suite.Require().Equal(expectedIterationKey, subjectIterationKey)
+
+				suite.Require().Equal(newChainID, updatedClient.ChainId)
+				suite.Require().Equal(time.Hour*24*7, updatedClient.TrustingPeriod)
+			} else {
+				suite.Require().Error(err)
+				suite.Require().ErrorContains(err, tc.expError.Error())
+			}
+		})
+	}
+}
+
+func (suite *GnoTestSuite) TestIsMatchingClientState() {
+	var (
+		subjectPath, substitutePath               *ibctesting.Path
+		subjectClientState, substituteClientState *ibcgno.ClientState
+	)
+
+	testCases := []struct {
+		name     string
+		malleate func()
+		isMatch  bool
+	}{
+		{
+			"matching clients", func() {
+				var ok bool
+				subjectClientState, ok = suite.chainA.GetClientState(subjectPath.EndpointA.ClientID).(*ibcgno.ClientState)
+				suite.Require().True(ok)
+				substituteClientState, ok = suite.chainA.GetClientState(substitutePath.EndpointA.ClientID).(*ibcgno.ClientState)
+				suite.Require().True(ok)
+			}, true,
+		},
+		{
+			"matching, frozen height is not used in check for equality", func() {
+				subjectClientState.FrozenHeight = frozenHeight
+				substituteClientState.FrozenHeight = clienttypes.ZeroHeight()
+			}, true,
+		},
+		{
+			"matching, latest height is not used in check for equality", func() {
+				subjectClientState.LatestHeight = clienttypes.NewHeight(0, 10)
+				substituteClientState.FrozenHeight = clienttypes.ZeroHeight()
+			}, true,
+		},
+		{
+			"matching, chain id is different", func() {
+				subjectClientState.ChainId = "bitcoin"
+				substituteClientState.ChainId = "ethereum"
+			}, true,
+		},
+		{
+			"matching, trusting period is different", func() {
+				subjectClientState.TrustingPeriod = time.Hour * 10
+				substituteClientState.TrustingPeriod = time.Hour * 1
+			}, true,
+		},
+		{
+			"not matching, trust level is different", func() {
+				subjectClientState.TrustLevel = ibcgno.Fraction{2, 3}
+				substituteClientState.TrustLevel = ibcgno.Fraction{1, 3}
+			}, false,
+		},
+	}
+
+	for _, tc := range testCases {
+		suite.Run(tc.name, func() {
+			suite.SetupTest() // reset
+
+			subjectPath = ibctesting.NewPath(suite.chainA, suite.chainB)
+			substitutePath = ibctesting.NewPath(suite.chainA, suite.chainB)
+			subjectPath.SetupClients()
+			substitutePath.SetupClients()
+
+			tc.malleate()
+
+			suite.Require().Equal(tc.isMatch, ibcgno.IsMatchingClientState(*subjectClientState, *substituteClientState))
+		})
+	}
+}
