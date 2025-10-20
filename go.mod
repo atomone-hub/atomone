@@ -11,7 +11,7 @@ require (
 	cosmossdk.io/simapp v0.0.0-20230602123434-616841b9704d
 	cosmossdk.io/tools/rosetta v0.2.1
 	github.com/chzyer/readline v1.5.1
-	github.com/cometbft/cometbft v0.37.15
+	github.com/cometbft/cometbft v0.37.16
 	github.com/cometbft/cometbft-db v0.10.0
 	github.com/cosmos/cosmos-proto v1.0.0-beta.5
 	github.com/cosmos/cosmos-sdk v0.47.17
