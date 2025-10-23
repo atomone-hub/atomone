@@ -16,7 +16,7 @@ For more details on the release, please see the [release notes][v3].
 
 ## Release Binary
 
-Please use the correct release binary: `v3.0.1`.
+Please use the correct release binary: `v3.0.3`.
 
 ## Go version
 
@@ -100,7 +100,7 @@ case the upgrade fails and the previous chain needs to be restarted.
 ### Current runtime
 
 The AtomOne mainnet network, `atomone-1`, is currently running [AtomOne
-v2.0.0][v2]. We anticipate that operators who are running on v2.0.0, will be
+v2.1.0][v2]. We anticipate that operators who are running on v2.1.0, will be
 able to upgrade successfully. Validators are expected to ensure that their
 systems are up to date and capable of performing the upgrade. This includes
 running the correct binary and if building from source, building with the
@@ -108,7 +108,7 @@ appropriate `go` version.
 
 ### Target runtime
 
-The AtomOne mainnet network, `atomone-1`, will run **[AtomOne v3.0.1][v3]**.
+The AtomOne mainnet network, `atomone-1`, will run **[AtomOne v3.0.3][v3]**.
 Operators _**MUST**_ use this version post-upgrade to remain connected to the
 network. The new version requires `go v1.22.10` to build successfully.
 
@@ -126,17 +126,17 @@ before upgrade.
 
 ### Method I: Manual Upgrade
 
-Make sure **AtomOne v2.0.0** is installed by either downloading a [compatible
+Make sure **AtomOne v2.1.0** is installed by either downloading a [compatible
 binary][v2], or building from source. Check the required version to build this
 binary in the `Makefile`.
 
-Run AtomOne v2.0.0 till upgrade height, the node will panic:
+Run AtomOne v2.1.0 till upgrade height, the node will panic:
 
 ```shell
 ERR UPGRADE "v3" NEEDED at height: <UPGRADE_HEIGHT>: upgrade to v3 and applying upgrade "v3" at height:<UPGRADE_HEIGHT>
 ```
 
-Stop the node, and switch the binary to **AtomOne v3.0.1** and re-start by
+Stop the node, and switch the binary to **AtomOne v3.0.3** and re-start by
 `atomoned start`.
 
 It may take several minutes to a few hours until validators with a total sum
@@ -155,7 +155,7 @@ continue to produce blocks.
 go install cosmossdk.io/tools/cosmovisor/cmd/cosmovisor@latest
 ```
 
-- Create a `cosmovisor` folder inside `$ATOMONE_HOME` and move AtomOne `v2.0.0`
+- Create a `cosmovisor` folder inside `$ATOMONE_HOME` and move AtomOne `v2.1.0`
 into `$ATOMONE_HOME/cosmovisor/genesis/bin`:
 
 ```shell
@@ -163,7 +163,7 @@ mkdir -p $ATOMONE_HOME/cosmovisor/genesis/bin
 cp $(which atomoned) $ATOMONE_HOME/cosmovisor/genesis/bin
 ```
 
-- Build AtomOne `v3.0.1`, and move atomoned `v3.0.1` to
+- Build AtomOne `v3.0.3`, and move atomoned `v3.0.3` to
   `$ATOMONE_HOME/cosmovisor/upgrades/v3/bin`
 
 ```shell
@@ -178,11 +178,11 @@ At this moment, you should have the following structure:
 ├── current -> genesis or upgrades/<name>
 ├── genesis
 │   └── bin
-│       └── atomoned  # old: v2.0.0
+│       └── atomoned  # old: v2.1.0
 └── upgrades
     └── v3
         └── bin
-            └── atomoned  # new: v3.0.1
+            └── atomoned  # new: v3.0.3
 ```
 
 - Export the environmental variables:
@@ -230,7 +230,7 @@ challenges, the core teams, after conferring with operators and attaining
 social consensus, may choose to declare that the upgrade will be skipped.
 
 Steps to skip this upgrade proposal are simply to resume the `atomone-1`
-network with the (downgraded) v2.0.0 binary using the following command:
+network with the (downgraded) v2.1.0 binary using the following command:
 
 ```shell
 atomoned start --unsafe-skip-upgrade <UPGRADE_HEIGHT>
@@ -264,5 +264,5 @@ repeat the upgrade procedure again during the network startup. If you discover
 a mistake in the process, the best thing to do is wait for the network to start
 before correcting it.
 
-[v2]: https://github.com/atomone-hub/atomone/releases/tag/v2.0.0
-[v3]: https://github.com/atomone-hub/atomone/releases/tag/v3.0.1
+[v2]: https://github.com/atomone-hub/atomone/releases/tag/v2.1.0
+[v3]: https://github.com/atomone-hub/atomone/releases/tag/v3.0.3
