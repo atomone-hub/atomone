@@ -10,11 +10,29 @@
 
 ### DEPENDENCIES
 
+- Upgrade CometBFT to v0.38.19 to fix security issue (ASA-2025-003) [#234](https://github.com/atomone-hub/atomone/pull/234)
+
 ### FEATURES
 
 ### STATE BREAKING
 
 ### IMPROVEMENTS
+
+## v3.0.3
+
+*Oct 20th, 2025*
+
+### DEPENDENCIES
+
+- Upgrade CometBFT to v0.37.16 to fix security issue (ASA-2025-003) [#233](https://github.com/atomone-hub/atomone/pull/233)
+
+## v3.0.2
+
+*Oct 1st, 2025*
+
+### API BREAKING
+
+- CLI: the `photon mint` command now takes the `to_address` as first argument [#222](https://github.com/atomone-hub/atomone/pull/222)
 
 ## v3.0.1
 
