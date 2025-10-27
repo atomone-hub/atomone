@@ -82,6 +82,17 @@ func TestGovernor(t *testing.T) {
 			}
 		}
 	}
+
+	// Remove gov2
+	govKeeper.RemoveGovernor(ctx, govAddrs[1])
+	gov, found = govKeeper.GetGovernor(ctx, govAddrs[1])
+	assert.False(found, "expected gov2 to be removed")
+
+	// Get all govs after removal
+	govs = govKeeper.GetAllGovernors(ctx)
+	if assert.Len(govs, 1, "expected 1 governor after removal") {
+		assert.Equal(gov1, *govs[0])
+	}
 }
 
 func TestValidateGovernorMinSelfDelegation(t *testing.T) {
