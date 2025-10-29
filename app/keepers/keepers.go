@@ -1,6 +1,9 @@
 package keepers
 
 import (
+	"github.com/allinbits/interchain-security/x/ccv/provider"
+	providerkeeper "github.com/allinbits/interchain-security/x/ccv/provider/keeper"
+	providertypes "github.com/allinbits/interchain-security/x/ccv/provider/types"
 	ica "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts"
 	icahost "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/host"
 	icahostkeeper "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/host/keeper"
@@ -90,11 +93,13 @@ type AppKeepers struct {
 	PhotonKeeper          *photonkeeper.Keeper
 	DynamicfeeKeeper      *dynamicfeekeeper.Keeper
 	CoreDaosKeeper        *coredaoskeeper.Keeper
+	ProviderKeeper        *providerkeeper.Keeper
 
 	// Modules
 	ICAModule      ica.AppModule
 	TransferModule transfer.AppModule
 	TMClientModule ibctm.AppModule
+	ProviderModule provider.AppModule
 }
 
 func NewAppKeeper(
@@ -263,13 +268,43 @@ func NewAppKeeper(
 		appKeepers.StakingKeeper,
 	)
 
+	// Initialize provider keeper
+	// NOTE: Must be initialized BEFORE staking hooks are set
+	providerKeeper := providerkeeper.NewKeeper(
+		appCodec,
+		appKeepers.keys[providertypes.StoreKey],
+		appKeepers.GetSubspace(providertypes.ModuleName),
+		appKeepers.IBCKeeper.ChannelKeeper,
+		appKeepers.IBCKeeper.ConnectionKeeper,
+		appKeepers.IBCKeeper.ClientKeeper,
+		appKeepers.StakingKeeper,
+		appKeepers.SlashingKeeper,
+		appKeepers.AccountKeeper,
+		appKeepers.DistrKeeper,
+		appKeepers.BankKeeper,
+		NewGovKeeperAdapter(appKeepers.GovKeeper),
+		authorityStr,
+		addresscodec.NewBech32Codec(sdk.GetConfig().GetBech32ValidatorAddrPrefix()),
+		addresscodec.NewBech32Codec(sdk.GetConfig().GetBech32ConsensusAddrPrefix()),
+		authtypes.FeeCollectorName,
+	)
+	appKeepers.ProviderKeeper = &providerKeeper
+
+	appKeepers.ProviderModule = provider.NewAppModule(
+		appKeepers.ProviderKeeper,
+		appKeepers.GetSubspace(providertypes.ModuleName),
+		appKeepers.keys[providertypes.StoreKey],
+	)
+
 	// register the staking hooks
 	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
+	// Provider hooks MUST be included after provider keeper is initialized
 	appKeepers.StakingKeeper.SetHooks(
 		stakingtypes.NewMultiStakingHooks(
 			appKeepers.DistrKeeper.Hooks(),
 			appKeepers.SlashingKeeper.Hooks(),
 			appKeepers.CoreDaosKeeper.StakingHooks(),
+			appKeepers.ProviderKeeper.Hooks(),
 		),
 	)
 
@@ -378,6 +413,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName)
 	paramsKeeper.Subspace(ibcexported.ModuleName)
 	paramsKeeper.Subspace(icahosttypes.SubModuleName)
+	paramsKeeper.Subspace(providertypes.ModuleName)
 
 	return paramsKeeper
 }
