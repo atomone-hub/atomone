@@ -51,19 +51,19 @@ import (
 )
 
 var maccPerms = map[string][]string{
-	authtypes.FeeCollectorName:     nil,
-	distrtypes.ModuleName:          nil,
-	icatypes.ModuleName:            nil,
-	minttypes.ModuleName:           {authtypes.Minter},
-	stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
-	stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
-	govtypes.ModuleName:            {authtypes.Burner},
-	ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
+	authtypes.FeeCollectorName:        nil,
+	distrtypes.ModuleName:             nil,
+	icatypes.ModuleName:               nil,
+	minttypes.ModuleName:              {authtypes.Minter},
+	stakingtypes.BondedPoolName:       {authtypes.Burner, authtypes.Staking},
+	stakingtypes.NotBondedPoolName:    {authtypes.Burner, authtypes.Staking},
+	govtypes.ModuleName:               {authtypes.Burner},
+	ibctransfertypes.ModuleName:       {authtypes.Minter, authtypes.Burner},
 	providertypes.ConsumerRewardsPool: nil,
 	providertypes.ModuleName:          nil,
-	photontypes.ModuleName:         {authtypes.Minter, authtypes.Burner},
-	dynamicfeetypes.ModuleName:     nil,
-	coredaostypes.ModuleName:       nil,
+	photontypes.ModuleName:            {authtypes.Minter, authtypes.Burner},
+	dynamicfeetypes.ModuleName:        nil,
+	coredaostypes.ModuleName:          nil,
 }
 
 func appModules(
