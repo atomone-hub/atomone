@@ -4,6 +4,7 @@ import (
 	"github.com/allinbits/interchain-security/x/ccv/provider"
 	providerkeeper "github.com/allinbits/interchain-security/x/ccv/provider/keeper"
 	providertypes "github.com/allinbits/interchain-security/x/ccv/provider/types"
+
 	ica "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts"
 	icahost "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/host"
 	icahostkeeper "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/host/keeper"

@@ -2,8 +2,10 @@ package keepers
 
 import (
 	ccvtypes "github.com/allinbits/interchain-security/x/ccv/types"
-	atomonegovkeeper "github.com/atomone-hub/atomone/x/gov/keeper"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	atomonegovkeeper "github.com/atomone-hub/atomone/x/gov/keeper"
 )
 
 // GovKeeperAdapter adapts AtomOne's custom governance keeper to the interface

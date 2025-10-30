@@ -2,6 +2,7 @@ package atomone
 
 import (
 	providertypes "github.com/allinbits/interchain-security/x/ccv/provider/types"
+
 	icatypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/types"
 	ibctransfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
 	ibc "github.com/cosmos/ibc-go/v10/modules/core"
