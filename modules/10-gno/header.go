@@ -5,12 +5,14 @@ import (
 	"errors"
 	"time"
 
-	errorsmod "cosmossdk.io/errors"
+	bfttypes "github.com/gnolang/gno/tm2/pkg/bft/types"
+	"github.com/gnolang/gno/tm2/pkg/crypto"
+
 	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
 	commitmenttypes "github.com/cosmos/ibc-go/v10/modules/core/23-commitment/types"
 	"github.com/cosmos/ibc-go/v10/modules/core/exported"
-	bfttypes "github.com/gnolang/gno/tm2/pkg/bft/types"
-	"github.com/gnolang/gno/tm2/pkg/crypto"
+
+	errorsmod "cosmossdk.io/errors"
 )
 
 var _ exported.ClientMessage = (*Header)(nil)

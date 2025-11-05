@@ -5,19 +5,19 @@ import (
 	"errors"
 	"fmt"
 
-	errorsmod "cosmossdk.io/errors"
-	storetypes "cosmossdk.io/store/types"
-
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	bfttypes "github.com/gnolang/gno/tm2/pkg/bft/types"
+	"github.com/gnolang/gno/tm2/pkg/crypto"
 
 	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
 	commitmenttypes "github.com/cosmos/ibc-go/v10/modules/core/23-commitment/types"
 	host "github.com/cosmos/ibc-go/v10/modules/core/24-host"
 	"github.com/cosmos/ibc-go/v10/modules/core/exported"
-	"github.com/gnolang/gno/tm2/pkg/crypto"
+
+	errorsmod "cosmossdk.io/errors"
+	storetypes "cosmossdk.io/store/types"
+
+	"github.com/cosmos/cosmos-sdk/codec"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // VerifyClientMessage checks if the clientMessage is of type Header or Misbehaviour and verifies the message
@@ -87,7 +87,7 @@ func (cs *ClientState) verifyHeader(
 	}
 	gnoTrustedValidators.TotalVotingPower() // ensure TotalVotingPower is set
 	if gnoTrustedValidators.IsNilOrEmpty() {
-		return errorsmod.Wrap(errors.New("Not gno validators"), "trusted validator set in not gno validator set type")
+		return errorsmod.Wrap(errors.New("not gno validators"), "trusted validator set in not gno validator set type")
 	}
 
 	gnoHeader := bfttypes.Header{
@@ -151,7 +151,7 @@ func (cs *ClientState) verifyHeader(
 	}
 	gnoValidatorSet.TotalVotingPower() // ensure TotalVotingPower is set
 	if gnoValidatorSet.IsNilOrEmpty() {
-		return errorsmod.Wrap(errors.New("Not gno validators"), "trusted validator set in not gno validator set type")
+		return errorsmod.Wrap(errors.New("not gno validators"), "trusted validator set in not gno validator set type")
 	}
 
 	// assert header height is newer than consensus state
@@ -289,7 +289,6 @@ func (cs ClientState) UpdateStateOnMisbehaviour(ctx sdk.Context, cdc codec.Binar
 
 // checkTrustedHeader checks that consensus state matches trusted fields of Header
 func checkTrustedHeader(header *Header, consState *ConsensusState) error {
-
 	gnoTrustedValset := bfttypes.ValidatorSet{
 		Validators: make([]*bfttypes.Validator, len(header.TrustedValidators.Validators)),
 		Proposer:   nil,
@@ -308,7 +307,7 @@ func checkTrustedHeader(header *Header, consState *ConsensusState) error {
 	}
 	gnoTrustedValset.TotalVotingPower() // ensure TotalVotingPower is set
 	if gnoTrustedValset.IsNilOrEmpty() {
-		return errorsmod.Wrap(errors.New("Empty trusted validator set"), "trusted validator set is not gno validator set type")
+		return errorsmod.Wrap(errors.New("empty trusted validator set"), "trusted validator set is not gno validator set type")
 	}
 
 	// assert that trustedVals is NextValidators of last trusted header

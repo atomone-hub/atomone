@@ -4,14 +4,14 @@ import (
 	"reflect"
 	"time"
 
+	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
+	"github.com/cosmos/ibc-go/v10/modules/core/exported"
+
 	errorsmod "cosmossdk.io/errors"
 	storetypes "cosmossdk.io/store/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
-	"github.com/cosmos/ibc-go/v10/modules/core/exported"
 )
 
 // CheckSubstituteAndUpdateState will try to update the client with the state of the

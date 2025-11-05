@@ -1,12 +1,12 @@
 package migrations
 
 import (
+	"github.com/cosmos/ibc-go/v10/modules/core/exported"
+
 	"cosmossdk.io/log"
 	storetypes "cosmossdk.io/store/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	"github.com/cosmos/ibc-go/v10/modules/core/exported"
 )
 
 // ClientKeeper expected account IBC client keeper

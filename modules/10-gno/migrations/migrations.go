@@ -1,14 +1,15 @@
 package migrations
 
 import (
+	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
+	"github.com/cosmos/ibc-go/v10/modules/core/exported"
+
 	errorsmod "cosmossdk.io/errors"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	ibcgno "github.com/atomone-hub/atomone/modules/10-gno"
-	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
-	"github.com/cosmos/ibc-go/v10/modules/core/exported"
 )
 
 // PruneExpiredConsensusStates prunes all expired GNO consensus states. This function

@@ -11,6 +11,9 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/spf13/cast"
 
+	// Force registration of gno proto types
+	_ "github.com/atomone-hub/atomone/modules/10-gno"
+
 	abci "github.com/cometbft/cometbft/abci/types"
 
 	dbm "github.com/cosmos/cosmos-db"

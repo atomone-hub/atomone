@@ -47,7 +47,7 @@ const (
 )
 
 // WeightedOperations returns all the operations from the module with their respective weights
-func WeightedOperations(appParams simtypes.AppParams, cdc codec.JSONCodec, ak types.AccountKeeper, bk types.BankKeeper, k *keeper.Keeper, wMsgs []simtypes.WeightedProposalMsg, wContents []simtypes.WeightedProposalContent) simulation.WeightedOperations { //nolint:staticcheck
+func WeightedOperations(appParams simtypes.AppParams, cdc codec.JSONCodec, ak types.AccountKeeper, bk types.BankKeeper, k *keeper.Keeper, wMsgs []simtypes.WeightedProposalMsg, wContents []simtypes.WeightedProposalContent) simulation.WeightedOperations {
 	var (
 		weightMsgDeposit      int
 		weightMsgVote         int
@@ -145,7 +145,7 @@ func SimulateMsgSubmitProposal(ak types.AccountKeeper, bk types.BankKeeper, k *k
 // SimulateMsgSubmitLegacyProposal simulates creating a msg Submit Proposal
 // voting on the proposal, and subsequently slashing the proposal. It is implemented using
 // future operations.
-func SimulateMsgSubmitLegacyProposal(ak types.AccountKeeper, bk types.BankKeeper, k *keeper.Keeper, contentSim simtypes.ContentSimulatorFn) simtypes.Operation { //nolint:staticcheck
+func SimulateMsgSubmitLegacyProposal(ak types.AccountKeeper, bk types.BankKeeper, k *keeper.Keeper, contentSim simtypes.ContentSimulatorFn) simtypes.Operation {
 	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		// 1) submit proposal now

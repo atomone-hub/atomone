@@ -39,8 +39,8 @@ type MsgAnnotateProposal struct {
 	ProposalId uint64 `protobuf:"varint,2,opt,name=proposal_id,json=proposalId,proto3" json:"proposal_id,omitempty"`
 	// annotation is the annotation to add to the proposal.
 	Annotation string `protobuf:"bytes,3,opt,name=annotation,proto3" json:"annotation,omitempty"`
-	// overwrite is a boolean indicating whether to overwrite the existing annotation.
-	// Must be set to true if the proposal already has an annotation.
+	// overwrite is a boolean indicating whether to overwrite the existing
+	// annotation. Must be set to true if the proposal already has an annotation.
 	// Ignored if the proposal does not have yet an annotation.
 	Overwrite bool `protobuf:"varint,4,opt,name=overwrite,proto3" json:"overwrite,omitempty"`
 }
@@ -235,7 +235,8 @@ func (m *MsgEndorseProposalResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgEndorseProposalResponse proto.InternalMessageInfo
 
-// MsgExtendVotingPeriod defines a message for extending the voting period of a proposal.
+// MsgExtendVotingPeriod defines a message for extending the voting period of a
+// proposal.
 type MsgExtendVotingPeriod struct {
 	// extender is the address of the dao extending the voting period.
 	Extender string `protobuf:"bytes,1,opt,name=extender,proto3" json:"extender,omitempty"`
@@ -333,8 +334,8 @@ type MsgVetoProposal struct {
 	Vetoer string `protobuf:"bytes,1,opt,name=vetoer,proto3" json:"vetoer,omitempty"`
 	// proposal_id is the ID of the proposal to veto.
 	ProposalId uint64 `protobuf:"varint,2,opt,name=proposal_id,json=proposalId,proto3" json:"proposal_id,omitempty"`
-	// burn_deposit is a boolean indicating whether to burn the deposit of the proposal.
-	// If true, the deposit is burned and not refunded.
+	// burn_deposit is a boolean indicating whether to burn the deposit of the
+	// proposal. If true, the deposit is burned and not refunded.
 	BurnDeposit bool `protobuf:"varint,3,opt,name=burn_deposit,json=burnDeposit,proto3" json:"burn_deposit,omitempty"`
 }
 
@@ -598,15 +599,16 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
-	// AnnotateProposal defines a method to annotate a proposal with additional information.
-	// It is only available to the Steering DAO.
+	// AnnotateProposal defines a method to annotate a proposal with additional
+	// information. It is only available to the Steering DAO.
 	AnnotateProposal(ctx context.Context, in *MsgAnnotateProposal, opts ...grpc.CallOption) (*MsgAnnotateProposalResponse, error)
-	// EndorseProposal defines a method to endorse a proposal, and for law proposals this also
-	// results in the lowering of the passing threshold to the passing threshold of regular proposals.
-	// It is only available to the Steering DAO.
+	// EndorseProposal defines a method to endorse a proposal, and for law
+	// proposals this also results in the lowering of the passing threshold to the
+	// passing threshold of regular proposals. It is only available to the
+	// Steering DAO.
 	EndorseProposal(ctx context.Context, in *MsgEndorseProposal, opts ...grpc.CallOption) (*MsgEndorseProposalResponse, error)
-	// ExtendVotingPeriod defines a method to extend the voting period of a proposal.
-	// It is available to both the Steering DAO and the Oversight DAO.
+	// ExtendVotingPeriod defines a method to extend the voting period of a
+	// proposal. It is available to both the Steering DAO and the Oversight DAO.
 	ExtendVotingPeriod(ctx context.Context, in *MsgExtendVotingPeriod, opts ...grpc.CallOption) (*MsgExtendVotingPeriodResponse, error)
 	// VetoProposal defines a method to veto a proposal.
 	// It is only available to the Oversight DAO.
@@ -671,15 +673,16 @@ func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts 
 
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
-	// AnnotateProposal defines a method to annotate a proposal with additional information.
-	// It is only available to the Steering DAO.
+	// AnnotateProposal defines a method to annotate a proposal with additional
+	// information. It is only available to the Steering DAO.
 	AnnotateProposal(context.Context, *MsgAnnotateProposal) (*MsgAnnotateProposalResponse, error)
-	// EndorseProposal defines a method to endorse a proposal, and for law proposals this also
-	// results in the lowering of the passing threshold to the passing threshold of regular proposals.
-	// It is only available to the Steering DAO.
+	// EndorseProposal defines a method to endorse a proposal, and for law
+	// proposals this also results in the lowering of the passing threshold to the
+	// passing threshold of regular proposals. It is only available to the
+	// Steering DAO.
 	EndorseProposal(context.Context, *MsgEndorseProposal) (*MsgEndorseProposalResponse, error)
-	// ExtendVotingPeriod defines a method to extend the voting period of a proposal.
-	// It is available to both the Steering DAO and the Oversight DAO.
+	// ExtendVotingPeriod defines a method to extend the voting period of a
+	// proposal. It is available to both the Steering DAO and the Oversight DAO.
 	ExtendVotingPeriod(context.Context, *MsgExtendVotingPeriod) (*MsgExtendVotingPeriodResponse, error)
 	// VetoProposal defines a method to veto a proposal.
 	// It is only available to the Oversight DAO.

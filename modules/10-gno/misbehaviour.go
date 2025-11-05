@@ -3,13 +3,14 @@ package gno
 import (
 	"time"
 
-	errorsmod "cosmossdk.io/errors"
+	bfttypes "github.com/gnolang/gno/tm2/pkg/bft/types"
+	"github.com/gnolang/gno/tm2/pkg/crypto"
 
 	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
 	host "github.com/cosmos/ibc-go/v10/modules/core/24-host"
 	"github.com/cosmos/ibc-go/v10/modules/core/exported"
-	bfttypes "github.com/gnolang/gno/tm2/pkg/bft/types"
-	"github.com/gnolang/gno/tm2/pkg/crypto"
+
+	errorsmod "cosmossdk.io/errors"
 )
 
 var _ exported.ClientMessage = (*Misbehaviour)(nil)
@@ -115,7 +116,6 @@ func (misbehaviour Misbehaviour) ValidateBasic() error {
 
 // validCommit checks if the given commit is a valid commit from the passed-in validatorset
 func validCommit(chainID string, blockID bfttypes.BlockID, commit Commit, valSet *ValidatorSet) (err error) {
-
 	err = blockID.ValidateBasic()
 	if err != nil {
 		return errorsmod.Wrap(err, "block ID is not gno block ID type")

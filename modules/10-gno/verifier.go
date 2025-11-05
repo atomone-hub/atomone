@@ -7,10 +7,12 @@ import (
 	math "math"
 	"time"
 
-	errorsmod "cosmossdk.io/errors"
+	bfttypes "github.com/gnolang/gno/tm2/pkg/bft/types"
+
 	cmtmath "github.com/cometbft/cometbft/libs/math"
 	"github.com/cometbft/cometbft/types"
-	bfttypes "github.com/gnolang/gno/tm2/pkg/bft/types"
+
+	errorsmod "cosmossdk.io/errors"
 )
 
 // DefaultTrustLevel - new header can be trusted if at least one correct
@@ -198,15 +200,16 @@ func ValidateTrustLevel(lvl cmtmath.Fraction) error {
 	}
 	return nil
 }
+
 func VerifyLightCommit(vals *bfttypes.ValidatorSet, chainID string, blockID bfttypes.BlockID, height int64, commit *bfttypes.Commit, trustLevel cmtmath.Fraction) error {
 	if err := commit.ValidateBasic(); err != nil {
 		return err
 	}
 	if vals.Size() != len(commit.Precommits) {
-		return errorsmod.Wrapf(ErrNewValSetCantBeTrusted, bfttypes.NewErrInvalidCommitPrecommits(vals.Size(), len(commit.Precommits)).Error())
+		return errorsmod.Wrapf(ErrNewValSetCantBeTrusted, "%s", bfttypes.NewErrInvalidCommitPrecommits(vals.Size(), len(commit.Precommits)).Error())
 	}
 	if height != commit.Height() {
-		return errorsmod.Wrapf(ErrNewValSetCantBeTrusted, bfttypes.NewErrInvalidCommitHeight(height, commit.Height()).Error())
+		return errorsmod.Wrapf(ErrNewValSetCantBeTrusted, "%s", bfttypes.NewErrInvalidCommitHeight(height, commit.Height()).Error())
 	}
 	if !blockID.Equals(commit.BlockID) {
 		return fmt.Errorf("invalid commit -- wrong block id: want %v got %v",

@@ -5,15 +5,15 @@ import (
 	"encoding/binary"
 	"fmt"
 
+	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
+	host "github.com/cosmos/ibc-go/v10/modules/core/24-host"
+	"github.com/cosmos/ibc-go/v10/modules/core/exported"
+
 	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
-	host "github.com/cosmos/ibc-go/v10/modules/core/24-host"
-	"github.com/cosmos/ibc-go/v10/modules/core/exported"
 )
 
 /*

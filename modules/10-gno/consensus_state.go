@@ -3,14 +3,14 @@ package gno
 import (
 	"time"
 
-	errorsmod "cosmossdk.io/errors"
-
 	cmtbytes "github.com/cometbft/cometbft/libs/bytes"
 	cmttypes "github.com/cometbft/cometbft/types"
 
 	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
 	commitmenttypes "github.com/cosmos/ibc-go/v10/modules/core/23-commitment/types"
 	"github.com/cosmos/ibc-go/v10/modules/core/exported"
+
+	errorsmod "cosmossdk.io/errors"
 )
 
 var _ exported.ConsensusState = (*ConsensusState)(nil)
@@ -26,6 +26,7 @@ func NewConsensusState(
 		Timestamp:          timestamp,
 		Root:               root,
 		NextValidatorsHash: nextValsHash,
+		LcType:             Gno,
 	}
 }
 

@@ -4,6 +4,15 @@ import (
 	"strings"
 	"time"
 
+	bfttypes "github.com/gnolang/gno/tm2/pkg/bft/types"
+
+	"github.com/cometbft/cometbft/light"
+
+	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
+	commitmenttypes "github.com/cosmos/ibc-go/v10/modules/core/23-commitment/types"
+	commitmenttypesv2 "github.com/cosmos/ibc-go/v10/modules/core/23-commitment/types/v2"
+	ibcerrors "github.com/cosmos/ibc-go/v10/modules/core/errors"
+	"github.com/cosmos/ibc-go/v10/modules/core/exported"
 	ics23 "github.com/cosmos/ics23/go"
 
 	errorsmod "cosmossdk.io/errors"
@@ -11,15 +20,6 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	"github.com/cometbft/cometbft/light"
-	bfttypes "github.com/gnolang/gno/tm2/pkg/bft/types"
-
-	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
-	commitmenttypes "github.com/cosmos/ibc-go/v10/modules/core/23-commitment/types"
-	commitmenttypesv2 "github.com/cosmos/ibc-go/v10/modules/core/23-commitment/types/v2"
-	ibcerrors "github.com/cosmos/ibc-go/v10/modules/core/errors"
-	"github.com/cosmos/ibc-go/v10/modules/core/exported"
 )
 
 var _ exported.ClientState = (*ClientState)(nil)

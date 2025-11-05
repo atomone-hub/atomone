@@ -4,6 +4,11 @@ import (
 	"fmt"
 	"time"
 
+	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
+	commitmenttypes "github.com/cosmos/ibc-go/v10/modules/core/23-commitment/types"
+	commitmenttypesv2 "github.com/cosmos/ibc-go/v10/modules/core/23-commitment/types/v2"
+	"github.com/cosmos/ibc-go/v10/modules/core/exported"
+
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
@@ -11,11 +16,6 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
-	commitmenttypes "github.com/cosmos/ibc-go/v10/modules/core/23-commitment/types"
-	commitmenttypesv2 "github.com/cosmos/ibc-go/v10/modules/core/23-commitment/types/v2"
-	"github.com/cosmos/ibc-go/v10/modules/core/exported"
 )
 
 // VerifyUpgradeAndUpdateState checks if the upgraded client has been committed by the current client

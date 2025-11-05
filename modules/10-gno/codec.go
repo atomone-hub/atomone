@@ -1,9 +1,9 @@
 package gno
 
 import (
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-
 	"github.com/cosmos/ibc-go/v10/modules/core/exported"
+
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 )
 
 // RegisterInterfaces registers the gno concrete client-related

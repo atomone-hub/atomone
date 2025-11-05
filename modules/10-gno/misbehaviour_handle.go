@@ -6,16 +6,17 @@ import (
 	"reflect"
 	"time"
 
+	bfttypes "github.com/gnolang/gno/tm2/pkg/bft/types"
+	"github.com/gnolang/gno/tm2/pkg/crypto"
+
+	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
+	"github.com/cosmos/ibc-go/v10/modules/core/exported"
+
 	errorsmod "cosmossdk.io/errors"
 	storetypes "cosmossdk.io/store/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
-	"github.com/cosmos/ibc-go/v10/modules/core/exported"
-	bfttypes "github.com/gnolang/gno/tm2/pkg/bft/types"
-	"github.com/gnolang/gno/tm2/pkg/crypto"
 )
 
 // CheckForMisbehaviour detects duplicate height misbehaviour and BFT time violation misbehaviour
@@ -32,7 +33,7 @@ func (ClientState) CheckForMisbehaviour(ctx sdk.Context, cdc codec.BinaryCodec, 
 		if existingConsState, found := GetConsensusState(clientStore, cdc, header.GetHeight()); found {
 			// This header has already been submitted and the necessary state is already stored
 			// in client store, thus we can return early without further validation.
-			if reflect.DeepEqual(existingConsState, header.ConsensusState()) { //nolint:gosimple
+			if reflect.DeepEqual(existingConsState, header.ConsensusState()) {
 				return false
 			}
 
@@ -153,7 +154,7 @@ func checkMisbehaviourHeader(
 	}
 	gnoTrustedValset.TotalVotingPower() // ensure TotalVotingPower is set
 	if gnoTrustedValset.IsNilOrEmpty() {
-		return errorsmod.Wrap(errors.New("Empty trusted validator set"), "trusted validator set is not gno validator set type")
+		return errorsmod.Wrap(errors.New("empty trusted validator set"), "trusted validator set is not gno validator set type")
 	}
 
 	gnoCommit := bfttypes.Commit{
@@ -206,7 +207,6 @@ func checkMisbehaviourHeader(
 	// - ValidatorSet must have TrustLevel similarity with trusted ValidatorSet
 	// - TODO: re-check
 	err = VerifyLightCommit(&gnoTrustedValset, chainID, gnoCommit.BlockID, header.SignedHeader.Header.Height, &gnoCommit, LCDefaultTrustLevel)
-
 	if err != nil {
 		return errorsmod.Wrapf(clienttypes.ErrInvalidMisbehaviour, "validator set in header has too much change from trusted validator set: %v", err)
 	}

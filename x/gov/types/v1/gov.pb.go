@@ -807,11 +807,13 @@ type TallyParams struct {
 	Threshold string `protobuf:"bytes,2,opt,name=threshold,proto3" json:"threshold,omitempty"`
 	// quorum for constitution amendment proposals
 	ConstitutionAmendmentQuorum string `protobuf:"bytes,3,opt,name=constitution_amendment_quorum,json=constitutionAmendmentQuorum,proto3" json:"constitution_amendment_quorum,omitempty"` // Deprecated: Do not use.
-	// Minimum proportion of Yes votes for a Constitution Amendment proposal to pass. Default value: 0.9.
+	// Minimum proportion of Yes votes for a Constitution Amendment proposal to
+	// pass. Default value: 0.9.
 	ConstitutionAmendmentThreshold string `protobuf:"bytes,4,opt,name=constitution_amendment_threshold,json=constitutionAmendmentThreshold,proto3" json:"constitution_amendment_threshold,omitempty"`
 	// quorum for law proposals
 	LawQuorum string `protobuf:"bytes,5,opt,name=law_quorum,json=lawQuorum,proto3" json:"law_quorum,omitempty"` // Deprecated: Do not use.
-	// Minimum proportion of Yes votes for a Law proposal to pass. Default value: 0.9.
+	// Minimum proportion of Yes votes for a Law proposal to pass. Default value:
+	// 0.9.
 	LawThreshold string `protobuf:"bytes,6,opt,name=law_threshold,json=lawThreshold,proto3" json:"law_threshold,omitempty"`
 }
 
@@ -894,23 +896,24 @@ func (m *TallyParams) GetLawThreshold() string {
 }
 
 type MinDepositThrottler struct {
-	// Floor value for the minimum deposit required for a proposal to enter the voting period.
+	// Floor value for the minimum deposit required for a proposal to enter the
+	// voting period.
 	FloorValue []types.Coin `protobuf:"bytes,1,rep,name=floor_value,json=floorValue,proto3" json:"floor_value"`
-	// Duration that dictates after how long the dynamic minimum deposit should be recalculated
-	// for time-based decreases.
+	// Duration that dictates after how long the dynamic minimum deposit should be
+	// recalculated for time-based decreases.
 	UpdatePeriod *time.Duration `protobuf:"bytes,2,opt,name=update_period,json=updatePeriod,proto3,stdduration" json:"update_period,omitempty"`
 	// The number of active proposals the dynamic minimum deposit should target.
 	TargetActiveProposals uint64 `protobuf:"varint,3,opt,name=target_active_proposals,json=targetActiveProposals,proto3" json:"target_active_proposals,omitempty"`
-	// The ratio of increase for the minimum deposit when the number of active proposals
-	// is at or above the target.
+	// The ratio of increase for the minimum deposit when the number of active
+	// proposals is at or above the target.
 	IncreaseRatio string `protobuf:"bytes,4,opt,name=increase_ratio,json=increaseRatio,proto3" json:"increase_ratio,omitempty"`
-	// The ratio of decrease for the minimum deposit when the number of active proposals
-	// is 1 less than the target.
+	// The ratio of decrease for the minimum deposit when the number of active
+	// proposals is 1 less than the target.
 	DecreaseRatio string `protobuf:"bytes,5,opt,name=decrease_ratio,json=decreaseRatio,proto3" json:"decrease_ratio,omitempty"`
 	// A positive integer representing the sensitivity of dynamic minimum deposit
 	// decreases to the distance from the target number of active proposals.
-	// The higher the number, the lower the sensitivity. A value of 1 represents the
-	// highest sensitivity.
+	// The higher the number, the lower the sensitivity. A value of 1 represents
+	// the highest sensitivity.
 	DecreaseSensitivityTargetDistance uint64 `protobuf:"varint,6,opt,name=decrease_sensitivity_target_distance,json=decreaseSensitivityTargetDistance,proto3" json:"decrease_sensitivity_target_distance,omitempty"`
 }
 
@@ -990,23 +993,25 @@ func (m *MinDepositThrottler) GetDecreaseSensitivityTargetDistance() uint64 {
 }
 
 type MinInitialDepositThrottler struct {
-	// Floor value for the minimum initial deposit required for a proposal to enter the deposit period.
+	// Floor value for the minimum initial deposit required for a proposal to
+	// enter the deposit period.
 	FloorValue []types.Coin `protobuf:"bytes,1,rep,name=floor_value,json=floorValue,proto3" json:"floor_value"`
-	// Duration that dictates after how long the dynamic minimum deposit should be recalculated
-	// for time-based decreases.
+	// Duration that dictates after how long the dynamic minimum deposit should be
+	// recalculated for time-based decreases.
 	UpdatePeriod *time.Duration `protobuf:"bytes,2,opt,name=update_period,json=updatePeriod,proto3,stdduration" json:"update_period,omitempty"`
-	// The number of proposals in deposit period the dynamic minimum initial deposit should target.
+	// The number of proposals in deposit period the dynamic minimum initial
+	// deposit should target.
 	TargetProposals uint64 `protobuf:"varint,3,opt,name=target_proposals,json=targetProposals,proto3" json:"target_proposals,omitempty"`
-	// The ratio of increase for the minimum initial deposit when the number of proposals
-	// in deposit period is at or above the target.
+	// The ratio of increase for the minimum initial deposit when the number of
+	// proposals in deposit period is at or above the target.
 	IncreaseRatio string `protobuf:"bytes,4,opt,name=increase_ratio,json=increaseRatio,proto3" json:"increase_ratio,omitempty"`
-	// The ratio of decrease for the minimum initial deposit when the number of proposals
-	// in deposit period is 1 less than the target.
+	// The ratio of decrease for the minimum initial deposit when the number of
+	// proposals in deposit period is 1 less than the target.
 	DecreaseRatio string `protobuf:"bytes,5,opt,name=decrease_ratio,json=decreaseRatio,proto3" json:"decrease_ratio,omitempty"`
 	// A positive integer representing the sensitivity of dynamic minimum initial
 	// deposit decreases to the distance from the target number of proposals
-	// in deposit period. The higher the number, the lower the sensitivity. A value
-	// of 1 represents the highest sensitivity.
+	// in deposit period. The higher the number, the lower the sensitivity. A
+	// value of 1 represents the highest sensitivity.
 	DecreaseSensitivityTargetDistance uint64 `protobuf:"varint,6,opt,name=decrease_sensitivity_target_distance,json=decreaseSensitivityTargetDistance,proto3" json:"decrease_sensitivity_target_distance,omitempty"`
 }
 
@@ -1106,7 +1111,8 @@ type Params struct {
 	Quorum string `protobuf:"bytes,4,opt,name=quorum,proto3" json:"quorum,omitempty"` // Deprecated: Do not use.
 	// Minimum proportion of Yes votes for proposal to pass. Default value: 2/3.
 	Threshold string `protobuf:"bytes,5,opt,name=threshold,proto3" json:"threshold,omitempty"`
-	// The ratio representing the proportion of the deposit value that must be paid at proposal submission.
+	// The ratio representing the proportion of the deposit value that must be
+	// paid at proposal submission.
 	MinInitialDepositRatio string `protobuf:"bytes,7,opt,name=min_initial_deposit_ratio,json=minInitialDepositRatio,proto3" json:"min_initial_deposit_ratio,omitempty"` // Deprecated: Do not use.
 	// burn deposits if a proposal does not meet quorum
 	BurnVoteQuorum bool `protobuf:"varint,13,opt,name=burn_vote_quorum,json=burnVoteQuorum,proto3" json:"burn_vote_quorum,omitempty"`
@@ -1122,20 +1128,23 @@ type Params struct {
 	MinDepositRatio string `protobuf:"bytes,15,opt,name=min_deposit_ratio,json=minDepositRatio,proto3" json:"min_deposit_ratio,omitempty"`
 	// quorum for constitution amendment proposals
 	ConstitutionAmendmentQuorum string `protobuf:"bytes,16,opt,name=constitution_amendment_quorum,json=constitutionAmendmentQuorum,proto3" json:"constitution_amendment_quorum,omitempty"` // Deprecated: Do not use.
-	// Minimum proportion of Yes votes for a Constitution Amendment proposal to pass. Default value: 0.9.
+	// Minimum proportion of Yes votes for a Constitution Amendment proposal to
+	// pass. Default value: 0.9.
 	ConstitutionAmendmentThreshold string `protobuf:"bytes,17,opt,name=constitution_amendment_threshold,json=constitutionAmendmentThreshold,proto3" json:"constitution_amendment_threshold,omitempty"`
 	// quorum for law proposals
 	LawQuorum string `protobuf:"bytes,18,opt,name=law_quorum,json=lawQuorum,proto3" json:"law_quorum,omitempty"` // Deprecated: Do not use.
-	// Minimum proportion of Yes votes for a Law proposal to pass. Default value: 0.9.
+	// Minimum proportion of Yes votes for a Law proposal to pass. Default value:
+	// 0.9.
 	LawThreshold string `protobuf:"bytes,19,opt,name=law_threshold,json=lawThreshold,proto3" json:"law_threshold,omitempty"`
-	// Duration of time after a proposal enters the voting period, during which quorum
-	// must be achieved to not incur in a voting period extension.
+	// Duration of time after a proposal enters the voting period, during which
+	// quorum must be achieved to not incur in a voting period extension.
 	QuorumTimeout *time.Duration `protobuf:"bytes,20,opt,name=quorum_timeout,json=quorumTimeout,proto3,stdduration" json:"quorum_timeout,omitempty"`
-	// Duration that expresses the maximum amount of time by which a proposal voting period
-	// can be extended.
+	// Duration that expresses the maximum amount of time by which a proposal
+	// voting period can be extended.
 	MaxVotingPeriodExtension *time.Duration `protobuf:"bytes,21,opt,name=max_voting_period_extension,json=maxVotingPeriodExtension,proto3,stdduration" json:"max_voting_period_extension,omitempty"`
-	// Number of times a proposal should be checked for quorum after the quorum timeout
-	// has elapsed. Used to compute the amount of time in between quorum checks.
+	// Number of times a proposal should be checked for quorum after the quorum
+	// timeout has elapsed. Used to compute the amount of time in between quorum
+	// checks.
 	QuorumCheckCount           uint64                      `protobuf:"varint,22,opt,name=quorum_check_count,json=quorumCheckCount,proto3" json:"quorum_check_count,omitempty"`
 	MinDepositThrottler        *MinDepositThrottler        `protobuf:"bytes,23,opt,name=min_deposit_throttler,json=minDepositThrottler,proto3" json:"min_deposit_throttler,omitempty"`
 	MinInitialDepositThrottler *MinInitialDepositThrottler `protobuf:"bytes,24,opt,name=min_initial_deposit_throttler,json=minInitialDepositThrottler,proto3" json:"min_initial_deposit_throttler,omitempty"`
