@@ -16,6 +16,7 @@ var (
 	runPhotonTest                 = true
 	runDynamicfeeTest             = true
 	runCoreDAOsTest               = true
+	runICSProviderTest            = true
 )
 
 func (s *IntegrationTestSuite) TestRestInterfaces() {
@@ -137,4 +138,13 @@ func (s *IntegrationTestSuite) TestCoreDAOs() {
 		s.T().Skip()
 	}
 	s.testCoreDAOs()
+}
+
+func (s *IntegrationTestSuite) TestICSProvider() {
+	if !runICSProviderTest {
+		s.T().Skip()
+	}
+	s.testProviderModuleInitialization()
+	s.testConsumerRewardsPool()
+	s.testProviderParams()
 }
