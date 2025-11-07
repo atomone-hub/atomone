@@ -68,6 +68,7 @@ const (
 	proposalTextFilename                  = "proposal_text.json"
 	proposalConstitutionAmendmentFilename = "constitution_amendment.json"
 	proposalLawFilename                   = "proposal_law.json"
+	proposalConsumerAdditionFilename      = "proposal_consumer_addition.json"
 	newConstitutionFilename               = "new_constitution.md"
 
 	hermesBinary              = "hermes"
@@ -338,6 +339,12 @@ func (s *IntegrationTestSuite) addGenesisVestingAndJailedAccounts(
 		ValidatorAddress: jailedValAddr.String(),
 		Shares:           math.LegacyNewDec(slashingShares),
 	})
+
+	// Ensure HistoricalEntries is set for ICS provider functionality
+	// The provider module needs historical consensus states to generate consumer genesis
+	if stakingGenState.Params.HistoricalEntries == 0 {
+		stakingGenState.Params.HistoricalEntries = 10000
+	}
 
 	appGenState[stakingtypes.ModuleName], err = s.cdc.MarshalJSON(stakingGenState)
 	s.Require().NoError(err)

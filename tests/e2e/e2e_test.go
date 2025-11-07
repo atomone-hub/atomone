@@ -147,4 +147,5 @@ func (s *IntegrationTestSuite) TestICSProvider() {
 	s.testProviderModuleInitialization()
 	s.testConsumerRewardsPool()
 	s.testProviderParams()
+	s.testConsumerProposalSubmission()
 }
