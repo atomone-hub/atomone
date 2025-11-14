@@ -1,4 +1,4 @@
-ARG GO_VERSION
+ARG GO_VERSION=1.24
 ARG IMG_TAG=latest
 
 # Compile the atomoned binary
@@ -7,7 +7,7 @@ WORKDIR /src/app/
 COPY go.mod go.sum* ./
 RUN go mod download
 COPY . .
-ENV PACKAGES curl make git libc-dev bash gcc linux-headers eudev-dev python3
+ENV PACKAGES="curl make git libc-dev bash gcc linux-headers eudev-dev python3"
 RUN apk add --no-cache $PACKAGES
 RUN CGO_ENABLED=0 make install
 

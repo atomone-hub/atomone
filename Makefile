@@ -17,6 +17,7 @@ TEST_DOCKER_REPO=cosmos/contrib-atomonetest
 
 GO_SYSTEM_VERSION = $(shell go env GOVERSION | cut -c 3-)
 GO_REQUIRED_VERSION = $(shell go list -f {{.GoVersion}} -m)
+ICS_VERSION = $(shell go list -f {{.Version}} -m github.com/allinbits/interchain-security)
 
 # command to run dependency utilities
 rundep=go run -modfile contrib/devdeps/go.mod
@@ -196,7 +197,7 @@ test-race: TEST_PACKAGES=$(PACKAGES_UNIT)
 test-e2e: ARGS=-timeout=25m -v
 test-e2e: TEST_PACKAGES=$(PACKAGES_E2E)
 test-e2e: DOCKER_DEFAULT_PLATFORM=linux/amd64
-test-e2e: docker-build-debug
+test-e2e: docker-build-all
 $(TEST_TARGETS): run-tests
 
 run-tests:
@@ -216,7 +217,14 @@ docker-build-debug:
 docker-build-hermes:
 	@cd tests/e2e/docker; docker build -t ghcr.io/cosmos/hermes-e2e:1.0.0 -f hermes.Dockerfile .
 
-docker-build-all: docker-build-debug docker-build-hermes
+docker-build-consumer:
+	@docker build -t allinbits/ics-consumer-e2e:latest -f tests/e2e/docker/consumer.Dockerfile --build-arg GO_VERSION=$(GO_REQUIRED_VERSION) --build-arg ICS_VERSION=$(ICS_VERSION) .
+
+docker-build-all: docker-build-debug docker-build-hermes docker-build-consumer
+
+clean-e2e:
+	@docker ps -aq --filter "name=chain-" | xargs -r docker rm -f 2>/dev/null || true
+	@docker network ls --filter "name=testnet" -q | xargs -r docker network rm 2>/dev/null || true
 
 mockgen_cmd=$(rundep) github.com/golang/mock/mockgen
 
@@ -228,7 +236,7 @@ mocks-gen:
 	$(mockgen_cmd) -source=x/dynamicfee/post/expected_keepers.go -package post_test -destination x/dynamicfee/post/expected_keepers_mocks_test.go
 	$(mockgen_cmd) -source=x/coredaos/types/expected_keepers.go -package testutil -destination x/coredaos/testutil/expected_keepers_mocks.go
 
-.PHONY: docker-build-debug docker-build-hermes docker-build-all mocks-gen
+.PHONY: docker-build-debug docker-build-hermes docker-build-consumer docker-build-all clean-e2e mocks-gen
 
 ###############################################################################
 ###                                Linting                                  ###

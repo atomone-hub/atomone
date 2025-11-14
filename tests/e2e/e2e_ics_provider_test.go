@@ -159,9 +159,12 @@ func (s *IntegrationTestSuite) writeConsumerAdditionProposal(c *chain, consumerC
 	// Get provider params to use as defaults for consumer
 	providerParams := s.queryProviderParams(chainAAPIEndpoint)
 
-	// Set spawn time in the future to allow governance to complete
-	// (governance typically takes 20-30 seconds for deposit + voting periods)
-	spawnTime := time.Now().Add(45 * time.Second)
+	// Set spawn time based on blockchain time (not wall clock time)
+	// Get current block time and add buffer for governance to complete
+	// Governance voting period is ~20-30s, so spawn shortly after proposal passes
+	// This ensures consumer genesis is available soon after proposal passes
+	blockTime := s.getLatestBlockTime(c, 0)
+	spawnTime := blockTime.Add(30 * time.Second)
 
 	template := `
 	{
@@ -184,7 +187,7 @@ func (s *IntegrationTestSuite) writeConsumerAdditionProposal(c *chain, consumerC
 			"blocks_per_distribution_transmission": 1000,
 			"historical_entries": 10000,
 			"distribution_transmission_channel": "",
-			"top_N": 0,
+			"top_N": 95,
 			"validators_power_cap": 0,
 			"validator_set_cap": 0,
 			"allowlist": [],

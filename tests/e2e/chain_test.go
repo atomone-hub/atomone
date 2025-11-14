@@ -22,7 +22,15 @@ const (
 	keyringAppName    = "testnet"
 )
 
+type chainType string
+
+const (
+	chainTypeProvider chainType = "provider" // AtomOne chain (can act as ICS provider or run standalone)
+	chainTypeConsumer chainType = "consumer" // ICS consumer chain
+)
+
 type chain struct {
+	chainType chainType
 	dataDir          string
 	id               string
 	validators       []*validator
@@ -39,6 +47,10 @@ type chain struct {
 }
 
 func newChain() (*chain, error) {
+	return newChainWithType(chainTypeProvider)
+}
+
+func newChainWithType(ct chainType) (*chain, error) {
 	tmpDir, err := os.MkdirTemp("", "atomone-e2e-testnet-")
 	if err != nil {
 		return nil, err
@@ -47,11 +59,12 @@ func newChain() (*chain, error) {
 	tempApp := atomone.NewAtomOneApp(log.NewNopLogger(), dbm.NewMemDB(), nil, false, atomone.EmptyAppOptions{})
 
 	return &chain{
-		id:       "chain-" + tmrand.Str(6),
-		dataDir:  tmpDir,
-		cdc:      tempApp.AppCodec(),
-		txConfig: tempApp.GetTxConfig(),
-		bm:       tempApp.BasicModuleManager(),
+		chainType: ct,
+		id:        "chain-" + tmrand.Str(6),
+		dataDir:   tmpDir,
+		cdc:       tempApp.AppCodec(),
+		txConfig:  tempApp.GetTxConfig(),
+		bm:        tempApp.BasicModuleManager(),
 	}, nil
 }
 

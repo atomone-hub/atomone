@@ -50,6 +50,7 @@ const (
 	queryCommand                 = "query"
 	keysCommand                  = "keys"
 	atomoneHomePath              = "/home/nonroot/.atomone"
+	consumerHomePath             = "/consumer/.interchain-security-c"
 	uatoneDenom                  = appparams.BondDenom
 	uphotonDenom                 = photontypes.Denom
 	minGasPrice                  = "0.00001"
@@ -105,8 +106,9 @@ type IntegrationTestSuite struct {
 	cdc      codec.Codec
 	txConfig client.TxConfig
 
-	initializedForIBC bool
-	valResources      map[string][]*dockertest.Resource
+	initializedForIBC  bool
+	initializedForICS  bool
+	valResources       map[string][]*dockertest.Resource
 }
 
 type AddressResponse struct {
@@ -188,6 +190,56 @@ func (s *IntegrationTestSuite) ensureIBCSetup() {
 	if !s.initializedForIBC {
 		s.initializedForIBC = true
 		s.SetupIBCSuite()
+	}
+}
+
+func (s *IntegrationTestSuite) SetupICSSuite() {
+	s.T().Log("Setting up ICS test environment: chainA (provider) + chainB (consumer)")
+
+	// Clean up existing chainA containers from SetupSuite
+	// SetupSuite() was automatically called by testify and started sovereign chainA
+	s.T().Log("Cleaning up existing sovereign chainA containers...")
+	oldChainID := s.chainA.id
+	if resources, exists := s.valResources[oldChainID]; exists {
+		for _, r := range resources {
+			if err := s.dkrPool.Purge(r); err != nil {
+				s.T().Logf("Warning: failed to purge old chainA container: %v", err)
+			}
+		}
+		delete(s.valResources, oldChainID)
+	}
+	os.RemoveAll(s.chainA.dataDir)
+
+	// Reset proposal counter since we're creating a fresh chain
+	proposalCounter = 0
+
+	// ChainA needs to be re-initialized as a provider chain
+	var err error
+	s.chainA, err = newChainWithType(chainTypeProvider)
+	s.Require().NoError(err)
+
+	vestingMnemonicA, err := createMnemonic()
+	s.Require().NoError(err)
+	jailedValMnemonicA, err := createMnemonic()
+	s.Require().NoError(err)
+
+	s.T().Logf("Re-initializing chain A as provider; chain-id: %s", s.chainA.id)
+	s.initNodes(s.chainA)
+	s.initGenesis(s.chainA, vestingMnemonicA, jailedValMnemonicA)
+	s.initValidatorConfigs(s.chainA)
+	s.runValidators(s.chainA, 0)
+
+	// Note: ChainB (consumer) will be created and started later in testConsumerChainLaunch()
+	// after we receive CCV genesis from the provider. Consumer chains cannot start without
+	// CCV genesis merged into their genesis file.
+
+	s.T().Log("ICS environment ready: provider chain running (cosmos/atomoned-e2e)")
+}
+
+func (s *IntegrationTestSuite) ensureICSSetup() {
+	if !s.initializedForICS {
+		s.initializedForICS = true
+		s.SetupICSSuite()
 	}
 }
 
@@ -346,6 +398,10 @@ func (s *IntegrationTestSuite) addGenesisVestingAndJailedAccounts(
 		stakingGenState.Params.HistoricalEntries = 10000
 	}
 
+	// Ensure bond denom matches the app's expected bond denom
+	// atomoned init defaults to "stake", but the app expects uatoneDenom
+	stakingGenState.Params.BondDenom = uatoneDenom
+
 	appGenState[stakingtypes.ModuleName], err = s.cdc.MarshalJSON(stakingGenState)
 	s.Require().NoError(err)
 
@@ -491,21 +547,29 @@ func (s *IntegrationTestSuite) initGenesis(c *chain, vestingMnemonic, jailedValM
 	var genUtilGenState genutiltypes.GenesisState
 	s.Require().NoError(s.cdc.UnmarshalJSON(appGenState[genutiltypes.ModuleName], &genUtilGenState))
 
-	// generate genesis txs
-	genTxs := make([]json.RawMessage, len(c.validators))
-	for i, val := range c.validators {
-		createValmsg, err := val.buildCreateValidatorMsg(stakingAmountCoin)
-		s.Require().NoError(err)
-		memo := fmt.Sprintf("%s@%s:26656", val.nodeKey.ID(), val.instanceName())
-		signedTx := s.signTx(c, val.keyInfo, 0, 0, memo, createValmsg)
+	// Only generate genesis txs for provider/sovereign chains.
+	// Consumer chains get their validators from the provider via CCV protocol,
+	// and do not have a staking module, so they cannot have gentxs.
+	if c.chainType == chainTypeConsumer {
+		// Consumer chains: empty gentxs, validators come from CCV
+		genUtilGenState.GenTxs = []json.RawMessage{}
+	} else {
+		// Provider/Sovereign chains: build validator genesis txs
+		genTxs := make([]json.RawMessage, len(c.validators))
+		for i, val := range c.validators {
+			createValmsg, err := val.buildCreateValidatorMsg(stakingAmountCoin)
+			s.Require().NoError(err)
+			memo := fmt.Sprintf("%s@%s:26656", val.nodeKey.ID(), val.instanceName())
+			signedTx := s.signTx(c, val.keyInfo, 0, 0, memo, createValmsg)
 
-		txRaw, err := s.cdc.MarshalJSON(signedTx)
-		s.Require().NoError(err)
+			txRaw, err := s.cdc.MarshalJSON(signedTx)
+			s.Require().NoError(err)
 
-		genTxs[i] = txRaw
+			genTxs[i] = txRaw
+		}
+
+		genUtilGenState.GenTxs = genTxs
 	}
-
-	genUtilGenState.GenTxs = genTxs
 
 	appGenState[genutiltypes.ModuleName], err = s.cdc.MarshalJSON(&genUtilGenState)
 	s.Require().NoError(err)
@@ -588,9 +652,25 @@ func (s *IntegrationTestSuite) initValidatorConfigs(c *chain) {
 
 // runValidators runs the validators in the chain
 func (s *IntegrationTestSuite) runValidators(c *chain, portOffset int) {
-	s.T().Logf("starting AtomOne %s validator containers...", c.id)
+	s.T().Logf("starting %s %s validator containers...", c.chainType, c.id)
 
-	const dockerImage = "cosmos/atomoned-e2e"
+	// TODO: Abstract Docker image selection into chain configuration
+	// instead of hardcoding here. Each chain type should know its own image.
+	var dockerRepository, dockerTag, homePath string
+	switch c.chainType {
+	case chainTypeConsumer:
+		dockerRepository = "allinbits/ics-consumer-e2e"
+		dockerTag = "latest"
+		homePath = consumerHomePath
+	case chainTypeProvider:
+		dockerRepository = "cosmos/atomoned-e2e"
+		dockerTag = "latest"
+		homePath = atomoneHomePath
+	default:
+		dockerRepository = "cosmos/atomoned-e2e"
+		dockerTag = "latest"
+		homePath = atomoneHomePath
+	}
 
 	s.valResources[c.id] = make([]*dockertest.Resource, len(c.validators))
 	for i, val := range c.validators {
@@ -598,9 +678,16 @@ func (s *IntegrationTestSuite) runValidators(c *chain, portOffset int) {
 			Name:      val.instanceName(),
 			NetworkID: s.dkrNet.Network.ID,
 			Mounts: []string{
-				fmt.Sprintf("%s/:%s", val.configDir(), atomoneHomePath),
+				fmt.Sprintf("%s/:%s", val.configDir(), homePath),
 			},
-			Repository: dockerImage,
+			Repository: dockerRepository,
+			Tag:        dockerTag,
+		}
+
+		// Consumer image ENTRYPOINT is "interchain-security-cd" without CMD,
+		// so we need to explicitly add "start" command
+		if c.chainType == chainTypeConsumer {
+			runOpts.Cmd = []string{"start"}
 		}
 
 		s.Require().NoError(exec.Command("chmod", "-R", "0777", val.configDir()).Run()) //nolint:gosec // this is a test
@@ -625,7 +712,8 @@ func (s *IntegrationTestSuite) runValidators(c *chain, portOffset int) {
 		s.Require().NoError(err)
 
 		s.valResources[c.id][i] = resource
-		s.T().Logf("started AtomOne %s validator container: %s", c.id, resource.Container.ID)
+		s.T().Logf("started %s:%s container for %s chain %s (validator %d): %s",
+			dockerRepository, dockerTag, c.chainType, c.id, i, resource.Container.ID)
 	}
 
 	rpcClient := s.rpcClient(s.chainA, 0)
@@ -651,7 +739,7 @@ func (s *IntegrationTestSuite) runValidators(c *chain, portOffset int) {
 		nodeReadyTimeout,
 		time.Second,
 	) {
-		s.T().Fatalf("AtomOne node failed to produce blocks. Is docker image %q up-to-date?", dockerImage)
+		s.T().Fatalf("AtomOne node failed to produce blocks. Is docker image %s:%s up-to-date?", dockerRepository, dockerTag)
 	}
 }
 

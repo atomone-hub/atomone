@@ -144,8 +144,10 @@ func (s *IntegrationTestSuite) TestICSProvider() {
 	if !runICSProviderTest {
 		s.T().Skip()
 	}
+	s.ensureICSSetup()
 	s.testProviderModuleInitialization()
 	s.testConsumerRewardsPool()
 	s.testProviderParams()
 	s.testConsumerProposalSubmission()
+	s.testConsumerChainLaunch()
 }
