@@ -1,0 +1,32 @@
+syntax = 'proto3';
+
+package tm2.tx;
+
+import "google/protobuf/any.proto";
+
+message Tx {
+  // specific message types
+  repeated google.protobuf.Any messages = 1;
+  // transaction costs (fee)
+  TxFee fee = 2;
+  // the signatures for the transaction
+  repeated TxSignature signatures = 3;
+  // memo attached to the transaction
+  string memo = 4;
+}
+
+message TxFee {
+  // gas limit
+  sint64 gas_wanted = 1;
+  // gas fee details (<value><denomination>)
+  string gas_fee = 2;
+}
+
+message TxSignature {
+  // public key associated with the signature
+  google.protobuf.Any pub_key = 1;
+  // the signature
+  bytes signature = 2;
+}
+
+message PubKeySecp256k1 { bytes key = 1; }

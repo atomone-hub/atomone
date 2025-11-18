@@ -9,5 +9,6 @@ option go_package = "github.com/atomone-hub/atomone/x/photon/types";
 
 // GenesisState defines the x/photon module's genesis state.
 message GenesisState {
-	Params params = 1 [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+  Params params = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }

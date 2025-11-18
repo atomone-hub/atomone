@@ -154,7 +154,7 @@ message TallyResult {
   // abstain_count is the number of abstain votes on a proposal.
   string abstain_count = 2 [ (cosmos_proto.scalar) = "cosmos.Int" ];
   // no_count is the number of no votes on a proposal.
-  string no_count           = 3 [(cosmos_proto.scalar) = "cosmos.Int"];
+  string no_count = 3 [ (cosmos_proto.scalar) = "cosmos.Int" ];
 }
 
 // Vote defines a vote on a governance proposal.
@@ -179,7 +179,8 @@ message Vote {
 message QuorumCheckQueueEntry {
   // quorum_timeout_time is the time after which quorum checks start happening
   // and voting period is extended if proposal reaches quorum.
-  google.protobuf.Timestamp quorum_timeout_time = 1 [(gogoproto.stdtime) = true];
+  google.protobuf.Timestamp quorum_timeout_time = 1
+      [ (gogoproto.stdtime) = true ];
 
   // quorum_check_count is the number of times quorum will be checked.
   // This is a snapshot of the parameter value with the same name when the
@@ -216,75 +217,83 @@ message VotingParams {
 message TallyParams {
   // Minimum percentage of total stake needed to vote for a result to be
   // considered valid.
-  string quorum = 1 [ (cosmos_proto.scalar) = "cosmos.Dec", deprecated = true];
+  string quorum = 1 [ (cosmos_proto.scalar) = "cosmos.Dec", deprecated = true ];
 
   // Minimum proportion of Yes votes for proposal to pass. Default value: 2/3.
-  string threshold = 2 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  string threshold = 2 [ (cosmos_proto.scalar) = "cosmos.Dec" ];
 
   // quorum for constitution amendment proposals
-  string constitution_amendment_quorum = 3 [(cosmos_proto.scalar) = "cosmos.Dec", deprecated = true];
+  string constitution_amendment_quorum = 3
+      [ (cosmos_proto.scalar) = "cosmos.Dec", deprecated = true ];
 
-  // Minimum proportion of Yes votes for a Constitution Amendment proposal to pass. Default value: 0.9.
-  string constitution_amendment_threshold = 4 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  // Minimum proportion of Yes votes for a Constitution Amendment proposal to
+  // pass. Default value: 0.9.
+  string constitution_amendment_threshold = 4
+      [ (cosmos_proto.scalar) = "cosmos.Dec" ];
 
   // quorum for law proposals
-  string law_quorum = 5 [(cosmos_proto.scalar) = "cosmos.Dec", deprecated = true];
+  string law_quorum = 5
+      [ (cosmos_proto.scalar) = "cosmos.Dec", deprecated = true ];
 
-  // Minimum proportion of Yes votes for a Law proposal to pass. Default value: 0.9.
-  string law_threshold = 6 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  // Minimum proportion of Yes votes for a Law proposal to pass. Default value:
+  // 0.9.
+  string law_threshold = 6 [ (cosmos_proto.scalar) = "cosmos.Dec" ];
 }
 
 message MinDepositThrottler {
-  // Floor value for the minimum deposit required for a proposal to enter the voting period.
+  // Floor value for the minimum deposit required for a proposal to enter the
+  // voting period.
   repeated cosmos.base.v1beta1.Coin floor_value = 1
-  [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 
-  // Duration that dictates after how long the dynamic minimum deposit should be recalculated
-  // for time-based decreases.
-  google.protobuf.Duration update_period = 2 [(gogoproto.stdduration) = true];
+  // Duration that dictates after how long the dynamic minimum deposit should be
+  // recalculated for time-based decreases.
+  google.protobuf.Duration update_period = 2 [ (gogoproto.stdduration) = true ];
 
   // The number of active proposals the dynamic minimum deposit should target.
   uint64 target_active_proposals = 3;
 
-  // The ratio of increase for the minimum deposit when the number of active proposals
-  // is at or above the target.
-  string increase_ratio = 4 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  // The ratio of increase for the minimum deposit when the number of active
+  // proposals is at or above the target.
+  string increase_ratio = 4 [ (cosmos_proto.scalar) = "cosmos.Dec" ];
 
-  // The ratio of decrease for the minimum deposit when the number of active proposals
-  // is 1 less than the target.
-  string decrease_ratio = 5 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  // The ratio of decrease for the minimum deposit when the number of active
+  // proposals is 1 less than the target.
+  string decrease_ratio = 5 [ (cosmos_proto.scalar) = "cosmos.Dec" ];
 
-  // A positive integer representing the sensitivity of dynamic minimum deposit 
+  // A positive integer representing the sensitivity of dynamic minimum deposit
   // decreases to the distance from the target number of active proposals.
-  // The higher the number, the lower the sensitivity. A value of 1 represents the
-  // highest sensitivity.
+  // The higher the number, the lower the sensitivity. A value of 1 represents
+  // the highest sensitivity.
   uint64 decrease_sensitivity_target_distance = 6;
 }
 
 message MinInitialDepositThrottler {
-  // Floor value for the minimum initial deposit required for a proposal to enter the deposit period.
+  // Floor value for the minimum initial deposit required for a proposal to
+  // enter the deposit period.
   repeated cosmos.base.v1beta1.Coin floor_value = 1
-  [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 
-  // Duration that dictates after how long the dynamic minimum deposit should be recalculated
-  // for time-based decreases.
-  google.protobuf.Duration update_period = 2 [(gogoproto.stdduration) = true];
+  // Duration that dictates after how long the dynamic minimum deposit should be
+  // recalculated for time-based decreases.
+  google.protobuf.Duration update_period = 2 [ (gogoproto.stdduration) = true ];
 
-  // The number of proposals in deposit period the dynamic minimum initial deposit should target.
+  // The number of proposals in deposit period the dynamic minimum initial
+  // deposit should target.
   uint64 target_proposals = 3;
 
-  // The ratio of increase for the minimum initial deposit when the number of proposals
-  // in deposit period is at or above the target.
-  string increase_ratio = 4 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  // The ratio of increase for the minimum initial deposit when the number of
+  // proposals in deposit period is at or above the target.
+  string increase_ratio = 4 [ (cosmos_proto.scalar) = "cosmos.Dec" ];
 
-  // The ratio of decrease for the minimum initial deposit when the number of proposals
-  // in deposit period is 1 less than the target.
-  string decrease_ratio = 5 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  // The ratio of decrease for the minimum initial deposit when the number of
+  // proposals in deposit period is 1 less than the target.
+  string decrease_ratio = 5 [ (cosmos_proto.scalar) = "cosmos.Dec" ];
 
-  // A positive integer representing the sensitivity of dynamic minimum initial 
+  // A positive integer representing the sensitivity of dynamic minimum initial
   // deposit decreases to the distance from the target number of proposals
-  // in deposit period. The higher the number, the lower the sensitivity. A value 
-  // of 1 represents the highest sensitivity.
+  // in deposit period. The higher the number, the lower the sensitivity. A
+  // value of 1 represents the highest sensitivity.
   uint64 decrease_sensitivity_target_distance = 6;
 }
 
@@ -298,8 +307,11 @@ message Params {
   // While setting this value returns an error, when queried it is set to the
   // value of the current minimum deposit value as determined by the dynamic
   // system for backward compatibility.
-  repeated cosmos.base.v1beta1.Coin min_deposit = 1
-      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true, deprecated = true ];
+  repeated cosmos.base.v1beta1.Coin min_deposit = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true,
+    deprecated = true
+  ];
 
   // Maximum period for Atom holders to deposit on a proposal. Initial value: 2
   // months.
@@ -311,13 +323,15 @@ message Params {
 
   //  Minimum percentage of total stake needed to vote for a result to be
   //  considered valid. Default value: 0.25.
-  string quorum = 4 [(cosmos_proto.scalar) = "cosmos.Dec", deprecated = true];
+  string quorum = 4 [ (cosmos_proto.scalar) = "cosmos.Dec", deprecated = true ];
 
   //  Minimum proportion of Yes votes for proposal to pass. Default value: 2/3.
-  string threshold = 5 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  string threshold = 5 [ (cosmos_proto.scalar) = "cosmos.Dec" ];
 
-  //  The ratio representing the proportion of the deposit value that must be paid at proposal submission.
-  string min_initial_deposit_ratio = 7 [(cosmos_proto.scalar) = "cosmos.Dec", deprecated = true ];
+  //  The ratio representing the proportion of the deposit value that must be
+  //  paid at proposal submission.
+  string min_initial_deposit_ratio = 7
+      [ (cosmos_proto.scalar) = "cosmos.Dec", deprecated = true ];
 
   // burn deposits if a proposal does not meet quorum
   bool burn_vote_quorum = 13;
@@ -335,27 +349,35 @@ message Params {
   string min_deposit_ratio = 15 [ (cosmos_proto.scalar) = "cosmos.Dec" ];
 
   // quorum for constitution amendment proposals
-  string constitution_amendment_quorum = 16 [(cosmos_proto.scalar) = "cosmos.Dec", deprecated = true];
+  string constitution_amendment_quorum = 16
+      [ (cosmos_proto.scalar) = "cosmos.Dec", deprecated = true ];
 
-  // Minimum proportion of Yes votes for a Constitution Amendment proposal to pass. Default value: 0.9.
-  string constitution_amendment_threshold = 17 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  // Minimum proportion of Yes votes for a Constitution Amendment proposal to
+  // pass. Default value: 0.9.
+  string constitution_amendment_threshold = 17
+      [ (cosmos_proto.scalar) = "cosmos.Dec" ];
 
   // quorum for law proposals
-  string law_quorum = 18 [(cosmos_proto.scalar) = "cosmos.Dec", deprecated = true];
+  string law_quorum = 18
+      [ (cosmos_proto.scalar) = "cosmos.Dec", deprecated = true ];
 
-  // Minimum proportion of Yes votes for a Law proposal to pass. Default value: 0.9.
-  string law_threshold = 19 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  // Minimum proportion of Yes votes for a Law proposal to pass. Default value:
+  // 0.9.
+  string law_threshold = 19 [ (cosmos_proto.scalar) = "cosmos.Dec" ];
 
-  // Duration of time after a proposal enters the voting period, during which quorum
-  // must be achieved to not incur in a voting period extension.
-  google.protobuf.Duration quorum_timeout = 20 [(gogoproto.stdduration) = true];
+  // Duration of time after a proposal enters the voting period, during which
+  // quorum must be achieved to not incur in a voting period extension.
+  google.protobuf.Duration quorum_timeout = 20
+      [ (gogoproto.stdduration) = true ];
 
-  // Duration that expresses the maximum amount of time by which a proposal voting period
-  // can be extended.
-  google.protobuf.Duration max_voting_period_extension = 21 [(gogoproto.stdduration) = true];
+  // Duration that expresses the maximum amount of time by which a proposal
+  // voting period can be extended.
+  google.protobuf.Duration max_voting_period_extension = 21
+      [ (gogoproto.stdduration) = true ];
 
-  // Number of times a proposal should be checked for quorum after the quorum timeout
-  // has elapsed. Used to compute the amount of time in between quorum checks.
+  // Number of times a proposal should be checked for quorum after the quorum
+  // timeout has elapsed. Used to compute the amount of time in between quorum
+  // checks.
   uint64 quorum_check_count = 22;
 
   MinDepositThrottler min_deposit_throttler = 23;
@@ -363,22 +385,24 @@ message Params {
   MinInitialDepositThrottler min_initial_deposit_throttler = 24;
 
   // Minimum proportion of No Votes for a proposal deposit to be burnt.
-  string burn_deposit_no_threshold = 25 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  string burn_deposit_no_threshold = 25
+      [ (cosmos_proto.scalar) = "cosmos.Dec" ];
 
   // Achievable quorum
-  QuorumRange quorum_range = 26 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  QuorumRange quorum_range = 26 [ (cosmos_proto.scalar) = "cosmos.Dec" ];
 
   // Achievable quorum for constitution amendment proposals
-  QuorumRange constitution_amendment_quorum_range = 27 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  QuorumRange constitution_amendment_quorum_range = 27
+      [ (cosmos_proto.scalar) = "cosmos.Dec" ];
 
   // Achievable quorum for law proposals
-  QuorumRange law_quorum_range = 28 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  QuorumRange law_quorum_range = 28 [ (cosmos_proto.scalar) = "cosmos.Dec" ];
 }
 
 message QuorumRange {
   // Maximum achievable quorum
-  string max = 1 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  string max = 1 [ (cosmos_proto.scalar) = "cosmos.Dec" ];
 
   // Minimum achievable quorum
-  string min = 2 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  string min = 2 [ (cosmos_proto.scalar) = "cosmos.Dec" ];
 }
