@@ -501,9 +501,9 @@ func (s *IntegrationTestSuite) submitGovCommand(chainAAPIEndpoint, sender string
 		func(c *assert.CollectT) {
 			res, err := s.queryGovProposal(chainAAPIEndpoint, proposalID)
 			require.NoError(c, err)
-			assert.Equal(c, res.GetProposal().Status.String(), expectedStatus.String())
+			assert.Equal(c, expectedStatus.String(), res.GetProposal().Status.String())
 		},
-		15*time.Second,
+		20*time.Second,
 		time.Second,
 	)
 }

@@ -1,12 +1,12 @@
 ARG IMG_TAG=latest
 
 # Compile the atomoned binary
-FROM golang:1.22-alpine AS atomoned-builder
+FROM golang:1.24-alpine AS atomoned-builder
 WORKDIR /src/app/
 COPY go.mod go.sum* ./
 RUN go mod download
 COPY . .
-ENV PACKAGES curl make git libc-dev bash gcc linux-headers eudev-dev python3
+ENV PACKAGES="curl make git libc-dev bash gcc linux-headers eudev-dev python3"
 RUN apk add --no-cache $PACKAGES
 RUN CGO_ENABLED=0 make install
 
