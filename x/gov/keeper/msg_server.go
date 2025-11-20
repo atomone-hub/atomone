@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"cosmossdk.io/errors"
+	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors1 "github.com/cosmos/cosmos-sdk/types/errors"
@@ -187,9 +188,11 @@ func (k msgServer) UpdateParams(goCtx context.Context, msg *v1.MsgUpdateParams) 
 
 	// before params change, trigger an update of the last min deposit
 	minDeposit := k.GetMinDeposit(ctx)
-	k.SetLastMinDeposit(ctx, minDeposit, ctx.BlockTime())
+	newMinDeposit := v1.GetNewMinDeposit(msg.Params.MinDepositThrottler.FloorValue, minDeposit, math.LegacyOneDec())
+	k.SetLastMinDeposit(ctx, newMinDeposit, ctx.BlockTime())
 	minInitialDeposit := k.GetMinInitialDeposit(ctx)
-	k.SetLastMinInitialDeposit(ctx, minInitialDeposit, ctx.BlockTime())
+	newMinInitialDeposit := v1.GetNewMinDeposit(msg.Params.MinInitialDepositThrottler.FloorValue, minInitialDeposit, math.LegacyOneDec())
+	k.SetLastMinInitialDeposit(ctx, newMinInitialDeposit, ctx.BlockTime())
 
 	if err := k.SetParams(ctx, msg.Params); err != nil {
 		return nil, err
