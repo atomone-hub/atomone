@@ -745,7 +745,7 @@ $ %s query gov proposer 1
 }
 
 func GetCmdConstitution() *cobra.Command {
-	return &cobra.Command{
+	cmd := &cobra.Command{
 		Use:   "constitution",
 		Short: "Get the constitution",
 		Args:  cobra.NoArgs,
@@ -764,11 +764,13 @@ func GetCmdConstitution() *cobra.Command {
 			return clientCtx.PrintProto(resp)
 		},
 	}
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
 }
 
 // GetCmdQueryMinDeposit implements the query min deposit command.
 func GetCmdQueryMinDeposit() *cobra.Command {
-	return &cobra.Command{
+	cmd := &cobra.Command{
 		Use:   "min-deposit",
 		Args:  cobra.ExactArgs(0),
 		Short: "Query the minimum deposit currently needed for a proposal to enter voting period",
@@ -796,11 +798,13 @@ $ %s query gov min-deposit
 			return clientCtx.PrintProto(resp)
 		},
 	}
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
 }
 
 // GetCmdQueryMinInitialDeposit implements the query min initial deposit command.
 func GetCmdQueryMinInitialDeposit() *cobra.Command {
-	return &cobra.Command{
+	cmd := &cobra.Command{
 		Use:   "min-initial-deposit",
 		Args:  cobra.ExactArgs(0),
 		Short: "Query the minimum initial deposit needed for a proposal to enter deposit period",
@@ -828,4 +832,6 @@ $ %s query gov min-initial-deposit
 			return clientCtx.PrintProto(resp)
 		},
 	}
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
 }
