@@ -21,6 +21,7 @@ import (
 	evidencetypes "cosmossdk.io/x/evidence/types"
 	"cosmossdk.io/x/feegrant"
 	feegrantkeeper "cosmossdk.io/x/feegrant/keeper"
+	upgradecompat "cosmossdk.io/x/upgrade"
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
@@ -228,7 +229,7 @@ func NewAppKeeper(
 		appCodec,
 		runtime.NewKVStoreService(appKeepers.keys[ibcexported.StoreKey]),
 		appKeepers.GetSubspace(ibcexported.ModuleName),
-		&upgradeKeeperCompat{appKeepers.UpgradeKeeper},
+		upgradecompat.NewUpgradeKeeperCompat(appKeepers.UpgradeKeeper),
 		authorityStr,
 	)
 
