@@ -4,8 +4,8 @@ go 1.24.5
 
 replace (
 	cosmossdk.io/x/feegrant => cosmossdk.io/x/feegrant v0.1.1
-	cosmossdk.io/x/upgrade => github.com/atomone-hub/cosmos-sdk/x/upgrade/compat v0.0.0-20251122104637-7b8c6375ba87 // there for types compatibility with IBC. No logic is used from there.
-	github.com/cosmos/cosmos-sdk => github.com/atomone-hub/cosmos-sdk v0.50.14-atomone.1.0.20251122102304-84f7ce8bffe6
+	cosmossdk.io/x/upgrade => github.com/atomone-hub/cosmos-sdk/x/upgrade v0.1.5-atomone.1.0.20251122115547-b032334476a6
+	github.com/cosmos/cosmos-sdk => github.com/atomone-hub/cosmos-sdk v0.50.14-atomone.1.0.20251122115547-b032334476a6
 	github.com/cosmos/ibc-go/v10 => github.com/cosmos/ibc-go/v10 v10.2.0
 )
 
@@ -166,7 +166,7 @@ require (
 	github.com/gsterjov/go-libsecret v0.0.0-20161001094733-a6f4afe4910c // indirect
 	github.com/hashicorp/aws-sdk-go-base/v2 v2.0.0-beta.65 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
-	github.com/hashicorp/go-getter v1.8.2 // indirect
+	github.com/hashicorp/go-getter v1.8.3 // indirect
 	github.com/hashicorp/go-hclog v1.6.3 // indirect
 	github.com/hashicorp/go-immutable-radix v1.3.1 // indirect
 	github.com/hashicorp/go-metrics v0.5.4 // indirect
