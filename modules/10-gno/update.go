@@ -7,6 +7,7 @@ import (
 
 	bfttypes "github.com/gnolang/gno/tm2/pkg/bft/types"
 	"github.com/gnolang/gno/tm2/pkg/crypto"
+	"github.com/gnolang/gno/tm2/pkg/crypto/ed25519"
 
 	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
 	commitmenttypes "github.com/cosmos/ibc-go/v10/modules/core/23-commitment/types"
@@ -48,13 +49,16 @@ func (cs *ClientState) verifyHeader(
 	header *Header,
 ) error {
 	currentTimestamp := ctx.BlockTime()
-
+	fmt.Println(currentTimestamp)
 	// Retrieve trusted consensus states for each Header in misbehaviour
 	consState, found := GetConsensusState(clientStore, cdc, header.TrustedHeight)
+	fmt.Println(consState.LcType)
+	fmt.Println(consState.Root)
+	fmt.Println(header.TrustedHeight)
 	if !found {
 		return errorsmod.Wrapf(clienttypes.ErrConsensusStateNotFound, "could not get trusted consensus state from clientStore for Header at TrustedHeight: %s", header.TrustedHeight)
 	}
-
+	fmt.Println(consState.NextValidatorsHash)
 	if err := checkTrustedHeader(header, consState); err != nil {
 		return err
 	}
@@ -74,13 +78,13 @@ func (cs *ClientState) verifyHeader(
 		Proposer:   nil,
 	}
 	for i, val := range header.TrustedValidators.Validators {
-		key, err := crypto.PubKeyFromBytes(val.PubKey.Value)
-		if err != nil {
-			return errorsmod.Wrap(err, "validator set is not gno validator set")
+		key := val.PubKey
+		if (key.GetEd25519()) == nil {
+			return errorsmod.Wrap(clienttypes.ErrInvalidHeader, "validator pubkey is not ed25519")
 		}
 		gnoTrustedValidators.Validators[i] = &bfttypes.Validator{
 			Address:          crypto.MustAddressFromString(val.Address),
-			PubKey:           key,
+			PubKey:           ed25519.PubKeyEd25519(key.GetEd25519()),
 			VotingPower:      val.VotingPower,
 			ProposerPriority: val.ProposerPriority,
 		}
@@ -89,20 +93,33 @@ func (cs *ClientState) verifyHeader(
 	if gnoTrustedValidators.IsNilOrEmpty() {
 		return errorsmod.Wrap(errors.New("not gno validators"), "trusted validator set in not gno validator set type")
 	}
-
+	var dataHash []byte
+	var lastResultsHash []byte
+	if len(header.SignedHeader.Header.DataHash) == 0 {
+		dataHash = nil
+	} else {
+		dataHash = header.SignedHeader.Header.DataHash
+	}
+	if len(header.SignedHeader.Header.LastResultsHash) == 0 {
+		lastResultsHash = nil
+	} else {
+		lastResultsHash = header.SignedHeader.Header.LastResultsHash
+	}
 	gnoHeader := bfttypes.Header{
 		Version:            header.SignedHeader.Header.Version,
 		ChainID:            header.SignedHeader.Header.ChainId,
 		Height:             header.SignedHeader.Header.Height,
 		Time:               header.SignedHeader.Header.Time,
+		NumTxs:             header.SignedHeader.Header.NumTxs,
+		TotalTxs:           header.SignedHeader.Header.TotalTxs,
 		LastBlockID:        bfttypes.BlockID{Hash: header.SignedHeader.Header.LastBlockId.Hash, PartsHeader: bfttypes.PartSetHeader{Total: int(header.SignedHeader.Header.LastBlockId.PartsHeader.Total), Hash: header.SignedHeader.Header.LastBlockId.PartsHeader.Hash}},
 		LastCommitHash:     header.SignedHeader.Header.LastCommitHash,
-		DataHash:           header.SignedHeader.Header.DataHash,
+		DataHash:           dataHash,
 		ValidatorsHash:     header.SignedHeader.Header.ValidatorsHash,
 		NextValidatorsHash: header.SignedHeader.Header.NextValidatorsHash,
 		ConsensusHash:      header.SignedHeader.Header.ConsensusHash,
 		AppHash:            header.SignedHeader.Header.AppHash,
-		LastResultsHash:    header.SignedHeader.Header.LastResultsHash,
+		LastResultsHash:    lastResultsHash,
 		ProposerAddress:    crypto.MustAddressFromString(header.SignedHeader.Header.ProposerAddress),
 	}
 	gnoCommit := bfttypes.Commit{
@@ -138,13 +155,13 @@ func (cs *ClientState) verifyHeader(
 		Proposer:   nil,
 	}
 	for i, val := range header.ValidatorSet.Validators {
-		key, err := crypto.PubKeyFromBytes(val.PubKey.Value)
-		if err != nil {
-			return errorsmod.Wrap(err, "validator set is not gno validator set")
+		key := val.PubKey
+		if (key.GetEd25519()) == nil {
+			return errorsmod.Wrap(clienttypes.ErrInvalidHeader, "validator pubkey is not ed25519")
 		}
 		gnoValidatorSet.Validators[i] = &bfttypes.Validator{
 			Address:          crypto.MustAddressFromString(val.Address),
-			PubKey:           key,
+			PubKey:           ed25519.PubKeyEd25519(key.GetEd25519()),
 			VotingPower:      val.VotingPower,
 			ProposerPriority: val.ProposerPriority,
 		}
@@ -294,13 +311,15 @@ func checkTrustedHeader(header *Header, consState *ConsensusState) error {
 		Proposer:   nil,
 	}
 	for i, val := range header.TrustedValidators.Validators {
-		key, err := crypto.PubKeyFromBytes(val.PubKey.Value)
-		if err != nil {
-			return errorsmod.Wrap(err, "validator set is not gno validator set")
+		key := val.PubKey
+		if (key.GetEd25519()) == nil {
+			return errorsmod.Wrap(clienttypes.ErrInvalidHeader, "validator pubkey is not ed25519")
 		}
+		fmt.Println(key.GetEd25519())
+		fmt.Println(val.VotingPower)
 		gnoTrustedValset.Validators[i] = &bfttypes.Validator{
 			Address:          crypto.MustAddressFromString(val.Address),
-			PubKey:           key,
+			PubKey:           ed25519.PubKeyEd25519(key.GetEd25519()),
 			VotingPower:      val.VotingPower,
 			ProposerPriority: val.ProposerPriority,
 		}

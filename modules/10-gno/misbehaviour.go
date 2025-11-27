@@ -5,6 +5,7 @@ import (
 
 	bfttypes "github.com/gnolang/gno/tm2/pkg/bft/types"
 	"github.com/gnolang/gno/tm2/pkg/crypto"
+	"github.com/gnolang/gno/tm2/pkg/crypto/ed25519"
 
 	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
 	host "github.com/cosmos/ibc-go/v10/modules/core/24-host"
@@ -149,13 +150,13 @@ func validCommit(chainID string, blockID bfttypes.BlockID, commit Commit, valSet
 		Proposer:   nil,
 	}
 	for i, val := range valSet.Validators {
-		key, err := crypto.PubKeyFromBytes(val.PubKey.Value)
-		if err != nil {
-			return errorsmod.Wrap(err, "validator set is not gno validator set")
+		key := val.PubKey
+		if (key.GetEd25519()) == nil {
+			return errorsmod.Wrap(clienttypes.ErrInvalidHeader, "validator pubkey is not ed25519")
 		}
 		gnoValset.Validators[i] = &bfttypes.Validator{
 			Address:          crypto.MustAddressFromString(val.Address),
-			PubKey:           key,
+			PubKey:           ed25519.PubKeyEd25519(key.GetEd25519()),
 			VotingPower:      val.VotingPower,
 			ProposerPriority: val.ProposerPriority,
 		}

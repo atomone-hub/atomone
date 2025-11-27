@@ -2,20 +2,29 @@ package gno
 
 import (
 	"bytes"
+	"encoding/hex"
 	"errors"
 	"time"
-
-	bfttypes "github.com/gnolang/gno/tm2/pkg/bft/types"
-	"github.com/gnolang/gno/tm2/pkg/crypto"
 
 	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
 	commitmenttypes "github.com/cosmos/ibc-go/v10/modules/core/23-commitment/types"
 	"github.com/cosmos/ibc-go/v10/modules/core/exported"
+	bfttypes "github.com/gnolang/gno/tm2/pkg/bft/types"
+	"github.com/gnolang/gno/tm2/pkg/crypto"
+	"github.com/gnolang/gno/tm2/pkg/crypto/ed25519"
 
 	errorsmod "cosmossdk.io/errors"
 )
 
 var _ exported.ClientMessage = (*Header)(nil)
+
+func hexDec(s string) []byte {
+	b, err := hex.DecodeString(s)
+	if err != nil {
+		panic(err)
+	}
+	return b
+}
 
 // ConsensusState returns the updated consensus state associated with the header
 func (h Header) ConsensusState() *ConsensusState {
@@ -67,6 +76,8 @@ func (h Header) ValidateBasic() error {
 		ChainID:            h.SignedHeader.Header.ChainId,
 		Height:             h.SignedHeader.Header.Height,
 		Time:               h.SignedHeader.Header.Time,
+		NumTxs:             h.SignedHeader.Header.NumTxs,
+		TotalTxs:           h.SignedHeader.Header.TotalTxs,
 		LastBlockID:        bfttypes.BlockID{Hash: h.SignedHeader.Header.LastBlockId.Hash, PartsHeader: bfttypes.PartSetHeader{Total: int(h.SignedHeader.Header.LastBlockId.PartsHeader.Total), Hash: h.SignedHeader.Header.LastBlockId.PartsHeader.Hash}},
 		LastCommitHash:     h.SignedHeader.Header.LastCommitHash,
 		DataHash:           h.SignedHeader.Header.DataHash,
@@ -119,13 +130,13 @@ func (h Header) ValidateBasic() error {
 		Proposer:   nil,
 	}
 	for i, val := range h.ValidatorSet.Validators {
-		key, err := crypto.PubKeyFromBytes(val.PubKey.Value)
-		if err != nil {
-			return errorsmod.Wrap(err, "validator set is not gno validator set")
+		key := val.PubKey
+		if (key.GetEd25519()) == nil {
+			return errorsmod.Wrap(clienttypes.ErrInvalidHeader, "validator pubkey is not ed25519")
 		}
 		gnoValset.Validators[i] = &bfttypes.Validator{
 			Address:          crypto.MustAddressFromString(val.Address),
-			PubKey:           key,
+			PubKey:           ed25519.PubKeyEd25519(key.GetEd25519()),
 			VotingPower:      val.VotingPower,
 			ProposerPriority: val.ProposerPriority,
 		}

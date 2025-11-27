@@ -9,7 +9,7 @@ import "google/protobuf/duration.proto";
 import "google/protobuf/timestamp.proto";
 import "ibc/core/client/v1/client.proto";
 import "ibc/core/commitment/v1/commitment.proto";
-import "tendermint/types/validator.proto";
+import "tendermint/crypto/keys.proto";
 
 option go_package = "github.com/atomone-hub/atomone/modules/10-gno;gno";
 
@@ -202,7 +202,7 @@ message PartSetHeader {
 
 message Validator {
   string address = 1;
-  google.protobuf.Any pub_key = 2;
+  tendermint.crypto.PublicKey pub_key = 2;
   sint64 voting_power = 3;
   sint64 proposer_priority = 4;
 }
