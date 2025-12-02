@@ -8,6 +8,7 @@ import (
 	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkgovtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	"github.com/atomone-hub/atomone/x/coredaos/types"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
@@ -402,7 +403,7 @@ func (ms MsgServer) VetoProposal(goCtx context.Context, msg *types.MsgVetoPropos
 			types.EventTypeVetoProposal,
 			sdk.NewAttribute(types.AttributeKeyProposalID, fmt.Sprintf("%d", proposal.Id)),
 			sdk.NewAttribute(types.AttributeKeySigner, msg.Vetoer),
-			sdk.NewAttribute(govtypes.AttributeKeyProposalResult, types.AttributeValueProposalVetoed),
+			sdk.NewAttribute(sdkgovtypes.AttributeKeyProposalResult, types.AttributeValueProposalVetoed),
 		),
 	})
 

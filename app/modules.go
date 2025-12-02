@@ -30,6 +30,8 @@ import (
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
+	"github.com/cosmos/cosmos-sdk/x/gov"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/x/mint"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	sdkparams "github.com/cosmos/cosmos-sdk/x/params"
@@ -43,8 +45,7 @@ import (
 	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
 	"github.com/atomone-hub/atomone/x/dynamicfee"
 	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
-	"github.com/atomone-hub/atomone/x/gov"
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
+	atomonegov "github.com/atomone-hub/atomone/x/gov"
 	"github.com/atomone-hub/atomone/x/photon"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
 )
@@ -68,6 +69,14 @@ func appModules(
 	appCodec codec.Codec,
 	txConfig client.TxConfig,
 ) []module.AppModule {
+	govModule := gov.NewAppModule(
+		appCodec,
+		app.GovKeeper,
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.GetSubspace(govtypes.ModuleName),
+	)
+
 	return []module.AppModule{
 		genutil.NewAppModule(
 			app.AccountKeeper,
@@ -78,14 +87,8 @@ func appModules(
 		auth.NewAppModule(appCodec, app.AccountKeeper, nil, app.GetSubspace(authtypes.ModuleName)),
 		vesting.NewAppModule(app.AccountKeeper, app.BankKeeper),
 		bank.NewAppModule(appCodec, app.BankKeeper, app.AccountKeeper, app.GetSubspace(banktypes.ModuleName)),
-		gov.NewAppModule(
-			appCodec,
-			app.GovKeeper,
-			app.AccountKeeper,
-			app.BankKeeper,
-			app.GetSubspace(govtypes.ModuleName),
-			paramsChangeProposalHandler, // x/params won't be used in the future, so this handler can be removed eventually.
-		),
+		govModule,
+		atomonegov.NewAppModule(appCodec, app.GovKeeperWrapper),
 		mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper, nil, app.GetSubspace(minttypes.ModuleName)),
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(slashingtypes.ModuleName), app.interfaceRegistry),
 		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(distrtypes.ModuleName)),
@@ -99,7 +102,7 @@ func appModules(
 		sdkparams.NewAppModule(app.ParamsKeeper),
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
 		dynamicfee.NewAppModule(appCodec, *app.DynamicfeeKeeper),
-		coredaos.NewAppModule(appCodec, *app.CoreDaosKeeper, app.GovKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
+		coredaos.NewAppModule(appCodec, *app.CoreDaosKeeper, app.GovKeeperWrapper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
 
 		app.TransferModule,
 		app.ICAModule,

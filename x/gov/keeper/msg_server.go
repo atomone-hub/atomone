@@ -27,55 +27,7 @@ func NewMsgServerImpl(keeper *Keeper) v1.MsgServer {
 var _ v1.MsgServer = msgServer{}
 
 // SubmitProposal implements the MsgServer.SubmitProposal method.
-func (k msgServer) SubmitProposal(goCtx context.Context, msg *v1.MsgSubmitProposal) (*v1.MsgSubmitProposalResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	initialDeposit := msg.GetInitialDeposit()
-
-	if err := k.validateInitialDeposit(ctx, initialDeposit); err != nil {
-		return nil, err
-	}
-
-	proposalMsgs, err := msg.GetMsgs()
-	if err != nil {
-		return nil, err
-	}
-
-	proposer, err := sdk.AccAddressFromBech32(msg.GetProposer())
-	if err != nil {
-		return nil, err
-	}
-
-	proposal, err := k.Keeper.SubmitProposal(ctx, proposalMsgs, msg.Metadata, msg.Title, msg.Summary, proposer)
-	if err != nil {
-		return nil, err
-	}
-
-	bytes, err := proposal.Marshal()
-	if err != nil {
-		return nil, err
-	}
-
-	// ref: https://github.com/cosmos/cosmos-sdk/issues/9683
-	ctx.GasMeter().ConsumeGas(
-		3*ctx.KVGasConfig().WriteCostPerByte*uint64(len(bytes)),
-		"submit proposal",
-	)
-
-	// skip min deposit ratio check since for proposal submissions the initial deposit is the threshold
-	// to check against.
-	votingStarted, err := k.Keeper.AddDeposit(ctx, proposal.Id, proposer, msg.GetInitialDeposit(), true)
-	if err != nil {
-		return nil, err
-	}
-
-	if votingStarted {
-		ctx.EventManager().EmitEvent(
-			sdk.NewEvent(govtypes.EventTypeSubmitProposal,
-				sdk.NewAttribute(govtypes.AttributeKeyVotingPeriodStart, fmt.Sprintf("%d", proposal.Id)),
-			),
-		)
-	}
+func (k msgServer) SubmitProposal(ctx context.Context, msg *v1.MsgSubmitProposal) (*v1.MsgSubmitProposalResponse, error) {
 
 	return &v1.MsgSubmitProposalResponse{
 		ProposalId: proposal.Id,
@@ -83,156 +35,56 @@ func (k msgServer) SubmitProposal(goCtx context.Context, msg *v1.MsgSubmitPropos
 }
 
 // ExecLegacyContent implements the MsgServer.ExecLegacyContent method.
-func (k msgServer) ExecLegacyContent(goCtx context.Context, msg *v1.MsgExecLegacyContent) (*v1.MsgExecLegacyContentResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	govAcct := k.GetGovernanceAccount(ctx).GetAddress().String()
-	if govAcct != msg.Authority {
-		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "expected %s got %s", govAcct, msg.Authority)
-	}
-
-	content, err := v1.LegacyContentFromMessage(msg)
-	if err != nil {
-		return nil, errors.Wrapf(govtypes.ErrInvalidProposalContent, "%+v", err)
-	}
-
-	// Ensure that the content has a respective handler
-	if !k.Keeper.legacyRouter.HasRoute(content.ProposalRoute()) {
-		return nil, errors.Wrap(govtypes.ErrNoProposalHandlerExists, content.ProposalRoute())
-	}
-
-	handler := k.Keeper.legacyRouter.GetRoute(content.ProposalRoute())
-	if err := handler(ctx, content); err != nil {
-		return nil, errors.Wrapf(govtypes.ErrInvalidProposalContent, "failed to run legacy handler %s, %+v", content.ProposalRoute(), err)
-	}
+func (k msgServer) ExecLegacyContent(ctx context.Context, msg *v1.MsgExecLegacyContent) (*v1.MsgExecLegacyContentResponse, error) {
 
 	return &v1.MsgExecLegacyContentResponse{}, nil
 }
 
 // Vote implements the MsgServer.Vote method.
-func (k msgServer) Vote(goCtx context.Context, msg *v1.MsgVote) (*v1.MsgVoteResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	accAddr, err := sdk.AccAddressFromBech32(msg.Voter)
-	if err != nil {
-		return nil, err
-	}
-	err = k.Keeper.AddVote(ctx, msg.ProposalId, accAddr, v1.NewNonSplitVoteOption(msg.Option), msg.Metadata)
-	if err != nil {
-		return nil, err
-	}
+func (k msgServer) Vote(ctx context.Context, msg *v1.MsgVote) (*v1.MsgVoteResponse, error) {
 
 	return &v1.MsgVoteResponse{}, nil
 }
 
 // VoteWeighted implements the MsgServer.VoteWeighted method.
-func (k msgServer) VoteWeighted(goCtx context.Context, msg *v1.MsgVoteWeighted) (*v1.MsgVoteWeightedResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	accAddr, accErr := sdk.AccAddressFromBech32(msg.Voter)
-	if accErr != nil {
-		return nil, accErr
-	}
-	err := k.Keeper.AddVote(ctx, msg.ProposalId, accAddr, msg.Options, msg.Metadata)
-	if err != nil {
-		return nil, err
-	}
+func (k msgServer) VoteWeighted(ctx context.Context, msg *v1.MsgVoteWeighted) (*v1.MsgVoteWeightedResponse, error) {
 
 	return &v1.MsgVoteWeightedResponse{}, nil
 }
 
 // Deposit implements the MsgServer.Deposit method.
-func (k msgServer) Deposit(goCtx context.Context, msg *v1.MsgDeposit) (*v1.MsgDepositResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	accAddr, err := sdk.AccAddressFromBech32(msg.Depositor)
-	if err != nil {
-		return nil, err
-	}
-
-	if err := validateDeposit(msg.Amount); err != nil {
-		return nil, err
-	}
-
-	votingStarted, err := k.Keeper.AddDeposit(ctx, msg.ProposalId, accAddr, msg.Amount, false)
-	if err != nil {
-		return nil, err
-	}
-
-	if votingStarted {
-		ctx.EventManager().EmitEvent(
-			sdk.NewEvent(
-				govtypes.EventTypeProposalDeposit,
-				sdk.NewAttribute(govtypes.AttributeKeyVotingPeriodStart, fmt.Sprintf("%d", msg.ProposalId)),
-			),
-		)
-	}
+func (k msgServer) Deposit(ctx context.Context, msg *v1.MsgDeposit) (*v1.MsgDepositResponse, error) {
 
 	return &v1.MsgDepositResponse{}, nil
 }
 
-// validateDeposit validates the deposit amount, do not use for initial deposit.
-func validateDeposit(amount sdk.Coins) error {
-	if !amount.IsValid() || !amount.IsAllPositive() {
-		return sdkerrors1.ErrInvalidCoins.Wrap(amount.String())
-	}
-
-	return nil
-}
-
 // UpdateParams implements the MsgServer.UpdateParams method.
-func (k msgServer) UpdateParams(goCtx context.Context, msg *v1.MsgUpdateParams) (*v1.MsgUpdateParamsResponse, error) {
-	if k.authority != msg.Authority {
-		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
-	}
-
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	// before params change, trigger an update of the last min deposit
-	minDeposit := k.GetMinDeposit(ctx)
-	k.SetLastMinDeposit(ctx, minDeposit, ctx.BlockTime())
-	minInitialDeposit := k.GetMinInitialDeposit(ctx)
-	k.SetLastMinInitialDeposit(ctx, minInitialDeposit, ctx.BlockTime())
-
-	if err := k.SetParams(ctx, msg.Params); err != nil {
-		return nil, err
-	}
+func (k msgServer) UpdateParams(ctx context.Context, msg *v1.MsgUpdateParams) (*v1.MsgUpdateParamsResponse, error) {
 
 	return &v1.MsgUpdateParamsResponse{}, nil
 }
 
 // ProposeLaw implements the MsgServer.ProposeLaw method.
-func (k msgServer) ProposeLaw(goCtx context.Context, msg *v1.MsgProposeLaw) (*v1.MsgProposeLawResponse, error) {
-	if k.authority != msg.Authority {
-		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
-	}
+func (k msgServer) ProposeLaw(ctx context.Context, msg *v1.MsgProposeLaw) (*v1.MsgProposeLawResponse, error) {
+
 	// only a no-op for now
 	return &v1.MsgProposeLawResponse{}, nil
 }
 
 // ProposeConstitutionAmendment implements the MsgServer.ProposeConstitutionAmendment method.
-func (k msgServer) ProposeConstitutionAmendment(goCtx context.Context, msg *v1.MsgProposeConstitutionAmendment) (*v1.MsgProposeConstitutionAmendmentResponse, error) {
-	if k.authority != msg.Authority {
-		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
-	}
-	if msg.Amendment == "" {
-		return nil, govtypes.ErrInvalidProposalMsg.Wrap("amendment cannot be empty")
-	}
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	constitution, err := k.ApplyConstitutionAmendment(ctx, msg.Amendment)
-	if err != nil {
-		return nil, govtypes.ErrInvalidProposalMsg.Wrap(err.Error())
-	}
-	k.SetConstitution(ctx, constitution)
+func (k msgServer) ProposeConstitutionAmendment(ctx context.Context, msg *v1.MsgProposeConstitutionAmendment) (*v1.MsgProposeConstitutionAmendmentResponse, error) {
+
 	return &v1.MsgProposeConstitutionAmendmentResponse{}, nil
 }
 
 type legacyMsgServer struct {
-	govAcct string
-	server  v1.MsgServer
+	server v1.MsgServer
 }
 
 // NewLegacyMsgServerImpl returns an implementation of the v1beta1 legacy MsgServer interface. It wraps around
 // the current MsgServer
-func NewLegacyMsgServerImpl(govAcct string, v1Server v1.MsgServer) v1beta1.MsgServer {
-	return &legacyMsgServer{govAcct: govAcct, server: v1Server}
+func NewLegacyMsgServerImpl(v1Server v1.MsgServer) v1beta1.MsgServer {
+	return &legacyMsgServer{server: v1Server}
 }
 
 var _ v1beta1.MsgServer = legacyMsgServer{}
