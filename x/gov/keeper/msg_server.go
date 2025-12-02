@@ -2,46 +2,69 @@ package keeper
 
 import (
 	"context"
-	"fmt"
 
-	"cosmossdk.io/errors"
+	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
+	sdkv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors1 "github.com/cosmos/cosmos-sdk/types/errors"
-
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 )
 
 type msgServer struct {
-	*Keeper
+	sdkv1.MsgServer
 }
 
 // NewMsgServerImpl returns an implementation of the gov MsgServer interface
 // for the provided Keeper.
-func NewMsgServerImpl(keeper *Keeper) v1.MsgServer {
-	return &msgServer{Keeper: keeper}
+func NewMsgServerImpl(k *Keeper) v1.MsgServer {
+	return &msgServer{MsgServer: govkeeper.NewMsgServerImpl(k.Keeper)}
 }
 
 var _ v1.MsgServer = msgServer{}
 
 // SubmitProposal implements the MsgServer.SubmitProposal method.
 func (k msgServer) SubmitProposal(ctx context.Context, msg *v1.MsgSubmitProposal) (*v1.MsgSubmitProposalResponse, error) {
+	result, err := k.MsgServer.SubmitProposal(ctx, &sdkv1.MsgSubmitProposal{
+		Messages:       msg.GetMessages(),
+		InitialDeposit: msg.GetInitialDeposit(),
+		Proposer:       msg.GetProposer(),
+		Metadata:       msg.GetMetadata(),
+		Title:          msg.GetTitle(),
+		Summary:        msg.GetSummary(),
+	})
+	if err != nil {
+		return nil, err
+	}
 
 	return &v1.MsgSubmitProposalResponse{
-		ProposalId: proposal.Id,
+		ProposalId: result.GetProposalId(),
 	}, nil
 }
 
 // ExecLegacyContent implements the MsgServer.ExecLegacyContent method.
 func (k msgServer) ExecLegacyContent(ctx context.Context, msg *v1.MsgExecLegacyContent) (*v1.MsgExecLegacyContentResponse, error) {
+	_, err := k.MsgServer.ExecLegacyContent(ctx, &sdkv1.MsgExecLegacyContent{
+		Content:   msg.GetContent(),
+		Authority: msg.GetAuthority(),
+	})
+	if err != nil {
+		return nil, err
+	}
 
 	return &v1.MsgExecLegacyContentResponse{}, nil
 }
 
 // Vote implements the MsgServer.Vote method.
 func (k msgServer) Vote(ctx context.Context, msg *v1.MsgVote) (*v1.MsgVoteResponse, error) {
+	_, err := k.MsgServer.Vote(ctx, &sdkv1.MsgVote{
+		ProposalId: msg.GetProposalId(),
+		Voter:      msg.GetVoter(),
+		Option:     sdkv1.VoteOption(msg.Option),
+		Metadata:   msg.GetMetadata(),
+	})
+	if err != nil {
+		return nil, err
+	}
 
 	return &v1.MsgVoteResponse{}, nil
 }
@@ -90,71 +113,21 @@ func NewLegacyMsgServerImpl(v1Server v1.MsgServer) v1beta1.MsgServer {
 var _ v1beta1.MsgServer = legacyMsgServer{}
 
 func (k legacyMsgServer) SubmitProposal(goCtx context.Context, msg *v1beta1.MsgSubmitProposal) (*v1beta1.MsgSubmitProposalResponse, error) {
-	contentMsg, err := v1.NewLegacyContent(msg.GetContent(), k.govAcct)
-	if err != nil {
-		return nil, fmt.Errorf("error converting legacy content into proposal message: %w", err)
-	}
-
-	proposal, err := v1.NewMsgSubmitProposal(
-		[]sdk.Msg{contentMsg},
-		msg.InitialDeposit,
-		msg.Proposer,
-		"",
-		msg.GetContent().GetTitle(),
-		msg.GetContent().GetDescription(),
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := k.server.SubmitProposal(goCtx, proposal)
-	if err != nil {
-		return nil, err
-	}
 
 	return &v1beta1.MsgSubmitProposalResponse{ProposalId: resp.ProposalId}, nil
 }
 
 func (k legacyMsgServer) Vote(goCtx context.Context, msg *v1beta1.MsgVote) (*v1beta1.MsgVoteResponse, error) {
-	_, err := k.server.Vote(goCtx, &v1.MsgVote{
-		ProposalId: msg.ProposalId,
-		Voter:      msg.Voter,
-		Option:     v1.VoteOption(msg.Option),
-	})
-	if err != nil {
-		return nil, err
-	}
+
 	return &v1beta1.MsgVoteResponse{}, nil
 }
 
 func (k legacyMsgServer) VoteWeighted(goCtx context.Context, msg *v1beta1.MsgVoteWeighted) (*v1beta1.MsgVoteWeightedResponse, error) {
-	opts := make([]*v1.WeightedVoteOption, len(msg.Options))
-	for idx, opt := range msg.Options {
-		opts[idx] = &v1.WeightedVoteOption{
-			Option: v1.VoteOption(opt.Option),
-			Weight: opt.Weight.String(),
-		}
-	}
 
-	_, err := k.server.VoteWeighted(goCtx, &v1.MsgVoteWeighted{
-		ProposalId: msg.ProposalId,
-		Voter:      msg.Voter,
-		Options:    opts,
-	})
-	if err != nil {
-		return nil, err
-	}
 	return &v1beta1.MsgVoteWeightedResponse{}, nil
 }
 
 func (k legacyMsgServer) Deposit(goCtx context.Context, msg *v1beta1.MsgDeposit) (*v1beta1.MsgDepositResponse, error) {
-	_, err := k.server.Deposit(goCtx, &v1.MsgDeposit{
-		ProposalId: msg.ProposalId,
-		Depositor:  msg.Depositor,
-		Amount:     msg.Amount,
-	})
-	if err != nil {
-		return nil, err
-	}
+
 	return &v1beta1.MsgDepositResponse{}, nil
 }
