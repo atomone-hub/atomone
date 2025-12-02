@@ -16,10 +16,12 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	sdkgov "github.com/cosmos/cosmos-sdk/x/gov"
 	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
 
 	"github.com/atomone-hub/atomone/x/gov/keeper"
+	"github.com/atomone-hub/atomone/x/gov/types"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	modulev1 "github.com/atomone-hub/atomone/x/gov/types/module"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
@@ -28,9 +30,7 @@ import (
 
 const ConsensusVersion = 6
 
-var (
-	_ module.AppModuleBasic = AppModuleBasic{}
-)
+var _ module.AppModuleBasic = AppModuleBasic{}
 
 // AppModuleBasic defines the basic application module used by the gov module.
 type AppModuleBasic struct {
@@ -44,7 +44,7 @@ func NewAppModuleBasic() AppModuleBasic {
 
 // Name returns the gov module's name.
 func (AppModuleBasic) Name() string {
-	return govtypes.ModuleName
+	return fmt.Sprintf("atomone-%s", govtypes.ModuleName)
 }
 
 // RegisterLegacyAminoCodec registers the gov module's types for the given codec.
@@ -89,14 +89,16 @@ func (a AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry
 type AppModule struct {
 	AppModuleBasic
 
-	keeper *keeper.Keeper
+	keeper        *keeper.Keeper
+	accountKeeper authkeeper.AccountKeeper
 }
 
 // NewAppModule creates a new AppModule object
-func NewAppModule(cdc codec.Codec, k *keeper.Keeper) AppModule {
+func NewAppModule(cdc codec.Codec, k *keeper.Keeper, accountKeeper authkeeper.AccountKeeper) AppModule {
 	return AppModule{
 		AppModuleBasic: AppModuleBasic{cdc: cdc},
 		keeper:         k,
+		accountKeeper:  accountKeeper,
 	}
 }
 
@@ -120,7 +122,8 @@ type GovInputs struct {
 	Config *modulev1.Module
 	Cdc    codec.Codec
 
-	GovKeeper *govkeeper.Keeper
+	GovKeeper     *govkeeper.Keeper
+	AccountKeeper authkeeper.AccountKeeper
 }
 
 type GovOutputs struct {
@@ -131,9 +134,8 @@ type GovOutputs struct {
 }
 
 func ProvideModule(in GovInputs) GovOutputs {
-
 	k := keeper.NewKeeper(in.GovKeeper)
-	m := NewAppModule(in.Cdc, k)
+	m := NewAppModule(in.Cdc, k, in.AccountKeeper)
 
 	return GovOutputs{Module: m, Keeper: k}
 }
@@ -146,7 +148,7 @@ func (AppModule) Name() string {
 // RegisterServices registers module services.
 func (am AppModule) RegisterServices(cfg module.Configurator) {
 	msgServer := keeper.NewMsgServerImpl(am.keeper)
-	v1beta1.RegisterMsgServer(cfg.MsgServer(), keeper.NewLegacyMsgServerImpl(msgServer))
+	v1beta1.RegisterMsgServer(cfg.MsgServer(), keeper.NewLegacyMsgServerImpl(am.accountKeeper.GetModuleAddress(types.ModuleName).String(), msgServer))
 	v1.RegisterMsgServer(cfg.MsgServer(), msgServer)
 
 	legacyQueryServer := keeper.NewLegacyQueryServer(am.keeper)

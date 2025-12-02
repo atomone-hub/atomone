@@ -240,10 +240,11 @@ func NewAppKeeper(
 	govConfig.MaxMetadataLen = 10200
 	appKeepers.GovKeeper = govkeeper.NewKeeper(
 		appCodec,
-		appKeepers.keys[govtypes.StoreKey],
+		runtime.NewKVStoreService(appKeepers.keys[govtypes.StoreKey]),
 		appKeepers.AccountKeeper,
 		appKeepers.BankKeeper,
 		appKeepers.StakingKeeper,
+		appKeepers.DistrKeeper,
 		bApp.MsgServiceRouter(),
 		govConfig,
 		authorityStr,

@@ -5,6 +5,7 @@ import (
 
 	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
 	sdkv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
+	sdkv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
@@ -16,7 +17,9 @@ type msgServer struct {
 
 // NewMsgServerImpl returns an implementation of the gov MsgServer interface
 // for the provided Keeper.
-func NewMsgServerImpl(k *Keeper) v1.MsgServer {
+// We return an private type, as we do not want to do type casting in module.
+// Making it public adds no benefits.
+func NewMsgServerImpl(k *Keeper) *msgServer {
 	return &msgServer{MsgServer: govkeeper.NewMsgServerImpl(k.Keeper)}
 }
 
@@ -71,63 +74,149 @@ func (k msgServer) Vote(ctx context.Context, msg *v1.MsgVote) (*v1.MsgVoteRespon
 
 // VoteWeighted implements the MsgServer.VoteWeighted method.
 func (k msgServer) VoteWeighted(ctx context.Context, msg *v1.MsgVoteWeighted) (*v1.MsgVoteWeightedResponse, error) {
+	_, err := k.MsgServer.VoteWeighted(ctx, &sdkv1.MsgVoteWeighted{
+		ProposalId: msg.GetProposalId(),
+		Voter:      msg.GetVoter(),
+		Options:    v1.ConvertAtomOneWeightedVoteOptionsToSDK(msg.GetOptions()),
+		Metadata:   msg.GetMetadata(),
+	})
+	if err != nil {
+		return nil, err
+	}
 
 	return &v1.MsgVoteWeightedResponse{}, nil
 }
 
 // Deposit implements the MsgServer.Deposit method.
 func (k msgServer) Deposit(ctx context.Context, msg *v1.MsgDeposit) (*v1.MsgDepositResponse, error) {
+	_, err := k.MsgServer.Deposit(ctx, &sdkv1.MsgDeposit{
+		ProposalId: msg.GetProposalId(),
+		Depositor:  msg.GetDepositor(),
+		Amount:     msg.GetAmount(),
+	})
+	if err != nil {
+		return nil, err
+	}
 
 	return &v1.MsgDepositResponse{}, nil
 }
 
 // UpdateParams implements the MsgServer.UpdateParams method.
 func (k msgServer) UpdateParams(ctx context.Context, msg *v1.MsgUpdateParams) (*v1.MsgUpdateParamsResponse, error) {
+	_, err := k.MsgServer.UpdateParams(ctx, &sdkv1.MsgUpdateParams{
+		Authority: msg.GetAuthority(),
+		Params:    *v1.ConvertAtomOneParamsToSDK(&msg.Params),
+	})
+	if err != nil {
+		return nil, err
+	}
 
 	return &v1.MsgUpdateParamsResponse{}, nil
 }
 
 // ProposeLaw implements the MsgServer.ProposeLaw method.
 func (k msgServer) ProposeLaw(ctx context.Context, msg *v1.MsgProposeLaw) (*v1.MsgProposeLawResponse, error) {
+	_, err := k.MsgServer.ProposeLaw(ctx, &sdkv1.MsgProposeLaw{
+		Authority: msg.GetAuthority(),
+	})
+	if err != nil {
+		return nil, err
+	}
 
-	// only a no-op for now
 	return &v1.MsgProposeLawResponse{}, nil
 }
 
 // ProposeConstitutionAmendment implements the MsgServer.ProposeConstitutionAmendment method.
 func (k msgServer) ProposeConstitutionAmendment(ctx context.Context, msg *v1.MsgProposeConstitutionAmendment) (*v1.MsgProposeConstitutionAmendmentResponse, error) {
+	_, err := k.MsgServer.ProposeConstitutionAmendment(ctx, &sdkv1.MsgProposeConstitutionAmendment{
+		Authority: msg.GetAuthority(),
+		Amendment: msg.GetAmendment(),
+	})
+	if err != nil {
+		return nil, err
+	}
 
 	return &v1.MsgProposeConstitutionAmendmentResponse{}, nil
 }
 
 type legacyMsgServer struct {
-	server v1.MsgServer
+	sdkv1beta1.MsgServer
 }
 
 // NewLegacyMsgServerImpl returns an implementation of the v1beta1 legacy MsgServer interface. It wraps around
-// the current MsgServer
-func NewLegacyMsgServerImpl(v1Server v1.MsgServer) v1beta1.MsgServer {
-	return &legacyMsgServer{server: v1Server}
+// the SDK's v1beta1 MsgServer
+func NewLegacyMsgServerImpl(govAcct string, msgServer *msgServer) v1beta1.MsgServer {
+	return &legacyMsgServer{
+		MsgServer: govkeeper.NewLegacyMsgServerImpl(govAcct, msgServer.MsgServer),
+	}
 }
 
 var _ v1beta1.MsgServer = legacyMsgServer{}
 
 func (k legacyMsgServer) SubmitProposal(goCtx context.Context, msg *v1beta1.MsgSubmitProposal) (*v1beta1.MsgSubmitProposalResponse, error) {
+	sdkMsg := &sdkv1beta1.MsgSubmitProposal{
+		Content:        msg.Content,
+		InitialDeposit: msg.InitialDeposit,
+		Proposer:       msg.Proposer,
+	}
+
+	resp, err := k.MsgServer.SubmitProposal(goCtx, sdkMsg)
+	if err != nil {
+		return nil, err
+	}
 
 	return &v1beta1.MsgSubmitProposalResponse{ProposalId: resp.ProposalId}, nil
 }
 
 func (k legacyMsgServer) Vote(goCtx context.Context, msg *v1beta1.MsgVote) (*v1beta1.MsgVoteResponse, error) {
+	sdkMsg := &sdkv1beta1.MsgVote{
+		ProposalId: msg.ProposalId,
+		Voter:      msg.Voter,
+		Option:     sdkv1beta1.VoteOption(msg.Option),
+	}
+
+	_, err := k.MsgServer.Vote(goCtx, sdkMsg)
+	if err != nil {
+		return nil, err
+	}
 
 	return &v1beta1.MsgVoteResponse{}, nil
 }
 
 func (k legacyMsgServer) VoteWeighted(goCtx context.Context, msg *v1beta1.MsgVoteWeighted) (*v1beta1.MsgVoteWeightedResponse, error) {
+	options := make([]sdkv1beta1.WeightedVoteOption, len(msg.Options))
+	for i, opt := range msg.Options {
+		options[i] = sdkv1beta1.WeightedVoteOption{
+			Option: sdkv1beta1.VoteOption(opt.Option),
+			Weight: opt.Weight,
+		}
+	}
+
+	sdkMsg := &sdkv1beta1.MsgVoteWeighted{
+		ProposalId: msg.ProposalId,
+		Voter:      msg.Voter,
+		Options:    options,
+	}
+
+	_, err := k.MsgServer.VoteWeighted(goCtx, sdkMsg)
+	if err != nil {
+		return nil, err
+	}
 
 	return &v1beta1.MsgVoteWeightedResponse{}, nil
 }
 
 func (k legacyMsgServer) Deposit(goCtx context.Context, msg *v1beta1.MsgDeposit) (*v1beta1.MsgDepositResponse, error) {
+	sdkMsg := &sdkv1beta1.MsgDeposit{
+		ProposalId: msg.ProposalId,
+		Depositor:  msg.Depositor,
+		Amount:     msg.Amount,
+	}
+
+	_, err := k.MsgServer.Deposit(goCtx, sdkMsg)
+	if err != nil {
+		return nil, err
+	}
 
 	return &v1beta1.MsgDepositResponse{}, nil
 }

@@ -13,8 +13,8 @@ import (
 	paramscutils "github.com/cosmos/cosmos-sdk/x/params/client/utils"
 	paramproposal "github.com/cosmos/cosmos-sdk/x/params/types/proposal"
 
-	govclient "github.com/atomone-hub/atomone/x/gov/client"
 	govv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
+	govclient "github.com/cosmos/cosmos-sdk/x/gov/client"
 )
 
 var paramsChangeProposalHandler = govclient.NewProposalHandler(newSubmitParamChangeProposalTxCmd)
