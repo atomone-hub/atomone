@@ -10,6 +10,7 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	sdkgovtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	"github.com/atomone-hub/atomone/x/gov/types"
 )
@@ -195,18 +196,18 @@ func ValidProposalStatus(status ProposalStatus) bool {
 func ValidateAbstract(c Content) error {
 	title := c.GetTitle()
 	if len(strings.TrimSpace(title)) == 0 {
-		return types.ErrInvalidProposalContent.Wrap("proposal title cannot be blank")
+		return sdkgovtypes.ErrInvalidProposalContent.Wrap("proposal title cannot be blank")
 	}
 	if len(title) > MaxTitleLength {
-		return types.ErrInvalidProposalContent.Wrapf("proposal title is longer than max length of %d", MaxTitleLength)
+		return sdkgovtypes.ErrInvalidProposalContent.Wrapf("proposal title is longer than max length of %d", MaxTitleLength)
 	}
 
 	description := c.GetDescription()
 	if len(description) == 0 {
-		return types.ErrInvalidProposalContent.Wrap("proposal description cannot be blank")
+		return sdkgovtypes.ErrInvalidProposalContent.Wrap("proposal description cannot be blank")
 	}
 	if len(description) > MaxDescriptionLength {
-		return types.ErrInvalidProposalContent.Wrapf("proposal description is longer than max length of %d", MaxDescriptionLength)
+		return sdkgovtypes.ErrInvalidProposalContent.Wrapf("proposal description is longer than max length of %d", MaxDescriptionLength)
 	}
 
 	return nil
