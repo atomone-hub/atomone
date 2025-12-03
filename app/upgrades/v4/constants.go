@@ -8,8 +8,7 @@ import (
 )
 
 const (
-	UpgradeName = "v4"
-
+	UpgradeName        = "v4"
 	capabilityStoreKey = "capability"
 )
 
@@ -20,6 +19,7 @@ var Upgrade = upgrades.Upgrade{
 		Added: []string{
 			// new module added in v4
 			coredaostypes.ModuleName,
+			// x/gov has been added but it uses the same store key as the x/gov fork from v3
 		},
 		Deleted: []string{
 			capabilityStoreKey,

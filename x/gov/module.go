@@ -140,11 +140,6 @@ func ProvideModule(in GovInputs) GovOutputs {
 	return GovOutputs{Module: m, Keeper: k}
 }
 
-// Name returns the gov module's name.
-func (AppModule) Name() string {
-	return govtypes.ModuleName
-}
-
 // RegisterServices registers module services.
 func (am AppModule) RegisterServices(cfg module.Configurator) {
 	msgServer := keeper.NewMsgServerImpl(am.keeper)

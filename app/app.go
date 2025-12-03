@@ -54,6 +54,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/gov"
 	govclient "github.com/cosmos/cosmos-sdk/x/gov/client"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	paramsclient "github.com/cosmos/cosmos-sdk/x/params/client"
 
 	atomoneante "github.com/atomone-hub/atomone/ante"
 	"github.com/atomone-hub/atomone/app/keepers"
@@ -221,7 +222,7 @@ func NewAtomOneApp(
 			genutiltypes.ModuleName: genutil.NewAppModuleBasic(genutiltypes.DefaultMessageValidator),
 			govtypes.ModuleName: gov.NewAppModuleBasic(
 				[]govclient.ProposalHandler{
-					paramsChangeProposalHandler,
+					paramsclient.ProposalHandler,
 				},
 			),
 		})
