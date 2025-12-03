@@ -7,6 +7,8 @@ run:
   skip-files:
     - ".*\\.pb\\.go$"
     - ".*\\.pb\\.gw\\.go$"
+    - x/gov/types/v1/wrapper.go
+    - x/gov/types/v1beta1/wrapper.go
 
 linters:
   disable-all: true

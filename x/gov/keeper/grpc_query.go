@@ -103,9 +103,9 @@ func (q grpcServer) Params(ctx context.Context, req *v1.QueryParamsRequest) (*v1
 	}
 
 	return &v1.QueryParamsResponse{
-		VotingParams:  v1.ConvertSDKVotingParamsToAtomOne(result.VotingParams),
-		DepositParams: v1.ConvertSDKDepositParamsToAtomOne(result.DepositParams),
-		TallyParams:   v1.ConvertSDKTallyParamsToAtomOne(result.TallyParams),
+		VotingParams:  v1.ConvertSDKVotingParamsToAtomOne(result.VotingParams),   //nolint:staticcheck // backward compat
+		DepositParams: v1.ConvertSDKDepositParamsToAtomOne(result.DepositParams), //nolint:staticcheck // backward compat
+		TallyParams:   v1.ConvertSDKTallyParamsToAtomOne(result.TallyParams),     //nolint:staticcheck // backward compat
 		Params:        v1.ConvertSDKParamsToAtomOne(result.Params),
 	}, nil
 }
@@ -275,7 +275,6 @@ func (q legacyQueryServer) Votes(c context.Context, req *v1beta1.QueryVotesReque
 	}, nil
 }
 
-//nolint:staticcheck
 func (q legacyQueryServer) Params(c context.Context, req *v1beta1.QueryParamsRequest) (*v1beta1.QueryParamsResponse, error) {
 	result, err := q.QueryServer.Params(c, &sdkv1beta1.QueryParamsRequest{
 		ParamsType: req.ParamsType,

@@ -22,7 +22,6 @@ import (
 
 	"github.com/atomone-hub/atomone/x/gov/keeper"
 	"github.com/atomone-hub/atomone/x/gov/types"
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	modulev1 "github.com/atomone-hub/atomone/x/gov/types/module"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
@@ -44,7 +43,7 @@ func NewAppModuleBasic() AppModuleBasic {
 
 // Name returns the gov module's name.
 func (AppModuleBasic) Name() string {
-	return fmt.Sprintf("atomone-%s", govtypes.ModuleName)
+	return fmt.Sprintf("atomone-%s", types.ModuleName)
 }
 
 // RegisterLegacyAminoCodec registers the gov module's types for the given codec.
@@ -63,7 +62,7 @@ func (AppModuleBasic) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
 func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config client.TxEncodingConfig, bz json.RawMessage) error {
 	var data v1.GenesisState
 	if err := cdc.UnmarshalJSON(bz, &data); err != nil {
-		return fmt.Errorf("failed to unmarshal %s genesis state: %w", govtypes.ModuleName, err)
+		return fmt.Errorf("failed to unmarshal %s genesis state: %w", types.ModuleName, err)
 	}
 
 	return v1.ValidateGenesis(&data)

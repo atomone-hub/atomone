@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"cosmossdk.io/collections"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
 
@@ -15,7 +16,7 @@ type Keeper struct {
 	*govkeeper.Keeper
 }
 
-// NewKeeper returns a governance keeper. It wraps the orginal Atom One SDK module for backward compatibility.
+// NewKeeper returns a governance keeper. It wraps the original Atom One SDK module for backward compatibility.
 func NewKeeper(k *govkeeper.Keeper) *Keeper {
 	return &Keeper{
 		Keeper: k,
