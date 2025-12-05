@@ -245,19 +245,22 @@ func ConvertAtomOneProposalToSDK(atomoneProposal *Proposal) *sdkv1.Proposal {
 	}
 
 	return &sdkv1.Proposal{
-		Id:               atomoneProposal.Id,
-		Messages:         atomoneProposal.Messages,
-		Status:           sdkv1.ProposalStatus(atomoneProposal.Status),
-		FinalTallyResult: ConvertAtomOneTallyResultToSDK(atomoneProposal.FinalTallyResult),
-		SubmitTime:       atomoneProposal.SubmitTime,
-		DepositEndTime:   atomoneProposal.DepositEndTime,
-		TotalDeposit:     atomoneProposal.TotalDeposit,
-		VotingStartTime:  atomoneProposal.VotingStartTime,
-		VotingEndTime:    atomoneProposal.VotingEndTime,
-		Metadata:         atomoneProposal.Metadata,
-		Title:            atomoneProposal.Title,
-		Summary:          atomoneProposal.Summary,
-		Proposer:         atomoneProposal.Proposer,
+		Id:                        atomoneProposal.Id,
+		Messages:                  atomoneProposal.Messages,
+		Status:                    sdkv1.ProposalStatus(atomoneProposal.Status),
+		FinalTallyResult:          ConvertAtomOneTallyResultToSDK(atomoneProposal.FinalTallyResult),
+		SubmitTime:                atomoneProposal.SubmitTime,
+		DepositEndTime:            atomoneProposal.DepositEndTime,
+		TotalDeposit:              atomoneProposal.TotalDeposit,
+		VotingStartTime:           atomoneProposal.VotingStartTime,
+		VotingEndTime:             atomoneProposal.VotingEndTime,
+		Metadata:                  atomoneProposal.Metadata,
+		Title:                     atomoneProposal.Title,
+		Summary:                   atomoneProposal.Summary,
+		Proposer:                  atomoneProposal.Proposer,
+		Endorsed:                  atomoneProposal.Endorsed,
+		Annotation:                atomoneProposal.Annotation,
+		TimesVotingPeriodExtended: atomoneProposal.TimesVotingPeriodExtended,
 	}
 }
 
