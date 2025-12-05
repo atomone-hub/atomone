@@ -35,9 +35,6 @@ type GovKeeper interface {
 	// RemoveFromActiveProposalQueue removes a proposalID from the Active
 	// Proposal Queue
 	RemoveFromActiveProposalQueue(ctx sdk.Context, proposalID uint64, endTime time.Time)
-	// DecrementActiveProposalsNumber decrements the number of active proposals
-	// by one
-	DecrementActiveProposalsNumber(ctx sdk.Context)
 	// UpdateMinInitialDeposit updates the min initial deposit required for
 	// proposal submission
 	UpdateMinInitialDeposit(ctx sdk.Context, checkElapsedTime bool)

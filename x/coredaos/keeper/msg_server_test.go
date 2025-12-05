@@ -756,9 +756,8 @@ func TestMsgServerVetoProposal(t *testing.T) {
 				m.GovKeeper.EXPECT().SetProposal(ctx, proposalWithVeto).After(call1)
 				m.GovKeeper.EXPECT().DeleteVotes(ctx, uint64(1)).After(call1)
 				call2 := m.GovKeeper.EXPECT().RemoveFromActiveProposalQueue(ctx, uint64(1), votingEndTime).After(call1)
-				call3 := m.GovKeeper.EXPECT().DecrementActiveProposalsNumber(ctx).After(call2)
-				m.GovKeeper.EXPECT().UpdateMinInitialDeposit(ctx, true).After(call3)
-				m.GovKeeper.EXPECT().UpdateMinDeposit(ctx, true).After(call3)
+				m.GovKeeper.EXPECT().UpdateMinInitialDeposit(ctx, true).After(call2)
+				m.GovKeeper.EXPECT().UpdateMinDeposit(ctx, true).After(call2)
 			},
 			setOversightDAO: true,
 		},
@@ -775,9 +774,8 @@ func TestMsgServerVetoProposal(t *testing.T) {
 				m.GovKeeper.EXPECT().SetProposal(ctx, proposalWithVeto).After(call1)
 				m.GovKeeper.EXPECT().DeleteVotes(ctx, uint64(1)).After(call1)
 				call2 := m.GovKeeper.EXPECT().RemoveFromActiveProposalQueue(ctx, uint64(1), votingEndTime).After(call1)
-				call3 := m.GovKeeper.EXPECT().DecrementActiveProposalsNumber(ctx).After(call2)
-				m.GovKeeper.EXPECT().UpdateMinInitialDeposit(ctx, true).After(call3)
-				m.GovKeeper.EXPECT().UpdateMinDeposit(ctx, true).After(call3)
+				m.GovKeeper.EXPECT().UpdateMinInitialDeposit(ctx, true).After(call2)
+				m.GovKeeper.EXPECT().UpdateMinDeposit(ctx, true).After(call2)
 			},
 			setOversightDAO: true,
 		},

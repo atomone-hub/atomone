@@ -386,7 +386,6 @@ func (ms MsgServer) VetoProposal(goCtx context.Context, msg *types.MsgVetoPropos
 	ms.k.govKeeper.SetProposal(ctx, proposal)
 	ms.k.govKeeper.DeleteVotes(ctx, proposal.Id)
 	ms.k.govKeeper.RemoveFromActiveProposalQueue(ctx, proposal.Id, *proposal.VotingEndTime)
-	ms.k.govKeeper.DecrementActiveProposalsNumber(ctx)
 
 	ms.k.govKeeper.UpdateMinInitialDeposit(ctx, true)
 	ms.k.govKeeper.UpdateMinDeposit(ctx, true)

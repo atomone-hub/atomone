@@ -23,11 +23,6 @@ func NewKeeper(k *govkeeper.Keeper) *Keeper {
 	}
 }
 
-// DecrementActiveProposalsNumber implements GovKeeper.
-func (keeper *Keeper) DecrementActiveProposalsNumber(ctx sdk.Context) {
-	// Active proposal count is tracked implicitly by the x/gov keeper.
-}
-
 // DeleteAndBurnDeposits implements GovKeeper.
 // Subtle: this method shadows the method (*Keeper).DeleteAndBurnDeposits of Keeper.Keeper.
 func (keeper *Keeper) DeleteAndBurnDeposits(ctx sdk.Context, proposalID uint64) {
