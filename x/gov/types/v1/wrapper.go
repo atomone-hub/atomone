@@ -24,9 +24,9 @@ func ConvertSDKProposalToAtomOne(sdkProposal *sdkv1.Proposal) *Proposal {
 		Title:                     sdkProposal.Title,
 		Summary:                   sdkProposal.Summary,
 		Proposer:                  sdkProposal.Proposer,
-		Endorsed:                  false,
-		Annotation:                "",
-		TimesVotingPeriodExtended: 0,
+		Endorsed:                  sdkProposal.Endorsed,
+		Annotation:                sdkProposal.Annotation,
+		TimesVotingPeriodExtended: sdkProposal.TimesVotingPeriodExtended,
 	}
 }
 
