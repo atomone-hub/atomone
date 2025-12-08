@@ -15,6 +15,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	sdkgov "github.com/cosmos/cosmos-sdk/x/gov"
@@ -148,6 +149,13 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 	legacyQueryServer := keeper.NewLegacyQueryServer(am.keeper)
 	v1beta1.RegisterQueryServer(cfg.QueryServer(), legacyQueryServer)
 	v1.RegisterQueryServer(cfg.QueryServer(), keeper.NewQueryServer(am.keeper))
+
+	// register no-op migration
+	if err := cfg.RegisterMigration(am.Name(), 5, func(ctx sdk.Context) error {
+		return nil
+	}); err != nil {
+		panic(err)
+	}
 }
 
 // ConsensusVersion implements AppModule/ConsensusVersion.

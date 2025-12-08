@@ -1,6 +1,8 @@
 package atomone
 
 import (
+	"encoding/json"
+
 	icatypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/types"
 	ibctransfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
 	ibc "github.com/cosmos/ibc-go/v10/modules/core"
@@ -46,6 +48,7 @@ import (
 	"github.com/atomone-hub/atomone/x/dynamicfee"
 	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
 	atomonegov "github.com/atomone-hub/atomone/x/gov"
+	atomonegovv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	"github.com/atomone-hub/atomone/x/photon"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
 )
@@ -64,18 +67,28 @@ var maccPerms = map[string][]string{
 	coredaostypes.ModuleName:       nil,
 }
 
+type govModuleAtomOneDefaults struct {
+	gov.AppModule
+}
+
+// DefaultGenesis returns default genesis state as raw bytes for the gov module.
+// It sets the same defaults than the atom one x/gov wrapper for genesis
+func (am govModuleAtomOneDefaults) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
+	return cdc.MustMarshalJSON(atomonegovv1.DefaultGenesisState())
+}
+
 func appModules(
 	app *AtomOneApp,
 	appCodec codec.Codec,
 	txConfig client.TxConfig,
 ) []module.AppModule {
-	govModule := gov.NewAppModule(
+	govModule := govModuleAtomOneDefaults{gov.NewAppModule(
 		appCodec,
 		app.GovKeeper,
 		app.AccountKeeper,
 		app.BankKeeper,
 		app.GetSubspace(govtypes.ModuleName),
-	)
+	)}
 
 	return []module.AppModule{
 		genutil.NewAppModule(
