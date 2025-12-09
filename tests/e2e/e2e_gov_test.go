@@ -393,10 +393,10 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 		totalVP := stakingPool.Pool.BondedTokens.ToLegacyDec()
 		actualParticipation := votes.Quo(totalVP)
 
-		s.Require().True(actualParticipation.Equal(expectedParticipation))
-		s.Require().Equal(quorumsAfter.Quorum, quorums.Quorum)
+		s.Require().True(actualParticipation.Equal(expectedParticipation), "actual participation does not match expected participation", actualParticipation.String(), expectedParticipation.String())
+		s.Require().Equal(quorumsAfter.Quorum, quorums.Quorum, "quorum does not match expected quorum", quorumsAfter.Quorum, quorums.Quorum)
 		s.Require().Equal(quorumsAfter.ConstitutionAmendmentQuorum,
-			quorums.ConstitutionAmendmentQuorum)
+			quorums.ConstitutionAmendmentQuorum, "constitution amendment quorum does not match expected quorum", quorumsAfter.ConstitutionAmendmentQuorum, quorums.ConstitutionAmendmentQuorum)
 	})
 
 	s.Run("dynamic constitution amendment quorum change", func() {
@@ -431,9 +431,9 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 		totalVP := stakingPool.Pool.BondedTokens.ToLegacyDec()
 		actualParticipation := votes.Quo(totalVP)
 
-		s.Require().True(actualParticipation.Equal(expectedParticipation))
-		s.Require().Equal(quorumsAfter.Quorum, quorums.Quorum)
-		s.Require().Equal(quorumsAfter.LawQuorum, quorums.LawQuorum)
+		s.Require().True(actualParticipation.Equal(expectedParticipation), "actual participation does not match expected participation", actualParticipation.String(), expectedParticipation.String())
+		s.Require().Equal(quorumsAfter.Quorum, quorums.Quorum, "quorum does not match expected quorum", quorumsAfter.Quorum, quorums.Quorum)
+		s.Require().Equal(quorumsAfter.LawQuorum, quorums.LawQuorum, "law quorum does not match expected law quorum", quorumsAfter.LawQuorum, quorums.LawQuorum)
 	})
 }
 
@@ -539,7 +539,7 @@ func (s *IntegrationTestSuite) writeCoreDAOsParamChangeProposal(c *chain, params
 	govModuleAddress := authtypes.NewModuleAddress(govtypes.ModuleName).String()
 
 	template := `
-	{ 
+	{
 		"messages": [
 		{
 		 "@type": "/atomone.coredaos.v1.MsgUpdateParams",
