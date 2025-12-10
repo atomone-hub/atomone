@@ -8,6 +8,8 @@
 
 ### BUG FIXES
 
+- Use `TruncateInt` to compute `uphotonToMint` [250](https://github.com/atomone-hub/atomone/pull/250)
+
 ### DEPENDENCIES
 
 - Upgrade CometBFT to v0.38.19 to fix security issue (ASA-2025-003) [#234](https://github.com/atomone-hub/atomone/pull/234)

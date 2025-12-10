@@ -46,7 +46,7 @@ func (k msgServer) MintPhoton(goCtx context.Context, msg *types.MsgMintPhoton) (
 		uphotonSupply   = k.bankKeeper.GetSupply(ctx, types.Denom).Amount.ToLegacyDec()
 		conversionRate  = k.PhotonConversionRate(ctx, bondDenomSupply, uphotonSupply)
 		bondDenomToBurn = msg.Amount
-		uphotonToMint   = bondDenomToBurn.Amount.ToLegacyDec().Mul(conversionRate).RoundInt()
+		uphotonToMint   = bondDenomToBurn.Amount.ToLegacyDec().Mul(conversionRate).TruncateInt()
 	)
 	// If no photon to mint, do not burn bondDenomToBurn, returns an error
 	// this could happen due to rounding
