@@ -267,3 +267,7 @@ func (msg MsgProposeLaw) ValidateBasic() error {
 
 	return nil
 }
+
+func (msg MsgProposeConstitutionAmendment) IsProposalKindConstitutionAmendment() {}
+
+func (msg MsgProposeLaw) IsProposalKindLaw() {}
