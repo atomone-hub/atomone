@@ -9,6 +9,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	sdktx "github.com/cosmos/cosmos-sdk/types/tx"
+	sdkgovtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	"github.com/atomone-hub/atomone/x/gov/types"
 	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
@@ -82,7 +83,7 @@ func (m MsgSubmitProposal) ValidateBasic() error {
 
 	// Check that either metadata or Msgs length is non nil.
 	if len(m.Messages) == 0 && len(m.Metadata) == 0 {
-		return types.ErrNoProposalMsgs.Wrap("either metadata or Msgs length must be non-nil")
+		return sdkgovtypes.ErrNoProposalMsgs.Wrap("either metadata or Msgs length must be non-nil")
 	}
 
 	msgs, err := m.GetMsgs()
@@ -93,7 +94,7 @@ func (m MsgSubmitProposal) ValidateBasic() error {
 	for idx, msg := range msgs {
 		if msg, ok := msg.(sdk.HasValidateBasic); ok {
 			if err := msg.ValidateBasic(); err != nil {
-				return types.ErrInvalidProposalMsg.Wrap(fmt.Sprintf("msg: %d, err: %s", idx, err.Error()))
+				return sdkgovtypes.ErrInvalidProposalMsg.Wrap(fmt.Sprintf("msg: %d, err: %s", idx, err.Error()))
 			}
 		}
 	}
@@ -142,7 +143,7 @@ func (msg MsgVote) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid voter address: %s", err)
 	}
 	if !ValidVoteOption(msg.Option) {
-		return types.ErrInvalidVote.Wrap(msg.Option.String())
+		return sdkgovtypes.ErrInvalidVote.Wrap(msg.Option.String())
 	}
 
 	return nil
@@ -174,25 +175,25 @@ func (msg MsgVoteWeighted) ValidateBasic() error {
 	usedOptions := make(map[VoteOption]bool)
 	for _, option := range msg.Options {
 		if !option.IsValid() {
-			return types.ErrInvalidVote.Wrap(option.String())
+			return sdkgovtypes.ErrInvalidVote.Wrap(option.String())
 		}
 		weight, err := math.LegacyNewDecFromStr(option.Weight)
 		if err != nil {
-			return types.ErrInvalidVote.Wrapf("Invalid weight: %s", err)
+			return sdkgovtypes.ErrInvalidVote.Wrapf("Invalid weight: %s", err)
 		}
 		totalWeight = totalWeight.Add(weight)
 		if usedOptions[option.Option] {
-			return types.ErrInvalidVote.Wrap("Duplicated vote option")
+			return sdkgovtypes.ErrInvalidVote.Wrap("Duplicated vote option")
 		}
 		usedOptions[option.Option] = true
 	}
 
 	if totalWeight.GT(math.LegacyNewDec(1)) {
-		return types.ErrInvalidVote.Wrap("Total weight overflow 1.00")
+		return sdkgovtypes.ErrInvalidVote.Wrap("Total weight overflow 1.00")
 	}
 
 	if totalWeight.LT(math.LegacyNewDec(1)) {
-		return types.ErrInvalidVote.Wrap("Total weight lower than 1.00")
+		return sdkgovtypes.ErrInvalidVote.Wrap("Total weight lower than 1.00")
 	}
 
 	return nil
@@ -247,12 +248,12 @@ func (msg MsgProposeConstitutionAmendment) ValidateBasic() error {
 	}
 
 	if msg.Amendment == "" {
-		return types.ErrInvalidProposalContent.Wrap("amendment cannot be empty")
+		return sdkgovtypes.ErrInvalidProposalContent.Wrap("amendment cannot be empty")
 	}
 
 	_, err := types.ParseUnifiedDiff(msg.Amendment)
 	if err != nil {
-		return types.ErrInvalidProposalContent.Wrap(err.Error())
+		return sdkgovtypes.ErrInvalidProposalContent.Wrap(err.Error())
 	}
 
 	return nil
@@ -266,3 +267,7 @@ func (msg MsgProposeLaw) ValidateBasic() error {
 
 	return nil
 }
+
+func (msg MsgProposeConstitutionAmendment) IsProposalKindConstitutionAmendment() {}
+
+func (msg MsgProposeLaw) IsProposalKindLaw() {}

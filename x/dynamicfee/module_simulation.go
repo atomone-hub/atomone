@@ -6,8 +6,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 
+	"github.com/atomone-hub/atomone/x/dynamicfee/simulation"
 	"github.com/atomone-hub/atomone/x/dynamicfee/types"
-	"github.com/atomone-hub/atomone/x/gov/simulation"
 )
 
 // GenerateGenesisState returns a disabled dynamicfee module because the module

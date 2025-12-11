@@ -40,6 +40,10 @@ import (
 	consensusparamtypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
 	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
+	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	govv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
+	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	mintkeeper "github.com/cosmos/cosmos-sdk/x/mint/keeper"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/cosmos/cosmos-sdk/x/params"
@@ -55,10 +59,7 @@ import (
 	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
 	dynamicfeekeeper "github.com/atomone-hub/atomone/x/dynamicfee/keeper"
 	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
-	govkeeper "github.com/atomone-hub/atomone/x/gov/keeper"
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
-	govv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
-	govv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
+	atomonegovkeeper "github.com/atomone-hub/atomone/x/gov/keeper"
 	photonkeeper "github.com/atomone-hub/atomone/x/photon/keeper"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
 )
@@ -70,15 +71,16 @@ type AppKeepers struct {
 	memKeys map[string]*storetypes.MemoryStoreKey
 
 	// keepers
-	AccountKeeper  authkeeper.AccountKeeper
-	BankKeeper     bankkeeper.Keeper
-	StakingKeeper  *stakingkeeper.Keeper
-	SlashingKeeper slashingkeeper.Keeper
-	MintKeeper     mintkeeper.Keeper
-	DistrKeeper    distrkeeper.Keeper
-	GovKeeper      *govkeeper.Keeper
-	UpgradeKeeper  *upgradekeeper.Keeper
-	ParamsKeeper   paramskeeper.Keeper
+	AccountKeeper    authkeeper.AccountKeeper
+	BankKeeper       bankkeeper.Keeper
+	StakingKeeper    *stakingkeeper.Keeper
+	SlashingKeeper   slashingkeeper.Keeper
+	MintKeeper       mintkeeper.Keeper
+	DistrKeeper      distrkeeper.Keeper
+	GovKeeper        *govkeeper.Keeper
+	GovKeeperWrapper *atomonegovkeeper.Keeper
+	UpgradeKeeper    *upgradekeeper.Keeper
+	ParamsKeeper     paramskeeper.Keeper
 	// IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
 	IBCKeeper             *ibckeeper.Keeper
 	ICAHostKeeper         icahostkeeper.Keeper
@@ -238,10 +240,11 @@ func NewAppKeeper(
 	govConfig.MaxMetadataLen = 10200
 	appKeepers.GovKeeper = govkeeper.NewKeeper(
 		appCodec,
-		appKeepers.keys[govtypes.StoreKey],
+		runtime.NewKVStoreService(appKeepers.keys[govtypes.StoreKey]),
 		appKeepers.AccountKeeper,
 		appKeepers.BankKeeper,
 		appKeepers.StakingKeeper,
+		appKeepers.DistrKeeper,
 		bApp.MsgServiceRouter(),
 		govConfig,
 		authorityStr,
@@ -255,11 +258,13 @@ func NewAppKeeper(
 		})
 	appKeepers.GovKeeper.SetLegacyRouter(govRouter)
 
+	appKeepers.GovKeeperWrapper = atomonegovkeeper.NewKeeper(appKeepers.GovKeeper)
+
 	appKeepers.CoreDaosKeeper = coredaoskeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(appKeepers.keys[coredaostypes.StoreKey]),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		appKeepers.GovKeeper,
+		appKeepers.GovKeeperWrapper,
 		appKeepers.StakingKeeper,
 	)
 

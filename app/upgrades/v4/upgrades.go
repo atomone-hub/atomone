@@ -2,10 +2,15 @@ package v4
 
 import (
 	"context"
+	"fmt"
 
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 
 	"github.com/cosmos/cosmos-sdk/types/module"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
+	sdkgov "github.com/cosmos/cosmos-sdk/x/gov/types"
+	sdkgovv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 
 	"github.com/atomone-hub/atomone/app/keepers"
 )
@@ -23,6 +28,29 @@ func CreateUpgradeHandler(
 			return vm, err
 		}
 
+		if err := initGovParams(ctx, keepers.GovKeeper); err != nil {
+			return vm, err
+		}
+
 		return vm, nil
 	}
+}
+
+// initGovParams initializes the missing gov modules added in AtomOne SDK v0.50.
+func initGovParams(ctx context.Context, govKeeper *govkeeper.Keeper) error {
+	params, err := govKeeper.Params.Get(ctx)
+	if err != nil {
+		return err
+	}
+
+	defaultParams := sdkgovv1.DefaultParams()
+	params.ProposalCancelRatio = defaultParams.ProposalCancelRatio
+	params.ProposalCancelDest = authtypes.NewModuleAddress(sdkgov.ModuleName).String()
+	params.MinDepositRatio = defaultParams.MinDepositRatio
+
+	if err := govKeeper.Params.Set(ctx, params); err != nil {
+		return fmt.Errorf("failed to set gov params: %w", err)
+	}
+
+	return nil
 }
