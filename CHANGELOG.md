@@ -6,6 +6,8 @@
 
 ### API BREAKING
 
+- Remove all unused code path in x/gov Atom One fork. The module wraps the x/gov Atom One SDK module instead [#248](https://github.com/atomone-hub/atomone/pull/248)
+
 ### BUG FIXES
 
 - Use `TruncateInt` to compute `uphotonToMint` [250](https://github.com/atomone-hub/atomone/pull/250)
@@ -15,6 +17,8 @@
 - Upgrade CometBFT to v0.38.19 to fix security issue (ASA-2025-003) [#234](https://github.com/atomone-hub/atomone/pull/234)
 
 ### FEATURES
+
+- Migrate x/gov fork from Atom One to Atom One SDK [#248](https://github.com/atomone-hub/atomone/pull/248)
 
 ### STATE BREAKING
 
