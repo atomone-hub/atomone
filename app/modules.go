@@ -172,8 +172,8 @@ thus, gov.EndBlock must be executed before staking.EndBlock
 func orderEndBlockers() []string {
 	return []string{
 		dynamicfeetypes.ModuleName,
-		govtypes.ModuleName,
 		stakingtypes.ModuleName,
+		govtypes.ModuleName,
 		ibcexported.ModuleName,
 		ibctransfertypes.ModuleName,
 		icatypes.ModuleName,
@@ -207,8 +207,8 @@ func orderInitBlockers() []string {
 		authtypes.ModuleName,
 		banktypes.ModuleName,
 		distrtypes.ModuleName,
-		govtypes.ModuleName,
 		stakingtypes.ModuleName,
+		govtypes.ModuleName,
 		photontypes.ModuleName,
 		slashingtypes.ModuleName,
 		minttypes.ModuleName,

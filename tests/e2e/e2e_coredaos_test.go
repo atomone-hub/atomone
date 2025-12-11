@@ -6,7 +6,6 @@ import (
 
 	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
 	govtypesv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
-	govtypesv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
@@ -20,24 +19,24 @@ func (s *IntegrationTestSuite) testCoreDAOs() {
 
 	steeringDAOAddress, err := s.chainA.multiSigAccounts[0].keyInfo.GetAddress()
 	s.Require().NoError(err)
-	oversiteDAOAddress, err := s.chainA.multiSigAccounts[1].keyInfo.GetAddress()
+	oversightDAOAddress, err := s.chainA.multiSigAccounts[1].keyInfo.GetAddress()
 	s.Require().NoError(err)
 	params.Params.SteeringDaoAddress = steeringDAOAddress.String()
-	params.Params.OversightDaoAddress = oversiteDAOAddress.String()
+	params.Params.OversightDaoAddress = oversightDAOAddress.String()
 	s.writeCoreDAOsParamChangeProposal(s.chainA, params.Params)
 	// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
 	proposalCounter++
 	submitGovFlags := []string{configFile(proposalParamChangeFilename)}
 	depositGovFlags := []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 	voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
-	s.submitGovProposal(chainAAPIEndpoint, senderAddress.String(), proposalCounter, "atomone.coredaos.v1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
+	s.submitGovProposal(chainAAPIEndpoint, senderAddress.String(), proposalCounter, "atomone.coredaos.v1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1.StatusPassed)
 
 	newParams := s.queryCoreDAOsParams(chainAAPIEndpoint)
 	s.Require().Equal(newParams.Params.SteeringDaoAddress, steeringDAOAddress.String())
-	s.Require().Equal(newParams.Params.OversightDaoAddress, oversiteDAOAddress.String())
+	s.Require().Equal(newParams.Params.OversightDaoAddress, oversightDAOAddress.String())
 
 	s.execBankMultiSend(s.chainA, valIdx, senderAddress.String(),
-		[]string{steeringDAOAddress.String(), oversiteDAOAddress.String()},
+		[]string{steeringDAOAddress.String(), oversightDAOAddress.String()},
 		sdk.NewCoins(
 			tokenAmount,
 			sdk.NewInt64Coin(uphotonDenom, 100_000_000),
@@ -161,7 +160,7 @@ func (s *IntegrationTestSuite) submitVotingPeriodLawProposal(c *chain) int {
 	depositGovFlags = append(depositGovFlags, depositString)
 	senderAddress, _ := s.chainA.validators[0].keyInfo.GetAddress()
 	sender := senderAddress.String()
-	s.submitGovCommand(chainAAPIEndpoint, sender, proposalCounter, "submit-proposal", submitGovFlags, govtypesv1beta1.StatusDepositPeriod)
-	s.submitGovCommand(chainAAPIEndpoint, sender, proposalCounter, "deposit", depositGovFlags, govtypesv1beta1.StatusVotingPeriod)
+	s.submitGovCommand(chainAAPIEndpoint, sender, proposalCounter, "submit-proposal", submitGovFlags, govtypesv1.StatusDepositPeriod)
+	s.submitGovCommand(chainAAPIEndpoint, sender, proposalCounter, "deposit", depositGovFlags, govtypesv1.StatusVotingPeriod)
 	return proposalCounter
 }

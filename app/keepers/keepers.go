@@ -268,16 +268,6 @@ func NewAppKeeper(
 		appKeepers.StakingKeeper,
 	)
 
-	// register the staking hooks
-	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
-	appKeepers.StakingKeeper.SetHooks(
-		stakingtypes.NewMultiStakingHooks(
-			appKeepers.DistrKeeper.Hooks(),
-			appKeepers.SlashingKeeper.Hooks(),
-			appKeepers.CoreDaosKeeper.StakingHooks(),
-		),
-	)
-
 	evidenceKeeper := evidencekeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(appKeepers.keys[evidencetypes.StoreKey]),
@@ -288,6 +278,17 @@ func NewAppKeeper(
 	)
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	appKeepers.EvidenceKeeper = *evidenceKeeper
+
+	// register the staking hooks
+	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
+	appKeepers.StakingKeeper.SetHooks(
+		stakingtypes.NewMultiStakingHooks(
+			appKeepers.DistrKeeper.Hooks(),
+			appKeepers.SlashingKeeper.Hooks(),
+			appKeepers.GovKeeper.StakingHooks(),
+			appKeepers.CoreDaosKeeper.StakingHooks(),
+		),
+	)
 
 	// ICA Host keeper
 	appKeepers.ICAHostKeeper = icahostkeeper.NewKeeper(
