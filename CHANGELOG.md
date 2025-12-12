@@ -16,6 +16,8 @@
 
 ### FEATURES
 
+- Migrate x/gov fork from Atom One to Atom One SDK [#248](https://github.com/atomone-hub/atomone/pull/248)
+
 ### STATE BREAKING
 
 ### IMPROVEMENTS
