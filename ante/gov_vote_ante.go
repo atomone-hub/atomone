@@ -74,6 +74,16 @@ func (g GovVoteDecorator) ValidateVoteMsgs(ctx sdk.Context, msgs []sdk.Msg) erro
 			if err != nil {
 				return err
 			}
+		case *govv1beta1.MsgVoteWeighted:
+			accAddr, err = sdk.AccAddressFromBech32(msg.Voter)
+			if err != nil {
+				return err
+			}
+		case *govv1.MsgVoteWeighted:
+			accAddr, err = sdk.AccAddressFromBech32(msg.Voter)
+			if err != nil {
+				return err
+			}
 		default:
 			// not a vote message - nothing to validate
 			return nil
