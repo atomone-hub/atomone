@@ -246,6 +246,7 @@ func ConvertSDKGovernorValSharesToAtomOne(sdkGovValShares *sdkv1.GovernorValShar
 	}
 
 	return &GovernorValShares{
+		GovernorAddress:  sdkGovValShares.GovernorAddress,
 		ValidatorAddress: sdkGovValShares.ValidatorAddress,
 		Shares:           sdkGovValShares.Shares,
 	}
@@ -572,6 +573,7 @@ func ConvertAtomOneGovernorValSharesToSDK(atomoneGovValShares *GovernorValShares
 	}
 
 	return &sdkv1.GovernorValShares{
+		GovernorAddress:  atomoneGovValShares.GovernorAddress,
 		ValidatorAddress: atomoneGovValShares.ValidatorAddress,
 		Shares:           atomoneGovValShares.Shares,
 	}
