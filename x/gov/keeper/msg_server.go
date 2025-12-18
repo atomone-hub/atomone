@@ -139,6 +139,62 @@ func (k msgServer) ProposeConstitutionAmendment(ctx context.Context, msg *v1.Msg
 	return &v1.MsgProposeConstitutionAmendmentResponse{}, nil
 }
 
+func (k msgServer) CreateGovernor(goCtx context.Context, msg *v1.MsgCreateGovernor) (*v1.MsgCreateGovernorResponse, error) {
+	_, err := k.MsgServer.CreateGovernor(goCtx, &sdkv1.MsgCreateGovernor{
+		Address:     msg.GetAddress(),
+		Description: msg.GetDescription(),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &v1.MsgCreateGovernorResponse{}, nil
+}
+
+func (k msgServer) EditGovernor(goCtx context.Context, msg *v1.MsgEditGovernor) (*v1.MsgEditGovernorResponse, error) {
+	_, err := k.MsgServer.EditGovernor(goCtx, &sdkv1.MsgEditGovernor{
+		Address:     msg.GetAddress(),
+		Description: msg.GetDescription(),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &v1.MsgEditGovernorResponse{}, nil
+}
+
+func (k msgServer) UpdateGovernorStatus(goCtx context.Context, msg *v1.MsgUpdateGovernorStatus) (*v1.MsgUpdateGovernorStatusResponse, error) {
+	_, err := k.MsgServer.UpdateGovernorStatus(goCtx, &sdkv1.MsgUpdateGovernorStatus{
+		Address: msg.GetAddress(),
+		Status:  sdkv1.GovernorStatus(msg.GetStatus()),
+	})
+
+	return &v1.MsgUpdateGovernorStatusResponse{}, nil
+}
+
+func (k msgServer) DelegateGovernor(goCtx context.Context, msg *v1.MsgDelegateGovernor) (*v1.MsgDelegateGovernorResponse, error) {
+	_, err := k.MsgServer.DelegateGovernor(goCtx, &sdkv1.MsgDelegateGovernor{
+		DelegatorAddress: msg.GetDelegatorAddress(),
+		GovernorAddress:  msg.GetGovernorAddress(),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &v1.MsgDelegateGovernorResponse{}, nil
+}
+
+func (k msgServer) UndelegateGovernor(goCtx context.Context, msg *v1.MsgUndelegateGovernor) (*v1.MsgUndelegateGovernorResponse, error) {
+	_, err := k.MsgServer.UndelegateGovernor(goCtx, &sdkv1.MsgUndelegateGovernor{
+		DelegatorAddress: msg.GetDelegatorAddress(),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &v1.MsgUndelegateGovernorResponse{}, nil
+}
+
 type legacyMsgServer struct {
 	sdkv1beta1.MsgServer
 }

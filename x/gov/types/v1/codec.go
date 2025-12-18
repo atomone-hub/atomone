@@ -19,6 +19,10 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "atomone/x/gov/v1/MsgUpdateParams")
 	legacy.RegisterAminoMsg(cdc, &MsgProposeConstitutionAmendment{}, "atomone/x/gov/v1/MsgProposeAmendment")
 	legacy.RegisterAminoMsg(cdc, &MsgProposeLaw{}, "atomone/x/gov/v1/MsgProposeLaw")
+	legacy.RegisterAminoMsg(cdc, &MsgCreateGovernor{}, "cosmos-sdk/v1/MsgCreateGovernor")
+	legacy.RegisterAminoMsg(cdc, &MsgEditGovernor{}, "cosmos-sdk/v1/MsgEditGovernor")
+	legacy.RegisterAminoMsg(cdc, &MsgDelegateGovernor{}, "cosmos-sdk/v1/MsgDelegateGovernor")
+	legacy.RegisterAminoMsg(cdc, &MsgUndelegateGovernor{}, "cosmos-sdk/v1/MsgUndelegateGovernor")
 }
 
 // RegisterInterfaces registers the interfaces types with the Interface Registry.
@@ -32,6 +36,10 @@ func RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 		&MsgUpdateParams{},
 		&MsgProposeConstitutionAmendment{},
 		&MsgProposeLaw{},
+		&MsgCreateGovernor{},
+		&MsgEditGovernor{},
+		&MsgDelegateGovernor{},
+		&MsgUndelegateGovernor{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
