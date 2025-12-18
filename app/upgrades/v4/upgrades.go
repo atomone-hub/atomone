@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"cosmossdk.io/math"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 
 	"github.com/cosmos/cosmos-sdk/types/module"
@@ -47,6 +48,8 @@ func initGovParams(ctx context.Context, govKeeper *govkeeper.Keeper) error {
 	params.ProposalCancelRatio = defaultParams.ProposalCancelRatio
 	params.ProposalCancelDest = authtypes.NewModuleAddress(sdkgov.ModuleName).String()
 	params.MinDepositRatio = defaultParams.MinDepositRatio
+	params.GovernorStatusChangePeriod = defaultParams.GovernorStatusChangePeriod
+	params.MinGovernorSelfDelegation = math.NewInt(10000_000000).String() // to be elegible as governor must have 10K ATONE staked
 
 	if err := govKeeper.Params.Set(ctx, params); err != nil {
 		return fmt.Errorf("failed to set gov params: %w", err)
