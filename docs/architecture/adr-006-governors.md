@@ -6,7 +6,7 @@
 
 ## Status
 
-Implemented (https://github.com/atomone-hub/atomone/pull/73), (https://github.com/atomone-hub/cosmos-sdk/pull/36), (https://github.com/atomone-hub/atomone/pull/257)
+Implemented (https://github.com/atomone-hub/atomone/pull/73), (https://github.com/atomone-hub/cosmos-sdk/pull/36), (https://github.com/atomone-hub/atomone/pull/258)
 
 ## Abstract
 

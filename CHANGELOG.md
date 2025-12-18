@@ -17,7 +17,7 @@
 ### FEATURES
 
 - Migrate `x/gov` fork from Atom One to Atom One SDK [#248](https://github.com/atomone-hub/atomone/pull/248)
-- Add governors to `x/gov` module [#257](https://github.com/atomone-hub/atomone/pull/255)
+- Add governors to `x/gov` module [#258](https://github.com/atomone-hub/atomone/pull/258)
 
 ### STATE BREAKING
 
