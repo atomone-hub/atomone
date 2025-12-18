@@ -9,6 +9,7 @@
 ### BUG FIXES
 
 - Use `TruncateInt` to compute `uphotonToMint` [250](https://github.com/atomone-hub/atomone/pull/250)
+- Fix missing ICA controller configuration
 
 ### DEPENDENCIES
 
