@@ -242,7 +242,7 @@ message MsgProposeConstitutionAmendmentResponse {}
 // MsgCreateGovernor defines a SDK message for creating a new governor.
 message MsgCreateGovernor {
   option (cosmos.msg.v1.signer) = "address";
-  option (amino.name)           = "atomone/MsgCreateGovernor";
+  option (amino.name)           = "atomone/v1/MsgCreateGovernor";
 
   option (gogoproto.equal)           = false;
 
@@ -257,7 +257,7 @@ message MsgCreateGovernorResponse {}
 // MsgEditGovernor defines a SDK message for editing an existing governor.
 message MsgEditGovernor {
   option (cosmos.msg.v1.signer) = "address";
-  option (amino.name)           = "atomone/MsgEditGovernor";
+  option (amino.name)           = "atomone/v1/MsgEditGovernor";
 
   option (gogoproto.equal)           = false;
 
@@ -272,7 +272,7 @@ message MsgEditGovernorResponse {}
 // MsgUpdateGovernorStatus defines a SDK message for updating the status of a governor.
 message MsgUpdateGovernorStatus {
   option (cosmos.msg.v1.signer) = "address";
-  option (amino.name)           = "atomone/MsgUpdateGovernorStatus";
+  option (amino.name)           = "atomone/v1/MsgUpdateGovernorStatus";
 
   option (gogoproto.equal)           = false;
 
@@ -288,7 +288,7 @@ message MsgUpdateGovernorStatusResponse {}
 // from a delegator to a governor.
 message MsgDelegateGovernor {
   option (cosmos.msg.v1.signer) = "delegator_address";
-  option (amino.name)           = "atomone/MsgDelegateGovernor";
+  option (amino.name)           = "atomone/v1/MsgDelegateGovernor";
 
   option (gogoproto.equal)           = false;
 
@@ -302,7 +302,7 @@ message MsgDelegateGovernorResponse {}
 // MsgUndelegateGovernor defines a SDK message for undelegating governance voting power
 message MsgUndelegateGovernor {
   option (cosmos.msg.v1.signer) = "delegator_address";
-  option (amino.name)           = "atomone/MsgUndelegateGovernor";
+  option (amino.name)           = "atomone/v1/MsgUndelegateGovernor";
 
   option (gogoproto.equal)           = false;
 

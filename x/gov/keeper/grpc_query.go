@@ -209,7 +209,7 @@ func (q grpcServer) Governor(c context.Context, req *v1.QueryGovernorRequest) (*
 	}
 
 	return &v1.QueryGovernorResponse{
-		Governor: &result.GetGovernor(),
+		Governor: v1.ConvertSDKGovernorToAtomOne(result.GetGovernor()),
 	}, nil
 }
 
@@ -223,7 +223,7 @@ func (q grpcServer) Governors(c context.Context, req *v1.QueryGovernorsRequest) 
 	}
 
 	return &v1.QueryGovernorsResponse{
-		Governors:  result.GetGovernors(),
+		Governors:  v1.ConvertSDKGovernorsToAtomOne(result.GetGovernors()),
 		Pagination: result.GetPagination(),
 	}, nil
 }
@@ -239,7 +239,7 @@ func (q grpcServer) GovernanceDelegations(c context.Context, req *v1.QueryGovern
 	}
 
 	return &v1.QueryGovernanceDelegationsResponse{
-		Delegations: result.GetDelegations(),
+		Delegations: v1.ConvertSDKGovernanceDelegationsToAtomOne(result.GetDelegations()),
 		Pagination:  result.GetPagination(),
 	}, nil
 }
@@ -269,7 +269,7 @@ func (q grpcServer) GovernorValShares(c context.Context, req *v1.QueryGovernorVa
 	}
 
 	return &v1.QueryGovernorValSharesResponse{
-		ValShares:  result.GetValShares(),
+		ValShares:  v1.ConvertSDKGovernorValSharesSliceToAtomOne(result.GetValShares()),
 		Pagination: result.GetPagination(),
 	}, nil
 }

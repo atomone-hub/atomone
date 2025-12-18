@@ -142,7 +142,7 @@ func (k msgServer) ProposeConstitutionAmendment(ctx context.Context, msg *v1.Msg
 func (k msgServer) CreateGovernor(goCtx context.Context, msg *v1.MsgCreateGovernor) (*v1.MsgCreateGovernorResponse, error) {
 	_, err := k.MsgServer.CreateGovernor(goCtx, &sdkv1.MsgCreateGovernor{
 		Address:     msg.GetAddress(),
-		Description: msg.GetDescription(),
+		Description: *v1.ConvertAtomOneGovernorDescriptionToSDK(&msg.Description),
 	})
 	if err != nil {
 		return nil, err
@@ -154,7 +154,7 @@ func (k msgServer) CreateGovernor(goCtx context.Context, msg *v1.MsgCreateGovern
 func (k msgServer) EditGovernor(goCtx context.Context, msg *v1.MsgEditGovernor) (*v1.MsgEditGovernorResponse, error) {
 	_, err := k.MsgServer.EditGovernor(goCtx, &sdkv1.MsgEditGovernor{
 		Address:     msg.GetAddress(),
-		Description: msg.GetDescription(),
+		Description: *v1.ConvertAtomOneGovernorDescriptionToSDK(&msg.Description),
 	})
 	if err != nil {
 		return nil, err
@@ -168,6 +168,9 @@ func (k msgServer) UpdateGovernorStatus(goCtx context.Context, msg *v1.MsgUpdate
 		Address: msg.GetAddress(),
 		Status:  sdkv1.GovernorStatus(msg.GetStatus()),
 	})
+	if err != nil {
+		return nil, err
+	}
 
 	return &v1.MsgUpdateGovernorStatusResponse{}, nil
 }
