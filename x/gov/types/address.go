@@ -10,8 +10,6 @@ import (
 
 	"github.com/stretchr/testify/assert/yaml"
 
-	"cosmossdk.io/collections"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -187,54 +185,4 @@ func addressBytesFromHexString(address string) ([]byte, error) {
 	}
 
 	return hex.DecodeString(address)
-}
-
-type governorAddressKey struct {
-	stringDecoder func(string) (GovernorAddress, error)
-	keyType       string
-}
-
-func (a governorAddressKey) Encode(buffer []byte, key GovernorAddress) (int, error) {
-	return collections.BytesKey.Encode(buffer, key)
-}
-
-func (a governorAddressKey) Decode(buffer []byte) (int, GovernorAddress, error) {
-	return collections.BytesKey.Decode(buffer)
-}
-
-func (a governorAddressKey) Size(key GovernorAddress) int {
-	return collections.BytesKey.Size(key)
-}
-
-func (a governorAddressKey) EncodeJSON(value GovernorAddress) ([]byte, error) {
-	return collections.StringKey.EncodeJSON(value.String())
-}
-
-func (a governorAddressKey) DecodeJSON(b []byte) (v GovernorAddress, err error) {
-	s, err := collections.StringKey.DecodeJSON(b)
-	if err != nil {
-		return
-	}
-	v, err = a.stringDecoder(s)
-	return
-}
-
-func (a governorAddressKey) Stringify(key GovernorAddress) string {
-	return key.String()
-}
-
-func (a governorAddressKey) KeyType() string {
-	return a.keyType
-}
-
-func (a governorAddressKey) EncodeNonTerminal(buffer []byte, key GovernorAddress) (int, error) {
-	return collections.BytesKey.EncodeNonTerminal(buffer, key)
-}
-
-func (a governorAddressKey) DecodeNonTerminal(buffer []byte) (int, GovernorAddress, error) {
-	return collections.BytesKey.DecodeNonTerminal(buffer)
-}
-
-func (a governorAddressKey) SizeNonTerminal(key GovernorAddress) int {
-	return collections.BytesKey.SizeNonTerminal(key)
 }
