@@ -15,6 +15,7 @@ import (
 	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	sdkgovtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
@@ -452,7 +453,7 @@ func (s *IntegrationTestSuite) testGovGovernors() {
 
 		// create a governor
 		acc1Addr, _ := s.chainA.genesisAccounts[1].keyInfo.GetAddress()
-		governorAddr := govtypes.GovernorAddress(acc1Addr).String()
+		governorAddr := sdkgovtypes.GovernorAddress(acc1Addr).String()
 		// a governor must have a delegation of at least 10atone
 		valAddr, _ := s.chainA.validators[0].keyInfo.GetAddress()
 		validatorAddr := sdk.ValAddress(valAddr).String()
