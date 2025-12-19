@@ -199,6 +199,81 @@ func (q grpcServer) ParticipationEMAs(ctx context.Context, _ *v1.QueryParticipat
 	}, nil
 }
 
+// Governor queries governor information based on governor address.
+func (q grpcServer) Governor(c context.Context, req *v1.QueryGovernorRequest) (*v1.QueryGovernorResponse, error) {
+	result, err := q.QueryServer.Governor(c, &sdkv1.QueryGovernorRequest{
+		GovernorAddress: req.GovernorAddress,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &v1.QueryGovernorResponse{
+		Governor: v1.ConvertSDKGovernorToAtomOne(result.GetGovernor()),
+	}, nil
+}
+
+// Governors queries all governors.
+func (q grpcServer) Governors(c context.Context, req *v1.QueryGovernorsRequest) (*v1.QueryGovernorsResponse, error) {
+	result, err := q.QueryServer.Governors(c, &sdkv1.QueryGovernorsRequest{
+		Pagination: req.Pagination,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &v1.QueryGovernorsResponse{
+		Governors:  v1.ConvertSDKGovernorsToAtomOne(result.GetGovernors()),
+		Pagination: result.GetPagination(),
+	}, nil
+}
+
+// GovernanceDelegations queries all delegations of a governor.
+func (q grpcServer) GovernanceDelegations(c context.Context, req *v1.QueryGovernanceDelegationsRequest) (*v1.QueryGovernanceDelegationsResponse, error) {
+	result, err := q.QueryServer.GovernanceDelegations(c, &sdkv1.QueryGovernanceDelegationsRequest{
+		GovernorAddress: req.GovernorAddress,
+		Pagination:      req.Pagination,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &v1.QueryGovernanceDelegationsResponse{
+		Delegations: v1.ConvertSDKGovernanceDelegationsToAtomOne(result.GetDelegations()),
+		Pagination:  result.GetPagination(),
+	}, nil
+}
+
+// GovernanceDelegation queries a delegation
+func (q grpcServer) GovernanceDelegation(c context.Context, req *v1.QueryGovernanceDelegationRequest) (*v1.QueryGovernanceDelegationResponse, error) {
+	result, err := q.QueryServer.GovernanceDelegation(c, &sdkv1.QueryGovernanceDelegationRequest{
+		DelegatorAddress: req.DelegatorAddress,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &v1.QueryGovernanceDelegationResponse{
+		GovernorAddress: result.GetGovernorAddress(),
+	}, nil
+}
+
+// GovernorValShares queries all validator shares of a governor.
+func (q grpcServer) GovernorValShares(c context.Context, req *v1.QueryGovernorValSharesRequest) (*v1.QueryGovernorValSharesResponse, error) {
+	result, err := q.QueryServer.GovernorValShares(c, &sdkv1.QueryGovernorValSharesRequest{
+		GovernorAddress: req.GovernorAddress,
+		Pagination:      req.Pagination,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &v1.QueryGovernorValSharesResponse{
+		ValShares:  v1.ConvertSDKGovernorValSharesSliceToAtomOne(result.GetValShares()),
+		Pagination: result.GetPagination(),
+	}, nil
+}
+
 var _ v1beta1.QueryServer = legacyQueryServer{}
 
 type legacyQueryServer struct {

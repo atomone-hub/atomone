@@ -199,6 +199,99 @@ func ConvertSDKQuorumRangeToAtomOne(sdkRange *sdkv1.QuorumRange) *QuorumRange {
 	}
 }
 
+// ConvertSDKGovernorDescriptionToAtomOne converts SDK GovernorDescription to AtomOne
+func ConvertSDKGovernorDescriptionToAtomOne(sdkGovDesc *sdkv1.GovernorDescription) *GovernorDescription {
+	if sdkGovDesc == nil {
+		return nil
+	}
+
+	return &GovernorDescription{
+		Moniker:         sdkGovDesc.Moniker,
+		Identity:        sdkGovDesc.Identity,
+		Website:         sdkGovDesc.Website,
+		SecurityContact: sdkGovDesc.SecurityContact,
+		Details:         sdkGovDesc.Details,
+	}
+}
+
+// ConvertSDKGovernorToAtomOne converts SDK Governor to AtomOne
+func ConvertSDKGovernorToAtomOne(sdkGovernor *sdkv1.Governor) *Governor {
+	if sdkGovernor == nil {
+		return nil
+	}
+
+	return &Governor{
+		GovernorAddress: sdkGovernor.GovernorAddress,
+		Description:     *ConvertSDKGovernorDescriptionToAtomOne(&sdkGovernor.Description),
+		Status:          GovernorStatus(sdkGovernor.Status),
+	}
+}
+
+// ConvertSDKGovernanceDelegationToAtomOne converts SDK GovernanceDelegation to AtomOne
+func ConvertSDKGovernanceDelegationToAtomOne(sdkDelegation *sdkv1.GovernanceDelegation) *GovernanceDelegation {
+	if sdkDelegation == nil {
+		return nil
+	}
+
+	return &GovernanceDelegation{
+		DelegatorAddress: sdkDelegation.DelegatorAddress,
+		GovernorAddress:  sdkDelegation.GovernorAddress,
+	}
+}
+
+// ConvertSDKGovernorValSharesToAtomOne converts SDK GovernorValShares to AtomOne
+func ConvertSDKGovernorValSharesToAtomOne(sdkGovValShares *sdkv1.GovernorValShares) *GovernorValShares {
+	if sdkGovValShares == nil {
+		return nil
+	}
+
+	return &GovernorValShares{
+		GovernorAddress:  sdkGovValShares.GovernorAddress,
+		ValidatorAddress: sdkGovValShares.ValidatorAddress,
+		Shares:           sdkGovValShares.Shares,
+	}
+}
+
+// ConvertSDKGovernorsToAtomOne converts a slice of SDK governors to AtomOne governors
+func ConvertSDKGovernorsToAtomOne(sdkGovernors []*sdkv1.Governor) []*Governor {
+	if sdkGovernors == nil {
+		return nil
+	}
+
+	atomOneGovernors := make([]*Governor, len(sdkGovernors))
+	for i, sdkGovernor := range sdkGovernors {
+		atomOneGovernors[i] = ConvertSDKGovernorToAtomOne(sdkGovernor)
+	}
+
+	return atomOneGovernors
+}
+
+// ConvertSDKGovernanceDelegationsToAtomOne converts a slice of SDK governance delegations to AtomOne governance delegations
+func ConvertSDKGovernanceDelegationsToAtomOne(sdkDelegations []*sdkv1.GovernanceDelegation) []*GovernanceDelegation {
+	if sdkDelegations == nil {
+		return nil
+	}
+
+	atomOneDelegations := make([]*GovernanceDelegation, len(sdkDelegations))
+	for i, sdkDelegation := range sdkDelegations {
+		atomOneDelegations[i] = ConvertSDKGovernanceDelegationToAtomOne(sdkDelegation)
+	}
+	return atomOneDelegations
+}
+
+// ConvertSDKGovernorValSharesSliceToAtomOne converts a slice of SDK GovernorValShares to AtomOne
+func ConvertSDKGovernorValSharesSliceToAtomOne(sdkGovValSharesSlice []*sdkv1.GovernorValShares) []*GovernorValShares {
+	if sdkGovValSharesSlice == nil {
+		return nil
+	}
+
+	atomOneGovValSharesSlice := make([]*GovernorValShares, len(sdkGovValSharesSlice))
+	for i, sdkGovValShares := range sdkGovValSharesSlice {
+		atomOneGovValSharesSlice[i] = ConvertSDKGovernorValSharesToAtomOne(sdkGovValShares)
+	}
+	return atomOneGovValSharesSlice
+}
+
 // ConvertSDKVotingParamsToAtomOne converts SDK voting params to AtomOne voting params
 func ConvertSDKVotingParamsToAtomOne(sdkParams *sdkv1.VotingParams) *VotingParams {
 	if sdkParams == nil {
@@ -431,6 +524,99 @@ func ConvertAtomOneDepositsToSDK(atomoneDeposits []*Deposit) []*sdkv1.Deposit {
 		deposits[i] = ConvertAtomOneDepositToSDK(d)
 	}
 	return deposits
+}
+
+// ConvertAtomoneGovernorDescriptionToSDK converts AtomOne GovernorDescription to SDK
+func ConvertAtomOneGovernorDescriptionToSDK(atomoneGovDesc *GovernorDescription) *sdkv1.GovernorDescription {
+	if atomoneGovDesc == nil {
+		return nil
+	}
+
+	return &sdkv1.GovernorDescription{
+		Moniker:         atomoneGovDesc.Moniker,
+		Identity:        atomoneGovDesc.Identity,
+		Website:         atomoneGovDesc.Website,
+		SecurityContact: atomoneGovDesc.SecurityContact,
+		Details:         atomoneGovDesc.Details,
+	}
+}
+
+// ConvertAtomOneGovernorToSDK converts AtomOne Governor to SDK
+func ConvertAtomOneGovernorToSDK(atomoneGovernor *Governor) *sdkv1.Governor {
+	if atomoneGovernor == nil {
+		return nil
+	}
+
+	return &sdkv1.Governor{
+		GovernorAddress: atomoneGovernor.GovernorAddress,
+		Description:     *ConvertAtomOneGovernorDescriptionToSDK(&atomoneGovernor.Description),
+		Status:          sdkv1.GovernorStatus(atomoneGovernor.Status),
+	}
+}
+
+// ConvertAtomOneGovernanceDelegationToSDK converts AtomOne GovernanceDelegation to SDK
+func ConvertAtomOneGovernanceDelegationToSDK(atomoneDelegation *GovernanceDelegation) *sdkv1.GovernanceDelegation {
+	if atomoneDelegation == nil {
+		return nil
+	}
+
+	return &sdkv1.GovernanceDelegation{
+		DelegatorAddress: atomoneDelegation.DelegatorAddress,
+		GovernorAddress:  atomoneDelegation.GovernorAddress,
+	}
+}
+
+// ConvertAtomOneGovernorValSharesToSDK converts AtomOne GovernorValShares to SDK
+func ConvertAtomOneGovernorValSharesToSDK(atomoneGovValShares *GovernorValShares) *sdkv1.GovernorValShares {
+	if atomoneGovValShares == nil {
+		return nil
+	}
+
+	return &sdkv1.GovernorValShares{
+		GovernorAddress:  atomoneGovValShares.GovernorAddress,
+		ValidatorAddress: atomoneGovValShares.ValidatorAddress,
+		Shares:           atomoneGovValShares.Shares,
+	}
+}
+
+// ConvertAtomOneGovernorsToSDK converts a slice of AtomOne governors to SDK governors
+func ConvertAtomOneGovernorsToSDK(atomoneGovernors []*Governor) []*sdkv1.Governor {
+	if atomoneGovernors == nil {
+		return nil
+	}
+
+	sdkGovernors := make([]*sdkv1.Governor, len(atomoneGovernors))
+	for i, atomoneGovernor := range atomoneGovernors {
+		sdkGovernors[i] = ConvertAtomOneGovernorToSDK(atomoneGovernor)
+	}
+
+	return sdkGovernors
+}
+
+// ConvertAtomOneGovernanceDelegationsToSDK converts a slice of AtomOne governance delegations to SDK governance delegations
+func ConvertAtomOneGovernanceDelegationsToSDK(atomoneDelegations []*GovernanceDelegation) []*sdkv1.GovernanceDelegation {
+	if atomoneDelegations == nil {
+		return nil
+	}
+
+	sdkDelegations := make([]*sdkv1.GovernanceDelegation, len(atomoneDelegations))
+	for i, atomoneDelegation := range atomoneDelegations {
+		sdkDelegations[i] = ConvertAtomOneGovernanceDelegationToSDK(atomoneDelegation)
+	}
+	return sdkDelegations
+}
+
+// ConvertAtomOneGovernorValSharesSliceToSDK converts a slice of AtomOne GovernorValShares to SDK
+func ConvertAtomOneGovernorValSharesSliceToSDK(atomoneGovValSharesSlice []*GovernorValShares) []*sdkv1.GovernorValShares {
+	if atomoneGovValSharesSlice == nil {
+		return nil
+	}
+
+	sdkGovValSharesSlice := make([]*sdkv1.GovernorValShares, len(atomoneGovValSharesSlice))
+	for i, atomoneGovValShares := range atomoneGovValSharesSlice {
+		sdkGovValSharesSlice[i] = ConvertAtomOneGovernorValSharesToSDK(atomoneGovValShares)
+	}
+	return sdkGovValSharesSlice
 }
 
 // ConvertAtomOneVotingParamsToSDK converts AtomOne voting params to SDK voting params

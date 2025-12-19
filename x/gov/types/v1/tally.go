@@ -2,7 +2,34 @@ package v1
 
 import (
 	"cosmossdk.io/math"
+
+	sdkgovtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 )
+
+// GovernorGovInfo used for tallying
+type GovernorGovInfo struct {
+	Address             sdkgovtypes.GovernorAddress // address of the governor
+	ValShares           map[string]math.LegacyDec   // shares held for each validator
+	ValSharesDeductions map[string]math.LegacyDec   // deductions from validator's shares when a delegator votes independently
+	Vote                WeightedVoteOptions         // vote of the governor
+}
+
+// NewGovernorGovInfo creates a GovernorGovInfo instance
+func NewGovernorGovInfo(address sdkgovtypes.GovernorAddress, valShares []GovernorValShares, options WeightedVoteOptions) GovernorGovInfo {
+	valSharesMap := make(map[string]math.LegacyDec)
+	valSharesDeductionsMap := make(map[string]math.LegacyDec)
+	for _, valShare := range valShares {
+		valSharesMap[valShare.ValidatorAddress] = valShare.Shares
+		valSharesDeductionsMap[valShare.ValidatorAddress] = math.LegacyZeroDec()
+	}
+
+	return GovernorGovInfo{
+		Address:             address,
+		ValShares:           valSharesMap,
+		ValSharesDeductions: valSharesDeductionsMap,
+		Vote:                options,
+	}
+}
 
 // NewTallyResult creates a new TallyResult instance
 func NewTallyResult(yes, abstain, no math.Int) TallyResult {
