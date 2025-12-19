@@ -1,6 +1,7 @@
 package keepers
 
 import (
+	icacontrollertypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/controller/types"
 	icahosttypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/host/types"
 	ibctransfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
 	ibcexported "github.com/cosmos/ibc-go/v10/modules/core/exported"
@@ -43,6 +44,7 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 		evidencetypes.StoreKey,
 		ibctransfertypes.StoreKey,
 		icahosttypes.StoreKey,
+		icacontrollertypes.StoreKey,
 		feegrant.StoreKey,
 		authzkeeper.StoreKey,
 		consensusparamtypes.StoreKey,
