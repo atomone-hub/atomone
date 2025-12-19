@@ -9,8 +9,6 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	sdkgovtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-
-	"github.com/atomone-hub/atomone/x/gov/types"
 )
 
 var (
@@ -161,6 +159,6 @@ func (g Governor) GetMoniker() string                  { return g.Description.Mo
 func (g Governor) GetStatus() GovernorStatus           { return g.Status }
 func (g Governor) GetDescription() GovernorDescription { return g.Description }
 func (g Governor) GetLastStatusChangeTime() *time.Time { return g.LastStatusChangeTime }
-func (g Governor) GetAddress() types.GovernorAddress {
-	return types.MustGovernorAddressFromBech32(g.GovernorAddress)
+func (g Governor) GetAddress() sdkgovtypes.GovernorAddress {
+	return sdkgovtypes.MustGovernorAddressFromBech32(g.GovernorAddress)
 }

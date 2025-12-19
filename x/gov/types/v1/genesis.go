@@ -8,8 +8,7 @@ import (
 
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	"github.com/atomone-hub/atomone/x/gov/types"
+	sdkgovtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 )
 
 // NewGenesisState creates a new genesis state for the governance module
@@ -112,7 +111,7 @@ func ValidateGenesis(data *GenesisState) error {
 	errGroup.Go(func() error {
 		governorIDs := make(map[string]struct{})
 		for _, g := range data.Governors {
-			if _, err := types.GovernorAddressFromBech32(g.GovernorAddress); err != nil {
+			if _, err := sdkgovtypes.GovernorAddressFromBech32(g.GovernorAddress); err != nil {
 				return fmt.Errorf("invalid governor address: %v", g)
 			}
 			if _, ok := governorIDs[g.GovernorAddress]; ok {
@@ -132,7 +131,7 @@ func ValidateGenesis(data *GenesisState) error {
 			if _, err := sdk.AccAddressFromBech32(d.DelegatorAddress); err != nil {
 				return fmt.Errorf("invalid delegator address: %v", d)
 			}
-			if _, err := types.GovernorAddressFromBech32(d.GovernorAddress); err != nil {
+			if _, err := sdkgovtypes.GovernorAddressFromBech32(d.GovernorAddress); err != nil {
 				return fmt.Errorf("invalid governor address: %v", d)
 			}
 			if _, ok := delegatorIDs[d.DelegatorAddress]; ok {

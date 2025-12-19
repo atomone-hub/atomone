@@ -6,12 +6,11 @@ import (
 	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	"github.com/atomone-hub/atomone/x/gov/types"
+	sdkgovtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 )
 
 // NewGovernanceDelegation creates a new GovernanceDelegation instance
-func NewGovernanceDelegation(delegatorAddr sdk.AccAddress, governorAddr types.GovernorAddress) GovernanceDelegation {
+func NewGovernanceDelegation(delegatorAddr sdk.AccAddress, governorAddr sdkgovtypes.GovernorAddress) GovernanceDelegation {
 	return GovernanceDelegation{
 		DelegatorAddress: delegatorAddr.String(),
 		GovernorAddress:  governorAddr.String(),
@@ -19,7 +18,7 @@ func NewGovernanceDelegation(delegatorAddr sdk.AccAddress, governorAddr types.Go
 }
 
 // NewGovernorValShares creates a new GovernorValShares instance
-func NewGovernorValShares(governorAddr types.GovernorAddress, validatorAddress sdk.ValAddress, shares math.LegacyDec) GovernorValShares {
+func NewGovernorValShares(governorAddr sdkgovtypes.GovernorAddress, validatorAddress sdk.ValAddress, shares math.LegacyDec) GovernorValShares {
 	if shares.IsNegative() {
 		panic(fmt.Sprintf("invalid governor val shares: %s", shares))
 	}

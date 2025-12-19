@@ -303,7 +303,7 @@ func (msg MsgEditGovernor) ValidateBasic() error {
 }
 
 // NewMsgDelegateGovernor creates a new MsgDelegateGovernor instance
-func NewMsgDelegateGovernor(delegator sdk.AccAddress, governor types.GovernorAddress) *MsgDelegateGovernor {
+func NewMsgDelegateGovernor(delegator sdk.AccAddress, governor sdkgovtypes.GovernorAddress) *MsgDelegateGovernor {
 	return &MsgDelegateGovernor{DelegatorAddress: delegator.String(), GovernorAddress: governor.String()}
 }
 
@@ -312,7 +312,7 @@ func (msg MsgDelegateGovernor) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.GetDelegatorAddress()); err != nil {
 		return err
 	}
-	if _, err := types.GovernorAddressFromBech32(msg.GetGovernorAddress()); err != nil {
+	if _, err := sdkgovtypes.GovernorAddressFromBech32(msg.GetGovernorAddress()); err != nil {
 		return err
 	}
 	return nil
