@@ -2,6 +2,9 @@ package keepers
 
 import (
 	ica "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts"
+	icacontroller "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/controller"
+	icacontrollerkeeper "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/controller/keeper"
+	icacontrollertypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/controller/types"
 	icahost "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/host"
 	icahostkeeper "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/host/keeper"
 	icahosttypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/host/types"
@@ -84,6 +87,7 @@ type AppKeepers struct {
 	// IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
 	IBCKeeper             *ibckeeper.Keeper
 	ICAHostKeeper         icahostkeeper.Keeper
+	ICAControllerKeeper   icacontrollerkeeper.Keeper
 	EvidenceKeeper        evidencekeeper.Keeper
 	TransferKeeper        ibctransferkeeper.Keeper
 	FeeGrantKeeper        feegrantkeeper.Keeper
@@ -302,6 +306,16 @@ func NewAppKeeper(
 		bApp.GRPCQueryRouter(),
 		authorityStr,
 	)
+	// ICA Controller keeper
+	appKeepers.ICAControllerKeeper = icacontrollerkeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(appKeepers.keys[icacontrollertypes.StoreKey]),
+		appKeepers.GetSubspace(icacontrollertypes.SubModuleName),
+		appKeepers.IBCKeeper.ChannelKeeper, // ICS4Wrapper
+		appKeepers.IBCKeeper.ChannelKeeper,
+		bApp.MsgServiceRouter(),
+		authorityStr,
+	)
 
 	appKeepers.TransferKeeper = ibctransferkeeper.NewKeeper(
 		appCodec,
@@ -323,7 +337,7 @@ func NewAppKeeper(
 	)
 
 	// Middleware Stacks
-	appKeepers.ICAModule = ica.NewAppModule(nil, &appKeepers.ICAHostKeeper)
+	appKeepers.ICAModule = ica.NewAppModule(&appKeepers.ICAControllerKeeper, &appKeepers.ICAHostKeeper)
 	appKeepers.TransferModule = transfer.NewAppModule(appKeepers.TransferKeeper)
 
 	// create IBC module from bottom to top of stack
@@ -335,11 +349,15 @@ func NewAppKeeper(
 	// Add transfer stack to IBC Router
 
 	// Create Interchain Accounts Stack
-	var icaHostStack porttypes.IBCModule = icahost.NewIBCModule(appKeepers.ICAHostKeeper)
+	var (
+		icaHostStack       porttypes.IBCModule = icahost.NewIBCModule(appKeepers.ICAHostKeeper)
+		icaControllerStack porttypes.IBCModule = icacontroller.NewIBCMiddleware(appKeepers.ICAControllerKeeper)
+	)
 
 	// Create IBC Router & seal
 	ibcRouter := porttypes.NewRouter().
 		AddRoute(icahosttypes.SubModuleName, icaHostStack).
+		AddRoute(icacontrollertypes.SubModuleName, icaControllerStack).
 		AddRoute(ibctransfertypes.ModuleName, transferStack)
 
 	ibcv2Router := ibcapi.NewRouter().
@@ -384,6 +402,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName)
 	paramsKeeper.Subspace(ibcexported.ModuleName)
 	paramsKeeper.Subspace(icahosttypes.SubModuleName)
+	paramsKeeper.Subspace(icacontrollertypes.SubModuleName).WithKeyTable(icacontrollertypes.ParamKeyTable())
 
 	return paramsKeeper
 }
