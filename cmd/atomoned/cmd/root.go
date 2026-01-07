@@ -6,6 +6,8 @@ import (
 	"os"
 	"path/filepath"
 
+	icscmd "github.com/atomone-hub/ics-poc-1/cmd"
+	icscfg "github.com/atomone-hub/ics-poc-1/config"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
@@ -37,9 +39,6 @@ import (
 
 	atomone "github.com/atomone-hub/atomone/app"
 	"github.com/atomone-hub/atomone/app/params"
-
-	icscmd "github.com/atomone-hub/ics-poc-1/cmd"
-	icscfg "github.com/atomone-hub/ics-poc-1/config"
 )
 
 // NewRootCmd creates a new root command for simd. It is called once in the
