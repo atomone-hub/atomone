@@ -29,5 +29,5 @@ func (m *MsgUpdateParams) ValidateBasic() error {
 		return err
 	}
 
-	return nil
+	return m.Params.ValidateBasic()
 }
