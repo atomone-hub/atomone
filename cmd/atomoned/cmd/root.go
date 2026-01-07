@@ -4,6 +4,7 @@ import (
 	"errors"
 	"io"
 	"os"
+	"path/filepath"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -36,6 +37,9 @@ import (
 
 	atomone "github.com/atomone-hub/atomone/app"
 	"github.com/atomone-hub/atomone/app/params"
+
+	icscmd "github.com/atomone-hub/ics-poc-1/cmd"
+	icscfg "github.com/atomone-hub/ics-poc-1/config"
 )
 
 // NewRootCmd creates a new root command for simd. It is called once in the
@@ -154,7 +158,14 @@ func initRootCmd(
 		snapshot.Cmd(newApp),
 	)
 
-	server.AddCommands(rootCmd, atomone.DefaultNodeHome, newApp, appExport, func(startCmd *cobra.Command) {})
+	icsConfig, err := icscfg.LoadConfig(filepath.Join(atomone.DefaultNodeHome, "config", "ics.toml"))
+	if err != nil {
+		panic(err)
+	}
+
+	server.AddCommandsWithStartCmdOptions(rootCmd, atomone.DefaultNodeHome, newApp, appExport, server.StartCmdOptions{
+		StartCommandHandler: icscmd.NewProvider(*icsConfig),
+	})
 
 	// add keybase, auxiliary RPC, query, and tx child commands
 	rootCmd.AddCommand(

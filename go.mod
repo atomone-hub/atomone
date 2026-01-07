@@ -1,11 +1,17 @@
 module github.com/atomone-hub/atomone
 
-go 1.24.5
+go 1.25.4
+
+// ATOM ONE forks
+replace (
+	cosmossdk.io/x/upgrade => github.com/atomone-hub/cosmos-sdk/x/upgrade v0.1.5-atomone.1.0.20251218143825-cbb67818e94a
+	github.com/atomone-hub/ics-poc-1 => github.com/atomone-hub/ics-poc-1 v0.0.0-20260107112452-cabcc94aa606
+	github.com/cometbft/cometbft => github.com/atomone-hub/cometbft v0.0.0-20251216151559-a24cfa28b916
+	github.com/cosmos/cosmos-sdk => github.com/atomone-hub/cosmos-sdk v0.50.14-atomone.1.0.20260107105933-680c2b513b67
+)
 
 replace (
 	cosmossdk.io/x/feegrant => cosmossdk.io/x/feegrant v0.1.1
-	cosmossdk.io/x/upgrade => github.com/atomone-hub/cosmos-sdk/x/upgrade v0.1.5-atomone.1.0.20251218143825-cbb67818e94a
-	github.com/cosmos/cosmos-sdk => github.com/atomone-hub/cosmos-sdk v0.50.14-atomone.1.0.20251218143825-cbb67818e94a
 	github.com/cosmos/ibc-go/v10 => github.com/cosmos/ibc-go/v10 v10.2.0
 )
 
@@ -16,7 +22,7 @@ require (
 	cosmossdk.io/core v0.11.3
 	cosmossdk.io/depinject v1.2.0
 	cosmossdk.io/errors v1.0.2
-	cosmossdk.io/log v1.5.1
+	cosmossdk.io/log v1.6.1
 	cosmossdk.io/math v1.5.3
 	cosmossdk.io/store v1.1.2
 	cosmossdk.io/tools/confix v0.1.2
@@ -24,8 +30,9 @@ require (
 	cosmossdk.io/x/feegrant v0.1.1
 	cosmossdk.io/x/tx v0.14.0
 	cosmossdk.io/x/upgrade v0.2.0
+	github.com/atomone-hub/ics-poc-1 v0.0.0-00010101000000-000000000000
 	github.com/cometbft/cometbft v0.38.20
-	github.com/cosmos/cosmos-db v1.1.1
+	github.com/cosmos/cosmos-db v1.1.3
 	github.com/cosmos/cosmos-proto v1.0.0-beta.5
 	github.com/cosmos/cosmos-sdk v0.53.0
 	github.com/cosmos/go-bip39 v1.0.0
@@ -244,7 +251,7 @@ require (
 	go.opentelemetry.io/otel/trace v1.37.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
-	golang.org/x/arch v0.15.0 // indirect
+	golang.org/x/arch v0.17.0 // indirect
 	golang.org/x/crypto v0.41.0 // indirect
 	golang.org/x/exp v0.0.0-20250305212735-054e65f0b394 // indirect
 	golang.org/x/net v0.43.0 // indirect
