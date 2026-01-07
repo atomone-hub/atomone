@@ -103,8 +103,8 @@ github.com/atomone-hub/cosmos-sdk/store v1.1.2-0.20260107105933-680c2b513b67 h1:
 github.com/atomone-hub/cosmos-sdk/store v1.1.2-0.20260107105933-680c2b513b67/go.mod h1:MfJn/OPcNIVQfpatZgRfZAVtsoFI5bnxVA0WTog4lbw=
 github.com/atomone-hub/cosmos-sdk/x/upgrade v0.1.5-atomone.1.0.20251218143825-cbb67818e94a h1:hoLPN0l4Z3ndSDoxyAFz9eRAKYsj49px/dYz4feX0BQ=
 github.com/atomone-hub/cosmos-sdk/x/upgrade v0.1.5-atomone.1.0.20251218143825-cbb67818e94a/go.mod h1:Fj4o8oq4Ek3aiuzeG5haL4ExKY3MHndz8J/F7q3PguE=
-github.com/atomone-hub/ics-poc-1 v0.0.0-20260107124406-768b6d79d964 h1:+bV8ApnQgA8L2SnlJKYYtNdYz64ioc5wzQXwC+6YXNw=
-github.com/atomone-hub/ics-poc-1 v0.0.0-20260107124406-768b6d79d964/go.mod h1:z8giKo5oo/KGa1kMGCRnQI9RjBf6lMQNPrjiIyXj6zI=
+github.com/atomone-hub/ics-poc-1 v0.0.0-20260107142032-e2562f1b3a4c h1:YLGjw99pToTjld+zoXnDcO5LPHFl6hG9hCvfZN9YYY4=
+github.com/atomone-hub/ics-poc-1 v0.0.0-20260107142032-e2562f1b3a4c/go.mod h1:z8giKo5oo/KGa1kMGCRnQI9RjBf6lMQNPrjiIyXj6zI=
 github.com/aws/aws-lambda-go v1.13.3/go.mod h1:4UKl9IzQMoD+QF79YdCuzCwp8VbmG4VAQwij/eHl5CU=
 github.com/aws/aws-sdk-go v1.27.0/go.mod h1:KmX6BPdI08NWTb3/sm4ZGu5ShLoqVDhKgpiN924inxo=
 github.com/aws/aws-sdk-go-v2 v0.18.0/go.mod h1:JWVYvqSMppoMJC0x5wdwiImzgXTI9FuZwxzkQq9wy+g=
