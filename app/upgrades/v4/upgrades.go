@@ -14,6 +14,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	dynamicfeekeeper "github.com/cosmos/cosmos-sdk/x/dynamicfee/keeper"
+	dynamicfeetypes "github.com/cosmos/cosmos-sdk/x/dynamicfee/types"
 	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
 	sdkgov "github.com/cosmos/cosmos-sdk/x/gov/types"
 	sdkgovv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
@@ -21,6 +23,7 @@ import (
 
 	"github.com/atomone-hub/atomone/app/keepers"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
+	photontypes "github.com/atomone-hub/atomone/x/photon/types"
 )
 
 // CreateUpgradeHandler returns a upgrade handler for AtomOne v4
@@ -47,6 +50,9 @@ func CreateUpgradeHandler(
 			return vm, err
 		}
 
+		if err := initDynamicfeeParams(ctx, keepers.DynamicfeeKeeper); err != nil {
+			return vm, err
+		}
 		return vm, nil
 	}
 }
@@ -580,6 +586,7 @@ func governorValSharesValueCodec(cdc codec.Codec) collcodec.ValueCodec[sdkgovv1.
 func migrateValidatorsCommission(ctx context.Context, stakingKeeper *stakingkeeper.Keeper) error {
 	// Set chain-wide commission to 5%
 	params, err := stakingKeeper.GetParams(ctx)
+
 	if err != nil {
 		return err
 	}
@@ -611,6 +618,29 @@ func migrateValidatorsCommission(ctx context.Context, stakingKeeper *stakingkeep
 			return err
 		}
 	}
+	return nil
+}
 
+func initDynamicfeeParams(ctx context.Context, dynamicfeeKeeper *dynamicfeekeeper.Keeper) error {
+	params, err := dynamicfeeKeeper.GetParams(ctx)
+	if err != nil {
+		return err
+	}
+
+	defaultParams := dynamicfeetypes.DefaultParams()
+	params.Alpha = defaultParams.Alpha
+	params.Beta = defaultParams.Beta
+	params.Window = defaultParams.Window
+	params.TargetBlockUtilization = defaultParams.TargetBlockUtilization
+	params.MinLearningRate = defaultParams.MinLearningRate
+	params.MinBaseGasPrice = defaultParams.MinBaseGasPrice
+	params.Gamma = defaultParams.Gamma
+	params.Enabled = defaultParams.Enabled
+	params.DefaultMaxBlockGas = defaultParams.DefaultMaxBlockGas
+	params.MaxLearningRate = defaultParams.MaxLearningRate
+	params.FeeDenom = photontypes.Denom
+	if err := dynamicfeeKeeper.SetParams(ctx, params); err != nil {
+		return fmt.Errorf("failed to set dynamicfee params: %w", err)
+	}
 	return nil
 }

@@ -19,10 +19,10 @@ import (
 	sdkgovtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	govtypesv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
+	dynamicfeetypes "github.com/cosmos/cosmos-sdk/x/dynamicfee/types"
 )
 
 /*
@@ -676,7 +676,7 @@ func (s *IntegrationTestSuite) writeDynamicfeeParamChangeProposal(c *chain, para
 	{
 		"messages":[
 		  {
-			"@type": "/atomone.dynamicfee.v1.MsgUpdateParams",
+			"@type": "/cosmos.dynamicfee.v1.MsgUpdateParams",
 			"authority": "%s",
 			"params": %s
 		  }
