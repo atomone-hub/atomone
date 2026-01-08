@@ -15,8 +15,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	dynamicfeekeeper "github.com/cosmos/cosmos-sdk/x/dynamicfee/keeper"
-	dynamicfeetypes "github.com/cosmos/cosmos-sdk/x/dynamicfee/types"
 	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
 	sdkgov "github.com/cosmos/cosmos-sdk/x/gov/types"
 	sdkgovv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
@@ -46,9 +44,6 @@ func CreateUpgradeHandler(
 			return vm, err
 		}
 
-		if err := initDynamicfeeParams(ctx, keepers.DynamicfeeKeeper); err != nil {
-			return vm, err
-		}
 		return vm, nil
 	}
 }
