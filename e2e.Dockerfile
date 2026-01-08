@@ -3,6 +3,10 @@ ARG IMG_TAG=latest
 
 # Compile the atomoned binary
 FROM golang:$GO_VERSION-alpine AS atomoned-builder
+RUN apk add --no-cache git openssh ca-certificates
+WORKDIR /src
+RUN git clone https://github.com/atomone-hub/cosmos-sdk.git
+RUN cd cosmos-sdk;git checkout giuliostramondo/chore/dynamicfee-sdk
 WORKDIR /src/app/
 COPY go.mod go.sum* ./
 RUN go mod download

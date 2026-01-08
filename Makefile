@@ -327,6 +327,8 @@ localnet-start: build
 	$(localnetd) genesis add-genesis-account atone1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8flcml8 5388766663072uatone
 	jq '.app_state.distribution.fee_pool.community_pool = [ { "denom": "uatone", "amount": "5388766663072.000000000000000000" }]' $(localnet_home)/config/genesis.json > /tmp/gen
 	mv /tmp/gen $(localnet_home)/config/genesis.json
+	jq '.app_state.dynamicfee.params.fee_denom = "uphoton"' $(localnet_home)/config/genesis.json > /tmp/gen
+	mv /tmp/gen $(localnet_home)/config/genesis.json
 	# Previous add-genesis-account call added the auth module account as a BaseAccount, we need to remove it
 	jq 'del(.app_state.auth.accounts[] | select(.address == "atone1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8flcml8"))' $(localnet_home)/config/genesis.json > /tmp/gen
 	mv /tmp/gen $(localnet_home)/config/genesis.json

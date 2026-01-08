@@ -30,6 +30,8 @@ import (
 	consensusparamtypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
 	distr "github.com/cosmos/cosmos-sdk/x/distribution"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
+	"github.com/cosmos/cosmos-sdk/x/dynamicfee"
+	dynamicfeetypes "github.com/cosmos/cosmos-sdk/x/dynamicfee/types"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	"github.com/cosmos/cosmos-sdk/x/gov"
@@ -45,8 +47,6 @@ import (
 
 	"github.com/atomone-hub/atomone/x/coredaos"
 	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
-	"github.com/atomone-hub/atomone/x/dynamicfee"
-	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
 	atomonegov "github.com/atomone-hub/atomone/x/gov"
 	atomonegovv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	"github.com/atomone-hub/atomone/x/photon"

@@ -21,9 +21,10 @@ import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 	govv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
+	photontypes "github.com/atomone-hub/atomone/x/photon/types"
+	dynamicfeetypes "github.com/cosmos/cosmos-sdk/x/dynamicfee/types"
 )
 
 func getGenDoc(path string) (*genutiltypes.AppGenesis, error) {
@@ -247,6 +248,7 @@ func modifyGenesis(cdc codec.Codec, path, moniker, amountStr string, addrAll []s
 	dynamicfeeGenState := dynamicfeetypes.GetGenesisStateFromAppState(cdc, appState)
 	baseGasPrice := math.LegacyMustNewDecFromStr("0.00001")
 	dynamicfeeGenState.Params.MinBaseGasPrice = baseGasPrice
+	dynamicfeeGenState.Params.FeeDenom = photontypes.Denom
 	dynamicfeeGenState.State.BaseGasPrice = baseGasPrice
 	dynamicfeeGenStateBz, err := cdc.MarshalJSON(&dynamicfeeGenState)
 	if err != nil {

@@ -45,6 +45,8 @@ import (
 	consensusparamtypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
 	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
+	dynamicfeekeeper "github.com/cosmos/cosmos-sdk/x/dynamicfee/keeper"
+	dynamicfeetypes "github.com/cosmos/cosmos-sdk/x/dynamicfee/types"
 	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	govv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
@@ -62,8 +64,6 @@ import (
 
 	coredaoskeeper "github.com/atomone-hub/atomone/x/coredaos/keeper"
 	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
-	dynamicfeekeeper "github.com/atomone-hub/atomone/x/dynamicfee/keeper"
-	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
 	atomonegovkeeper "github.com/atomone-hub/atomone/x/gov/keeper"
 	photonkeeper "github.com/atomone-hub/atomone/x/photon/keeper"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
@@ -395,10 +395,10 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 
 	//nolint: staticcheck // SA1019: moduletypes.ParamKeyTable is deprecated
 	paramsKeeper.Subspace(authtypes.ModuleName).WithKeyTable(authtypes.ParamKeyTable())
-	paramsKeeper.Subspace(stakingtypes.ModuleName).WithKeyTable(stakingtypes.ParamKeyTable())   //nolint:staticcheck // SA1019
-	paramsKeeper.Subspace(banktypes.ModuleName).WithKeyTable(banktypes.ParamKeyTable())         //nolint:staticcheck // SA1019
-	paramsKeeper.Subspace(minttypes.ModuleName).WithKeyTable(minttypes.ParamKeyTable())         //nolint:staticcheck // SA1019
-	paramsKeeper.Subspace(distrtypes.ModuleName).WithKeyTable(distrtypes.ParamKeyTable())       //nolint:staticcheck // SA1019
+	paramsKeeper.Subspace(stakingtypes.ModuleName).WithKeyTable(stakingtypes.ParamKeyTable()) //nolint:staticcheck // SA1019
+	paramsKeeper.Subspace(banktypes.ModuleName).WithKeyTable(banktypes.ParamKeyTable())
+	paramsKeeper.Subspace(minttypes.ModuleName).WithKeyTable(minttypes.ParamKeyTable()) //nolint:staticcheck // SA1019
+	paramsKeeper.Subspace(distrtypes.ModuleName).WithKeyTable(distrtypes.ParamKeyTable())
 	paramsKeeper.Subspace(slashingtypes.ModuleName).WithKeyTable(slashingtypes.ParamKeyTable()) //nolint:staticcheck // SA1019
 	paramsKeeper.Subspace(govtypes.ModuleName).WithKeyTable(govv1.ParamKeyTable())              //nolint:staticcheck // SA1019
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName).WithKeyTable(ibctransfertypes.ParamKeyTable())
