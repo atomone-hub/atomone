@@ -54,24 +54,24 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
+	"github.com/cosmos/cosmos-sdk/x/gov"
+	govclient "github.com/cosmos/cosmos-sdk/x/gov/client"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	paramsclient "github.com/cosmos/cosmos-sdk/x/params/client"
 
 	atomoneante "github.com/atomone-hub/atomone/ante"
 	"github.com/atomone-hub/atomone/app/keepers"
 	"github.com/atomone-hub/atomone/app/upgrades"
-	v3 "github.com/atomone-hub/atomone/app/upgrades/v3"
 	v4 "github.com/atomone-hub/atomone/app/upgrades/v4"
 	"github.com/atomone-hub/atomone/client/docs"
 	atomonepost "github.com/atomone-hub/atomone/post"
-	"github.com/atomone-hub/atomone/x/gov"
-	govclient "github.com/atomone-hub/atomone/x/gov/client"
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 )
 
 var (
 	// DefaultNodeHome default home directories for the application daemon
 	DefaultNodeHome string
 
-	Upgrades = []upgrades.Upgrade{v3.Upgrade, v4.Upgrade}
+	Upgrades = []upgrades.Upgrade{v4.Upgrade}
 )
 
 var (
@@ -225,7 +225,7 @@ func NewAtomOneApp(
 			genutiltypes.ModuleName: genutil.NewAppModuleBasic(genutiltypes.DefaultMessageValidator),
 			govtypes.ModuleName: gov.NewAppModuleBasic(
 				[]govclient.ProposalHandler{
-					paramsChangeProposalHandler,
+					paramsclient.ProposalHandler,
 				},
 			),
 		})

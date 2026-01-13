@@ -13,6 +13,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
+	sdkgovv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 
 	"github.com/atomone-hub/atomone/app/keepers"
 	govkeeper "github.com/atomone-hub/atomone/x/gov/keeper"
@@ -36,7 +37,7 @@ func CreateUpgradeHandler(
 		if err != nil {
 			return vm, err
 		}
-		if err := initGovDynamicQuorum(sdkCtx, keepers.GovKeeper); err != nil {
+		if err := initGovDynamicQuorum(sdkCtx, keepers.GovKeeperWrapper); err != nil {
 			return vm, err
 		}
 
@@ -53,19 +54,37 @@ func CreateUpgradeHandler(
 // participation ema.
 func initGovDynamicQuorum(ctx sdk.Context, govKeeper *govkeeper.Keeper) error {
 	ctx.Logger().Info("Initializing gov module for dynamic quorum...")
-	params := govKeeper.GetParams(ctx)
+	params, err := govKeeper.Params.Get(ctx)
+	if err != nil {
+		return err
+	}
 	defaultParams := v1.DefaultParams()
-	params.QuorumRange = defaultParams.QuorumRange
-	params.ConstitutionAmendmentQuorumRange = defaultParams.ConstitutionAmendmentQuorumRange
-	params.LawQuorumRange = defaultParams.LawQuorumRange
-	if err := govKeeper.SetParams(ctx, params); err != nil {
+	params.QuorumRange = &sdkgovv1.QuorumRange{
+		Min: defaultParams.QuorumRange.Min,
+		Max: defaultParams.QuorumRange.Max,
+	}
+	params.ConstitutionAmendmentQuorumRange = &sdkgovv1.QuorumRange{
+		Min: defaultParams.ConstitutionAmendmentQuorumRange.Min,
+		Max: defaultParams.ConstitutionAmendmentQuorumRange.Max,
+	}
+	params.LawQuorumRange = &sdkgovv1.QuorumRange{
+		Min: defaultParams.LawQuorumRange.Min,
+		Max: defaultParams.LawQuorumRange.Max,
+	}
+	if err := govKeeper.Params.Set(ctx, params); err != nil {
 		return fmt.Errorf("set gov params: %w", err)
 	}
 	// NOTE(tb): Disregarding whales' votes, the current participation is less than 12%
 	initParticipationEma := math.LegacyNewDecWithPrec(12, 2)
-	govKeeper.SetParticipationEMA(ctx, initParticipationEma)
-	govKeeper.SetConstitutionAmendmentParticipationEMA(ctx, initParticipationEma)
-	govKeeper.SetLawParticipationEMA(ctx, initParticipationEma)
+	if err := govKeeper.ParticipationEMA.Set(ctx, initParticipationEma); err != nil {
+		return fmt.Errorf("set participation EMA: %w", err)
+	}
+	if err := govKeeper.ConstitutionAmendmentParticipationEMA.Set(ctx, initParticipationEma); err != nil {
+		return fmt.Errorf("set constitution amendment participation EMA: %w", err)
+	}
+	if err := govKeeper.LawParticipationEMA.Set(ctx, initParticipationEma); err != nil {
+		return fmt.Errorf("set law participation EMA: %w", err)
+	}
 	ctx.Logger().Info("Gov module initialized for dynamic quorum")
 	return nil
 }

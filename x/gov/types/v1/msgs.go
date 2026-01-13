@@ -9,14 +9,15 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	sdktx "github.com/cosmos/cosmos-sdk/types/tx"
+	sdkgovtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	"github.com/atomone-hub/atomone/x/gov/types"
 	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
 )
 
 var (
-	_, _, _, _, _, _, _, _ sdk.Msg                            = &MsgSubmitProposal{}, &MsgDeposit{}, &MsgVote{}, &MsgVoteWeighted{}, &MsgExecLegacyContent{}, &MsgUpdateParams{}, &MsgProposeConstitutionAmendment{}, &MsgProposeLaw{}
-	_, _                   codectypes.UnpackInterfacesMessage = &MsgSubmitProposal{}, &MsgExecLegacyContent{}
+	_, _, _, _, _, _, _, _, _, _, _, _, _ sdk.Msg                            = &MsgSubmitProposal{}, &MsgDeposit{}, &MsgVote{}, &MsgVoteWeighted{}, &MsgExecLegacyContent{}, &MsgUpdateParams{}, &MsgProposeConstitutionAmendment{}, &MsgProposeLaw{}, &MsgCreateGovernor{}, &MsgEditGovernor{}, &MsgDelegateGovernor{}, &MsgUndelegateGovernor{}, &MsgUpdateGovernorStatus{}
+	_, _                                  codectypes.UnpackInterfacesMessage = &MsgSubmitProposal{}, &MsgExecLegacyContent{}
 )
 
 // NewMsgSubmitProposal creates a new MsgSubmitProposal.
@@ -82,7 +83,7 @@ func (m MsgSubmitProposal) ValidateBasic() error {
 
 	// Check that either metadata or Msgs length is non nil.
 	if len(m.Messages) == 0 && len(m.Metadata) == 0 {
-		return types.ErrNoProposalMsgs.Wrap("either metadata or Msgs length must be non-nil")
+		return sdkgovtypes.ErrNoProposalMsgs.Wrap("either metadata or Msgs length must be non-nil")
 	}
 
 	msgs, err := m.GetMsgs()
@@ -93,7 +94,7 @@ func (m MsgSubmitProposal) ValidateBasic() error {
 	for idx, msg := range msgs {
 		if msg, ok := msg.(sdk.HasValidateBasic); ok {
 			if err := msg.ValidateBasic(); err != nil {
-				return types.ErrInvalidProposalMsg.Wrap(fmt.Sprintf("msg: %d, err: %s", idx, err.Error()))
+				return sdkgovtypes.ErrInvalidProposalMsg.Wrap(fmt.Sprintf("msg: %d, err: %s", idx, err.Error()))
 			}
 		}
 	}
@@ -142,7 +143,7 @@ func (msg MsgVote) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid voter address: %s", err)
 	}
 	if !ValidVoteOption(msg.Option) {
-		return types.ErrInvalidVote.Wrap(msg.Option.String())
+		return sdkgovtypes.ErrInvalidVote.Wrap(msg.Option.String())
 	}
 
 	return nil
@@ -174,25 +175,25 @@ func (msg MsgVoteWeighted) ValidateBasic() error {
 	usedOptions := make(map[VoteOption]bool)
 	for _, option := range msg.Options {
 		if !option.IsValid() {
-			return types.ErrInvalidVote.Wrap(option.String())
+			return sdkgovtypes.ErrInvalidVote.Wrap(option.String())
 		}
 		weight, err := math.LegacyNewDecFromStr(option.Weight)
 		if err != nil {
-			return types.ErrInvalidVote.Wrapf("Invalid weight: %s", err)
+			return sdkgovtypes.ErrInvalidVote.Wrapf("Invalid weight: %s", err)
 		}
 		totalWeight = totalWeight.Add(weight)
 		if usedOptions[option.Option] {
-			return types.ErrInvalidVote.Wrap("Duplicated vote option")
+			return sdkgovtypes.ErrInvalidVote.Wrap("Duplicated vote option")
 		}
 		usedOptions[option.Option] = true
 	}
 
 	if totalWeight.GT(math.LegacyNewDec(1)) {
-		return types.ErrInvalidVote.Wrap("Total weight overflow 1.00")
+		return sdkgovtypes.ErrInvalidVote.Wrap("Total weight overflow 1.00")
 	}
 
 	if totalWeight.LT(math.LegacyNewDec(1)) {
-		return types.ErrInvalidVote.Wrap("Total weight lower than 1.00")
+		return sdkgovtypes.ErrInvalidVote.Wrap("Total weight lower than 1.00")
 	}
 
 	return nil
@@ -247,12 +248,12 @@ func (msg MsgProposeConstitutionAmendment) ValidateBasic() error {
 	}
 
 	if msg.Amendment == "" {
-		return types.ErrInvalidProposalContent.Wrap("amendment cannot be empty")
+		return sdkgovtypes.ErrInvalidProposalContent.Wrap("amendment cannot be empty")
 	}
 
 	_, err := types.ParseUnifiedDiff(msg.Amendment)
 	if err != nil {
-		return types.ErrInvalidProposalContent.Wrap(err.Error())
+		return sdkgovtypes.ErrInvalidProposalContent.Wrap(err.Error())
 	}
 
 	return nil
@@ -264,5 +265,84 @@ func (msg MsgProposeLaw) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", err)
 	}
 
+	return nil
+}
+
+func (msg MsgProposeConstitutionAmendment) IsProposalKindConstitutionAmendment() {}
+
+func (msg MsgProposeLaw) IsProposalKindLaw() {}
+
+// NewMsgCreateGovernor creates a new MsgCreateGovernor instance
+func NewMsgCreateGovernor(address sdk.AccAddress, description GovernorDescription) *MsgCreateGovernor {
+	return &MsgCreateGovernor{Address: address.String(), Description: description}
+}
+
+// ValidateBasic implements the sdk.Msg interface.
+func (msg MsgCreateGovernor) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(msg.GetAddress()); err != nil {
+		return err
+	}
+
+	if _, err := msg.GetDescription().EnsureLength(); err != nil {
+		return sdkgovtypes.ErrInvalidGovernanceDescription.Wrap(err.Error())
+	}
+	return nil
+}
+
+// NewMsgEditGovernor creates a new MsgEditGovernor instance
+func NewMsgEditGovernor(addr sdk.AccAddress, description GovernorDescription) *MsgEditGovernor {
+	return &MsgEditGovernor{Address: addr.String(), Description: description}
+}
+
+// ValidateBasic implements the sdk.Msg interface.
+func (msg MsgEditGovernor) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(msg.GetAddress()); err != nil {
+		return err
+	}
+	return nil
+}
+
+// NewMsgDelegateGovernor creates a new MsgDelegateGovernor instance
+func NewMsgDelegateGovernor(delegator sdk.AccAddress, governor sdkgovtypes.GovernorAddress) *MsgDelegateGovernor {
+	return &MsgDelegateGovernor{DelegatorAddress: delegator.String(), GovernorAddress: governor.String()}
+}
+
+// ValidateBasic implements the sdk.Msg interface.
+func (msg MsgDelegateGovernor) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(msg.GetDelegatorAddress()); err != nil {
+		return err
+	}
+	if _, err := sdkgovtypes.GovernorAddressFromBech32(msg.GetGovernorAddress()); err != nil {
+		return err
+	}
+	return nil
+}
+
+// NewMsgUndelegateGovernor creates a new MsgUndelegateGovernor instance
+func NewMsgUndelegateGovernor(delegator sdk.AccAddress) *MsgUndelegateGovernor {
+	return &MsgUndelegateGovernor{DelegatorAddress: delegator.String()}
+}
+
+// ValidateBasic implements the sdk.Msg interface.
+func (msg MsgUndelegateGovernor) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(msg.GetDelegatorAddress()); err != nil {
+		return err
+	}
+	return nil
+}
+
+// NewMsgUpdateGovernorStatus creates a new MsgUpdateGovernorStatus instance
+func NewMsgUpdateGovernorStatus(address sdk.AccAddress, status GovernorStatus) *MsgUpdateGovernorStatus {
+	return &MsgUpdateGovernorStatus{Address: address.String(), Status: status}
+}
+
+// ValidateBasic implements the sdk.Msg interface.
+func (msg MsgUpdateGovernorStatus) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(msg.GetAddress()); err != nil {
+		return err
+	}
+	if !msg.GetStatus().IsValid() {
+		return sdkgovtypes.ErrInvalidGovernorStatus.Wrap(msg.GetStatus().String())
+	}
 	return nil
 }

@@ -8,13 +8,29 @@
 
 ### BUG FIXES
 
+- Use `TruncateInt` to compute `uphotonToMint` [#250](https://github.com/atomone-hub/atomone/pull/250)
+- Fix missing ICA controller configuration [#257](https://github.com/atomone-hub/atomone/pull/257)
+
 ### DEPENDENCIES
 
+- Upgrade CometBFT to v0.38.19 to fix security issue (ASA-2025-003) [#234](https://github.com/atomone-hub/atomone/pull/234)
+
 ### FEATURES
+
+- Migrate `x/gov` fork from Atom One to Atom One SDK [#248](https://github.com/atomone-hub/atomone/pull/248)
+- Add governors to `x/gov` module [#258](https://github.com/atomone-hub/atomone/pull/258)
 
 ### STATE BREAKING
 
 ### IMPROVEMENTS
+
+## v3.0.3
+
+*Oct 20th, 2025*
+
+### DEPENDENCIES
+
+- Upgrade CometBFT to v0.37.16 to fix security issue (ASA-2025-003) [#233](https://github.com/atomone-hub/atomone/pull/233)
 
 ## v3.0.2
 

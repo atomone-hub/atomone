@@ -1,6 +1,8 @@
 package atomone
 
 import (
+	"encoding/json"
+
 	icatypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/types"
 	ibctransfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
 	ibc "github.com/cosmos/ibc-go/v10/modules/core"
@@ -30,6 +32,8 @@ import (
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
+	"github.com/cosmos/cosmos-sdk/x/gov"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/x/mint"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	sdkparams "github.com/cosmos/cosmos-sdk/x/params"
@@ -43,8 +47,8 @@ import (
 	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
 	"github.com/atomone-hub/atomone/x/dynamicfee"
 	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
-	"github.com/atomone-hub/atomone/x/gov"
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
+	atomonegov "github.com/atomone-hub/atomone/x/gov"
+	atomonegovv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	"github.com/atomone-hub/atomone/x/photon"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
 )
@@ -63,11 +67,29 @@ var maccPerms = map[string][]string{
 	coredaostypes.ModuleName:       nil,
 }
 
+type govModuleAtomOneDefaults struct {
+	gov.AppModule
+}
+
+// DefaultGenesis returns default genesis state as raw bytes for the gov module.
+// It sets the same defaults than the atom one x/gov wrapper for genesis
+func (am govModuleAtomOneDefaults) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
+	return cdc.MustMarshalJSON(atomonegovv1.DefaultGenesisState())
+}
+
 func appModules(
 	app *AtomOneApp,
 	appCodec codec.Codec,
 	txConfig client.TxConfig,
 ) []module.AppModule {
+	govModule := govModuleAtomOneDefaults{gov.NewAppModule(
+		appCodec,
+		app.GovKeeper,
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.GetSubspace(govtypes.ModuleName),
+	)}
+
 	return []module.AppModule{
 		genutil.NewAppModule(
 			app.AccountKeeper,
@@ -78,14 +100,8 @@ func appModules(
 		auth.NewAppModule(appCodec, app.AccountKeeper, nil, app.GetSubspace(authtypes.ModuleName)),
 		vesting.NewAppModule(app.AccountKeeper, app.BankKeeper),
 		bank.NewAppModule(appCodec, app.BankKeeper, app.AccountKeeper, app.GetSubspace(banktypes.ModuleName)),
-		gov.NewAppModule(
-			appCodec,
-			app.GovKeeper,
-			app.AccountKeeper,
-			app.BankKeeper,
-			app.GetSubspace(govtypes.ModuleName),
-			paramsChangeProposalHandler, // x/params won't be used in the future, so this handler can be removed eventually.
-		),
+		govModule,
+		atomonegov.NewAppModule(appCodec, app.GovKeeperWrapper, app.AccountKeeper),
 		mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper, nil, app.GetSubspace(minttypes.ModuleName)),
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(slashingtypes.ModuleName), app.interfaceRegistry),
 		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(distrtypes.ModuleName)),
@@ -99,7 +115,7 @@ func appModules(
 		sdkparams.NewAppModule(app.ParamsKeeper),
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
 		dynamicfee.NewAppModule(appCodec, *app.DynamicfeeKeeper),
-		coredaos.NewAppModule(appCodec, *app.CoreDaosKeeper, app.GovKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
+		coredaos.NewAppModule(appCodec, *app.CoreDaosKeeper, app.GovKeeperWrapper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
 
 		app.TransferModule,
 		app.ICAModule,
@@ -157,8 +173,8 @@ thus, gov.EndBlock must be executed before staking.EndBlock
 func orderEndBlockers() []string {
 	return []string{
 		dynamicfeetypes.ModuleName,
-		govtypes.ModuleName,
 		stakingtypes.ModuleName,
+		govtypes.ModuleName,
 		ibcexported.ModuleName,
 		ibctransfertypes.ModuleName,
 		icatypes.ModuleName,
@@ -192,8 +208,8 @@ func orderInitBlockers() []string {
 		authtypes.ModuleName,
 		banktypes.ModuleName,
 		distrtypes.ModuleName,
-		govtypes.ModuleName,
 		stakingtypes.ModuleName,
+		govtypes.ModuleName,
 		photontypes.ModuleName,
 		slashingtypes.ModuleName,
 		minttypes.ModuleName,

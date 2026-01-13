@@ -2,13 +2,13 @@
 syntax = "proto3";
 package atomone.gov.v1;
 
-import "cosmos/base/v1beta1/coin.proto";
-import "atomone/gov/v1/gov.proto";
-import "gogoproto/gogo.proto";
-import "cosmos_proto/cosmos.proto";
-import "google/protobuf/any.proto";
-import "cosmos/msg/v1/msg.proto";
 import "amino/amino.proto";
+import "atomone/gov/v1/gov.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos/msg/v1/msg.proto";
+import "cosmos_proto/cosmos.proto";
+import "gogoproto/gogo.proto";
+import "google/protobuf/any.proto";
 
 option go_package = "github.com/atomone-hub/atomone/x/gov/types/v1";
 
@@ -21,8 +21,7 @@ service Msg {
 
   // ExecLegacyContent defines a Msg to be in included in a MsgSubmitProposal
   // to execute a legacy content-based proposal.
-  rpc ExecLegacyContent(MsgExecLegacyContent)
-      returns (MsgExecLegacyContentResponse);
+  rpc ExecLegacyContent(MsgExecLegacyContent) returns (MsgExecLegacyContentResponse);
 
   // Vote defines a method to add a vote on a specific proposal.
   rpc Vote(MsgVote) returns (MsgVoteResponse);
@@ -46,8 +45,24 @@ service Msg {
 
   // ProposeConstitutionAmendment defines a governance operation for proposing a
   // new constitution amendment. The authority is defined in the keeper.
-  rpc ProposeConstitutionAmendment(MsgProposeConstitutionAmendment)
-      returns (MsgProposeConstitutionAmendmentResponse);
+  rpc ProposeConstitutionAmendment(MsgProposeConstitutionAmendment) returns (MsgProposeConstitutionAmendmentResponse);
+
+  // CreateGovernor defines a method to create a new governor.
+  rpc CreateGovernor(MsgCreateGovernor) returns (MsgCreateGovernorResponse);
+
+  // EditGovernor defines a method to edit an existing governor.
+  // It also sets its status.
+  rpc EditGovernor(MsgEditGovernor) returns (MsgEditGovernorResponse);
+
+  // UpdateGovernorStatus defines a method to update the status of a governor.
+  rpc UpdateGovernorStatus(MsgUpdateGovernorStatus) returns (MsgUpdateGovernorStatusResponse);
+
+  // DelegateGovernor defines a method to delegate a non-zero percentange of
+  // governance voting power from a delegator to a governor.
+  rpc DelegateGovernor(MsgDelegateGovernor) returns (MsgDelegateGovernorResponse);
+
+  // UndelegateGovernor defines a method to undelegate governance voting power
+  rpc UndelegateGovernor(MsgUndelegateGovernor) returns (MsgUndelegateGovernorResponse);
 }
 
 // MsgSubmitProposal defines an sdk.Msg type that supports submitting arbitrary
@@ -61,11 +76,13 @@ message MsgSubmitProposal {
 
   // initial_deposit is the deposit value that must be paid at proposal
   // submission.
-  repeated cosmos.base.v1beta1.Coin initial_deposit = 2
-      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+  repeated cosmos.base.v1beta1.Coin initial_deposit = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
 
   // proposer is the account address of the proposer.
-  string proposer = 3 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string proposer = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   // metadata is any arbitrary metadata attached to the proposal.
   string metadata = 4;
@@ -94,8 +111,7 @@ message MsgExecLegacyContent {
   option (amino.name) = "atomone/v1/MsgExecLegacyContent";
 
   // content is the proposal's content.
-  google.protobuf.Any content = 1
-      [ (cosmos_proto.accepts_interface) = "atomone.gov.v1beta1.Content" ];
+  google.protobuf.Any content = 1 [(cosmos_proto.accepts_interface) = "atomone.gov.v1beta1.Content"];
   // authority must be the gov module address.
   string authority = 2;
 }
@@ -109,11 +125,13 @@ message MsgVote {
   option (amino.name) = "atomone/v1/MsgVote";
 
   // proposal_id defines the unique id of the proposal.
-  uint64 proposal_id = 1
-      [ (gogoproto.jsontag) = "proposal_id", (amino.dont_omitempty) = true ];
+  uint64 proposal_id = 1 [
+    (gogoproto.jsontag) = "proposal_id",
+    (amino.dont_omitempty) = true
+  ];
 
   // voter is the voter address for the proposal.
-  string voter = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string voter = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   // option defines the vote option.
   VoteOption option = 3;
@@ -131,11 +149,13 @@ message MsgVoteWeighted {
   option (amino.name) = "atomone/v1/MsgVoteWeighted";
 
   // proposal_id defines the unique id of the proposal.
-  uint64 proposal_id = 1
-      [ (gogoproto.jsontag) = "proposal_id", (amino.dont_omitempty) = true ];
+  uint64 proposal_id = 1 [
+    (gogoproto.jsontag) = "proposal_id",
+    (amino.dont_omitempty) = true
+  ];
 
   // voter is the voter address for the proposal.
-  string voter = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string voter = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   // options defines the weighted vote options.
   repeated WeightedVoteOption options = 3;
@@ -153,15 +173,19 @@ message MsgDeposit {
   option (amino.name) = "atomone/v1/MsgDeposit";
 
   // proposal_id defines the unique id of the proposal.
-  uint64 proposal_id = 1
-      [ (gogoproto.jsontag) = "proposal_id", (amino.dont_omitempty) = true ];
+  uint64 proposal_id = 1 [
+    (gogoproto.jsontag) = "proposal_id",
+    (amino.dont_omitempty) = true
+  ];
 
   // depositor defines the deposit addresses from the proposals.
-  string depositor = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string depositor = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   // amount to be deposited by depositor.
-  repeated cosmos.base.v1beta1.Coin amount = 3
-      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+  repeated cosmos.base.v1beta1.Coin amount = 3 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
 }
 
 // MsgDepositResponse defines the Msg/Deposit response type.
@@ -176,13 +200,15 @@ message MsgUpdateParams {
 
   // authority is the address that controls the module (defaults to x/gov unless
   // overwritten).
-  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   // params defines the x/gov parameters to update.
   //
   // NOTE: All parameters must be supplied.
-  Params params = 2
-      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+  Params params = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
 }
 
 // MsgUpdateParamsResponse defines the response structure for executing a
@@ -198,7 +224,7 @@ message MsgProposeLaw {
 
   // authority is the address that controls the module (defaults to x/gov unless
   // overwritten).
-  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 }
 
 // MsgProposeLawResponse defines the response structure for executing a
@@ -213,13 +239,92 @@ message MsgProposeConstitutionAmendment {
 
   // authority is the address that controls the module (defaults to x/gov unless
   // overwritten).
-  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   // amendment is the amendment to the constitution. It must be in valid GNU
   // patch format.
   string amendment = 2;
 }
 
-// MsgProposeConstitutionAmendmentResponse defines the response structure for
-// executing a MsgProposeConstitutionAmendment message.
+// MsgProposeConstitutionAmendmentResponse defines the response structure for executing a
+// MsgProposeConstitutionAmendment message.
 message MsgProposeConstitutionAmendmentResponse {}
+
+// MsgCreateGovernor defines a SDK message for creating a new governor.
+message MsgCreateGovernor {
+  option (cosmos.msg.v1.signer) = "address";
+  option (amino.name) = "atomone/v1/MsgCreateGovernor";
+
+  option (gogoproto.equal) = false;
+
+  // address is the base account address that is creating the governor.
+  string address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  GovernorDescription description = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+// MsgCreateGovernorrResponse defines the Msg/CreateGovernor response type.
+message MsgCreateGovernorResponse {}
+
+// MsgEditGovernor defines a SDK message for editing an existing governor.
+message MsgEditGovernor {
+  option (cosmos.msg.v1.signer) = "address";
+  option (amino.name) = "atomone/v1/MsgEditGovernor";
+
+  option (gogoproto.equal) = false;
+
+  // address is the base account address that is editing the corresponding governor.
+  string address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  GovernorDescription description = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+// MsgEditGovernorResponse defines the Msg/EditGovernor response type.
+message MsgEditGovernorResponse {}
+
+// MsgUpdateGovernorStatus defines a SDK message for updating the status of a governor.
+message MsgUpdateGovernorStatus {
+  option (cosmos.msg.v1.signer) = "address";
+  option (amino.name) = "atomone/v1/MsgUpdateGovernorStatus";
+
+  option (gogoproto.equal) = false;
+
+  // address is the base account address that is editing the corresponding governor.
+  string address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  GovernorStatus status = 2;
+}
+
+// MsgUpdateGovernorStatusResponse defines the Msg/UpdateGovernorStatus response type.
+message MsgUpdateGovernorStatusResponse {}
+
+// MsgDelegateGovernor defines a SDK message for performing a delegation of governance voting power
+// from a delegator to a governor.
+message MsgDelegateGovernor {
+  option (cosmos.msg.v1.signer) = "delegator_address";
+  option (amino.name) = "atomone/v1/MsgDelegateGovernor";
+
+  option (gogoproto.equal) = false;
+
+  string delegator_address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string governor_address = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+}
+
+// MsgDelegateGovernorResponse defines the Msg/Delegate response type.
+message MsgDelegateGovernorResponse {}
+
+// MsgUndelegateGovernor defines a SDK message for undelegating governance voting power
+message MsgUndelegateGovernor {
+  option (cosmos.msg.v1.signer) = "delegator_address";
+  option (amino.name) = "atomone/v1/MsgUndelegateGovernor";
+
+  option (gogoproto.equal) = false;
+
+  string delegator_address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+}
+
+// MsgUndelegateGovernorResponse defines the Msg/UndelegateGovernor response type.
+message MsgUndelegateGovernorResponse {}

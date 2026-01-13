@@ -20,7 +20,7 @@ import (
 )
 
 // Test that the GovVoteDecorator rejects v1beta1 vote messages from accounts with less than 1 atom staked
-// Submitting v1beta1.VoteMsg should not be possible through the CLI, but it's still possible to craft a transaction
+// Submitting v1beta1.MsgVote should not be possible through the CLI, but it's still possible to craft a transaction
 func TestVoteSpamDecoratorGovV1Beta1(t *testing.T) {
 	atomoneApp := helpers.Setup(t)
 	ctx := atomoneApp.NewUncachedContext(true, tmproto.Header{})
@@ -142,8 +142,133 @@ func TestVoteSpamDecoratorGovV1Beta1(t *testing.T) {
 	}
 }
 
+// Test that the GovVoteDecorator rejects v1beta1 weighted vote messages from accounts with less than 1 atom staked
+// Submitting v1beta1.MsgVoteWeighted should not be possible through the CLI, but it's still possible to craft a transaction
+func TestVoteWeightedSpamDecoratorGovV1Beta1(t *testing.T) {
+	atomoneApp := helpers.Setup(t)
+	ctx := atomoneApp.NewUncachedContext(true, tmproto.Header{})
+	decorator := ante.NewGovVoteDecorator(atomoneApp.AppCodec(), atomoneApp.StakingKeeper)
+	stakingKeeper := atomoneApp.StakingKeeper
+
+	// Get validator
+	valAddrs, err := stakingKeeper.GetAllValidators(ctx)
+	require.NoError(t, err)
+	valAddr1, err := stakingKeeper.ValidatorAddressCodec().StringToBytes(valAddrs[0].OperatorAddress)
+	require.NoError(t, err)
+
+	// Create one more validator
+	pk := ed25519.GenPrivKeyFromSecret([]byte{uint8(13)}).PubKey()
+	validator2, err := stakingtypes.NewValidator(
+		sdk.ValAddress(pk.Address()).String(),
+		pk,
+		stakingtypes.Description{},
+	)
+	require.NoError(t, err)
+	// Make sure the validator is bonded so it's not removed on Undelegate
+	validator2.Status = stakingtypes.Bonded
+	stakingKeeper.SetValidator(ctx, validator2)
+	err = stakingKeeper.SetValidatorByConsAddr(ctx, validator2)
+	require.NoError(t, err)
+	stakingKeeper.SetNewValidatorByPowerIndex(ctx, validator2)
+
+	valAddr2, err := stakingKeeper.ValidatorAddressCodec().StringToBytes(validator2.OperatorAddress)
+	require.NoError(t, err)
+
+	err = stakingKeeper.Hooks().AfterValidatorCreated(ctx, valAddr2)
+	require.NoError(t, err)
+
+	// Get delegator (this account was created during setup)
+	delegator, err := atomoneApp.AccountKeeper.Accounts.Indexes.Number.MatchExact(ctx, 0)
+	require.NoError(t, err)
+
+	tests := []struct {
+		name       string
+		bondAmt    math.Int
+		validators []sdk.ValAddress
+		expectPass bool
+	}{
+		{
+			name:       "delegate 0 atone",
+			bondAmt:    math.ZeroInt(),
+			validators: []sdk.ValAddress{valAddr1},
+			expectPass: false,
+		},
+		{
+			name:       "delegate 0.1 atone",
+			bondAmt:    math.NewInt(100000),
+			validators: []sdk.ValAddress{valAddr1},
+			expectPass: false,
+		},
+		{
+			name:       "delegate 1 atone",
+			bondAmt:    math.NewInt(1000000),
+			validators: []sdk.ValAddress{valAddr1},
+			expectPass: true,
+		},
+		{
+			name:       "delegate 1 atom to two validators",
+			bondAmt:    math.NewInt(1000000),
+			validators: []sdk.ValAddress{valAddr1, valAddr2},
+			expectPass: true,
+		},
+		{
+			name:       "delegate 0.9 atom to two validators",
+			bondAmt:    math.NewInt(900000),
+			validators: []sdk.ValAddress{valAddr1, valAddr2},
+			expectPass: false,
+		},
+		{
+			name:       "delegate 10 atone",
+			bondAmt:    math.NewInt(10000000),
+			validators: []sdk.ValAddress{valAddr1},
+			expectPass: true,
+		},
+	}
+
+	for _, tc := range tests {
+		// Unbond all tokens for this delegator
+		delegations, err := stakingKeeper.GetAllDelegatorDelegations(ctx, delegator)
+		require.NoError(t, err)
+		for _, del := range delegations {
+			delValAddr, err := stakingKeeper.ValidatorAddressCodec().StringToBytes(del.GetValidatorAddr())
+			require.NoError(t, err)
+
+			_, _, err = stakingKeeper.Undelegate(ctx, delegator, delValAddr, del.GetShares())
+			require.NoError(t, err)
+		}
+
+		// Delegate tokens
+		if !tc.bondAmt.IsZero() {
+			amt := tc.bondAmt.Quo(math.NewInt(int64(len(tc.validators))))
+			for _, valAddr := range tc.validators {
+				val, err := stakingKeeper.GetValidator(ctx, valAddr)
+				require.NoError(t, err)
+				_, err = stakingKeeper.Delegate(ctx, delegator, amt, stakingtypes.Unbonded, val, true)
+				require.NoError(t, err)
+			}
+		}
+
+		weightedVoteOptions, err := govv1beta1.WeightedVoteOptionsFromString("VOTE_OPTION_YES=0.5,VOTE_OPTION_NO=0.5")
+		require.NoError(t, err)
+		// Create vote message
+		msg := govv1beta1.NewMsgVoteWeighted(
+			delegator,
+			0,
+			weightedVoteOptions,
+		)
+
+		// Validate vote message
+		err = decorator.ValidateVoteMsgs(ctx, []sdk.Msg{msg})
+		if tc.expectPass {
+			require.NoError(t, err, "expected %v to pass", tc.name)
+		} else {
+			require.Error(t, err, "expected %v to fail", tc.name)
+		}
+	}
+}
+
 // Test that the GovVoteDecorator rejects v1 vote messages from accounts with less than 1 atom staked
-// Usually, only v1.VoteMsg can be submitted using the CLI.
+// Usually, only v1.MsgVote can be submitted using the CLI.
 func TestVoteSpamDecoratorGovV1(t *testing.T) {
 	atomoneApp := helpers.Setup(t)
 	ctx := atomoneApp.NewUncachedContext(true, tmproto.Header{})
@@ -256,6 +381,133 @@ func TestVoteSpamDecoratorGovV1(t *testing.T) {
 			0,
 			govv1.VoteOption_VOTE_OPTION_YES,
 			"new-v1-vote-message-test",
+		)
+
+		// Validate vote message
+		err = decorator.ValidateVoteMsgs(ctx, []sdk.Msg{msg})
+		if tc.expectPass {
+			require.NoError(t, err, "expected %v to pass", tc.name)
+		} else {
+			require.Error(t, err, "expected %v to fail", tc.name)
+		}
+	}
+}
+
+// Test that the GovVoteDecorator rejects v1 weighted vote messages from accounts with less than 1 atom staked
+func TestVoteWeightedSpamDecoratorGovV1(t *testing.T) {
+	atomoneApp := helpers.Setup(t)
+	ctx := atomoneApp.NewUncachedContext(true, tmproto.Header{})
+	decorator := ante.NewGovVoteDecorator(atomoneApp.AppCodec(), atomoneApp.StakingKeeper)
+	stakingKeeper := atomoneApp.StakingKeeper
+
+	// Get validator
+	vals, err := stakingKeeper.GetAllValidators(ctx)
+	require.NoError(t, err)
+
+	valAddr1, err := stakingKeeper.ValidatorAddressCodec().StringToBytes(vals[0].OperatorAddress)
+	require.NoError(t, err)
+
+	// Create one more validator
+	pk := ed25519.GenPrivKeyFromSecret([]byte{uint8(13)}).PubKey()
+	valAddr2 := sdk.ValAddress(pk.Address())
+	valAddr2Str, err := stakingKeeper.ValidatorAddressCodec().BytesToString(valAddr2)
+	require.NoError(t, err)
+
+	validator2, err := stakingtypes.NewValidator(
+		valAddr2Str,
+		pk,
+		stakingtypes.Description{},
+	)
+	require.NoError(t, err)
+	// Make sure the validator is bonded so it's not removed on Undelegate
+	validator2.Status = stakingtypes.Bonded
+	stakingKeeper.SetValidator(ctx, validator2)
+	err = stakingKeeper.SetValidatorByConsAddr(ctx, validator2)
+	require.NoError(t, err)
+	stakingKeeper.SetNewValidatorByPowerIndex(ctx, validator2)
+	err = stakingKeeper.Hooks().AfterValidatorCreated(ctx, valAddr2)
+	require.NoError(t, err)
+
+	// Get delegator (this account was created during setup)
+	delegator, err := atomoneApp.AccountKeeper.Accounts.Indexes.Number.MatchExact(ctx, 0)
+	require.NoError(t, err)
+
+	tests := []struct {
+		name       string
+		bondAmt    math.Int
+		validators []sdk.ValAddress
+		expectPass bool
+	}{
+		{
+			name:       "delegate 0 atone",
+			bondAmt:    math.ZeroInt(),
+			validators: []sdk.ValAddress{valAddr1},
+			expectPass: false,
+		},
+		{
+			name:       "delegate 0.1 atone",
+			bondAmt:    math.NewInt(100000),
+			validators: []sdk.ValAddress{valAddr1},
+			expectPass: false,
+		},
+		{
+			name:       "delegate 1 atone",
+			bondAmt:    math.NewInt(1000000),
+			validators: []sdk.ValAddress{valAddr1},
+			expectPass: true,
+		},
+		{
+			name:       "delegate 1 atom to two validators",
+			bondAmt:    math.NewInt(1000000),
+			validators: []sdk.ValAddress{valAddr1, valAddr2},
+			expectPass: true,
+		},
+		{
+			name:       "delegate 0.9 atom to two validators",
+			bondAmt:    math.NewInt(900000),
+			validators: []sdk.ValAddress{valAddr1, valAddr2},
+			expectPass: false,
+		},
+		{
+			name:       "delegate 10 atone",
+			bondAmt:    math.NewInt(10000000),
+			validators: []sdk.ValAddress{valAddr1},
+			expectPass: true,
+		},
+	}
+
+	for _, tc := range tests {
+		// Unbond all tokens for this delegator
+		delegations, err := stakingKeeper.GetAllDelegatorDelegations(ctx, delegator)
+		require.NoError(t, err)
+
+		for _, del := range delegations {
+			delValAddr, err := stakingKeeper.ValidatorAddressCodec().StringToBytes(del.GetValidatorAddr())
+			require.NoError(t, err)
+
+			_, _, err = stakingKeeper.Undelegate(ctx, delegator, delValAddr, del.GetShares())
+			require.NoError(t, err)
+		}
+
+		// Delegate tokens
+		if !tc.bondAmt.IsZero() {
+			amt := tc.bondAmt.Quo(math.NewInt(int64(len(tc.validators))))
+			for _, valAddr := range tc.validators {
+				val, err := stakingKeeper.GetValidator(ctx, valAddr)
+				require.NoError(t, err)
+				_, err = stakingKeeper.Delegate(ctx, delegator, amt, stakingtypes.Unbonded, val, true)
+				require.NoError(t, err)
+			}
+		}
+
+		weightedVoteOptions, err := govv1.WeightedVoteOptionsFromString("VOTE_OPTION_YES=0.5,VOTE_OPTION_NO=0.5")
+		require.NoError(t, err)
+		// Create vote message
+		msg := govv1.NewMsgVoteWeighted(
+			delegator,
+			0,
+			weightedVoteOptions,
+			"new-v1-weighted-vote-message-test",
 		)
 
 		// Validate vote message

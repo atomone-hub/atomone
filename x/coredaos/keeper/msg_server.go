@@ -8,6 +8,7 @@ import (
 	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkgovtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	"github.com/atomone-hub/atomone/x/coredaos/types"
 	govtypes "github.com/atomone-hub/atomone/x/gov/types"
@@ -115,7 +116,7 @@ func (ms MsgServer) AnnotateProposal(goCtx context.Context, msg *types.MsgAnnota
 			"authority", msg.Annotator,
 		)
 
-		return nil, errors.Wrapf(govtypes.ErrInactiveProposal, "proposal with ID %d is not in voting period", msg.ProposalId)
+		return nil, errors.Wrapf(sdkgovtypes.ErrInactiveProposal, "proposal with ID %d is not in voting period", msg.ProposalId)
 	}
 
 	// Check if the proposal already has an annotation, if so, allow overwriting only if the `overwrite` flag is set to true.
@@ -193,7 +194,7 @@ func (ms MsgServer) EndorseProposal(goCtx context.Context, msg *types.MsgEndorse
 			"authority", msg.Endorser,
 		)
 
-		return nil, errors.Wrapf(govtypes.ErrInactiveProposal, "proposal with ID %d is not in voting period", msg.ProposalId)
+		return nil, errors.Wrapf(sdkgovtypes.ErrInactiveProposal, "proposal with ID %d is not in voting period", msg.ProposalId)
 	}
 	if proposal.Endorsed {
 		logger.Error(
@@ -279,7 +280,7 @@ func (ms MsgServer) ExtendVotingPeriod(goCtx context.Context, msg *types.MsgExte
 			"authority", msg.Extender,
 		)
 
-		return nil, errors.Wrapf(govtypes.ErrInactiveProposal, "proposal with ID %d is not in voting period", msg.ProposalId)
+		return nil, errors.Wrapf(sdkgovtypes.ErrInactiveProposal, "proposal with ID %d is not in voting period", msg.ProposalId)
 	}
 	if proposal.TimesVotingPeriodExtended >= params.VotingPeriodExtensionsLimit {
 		logger.Error(
@@ -289,7 +290,7 @@ func (ms MsgServer) ExtendVotingPeriod(goCtx context.Context, msg *types.MsgExte
 			"authority", msg.Extender,
 		)
 
-		return nil, errors.Wrapf(govtypes.ErrInvalidProposalContent, "proposal with ID %d has reached the maximum number of voting period extensions", msg.ProposalId)
+		return nil, errors.Wrapf(sdkgovtypes.ErrInvalidProposalContent, "proposal with ID %d has reached the maximum number of voting period extensions", msg.ProposalId)
 	}
 
 	newEndTime := proposal.VotingEndTime.Add(*params.VotingPeriodExtensionDuration)
@@ -367,7 +368,7 @@ func (ms MsgServer) VetoProposal(goCtx context.Context, msg *types.MsgVetoPropos
 			"authority", msg.Vetoer,
 		)
 
-		return nil, errors.Wrapf(govtypes.ErrInactiveProposal, "proposal with ID %d is not in voting period", msg.ProposalId)
+		return nil, errors.Wrapf(sdkgovtypes.ErrInactiveProposal, "proposal with ID %d is not in voting period", msg.ProposalId)
 	}
 
 	// follows the same logic as in x/gov/abci.go for rejected proposals
@@ -385,7 +386,6 @@ func (ms MsgServer) VetoProposal(goCtx context.Context, msg *types.MsgVetoPropos
 	ms.k.govKeeper.SetProposal(ctx, proposal)
 	ms.k.govKeeper.DeleteVotes(ctx, proposal.Id)
 	ms.k.govKeeper.RemoveFromActiveProposalQueue(ctx, proposal.Id, *proposal.VotingEndTime)
-	ms.k.govKeeper.DecrementActiveProposalsNumber(ctx)
 
 	ms.k.govKeeper.UpdateMinInitialDeposit(ctx, true)
 	ms.k.govKeeper.UpdateMinDeposit(ctx, true)
@@ -402,7 +402,7 @@ func (ms MsgServer) VetoProposal(goCtx context.Context, msg *types.MsgVetoPropos
 			types.EventTypeVetoProposal,
 			sdk.NewAttribute(types.AttributeKeyProposalID, fmt.Sprintf("%d", proposal.Id)),
 			sdk.NewAttribute(types.AttributeKeySigner, msg.Vetoer),
-			sdk.NewAttribute(govtypes.AttributeKeyProposalResult, types.AttributeValueProposalVetoed),
+			sdk.NewAttribute(sdkgovtypes.AttributeKeyProposalResult, types.AttributeValueProposalVetoed),
 		),
 	})
 

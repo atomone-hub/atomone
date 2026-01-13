@@ -2,6 +2,9 @@ package keepers
 
 import (
 	ica "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts"
+	icacontroller "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/controller"
+	icacontrollerkeeper "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/controller/keeper"
+	icacontrollertypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/controller/types"
 	icahost "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/host"
 	icahostkeeper "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/host/keeper"
 	icahosttypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/host/types"
@@ -40,6 +43,10 @@ import (
 	consensusparamtypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
 	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
+	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	govv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
+	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	mintkeeper "github.com/cosmos/cosmos-sdk/x/mint/keeper"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/cosmos/cosmos-sdk/x/params"
@@ -56,10 +63,7 @@ import (
 	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
 	dynamicfeekeeper "github.com/atomone-hub/atomone/x/dynamicfee/keeper"
 	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
-	govkeeper "github.com/atomone-hub/atomone/x/gov/keeper"
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
-	govv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
-	govv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
+	atomonegovkeeper "github.com/atomone-hub/atomone/x/gov/keeper"
 	photonkeeper "github.com/atomone-hub/atomone/x/photon/keeper"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
 )
@@ -71,18 +75,20 @@ type AppKeepers struct {
 	memKeys map[string]*storetypes.MemoryStoreKey
 
 	// keepers
-	AccountKeeper  authkeeper.AccountKeeper
-	BankKeeper     bankkeeper.Keeper
-	StakingKeeper  *stakingkeeper.Keeper
-	SlashingKeeper slashingkeeper.Keeper
-	MintKeeper     mintkeeper.Keeper
-	DistrKeeper    distrkeeper.Keeper
-	GovKeeper      *govkeeper.Keeper
-	UpgradeKeeper  *upgradekeeper.Keeper
-	ParamsKeeper   paramskeeper.Keeper
+	AccountKeeper    authkeeper.AccountKeeper
+	BankKeeper       bankkeeper.Keeper
+	StakingKeeper    *stakingkeeper.Keeper
+	SlashingKeeper   slashingkeeper.Keeper
+	MintKeeper       mintkeeper.Keeper
+	DistrKeeper      distrkeeper.Keeper
+	GovKeeper        *govkeeper.Keeper
+	GovKeeperWrapper *atomonegovkeeper.Keeper
+	UpgradeKeeper    *upgradekeeper.Keeper
+	ParamsKeeper     paramskeeper.Keeper
 	// IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
 	IBCKeeper             *ibckeeper.Keeper
 	ICAHostKeeper         icahostkeeper.Keeper
+	ICAControllerKeeper   icacontrollerkeeper.Keeper
 	EvidenceKeeper        evidencekeeper.Keeper
 	TransferKeeper        ibctransferkeeper.Keeper
 	FeeGrantKeeper        feegrantkeeper.Keeper
@@ -240,10 +246,11 @@ func NewAppKeeper(
 	govConfig.MaxMetadataLen = 10200
 	appKeepers.GovKeeper = govkeeper.NewKeeper(
 		appCodec,
-		appKeepers.keys[govtypes.StoreKey],
+		runtime.NewKVStoreService(appKeepers.keys[govtypes.StoreKey]),
 		appKeepers.AccountKeeper,
 		appKeepers.BankKeeper,
 		appKeepers.StakingKeeper,
+		appKeepers.DistrKeeper,
 		bApp.MsgServiceRouter(),
 		govConfig,
 		authorityStr,
@@ -257,22 +264,14 @@ func NewAppKeeper(
 		})
 	appKeepers.GovKeeper.SetLegacyRouter(govRouter)
 
+	appKeepers.GovKeeperWrapper = atomonegovkeeper.NewKeeper(appKeepers.GovKeeper)
+
 	appKeepers.CoreDaosKeeper = coredaoskeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(appKeepers.keys[coredaostypes.StoreKey]),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		appKeepers.GovKeeper,
+		appKeepers.GovKeeperWrapper,
 		appKeepers.StakingKeeper,
-	)
-
-	// register the staking hooks
-	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
-	appKeepers.StakingKeeper.SetHooks(
-		stakingtypes.NewMultiStakingHooks(
-			appKeepers.DistrKeeper.Hooks(),
-			appKeepers.SlashingKeeper.Hooks(),
-			appKeepers.CoreDaosKeeper.StakingHooks(),
-		),
 	)
 
 	evidenceKeeper := evidencekeeper.NewKeeper(
@@ -286,6 +285,17 @@ func NewAppKeeper(
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	appKeepers.EvidenceKeeper = *evidenceKeeper
 
+	// register the staking hooks
+	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
+	appKeepers.StakingKeeper.SetHooks(
+		stakingtypes.NewMultiStakingHooks(
+			appKeepers.DistrKeeper.Hooks(),
+			appKeepers.SlashingKeeper.Hooks(),
+			appKeepers.GovKeeper.StakingHooks(),
+			appKeepers.CoreDaosKeeper.StakingHooks(),
+		),
+	)
+
 	// ICA Host keeper
 	appKeepers.ICAHostKeeper = icahostkeeper.NewKeeper(
 		appCodec,
@@ -296,6 +306,16 @@ func NewAppKeeper(
 		appKeepers.AccountKeeper,
 		bApp.MsgServiceRouter(),
 		bApp.GRPCQueryRouter(),
+		authorityStr,
+	)
+	// ICA Controller keeper
+	appKeepers.ICAControllerKeeper = icacontrollerkeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(appKeepers.keys[icacontrollertypes.StoreKey]),
+		appKeepers.GetSubspace(icacontrollertypes.SubModuleName),
+		appKeepers.IBCKeeper.ChannelKeeper, // ICS4Wrapper
+		appKeepers.IBCKeeper.ChannelKeeper,
+		bApp.MsgServiceRouter(),
 		authorityStr,
 	)
 
@@ -319,7 +339,7 @@ func NewAppKeeper(
 	)
 
 	// Middleware Stacks
-	appKeepers.ICAModule = ica.NewAppModule(nil, &appKeepers.ICAHostKeeper)
+	appKeepers.ICAModule = ica.NewAppModule(&appKeepers.ICAControllerKeeper, &appKeepers.ICAHostKeeper)
 	appKeepers.TransferModule = transfer.NewAppModule(appKeepers.TransferKeeper)
 
 	// create IBC module from bottom to top of stack
@@ -331,11 +351,15 @@ func NewAppKeeper(
 	// Add transfer stack to IBC Router
 
 	// Create Interchain Accounts Stack
-	var icaHostStack porttypes.IBCModule = icahost.NewIBCModule(appKeepers.ICAHostKeeper)
+	var (
+		icaHostStack       porttypes.IBCModule = icahost.NewIBCModule(appKeepers.ICAHostKeeper)
+		icaControllerStack porttypes.IBCModule = icacontroller.NewIBCMiddleware(appKeepers.ICAControllerKeeper)
+	)
 
 	// Create IBC Router & seal
 	ibcRouter := porttypes.NewRouter().
 		AddRoute(icahosttypes.SubModuleName, icaHostStack).
+		AddRoute(icacontrollertypes.SubModuleName, icaControllerStack).
 		AddRoute(ibctransfertypes.ModuleName, transferStack)
 
 	ibcv2Router := ibcapi.NewRouter().
@@ -384,6 +408,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName)
 	paramsKeeper.Subspace(ibcexported.ModuleName)
 	paramsKeeper.Subspace(icahosttypes.SubModuleName)
+	paramsKeeper.Subspace(icacontrollertypes.SubModuleName).WithKeyTable(icacontrollertypes.ParamKeyTable())
 
 	return paramsKeeper
 }

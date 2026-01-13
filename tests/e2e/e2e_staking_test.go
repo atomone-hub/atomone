@@ -35,7 +35,7 @@ func (s *IntegrationTestSuite) testStaking() {
 		delegation := sdk.NewCoin(uatoneDenom, delegationAmount) // 500 atom
 
 		// Alice delegate uatone to Validator A
-		s.execDelegate(s.chainA, 0, delegation.String(), validatorAddressA, delegatorAddress.String(), atomoneHomePath)
+		s.execDelegate(s.chainA, 0, delegation, validatorAddressA, delegatorAddress.String())
 
 		// Validate delegation successful
 		s.Require().Eventually(
@@ -60,8 +60,8 @@ func (s *IntegrationTestSuite) testStaking() {
 		s.Require().Eventually(
 			func() bool {
 				res, err := s.queryDelegation(chainEndpoint, validatorAddressB, delegatorAddress.String())
-				amt := res.GetDelegationResponse().GetDelegation().GetShares()
 				s.Require().NoError(err)
+				amt := res.GetDelegationResponse().GetDelegation().GetShares()
 
 				return amt.Equal(math.LegacyNewDecFromInt(redelegationAmount))
 			},
@@ -78,8 +78,8 @@ func (s *IntegrationTestSuite) testStaking() {
 		s.Require().Eventually(
 			func() bool {
 				res, err := s.queryDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
-				amt := res.GetDelegationResponse().GetDelegation().GetShares()
 				s.Require().NoError(err)
+				amt := res.GetDelegationResponse().GetDelegation().GetShares()
 
 				currDelegationAmount = amt.TruncateInt()
 				currDelegation = sdk.NewCoin(uatoneDenom, currDelegationAmount)
@@ -125,8 +125,8 @@ func (s *IntegrationTestSuite) testStaking() {
 		s.Require().Eventually(
 			func() bool {
 				resDel, err := s.queryDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
-				amt := resDel.GetDelegationResponse().GetDelegation().GetShares()
 				s.Require().NoError(err)
+				amt := resDel.GetDelegationResponse().GetDelegation().GetShares()
 
 				// expect that no unbonding delegations are found for validator A
 				_, err = s.queryUnbondingDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
