@@ -49,16 +49,11 @@ func (cs *ClientState) verifyHeader(
 	header *Header,
 ) error {
 	currentTimestamp := ctx.BlockTime()
-	fmt.Println(currentTimestamp)
 	// Retrieve trusted consensus states for each Header in misbehaviour
 	consState, found := GetConsensusState(clientStore, cdc, header.TrustedHeight)
-	fmt.Println(consState.LcType)
-	fmt.Println(consState.Root)
-	fmt.Println(header.TrustedHeight)
 	if !found {
 		return errorsmod.Wrapf(clienttypes.ErrConsensusStateNotFound, "could not get trusted consensus state from clientStore for Header at TrustedHeight: %s", header.TrustedHeight)
 	}
-	fmt.Println(consState.NextValidatorsHash)
 	if err := checkTrustedHeader(header, consState); err != nil {
 		return err
 	}
@@ -315,8 +310,6 @@ func checkTrustedHeader(header *Header, consState *ConsensusState) error {
 		if (key.GetEd25519()) == nil {
 			return errorsmod.Wrap(clienttypes.ErrInvalidHeader, "validator pubkey is not ed25519")
 		}
-		fmt.Println(key.GetEd25519())
-		fmt.Println(val.VotingPower)
 		gnoTrustedValset.Validators[i] = &bfttypes.Validator{
 			Address:          crypto.MustAddressFromString(val.Address),
 			PubKey:           ed25519.PubKeyEd25519(key.GetEd25519()),
