@@ -58,6 +58,7 @@ import (
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
+	ibcgno "github.com/atomone-hub/atomone/modules/10-gno"
 	coredaoskeeper "github.com/atomone-hub/atomone/x/coredaos/keeper"
 	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
 	dynamicfeekeeper "github.com/atomone-hub/atomone/x/dynamicfee/keeper"
@@ -98,9 +99,10 @@ type AppKeepers struct {
 	CoreDaosKeeper        *coredaoskeeper.Keeper
 
 	// Modules
-	ICAModule      ica.AppModule
-	TransferModule transfer.AppModule
-	TMClientModule ibctm.AppModule
+	ICAModule       ica.AppModule
+	TransferModule  transfer.AppModule
+	TMClientModule  ibctm.AppModule
+	GnoClientModule ibcgno.AppModule
 }
 
 func NewAppKeeper(
@@ -372,8 +374,11 @@ func NewAppKeeper(
 
 	tmLightClientModule := ibctm.NewLightClientModule(appCodec, storeProvider)
 	appKeepers.IBCKeeper.ClientKeeper.AddRoute(ibctm.ModuleName, &tmLightClientModule)
-
 	appKeepers.TMClientModule = ibctm.NewAppModule(tmLightClientModule)
+
+	gnoLightClientModule := ibcgno.NewLightClientModule(appCodec, storeProvider)
+	appKeepers.IBCKeeper.ClientKeeper.AddRoute(ibcgno.ModuleName, &gnoLightClientModule)
+	appKeepers.GnoClientModule = ibcgno.NewAppModule(gnoLightClientModule)
 
 	return appKeepers
 }
