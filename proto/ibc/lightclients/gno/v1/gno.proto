@@ -1,0 +1,220 @@
+syntax = "proto3";
+
+package ibc.lightclients.gno.v1;
+
+import "cosmos/ics23/v1/proofs.proto";
+import "gogoproto/gogo.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+import "ibc/core/client/v1/client.proto";
+import "ibc/core/commitment/v1/commitment.proto";
+import "tendermint/crypto/keys.proto";
+
+option go_package = "github.com/atomone-hub/atomone/modules/10-gno;gno";
+
+// ClientState from Gno tracks the current validator set, latest height,
+// and a possible frozen height.
+message ClientState {
+  option (gogoproto.goproto_getters) = false;
+
+  string chain_id = 1;
+  Fraction trust_level = 2 [(gogoproto.nullable) = false];
+  // duration of the period since the LatestTimestamp during which the
+  // submitted headers are valid for upgrade
+  google.protobuf.Duration trusting_period = 3 [
+    (gogoproto.nullable) = false,
+    (gogoproto.stdduration) = true
+  ];
+  // duration of the staking unbonding period
+  google.protobuf.Duration unbonding_period = 4 [
+    (gogoproto.nullable) = false,
+    (gogoproto.stdduration) = true
+  ];
+  // defines how much new (untrusted) header's Time can drift into the future.
+  google.protobuf.Duration max_clock_drift = 5 [
+    (gogoproto.nullable) = false,
+    (gogoproto.stdduration) = true
+  ];
+  // Block height when the client was frozen due to a misbehaviour
+  ibc.core.client.v1.Height frozen_height = 6 [(gogoproto.nullable) = false];
+  // Latest height the client was updated to
+  ibc.core.client.v1.Height latest_height = 7 [(gogoproto.nullable) = false];
+
+  // Proof specifications used in verifying counterparty state
+  repeated cosmos.ics23.v1.ProofSpec proof_specs = 8;
+
+  // Path at which next upgraded client will be committed.
+  // Each element corresponds to the key for a single CommitmentProof in the
+  // chained proof. NOTE: ClientState must stored under
+  // `{upgradePath}/{upgradeHeight}/clientState` ConsensusState must be stored
+  // under `{upgradepath}/{upgradeHeight}/consensusState` For SDK chains using
+  // the default upgrade module, upgrade_path should be []string{"upgrade",
+  // "upgradedIBCState"}`
+  repeated string upgrade_path = 9;
+
+  // allow_update_after_expiry is deprecated
+  bool allow_update_after_expiry = 10 [deprecated = true];
+  // allow_update_after_misbehaviour is deprecated
+  bool allow_update_after_misbehaviour = 11 [deprecated = true];
+
+  // In order to distinguisgh between Gno and Tendermint light clients
+  // we add a client type field. This is useful for clients that
+  // may support multiple light client types.
+  string lc_type = 12;
+}
+
+// ConsensusState defines the consensus state from Gno.
+message ConsensusState {
+  option (gogoproto.goproto_getters) = false;
+
+  // timestamp that corresponds to the block height in which the ConsensusState
+  // was stored.
+  google.protobuf.Timestamp timestamp = 1 [
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+  // commitment root (i.e app hash)
+  ibc.core.commitment.v1.MerkleRoot root = 2 [(gogoproto.nullable) = false];
+  bytes next_validators_hash = 3;
+  // In order to distinguisgh between Gno and Tendermint light clients
+  // we add a client type field. This is useful for clients that
+  // may support multiple light client types.
+  string lc_type = 4;
+}
+
+// Misbehaviour is a wrapper over two conflicting Headers
+// that implements Misbehaviour interface expected by ICS-02
+message Misbehaviour {
+  option (gogoproto.goproto_getters) = false;
+
+  // ClientID is deprecated
+  string client_id = 1 [deprecated = true];
+  Header header_1 = 2 [(gogoproto.customname) = "Header1"];
+  Header header_2 = 3 [(gogoproto.customname) = "Header2"];
+}
+
+// Header defines the Tendermint client consensus Header.
+// It encapsulates all the information necessary to update from a trusted
+// Tendermint ConsensusState. The inclusion of TrustedHeight and
+// TrustedValidators allows this update to process correctly, so long as the
+// ConsensusState for the TrustedHeight exists, this removes race conditions
+// among relayers The SignedHeader and ValidatorSet are the new untrusted update
+// fields for the client. The TrustedHeight is the height of a stored
+// ConsensusState on the client that will be used to verify the new untrusted
+// header. The Trusted ConsensusState must be within the unbonding period of
+// current time in order to correctly verify, and the TrustedValidators must
+// hash to TrustedConsensusState.NextValidatorsHash since that is the last
+// trusted validator set at the TrustedHeight.
+message Header {
+  SignedHeader signed_header = 1;
+
+  ValidatorSet validator_set = 2;
+  ibc.core.client.v1.Height trusted_height = 3 [(gogoproto.nullable) = false];
+  ValidatorSet trusted_validators = 4;
+}
+
+message Block {
+  GnoHeader header = 1;
+  Data data = 2;
+  Commit last_commit = 3;
+}
+
+message GnoHeader {
+  string version = 1;
+  string chain_id = 2;
+  sint64 height = 3;
+  google.protobuf.Timestamp time = 4 [
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+  sint64 num_txs = 5;
+  sint64 total_txs = 6;
+  string app_version = 7;
+  BlockID last_block_id = 8;
+  bytes last_commit_hash = 9;
+  bytes data_hash = 10;
+  bytes validators_hash = 11;
+  bytes next_validators_hash = 12;
+  bytes consensus_hash = 13;
+  bytes app_hash = 14;
+  bytes last_results_hash = 15;
+  string proposer_address = 16;
+}
+
+message Data {
+  repeated bytes txs = 1;
+}
+
+message Commit {
+  BlockID block_id = 1;
+  repeated CommitSig precommits = 2;
+}
+
+message BlockID {
+  bytes hash = 1;
+  PartSetHeader parts_header = 2 [json_name = "parts"];
+}
+
+message SignedHeader {
+  GnoHeader header = 1;
+  Commit commit = 2;
+}
+
+message LightBlock {
+  SignedHeader signed_header = 1;
+  ValidatorSet validator_set = 2;
+}
+message CommitSig {
+  uint32 type = 1;
+  sint64 height = 2;
+  sint64 round = 3;
+  BlockID block_id = 4;
+  google.protobuf.Timestamp timestamp = 5 [
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+  string validator_address = 6;
+  sint64 validator_index = 7;
+  bytes signature = 8;
+}
+
+message Vote {
+  uint32 type = 1;
+  sint64 height = 2;
+  sint64 round = 3;
+  BlockID block_id = 4;
+  google.protobuf.Timestamp timestamp = 5 [
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+  string validator_address = 6;
+  sint64 validator_index = 7;
+  bytes signature = 8;
+}
+
+message PartSet {}
+
+message PartSetHeader {
+  sint64 total = 1;
+  bytes hash = 2;
+}
+
+message Validator {
+  string address = 1;
+  tendermint.crypto.PublicKey pub_key = 2;
+  sint64 voting_power = 3;
+  sint64 proposer_priority = 4;
+}
+
+message ValidatorSet {
+  repeated Validator validators = 1;
+  Validator proposer = 2;
+}
+
+// Fraction defines the protobuf message type for tmmath.Fraction that only
+// supports positive values.
+message Fraction {
+  uint64 numerator = 1;
+  uint64 denominator = 2;
+}
