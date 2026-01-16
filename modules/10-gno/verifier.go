@@ -10,7 +10,6 @@ import (
 	bfttypes "github.com/gnolang/gno/tm2/pkg/bft/types"
 
 	cmtmath "github.com/cometbft/cometbft/libs/math"
-	"github.com/cometbft/cometbft/types"
 
 	errorsmod "cosmossdk.io/errors"
 )
@@ -276,37 +275,4 @@ func safeMul(a, b int64) (int64, bool) {
 func HeaderExpired(h *bfttypes.SignedHeader, trustingPeriod time.Duration, now time.Time) bool {
 	expirationTime := h.Time.Add(trustingPeriod)
 	return !expirationTime.After(now)
-}
-
-// VerifyBackwards verifies an untrusted header with a height one less than
-// that of an adjacent trusted header. It ensures that:
-//
-//		a) untrusted header is valid
-//	 b) untrusted header has a time before the trusted header
-//	 c) that the LastBlockID hash of the trusted header is the same as the hash
-//	 of the trusted header
-//
-//	 For any of these cases ErrInvalidHeader is returned.
-func VerifyBackwards(untrustedHeader, trustedHeader *types.Header) error {
-	if err := untrustedHeader.ValidateBasic(); err != nil {
-		return errorsmod.Wrapf(ErrInvalidHeader, "untrustedHeader.ValidateBasic failed: %v", err)
-	}
-
-	if untrustedHeader.ChainID != trustedHeader.ChainID {
-		return errorsmod.Wrapf(ErrInvalidHeader, "header belongs to another chain: %v", untrustedHeader.ChainID)
-	}
-
-	if !untrustedHeader.Time.Before(trustedHeader.Time) {
-		return errorsmod.Wrapf(ErrInvalidHeader, "expected older header time %v to be before new header time %v",
-			untrustedHeader.Time,
-			trustedHeader.Time)
-	}
-
-	if !bytes.Equal(untrustedHeader.Hash(), trustedHeader.LastBlockID.Hash) {
-		return errorsmod.Wrapf(ErrInvalidHeader, "expected older header hash %X to match trusted header's last block %X",
-			untrustedHeader.Hash(),
-			trustedHeader.LastBlockID.Hash)
-	}
-
-	return nil
 }

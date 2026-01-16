@@ -2,13 +2,8 @@ package gno
 
 import (
 	"bytes"
-	"errors"
 	"reflect"
 	"time"
-
-	bfttypes "github.com/gnolang/gno/tm2/pkg/bft/types"
-	"github.com/gnolang/gno/tm2/pkg/crypto"
-	"github.com/gnolang/gno/tm2/pkg/crypto/ed25519"
 
 	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
 	"github.com/cosmos/ibc-go/v10/modules/core/exported"
@@ -60,18 +55,11 @@ func (ClientState) CheckForMisbehaviour(ctx sdk.Context, cdc codec.BinaryCodec, 
 		// if heights are equal check that this is valid misbehaviour of a fork
 		// otherwise if heights are unequal check that this is valid misbehavior of BFT time violation
 		if msg.Header1.GetHeight().EQ(msg.Header2.GetHeight()) {
-
-			blockID1 := bfttypes.BlockID{
-				Hash:        msg.Header1.SignedHeader.Header.LastBlockId.Hash,
-				PartsHeader: bfttypes.PartSetHeader{Total: int(msg.Header1.SignedHeader.Header.LastBlockId.PartsHeader.Total), Hash: msg.Header1.SignedHeader.Header.LastBlockId.PartsHeader.Hash},
-			}
+			blockID1 := ConvertToGnoBlockID(msg.Header1.SignedHeader.Header.LastBlockId)
 			if blockID1.ValidateBasic() != nil {
 				return false
 			}
-			blockID2 := bfttypes.BlockID{
-				Hash:        msg.Header2.SignedHeader.Header.LastBlockId.Hash,
-				PartsHeader: bfttypes.PartSetHeader{Total: int(msg.Header2.SignedHeader.Header.LastBlockId.PartsHeader.Total), Hash: msg.Header2.SignedHeader.Header.LastBlockId.PartsHeader.Hash},
-			}
+			blockID2 := ConvertToGnoBlockID(msg.Header2.SignedHeader.Header.LastBlockId)
 			if blockID2.ValidateBasic() != nil {
 				return false
 			}
@@ -137,49 +125,18 @@ func (cs *ClientState) verifyMisbehaviour(ctx sdk.Context, clientStore storetype
 func checkMisbehaviourHeader(
 	clientState *ClientState, consState *ConsensusState, header *Header, currentTimestamp time.Time,
 ) error {
-	gnoTrustedValset := bfttypes.ValidatorSet{
-		Validators: make([]*bfttypes.Validator, len(header.TrustedValidators.Validators)),
-		Proposer:   nil,
-	}
-	for i, val := range header.TrustedValidators.Validators {
-		key := val.PubKey
-		if (key.GetEd25519()) == nil {
-			return errorsmod.Wrap(clienttypes.ErrInvalidHeader, "validator pubkey is not ed25519")
-		}
-		gnoTrustedValset.Validators[i] = &bfttypes.Validator{
-			Address:          crypto.MustAddressFromString(val.Address),
-			PubKey:           ed25519.PubKeyEd25519(key.GetEd25519()),
-			VotingPower:      val.VotingPower,
-			ProposerPriority: val.ProposerPriority,
-		}
-	}
-	gnoTrustedValset.TotalVotingPower() // ensure TotalVotingPower is set
-	if gnoTrustedValset.IsNilOrEmpty() {
-		return errorsmod.Wrap(errors.New("empty trusted validator set"), "trusted validator set is not gno validator set type")
+	gnoTrustedValset, err := ConvertToGnoValidatorSet(header.TrustedValidators)
+	if err != nil {
+		return errorsmod.Wrap(err, "failed to convert trusted validator set")
 	}
 
-	gnoCommit := bfttypes.Commit{
-		BlockID:    bfttypes.BlockID{Hash: header.SignedHeader.Commit.BlockId.Hash, PartsHeader: bfttypes.PartSetHeader{Total: int(header.SignedHeader.Commit.BlockId.PartsHeader.Total), Hash: header.SignedHeader.Commit.BlockId.PartsHeader.Hash}},
-		Precommits: make([]*bfttypes.CommitSig, len(header.SignedHeader.Commit.Precommits)),
-	}
-	for i, sig := range header.SignedHeader.Commit.Precommits {
-		if sig == nil {
-			continue
-		}
-		gnoCommit.Precommits[i] = &bfttypes.CommitSig{
-			ValidatorIndex:   int(sig.ValidatorIndex),
-			Signature:        sig.Signature,
-			BlockID:          bfttypes.BlockID{Hash: sig.BlockId.Hash, PartsHeader: bfttypes.PartSetHeader{Total: int(sig.BlockId.PartsHeader.Total), Hash: sig.BlockId.PartsHeader.Hash}},
-			Type:             bfttypes.SignedMsgType(sig.Type),
-			Height:           sig.Height,
-			Round:            int(sig.Round),
-			Timestamp:        sig.Timestamp,
-			ValidatorAddress: crypto.MustAddressFromString(sig.ValidatorAddress),
-		}
-	}
-	err := gnoCommit.ValidateBasic()
+	gnoCommit, err := ConvertToGnoCommit(header.SignedHeader.Commit)
 	if err != nil {
-		return errorsmod.Wrap(err, "commit is not gno commit type")
+		return errorsmod.Wrap(err, "failed to convert commit")
+	}
+
+	if err := gnoCommit.ValidateBasic(); err != nil {
+		return errorsmod.Wrap(err, "commit failed basic validation")
 	}
 
 	// check the trusted fields for the header against ConsensusState
@@ -205,10 +162,8 @@ func checkMisbehaviourHeader(
 		chainID, _ = clienttypes.SetRevisionNumber(chainID, header.GetHeight().GetRevisionNumber())
 	}
 
-	// - ValidatorSet must have TrustLevel similarity with trusted ValidatorSet
-	// - TODO: re-check
-	err = VerifyLightCommit(&gnoTrustedValset, chainID, gnoCommit.BlockID, header.SignedHeader.Header.Height, &gnoCommit, LCDefaultTrustLevel)
-	if err != nil {
+	// ValidatorSet must have TrustLevel similarity with trusted ValidatorSet
+	if err := VerifyLightCommit(gnoTrustedValset, chainID, gnoCommit.BlockID, header.SignedHeader.Header.Height, gnoCommit, LCDefaultTrustLevel); err != nil {
 		return errorsmod.Wrapf(clienttypes.ErrInvalidMisbehaviour, "validator set in header has too much change from trusted validator set: %v", err)
 	}
 	return nil

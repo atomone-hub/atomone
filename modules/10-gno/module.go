@@ -24,7 +24,7 @@ var (
 // a no-op.
 type AppModuleBasic struct{}
 
-const Gno string = "10-gno"
+const Gno = ModuleName
 
 // IsOnePerModuleType implements the depinject.OnePerModuleType interface.
 func (AppModuleBasic) IsOnePerModuleType() {}
