@@ -58,7 +58,7 @@ message ClientState {
   // allow_update_after_misbehaviour is deprecated
   bool allow_update_after_misbehaviour = 11 [deprecated = true];
 
-  // In order to distinguisgh between Gno and Tendermint light clients
+  // In order to distinguish between Gno and Tendermint light clients
   // we add a client type field. This is useful for clients that
   // may support multiple light client types.
   string lc_type = 12;
@@ -77,7 +77,7 @@ message ConsensusState {
   // commitment root (i.e app hash)
   ibc.core.commitment.v1.MerkleRoot root = 2 [(gogoproto.nullable) = false];
   bytes next_validators_hash = 3;
-  // In order to distinguisgh between Gno and Tendermint light clients
+  // In order to distinguish between Gno and Tendermint light clients
   // we add a client type field. This is useful for clients that
   // may support multiple light client types.
   string lc_type = 4;

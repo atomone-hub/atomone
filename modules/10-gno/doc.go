@@ -1,6 +1,5 @@
 /*
-DONE
-package gno implements a concrete LightClientModule, ClientState, ConsensusState,
+Package gno implements a concrete LightClientModule, ClientState, ConsensusState,
 Header, Misbehaviour and types for the Tendermint 2 / GNO consensus light client.
 This implementation is based off the ICS 07 specification for Tendermint consensus
 (https://github.com/cosmos/ibc/tree/main/spec/client/ics-007-tendermint-client)

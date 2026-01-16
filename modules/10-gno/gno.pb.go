@@ -63,7 +63,7 @@ type ClientState struct {
 	AllowUpdateAfterExpiry bool `protobuf:"varint,10,opt,name=allow_update_after_expiry,json=allowUpdateAfterExpiry,proto3" json:"allow_update_after_expiry,omitempty"` // Deprecated: Do not use.
 	// allow_update_after_misbehaviour is deprecated
 	AllowUpdateAfterMisbehaviour bool `protobuf:"varint,11,opt,name=allow_update_after_misbehaviour,json=allowUpdateAfterMisbehaviour,proto3" json:"allow_update_after_misbehaviour,omitempty"` // Deprecated: Do not use.
-	// In order to distinguisgh between Gno and Tendermint light clients
+	// In order to distinguish between Gno and Tendermint light clients
 	// we add a client type field. This is useful for clients that
 	// may support multiple light client types.
 	LcType string `protobuf:"bytes,12,opt,name=lc_type,json=lcType,proto3" json:"lc_type,omitempty"`
@@ -110,7 +110,7 @@ type ConsensusState struct {
 	// commitment root (i.e app hash)
 	Root               types1.MerkleRoot `protobuf:"bytes,2,opt,name=root,proto3" json:"root"`
 	NextValidatorsHash []byte            `protobuf:"bytes,3,opt,name=next_validators_hash,json=nextValidatorsHash,proto3" json:"next_validators_hash,omitempty"`
-	// In order to distinguisgh between Gno and Tendermint light clients
+	// In order to distinguish between Gno and Tendermint light clients
 	// we add a client type field. This is useful for clients that
 	// may support multiple light client types.
 	LcType string `protobuf:"bytes,4,opt,name=lc_type,json=lcType,proto3" json:"lc_type,omitempty"`

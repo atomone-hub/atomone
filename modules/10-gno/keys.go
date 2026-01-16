@@ -1,4 +1,3 @@
-/* DONE */
 package gno
 
 const (
