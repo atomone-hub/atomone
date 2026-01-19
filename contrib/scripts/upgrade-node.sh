@@ -42,17 +42,23 @@ sed -i -z 's/# Enable defines if the API server should be enabled.\nenable = fal
 # Decrease voting period to 1min
 jq '.app_state.gov.params.voting_period = "60s"' $localnet_home/config/genesis.json > /tmp/gen
 mv /tmp/gen $localnet_home/config/genesis.json
+# Lower threshold to 0.01
+jq '.app_state.gov.params.threshold = "0.010000000000000000"' $localnet_home/config/genesis.json > /tmp/gen
+mv /tmp/gen $localnet_home/config/genesis.json
 jq --rawfile data contrib/localnet/constitution-mock.md '.app_state.gov.constitution=$data' $localnet_home/config/genesis.json > /tmp/gen
 mv /tmp/gen $localnet_home/config/genesis.json
 echo "start chain"
 $localnetd start &
 sleep 10
+echo "stake tokens for user to be able to vote"
+$localnetd tx staking delegate $($localnetd keys show val --bech val -a) 100000000uatone --from user --fees 10000uphoton --yes
+sleep 6
 echo "submit upgrade tx"
 $localnetd tx gov submit-proposal "$proposal_path" --from user --fees 10000uphoton --yes
 sleep 6
 $localnetd tx gov deposit 1 10000000uatone --from user --fees 10000uphoton --yes
 sleep 6
-$localnetd tx gov vote 1 yes --from val --yes
+$localnetd tx gov vote 1 yes --from user --fees 10000uphoton --yes
 echo "wait for chain halt and restart new binary"
 # $localnetd_new start &
 # $localnetd_new q tx gov params
