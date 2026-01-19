@@ -5,6 +5,7 @@ import (
 
 	"github.com/atomone-hub/atomone/app/upgrades"
 	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
+	icacontrollertypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/controller/types"
 )
 
 const (
@@ -18,7 +19,8 @@ var Upgrade = upgrades.Upgrade{
 	StoreUpgrades: store.StoreUpgrades{
 		Added: []string{
 			// new module added in v4
-			coredaostypes.ModuleName,
+			coredaostypes.StoreKey,
+			icacontrollertypes.StoreKey,
 			// x/gov has been added but it uses the same store key as the x/gov fork from v3
 		},
 		Deleted: []string{
