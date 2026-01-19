@@ -2,6 +2,8 @@ module github.com/atomone-hub/atomone
 
 go 1.22.10
 
+replace github.com/cometbft/cometbft => github.com/allinbits/cometbft-sec-tachyon v0.37.17-0.20260119145852-f1142f32eaad
+
 require (
 	cosmossdk.io/api v0.3.1
 	cosmossdk.io/core v0.5.1
