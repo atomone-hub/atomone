@@ -52,7 +52,7 @@ mv /tmp/gen $localnet_home/config/genesis.json
 jq --rawfile data contrib/localnet/constitution-mock.md '.app_state.gov.constitution=$data' $localnet_home/config/genesis.json > /tmp/gen
 mv /tmp/gen $localnet_home/config/genesis.json
 echo "Start old chain..."
-$localnetd start &> prev.log &
+$localnetd start --log_format json &> prev.log &
 sleep 10
 echo "Stake tokens for user to be able to vote"
 stake_tx=$($localnetd tx staking delegate $($localnetd keys show val --bech val -a) 10000000000uatone --from user --fees 10000uphoton --yes --output json)
@@ -132,4 +132,4 @@ pkill -f "$ATOMONED_BIN" || true
 sleep 2
 
 echo "Starting new binary..."
-$localnetd_new start
+$localnetd_new start --log_format json
