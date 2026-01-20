@@ -101,7 +101,7 @@ func (keeper *Keeper) RemoveFromActiveProposalQueue(ctx sdk.Context, proposalID 
 // SetProposal implements GovKeeper.
 func (keeper *Keeper) SetProposal(ctx sdk.Context, proposal v1.Proposal) {
 	sdkProposal := v1.ConvertAtomOneProposalToSDK(&proposal)
-	err := keeper.Keeper.Proposals.Set(ctx, sdkProposal.Id, *sdkProposal)
+	err := keeper.Keeper.SetProposal(ctx, *sdkProposal)
 	if err != nil {
 		panic(err)
 	}

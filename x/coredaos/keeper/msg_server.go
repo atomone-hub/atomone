@@ -379,9 +379,12 @@ func (ms MsgServer) VetoProposal(goCtx context.Context, msg *types.MsgVetoPropos
 	}
 	proposal.Status = govtypesv1.StatusVetoed
 
-	// Since the proposal is veoted, we set the final tally result to an empty tally.
+	// Since the proposal is veoted, we set the final tally result to an empty tally
+	// and the voting period ends immediately
 	emptyTally := govtypesv1.EmptyTallyResult()
 	proposal.FinalTallyResult = &emptyTally
+	blockTime := ctx.BlockTime()
+	proposal.VotingEndTime = &blockTime
 
 	ms.k.govKeeper.SetProposal(ctx, proposal)
 	ms.k.govKeeper.DeleteVotes(ctx, proposal.Id)
