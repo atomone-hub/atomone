@@ -86,7 +86,7 @@ func (keeper *Keeper) RemoveFromActiveProposalQueue(ctx sdk.Context, proposalID 
 // SetProposal implements GovKeeper.
 func (keeper *Keeper) SetProposal(ctx sdk.Context, proposal v1.Proposal) {
 	sdkProposal := v1.ConvertAtomOneProposalToSDK(&proposal)
-	_ = keeper.Keeper.Proposals.Set(ctx, sdkProposal.Id, *sdkProposal)
+	_ = keeper.Keeper.SetProposal(ctx, *sdkProposal)
 }
 
 // UpdateMinDeposit implements GovKeeper.
