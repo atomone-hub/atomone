@@ -26,7 +26,10 @@ func NewKeeper(k *govkeeper.Keeper) *Keeper {
 // DeleteAndBurnDeposits implements GovKeeper.
 // Subtle: this method shadows the method (*Keeper).DeleteAndBurnDeposits of Keeper.Keeper.
 func (keeper *Keeper) DeleteAndBurnDeposits(ctx sdk.Context, proposalID uint64) {
-	_ = keeper.Keeper.DeleteAndBurnDeposits(ctx, proposalID)
+	err := keeper.Keeper.DeleteAndBurnDeposits(ctx, proposalID)
+	if err != nil {
+		panic(err)
+	}
 }
 
 // DeleteVotes implements GovKeeper.
@@ -35,7 +38,10 @@ func (keeper *Keeper) DeleteVotes(ctx sdk.Context, proposalID uint64) {
 	// Votes are stored as collections.Map[collections.Pair[uint64, sdk.AccAddress], v1.Vote]
 	// We need to clear all votes with the given proposalID prefix
 	rng := collections.NewPrefixedPairRange[uint64, sdk.AccAddress](proposalID)
-	_ = keeper.Keeper.Votes.Clear(ctx, rng)
+	err := keeper.Keeper.Votes.Clear(ctx, rng)
+	if err != nil {
+		panic(err)
+	}
 }
 
 // GetProposal implements GovKeeper.
@@ -60,7 +66,10 @@ func (keeper *Keeper) GetProposalID(ctx sdk.Context) (proposalID uint64, err err
 func (keeper *Keeper) InsertActiveProposalQueue(ctx sdk.Context, proposalID uint64, endTime time.Time) {
 	// ActiveProposalsQueue is collections.Map[collections.Pair[time.Time, uint64], uint64]
 	key := collections.Join(endTime, proposalID)
-	_ = keeper.Keeper.ActiveProposalsQueue.Set(ctx, key, proposalID)
+	err := keeper.Keeper.ActiveProposalsQueue.Set(ctx, key, proposalID)
+	if err != nil {
+		panic(err)
+	}
 }
 
 // ProposalKinds implements GovKeeper.
@@ -73,20 +82,29 @@ func (keeper *Keeper) ProposalKinds(proposal v1.Proposal) v1.ProposalKinds {
 // RefundAndDeleteDeposits implements GovKeeper.
 // Subtle: this method shadows the method (*Keeper).RefundAndDeleteDeposits of Keeper.Keeper.
 func (keeper *Keeper) RefundAndDeleteDeposits(ctx sdk.Context, proposalID uint64) {
-	_ = keeper.Keeper.RefundAndDeleteDeposits(ctx, proposalID)
+	err := keeper.Keeper.RefundAndDeleteDeposits(ctx, proposalID)
+	if err != nil {
+		panic(err)
+	}
 }
 
 // RemoveFromActiveProposalQueue implements GovKeeper.
 func (keeper *Keeper) RemoveFromActiveProposalQueue(ctx sdk.Context, proposalID uint64, endTime time.Time) {
 	// ActiveProposalsQueue is collections.Map[collections.Pair[time.Time, uint64], uint64]
 	key := collections.Join(endTime, proposalID)
-	_ = keeper.Keeper.ActiveProposalsQueue.Remove(ctx, key)
+	err := keeper.Keeper.ActiveProposalsQueue.Remove(ctx, key)
+	if err != nil {
+		panic(err)
+	}
 }
 
 // SetProposal implements GovKeeper.
 func (keeper *Keeper) SetProposal(ctx sdk.Context, proposal v1.Proposal) {
 	sdkProposal := v1.ConvertAtomOneProposalToSDK(&proposal)
-	_ = keeper.Keeper.SetProposal(ctx, *sdkProposal)
+	err := keeper.Keeper.SetProposal(ctx, *sdkProposal)
+	if err != nil {
+		panic(err)
+	}
 }
 
 // UpdateMinDeposit implements GovKeeper.
