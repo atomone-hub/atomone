@@ -686,7 +686,7 @@ func TestMsgServerVetoProposal(t *testing.T) {
 		Id:               1,
 		Status:           govtypesv1.StatusVetoed,
 		FinalTallyResult: &emptyTally,
-		VotingEndTime:    &votingEndTime,
+		VotingEndTime:    &votingEndTime, // will be overwritten in the test
 	}
 	depositPeriodProposal := govtypesv1.Proposal{
 		Title:   "Test Proposal",
@@ -751,6 +751,11 @@ func TestMsgServerVetoProposal(t *testing.T) {
 				ProposalId: 1,
 			},
 			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
+				// ensure proposalWithVeto has the correct VotingEndTime set
+				// can only do it here because ctx is needed
+				votingEndTime := ctx.BlockTime()
+				proposalWithVeto.VotingEndTime = &votingEndTime
+
 				call1 := m.GovKeeper.EXPECT().GetProposal(ctx, uint64(1)).Return(votingPeriodProposal, true)
 				m.GovKeeper.EXPECT().RefundAndDeleteDeposits(ctx, uint64(1)).After(call1)
 				m.GovKeeper.EXPECT().SetProposal(ctx, proposalWithVeto).After(call1)
@@ -769,6 +774,11 @@ func TestMsgServerVetoProposal(t *testing.T) {
 				BurnDeposit: true,
 			},
 			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
+				// ensure proposalWithVeto has the correct VotingEndTime set
+				// can only do it here because ctx is needed
+				votingEndTime := ctx.BlockTime()
+				proposalWithVeto.VotingEndTime = &votingEndTime
+
 				call1 := m.GovKeeper.EXPECT().GetProposal(ctx, uint64(1)).Return(votingPeriodProposal, true)
 				m.GovKeeper.EXPECT().DeleteAndBurnDeposits(ctx, uint64(1)).MaxTimes(1)
 				m.GovKeeper.EXPECT().SetProposal(ctx, proposalWithVeto).After(call1)
