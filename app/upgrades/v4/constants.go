@@ -5,6 +5,7 @@ import (
 
 	"github.com/atomone-hub/atomone/app/upgrades"
 	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
+
 	icacontrollertypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/controller/types"
 )
 
