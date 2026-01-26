@@ -49,11 +49,6 @@ type valArgs struct {
 
 func NewInPlaceTestnetCmd() *cobra.Command {
 	cmd := server.InPlaceTestnetCreator(newTestnetApp)
-	cmd.Short = "Updates chain's application and consensus state with provided validator info and starts the node"
-	cmd.Long = `The test command modifies both application and consensus stores within a local mainnet node and starts the node,
-with the aim of facilitating testing procedures. This command replaces existing validator data with updated information,
-thereby removing the old validator set and introducing a new set suitable for local testing purposes. By altering the state extracted from the mainnet node,
-it enables developers to configure their local environments to reflect mainnet conditions more accurately.`
 	cmd.Example = `atomoned in-place-testnet testing-1 cosmosvaloper1w7f3xx7e75p4l7qdym5msqem9rd4dyc4mq79dm --home $HOME/.atomone/validator1 --validator-privkey=6dq+/KHNvyiw2TToCgOpUpQKIzrLs69Rb8Az39xvmxPHNoPxY1Cil8FY+4DhT9YwD6s0tFABMlLcpaylzKKBOg== --accounts-to-fund="cosmos1f7twgcq4ypzg7y24wuywy06xmdet8pc4473tnq,cosmos1qvuhm5m644660nd8377d6l7yz9e9hhm9evmx3x"`
 
 	cmd.Flags().String(flagAccountsToFund, "", "Comma-separated list of account addresses that will be funded for testing purposes")
