@@ -7,14 +7,19 @@ import (
 	"os"
 	"strings"
 
-	"cosmossdk.io/log"
-	"cosmossdk.io/math"
-	storetypes "cosmossdk.io/store/types"
-	atomone "github.com/atomone-hub/atomone/app"
+	"github.com/spf13/cast"
+	"github.com/spf13/cobra"
+
 	"github.com/cometbft/cometbft/crypto"
 	"github.com/cometbft/cometbft/libs/bytes"
 	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
+
 	dbm "github.com/cosmos/cosmos-db"
+
+	"cosmossdk.io/log"
+	"cosmossdk.io/math"
+	storetypes "cosmossdk.io/store/types"
+
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
@@ -25,8 +30,8 @@ import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	"github.com/spf13/cast"
-	"github.com/spf13/cobra"
+
+	atomone "github.com/atomone-hub/atomone/app"
 )
 
 const valVotingPower int64 = 900000000000000
