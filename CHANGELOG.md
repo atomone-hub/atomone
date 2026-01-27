@@ -22,7 +22,7 @@
 
 ### DEPENDENCIES
 
-- Upgrade CometBFT to v0.37.18 to fix security issue (CSA-2026-001) [#233](https://github.com/atomone-hub/atomone/pull/233)
+- Upgrade CometBFT to v0.37.18 to fix security issue (CSA-2026-001) [#269](https://github.com/atomone-hub/atomone/pull/269)
 
 ## v3.0.3
 
