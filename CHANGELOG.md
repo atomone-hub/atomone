@@ -16,6 +16,14 @@
 
 ### IMPROVEMENTS
 
+## v3.2.0
+
+*Jan 27th, 2026*
+
+### DEPENDENCIES
+
+- Upgrade CometBFT to v0.37.18 to fix security issue (CSA-2026-001) [#233](https://github.com/atomone-hub/atomone/pull/233)
+
 ## v3.0.3
 
 *Oct 20th, 2025*
