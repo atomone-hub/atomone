@@ -146,6 +146,7 @@ func initRootCmd(
 ) {
 	rootCmd.AddCommand(
 		genutilcli.InitCmd(basicManager, atomone.DefaultNodeHome),
+		NewInPlaceTestnetCmd(),
 		tmcli.NewCompletionCmd(rootCmd, true),
 		NewTestnetCmd(basicManager, banktypes.GenesisBalancesIterator{}),
 		addDebugCommands(debug.Cmd()),
