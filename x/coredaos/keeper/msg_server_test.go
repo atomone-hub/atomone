@@ -753,8 +753,8 @@ func TestMsgServerVetoProposal(t *testing.T) {
 			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
 				// ensure proposalWithVeto has the correct VotingEndTime set
 				// can only do it here because ctx is needed
-				votingEndTime := ctx.BlockTime()
-				proposalWithVeto.VotingEndTime = &votingEndTime
+				newVotingEndTime := ctx.BlockTime()
+				proposalWithVeto.VotingEndTime = &newVotingEndTime
 
 				call1 := m.GovKeeper.EXPECT().GetProposal(ctx, uint64(1)).Return(votingPeriodProposal, true)
 				m.GovKeeper.EXPECT().RefundAndDeleteDeposits(ctx, uint64(1)).After(call1)
@@ -776,8 +776,8 @@ func TestMsgServerVetoProposal(t *testing.T) {
 			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
 				// ensure proposalWithVeto has the correct VotingEndTime set
 				// can only do it here because ctx is needed
-				votingEndTime := ctx.BlockTime()
-				proposalWithVeto.VotingEndTime = &votingEndTime
+				newVotingEndTime := ctx.BlockTime()
+				proposalWithVeto.VotingEndTime = &newVotingEndTime
 
 				call1 := m.GovKeeper.EXPECT().GetProposal(ctx, uint64(1)).Return(votingPeriodProposal, true)
 				m.GovKeeper.EXPECT().DeleteAndBurnDeposits(ctx, uint64(1)).MaxTimes(1)
