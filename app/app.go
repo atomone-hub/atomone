@@ -491,6 +491,7 @@ func (app *AtomOneApp) setupUpgradeHandlers() {
 			upgrade.UpgradeName,
 			upgrade.CreateUpgradeHandler(
 				app.mm,
+				app.appCodec,
 				app.configurator,
 				&app.AppKeepers,
 			),
