@@ -177,6 +177,56 @@ endif
 .PHONY: create-release-dry-run create-release
 
 ###############################################################################
+###                       Reproducible Build Verification                   ###
+###############################################################################
+
+GITHUB_RELEASE_URL := https://github.com/atomone-hub/atomone/releases/download
+
+# verify-build: Build locally and verify against GitHub release checksums
+# Usage: make verify-build TAG=vX.Y.Z
+verify-build:
+ifndef TAG
+	$(error TAG is required. Usage: make verify-build TAG=vX.Y.Z)
+endif
+	@test -z "$$(git status --porcelain)" || (echo "ERROR: Working directory is not clean. Commit or stash changes first."; exit 1)
+	@git rev-parse $(TAG) >/dev/null 2>&1 || (echo "ERROR: Tag $(TAG) does not exist."; exit 1)
+	@echo "==> Verifying reproducible build for $(TAG)"
+	@echo "--> Downloading GitHub release checksums"
+	@mkdir -p $(BUILDDIR)
+	curl -sSfL "$(GITHUB_RELEASE_URL)/$(TAG)/SHA256SUMS-$(TAG).txt" -o "$(BUILDDIR)/SHA256SUMS-$(TAG)-github.txt"
+	@echo "--> GitHub release checksums:"
+	@cat $(BUILDDIR)/SHA256SUMS-$(TAG)-github.txt
+	@echo "--> Checking out $(TAG)"
+	@git checkout $(TAG) > /dev/null 2>&1
+	@GO_VERSION=$$(go list -f {{.GoVersion}} -m) && \
+		echo "--> Building with goreleaser using Go $$GO_VERSION" && \
+		GOROOT=$$(go$$GO_VERSION env GOROOT) PATH=$$(go$$GO_VERSION env GOROOT)/bin:$$PATH \
+		TM_VERSION=$$(go list -f {{.Version}} -m github.com/cometbft/cometbft) \
+		go run -modfile contrib/devdeps/go.mod github.com/goreleaser/goreleaser release --clean --skip=publish
+	@echo "--> Local build checksums:"
+	@cat dist/SHA256SUMS-$(TAG).txt
+	@echo ""
+	@git checkout - > /dev/null 2>&1
+	@echo "--> Comparing checksums..."
+	@if diff -q "dist/SHA256SUMS-$(TAG).txt" "$(BUILDDIR)/SHA256SUMS-$(TAG)-github.txt" > /dev/null 2>&1; then \
+		echo "==> SUCCESS: Local build matches GitHub release - reproducible build verified"; \
+		echo ""; \
+		echo "To add this version to RELEASES.md, prepend the following:"; \
+		echo ""; \
+		echo "# $(TAG)"; \
+		echo ""; \
+		cat "dist/SHA256SUMS-$(TAG).txt"; \
+		echo ""; \
+	else \
+		echo "==> MISMATCH: Local build differs from GitHub release"; \
+		echo ""; \
+		diff "dist/SHA256SUMS-$(TAG).txt" "$(BUILDDIR)/SHA256SUMS-$(TAG)-github.txt" || true; \
+		exit 1; \
+	fi
+
+.PHONY: verify-build
+
+###############################################################################
 ###                           Tests & Simulation                            ###
 ###############################################################################
 
