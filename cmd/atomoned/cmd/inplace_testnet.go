@@ -49,7 +49,7 @@ type valArgs struct {
 
 func NewInPlaceTestnetCmd() *cobra.Command {
 	cmd := server.InPlaceTestnetCreator(newTestnetApp)
-	cmd.Example = `atomoned in-place-testnet testing-1 cosmosvaloper1w7f3xx7e75p4l7qdym5msqem9rd4dyc4mq79dm --home $HOME/.atomone/validator1 --validator-privkey=6dq+/KHNvyiw2TToCgOpUpQKIzrLs69Rb8Az39xvmxPHNoPxY1Cil8FY+4DhT9YwD6s0tFABMlLcpaylzKKBOg== --accounts-to-fund="cosmos1f7twgcq4ypzg7y24wuywy06xmdet8pc4473tnq,cosmos1qvuhm5m644660nd8377d6l7yz9e9hhm9evmx3x"`
+	cmd.Example = `atomoned in-place-testnet testing-1 atonevaloper1w7f3xx7e75p4l7qdym5msqem9rd4dyc4jfa7ag --home $HOME/.atomone/validator1 --validator-privkey=6dq+/KHNvyiw2TToCgOpUpQKIzrLs69Rb8Az39xvmxPHNoPxY1Cil8FY+4DhT9YwD6s0tFABMlLcpaylzKKBOg== --accounts-to-fund="atone1f7twgcq4ypzg7y24wuywy06xmdet8pc4m7dv9c,atone1qvuhm5m644660nd8377d6l7yz9e9hhm9hv8p87"`
 
 	cmd.Flags().String(flagAccountsToFund, "", "Comma-separated list of account addresses that will be funded for testing purposes")
 	return cmd
