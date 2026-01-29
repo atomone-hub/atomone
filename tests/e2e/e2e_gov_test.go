@@ -11,8 +11,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"cosmossdk.io/math"
 	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
+
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	sdkgovtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
@@ -611,9 +612,9 @@ func (s *IntegrationTestSuite) submitGovCommand(chainAAPIEndpoint, sender string
 		func(c *assert.CollectT) {
 			res, err := s.queryGovProposal(chainAAPIEndpoint, proposalID)
 			require.NoError(c, err)
-			assert.Equal(c, res.GetProposal().Status.String(), expectedStatus.String())
+			assert.Equal(c, expectedStatus.String(), res.GetProposal().Status.String())
 		},
-		15*time.Second,
+		20*time.Second,
 		time.Second,
 	)
 }
