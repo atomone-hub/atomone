@@ -89,7 +89,7 @@ func (s *IntegrationTestSuite) testGovCancelSoftwareUpgrade() {
 
 		sender := senderAddress.String()
 		height := s.getLatestBlockHeight(s.chainA, 0)
-		proposalHeight := height + 50
+		proposalHeight := height + 40
 		s.writeGovSoftwareUpgradeProposal(s.chainA, proposalHeight)
 
 		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
@@ -592,15 +592,14 @@ func (s *IntegrationTestSuite) verifyChainHaltedAtUpgradeHeight(c *chain, valIdx
 }
 
 func (s *IntegrationTestSuite) verifyChainPassesUpgradeHeight(c *chain, valIdx int, upgradeHeight int64) {
-	var currentHeight int64
-	s.Require().Eventually(
-		func() bool {
-			currentHeight = s.getLatestBlockHeight(c, valIdx)
-			return currentHeight > upgradeHeight
+	s.Require().EventuallyWithT(
+		func(collect *assert.CollectT) {
+			currentHeight := s.getLatestBlockHeight(c, valIdx)
+			assert.Greater(collect, currentHeight, upgradeHeight,
+				"expected chain height greater than %d: got %d", upgradeHeight, currentHeight)
 		},
 		30*time.Second,
 		time.Second,
-		"expected chain height greater than %d: got %d", upgradeHeight, currentHeight,
 	)
 }
 
