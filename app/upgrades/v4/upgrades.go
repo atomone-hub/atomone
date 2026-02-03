@@ -65,35 +65,35 @@ func migrateGovState(ctx context.Context, cdc codec.Codec, govKeeper *govkeeper.
 	}
 
 	if err := migrateProposals(ctx, cdc, govKeeper, sb); err != nil {
-		errors.Join(errs, fmt.Errorf("failed to migrate gov proposals: %w", err))
+		errs = errors.Join(errs, fmt.Errorf("failed to migrate gov proposals: %w", err))
 	}
 
 	if err := migrateLastMinDeposit(ctx, cdc, govKeeper, sb); err != nil {
-		errors.Join(errs, fmt.Errorf("failed to migrate gov last min deposit: %w", err))
+		errs = errors.Join(errs, fmt.Errorf("failed to migrate gov last min deposit: %w", err))
 	}
 
 	if err := migrateLastMinInitialDeposit(ctx, cdc, govKeeper, sb); err != nil {
-		errors.Join(errs, fmt.Errorf("failed to migrate gov last min initial deposit: %w", err))
+		errs = errors.Join(errs, fmt.Errorf("failed to migrate gov last min initial deposit: %w", err))
 	}
 
 	if err := migrateQuorumCheckQueue(ctx, cdc, govKeeper, sb); err != nil {
-		errors.Join(errs, fmt.Errorf("failed to migrate gov quorum check queue: %w", err))
+		errs = errors.Join(errs, fmt.Errorf("failed to migrate gov quorum check queue: %w", err))
 	}
 
 	if err := migrateGovernors(ctx, cdc, govKeeper, sb); err != nil {
-		errors.Join(errs, fmt.Errorf("failed to migrate gov governors: %w", err))
+		errs = errors.Join(errs, fmt.Errorf("failed to migrate gov governors: %w", err))
 	}
 
 	if err := migrateGovernanceDelegations(ctx, cdc, govKeeper, sb); err != nil {
-		errors.Join(errs, fmt.Errorf("failed to migrate gov governance delegations: %w", err))
+		errs = errors.Join(errs, fmt.Errorf("failed to migrate gov governance delegations: %w", err))
 	}
 
 	if err := migrateGovernanceDelegationsByGovernor(ctx, cdc, govKeeper, sb); err != nil {
-		errors.Join(errs, fmt.Errorf("failed to migrate gov governance delegations by governor: %w", err))
+		errs = errors.Join(errs, fmt.Errorf("failed to migrate gov governance delegations by governor: %w", err))
 	}
 
 	if err := migrateValidatorSharesByGovernor(ctx, cdc, govKeeper, sb); err != nil {
-		errors.Join(errs, fmt.Errorf("failed to migrate gov validator shares by governor: %w", err))
+		errs = errors.Join(errs, fmt.Errorf("failed to migrate gov validator shares by governor: %w", err))
 	}
 
 	return errs
