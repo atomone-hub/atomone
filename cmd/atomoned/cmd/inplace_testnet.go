@@ -32,6 +32,7 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	atomone "github.com/atomone-hub/atomone/app"
+	"github.com/atomone-hub/atomone/app/params"
 )
 
 const valVotingPower int64 = 900000000000000
@@ -176,6 +177,9 @@ func initAppForTestnet(app *atomone.AtomOneApp, args valArgs) *atomone.AtomOneAp
 	//
 	bondDenom, err := app.StakingKeeper.BondDenom(ctx)
 	handleErr(err)
+	if bondDenom == "" {
+		bondDenom = params.BondDenom
+	}
 
 	defaultCoins := sdk.NewCoins(sdk.NewInt64Coin(bondDenom, 1000000000))
 
