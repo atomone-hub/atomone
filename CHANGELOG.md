@@ -20,6 +20,7 @@
 
 - Migrate `x/gov` fork from Atom One to Atom One SDK [#248](https://github.com/atomone-hub/atomone/pull/248)
 - Add governors to `x/gov` module [#258](https://github.com/atomone-hub/atomone/pull/258)
+- Prevent Oversight DAO from vetoing proposals that include a change to the Oversight DAO address [#275](https://github.com/atomone-hub/atomone/pull/275)
 
 ### STATE BREAKING
 
