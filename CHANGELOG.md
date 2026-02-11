@@ -26,6 +26,8 @@
 
 ### IMPROVEMENTS
 
+- Reorder ante handlers to verify signatures and deduct fees before doing any tx related stateful checks [#274](https://github.com/atomone-hub/atomone/pull/274)
+
 ## v3.0.3
 
 *Oct 20th, 2025*

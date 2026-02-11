@@ -62,9 +62,13 @@ func NewAnteHandler(opts HandlerOptions) (sdk.AnteHandler, error) {
 		ante.NewExtensionOptionsDecorator(opts.ExtensionOptionChecker),
 		ante.NewValidateBasicDecorator(),
 		ante.NewTxTimeoutHeightDecorator(),
+		ante.NewSetPubKeyDecorator(opts.AccountKeeper), // SetPubKeyDecorator must be called before all signature verification decorators
+		ante.NewValidateSigCountDecorator(opts.AccountKeeper),
+		ante.NewSigGasConsumeDecorator(opts.AccountKeeper, sigGasConsumer),
+		ante.NewSigVerificationDecorator(opts.AccountKeeper, opts.SignModeHandler),
+		ante.NewIncrementSequenceDecorator(opts.AccountKeeper),
 		ante.NewValidateMemoDecorator(opts.AccountKeeper),
 		ante.NewConsumeGasForTxSizeDecorator(opts.AccountKeeper),
-		NewGovVoteDecorator(opts.Codec, opts.StakingKeeper),
 		photonante.NewValidateFeeDecorator(opts.PhotonKeeper),
 		dynamicfeeante.NewDynamicfeeCheckDecorator(
 			opts.AccountKeeper,
@@ -78,11 +82,7 @@ func NewAnteHandler(opts HandlerOptions) (sdk.AnteHandler, error) {
 				opts.TxFeeChecker,
 			),
 		),
-		ante.NewSetPubKeyDecorator(opts.AccountKeeper), // SetPubKeyDecorator must be called before all signature verification decorators
-		ante.NewValidateSigCountDecorator(opts.AccountKeeper),
-		ante.NewSigGasConsumeDecorator(opts.AccountKeeper, sigGasConsumer),
-		ante.NewSigVerificationDecorator(opts.AccountKeeper, opts.SignModeHandler),
-		ante.NewIncrementSequenceDecorator(opts.AccountKeeper),
+		NewGovVoteDecorator(opts.Codec, opts.StakingKeeper),
 		ibcante.NewRedundantRelayDecorator(opts.IBCkeeper),
 	}
 
