@@ -1,6 +1,7 @@
 package simulation
 
 import (
+	"errors"
 	"math/rand"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -261,7 +262,11 @@ func SimulateMsgVetoProposal(gk types.GovKeeper, sk types.StakingKeeper, ak type
 			ModuleName:    types.ModuleName,
 		}
 
-		return simulation.GenAndDeliverTxWithRandFees(txCtx)
+		operationMsg, futureOperation, err := simulation.GenAndDeliverTxWithRandFees(txCtx)
+		if errors.Is(err, types.ErrInvalidVeto) {
+			return simtypes.NoOpMsg(types.ModuleName, TypeMsgVetoProposal, "oversight DAO cannot veto this proposal"), nil, nil
+		}
+		return operationMsg, futureOperation, err
 	}
 }
 
