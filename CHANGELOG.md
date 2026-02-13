@@ -10,19 +10,24 @@
 
 - Use `TruncateInt` to compute `uphotonToMint` [#250](https://github.com/atomone-hub/atomone/pull/250)
 - Fix missing ICA controller configuration [#257](https://github.com/atomone-hub/atomone/pull/257)
+- Fix wrapper converters for `x/gov` [#276](https://github.com/atomone-hub/atomone/pull/276)
 
 ### DEPENDENCIES
 
 - Upgrade CometBFT to v0.38.19 to fix security issue (ASA-2025-003) [#234](https://github.com/atomone-hub/atomone/pull/234)
+- Upgrade CometBFT to v0.38.21 to fix security issue (CSA-2026-001) [#270](https://github.com/atomone-hub/atomone/pull/270)
 
 ### FEATURES
 
 - Migrate `x/gov` fork from Atom One to Atom One SDK [#248](https://github.com/atomone-hub/atomone/pull/248)
 - Add governors to `x/gov` module [#258](https://github.com/atomone-hub/atomone/pull/258)
+- Prevent Oversight DAO from vetoing proposals that include a change to the Oversight DAO address [#275](https://github.com/atomone-hub/atomone/pull/275)
 
 ### STATE BREAKING
 
 ### IMPROVEMENTS
+
+- Reorder ante handlers to verify signatures and deduct fees before doing any tx related stateful checks [#274](https://github.com/atomone-hub/atomone/pull/274)
 
 ## v3.0.3
 
