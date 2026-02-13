@@ -225,9 +225,10 @@ func ConvertSDKGovernorToAtomOne(sdkGovernor *sdkv1.Governor) *Governor {
 	}
 
 	return &Governor{
-		GovernorAddress: sdkGovernor.GovernorAddress,
-		Description:     *ConvertSDKGovernorDescriptionToAtomOne(&sdkGovernor.Description),
-		Status:          GovernorStatus(sdkGovernor.Status),
+		GovernorAddress:      sdkGovernor.GovernorAddress,
+		Description:          *ConvertSDKGovernorDescriptionToAtomOne(&sdkGovernor.Description),
+		Status:               GovernorStatus(sdkGovernor.Status),
+		LastStatusChangeTime: sdkGovernor.LastStatusChangeTime,
 	}
 }
 
@@ -534,6 +535,31 @@ func ConvertAtomOneDepositsToSDK(atomoneDeposits []*Deposit) []*sdkv1.Deposit {
 	return deposits
 }
 
+// ConvertAtomOneLastMinDepositToSDK converts AtomOne LastMinDeposit to SDK
+func ConvertAtomOneLastMinDepositToSDK(atomoneLastMinDeposit *LastMinDeposit) *sdkv1.LastMinDeposit {
+	if atomoneLastMinDeposit == nil {
+		return nil
+	}
+
+	return &sdkv1.LastMinDeposit{
+		Value: atomoneLastMinDeposit.Value,
+		Time:  atomoneLastMinDeposit.Time,
+	}
+}
+
+// ConvertAtomOneQuorumCheckQueueEntryToSDK converts AtomOne QuorumCheckQueueEntry to SDK
+func ConvertAtomOneQuorumCheckQueueEntryToSDK(atomoneEntry *QuorumCheckQueueEntry) *sdkv1.QuorumCheckQueueEntry {
+	if atomoneEntry == nil {
+		return nil
+	}
+
+	return &sdkv1.QuorumCheckQueueEntry{
+		QuorumTimeoutTime: atomoneEntry.QuorumTimeoutTime,
+		QuorumCheckCount:  atomoneEntry.QuorumCheckCount,
+		QuorumChecksDone:  atomoneEntry.QuorumChecksDone,
+	}
+}
+
 // ConvertAtomoneGovernorDescriptionToSDK converts AtomOne GovernorDescription to SDK
 func ConvertAtomOneGovernorDescriptionToSDK(atomoneGovDesc *GovernorDescription) *sdkv1.GovernorDescription {
 	if atomoneGovDesc == nil {
@@ -556,9 +582,10 @@ func ConvertAtomOneGovernorToSDK(atomoneGovernor *Governor) *sdkv1.Governor {
 	}
 
 	return &sdkv1.Governor{
-		GovernorAddress: atomoneGovernor.GovernorAddress,
-		Description:     *ConvertAtomOneGovernorDescriptionToSDK(&atomoneGovernor.Description),
-		Status:          sdkv1.GovernorStatus(atomoneGovernor.Status),
+		GovernorAddress:      atomoneGovernor.GovernorAddress,
+		Description:          *ConvertAtomOneGovernorDescriptionToSDK(&atomoneGovernor.Description),
+		Status:               sdkv1.GovernorStatus(atomoneGovernor.Status),
+		LastStatusChangeTime: atomoneGovernor.LastStatusChangeTime,
 	}
 }
 
