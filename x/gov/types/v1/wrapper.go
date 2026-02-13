@@ -154,6 +154,8 @@ func ConvertSDKParamsToAtomOne(sdkParams *sdkv1.Params) *Params {
 		QuorumRange:                      ConvertSDKQuorumRangeToAtomOne(sdkParams.QuorumRange),
 		ConstitutionAmendmentQuorumRange: ConvertSDKQuorumRangeToAtomOne(sdkParams.ConstitutionAmendmentQuorumRange),
 		LawQuorumRange:                   ConvertSDKQuorumRangeToAtomOne(sdkParams.LawQuorumRange),
+		GovernorStatusChangePeriod:       sdkParams.GovernorStatusChangePeriod,
+		MinGovernorSelfDelegation:        sdkParams.MinGovernorSelfDelegation,
 	}
 }
 
@@ -164,11 +166,12 @@ func ConvertSDKMinDepositThrottlerToAtomOne(sdkThrottler *sdkv1.MinDepositThrott
 	}
 
 	return &MinDepositThrottler{
-		FloorValue:            sdkThrottler.FloorValue,
-		UpdatePeriod:          sdkThrottler.UpdatePeriod,
-		TargetActiveProposals: sdkThrottler.TargetActiveProposals,
-		IncreaseRatio:         sdkThrottler.IncreaseRatio,
-		DecreaseRatio:         sdkThrottler.DecreaseRatio,
+		FloorValue:                        sdkThrottler.FloorValue,
+		UpdatePeriod:                      sdkThrottler.UpdatePeriod,
+		TargetActiveProposals:             sdkThrottler.TargetActiveProposals,
+		IncreaseRatio:                     sdkThrottler.IncreaseRatio,
+		DecreaseRatio:                     sdkThrottler.DecreaseRatio,
+		DecreaseSensitivityTargetDistance: sdkThrottler.DecreaseSensitivityTargetDistance,
 	}
 }
 
@@ -179,11 +182,12 @@ func ConvertSDKMinInitialDepositThrottlerToAtomOne(sdkThrottler *sdkv1.MinInitia
 	}
 
 	return &MinInitialDepositThrottler{
-		FloorValue:      sdkThrottler.FloorValue,
-		UpdatePeriod:    sdkThrottler.UpdatePeriod,
-		TargetProposals: sdkThrottler.TargetProposals,
-		IncreaseRatio:   sdkThrottler.IncreaseRatio,
-		DecreaseRatio:   sdkThrottler.DecreaseRatio,
+		FloorValue:                        sdkThrottler.FloorValue,
+		UpdatePeriod:                      sdkThrottler.UpdatePeriod,
+		TargetProposals:                   sdkThrottler.TargetProposals,
+		IncreaseRatio:                     sdkThrottler.IncreaseRatio,
+		DecreaseRatio:                     sdkThrottler.DecreaseRatio,
+		DecreaseSensitivityTargetDistance: sdkThrottler.DecreaseSensitivityTargetDistance,
 	}
 }
 
@@ -443,6 +447,8 @@ func ConvertAtomOneParamsToSDK(atomoneParams *Params) *sdkv1.Params {
 		QuorumRange:                      ConvertAtomOneQuorumRangeToSDK(atomoneParams.QuorumRange),
 		ConstitutionAmendmentQuorumRange: ConvertAtomOneQuorumRangeToSDK(atomoneParams.ConstitutionAmendmentQuorumRange),
 		LawQuorumRange:                   ConvertAtomOneQuorumRangeToSDK(atomoneParams.LawQuorumRange),
+		GovernorStatusChangePeriod:       atomoneParams.GovernorStatusChangePeriod,
+		MinGovernorSelfDelegation:        atomoneParams.MinGovernorSelfDelegation,
 	}
 }
 
@@ -453,11 +459,12 @@ func ConvertAtomOneMinDepositThrottlerToSDK(atomoneThrottler *MinDepositThrottle
 	}
 
 	return &sdkv1.MinDepositThrottler{
-		FloorValue:            atomoneThrottler.FloorValue,
-		UpdatePeriod:          atomoneThrottler.UpdatePeriod,
-		TargetActiveProposals: atomoneThrottler.TargetActiveProposals,
-		IncreaseRatio:         atomoneThrottler.IncreaseRatio,
-		DecreaseRatio:         atomoneThrottler.DecreaseRatio,
+		FloorValue:                        atomoneThrottler.FloorValue,
+		UpdatePeriod:                      atomoneThrottler.UpdatePeriod,
+		TargetActiveProposals:             atomoneThrottler.TargetActiveProposals,
+		IncreaseRatio:                     atomoneThrottler.IncreaseRatio,
+		DecreaseRatio:                     atomoneThrottler.DecreaseRatio,
+		DecreaseSensitivityTargetDistance: atomoneThrottler.DecreaseSensitivityTargetDistance,
 	}
 }
 
@@ -468,11 +475,12 @@ func ConvertAtomOneMinInitialDepositThrottlerToSDK(atomoneThrottler *MinInitialD
 	}
 
 	return &sdkv1.MinInitialDepositThrottler{
-		FloorValue:      atomoneThrottler.FloorValue,
-		UpdatePeriod:    atomoneThrottler.UpdatePeriod,
-		TargetProposals: atomoneThrottler.TargetProposals,
-		IncreaseRatio:   atomoneThrottler.IncreaseRatio,
-		DecreaseRatio:   atomoneThrottler.DecreaseRatio,
+		FloorValue:                        atomoneThrottler.FloorValue,
+		UpdatePeriod:                      atomoneThrottler.UpdatePeriod,
+		TargetProposals:                   atomoneThrottler.TargetProposals,
+		IncreaseRatio:                     atomoneThrottler.IncreaseRatio,
+		DecreaseRatio:                     atomoneThrottler.DecreaseRatio,
+		DecreaseSensitivityTargetDistance: atomoneThrottler.DecreaseSensitivityTargetDistance,
 	}
 }
 

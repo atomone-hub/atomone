@@ -32,7 +32,7 @@ func (ms MsgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdatePara
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if ms.k.GetAuthority() != msg.Authority {
-		return nil, errors.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", ms.k.GetAuthority(), msg.Authority)
+		return nil, types.ErrInvalidSigner.Wrapf("invalid authority; expected %s, got %s", ms.k.GetAuthority(), msg.Authority)
 	}
 
 	params := msg.Params
@@ -48,7 +48,7 @@ func (ms MsgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdatePara
 		}
 		if delegatorBonded.GT(math.ZeroInt()) ||
 			delegatorUnbonded.GT(math.ZeroInt()) {
-			return nil, errors.Wrapf(types.ErrCannotStake, "cannot update params while Steering DAO have bonded or unbonding tokens")
+			return nil, types.ErrCannotStake.Wrapf("cannot update params while Steering DAO have bonded or unbonding tokens")
 		}
 	}
 	if params.OversightDaoAddress != "" {
@@ -62,7 +62,7 @@ func (ms MsgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdatePara
 		}
 		if delegatorBonded.GT(math.ZeroInt()) ||
 			delegatorUnbonded.GT(math.ZeroInt()) {
-			return nil, errors.Wrapf(types.ErrCannotStake, "cannot update params while Oversight DAO have bonded or unbonding tokens")
+			return nil, types.ErrCannotStake.Wrapf("cannot update params while Oversight DAO have bonded or unbonding tokens")
 		}
 	}
 	if err := ms.k.Params.Set(ctx, params); err != nil {
@@ -85,7 +85,7 @@ func (ms MsgServer) AnnotateProposal(goCtx context.Context, msg *types.MsgAnnota
 	if params.SteeringDaoAddress == "" {
 		logger.Info("Steering DAO address is not set, function is disabled")
 
-		return nil, errors.Wrapf(types.ErrFunctionDisabled, "Steering DAO address is not set")
+		return nil, types.ErrFunctionDisabled.Wrapf("Steering DAO address is not set")
 	}
 
 	if msg.Annotator != params.SteeringDaoAddress {
@@ -95,7 +95,7 @@ func (ms MsgServer) AnnotateProposal(goCtx context.Context, msg *types.MsgAnnota
 			"got", msg.Annotator,
 		)
 
-		return nil, errors.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", params.SteeringDaoAddress, msg.Annotator)
+		return nil, types.ErrInvalidSigner.Wrapf("invalid authority; expected %s, got %s", params.SteeringDaoAddress, msg.Annotator)
 	}
 
 	proposal, found := ms.k.govKeeper.GetProposal(ctx, msg.ProposalId)
@@ -106,7 +106,7 @@ func (ms MsgServer) AnnotateProposal(goCtx context.Context, msg *types.MsgAnnota
 			"authority", msg.Annotator,
 		)
 
-		return nil, errors.Wrapf(govtypes.ErrUnknownProposal, "proposal with ID %d not found", msg.ProposalId)
+		return nil, govtypes.ErrUnknownProposal.Wrapf("proposal with ID %d not found", msg.ProposalId)
 	}
 	if proposal.Status != govtypesv1.StatusVotingPeriod {
 		logger.Error(
@@ -116,7 +116,7 @@ func (ms MsgServer) AnnotateProposal(goCtx context.Context, msg *types.MsgAnnota
 			"authority", msg.Annotator,
 		)
 
-		return nil, errors.Wrapf(sdkgovtypes.ErrInactiveProposal, "proposal with ID %d is not in voting period", msg.ProposalId)
+		return nil, sdkgovtypes.ErrInactiveProposal.Wrapf("proposal with ID %d is not in voting period", msg.ProposalId)
 	}
 
 	// Check if the proposal already has an annotation, if so, allow overwriting only if the `overwrite` flag is set to true.
@@ -127,7 +127,7 @@ func (ms MsgServer) AnnotateProposal(goCtx context.Context, msg *types.MsgAnnota
 			"authority", msg.Annotator,
 		)
 
-		return nil, errors.Wrapf(types.ErrAnnotationAlreadyPresent, "proposal with ID %d already has an annotation", msg.ProposalId)
+		return nil, types.ErrAnnotationAlreadyPresent.Wrapf("proposal with ID %d already has an annotation", msg.ProposalId)
 	}
 
 	proposal.Annotation = msg.Annotation
@@ -163,7 +163,7 @@ func (ms MsgServer) EndorseProposal(goCtx context.Context, msg *types.MsgEndorse
 	if params.SteeringDaoAddress == "" {
 		logger.Info("Steering DAO address is not set, function is disabled")
 
-		return nil, errors.Wrapf(types.ErrFunctionDisabled, "Steering DAO address is not set")
+		return nil, types.ErrFunctionDisabled.Wrapf("Steering DAO address is not set")
 	}
 
 	if msg.Endorser != params.SteeringDaoAddress {
@@ -173,7 +173,7 @@ func (ms MsgServer) EndorseProposal(goCtx context.Context, msg *types.MsgEndorse
 			"got", msg.Endorser,
 		)
 
-		return nil, errors.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", params.SteeringDaoAddress, msg.Endorser)
+		return nil, types.ErrInvalidSigner.Wrapf("invalid authority; expected %s, got %s", params.SteeringDaoAddress, msg.Endorser)
 	}
 
 	proposal, found := ms.k.govKeeper.GetProposal(ctx, msg.ProposalId)
@@ -184,7 +184,7 @@ func (ms MsgServer) EndorseProposal(goCtx context.Context, msg *types.MsgEndorse
 			"authority", msg.Endorser,
 		)
 
-		return nil, errors.Wrapf(govtypes.ErrUnknownProposal, "proposal with ID %d not found", msg.ProposalId)
+		return nil, govtypes.ErrUnknownProposal.Wrapf("proposal with ID %d not found", msg.ProposalId)
 	}
 	if proposal.Status != govtypesv1.StatusVotingPeriod {
 		logger.Error(
@@ -194,7 +194,7 @@ func (ms MsgServer) EndorseProposal(goCtx context.Context, msg *types.MsgEndorse
 			"authority", msg.Endorser,
 		)
 
-		return nil, errors.Wrapf(sdkgovtypes.ErrInactiveProposal, "proposal with ID %d is not in voting period", msg.ProposalId)
+		return nil, sdkgovtypes.ErrInactiveProposal.Wrapf("proposal with ID %d is not in voting period", msg.ProposalId)
 	}
 	if proposal.Endorsed {
 		logger.Error(
@@ -203,7 +203,7 @@ func (ms MsgServer) EndorseProposal(goCtx context.Context, msg *types.MsgEndorse
 			"authority", msg.Endorser,
 		)
 
-		return nil, errors.Wrapf(types.ErrProposalAlreadyEndorsed, "proposal with ID %d has already been endorsed", msg.ProposalId)
+		return nil, types.ErrProposalAlreadyEndorsed.Wrapf("proposal with ID %d has already been endorsed", msg.ProposalId)
 	}
 
 	proposal.Endorsed = true
@@ -241,7 +241,7 @@ func (ms MsgServer) ExtendVotingPeriod(goCtx context.Context, msg *types.MsgExte
 	if params.SteeringDaoAddress == "" && params.OversightDaoAddress == "" {
 		logger.Info("Steering DAO address and Oversight DAO address are not set, function is disabled")
 
-		return nil, errors.Wrapf(types.ErrFunctionDisabled, "Steering DAO address and Oversight DAO address are not set")
+		return nil, types.ErrFunctionDisabled.Wrapf("Steering DAO address and Oversight DAO address are not set")
 	}
 
 	if msg.Extender != params.SteeringDaoAddress && msg.Extender != params.OversightDaoAddress {
@@ -259,7 +259,7 @@ func (ms MsgServer) ExtendVotingPeriod(goCtx context.Context, msg *types.MsgExte
 			"got", msg.Extender,
 		)
 
-		return nil, errors.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", addressesString, msg.Extender)
+		return nil, types.ErrInvalidSigner.Wrapf("invalid authority; expected %s, got %s", addressesString, msg.Extender)
 	}
 
 	proposal, found := ms.k.govKeeper.GetProposal(ctx, msg.ProposalId)
@@ -270,7 +270,7 @@ func (ms MsgServer) ExtendVotingPeriod(goCtx context.Context, msg *types.MsgExte
 			"authority", msg.Extender,
 		)
 
-		return nil, errors.Wrapf(govtypes.ErrUnknownProposal, "proposal with ID %d not found", msg.ProposalId)
+		return nil, govtypes.ErrUnknownProposal.Wrapf("proposal with ID %d not found", msg.ProposalId)
 	}
 	if proposal.Status != govtypesv1.StatusVotingPeriod {
 		logger.Error(
@@ -280,7 +280,7 @@ func (ms MsgServer) ExtendVotingPeriod(goCtx context.Context, msg *types.MsgExte
 			"authority", msg.Extender,
 		)
 
-		return nil, errors.Wrapf(sdkgovtypes.ErrInactiveProposal, "proposal with ID %d is not in voting period", msg.ProposalId)
+		return nil, sdkgovtypes.ErrInactiveProposal.Wrapf("proposal with ID %d is not in voting period", msg.ProposalId)
 	}
 	if proposal.TimesVotingPeriodExtended >= params.VotingPeriodExtensionsLimit {
 		logger.Error(
@@ -290,7 +290,7 @@ func (ms MsgServer) ExtendVotingPeriod(goCtx context.Context, msg *types.MsgExte
 			"authority", msg.Extender,
 		)
 
-		return nil, errors.Wrapf(sdkgovtypes.ErrInvalidProposalContent, "proposal with ID %d has reached the maximum number of voting period extensions", msg.ProposalId)
+		return nil, sdkgovtypes.ErrInvalidProposalContent.Wrapf("proposal with ID %d has reached the maximum number of voting period extensions", msg.ProposalId)
 	}
 
 	newEndTime := proposal.VotingEndTime.Add(*params.VotingPeriodExtensionDuration)
@@ -337,7 +337,7 @@ func (ms MsgServer) VetoProposal(goCtx context.Context, msg *types.MsgVetoPropos
 	if params.OversightDaoAddress == "" {
 		logger.Info("Oversight DAO address is not set, function is disabled")
 
-		return nil, errors.Wrapf(types.ErrFunctionDisabled, "Oversight DAO address is not set")
+		return nil, types.ErrFunctionDisabled.Wrapf("Oversight DAO address is not set")
 	}
 
 	if msg.Vetoer != params.OversightDaoAddress {
@@ -347,7 +347,7 @@ func (ms MsgServer) VetoProposal(goCtx context.Context, msg *types.MsgVetoPropos
 			"got", msg.Vetoer,
 		)
 
-		return nil, errors.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", params.OversightDaoAddress, msg.Vetoer)
+		return nil, types.ErrInvalidSigner.Wrapf("invalid authority; expected %s, got %s", params.OversightDaoAddress, msg.Vetoer)
 	}
 
 	proposal, found := ms.k.govKeeper.GetProposal(ctx, msg.ProposalId)
@@ -358,7 +358,7 @@ func (ms MsgServer) VetoProposal(goCtx context.Context, msg *types.MsgVetoPropos
 			"authority", msg.Vetoer,
 		)
 
-		return nil, errors.Wrapf(govtypes.ErrUnknownProposal, "proposal with ID %d not found", msg.ProposalId)
+		return nil, govtypes.ErrUnknownProposal.Wrapf("proposal with ID %d not found", msg.ProposalId)
 	}
 	if proposal.Status != govtypesv1.StatusVotingPeriod {
 		logger.Error(
@@ -368,7 +368,34 @@ func (ms MsgServer) VetoProposal(goCtx context.Context, msg *types.MsgVetoPropos
 			"authority", msg.Vetoer,
 		)
 
-		return nil, errors.Wrapf(sdkgovtypes.ErrInactiveProposal, "proposal with ID %d is not in voting period", msg.ProposalId)
+		return nil, sdkgovtypes.ErrInactiveProposal.Wrapf("proposal with ID %d is not in voting period", msg.ProposalId)
+	}
+
+	// Check if the proposal contains a change of the oversight DAO address.
+	// If so, vetoing the proposal would create a scenario where the current oversight DAO can prevent its own replacement
+	for _, msg := range proposal.Messages {
+		if msg.GetTypeUrl() == sdk.MsgTypeURL(&types.MsgUpdateParams{}) {
+			var updateParamsMsg types.MsgUpdateParams
+			if err := updateParamsMsg.Unmarshal(msg.GetValue()); err != nil {
+				logger.Error(
+					"failed to unmarshal MsgUpdateParams from proposal messages",
+					"proposal", proposal.Id,
+					"error", err,
+				)
+
+				return nil, err
+			}
+			if updateParamsMsg.Params.OversightDaoAddress != "" && updateParamsMsg.Params.OversightDaoAddress != params.OversightDaoAddress {
+				logger.Error(
+					"proposal contains a change of the oversight DAO address, vetoing it would prevent the replacement of the current oversight DAO",
+					"proposal", proposal.Id,
+					"current_oversight_dao_address", params.OversightDaoAddress,
+					"new_oversight_dao_address", updateParamsMsg.Params.OversightDaoAddress,
+				)
+
+				return nil, types.ErrInvalidVeto.Wrapf("proposal with ID %d contains a change of the oversight DAO address, vetoing it would prevent the replacement of the current oversight DAO", proposal.Id)
+			}
+		}
 	}
 
 	// follows the same logic as in x/gov/abci.go for rejected proposals
@@ -379,16 +406,17 @@ func (ms MsgServer) VetoProposal(goCtx context.Context, msg *types.MsgVetoPropos
 	}
 	proposal.Status = govtypesv1.StatusVetoed
 
-	// Since the proposal is veoted, we set the final tally result to an empty tally
+	// Since the proposal is vetoed, we set the final tally result to an empty tally
 	// and the voting period ends immediately
 	emptyTally := govtypesv1.EmptyTallyResult()
 	proposal.FinalTallyResult = &emptyTally
+	origEndTime := proposal.VotingEndTime
 	blockTime := ctx.BlockTime()
 	proposal.VotingEndTime = &blockTime
 
 	ms.k.govKeeper.SetProposal(ctx, proposal)
 	ms.k.govKeeper.DeleteVotes(ctx, proposal.Id)
-	ms.k.govKeeper.RemoveFromActiveProposalQueue(ctx, proposal.Id, *proposal.VotingEndTime)
+	ms.k.govKeeper.RemoveFromActiveProposalQueue(ctx, proposal.Id, *origEndTime)
 
 	ms.k.govKeeper.UpdateMinInitialDeposit(ctx, true)
 	ms.k.govKeeper.UpdateMinDeposit(ctx, true)
