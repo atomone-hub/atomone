@@ -225,9 +225,10 @@ func ConvertSDKGovernorToAtomOne(sdkGovernor *sdkv1.Governor) *Governor {
 	}
 
 	return &Governor{
-		GovernorAddress: sdkGovernor.GovernorAddress,
-		Description:     *ConvertSDKGovernorDescriptionToAtomOne(&sdkGovernor.Description),
-		Status:          GovernorStatus(sdkGovernor.Status),
+		GovernorAddress:      sdkGovernor.GovernorAddress,
+		Description:          *ConvertSDKGovernorDescriptionToAtomOne(&sdkGovernor.Description),
+		Status:               GovernorStatus(sdkGovernor.Status),
+		LastStatusChangeTime: sdkGovernor.LastStatusChangeTime,
 	}
 }
 
@@ -556,9 +557,10 @@ func ConvertAtomOneGovernorToSDK(atomoneGovernor *Governor) *sdkv1.Governor {
 	}
 
 	return &sdkv1.Governor{
-		GovernorAddress: atomoneGovernor.GovernorAddress,
-		Description:     *ConvertAtomOneGovernorDescriptionToSDK(&atomoneGovernor.Description),
-		Status:          sdkv1.GovernorStatus(atomoneGovernor.Status),
+		GovernorAddress:      atomoneGovernor.GovernorAddress,
+		Description:          *ConvertAtomOneGovernorDescriptionToSDK(&atomoneGovernor.Description),
+		Status:               sdkv1.GovernorStatus(atomoneGovernor.Status),
+		LastStatusChangeTime: atomoneGovernor.LastStatusChangeTime,
 	}
 }
 
