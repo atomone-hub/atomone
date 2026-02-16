@@ -11,6 +11,7 @@
 - Use `TruncateInt` to compute `uphotonToMint` [#250](https://github.com/atomone-hub/atomone/pull/250)
 - Fix missing ICA controller configuration [#257](https://github.com/atomone-hub/atomone/pull/257)
 - Fix wrapper converters for `x/gov` [#276](https://github.com/atomone-hub/atomone/pull/276)
+- Add min-stake filtering for cosmos-sdk votes in the gov ante handler [#279](https://github.com/atomone-hub/atomone/pull/279)
 
 ### DEPENDENCIES
 
