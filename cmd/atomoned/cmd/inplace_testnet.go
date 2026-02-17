@@ -223,7 +223,9 @@ func getCommandArgs(appOpts servertypes.AppOptions) (valArgs, error) {
 
 	// parsing  and set accounts to fund
 	accountsString := cast.ToString(appOpts.Get(flagAccountsToFund))
-	args.accountsToFund = append(args.accountsToFund, strings.Split(accountsString, ",")...)
+	if len(accountsString) > 0 {
+		args.accountsToFund = strings.Split(accountsString, ",")
+	}
 
 	// home dir
 	homeDir := cast.ToString(appOpts.Get(flags.FlagHome))
@@ -238,7 +240,6 @@ func getCommandArgs(appOpts servertypes.AppOptions) (valArgs, error) {
 // handleErr prints the error and exits the program if the error is not nil
 func handleErr(err error) {
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err.Error())
-		os.Exit(1)
+		panic(err)
 	}
 }
