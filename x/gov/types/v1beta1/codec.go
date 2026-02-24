@@ -10,6 +10,7 @@ import (
 	groupcodec "github.com/cosmos/cosmos-sdk/x/group/codec"
 	paramsproposal "github.com/cosmos/cosmos-sdk/x/params/types/proposal"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+	ibcclienttypes "github.com/cosmos/ibc-go/v7/modules/core/02-client/types"
 
 	govcodec "github.com/atomone-hub/atomone/x/gov/codec"
 )
@@ -44,14 +45,10 @@ func RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 	registry.RegisterImplementations(
 		(*Content)(nil),
 		&paramsproposal.ParameterChangeProposal{},
-	)
-	registry.RegisterImplementations(
-		(*Content)(nil),
-		&upgradetypes.SoftwareUpgradeProposal{}, //nolint:staticcheck
-	)
-	registry.RegisterImplementations(
-		(*Content)(nil),
+		&upgradetypes.SoftwareUpgradeProposal{},       //nolint:staticcheck
 		&upgradetypes.CancelSoftwareUpgradeProposal{}, //nolint:staticcheck
+		&ibcclienttypes.ClientUpdateProposal{},         //nolint:staticcheck
+		&ibcclienttypes.UpgradeProposal{},              //nolint:staticcheck
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
