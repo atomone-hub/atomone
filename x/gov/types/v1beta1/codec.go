@@ -48,8 +48,8 @@ func RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 		&paramsproposal.ParameterChangeProposal{},
 		&upgradetypes.SoftwareUpgradeProposal{},       //nolint:staticcheck
 		&upgradetypes.CancelSoftwareUpgradeProposal{}, //nolint:staticcheck
-		&ibcclienttypes.ClientUpdateProposal{},        //nolint:staticcheck
-		&ibcclienttypes.UpgradeProposal{},             //nolint:staticcheck
+		&ibcclienttypes.ClientUpdateProposal{},
+		&ibcclienttypes.UpgradeProposal{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
