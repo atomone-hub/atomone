@@ -1,6 +1,8 @@
 package v1beta1
 
 import (
+	ibcclienttypes "github.com/cosmos/ibc-go/v7/modules/core/02-client/types"
+
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/codec/legacy"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
@@ -10,7 +12,6 @@ import (
 	groupcodec "github.com/cosmos/cosmos-sdk/x/group/codec"
 	paramsproposal "github.com/cosmos/cosmos-sdk/x/params/types/proposal"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
-	ibcclienttypes "github.com/cosmos/ibc-go/v7/modules/core/02-client/types"
 
 	govcodec "github.com/atomone-hub/atomone/x/gov/codec"
 )
@@ -47,8 +48,8 @@ func RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 		&paramsproposal.ParameterChangeProposal{},
 		&upgradetypes.SoftwareUpgradeProposal{},       //nolint:staticcheck
 		&upgradetypes.CancelSoftwareUpgradeProposal{}, //nolint:staticcheck
-		&ibcclienttypes.ClientUpdateProposal{},         //nolint:staticcheck
-		&ibcclienttypes.UpgradeProposal{},              //nolint:staticcheck
+		&ibcclienttypes.ClientUpdateProposal{},        //nolint:staticcheck
+		&ibcclienttypes.UpgradeProposal{},             //nolint:staticcheck
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
