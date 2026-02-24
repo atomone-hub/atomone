@@ -16,6 +16,14 @@
 
 ### IMPROVEMENTS
 
+## v3.3.0
+
+*Feb 24th, 2026*
+
+### BUG FIXES
+
+- Fix register IBC proposal types for gov Content interface [#282](https://github.com/atomone-hub/atomone/pull/282)
+
 ## v3.2.0
 
 *Jan 27th, 2026*
