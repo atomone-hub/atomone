@@ -235,6 +235,18 @@ func SimulateMsgVetoProposal(gk types.GovKeeper, sk types.StakingKeeper, ak type
 			return simtypes.NoOpMsg(types.ModuleName, TypeMsgVetoProposal, "unable to generate proposal"), nil, nil
 		}
 
+		for _, msg := range proposal.Messages {
+			if msg.GetTypeUrl() == sdk.MsgTypeURL(&types.MsgUpdateParams{}) {
+				var updateParamsMsg types.MsgUpdateParams
+				if err := updateParamsMsg.Unmarshal(msg.GetValue()); err != nil {
+					return simtypes.NoOpMsg(types.ModuleName, TypeMsgVetoProposal, "unable check proposal msgs"), nil, nil
+				}
+				if updateParamsMsg.Params.OversightDaoAddress != "" && updateParamsMsg.Params.OversightDaoAddress != params.OversightDaoAddress {
+					return simtypes.NoOpMsg(types.ModuleName, TypeMsgVetoProposal, "skip invalid proposal"), nil, nil
+				}
+			}
+		}
+
 		var burnDeposit bool
 		randInt := r.Intn(2)
 		if randInt%2 == 0 {

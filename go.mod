@@ -1,12 +1,15 @@
 module github.com/atomone-hub/atomone
 
-go 1.24.5
+go 1.25
 
 replace (
+	cosmossdk.io/x/evidence => cosmossdk.io/x/evidence v0.1.1
 	cosmossdk.io/x/feegrant => cosmossdk.io/x/feegrant v0.1.1
-	cosmossdk.io/x/upgrade => github.com/atomone-hub/cosmos-sdk/x/upgrade v0.1.5-atomone.1.0.20251218143825-cbb67818e94a
-	github.com/cosmos/cosmos-sdk => github.com/atomone-hub/cosmos-sdk v0.50.14-atomone.1.0.20251218143825-cbb67818e94a
-	github.com/cosmos/ibc-go/v10 => github.com/cosmos/ibc-go/v10 v10.2.0
+	cosmossdk.io/x/upgrade => github.com/atomone-hub/cosmos-sdk/x/upgrade v0.1.5-atomone.2
+	// https://github.com/allinbits/vaas/pull/18
+	github.com/allinbits/vaas => github.com/allinbits/vaas v0.0.0-20260205103956-f81fce1a14b9
+	github.com/cosmos/cosmos-sdk => github.com/atomone-hub/cosmos-sdk v0.50.15-atomone.1
+	github.com/cosmos/ibc-go/v10 => github.com/cosmos/ibc-go/v10 v10.5.0
 )
 
 require (
@@ -14,23 +17,24 @@ require (
 	cosmossdk.io/client/v2 v2.0.0-beta.11
 	cosmossdk.io/collections v1.2.1
 	cosmossdk.io/core v0.11.3
-	cosmossdk.io/depinject v1.2.0
+	cosmossdk.io/depinject v1.2.1
 	cosmossdk.io/errors v1.0.2
-	cosmossdk.io/log v1.5.1
+	cosmossdk.io/log v1.6.1
 	cosmossdk.io/math v1.5.3
 	cosmossdk.io/store v1.1.2
 	cosmossdk.io/tools/confix v0.1.2
-	cosmossdk.io/x/evidence v0.1.1
+	cosmossdk.io/x/evidence v0.2.0
 	cosmossdk.io/x/feegrant v0.1.1
 	cosmossdk.io/x/tx v0.14.0
 	cosmossdk.io/x/upgrade v0.2.0
+	github.com/allinbits/vaas v0.0.0-00010101000000-000000000000
 	github.com/cometbft/cometbft v0.38.21
-	github.com/cosmos/cosmos-db v1.1.1
+	github.com/cosmos/cosmos-db v1.1.3
 	github.com/cosmos/cosmos-proto v1.0.0-beta.5
-	github.com/cosmos/cosmos-sdk v0.53.0
+	github.com/cosmos/cosmos-sdk v0.53.4
 	github.com/cosmos/go-bip39 v1.0.0
 	github.com/cosmos/gogoproto v1.7.2
-	github.com/cosmos/ibc-go/v10 v10.2.0
+	github.com/cosmos/ibc-go/v10 v10.5.0
 	github.com/cosmos/ics23/go v0.11.0
 	github.com/gnolang/gno v0.0.0-20260114150639-ccf1cf93844b
 	github.com/golang/mock v1.6.0
@@ -40,8 +44,8 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/ory/dockertest/v3 v3.10.0
 	github.com/spf13/cast v1.9.2
-	github.com/spf13/cobra v1.9.1
-	github.com/spf13/pflag v1.0.6
+	github.com/spf13/cobra v1.10.1
+	github.com/spf13/pflag v1.0.9
 	github.com/spf13/viper v1.20.1
 	github.com/stretchr/testify v1.11.1
 	golang.org/x/sync v0.16.0
@@ -125,14 +129,14 @@ require (
 	github.com/dgraph-io/ristretto v0.2.0 // indirect
 	github.com/docker/cli v24.0.7+incompatible // indirect
 	github.com/docker/docker v20.10.19+incompatible // indirect
-	github.com/docker/go-connections v0.4.0 // indirect
+	github.com/docker/go-connections v0.5.0 // indirect
 	github.com/docker/go-units v0.5.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/dvsekhvalnov/jose2go v1.7.0 // indirect
 	github.com/emicklei/dot v1.6.2 // indirect
 	github.com/envoyproxy/go-control-plane/envoy v1.32.4 // indirect
 	github.com/envoyproxy/protoc-gen-validate v1.2.1 // indirect
-	github.com/ethereum/go-ethereum v1.15.10 // indirect
+	github.com/ethereum/go-ethereum v1.15.11 // indirect
 	github.com/fatih/color v1.18.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
@@ -148,7 +152,7 @@ require (
 	github.com/gogo/googleapis v1.4.1 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/groupcache v0.0.0-20241129210726-2c02b8208cf8 // indirect
-	github.com/golang/snappy v0.0.5-0.20220116011046-fa5810519dcb // indirect
+	github.com/golang/snappy v0.0.5-0.20231225225746-43d5d4cd4e0e // indirect
 	github.com/google/btree v1.1.3 // indirect
 	github.com/google/flatbuffers v24.3.25+incompatible // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
@@ -200,7 +204,7 @@ require (
 	github.com/oasisprotocol/curve25519-voi v0.0.0-20230904125328-1f23a7beb09a // indirect
 	github.com/oklog/run v1.1.0 // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect
-	github.com/opencontainers/image-spec v1.1.0-rc2 // indirect
+	github.com/opencontainers/image-spec v1.1.0-rc5 // indirect
 	github.com/opencontainers/runc v1.1.12 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.4 // indirect
 	github.com/petermattis/goid v0.0.0-20240813172612-4fcff4a6cae7 // indirect
@@ -246,9 +250,11 @@ require (
 	go.opentelemetry.io/otel/sdk v1.38.0 // indirect
 	go.opentelemetry.io/otel/sdk/metric v1.38.0 // indirect
 	go.opentelemetry.io/otel/trace v1.38.0 // indirect
+	go.uber.org/mock v0.6.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
-	golang.org/x/arch v0.15.0 // indirect
+	go.yaml.in/yaml/v2 v2.4.2 // indirect
+	golang.org/x/arch v0.17.0 // indirect
 	golang.org/x/crypto v0.41.0 // indirect
 	golang.org/x/exp v0.0.0-20250305212735-054e65f0b394 // indirect
 	golang.org/x/net v0.43.0 // indirect
@@ -264,7 +270,7 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gotest.tools/v3 v3.5.2 // indirect
 	nhooyr.io/websocket v1.8.11 // indirect
-	sigs.k8s.io/yaml v1.4.0 // indirect
+	sigs.k8s.io/yaml v1.6.0 // indirect
 )
 
 replace (

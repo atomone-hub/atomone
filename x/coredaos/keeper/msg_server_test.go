@@ -9,6 +9,7 @@ import (
 
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdktx "github.com/cosmos/cosmos-sdk/types/tx"
 
 	"github.com/atomone-hub/atomone/x/coredaos/testutil"
 	"github.com/atomone-hub/atomone/x/coredaos/types"
@@ -668,7 +669,7 @@ func TestMsgServerExtendVotingPeriod(t *testing.T) {
 }
 
 func TestMsgServerVetoProposal(t *testing.T) {
-	testAcc := simtestutil.CreateRandomAccounts(2)
+	testAcc := simtestutil.CreateRandomAccounts(3)
 	vetoerAcc := testAcc[0].String()
 	oversightDAOAcc := testAcc[1].String()
 	emptyTally := govtypesv1.EmptyTallyResult()
@@ -693,6 +694,20 @@ func TestMsgServerVetoProposal(t *testing.T) {
 		Summary: "A proposal",
 		Id:      2,
 		Status:  govtypesv1.StatusDepositPeriod,
+	}
+	proposalWithChangeOversightDAOMsgs, err := sdktx.SetMsgs([]sdk.Msg{&types.MsgUpdateParams{
+		Authority: "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
+		Params: types.Params{
+			OversightDaoAddress: testAcc[2].String(),
+		},
+	}})
+	require.NoError(t, err)
+	proposalWithChangeOversightDAO := govtypesv1.Proposal{
+		Title:    "Test Proposal",
+		Summary:  "A proposal to change oversight DAO address",
+		Id:       4,
+		Status:   govtypesv1.StatusVotingPeriod,
+		Messages: proposalWithChangeOversightDAOMsgs,
 	}
 	tests := []struct {
 		name            string
@@ -810,6 +825,18 @@ func TestMsgServerVetoProposal(t *testing.T) {
 			expectedErr: "proposal with ID 3 is not in voting period: inactive proposal",
 			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
 				m.GovKeeper.EXPECT().GetProposal(ctx, uint64(3)).Return(proposalWithVeto, true)
+			},
+			setOversightDAO: true,
+		},
+		{
+			name: "veto proposal with change to oversight DAO address",
+			msg: &types.MsgVetoProposal{
+				Vetoer:     oversightDAOAcc,
+				ProposalId: 4,
+			},
+			expectedErr: "proposal with ID 4 contains a change of the oversight DAO address, vetoing it would prevent the replacement of the current oversight DAO: oversight DAO cannot veto this proposal",
+			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
+				m.GovKeeper.EXPECT().GetProposal(ctx, uint64(4)).Return(proposalWithChangeOversightDAO, true)
 			},
 			setOversightDAO: true,
 		},

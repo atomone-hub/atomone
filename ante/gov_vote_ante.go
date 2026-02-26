@@ -9,6 +9,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/authz"
+	sdkgovv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
+	sdkgovv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
@@ -80,6 +82,26 @@ func (g GovVoteDecorator) ValidateVoteMsgs(ctx sdk.Context, msgs []sdk.Msg) erro
 				return err
 			}
 		case *govv1.MsgVoteWeighted:
+			accAddr, err = sdk.AccAddressFromBech32(msg.Voter)
+			if err != nil {
+				return err
+			}
+		case *sdkgovv1beta1.MsgVote:
+			accAddr, err = sdk.AccAddressFromBech32(msg.Voter)
+			if err != nil {
+				return err
+			}
+		case *sdkgovv1.MsgVote:
+			accAddr, err = sdk.AccAddressFromBech32(msg.Voter)
+			if err != nil {
+				return err
+			}
+		case *sdkgovv1beta1.MsgVoteWeighted:
+			accAddr, err = sdk.AccAddressFromBech32(msg.Voter)
+			if err != nil {
+				return err
+			}
+		case *sdkgovv1.MsgVoteWeighted:
 			accAddr, err = sdk.AccAddressFromBech32(msg.Voter)
 			if err != nil {
 				return err
