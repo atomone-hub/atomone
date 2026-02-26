@@ -1,10 +1,13 @@
 module github.com/atomone-hub/atomone
 
-go 1.24.5
+go 1.25
 
 replace (
+	cosmossdk.io/x/evidence => cosmossdk.io/x/evidence v0.1.1
 	cosmossdk.io/x/feegrant => cosmossdk.io/x/feegrant v0.1.1
 	cosmossdk.io/x/upgrade => github.com/atomone-hub/cosmos-sdk/x/upgrade v0.1.5-atomone.2
+	// https://github.com/allinbits/vaas/pull/18
+	github.com/allinbits/vaas => github.com/allinbits/vaas v0.0.0-20260205103956-f81fce1a14b9
 	github.com/cosmos/cosmos-sdk => github.com/atomone-hub/cosmos-sdk v0.50.15-atomone.1
 	github.com/cosmos/ibc-go/v10 => github.com/cosmos/ibc-go/v10 v10.5.0
 )
@@ -20,10 +23,11 @@ require (
 	cosmossdk.io/math v1.5.3
 	cosmossdk.io/store v1.1.2
 	cosmossdk.io/tools/confix v0.1.2
-	cosmossdk.io/x/evidence v0.1.1
+	cosmossdk.io/x/evidence v0.2.0
 	cosmossdk.io/x/feegrant v0.1.1
 	cosmossdk.io/x/tx v0.14.0
 	cosmossdk.io/x/upgrade v0.2.0
+	github.com/allinbits/vaas v0.0.0-00010101000000-000000000000
 	github.com/cometbft/cometbft v0.38.21
 	github.com/cosmos/cosmos-db v1.1.3
 	github.com/cosmos/cosmos-proto v1.0.0-beta.5

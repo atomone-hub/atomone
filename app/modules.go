@@ -51,6 +51,9 @@ import (
 	atomonegovv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	"github.com/atomone-hub/atomone/x/photon"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
+
+	ibcprovider "github.com/allinbits/vaas/x/vaas/provider"
+	providertypes "github.com/allinbits/vaas/x/vaas/provider/types"
 )
 
 var maccPerms = map[string][]string{
@@ -116,7 +119,7 @@ func appModules(
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
 		dynamicfee.NewAppModule(appCodec, *app.DynamicfeeKeeper),
 		coredaos.NewAppModule(appCodec, *app.CoreDaosKeeper, app.GovKeeperWrapper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
-
+		ibcprovider.NewAppModule(&app.ProviderKeeper),
 		app.TransferModule,
 		app.ICAModule,
 		app.TMClientModule,
@@ -158,6 +161,7 @@ func orderBeginBlockers() []string {
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		coredaostypes.ModuleName,
+		providertypes.ModuleName,
 	}
 }
 
@@ -192,6 +196,7 @@ func orderEndBlockers() []string {
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		coredaostypes.ModuleName,
+		providertypes.ModuleName,
 	}
 }
 
@@ -225,5 +230,6 @@ func orderInitBlockers() []string {
 		consensusparamtypes.ModuleName,
 		dynamicfeetypes.ModuleName,
 		coredaostypes.ModuleName,
+		providertypes.ModuleName,
 	}
 }

@@ -67,6 +67,10 @@ import (
 	atomonegovkeeper "github.com/atomone-hub/atomone/x/gov/keeper"
 	photonkeeper "github.com/atomone-hub/atomone/x/photon/keeper"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
+
+	ibcprovider "github.com/allinbits/vaas/x/vaas/provider"
+	ibcproviderkeeper "github.com/allinbits/vaas/x/vaas/provider/keeper"
+	providertypes "github.com/allinbits/vaas/x/vaas/provider/types"
 )
 
 type AppKeepers struct {
@@ -98,6 +102,7 @@ type AppKeepers struct {
 	PhotonKeeper          *photonkeeper.Keeper
 	DynamicfeeKeeper      *dynamicfeekeeper.Keeper
 	CoreDaosKeeper        *coredaoskeeper.Keeper
+	ProviderKeeper        ibcproviderkeeper.Keeper
 
 	// Modules
 	ICAModule      ica.AppModule
@@ -120,6 +125,7 @@ func NewAppKeeper(
 ) AppKeepers {
 	authorityStr := authtypes.NewModuleAddress(govtypes.ModuleName).String()
 	addressCodec := addresscodec.NewBech32Codec(sdk.GetConfig().GetBech32AccountAddrPrefix())
+	consAddressCodec := addresscodec.NewBech32Codec(sdk.GetConfig().GetBech32ConsensusAddrPrefix())
 
 	appKeepers := AppKeepers{}
 	// Set keys KVStoreKey, TransientStoreKey, MemoryStoreKey
@@ -266,6 +272,24 @@ func NewAppKeeper(
 
 	appKeepers.GovKeeperWrapper = atomonegovkeeper.NewKeeper(appKeepers.GovKeeper)
 
+	appKeepers.ProviderKeeper = ibcproviderkeeper.NewKeeper(
+		appCodec,
+		appKeepers.keys[providertypes.StoreKey],
+		appKeepers.IBCKeeper.ChannelKeeper,
+		appKeepers.IBCKeeper.ConnectionKeeper,
+		appKeepers.IBCKeeper.ClientKeeper,
+		appKeepers.StakingKeeper,
+		appKeepers.SlashingKeeper,
+		appKeepers.AccountKeeper,
+		appKeepers.DistrKeeper,
+		appKeepers.BankKeeper,
+		*appKeepers.GovKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		appCodec.InterfaceRegistry().SigningContext().ValidatorAddressCodec(),
+		consAddressCodec,
+		authtypes.FeeCollectorName,
+	)
+
 	appKeepers.CoreDaosKeeper = coredaoskeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(appKeepers.keys[coredaostypes.StoreKey]),
@@ -356,14 +380,18 @@ func NewAppKeeper(
 		icaControllerStack porttypes.IBCModule = icacontroller.NewIBCMiddleware(appKeepers.ICAControllerKeeper)
 	)
 
+	providerModule := ibcprovider.NewAppModule(&appKeepers.ProviderKeeper)
+
 	// Create IBC Router & seal
 	ibcRouter := porttypes.NewRouter().
 		AddRoute(icahosttypes.SubModuleName, icaHostStack).
 		AddRoute(icacontrollertypes.SubModuleName, icaControllerStack).
-		AddRoute(ibctransfertypes.ModuleName, transferStack)
+		AddRoute(ibctransfertypes.ModuleName, transferStack).
+		AddRoute(providertypes.ModuleName, providerModule)
 
 	ibcv2Router := ibcapi.NewRouter().
-		AddRoute(ibctransfertypes.PortID, transferStackV2)
+		AddRoute(ibctransfertypes.PortID, transferStackV2).
+		AddRoute(providertypes.ModuleName, ibcprovider.NewIBCModuleV2(&appKeepers.ProviderKeeper))
 
 	appKeepers.IBCKeeper.SetRouter(ibcRouter)
 	appKeepers.IBCKeeper.SetRouterV2(ibcv2Router)
