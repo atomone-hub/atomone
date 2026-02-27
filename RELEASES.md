@@ -1,3 +1,12 @@
+# v3.3.0
+
+5868f67ead4585c1bb12413eb25ffe254aecdc8d3d5504697054b2762b5be6d3  atomoned-v3.3.0-darwin-amd64
+8aab3a06b6ba5ed58e433c390acac2da8977d6dc545fc59c0ff73f75272a60d0  atomoned-v3.3.0-darwin-arm64
+518ba2916da24b0fca3efba8e0e713c81ec3fb1a5fb0b845af61dd76adb1c55c  atomoned-v3.3.0-linux-amd64
+eb26af28c99732ef59b28a9bfcb8910cd73a04da99866a80dcc67fc5af846441  atomoned-v3.3.0-linux-arm64
+f565d6e6cade43c5f4908584664682393473cee0e9e2e7edc8990b0cc76d6237  atomoned-v3.3.0-windows-amd64.exe
+8a9fe784f0c7e7d91bc39d14c8f558c06c58d7eefd76055ec0ff267f8b4117cb  atomoned-v3.3.0-windows-arm64.exe
+
 # v3.2.0
 
 704ac5d22395c069e4ac025da228ae9307b6b75af0780836333bcd479e4a6852  atomoned-v3.2.0-darwin-amd64
