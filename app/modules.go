@@ -15,7 +15,6 @@ import (
 	"cosmossdk.io/x/upgrade"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 
-	no_valupdates_staking "github.com/allinbits/vaas/x/vaas/no_valupdates_staking"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/types/module"
@@ -31,7 +30,6 @@ import (
 	consensusparamtypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
 	distr "github.com/cosmos/cosmos-sdk/x/distribution"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
-	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	"github.com/cosmos/cosmos-sdk/x/gov"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
@@ -52,6 +50,8 @@ import (
 	"github.com/atomone-hub/atomone/x/photon"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
 
+	no_valupdates_genutil "github.com/allinbits/vaas/x/vaas/no_valupdates_genutil"
+	no_valupdates_staking "github.com/allinbits/vaas/x/vaas/no_valupdates_staking"
 	ibcprovider "github.com/allinbits/vaas/x/vaas/provider"
 	providertypes "github.com/allinbits/vaas/x/vaas/provider/types"
 )
@@ -94,7 +94,7 @@ func appModules(
 	)}
 
 	return []module.AppModule{
-		genutil.NewAppModule(
+		no_valupdates_genutil.NewAppModule(
 			app.AccountKeeper,
 			app.StakingKeeper,
 			app.BaseApp,
