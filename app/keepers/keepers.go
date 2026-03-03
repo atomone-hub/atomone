@@ -276,14 +276,13 @@ func NewAppKeeper(
 
 	appKeepers.ProviderKeeper = ibcproviderkeeper.NewKeeper(
 		appCodec,
-		appKeepers.keys[providertypes.StoreKey],
+		runtime.NewKVStoreService(appKeepers.keys[providertypes.StoreKey]),
 		appKeepers.IBCKeeper.ChannelKeeper,
 		appKeepers.IBCKeeper.ConnectionKeeper,
 		appKeepers.IBCKeeper.ClientKeeper,
 		appKeepers.StakingKeeper,
 		appKeepers.SlashingKeeper,
 		appKeepers.AccountKeeper,
-		appKeepers.DistrKeeper,
 		appKeepers.BankKeeper,
 		*appKeepers.GovKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),

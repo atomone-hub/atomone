@@ -1,13 +1,13 @@
 module github.com/atomone-hub/atomone
 
-go 1.25
+go 1.26.0
 
 replace (
 	cosmossdk.io/x/evidence => cosmossdk.io/x/evidence v0.1.1
 	cosmossdk.io/x/feegrant => cosmossdk.io/x/feegrant v0.1.1
 	cosmossdk.io/x/upgrade => github.com/atomone-hub/cosmos-sdk/x/upgrade v0.1.5-atomone.2
 	// https://github.com/allinbits/vaas/pull/18
-	github.com/allinbits/vaas => github.com/allinbits/vaas v0.0.0-20260205103956-f81fce1a14b9
+	github.com/allinbits/vaas => github.com/allinbits/vaas v0.0.0-20260303111645-6fb95c511621
 	github.com/cosmos/cosmos-sdk => github.com/atomone-hub/cosmos-sdk v0.50.15-atomone.1
 	github.com/cosmos/ibc-go/v10 => github.com/cosmos/ibc-go/v10 v10.5.0
 )
@@ -100,12 +100,13 @@ require (
 	github.com/bits-and-blooms/bitset v1.22.0 // indirect
 	github.com/btcsuite/btcd/btcec/v2 v2.3.5 // indirect
 	github.com/btcsuite/btcd/btcutil v1.1.6 // indirect
-	github.com/bytedance/sonic v1.14.0 // indirect
-	github.com/bytedance/sonic/loader v0.3.0 // indirect
+	github.com/bytedance/gopkg v0.1.3 // indirect
+	github.com/bytedance/sonic v1.15.0 // indirect
+	github.com/bytedance/sonic/loader v0.5.0 // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/chzyer/readline v1.5.1 // indirect
-	github.com/cloudwego/base64x v0.1.5 // indirect
+	github.com/cloudwego/base64x v0.1.6 // indirect
 	github.com/cncf/xds/go v0.0.0-20250501225837-2ac532fd4443 // indirect
 	github.com/cockroachdb/errors v1.12.0 // indirect
 	github.com/cockroachdb/fifo v0.0.0-20240616162244-4768e80dfb9a // indirect
