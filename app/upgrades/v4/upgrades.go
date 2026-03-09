@@ -22,6 +22,8 @@ import (
 	"github.com/atomone-hub/atomone/app/keepers"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
+	dynamicfeekeeper "github.com/cosmos/cosmos-sdk/x/dynamicfee/keeper"
+	dynamicfeetypes "github.com/cosmos/cosmos-sdk/x/dynamicfee/types"
 )
 
 // CreateUpgradeHandler returns a upgrade handler for AtomOne v4
