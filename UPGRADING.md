@@ -1,52 +1,49 @@
 # Upgrading AtomOne
 
-This guide provides instructions for upgrading AtomOne from v2.x to v3.x.
+This guide provides instructions for upgrading AtomOne from v3.x to v4.x.
 
 This document describes the steps for validators and full node operators, to
-upgrade successfully for the AtomOne v3 release.
+upgrade successfully for the AtomOne v4 release.
 
-For more details on the release, please see the [release notes][v3].
+For more details on the release, please see the [release notes][v4].
 
 > [!IMPORTANT]
-> This release introduces the `x/dynamicfee` module which adjusts the gas
-> prices according to blockchain activity, and in a way that takes precedence
-> over the validator `minimum-gas-prices` setting. Hence, after the upgrade,
-> this setting will be ignored; in other words, validators will no longer be
-> able to set their own gas prices.
+> This release upgrades to Cosmos SDK v0.50 and IBC v10. It also introduces the
+> `x/coredaos` module and migrates internal governance state to use the
+> Cosmos SDK gov keeper. The `atomone.gov.v1` proto paths are preserved via the
+> `x/gov` wrapper module, so external clients and queries are unaffected.
 
 ## Release Binary
 
-Please use the correct release binary: `v3.0.3`.
+Please use the correct release binary: `v4.0.0`.
 
 ## Go version
 
-AtomOne v3 build requires the same version of the Go compiler: 1.22.10. If
-you already have go installed but with an other version, you can install
-go1.22.10 with the following command:
+AtomOne v4 build requires Go compiler version 1.24.5. If you already have go
+installed but with another version, you can install go1.24.5 with the following
+command:
 
 ```sh
-$ go install golang.org/dl/go1.22.10@latest
-$ go1.22.10 download
+$ go install golang.org/dl/go1.24.5@latest
+$ go1.24.5 download
 ```
 
 Then you need to update some env variables to invoke the makefile commands of
 AtomOne. For example, to run `make build` :
 ```
-$ GOROOT=$(go1.22.10 env GOROOT) PATH=$GOROOT/bin:$PATH make build
+$ GOROOT=$(go1.24.5 env GOROOT) PATH=$GOROOT/bin:$PATH make build
 ```
 
 ## Instructions
 
-- [Upgrading AtomOne](#upgrading-atomeone)
+- [Upgrading AtomOne](#upgrading-atomone)
   - [Release Binary](#release-binary)
-  - [Go version bump](#go-version-dump)
+  - [Go version](#go-version)
   - [Instructions](#instructions)
   - [On-chain governance proposal attains consensus](#on-chain-governance-proposal-attains-consensus)
   - [Upgrade date](#upgrade-date)
   - [Preparing for the upgrade](#preparing-for-the-upgrade)
-    - [System requirements](#system-requirements)
     - [Backups](#backups)
-    - [Testing](#testing)
     - [Current runtime](#current-runtime)
     - [Target runtime](#target-runtime)
   - [Upgrade steps](#upgrade-steps)
@@ -65,7 +62,7 @@ $ GOROOT=$(go1.22.10 env GOROOT) PATH=$GOROOT/bin:$PATH make build
 
 Once a software upgrade governance proposal is submitted to the AtomOne chain,
 both a reference to this proposal and an `UPGRADE_HEIGHT` are added to the
-[release notes][v3].
+[release notes][v4].
 If and when this proposal reaches consensus, the upgrade height will be used to
 halt the "old" chain binaries. You can check the proposal on one of the block
 explorers or using the `atomoned` CLI tool.
@@ -75,12 +72,9 @@ Neither core developers nor core funding entities control the governance.
 
 The date/time of the upgrade is subject to change as blocks are not generated
 at a constant interval. You can stay up-to-date by checking the estimated
-estimated time until the block is produced one of the block explorers (e.g.
-https://www.mintscan.io/atomone/blocks/6318000).
+time until the block is produced on one of the block explorers.
 
 ## Preparing for the upgrade
-
-### System requirements
 
 ### Backups
 
@@ -100,7 +94,7 @@ case the upgrade fails and the previous chain needs to be restarted.
 ### Current runtime
 
 The AtomOne mainnet network, `atomone-1`, is currently running [AtomOne
-v2.1.0][v2]. We anticipate that operators who are running on v2.1.0, will be
+v3.3.0][v3]. We anticipate that operators who are running on v3.3.0, will be
 able to upgrade successfully. Validators are expected to ensure that their
 systems are up to date and capable of performing the upgrade. This includes
 running the correct binary and if building from source, building with the
@@ -108,9 +102,9 @@ appropriate `go` version.
 
 ### Target runtime
 
-The AtomOne mainnet network, `atomone-1`, will run **[AtomOne v3.0.3][v3]**.
+The AtomOne mainnet network, `atomone-1`, will run **[AtomOne v4.0.0][v4]**.
 Operators _**MUST**_ use this version post-upgrade to remain connected to the
-network. The new version requires `go v1.22.10` to build successfully.
+network. The new version requires `go v1.24.5` to build successfully.
 
 ## Upgrade steps
 
@@ -126,17 +120,17 @@ before upgrade.
 
 ### Method I: Manual Upgrade
 
-Make sure **AtomOne v2.1.0** is installed by either downloading a [compatible
-binary][v2], or building from source. Check the required version to build this
+Make sure **AtomOne v3.3.0** is installed by either downloading a [compatible
+binary][v3], or building from source. Check the required version to build this
 binary in the `Makefile`.
 
-Run AtomOne v2.1.0 till upgrade height, the node will panic:
+Run AtomOne v3.3.0 till upgrade height, the node will panic:
 
 ```shell
-ERR UPGRADE "v3" NEEDED at height: <UPGRADE_HEIGHT>: upgrade to v3 and applying upgrade "v3" at height:<UPGRADE_HEIGHT>
+ERR UPGRADE "v4" NEEDED at height: <UPGRADE_HEIGHT>: upgrade to v4 and applying upgrade "v4" at height:<UPGRADE_HEIGHT>
 ```
 
-Stop the node, and switch the binary to **AtomOne v3.0.3** and re-start by
+Stop the node, and switch the binary to **AtomOne v4.0.0** and re-start by
 `atomoned start`.
 
 It may take several minutes to a few hours until validators with a total sum
@@ -155,7 +149,7 @@ continue to produce blocks.
 go install cosmossdk.io/tools/cosmovisor/cmd/cosmovisor@latest
 ```
 
-- Create a `cosmovisor` folder inside `$ATOMONE_HOME` and move AtomOne `v2.1.0`
+- Create a `cosmovisor` folder inside `$ATOMONE_HOME` and move AtomOne `v3.3.0`
 into `$ATOMONE_HOME/cosmovisor/genesis/bin`:
 
 ```shell
@@ -163,12 +157,12 @@ mkdir -p $ATOMONE_HOME/cosmovisor/genesis/bin
 cp $(which atomoned) $ATOMONE_HOME/cosmovisor/genesis/bin
 ```
 
-- Build AtomOne `v3.0.3`, and move atomoned `v3.0.3` to
-  `$ATOMONE_HOME/cosmovisor/upgrades/v3/bin`
+- Build AtomOne `v4.0.0`, and move atomoned `v4.0.0` to
+  `$ATOMONE_HOME/cosmovisor/upgrades/v4/bin`
 
 ```shell
-mkdir -p  $ATOMONE_HOME/cosmovisor/upgrades/v3/bin
-cp $(which atomoned) $ATOMONE_HOME/cosmovisor/upgrades/v3/bin
+mkdir -p  $ATOMONE_HOME/cosmovisor/upgrades/v4/bin
+cp $(which atomoned) $ATOMONE_HOME/cosmovisor/upgrades/v4/bin
 ```
 
 At this moment, you should have the following structure:
@@ -178,11 +172,11 @@ At this moment, you should have the following structure:
 ├── current -> genesis or upgrades/<name>
 ├── genesis
 │   └── bin
-│       └── atomoned  # old: v2.1.0
+│       └── atomoned  # old: v3.3.0
 └── upgrades
-    └── v3
+    └── v4
         └── bin
-            └── atomoned  # new: v3.0.3
+            └── atomoned  # new: v4.0.0
 ```
 
 - Export the environmental variables:
@@ -230,7 +224,7 @@ challenges, the core teams, after conferring with operators and attaining
 social consensus, may choose to declare that the upgrade will be skipped.
 
 Steps to skip this upgrade proposal are simply to resume the `atomone-1`
-network with the (downgraded) v2.1.0 binary using the following command:
+network with the (downgraded) v3.3.0 binary using the following command:
 
 ```shell
 atomoned start --unsafe-skip-upgrade <UPGRADE_HEIGHT>
@@ -264,5 +258,5 @@ repeat the upgrade procedure again during the network startup. If you discover
 a mistake in the process, the best thing to do is wait for the network to start
 before correcting it.
 
-[v2]: https://github.com/atomone-hub/atomone/releases/tag/v2.1.0
-[v3]: https://github.com/atomone-hub/atomone/releases/tag/v3.0.3
+[v3]: https://github.com/atomone-hub/atomone/releases/tag/v3.3.0
+[v4]: https://github.com/atomone-hub/atomone/releases/tag/v4.0.0
