@@ -74,7 +74,7 @@ func TestAppStateDeterminism(t *testing.T) {
 
 		fmt.Println("config.Seed: ", config.Seed)
 
-		for j := 0; j < numTimesToRunPerSeed; j++ {
+		for j := range numTimesToRunPerSeed {
 			var logger log.Logger
 			if simcli.FlagVerboseValue {
 				logger = log.NewTestLogger(t)

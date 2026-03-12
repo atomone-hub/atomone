@@ -186,7 +186,7 @@ func (c *chain) addAccountFromMnemonic(counts int) error {
 		return err
 	}
 
-	for i := 0; i < counts; i++ {
+	for i := range counts {
 		name := fmt.Sprintf("acct-%d", i)
 		mnemonic, err := createMnemonic()
 		if err != nil {
@@ -233,11 +233,11 @@ func (c *chain) addMultiSigAccountFromMnemonic(counts int, sigNumber int, theres
 		return err
 	}
 
-	for multiSigCount := 0; multiSigCount < counts; multiSigCount++ {
+	for multiSigCount := range counts {
 		multisigName := fmt.Sprintf("multisig-%d", multiSigCount)
 		var pubkeys []cryptotypes.PubKey
 		var signers []account
-		for sigCount := 0; sigCount < sigNumber; sigCount++ {
+		for sigCount := range sigNumber {
 			name := fmt.Sprintf("multisig-%d-acct-%d", multiSigCount, sigCount)
 			mnemonic, err := createMnemonic()
 			if err != nil {
