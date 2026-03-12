@@ -1,6 +1,7 @@
 package ante
 
 import (
+	"context"
 	"errors"
 
 	errorsmod "cosmossdk.io/errors"
@@ -61,123 +62,127 @@ func (g GovVoteDecorator) AnteHandle(
 
 // ValidateVoteMsgs checks if a voter has enough stake to vote
 func (g GovVoteDecorator) ValidateVoteMsgs(ctx sdk.Context, msgs []sdk.Msg) error {
-	validMsg := func(m sdk.Msg) error {
-		var accAddr sdk.AccAddress
-		var err error
-
-		switch msg := m.(type) {
-		case *govv1beta1.MsgVote:
-			accAddr, err = sdk.AccAddressFromBech32(msg.Voter)
-			if err != nil {
-				return err
-			}
-		case *govv1.MsgVote:
-			accAddr, err = sdk.AccAddressFromBech32(msg.Voter)
-			if err != nil {
-				return err
-			}
-		case *govv1beta1.MsgVoteWeighted:
-			accAddr, err = sdk.AccAddressFromBech32(msg.Voter)
-			if err != nil {
-				return err
-			}
-		case *govv1.MsgVoteWeighted:
-			accAddr, err = sdk.AccAddressFromBech32(msg.Voter)
-			if err != nil {
-				return err
-			}
-		case *sdkgovv1beta1.MsgVote:
-			accAddr, err = sdk.AccAddressFromBech32(msg.Voter)
-			if err != nil {
-				return err
-			}
-		case *sdkgovv1.MsgVote:
-			accAddr, err = sdk.AccAddressFromBech32(msg.Voter)
-			if err != nil {
-				return err
-			}
-		case *sdkgovv1beta1.MsgVoteWeighted:
-			accAddr, err = sdk.AccAddressFromBech32(msg.Voter)
-			if err != nil {
-				return err
-			}
-		case *sdkgovv1.MsgVoteWeighted:
-			accAddr, err = sdk.AccAddressFromBech32(msg.Voter)
-			if err != nil {
-				return err
-			}
-		default:
-			// not a vote message - nothing to validate
-			return nil
-		}
-
-		if minStakedTokens.IsZero() {
-			return nil
-		}
-
-		enoughStake := false
-		delegationCount := 0
-		stakedTokens := math.LegacyNewDec(0)
-		if err := g.stakingKeeper.IterateDelegatorDelegations(ctx, accAddr, func(delegation stakingtypes.Delegation) bool {
-			validatorAddr, err := sdk.ValAddressFromBech32(delegation.ValidatorAddress)
-			if err != nil {
-				panic(err) // shouldn't happen
-			}
-			validator, err := g.stakingKeeper.GetValidator(ctx, validatorAddr)
-			if errors.Is(err, stakingtypes.ErrNoValidatorFound) {
-				return false
-			} else if err != nil {
-				panic(err) // shouldn't happen
-			}
-
-			shares := delegation.Shares
-			tokens := validator.TokensFromSharesTruncated(shares)
-			stakedTokens = stakedTokens.Add(tokens)
-			if stakedTokens.GTE(minStakedTokens) {
-				enoughStake = true
-				return true // break the iteration
-			}
-
-			delegationCount++
-			// break the iteration if maxDelegationsChecked were already checked
-			return delegationCount >= maxDelegationsChecked
-		}); err != nil {
-			return err
-		}
-
-		if !enoughStake {
-			return errorsmod.Wrapf(atomoneerrors.ErrInsufficientStake, "insufficient stake for voting - min required %v", minStakedTokens)
-		}
-
-		return nil
-	}
-
-	validAuthz := func(execMsg *authz.MsgExec) error {
-		for _, v := range execMsg.Msgs {
-			var innerMsg sdk.Msg
-			if err := g.cdc.UnpackAny(v, &innerMsg); err != nil {
-				return errorsmod.Wrap(atomoneerrors.ErrUnauthorized, "cannot unmarshal authz exec msgs")
-			}
-			if err := validMsg(innerMsg); err != nil {
-				return err
-			}
-		}
-
-		return nil
-	}
-
 	for _, m := range msgs {
 		if msg, ok := m.(*authz.MsgExec); ok {
-			if err := validAuthz(msg); err != nil {
+			if err := g.validAuthz(ctx, msg); err != nil {
 				return err
 			}
 			continue
 		}
 
 		// validate normal msgs
-		if err := validMsg(m); err != nil {
+		if err := g.validMsg(ctx, m); err != nil {
 			return err
 		}
 	}
+	return nil
+}
+
+func (g GovVoteDecorator) validAuthz(ctx context.Context, execMsg *authz.MsgExec) error {
+	for _, v := range execMsg.Msgs {
+		var innerMsg sdk.Msg
+		if err := g.cdc.UnpackAny(v, &innerMsg); err != nil {
+			return errorsmod.Wrap(atomoneerrors.ErrUnauthorized, "cannot unmarshal authz exec msgs")
+		}
+		// Reject nested MsgExec to prevent bypassing stake checks
+		if _, ok := innerMsg.(*authz.MsgExec); ok {
+			return g.validAuthz(ctx, execMsg)
+		}
+		if err := g.validMsg(ctx, innerMsg); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (g GovVoteDecorator) validMsg(ctx context.Context, m sdk.Msg) error {
+	var accAddr sdk.AccAddress
+	var err error
+
+	switch msg := m.(type) {
+	case *govv1beta1.MsgVote:
+		accAddr, err = sdk.AccAddressFromBech32(msg.Voter)
+		if err != nil {
+			return err
+		}
+	case *govv1.MsgVote:
+		accAddr, err = sdk.AccAddressFromBech32(msg.Voter)
+		if err != nil {
+			return err
+		}
+	case *govv1beta1.MsgVoteWeighted:
+		accAddr, err = sdk.AccAddressFromBech32(msg.Voter)
+		if err != nil {
+			return err
+		}
+	case *govv1.MsgVoteWeighted:
+		accAddr, err = sdk.AccAddressFromBech32(msg.Voter)
+		if err != nil {
+			return err
+		}
+	case *sdkgovv1beta1.MsgVote:
+		accAddr, err = sdk.AccAddressFromBech32(msg.Voter)
+		if err != nil {
+			return err
+		}
+	case *sdkgovv1.MsgVote:
+		accAddr, err = sdk.AccAddressFromBech32(msg.Voter)
+		if err != nil {
+			return err
+		}
+	case *sdkgovv1beta1.MsgVoteWeighted:
+		accAddr, err = sdk.AccAddressFromBech32(msg.Voter)
+		if err != nil {
+			return err
+		}
+	case *sdkgovv1.MsgVoteWeighted:
+		accAddr, err = sdk.AccAddressFromBech32(msg.Voter)
+		if err != nil {
+			return err
+		}
+	default:
+		// not a vote message - nothing to validate
+		return nil
+	}
+
+	if minStakedTokens.IsZero() {
+		return nil
+	}
+
+	enoughStake := false
+	delegationCount := 0
+	stakedTokens := math.LegacyNewDec(0)
+	if err := g.stakingKeeper.IterateDelegatorDelegations(ctx, accAddr, func(delegation stakingtypes.Delegation) bool {
+		validatorAddr, err := sdk.ValAddressFromBech32(delegation.ValidatorAddress)
+		if err != nil {
+			panic(err) // shouldn't happen
+		}
+		validator, err := g.stakingKeeper.GetValidator(ctx, validatorAddr)
+		if errors.Is(err, stakingtypes.ErrNoValidatorFound) {
+			return false
+		} else if err != nil {
+			panic(err) // shouldn't happen
+		}
+
+		shares := delegation.Shares
+		tokens := validator.TokensFromSharesTruncated(shares)
+		stakedTokens = stakedTokens.Add(tokens)
+		if stakedTokens.GTE(minStakedTokens) {
+			enoughStake = true
+			return true // break the iteration
+		}
+
+		delegationCount++
+		// break the iteration if maxDelegationsChecked were already checked
+		return delegationCount >= maxDelegationsChecked
+	}); err != nil {
+		return err
+	}
+
+	if !enoughStake {
+		return errorsmod.Wrapf(atomoneerrors.ErrInsufficientStake, "insufficient stake for voting - min required %v", minStakedTokens)
+	}
+
 	return nil
 }
