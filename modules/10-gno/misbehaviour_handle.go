@@ -163,7 +163,7 @@ func checkMisbehaviourHeader(
 	}
 
 	// ValidatorSet must have TrustLevel similarity with trusted ValidatorSet
-	if err := VerifyLightCommit(gnoTrustedValset, chainID, gnoCommit.BlockID, header.SignedHeader.Header.Height, gnoCommit, LCDefaultTrustLevel); err != nil {
+	if err := VerifyLightCommit(gnoTrustedValset, chainID, gnoCommit.BlockID, header.SignedHeader.Header.Height, gnoCommit, clientState.TrustLevel.ToTendermint()); err != nil {
 		return errorsmod.Wrapf(clienttypes.ErrInvalidMisbehaviour, "validator set in header has too much change from trusted validator set: %v", err)
 	}
 	return nil
