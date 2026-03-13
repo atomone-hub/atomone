@@ -251,7 +251,7 @@ func VerifyLightCommit(vals *bfttypes.ValidatorSet, chainID string, blockID bftt
 	if talliedVotingPower > votingPowerNeeded {
 		return nil
 	}
-	return errorsmod.Wrapf(ErrNewValSetCantBeTrusted, "Invalid commit -- insufficient old voting power: got %v, needed %v", talliedVotingPower, vals.TotalVotingPower()*2/3+1)
+	return errorsmod.Wrapf(ErrNewValSetCantBeTrusted, "Invalid commit -- insufficient old voting power: got %v, needed more than %v", talliedVotingPower, votingPowerNeeded)
 }
 
 func safeMul(a, b int64) (int64, bool) {
