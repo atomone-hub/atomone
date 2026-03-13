@@ -63,7 +63,10 @@ func ConvertToGnoCommit(commit *Commit) (*bfttypes.Commit, error) {
 	}
 
 	for i, sig := range commit.Precommits {
-		if sig == nil {
+		// Proto3 repeated message fields always deserialize as non-nil pointers,
+		// so absent validators appear as zero-value CommitSig structs rather than
+		// nil entries. Detect absent validators by checking for an empty signature.
+		if sig == nil || len(sig.Signature) == 0 {
 			continue
 		}
 		gnoCommit.Precommits[i] = &bfttypes.CommitSig{
