@@ -218,6 +218,19 @@ func TestParams(t *testing.T) {
 			expectedErr: true,
 		},
 		{
+			name: "min learning rate is nil but max is set",
+			p: types.Params{
+				Window:          1,
+				Alpha:           math.LegacyMustNewDecFromStr("0.1"),
+				Beta:            math.LegacyMustNewDecFromStr("0.1"),
+				Gamma:           math.LegacyMustNewDecFromStr("0.1"),
+				MinBaseGasPrice: math.LegacyMustNewDecFromStr("1.0"),
+				MaxLearningRate: math.LegacyMustNewDecFromStr("0.5"),
+				FeeDenom:        types.DefaultFeeDenom,
+			},
+			expectedErr: true,
+		},
+		{
 			name: "min learning rate is negative",
 			p: types.Params{
 				Window:          1,

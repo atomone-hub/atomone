@@ -67,7 +67,7 @@ func (p *Params) ValidateBasic() error {
 		return fmt.Errorf("default max block gas must be greater than 0")
 	}
 
-	if p.MaxLearningRate.IsNil() || p.MinLearningRate.IsNegative() {
+	if p.MinLearningRate.IsNil() || p.MinLearningRate.IsNegative() {
 		return fmt.Errorf("min learning rate cannot be negative or nil")
 	}
 
