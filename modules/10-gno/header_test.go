@@ -96,6 +96,7 @@ func TestHeader_ConsensusState(t *testing.T) {
 	require.Equal(t, blockTime, cs.Timestamp)
 	require.Equal(t, appHash, cs.Root.Hash)
 	require.Equal(t, nextValsHash, cs.NextValidatorsHash)
+	require.Equal(t, Gno, cs.LcType, "ConsensusState from Header must have LcType set to Gno")
 }
 
 func TestHeader_ValidateBasic(t *testing.T) {

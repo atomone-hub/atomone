@@ -4,7 +4,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/cometbft/cometbft/light"
 	cmtmath "github.com/cometbft/cometbft/libs/math"
+	"github.com/gnolang/gno/tm2/pkg/crypto/ed25519"
 	"github.com/stretchr/testify/require"
 )
 
@@ -63,7 +65,7 @@ func TestValidateTrustLevel(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			err := ValidateTrustLevel(tc.trustLevel)
+			err := light.ValidateTrustLevel(tc.trustLevel)
 			if tc.expectErr {
 				require.Error(t, err)
 			} else {
@@ -218,6 +220,250 @@ func TestVerifyLightCommit_InvalidSignature(t *testing.T) {
 	)
 	require.Error(t, err)
 	require.Contains(t, err.Error(), "invalid signature")
+}
+
+// TestVerifyLightCommit_DifferingValSets tests that VerifyLightCommit correctly
+// handles the cross-height case where the trusted validator set differs from
+// the one that produced the untrusted commit.
+func TestVerifyLightCommit_DifferingValSets(t *testing.T) {
+	chainID := testChainID
+	height := int64(20)
+	blockTime := time.Now().UTC()
+
+	// Create two overlapping but different validator sets:
+	// Trusted set: validators A, B, C (3 validators)
+	// Untrusted set: validators B, C, D (3 validators)
+	// Overlap: validators B and C
+	keyA := makePrivKey()
+	keyB := makePrivKey()
+	keyC := makePrivKey()
+	keyD := makePrivKey()
+
+	votingPower := int64(100)
+
+	trustedValSet := &ValidatorSet{
+		Validators: []*Validator{
+			createTestValidatorWithKey(votingPower, keyA),
+			createTestValidatorWithKey(votingPower, keyB),
+			createTestValidatorWithKey(votingPower, keyC),
+		},
+	}
+	trustedPrivKeys := []ed25519.PrivKeyEd25519{keyA, keyB, keyC}
+
+	// The untrusted commit is signed by B, C, D
+	untrustedValSet := &ValidatorSet{
+		Validators: []*Validator{
+			createTestValidatorWithKey(votingPower, keyB),
+			createTestValidatorWithKey(votingPower, keyC),
+			createTestValidatorWithKey(votingPower, keyD),
+		},
+	}
+	untrustedPrivKeys := []ed25519.PrivKeyEd25519{keyB, keyC, keyD}
+
+	// Create a signed header using the untrusted validator set
+	signedHeader := createTestSignedHeader(chainID, height, blockTime, untrustedValSet, untrustedPrivKeys)
+	bftTrustedVals := createBftValidatorSet(trustedValSet.Validators, trustedPrivKeys)
+	bftCommit := toBftCommit(signedHeader.Commit)
+
+	// Validators B and C overlap, giving 200 out of 300 total trusted voting power.
+	// This exceeds 1/3 (100), so verification should pass.
+	err := VerifyLightCommit(
+		bftTrustedVals,
+		chainID,
+		bftCommit.BlockID,
+		height,
+		bftCommit,
+		cmtmath.Fraction{Numerator: 1, Denominator: 3},
+	)
+	require.NoError(t, err, "should succeed: 2/3 of trusted voting power signed")
+
+	// With a 2/3 trust level, 200 out of 300 is not strictly greater than 200 needed,
+	// so this should fail (the check uses > not >=).
+	err = VerifyLightCommit(
+		bftTrustedVals,
+		chainID,
+		bftCommit.BlockID,
+		height,
+		bftCommit,
+		cmtmath.Fraction{Numerator: 2, Denominator: 3},
+	)
+	require.Error(t, err, "should fail: 200 voting power does not strictly exceed 200 threshold")
+}
+
+// TestVerifyLightCommit_DifferentSetSizes tests that VerifyLightCommit works
+// when the trusted validator set and the untrusted commit have different sizes.
+func TestVerifyLightCommit_DifferentSetSizes(t *testing.T) {
+	chainID := testChainID
+	height := int64(20)
+	blockTime := time.Now().UTC()
+
+	keyA := makePrivKey()
+	keyB := makePrivKey()
+	keyC := makePrivKey()
+	keyD := makePrivKey()
+
+	votingPower := int64(100)
+
+	// Trusted set has 3 validators: A, B, C
+	trustedValSet := &ValidatorSet{
+		Validators: []*Validator{
+			createTestValidatorWithKey(votingPower, keyA),
+			createTestValidatorWithKey(votingPower, keyB),
+			createTestValidatorWithKey(votingPower, keyC),
+		},
+	}
+	trustedPrivKeys := []ed25519.PrivKeyEd25519{keyA, keyB, keyC}
+
+	// Untrusted commit has 4 validators: A, B, C, D (different size!)
+	untrustedValSet := &ValidatorSet{
+		Validators: []*Validator{
+			createTestValidatorWithKey(votingPower, keyA),
+			createTestValidatorWithKey(votingPower, keyB),
+			createTestValidatorWithKey(votingPower, keyC),
+			createTestValidatorWithKey(votingPower, keyD),
+		},
+	}
+	untrustedPrivKeys := []ed25519.PrivKeyEd25519{keyA, keyB, keyC, keyD}
+
+	signedHeader := createTestSignedHeader(chainID, height, blockTime, untrustedValSet, untrustedPrivKeys)
+	bftTrustedVals := createBftValidatorSet(trustedValSet.Validators, trustedPrivKeys)
+	bftCommit := toBftCommit(signedHeader.Commit)
+
+	// All 3 trusted validators (A, B, C) signed, giving 300/300 trusted power.
+	err := VerifyLightCommit(
+		bftTrustedVals,
+		chainID,
+		bftCommit.BlockID,
+		height,
+		bftCommit,
+		cmtmath.Fraction{Numerator: 1, Denominator: 3},
+	)
+	require.NoError(t, err, "should succeed even though commit has more precommit slots than the trusted validator set")
+}
+
+// TestVerifyLightCommit_NoOverlap tests that VerifyLightCommit fails when
+// the trusted validator set and the commit signers have no overlap.
+func TestVerifyLightCommit_NoOverlap(t *testing.T) {
+	chainID := testChainID
+	height := int64(20)
+	blockTime := time.Now().UTC()
+
+	keyA := makePrivKey()
+	keyB := makePrivKey()
+	keyC := makePrivKey()
+	keyD := makePrivKey()
+
+	votingPower := int64(100)
+
+	// Trusted set: A, B
+	trustedValSet := &ValidatorSet{
+		Validators: []*Validator{
+			createTestValidatorWithKey(votingPower, keyA),
+			createTestValidatorWithKey(votingPower, keyB),
+		},
+	}
+	trustedPrivKeys := []ed25519.PrivKeyEd25519{keyA, keyB}
+
+	// Untrusted set: C, D (no overlap with trusted)
+	untrustedValSet := &ValidatorSet{
+		Validators: []*Validator{
+			createTestValidatorWithKey(votingPower, keyC),
+			createTestValidatorWithKey(votingPower, keyD),
+		},
+	}
+	untrustedPrivKeys := []ed25519.PrivKeyEd25519{keyC, keyD}
+
+	signedHeader := createTestSignedHeader(chainID, height, blockTime, untrustedValSet, untrustedPrivKeys)
+	bftTrustedVals := createBftValidatorSet(trustedValSet.Validators, trustedPrivKeys)
+	bftCommit := toBftCommit(signedHeader.Commit)
+
+	err := VerifyLightCommit(
+		bftTrustedVals,
+		chainID,
+		bftCommit.BlockID,
+		height,
+		bftCommit,
+		cmtmath.Fraction{Numerator: 1, Denominator: 3},
+	)
+	require.Error(t, err, "should fail: no trusted validators signed the commit")
+}
+
+// TestVerifyLightCommit_ErrorMessageReportsCorrectThreshold tests that when
+// VerifyLightCommit fails due to insufficient voting power, the error message
+// reports the actual threshold derived from the trustLevel parameter, not a
+// hardcoded 2/3 value.
+func TestVerifyLightCommit_ErrorMessageReportsCorrectThreshold(t *testing.T) {
+	chainID := testChainID
+	height := int64(20)
+	blockTime := time.Now().UTC()
+
+	// Trusted set: A, B, C (300 total VP)
+	// Commit signed by: D (no overlap → 0 tallied VP, guaranteed failure)
+	keyA := makePrivKey()
+	keyB := makePrivKey()
+	keyC := makePrivKey()
+	keyD := makePrivKey()
+
+	votingPower := int64(100)
+
+	trustedValSet := &ValidatorSet{
+		Validators: []*Validator{
+			createTestValidatorWithKey(votingPower, keyA),
+			createTestValidatorWithKey(votingPower, keyB),
+			createTestValidatorWithKey(votingPower, keyC),
+		},
+	}
+	trustedPrivKeys := []ed25519.PrivKeyEd25519{keyA, keyB, keyC}
+
+	untrustedValSet := &ValidatorSet{
+		Validators: []*Validator{
+			createTestValidatorWithKey(votingPower, keyD),
+		},
+	}
+	untrustedPrivKeys := []ed25519.PrivKeyEd25519{keyD}
+
+	signedHeader := createTestSignedHeader(chainID, height, blockTime, untrustedValSet, untrustedPrivKeys)
+	bftTrustedVals := createBftValidatorSet(trustedValSet.Validators, trustedPrivKeys)
+	bftCommit := toBftCommit(signedHeader.Commit)
+
+	testCases := []struct {
+		name           string
+		trustLevel     cmtmath.Fraction
+		expectedNeeded string // the threshold that should appear in the error
+	}{
+		{
+			name:           "1/3 trust level",
+			trustLevel:     cmtmath.Fraction{Numerator: 1, Denominator: 3},
+			expectedNeeded: "needed more than 100", // 300 * 1 / 3 = 100
+		},
+		{
+			name:           "1/2 trust level",
+			trustLevel:     cmtmath.Fraction{Numerator: 1, Denominator: 2},
+			expectedNeeded: "needed more than 150", // 300 * 1 / 2 = 150
+		},
+		{
+			name:           "2/3 trust level",
+			trustLevel:     cmtmath.Fraction{Numerator: 2, Denominator: 3},
+			expectedNeeded: "needed more than 200", // 300 * 2 / 3 = 200
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			err := VerifyLightCommit(
+				bftTrustedVals,
+				chainID,
+				bftCommit.BlockID,
+				height,
+				bftCommit,
+				tc.trustLevel,
+			)
+			require.Error(t, err)
+			require.Contains(t, err.Error(), tc.expectedNeeded,
+				"error message should report the actual threshold for trust level %d/%d",
+				tc.trustLevel.Numerator, tc.trustLevel.Denominator)
+		})
+	}
 }
 
 // TestVerifyAdjacent tests adjacent header verification
