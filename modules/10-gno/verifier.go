@@ -188,18 +188,6 @@ func verifyNewHeaderAndVals(
 	return nil
 }
 
-// ValidateTrustLevel checks that trustLevel is within the allowed range [1/3,
-// 1]. If not, it returns an error. 1/3 is the minimum amount of trust needed
-// which does not break the security model.
-func ValidateTrustLevel(lvl cmtmath.Fraction) error {
-	if lvl.Numerator*3 < lvl.Denominator || // < 1/3
-		lvl.Numerator > lvl.Denominator || // > 1
-		lvl.Denominator == 0 {
-		return fmt.Errorf("trustLevel must be within [1/3, 1], given %v", lvl)
-	}
-	return nil
-}
-
 func VerifyLightCommit(vals *bfttypes.ValidatorSet, chainID string, blockID bfttypes.BlockID, height int64, commit *bfttypes.Commit, trustLevel cmtmath.Fraction) error {
 	if err := commit.ValidateBasic(); err != nil {
 		return err
