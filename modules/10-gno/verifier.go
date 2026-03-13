@@ -204,9 +204,6 @@ func VerifyLightCommit(vals *bfttypes.ValidatorSet, chainID string, blockID bftt
 	if err := commit.ValidateBasic(); err != nil {
 		return err
 	}
-	if vals.Size() != len(commit.Precommits) {
-		return errorsmod.Wrapf(ErrNewValSetCantBeTrusted, "%s", bfttypes.NewErrInvalidCommitPrecommits(vals.Size(), len(commit.Precommits)).Error())
-	}
 	if height != commit.Height() {
 		return errorsmod.Wrapf(ErrNewValSetCantBeTrusted, "%s", bfttypes.NewErrInvalidCommitHeight(height, commit.Height()).Error())
 	}
@@ -216,12 +213,20 @@ func VerifyLightCommit(vals *bfttypes.ValidatorSet, chainID string, blockID bftt
 	}
 
 	talliedVotingPower := int64(0)
+	seen := make(map[int]bool)
 
 	for idx, precommit := range commit.Precommits {
 		if precommit == nil {
 			continue // OK, some precommits can be missing.
 		}
-		_, val := vals.GetByIndex(idx)
+		// Look up by address since the commit may be from a different height
+		// whose validator set has a different ordering/composition.
+		valIdx, val := vals.GetByAddress(precommit.ValidatorAddress)
+		if val == nil || seen[valIdx] {
+			continue // not in trusted set or already counted
+		}
+		seen[valIdx] = true
+
 		// Validate signature.
 		precommitSignBytes := commit.VoteSignBytes(chainID, idx)
 		if !val.PubKey.VerifyBytes(precommitSignBytes, precommit.Signature) {
