@@ -55,11 +55,11 @@ func (ClientState) CheckForMisbehaviour(ctx sdk.Context, cdc codec.BinaryCodec, 
 		// if heights are equal check that this is valid misbehaviour of a fork
 		// otherwise if heights are unequal check that this is valid misbehavior of BFT time violation
 		if msg.Header1.GetHeight().EQ(msg.Header2.GetHeight()) {
-			blockID1 := ConvertToGnoBlockID(msg.Header1.SignedHeader.Header.LastBlockId)
+			blockID1 := ConvertToGnoBlockID(msg.Header1.SignedHeader.Commit.BlockId)
 			if blockID1.ValidateBasic() != nil {
 				return false
 			}
-			blockID2 := ConvertToGnoBlockID(msg.Header2.SignedHeader.Header.LastBlockId)
+			blockID2 := ConvertToGnoBlockID(msg.Header2.SignedHeader.Commit.BlockId)
 			if blockID2.ValidateBasic() != nil {
 				return false
 			}
