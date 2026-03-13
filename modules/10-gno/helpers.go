@@ -106,12 +106,13 @@ func ConvertToGnoHeader(header *GnoHeader) (*bfttypes.Header, error) {
 	}
 
 	gnoHeader := bfttypes.Header{
-		Version:  header.Version,
-		ChainID:  header.ChainId,
-		Height:   header.Height,
-		Time:     header.Time,
-		NumTxs:   header.NumTxs,
-		TotalTxs: header.TotalTxs,
+		Version:    header.Version,
+		ChainID:    header.ChainId,
+		Height:     header.Height,
+		Time:       header.Time,
+		NumTxs:     header.NumTxs,
+		TotalTxs:   header.TotalTxs,
+		AppVersion: header.AppVersion,
 		LastBlockID: bfttypes.BlockID{
 			Hash: header.LastBlockId.Hash,
 			PartsHeader: bfttypes.PartSetHeader{
