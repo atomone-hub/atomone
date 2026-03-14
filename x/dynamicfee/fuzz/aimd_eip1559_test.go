@@ -34,7 +34,7 @@ func TestAIMDLearningRate(t *testing.T) {
 		gasGen := rapid.Uint64Range(0, maxBlockGas)
 
 		// Update the dynamic fee pricing.
-		for i := uint64(0); i < numBlocks; i++ {
+		for range numBlocks {
 			blockGas := gasGen.Draw(t, "gas")
 			prevLearningRate := state.LearningRate
 
@@ -80,7 +80,7 @@ func TestAIMDGasPrice(t *testing.T) {
 		gasGen := rapid.Uint64Range(0, maxBlockGas)
 
 		// Update the dynamic fee pricing.
-		for i := uint64(0); i < numBlocks; i++ {
+		for range numBlocks {
 			blockGas := gasGen.Draw(t, "gas")
 			prevBaseGasPrice := state.BaseGasPrice
 

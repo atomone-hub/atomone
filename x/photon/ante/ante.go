@@ -1,6 +1,8 @@
 package ante
 
 import (
+	"slices"
+
 	errorsmod "cosmossdk.io/errors"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -61,11 +63,8 @@ func AllowsAnyTxFee(tx sdk.Tx, txFeeExceptions []string) bool {
 	var anyTxFeeMsgCount int
 	for _, msg := range tx.GetMsgs() {
 		msgTypeURL := sdk.MsgTypeURL(msg)
-		for _, exception := range txFeeExceptions {
-			if exception == msgTypeURL {
-				anyTxFeeMsgCount++
-				break
-			}
+		if slices.Contains(txFeeExceptions, msgTypeURL) {
+			anyTxFeeMsgCount++
 		}
 	}
 	return anyTxFeeMsgCount == len(tx.GetMsgs())

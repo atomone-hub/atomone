@@ -119,7 +119,7 @@ func initTendermintConfig() *tmcfg.Config {
 	return cfg
 }
 
-func initAppConfig() (string, interface{}) {
+func initAppConfig() (string, any) {
 	// Embed additional configurations
 	type CustomAppConfig struct {
 		serverconfig.Config
