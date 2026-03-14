@@ -29,7 +29,7 @@ import (
 )
 
 func (s *IntegrationTestSuite) waitAtomOneTx(endpoint, txHash string, msgResp codec.ProtoMarshaler) (err error) {
-	for i := 0; i < 15; i++ {
+	for range 15 {
 		time.Sleep(time.Second)
 		_, err = s.queryAtomOneTx(endpoint, txHash, msgResp)
 		if isErrNotFound(err) {

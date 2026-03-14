@@ -60,7 +60,7 @@ func (c *chain) configDir() string {
 }
 
 func (c *chain) createAndInitValidators(count int) error {
-	for i := 0; i < count; i++ {
+	for i := range count {
 		node := c.createValidator(i)
 
 		// generate genesis files
