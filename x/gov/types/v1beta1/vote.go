@@ -39,11 +39,12 @@ func (v Votes) String() string {
 	if len(v) == 0 {
 		return "[]"
 	}
-	out := fmt.Sprintf("Votes for Proposal %d:", v[0].ProposalId)
+	var out strings.Builder
+	out.WriteString(fmt.Sprintf("Votes for Proposal %d:", v[0].ProposalId))
 	for _, vot := range v {
-		out += fmt.Sprintf("\n  %s: %s", vot.Voter, vot.Options)
+		out.WriteString(fmt.Sprintf("\n  %s: %s", vot.Voter, vot.Options))
 	}
-	return out
+	return out.String()
 }
 
 // NewNonSplitVoteOption creates a single option vote with weight 1
@@ -84,7 +85,7 @@ func VoteOptionFromString(str string) (VoteOption, error) {
 // if the string is invalid.
 func WeightedVoteOptionsFromString(str string) (WeightedVoteOptions, error) {
 	options := WeightedVoteOptions{}
-	for _, option := range strings.Split(str, ",") {
+	for option := range strings.SplitSeq(str, ",") {
 		fields := strings.Split(option, "=")
 		option, err := VoteOptionFromString(fields[0])
 		if err != nil {
@@ -119,6 +120,6 @@ func (vo VoteOption) Format(s fmt.State, verb rune) {
 	case 's':
 		s.Write([]byte(vo.String())) //nolint:errcheck
 	default:
-		s.Write([]byte(fmt.Sprintf("%v", byte(vo)))) //nolint:errcheck
+		s.Write(fmt.Appendf(nil, "%v", byte(vo))) //nolint:errcheck
 	}
 }
