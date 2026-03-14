@@ -89,12 +89,13 @@ var _ types.UnpackInterfacesMessage = Proposals{}
 
 // String implements stringer interface
 func (p Proposals) String() string {
-	out := "ID - (Status) - Title\n"
+	var out strings.Builder
+	out.WriteString("ID - (Status) - Title\n")
 	for _, prop := range p {
-		out += fmt.Sprintf("%d - (%s) - %s\n",
-			prop.Id, prop.Status, prop.Title)
+		out.WriteString(fmt.Sprintf("%d - (%s) - %s\n",
+			prop.Id, prop.Status, prop.Title))
 	}
-	return strings.TrimSpace(out)
+	return strings.TrimSpace(out.String())
 }
 
 // UnpackInterfaces implements UnpackInterfacesMessage.UnpackInterfaces
@@ -129,7 +130,7 @@ func (status ProposalStatus) Format(s fmt.State, verb rune) {
 		s.Write([]byte(status.String())) //nolint:errcheck
 	default:
 		// TODO: Do this conversion more directly
-		s.Write([]byte(fmt.Sprintf("%v", byte(status)))) //nolint:errcheck
+		s.Write(fmt.Appendf(nil, "%v", byte(status))) //nolint:errcheck
 	}
 }
 
