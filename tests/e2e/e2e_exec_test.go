@@ -44,18 +44,18 @@ const (
 	flagOutputDocument  = "output-document"
 )
 
-type flagOption func(map[string]interface{})
+type flagOption func(map[string]any)
 
 // withKeyValue add a new flag to command
 
-func withKeyValue(key string, value interface{}) flagOption {
-	return func(o map[string]interface{}) {
+func withKeyValue(key string, value any) flagOption {
+	return func(o map[string]any) {
 		o[key] = value
 	}
 }
 
-func applyOptions(chainID string, options []flagOption) map[string]interface{} {
-	opts := map[string]interface{}{
+func applyOptions(chainID string, options []flagOption) map[string]any {
+	opts := map[string]any{
 		flagKeyringBackend: "test",
 		flagOutput:         "json",
 		flagGas:            "auto",
