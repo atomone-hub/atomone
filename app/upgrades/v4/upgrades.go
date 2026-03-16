@@ -44,7 +44,7 @@ func CreateUpgradeHandler(
 			return vm, err
 		}
 
-		if err := migrateValidatorsCommission(ctx, cdc, keepers.StakingKeeper); err != nil {
+		if err := migrateValidatorsCommission(ctx, keepers.StakingKeeper); err != nil {
 			return vm, err
 		}
 
