@@ -709,6 +709,20 @@ func TestMsgServerVetoProposal(t *testing.T) {
 		Status:   govtypesv1.StatusVotingPeriod,
 		Messages: proposalWithChangeOversightDAOMsgs,
 	}
+	proposalWithEmptyOversightDAOMsgs, err := sdktx.SetMsgs([]sdk.Msg{&types.MsgUpdateParams{
+		Authority: "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
+		Params: types.Params{
+			OversightDaoAddress: "",
+		},
+	}})
+	require.NoError(t, err)
+	proposalWithEmptyOversightDAO := govtypesv1.Proposal{
+		Title:    "Test Proposal",
+		Summary:  "A proposal to set empty oversight DAO address",
+		Id:       5,
+		Status:   govtypesv1.StatusVotingPeriod,
+		Messages: proposalWithEmptyOversightDAOMsgs,
+	}
 	tests := []struct {
 		name            string
 		msg             *types.MsgVetoProposal
@@ -837,6 +851,18 @@ func TestMsgServerVetoProposal(t *testing.T) {
 			expectedErr: "proposal with ID 4 contains a change of the oversight DAO address, vetoing it would prevent the replacement of the current oversight DAO: oversight DAO cannot veto this proposal",
 			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
 				m.GovKeeper.EXPECT().GetProposal(ctx, uint64(4)).Return(proposalWithChangeOversightDAO, true)
+			},
+			setOversightDAO: true,
+		},
+		{
+			name: "veto proposal with disablement of oversight DAO",
+			msg: &types.MsgVetoProposal{
+				Vetoer:     oversightDAOAcc,
+				ProposalId: 5,
+			},
+			expectedErr: "proposal with ID 5 contains a change of the oversight DAO address, vetoing it would prevent the replacement of the current oversight DAO: oversight DAO cannot veto this proposal",
+			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
+				m.GovKeeper.EXPECT().GetProposal(ctx, uint64(5)).Return(proposalWithEmptyOversightDAO, true)
 			},
 			setOversightDAO: true,
 		},
