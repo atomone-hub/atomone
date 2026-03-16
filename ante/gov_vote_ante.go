@@ -85,8 +85,8 @@ func (g GovVoteDecorator) validAuthz(ctx context.Context, execMsg *authz.MsgExec
 			return errorsmod.Wrap(atomoneerrors.ErrUnauthorized, "cannot unmarshal authz exec msgs")
 		}
 		// Reject nested MsgExec to prevent bypassing stake checks
-		if _, ok := innerMsg.(*authz.MsgExec); ok {
-			return g.validAuthz(ctx, execMsg)
+		if msg, ok := innerMsg.(*authz.MsgExec); ok {
+			return g.validAuthz(ctx, msg)
 		}
 		if err := g.validMsg(ctx, innerMsg); err != nil {
 			return err
