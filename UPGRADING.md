@@ -19,19 +19,19 @@ Please use the correct release binary: `v4.0.0`.
 
 ## Go version
 
-AtomOne v4 build requires Go compiler version 1.24.5. If you already have go
-installed but with another version, you can install go1.24.5 with the following
+AtomOne v4 build requires Go compiler version 1.26.1. If you already have go
+installed but with another version, you can install go1.26.1 with the following
 command:
 
 ```sh
-$ go install golang.org/dl/go1.24.5@latest
-$ go1.24.5 download
+$ go install golang.org/dl/go1.26.1@latest
+$ go1.26.1 download
 ```
 
 Then you need to update some env variables to invoke the makefile commands of
 AtomOne. For example, to run `make build` :
 ```
-$ GOROOT=$(go1.24.5 env GOROOT) PATH=$GOROOT/bin:$PATH make build
+$ GOROOT=$(go1.26.1 env GOROOT) PATH=$GOROOT/bin:$PATH make build
 ```
 
 ## Instructions
@@ -104,7 +104,7 @@ appropriate `go` version.
 
 The AtomOne mainnet network, `atomone-1`, will run **[AtomOne v4.0.0][v4]**.
 Operators _**MUST**_ use this version post-upgrade to remain connected to the
-network. The new version requires `go v1.24.5` to build successfully.
+network. The new version requires `go v1.26.1` to build successfully.
 
 ## Upgrade steps
 
