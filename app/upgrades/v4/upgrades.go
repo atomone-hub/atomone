@@ -580,7 +580,7 @@ func governorValSharesValueCodec(cdc codec.Codec) collcodec.ValueCodec[sdkgovv1.
 }
 
 // migrateValidatorsCommission sets the chain-wide commission to the constitutionally-mandated 5% and updates all existing validator's commission accordingly.
-func migrateValidatorsCommission(ctx context.Context, cdc codec.Codec, stakingKeeper *stakingkeeper.Keeper) error {
+func migrateValidatorsCommission(ctx context.Context, stakingKeeper *stakingkeeper.Keeper) error {
 	// Set chain-wide commission to 5%
 	params, err := stakingKeeper.GetParams(ctx)
 	if err != nil {
