@@ -286,6 +286,27 @@ func TestState_UpdateBaseGasPrice(t *testing.T) {
 		require.Equal(t, expectedLR, lr)
 		require.Equal(t, expectedGasPrice, bgs)
 	})
+
+	t.Run("panic in UpdateBaseGasPrice resets both BaseGasPrice and LearningRate", func(t *testing.T) {
+		state := types.DefaultAIMDState()
+		params := types.DefaultAIMDParams()
+
+		// Set initial values that differ from minimums
+		state.BaseGasPrice = math.LegacyMustNewDecFromStr("1000")
+		state.LearningRate = math.LegacyMustNewDecFromStr("0.5")
+
+		// Force a panic by setting an invalid window index
+		// Setting Index beyond window bounds will cause a panic when accessing Window[Index]
+		state.Index = uint64(len(state.Window) + 100)
+
+		// This should panic but be recovered, and both fields should be reset
+		newBaseGasPrice := state.UpdateBaseGasPrice(log.NewNopLogger(), params, testutil.MaxBlockGas)
+
+		// Both BaseGasPrice and LearningRate should be reset to their minimums
+		require.Equal(t, params.MinBaseGasPrice, newBaseGasPrice)
+		require.Equal(t, params.MinBaseGasPrice, state.BaseGasPrice)
+		require.Equal(t, params.MinLearningRate, state.LearningRate)
+	})
 }
 
 func TestState_UpdateLearningRate(t *testing.T) {

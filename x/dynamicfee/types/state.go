@@ -54,6 +54,7 @@ func (s *State) UpdateBaseGasPrice(logger log.Logger, params Params, maxBlockGas
 		if rec := recover(); rec != nil {
 			logger.Error("Panic recovered in state.UpdateBaseGasPrice", "err", rec)
 			s.BaseGasPrice = params.MinBaseGasPrice
+			s.LearningRate = params.MinLearningRate
 			gasPrice = s.BaseGasPrice
 		}
 	}()
