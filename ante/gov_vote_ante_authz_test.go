@@ -59,4 +59,15 @@ func TestVoteSpamDecoratorAuthz(t *testing.T) {
 	nestedExecMsg := authz.NewMsgExec(granteeAddr, []sdk.Msg{&execMsg})
 	err = decorator.ValidateVoteMsgs(ctx, []sdk.Msg{&nestedExecMsg})
 	require.Error(t, err)
+
+	// Double nested authz.MsgExec
+	innerGoodMsg := govv1beta1.NewMsgVote(
+		delegator,
+		0,
+		govv1beta1.OptionYes,
+	)
+	execGoodMsg := authz.NewMsgExec(granteeAddr, []sdk.Msg{innerGoodMsg})
+	nestedExecMsg = authz.NewMsgExec(granteeAddr, []sdk.Msg{&execGoodMsg, &execMsg})
+	err = decorator.ValidateVoteMsgs(ctx, []sdk.Msg{&nestedExecMsg})
+	require.Error(t, err)
 }

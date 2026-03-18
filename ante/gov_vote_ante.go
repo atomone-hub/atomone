@@ -86,7 +86,10 @@ func (g GovVoteDecorator) validAuthz(ctx context.Context, execMsg *authz.MsgExec
 		}
 		// Reject nested MsgExec to prevent bypassing stake checks
 		if msg, ok := innerMsg.(*authz.MsgExec); ok {
-			return g.validAuthz(ctx, msg)
+			if err := g.validAuthz(ctx, msg); err != nil {
+				return err
+			}
+			continue
 		}
 		if err := g.validMsg(ctx, innerMsg); err != nil {
 			return err
