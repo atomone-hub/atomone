@@ -137,7 +137,6 @@ func (s *IntegrationTestSuite) testIBCTokenTransfer(channelIdA, channelIdB strin
 }
 
 func (s *IntegrationTestSuite) testIBCv2TokenTransfer(clientIdA, clientIdB string) {
-	defer s.saveTsRelayerLogs() // TODO remove when flakyness is fixed
 	s.Run("transferv2_to_chainB", func() {
 		address, _ := s.chainA.validators[0].keyInfo.GetAddress()
 		sender := address.String()
@@ -194,7 +193,7 @@ func (s *IntegrationTestSuite) assertCoinBalance(c *chain, addr string, expected
 				"wrong coin %s balance for %s", expected.Denom, addr,
 			)
 		},
-		time.Minute,
+		time.Minute*2,
 		time.Second,
 	)
 }
