@@ -13,6 +13,7 @@ import (
 
 type msgServer struct {
 	sdkv1.MsgServer
+	keeper *Keeper
 }
 
 // NewMsgServerImpl returns an implementation of the gov MsgServer interface
@@ -20,10 +21,26 @@ type msgServer struct {
 // We return an private type, as we do not want to do type casting in module.
 // Making it public adds no benefits.
 func NewMsgServerImpl(k *Keeper) *msgServer {
-	return &msgServer{MsgServer: govkeeper.NewMsgServerImpl(k.Keeper)}
+	return &msgServer{
+		MsgServer: govkeeper.NewMsgServerImpl(k.Keeper),
+		keeper:    k,
+	}
 }
 
 var _ v1.MsgServer = msgServer{}
+
+func mergeLegacyParamsWithSDKParams(current sdkv1.Params, legacy *v1.Params) sdkv1.Params {
+	updated := v1.ConvertAtomOneParamsToSDK(legacy)
+	if updated == nil {
+		return current
+	}
+
+	// atomone.gov.v1 cannot express these SDK-only fields, so preserve the live values.
+	updated.ProposalCancelRatio = current.ProposalCancelRatio
+	updated.ProposalCancelDest = current.ProposalCancelDest
+
+	return *updated
+}
 
 // SubmitProposal implements the MsgServer.SubmitProposal method.
 func (k msgServer) SubmitProposal(ctx context.Context, msg *v1.MsgSubmitProposal) (*v1.MsgSubmitProposalResponse, error) {
@@ -103,9 +120,14 @@ func (k msgServer) Deposit(ctx context.Context, msg *v1.MsgDeposit) (*v1.MsgDepo
 
 // UpdateParams implements the MsgServer.UpdateParams method.
 func (k msgServer) UpdateParams(ctx context.Context, msg *v1.MsgUpdateParams) (*v1.MsgUpdateParamsResponse, error) {
-	_, err := k.MsgServer.UpdateParams(ctx, &sdkv1.MsgUpdateParams{
+	currentParams, err := k.keeper.Params.Get(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = k.MsgServer.UpdateParams(ctx, &sdkv1.MsgUpdateParams{
 		Authority: msg.GetAuthority(),
-		Params:    *v1.ConvertAtomOneParamsToSDK(&msg.Params),
+		Params:    mergeLegacyParamsWithSDKParams(currentParams, &msg.Params),
 	})
 	if err != nil {
 		return nil, err

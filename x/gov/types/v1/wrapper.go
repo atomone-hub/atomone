@@ -424,6 +424,8 @@ func ConvertAtomOneParamsToSDK(atomoneParams *Params) *sdkv1.Params {
 		return nil
 	}
 
+	defaultParams := sdkv1.DefaultParams()
+
 	return &sdkv1.Params{
 		MinDeposit:                       atomoneParams.MinDeposit,
 		MaxDepositPeriod:                 atomoneParams.MaxDepositPeriod,
@@ -431,6 +433,8 @@ func ConvertAtomOneParamsToSDK(atomoneParams *Params) *sdkv1.Params {
 		Quorum:                           atomoneParams.Quorum,
 		Threshold:                        atomoneParams.Threshold,
 		MinInitialDepositRatio:           atomoneParams.MinInitialDepositRatio,
+		ProposalCancelRatio:              defaultParams.ProposalCancelRatio,
+		ProposalCancelDest:               defaultParams.ProposalCancelDest,
 		BurnVoteQuorum:                   atomoneParams.BurnVoteQuorum,
 		BurnProposalDepositPrevote:       atomoneParams.BurnProposalDepositPrevote,
 		MinDepositRatio:                  atomoneParams.MinDepositRatio,
