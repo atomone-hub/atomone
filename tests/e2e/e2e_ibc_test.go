@@ -8,8 +8,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"cosmossdk.io/math"
-
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	transfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
@@ -186,23 +184,14 @@ func (s *IntegrationTestSuite) testIBCv2TokenTransfer(clientIdA, clientIdB strin
 }
 
 func (s *IntegrationTestSuite) assertCoinBalance(c *chain, addr string, expected sdk.Coin) {
-	s.T().Logf("asserting balance of %s has %s ", addr, expected)
+	s.T().Logf("asserting balance of %s has %s on chain %s", addr, expected, c.id)
 	endpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
 	s.Require().EventuallyWithT(
 		func(c *assert.CollectT) {
-			// TODO use s.queryBalance when flakyness is fixed
-			balances, err := s.queryAllBalances(endpoint, addr)
-			if err != nil {
-				panic(err)
-			}
-			// current := s.queryBalance(endpoint, addr, expected.Denom)
-			ok, current := balances.Find(expected.Denom)
-			if !ok {
-				current = sdk.NewCoin(expected.Denom, math.ZeroInt())
-			}
+			current := s.queryBalance(endpoint, addr, expected.Denom)
 			assert.Equal(c,
 				expected.String(), current.String(),
-				"wrong coin balance for %s: %s", addr, balances,
+				"wrong coin %s balance for %s", expected.Denom, addr,
 			)
 		},
 		time.Minute,
