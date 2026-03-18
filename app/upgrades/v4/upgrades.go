@@ -604,7 +604,11 @@ func migrateValidatorsCommission(ctx context.Context, stakingKeeper *stakingkeep
 		// leaving MaxRate and MaxChangeRate unchanged as validator-defined values.
 		// In any case, the chain-wide MaxCommissionRate = MinCommissionRate = 5% would still prevent validators from changing their
 		// commission rate to anything other than 5%.
+		// The only exception is if MaxRate < 5%, in which case we set it also to 5%.
 		validator.Commission.Rate = fivePercent
+		if validator.Commission.MaxRate.LT(fivePercent) {
+			validator.Commission.MaxRate = fivePercent
+		}
 
 		if err := stakingKeeper.SetValidator(ctx, validator); err != nil {
 			return err
