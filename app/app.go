@@ -491,6 +491,7 @@ func (app *AtomOneApp) setupUpgradeHandlers() {
 			upgrade.UpgradeName,
 			upgrade.CreateUpgradeHandler(
 				app.mm,
+				app.appCodec,
 				app.configurator,
 				&app.AppKeepers,
 			),
@@ -531,6 +532,6 @@ func (app *AtomOneApp) GetIBCKeeper() *ibckeeper.Keeper {
 type EmptyAppOptions struct{}
 
 // Get implements AppOptions
-func (ao EmptyAppOptions) Get(_ string) interface{} {
+func (ao EmptyAppOptions) Get(_ string) any {
 	return nil
 }

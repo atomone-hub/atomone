@@ -10,6 +10,8 @@
 
 - Use `TruncateInt` to compute `uphotonToMint` [#250](https://github.com/atomone-hub/atomone/pull/250)
 - Fix missing ICA controller configuration [#257](https://github.com/atomone-hub/atomone/pull/257)
+- Fix wrapper converters for `x/gov` [#276](https://github.com/atomone-hub/atomone/pull/276)
+- Add min-stake filtering for cosmos-sdk votes in the gov ante handler [#279](https://github.com/atomone-hub/atomone/pull/279)
 
 ### DEPENDENCIES
 
@@ -20,10 +22,13 @@
 
 - Migrate `x/gov` fork from Atom One to Atom One SDK [#248](https://github.com/atomone-hub/atomone/pull/248)
 - Add governors to `x/gov` module [#258](https://github.com/atomone-hub/atomone/pull/258)
+- Prevent Oversight DAO from vetoing proposals that include a change to the Oversight DAO address [#275](https://github.com/atomone-hub/atomone/pull/275)
 
 ### STATE BREAKING
 
 ### IMPROVEMENTS
+
+- Reorder ante handlers to verify signatures and deduct fees before doing any tx related stateful checks [#274](https://github.com/atomone-hub/atomone/pull/274)
 
 ## v3.0.3
 
