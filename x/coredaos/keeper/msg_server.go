@@ -385,7 +385,7 @@ func (ms MsgServer) VetoProposal(goCtx context.Context, msg *types.MsgVetoPropos
 
 				return nil, err
 			}
-			if updateParamsMsg.Params.OversightDaoAddress != "" && updateParamsMsg.Params.OversightDaoAddress != params.OversightDaoAddress {
+			if updateParamsMsg.Params.OversightDaoAddress != params.OversightDaoAddress {
 				logger.Error(
 					"proposal contains a change of the oversight DAO address, vetoing it would prevent the replacement of the current oversight DAO",
 					"proposal", proposal.Id,
