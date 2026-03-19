@@ -188,24 +188,9 @@ func verifyNewHeaderAndVals(
 	return nil
 }
 
-// ValidateTrustLevel checks that trustLevel is within the allowed range [1/3,
-// 1]. If not, it returns an error. 1/3 is the minimum amount of trust needed
-// which does not break the security model.
-func ValidateTrustLevel(lvl cmtmath.Fraction) error {
-	if lvl.Numerator*3 < lvl.Denominator || // < 1/3
-		lvl.Numerator > lvl.Denominator || // > 1
-		lvl.Denominator == 0 {
-		return fmt.Errorf("trustLevel must be within [1/3, 1], given %v", lvl)
-	}
-	return nil
-}
-
 func VerifyLightCommit(vals *bfttypes.ValidatorSet, chainID string, blockID bfttypes.BlockID, height int64, commit *bfttypes.Commit, trustLevel cmtmath.Fraction) error {
 	if err := commit.ValidateBasic(); err != nil {
 		return err
-	}
-	if vals.Size() != len(commit.Precommits) {
-		return errorsmod.Wrapf(ErrNewValSetCantBeTrusted, "%s", bfttypes.NewErrInvalidCommitPrecommits(vals.Size(), len(commit.Precommits)).Error())
 	}
 	if height != commit.Height() {
 		return errorsmod.Wrapf(ErrNewValSetCantBeTrusted, "%s", bfttypes.NewErrInvalidCommitHeight(height, commit.Height()).Error())
@@ -216,12 +201,20 @@ func VerifyLightCommit(vals *bfttypes.ValidatorSet, chainID string, blockID bftt
 	}
 
 	talliedVotingPower := int64(0)
+	seen := make(map[int]bool)
 
 	for idx, precommit := range commit.Precommits {
 		if precommit == nil {
 			continue // OK, some precommits can be missing.
 		}
-		_, val := vals.GetByIndex(idx)
+		// Look up by address since the commit may be from a different height
+		// whose validator set has a different ordering/composition.
+		valIdx, val := vals.GetByAddress(precommit.ValidatorAddress)
+		if val == nil || seen[valIdx] {
+			continue // not in trusted set or already counted
+		}
+		seen[valIdx] = true
+
 		// Validate signature.
 		precommitSignBytes := commit.VoteSignBytes(chainID, idx)
 		if !val.PubKey.VerifyBytes(precommitSignBytes, precommit.Signature) {
@@ -246,7 +239,7 @@ func VerifyLightCommit(vals *bfttypes.ValidatorSet, chainID string, blockID bftt
 	if talliedVotingPower > votingPowerNeeded {
 		return nil
 	}
-	return errorsmod.Wrapf(ErrNewValSetCantBeTrusted, "Invalid commit -- insufficient old voting power: got %v, needed %v", talliedVotingPower, vals.TotalVotingPower()*2/3+1)
+	return errorsmod.Wrapf(ErrNewValSetCantBeTrusted, "Invalid commit -- insufficient old voting power: got %v, needed more than %v", talliedVotingPower, votingPowerNeeded)
 }
 
 func safeMul(a, b int64) (int64, bool) {

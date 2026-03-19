@@ -181,6 +181,99 @@ func TestMisbehaviour_ValidateBasic(t *testing.T) {
 	}
 }
 
+// TestMisbehaviour_ValidateBasic_CommitBlockID tests that ValidateBasic uses
+// the commit's BlockId (the block actually committed to) rather than the
+// header's LastBlockId (the previous block) when verifying commits in
+// misbehaviour. This was the bug fixed in Oak Issue #2.
+//
+// With the buggy code, validCommit was called with Header.LastBlockId,
+// causing VerifyCommit to always fail because signatures were verified
+// against the wrong block ID. This meant all valid misbehaviour was rejected.
+func TestMisbehaviour_ValidateBasic_CommitBlockID(t *testing.T) {
+	blockTime := time.Now().UTC()
+
+	// Create two independently valid headers at the same height (fork).
+	header1 := createTestHeader(t, testChainID, 100, clienttypes.NewHeight(1, 50), blockTime)
+	header2 := createTestHeader(t, testChainID, 100, clienttypes.NewHeight(1, 50), blockTime.Add(time.Second))
+
+	// Sanity: the two headers have different commit block IDs
+	require.NotEqual(t,
+		header1.SignedHeader.Commit.BlockId.Hash,
+		header2.SignedHeader.Commit.BlockId.Hash,
+		"test setup: two independent headers should have different commit block ID hashes",
+	)
+
+	// Sanity: LastBlockId differs from Commit.BlockId (parent vs current block)
+	require.NotEqual(t,
+		header1.SignedHeader.Header.LastBlockId.Hash,
+		header1.SignedHeader.Commit.BlockId.Hash,
+		"test setup: LastBlockId and Commit.BlockId should differ",
+	)
+
+	misbehaviour := NewMisbehaviour(testClientID, header1, header2)
+	err := misbehaviour.ValidateBasic()
+	require.NoError(t, err, "valid fork misbehaviour should pass ValidateBasic; "+
+		"if this fails, validCommit may be using Header.LastBlockId instead of Commit.BlockId")
+}
+
+// TestCheckForMisbehaviour_ForkDetection tests that CheckForMisbehaviour
+// correctly detects forks by comparing commit block IDs (not header LastBlockIds).
+// This was the bug fixed in Oak Issue #2.
+func TestCheckForMisbehaviour_ForkDetection(t *testing.T) {
+	blockTime := time.Now().UTC()
+
+	// Create two headers at the same height with different commits (a fork)
+	header1 := createTestHeader(t, testChainID, 100, clienttypes.NewHeight(1, 50), blockTime)
+	header2 := createTestHeader(t, testChainID, 100, clienttypes.NewHeight(1, 50), blockTime.Add(time.Second))
+
+	// Ensure commit block IDs differ (fork condition)
+	require.NotEqual(t,
+		header1.SignedHeader.Commit.BlockId.Hash,
+		header2.SignedHeader.Commit.BlockId.Hash,
+	)
+
+	// Make both headers share the same LastBlockId.
+	// The old buggy code used LastBlockId for comparison, so it would have
+	// seen equal hashes and missed the fork.
+	header1.SignedHeader.Header.LastBlockId = header2.SignedHeader.Header.LastBlockId
+
+	misbehaviour := NewMisbehaviour(testClientID, header1, header2)
+
+	cs := createTestClientState(testChainID, clienttypes.NewHeight(1, 99), false)
+	result := cs.CheckForMisbehaviour(
+		getTestContext(t, blockTime),
+		getTestCodec(),
+		setupClientStore(t),
+		misbehaviour,
+	)
+	require.True(t, result, "CheckForMisbehaviour should detect fork when commit block IDs differ, even if LastBlockIds are the same")
+}
+
+// TestCheckForMisbehaviour_NoForkSameCommit tests that CheckForMisbehaviour
+// returns false when commit block IDs are identical (no fork).
+func TestCheckForMisbehaviour_NoForkSameCommit(t *testing.T) {
+	blockTime := time.Now().UTC()
+
+	// Create the same header twice (identical commits)
+	header1 := createTestHeader(t, testChainID, 100, clienttypes.NewHeight(1, 50), blockTime)
+
+	// Deep copy header1 as header2 — same commit block ID
+	header2 := createTestHeader(t, testChainID, 100, clienttypes.NewHeight(1, 50), blockTime)
+	header2.SignedHeader.Commit.BlockId = header1.SignedHeader.Commit.BlockId
+	header2.SignedHeader.Header = header1.SignedHeader.Header
+
+	misbehaviour := NewMisbehaviour(testClientID, header1, header2)
+
+	cs := createTestClientState(testChainID, clienttypes.NewHeight(1, 99), false)
+	result := cs.CheckForMisbehaviour(
+		getTestContext(t, blockTime),
+		getTestCodec(),
+		setupClientStore(t),
+		misbehaviour,
+	)
+	require.False(t, result, "CheckForMisbehaviour should not detect fork when commit block IDs are identical")
+}
+
 func TestFrozenHeight(t *testing.T) {
 	require.Equal(t, clienttypes.NewHeight(0, 1), FrozenHeight)
 }
