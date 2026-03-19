@@ -18,6 +18,7 @@ import (
 	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
 	sdkgov "github.com/cosmos/cosmos-sdk/x/gov/types"
 	sdkgovv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
+	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 
 	"github.com/atomone-hub/atomone/app/keepers"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
@@ -40,6 +41,10 @@ func CreateUpgradeHandler(
 		storeService := runtime.NewKVStoreService(keepers.GetKey(sdkgov.StoreKey))
 		sb := collections.NewSchemaBuilder(storeService)
 		if err := migrateGovState(ctx, cdc, keepers.GovKeeper, sb); err != nil {
+			return vm, err
+		}
+
+		if err := migrateValidatorsCommission(ctx, keepers.StakingKeeper); err != nil {
 			return vm, err
 		}
 
@@ -572,4 +577,43 @@ func governorValSharesValueCodec(cdc codec.Codec) collcodec.ValueCodec[sdkgovv1.
 
 		return *v1.ConvertAtomOneGovernorValSharesToSDK(c), nil
 	})
+}
+
+// migrateValidatorsCommission sets the chain-wide commission to the constitutionally-mandated 5% and updates all existing validator's commission accordingly.
+func migrateValidatorsCommission(ctx context.Context, stakingKeeper *stakingkeeper.Keeper) error {
+	// Set chain-wide commission to 5%
+	params, err := stakingKeeper.GetParams(ctx)
+	if err != nil {
+		return err
+	}
+
+	fivePercent := math.LegacyMustNewDecFromStr("0.05")
+
+	params.MaxCommissionRate = fivePercent
+	params.MinCommissionRate = fivePercent
+	if err := stakingKeeper.SetParams(ctx, params); err != nil {
+		return err
+	}
+
+	// Update all existing validators' commission to 5%
+	validators, err := stakingKeeper.GetAllValidators(ctx)
+	if err != nil {
+		return err
+	}
+	for _, validator := range validators {
+		// leaving MaxRate and MaxChangeRate unchanged as validator-defined values.
+		// In any case, the chain-wide MaxCommissionRate = MinCommissionRate = 5% would still prevent validators from changing their
+		// commission rate to anything other than 5%.
+		// The only exception is if MaxRate < 5%, in which case we set it also to 5%.
+		validator.Commission.Rate = fivePercent
+		if validator.Commission.MaxRate.LT(fivePercent) {
+			validator.Commission.MaxRate = fivePercent
+		}
+
+		if err := stakingKeeper.SetValidator(ctx, validator); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
