@@ -75,7 +75,7 @@ func TestMsgServerUpdateParams(t *testing.T) {
 					VotingPeriodExtensionDuration: &timeDuration,
 				},
 			},
-			expectedErr: "cannot update params while Steering DAO have bonded or unbonding tokens: core DAOs cannot stake",
+			expectedErr: "cannot update params while Steering DAO has bonded or unbonding tokens: core DAOs cannot stake",
 			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
 				m.StakingKeeper.EXPECT().GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(bondedAcc)).Return(math.NewInt(10), nil)
 				m.StakingKeeper.EXPECT().GetDelegatorUnbonding(ctx, sdk.MustAccAddressFromBech32(bondedAcc)).Return(math.NewInt(0), nil)
@@ -90,7 +90,7 @@ func TestMsgServerUpdateParams(t *testing.T) {
 					VotingPeriodExtensionDuration: &timeDuration,
 				},
 			},
-			expectedErr: "cannot update params while Oversight DAO have bonded or unbonding tokens: core DAOs cannot stake",
+			expectedErr: "cannot update params while Oversight DAO has bonded or unbonding tokens: core DAOs cannot stake",
 			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
 				m.StakingKeeper.EXPECT().GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(bondedAcc)).Return(math.NewInt(10), nil)
 				m.StakingKeeper.EXPECT().GetDelegatorUnbonding(ctx, sdk.MustAccAddressFromBech32(bondedAcc)).Return(math.NewInt(0), nil)
@@ -129,7 +129,7 @@ func TestMsgServerUpdateParams(t *testing.T) {
 					VotingPeriodExtensionDuration: &timeDuration,
 				},
 			},
-			expectedErr: "cannot update params while Steering DAO have bonded or unbonding tokens: core DAOs cannot stake",
+			expectedErr: "cannot update params while Steering DAO has bonded or unbonding tokens: core DAOs cannot stake",
 			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
 				// Address is in unbonding
 				m.StakingKeeper.EXPECT().GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(unbondingAcc)).Return(math.NewInt(0), nil)
@@ -145,7 +145,7 @@ func TestMsgServerUpdateParams(t *testing.T) {
 					VotingPeriodExtensionDuration: &timeDuration,
 				},
 			},
-			expectedErr: "cannot update params while Oversight DAO have bonded or unbonding tokens: core DAOs cannot stake",
+			expectedErr: "cannot update params while Oversight DAO has bonded or unbonding tokens: core DAOs cannot stake",
 			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
 				// Address is in unbonding
 				m.StakingKeeper.EXPECT().GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(unbondingAcc)).Return(math.NewInt(0), nil)
