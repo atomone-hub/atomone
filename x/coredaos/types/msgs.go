@@ -7,6 +7,10 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
+const (
+	MaxAnnotationLength = 1000
+)
+
 var _, _, _, _, _ sdk.Msg = &MsgAnnotateProposal{}, &MsgEndorseProposal{}, &MsgExtendVotingPeriod{}, &MsgVetoProposal{}, &MsgUpdateParams{}
 
 // NewMsgAnnotateProposal creates a new MsgAnnotateProposal instance
@@ -35,6 +39,11 @@ func (msg *MsgAnnotateProposal) ValidateBasic() error {
 	}
 	if len(msg.Annotation) == 0 {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "annotation cannot be empty")
+	}
+	if len(msg.Annotation) > MaxAnnotationLength {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest,
+			"invalid annotation length; got: %d, max: %d", len(msg.Annotation), MaxAnnotationLength,
+		)
 	}
 	return nil
 }
