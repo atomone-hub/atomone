@@ -56,6 +56,11 @@ func (p Params) ValidateBasic() error {
 		}
 	}
 
+	// Oversight DAO cannot be the same as the Steering DAO
+	if p.SteeringDaoAddress != "" && p.OversightDaoAddress != "" && p.SteeringDaoAddress == p.OversightDaoAddress {
+		return fmt.Errorf("steering DAO address and oversight DAO address cannot be the same: %s", p.SteeringDaoAddress)
+	}
+
 	// VotingPeriodExtensionDuration must be a positive duration
 	if p.VotingPeriodExtensionDuration == nil {
 		return fmt.Errorf("voting period extension duration must not be nil")
