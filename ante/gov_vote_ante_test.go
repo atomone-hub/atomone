@@ -45,10 +45,10 @@ func TestVoteSpamDecoratorGovV1Beta1(t *testing.T) {
 	require.NoError(t, err)
 	// Make sure the validator is bonded so it's not removed on Undelegate
 	validator2.Status = stakingtypes.Bonded
-	stakingKeeper.SetValidator(ctx, validator2)
+	require.NoError(t, stakingKeeper.SetValidator(ctx, validator2))
 	err = stakingKeeper.SetValidatorByConsAddr(ctx, validator2)
 	require.NoError(t, err)
-	stakingKeeper.SetNewValidatorByPowerIndex(ctx, validator2)
+	require.NoError(t, stakingKeeper.SetNewValidatorByPowerIndex(ctx, validator2))
 
 	valAddr2, err := stakingKeeper.ValidatorAddressCodec().StringToBytes(validator2.OperatorAddress)
 	require.NoError(t, err)
@@ -183,10 +183,10 @@ func TestVoteWeightedSpamDecoratorGovV1Beta1(t *testing.T) {
 	require.NoError(t, err)
 	// Make sure the validator is bonded so it's not removed on Undelegate
 	validator2.Status = stakingtypes.Bonded
-	stakingKeeper.SetValidator(ctx, validator2)
+	require.NoError(t, stakingKeeper.SetValidator(ctx, validator2))
 	err = stakingKeeper.SetValidatorByConsAddr(ctx, validator2)
 	require.NoError(t, err)
-	stakingKeeper.SetNewValidatorByPowerIndex(ctx, validator2)
+	require.NoError(t, stakingKeeper.SetNewValidatorByPowerIndex(ctx, validator2))
 
 	valAddr2, err := stakingKeeper.ValidatorAddressCodec().StringToBytes(validator2.OperatorAddress)
 	require.NoError(t, err)
@@ -329,10 +329,10 @@ func TestVoteSpamDecoratorGovV1(t *testing.T) {
 	require.NoError(t, err)
 	// Make sure the validator is bonded so it's not removed on Undelegate
 	validator2.Status = stakingtypes.Bonded
-	stakingKeeper.SetValidator(ctx, validator2)
+	require.NoError(t, stakingKeeper.SetValidator(ctx, validator2))
 	err = stakingKeeper.SetValidatorByConsAddr(ctx, validator2)
 	require.NoError(t, err)
-	stakingKeeper.SetNewValidatorByPowerIndex(ctx, validator2)
+	require.NoError(t, stakingKeeper.SetNewValidatorByPowerIndex(ctx, validator2))
 	err = stakingKeeper.Hooks().AfterValidatorCreated(ctx, valAddr2)
 	require.NoError(t, err)
 
@@ -470,10 +470,10 @@ func TestVoteWeightedSpamDecoratorGovV1(t *testing.T) {
 	require.NoError(t, err)
 	// Make sure the validator is bonded so it's not removed on Undelegate
 	validator2.Status = stakingtypes.Bonded
-	stakingKeeper.SetValidator(ctx, validator2)
+	require.NoError(t, stakingKeeper.SetValidator(ctx, validator2))
 	err = stakingKeeper.SetValidatorByConsAddr(ctx, validator2)
 	require.NoError(t, err)
-	stakingKeeper.SetNewValidatorByPowerIndex(ctx, validator2)
+	require.NoError(t, stakingKeeper.SetNewValidatorByPowerIndex(ctx, validator2))
 	err = stakingKeeper.Hooks().AfterValidatorCreated(ctx, valAddr2)
 	require.NoError(t, err)
 

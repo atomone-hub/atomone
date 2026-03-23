@@ -211,15 +211,15 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 	if s.initializedForIBC {
 		s.tearDownHermesRelayer()
 		s.tearDownTsRelayer()
-		os.RemoveAll(s.chainB.dataDir)
+		s.Require().NoError(os.RemoveAll(s.chainB.dataDir))
 	}
 
 	s.Require().NoError(s.dkrPool.RemoveNetwork(s.dkrNet))
 
-	os.RemoveAll(s.chainA.dataDir)
+	s.Require().NoError(os.RemoveAll(s.chainA.dataDir))
 
 	for _, td := range s.tmpDirs {
-		os.RemoveAll(td)
+		s.Require().NoError(os.RemoveAll(td))
 	}
 }
 
