@@ -28,8 +28,12 @@ func ConvertToGnoValidatorSet(valSet *ValidatorSet) (*bfttypes.ValidatorSet, err
 		if key.GetEd25519() == nil {
 			return nil, errorsmod.Wrap(clienttypes.ErrInvalidHeader, "validator pubkey is not ed25519")
 		}
+		address, err := crypto.AddressFromString(val.Address)
+		if err != nil {
+			return nil, errorsmod.Wrap(clienttypes.ErrInvalidHeader, "invalid validator address")
+		}
 		gnoValset.Validators[i] = &bfttypes.Validator{
-			Address:          crypto.MustAddressFromString(val.Address),
+			Address:          address,
 			PubKey:           ed25519.PubKeyEd25519(key.GetEd25519()),
 			VotingPower:      val.VotingPower,
 			ProposerPriority: val.ProposerPriority,
