@@ -45,6 +45,13 @@ func (misbehaviour Misbehaviour) GetTime() time.Time {
 // ValidateBasic implements Misbehaviour interface
 func (misbehaviour Misbehaviour) ValidateBasic() error {
 
+	if misbehaviour.Header1 == nil {
+		return errorsmod.Wrap(ErrInvalidHeader, "misbehaviour Header1 cannot be nil")
+	}
+	if misbehaviour.Header2 == nil {
+		return errorsmod.Wrap(ErrInvalidHeader, "misbehaviour Header2 cannot be nil")
+	}
+
 	// ValidateBasic on both validators
 	if err := misbehaviour.Header1.ValidateBasic(); err != nil {
 		return errorsmod.Wrap(
@@ -59,12 +66,6 @@ func (misbehaviour Misbehaviour) ValidateBasic() error {
 		)
 	}
 
-	if misbehaviour.Header1 == nil {
-		return errorsmod.Wrap(ErrInvalidHeader, "misbehaviour Header1 cannot be nil")
-	}
-	if misbehaviour.Header2 == nil {
-		return errorsmod.Wrap(ErrInvalidHeader, "misbehaviour Header2 cannot be nil")
-	}
 	if misbehaviour.Header1.TrustedHeight.RevisionHeight == 0 {
 		return errorsmod.Wrapf(ErrInvalidHeaderHeight, "misbehaviour Header1 cannot have zero revision height")
 	}
@@ -84,7 +85,6 @@ func (misbehaviour Misbehaviour) ValidateBasic() error {
 	if err := host.ClientIdentifierValidator(misbehaviour.ClientId); err != nil {
 		return errorsmod.Wrap(err, "misbehaviour client ID is invalid")
 	}
-
 	// Ensure that Height1 is greater than or equal to Height2
 	if misbehaviour.Header1.GetHeight().LT(misbehaviour.Header2.GetHeight()) {
 		return errorsmod.Wrapf(clienttypes.ErrInvalidMisbehaviour, "Header1 height is less than Header2 height (%s < %s)", misbehaviour.Header1.GetHeight(), misbehaviour.Header2.GetHeight())
