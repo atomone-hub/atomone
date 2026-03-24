@@ -44,7 +44,6 @@ func (misbehaviour Misbehaviour) GetTime() time.Time {
 
 // ValidateBasic implements Misbehaviour interface
 func (misbehaviour Misbehaviour) ValidateBasic() error {
-
 	if misbehaviour.Header1 == nil {
 		return errorsmod.Wrap(ErrInvalidHeader, "misbehaviour Header1 cannot be nil")
 	}
