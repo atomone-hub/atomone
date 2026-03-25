@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"strings"
 	"testing"
 	"time"
 
@@ -208,6 +209,19 @@ func TestMsgServerUpdateParams(t *testing.T) {
 				Params: types.Params{
 					SteeringDaoAddress:            unbondedAcc,
 					OversightDaoAddress:           unbondedAcc,
+					VotingPeriodExtensionDuration: &timeDuration,
+				},
+			},
+			expectedErr: "steering DAO address and oversight DAO address cannot be the same: " + unbondedAcc,
+			setupMocks:  func(ctx sdk.Context, m *testutil.Mocks) {},
+		},
+		{
+			name: "steeringdao and oversight same address but different case",
+			msg: &types.MsgUpdateParams{
+				Authority: "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
+				Params: types.Params{
+					SteeringDaoAddress:            unbondedAcc,
+					OversightDaoAddress:           strings.ToUpper(unbondedAcc),
 					VotingPeriodExtensionDuration: &timeDuration,
 				},
 			},
