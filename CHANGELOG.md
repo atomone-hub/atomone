@@ -12,6 +12,7 @@
 - Fix missing ICA controller configuration [#257](https://github.com/atomone-hub/atomone/pull/257)
 - Fix wrapper converters for `x/gov` [#276](https://github.com/atomone-hub/atomone/pull/276)
 - Add min-stake filtering for cosmos-sdk votes in the gov ante handler [#279](https://github.com/atomone-hub/atomone/pull/279)
+- Prevent the designated authority to be set as the Oversight or Steering DAO address [#314](https://github.com/atomone-hub/atomone/pull/314)
 
 ### DEPENDENCIES
 
