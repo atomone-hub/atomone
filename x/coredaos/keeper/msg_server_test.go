@@ -225,6 +225,49 @@ func TestMsgServerUpdateParams(t *testing.T) {
 	}
 }
 
+func TestMsgServerUpdateParamsRevalidatesOnExecution(t *testing.T) {
+	const authority = "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn"
+
+	timeDuration := time.Duration(1)
+	tests := []struct {
+		name        string
+		params      types.Params
+		expectedErr string
+	}{
+		{
+			name: "steeringdao set to authority address",
+			params: types.Params{
+				SteeringDaoAddress:            authority,
+				VotingPeriodExtensionDuration: &timeDuration,
+			},
+			expectedErr: "authority address cannot be the same as steering DAO address: invalid address",
+		},
+		{
+			name: "oversightdao set to authority address",
+			params: types.Params{
+				OversightDaoAddress:           authority,
+				VotingPeriodExtensionDuration: &timeDuration,
+			},
+			expectedErr: "authority address cannot be the same as oversight DAO address: invalid address",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ms, k, _, ctx := testutil.SetupMsgServer(t)
+			params := types.DefaultParams()
+			k.Params.Set(ctx, params)
+
+			_, err := ms.UpdateParams(ctx, &types.MsgUpdateParams{
+				Authority: authority,
+				Params:    tt.params,
+			})
+			require.EqualError(t, err, tt.expectedErr)
+			require.Equal(t, params, k.GetParams(ctx))
+		})
+	}
+}
+
 func TestMsgServerAnnotateProposal(t *testing.T) {
 	testAcc := simtestutil.CreateRandomAccounts(2)
 	annotatorAcc := testAcc[0].String()

@@ -31,6 +31,10 @@ func NewMsgServer(k *Keeper) types.MsgServer {
 func (ms MsgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
+
 	if ms.k.GetAuthority() != msg.Authority {
 		return nil, types.ErrInvalidSigner.Wrapf("invalid authority; expected %s, got %s", ms.k.GetAuthority(), msg.Authority)
 	}
