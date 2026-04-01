@@ -73,6 +73,10 @@ func ConvertToGnoCommit(commit *Commit) (*bfttypes.Commit, error) {
 		if sig == nil || len(sig.Signature) == 0 {
 			continue
 		}
+		address, err := crypto.AddressFromString(sig.ValidatorAddress)
+		if err != nil {
+			return nil, errorsmod.Wrap(clienttypes.ErrInvalidHeader, "invalid validator address")
+		}
 		gnoCommit.Precommits[i] = &bfttypes.CommitSig{
 			ValidatorIndex: int(sig.ValidatorIndex),
 			Signature:      sig.Signature,
@@ -87,7 +91,7 @@ func ConvertToGnoCommit(commit *Commit) (*bfttypes.Commit, error) {
 			Height:           sig.Height,
 			Round:            int(sig.Round),
 			Timestamp:        sig.Timestamp,
-			ValidatorAddress: crypto.MustAddressFromString(sig.ValidatorAddress),
+			ValidatorAddress: address,
 		}
 	}
 
@@ -109,6 +113,10 @@ func ConvertToGnoHeader(header *GnoHeader) (*bfttypes.Header, error) {
 		lastResultsHash = header.LastResultsHash
 	}
 
+	address, err := crypto.AddressFromString(header.ProposerAddress)
+	if err != nil {
+		return nil, errorsmod.Wrap(clienttypes.ErrInvalidHeader, "invalid validator address")
+	}
 	gnoHeader := bfttypes.Header{
 		Version:    header.Version,
 		ChainID:    header.ChainId,
@@ -131,7 +139,7 @@ func ConvertToGnoHeader(header *GnoHeader) (*bfttypes.Header, error) {
 		ConsensusHash:      header.ConsensusHash,
 		AppHash:            header.AppHash,
 		LastResultsHash:    lastResultsHash,
-		ProposerAddress:    crypto.MustAddressFromString(header.ProposerAddress),
+		ProposerAddress:    address,
 	}
 
 	return &gnoHeader, nil
