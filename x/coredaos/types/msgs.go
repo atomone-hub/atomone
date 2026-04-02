@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	MaxAnnotationLength = 1000
+	MaxAnnotationLength = 5000
 )
 
 var _, _, _, _, _ sdk.Msg = &MsgAnnotateProposal{}, &MsgEndorseProposal{}, &MsgExtendVotingPeriod{}, &MsgVetoProposal{}, &MsgUpdateParams{}
