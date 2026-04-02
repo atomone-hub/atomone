@@ -8,7 +8,6 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/authz"
 	sdkgovv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	sdkgovv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
@@ -152,32 +151,5 @@ func (g GovVoteDecorator) ValidateVoteMsgs(ctx sdk.Context, msgs []sdk.Msg) erro
 		return nil
 	}
 
-	validAuthz := func(execMsg *authz.MsgExec) error {
-		for _, v := range execMsg.Msgs {
-			var innerMsg sdk.Msg
-			if err := g.cdc.UnpackAny(v, &innerMsg); err != nil {
-				return errorsmod.Wrap(atomoneerrors.ErrUnauthorized, "cannot unmarshal authz exec msgs")
-			}
-			if err := validMsg(innerMsg); err != nil {
-				return err
-			}
-		}
-
-		return nil
-	}
-
-	for _, m := range msgs {
-		if msg, ok := m.(*authz.MsgExec); ok {
-			if err := validAuthz(msg); err != nil {
-				return err
-			}
-			continue
-		}
-
-		// validate normal msgs
-		if err := validMsg(m); err != nil {
-			return err
-		}
-	}
-	return nil
+	return iterateMsg(g.cdc, msgs, validMsg)
 }

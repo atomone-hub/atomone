@@ -8,7 +8,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/authz"
 	sdkgovv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 
 	atomoneerrors "github.com/atomone-hub/atomone/types/errors"
@@ -51,7 +50,7 @@ func (g GovSubmitProposalDecorator) AnteHandle(
 
 // ValidateSubmitProposalMsgs checks that no submit-proposal message bundles a
 // coredaos MsgUpdateParams that changes the oversight DAO address together with
-// other proposal messages. It also inspects authz.MsgExec wrappers
+// other proposal messages. It also inspects authz.MsgExec wrappers.
 func (g GovSubmitProposalDecorator) ValidateSubmitProposalMsgs(ctx sdk.Context, msgs []sdk.Msg) error {
 	validateMsg := func(m sdk.Msg) error {
 		var proposalMsgs []*codectypes.Any
@@ -65,25 +64,7 @@ func (g GovSubmitProposalDecorator) ValidateSubmitProposalMsgs(ctx sdk.Context, 
 		}
 		return g.validateProposalMessages(ctx, proposalMsgs)
 	}
-
-	for _, m := range msgs {
-		if execMsg, ok := m.(*authz.MsgExec); ok {
-			for _, anyInner := range execMsg.Msgs {
-				var inner sdk.Msg
-				if err := g.cdc.UnpackAny(anyInner, &inner); err != nil {
-					continue
-				}
-				if err := validateMsg(inner); err != nil {
-					return err
-				}
-			}
-			continue
-		}
-		if err := validateMsg(m); err != nil {
-			return err
-		}
-	}
-	return nil
+	return iterateMsg(g.cdc, msgs, validateMsg)
 }
 
 // addressChanged returns true if newAddr and currentAddr refer to
@@ -107,34 +88,12 @@ func addressChanged(newAddr, currentAddr string) (bool, error) {
 	return !newAccAddr.Equals(currentAccAddr), nil
 }
 
-// flattenProposalMsgs recursively unpacks a list of Any-encoded messages,
-// expanding authz.MsgExec wrappers so that all leaf messages are returned.
-// Entries that cannot be unpacked are represented as nil (they still count
-// towards the total message count for bundling detection).
-func (g GovSubmitProposalDecorator) flattenProposalMsgs(anyMsgs []*codectypes.Any) []sdk.Msg {
-	var result []sdk.Msg
-	for _, anyMsg := range anyMsgs {
-		var msg sdk.Msg
-		if err := g.cdc.UnpackAny(anyMsg, &msg); err != nil {
-			// Cannot unpack — count as an opaque message.
-			result = append(result, nil)
-			continue
-		}
-		if execMsg, ok := msg.(*authz.MsgExec); ok {
-			result = append(result, g.flattenProposalMsgs(execMsg.Msgs)...)
-		} else {
-			result = append(result, msg)
-		}
-	}
-	return result
-}
-
 // validateProposalMessages inspects a list of proposal messages and returns an
 // error if a coredaos MsgUpdateParams that changes the oversight DAO address is
 // bundled with other messages. authz.MsgExec wrappers are expanded recursively
 // so that nested oversight-DAO changes are also detected.
 func (g GovSubmitProposalDecorator) validateProposalMessages(ctx sdk.Context, anyMsgs []*codectypes.Any) error {
-	effectiveMsgs := g.flattenProposalMsgs(anyMsgs)
+	effectiveMsgs := flattenAnyMsgs(g.cdc, anyMsgs)
 
 	// Bundling is only possible when there is more than one effective message.
 	if len(effectiveMsgs) <= 1 {
