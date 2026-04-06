@@ -55,6 +55,13 @@ func ConvertToGnoCommit(commit *Commit) (*bfttypes.Commit, error) {
 		return nil, errorsmod.Wrap(clienttypes.ErrInvalidHeader, "commit is nil")
 	}
 
+	if commit.BlockId == nil {
+		return nil, errorsmod.Wrap(clienttypes.ErrInvalidHeader, "commit block ID is nil")
+	}
+	if commit.BlockId.PartsHeader == nil {
+		return nil, errorsmod.Wrap(clienttypes.ErrInvalidHeader, "commit block ID parts header is nil")
+	}
+
 	gnoCommit := bfttypes.Commit{
 		BlockID: bfttypes.BlockID{
 			Hash: commit.BlockId.Hash,
@@ -72,6 +79,12 @@ func ConvertToGnoCommit(commit *Commit) (*bfttypes.Commit, error) {
 		// nil entries. Detect absent validators by checking for an empty signature.
 		if sig == nil || len(sig.Signature) == 0 {
 			continue
+		}
+		if sig.BlockId == nil {
+			return nil, errorsmod.Wrap(clienttypes.ErrInvalidHeader, "precommit block ID is nil")
+		}
+		if sig.BlockId.PartsHeader == nil {
+			return nil, errorsmod.Wrap(clienttypes.ErrInvalidHeader, "precommit block ID parts header is nil")
 		}
 		address, err := crypto.AddressFromString(sig.ValidatorAddress)
 		if err != nil {
@@ -111,6 +124,13 @@ func ConvertToGnoHeader(header *GnoHeader) (*bfttypes.Header, error) {
 	}
 	if len(header.LastResultsHash) > 0 {
 		lastResultsHash = header.LastResultsHash
+	}
+
+	if header.LastBlockId == nil {
+		return nil, errorsmod.Wrap(clienttypes.ErrInvalidHeader, "header last block ID is nil")
+	}
+	if header.LastBlockId.PartsHeader == nil {
+		return nil, errorsmod.Wrap(clienttypes.ErrInvalidHeader, "header last block ID parts header is nil")
 	}
 
 	address, err := crypto.AddressFromString(header.ProposerAddress)
@@ -171,6 +191,11 @@ func ConvertToGnoSignedHeader(signedHeader *SignedHeader) (*bfttypes.SignedHeade
 func ConvertToGnoBlockID(blockID *BlockID) bfttypes.BlockID {
 	if blockID == nil {
 		return bfttypes.BlockID{}
+	}
+	if blockID.PartsHeader == nil {
+		return bfttypes.BlockID{
+			Hash: blockID.Hash,
+		}
 	}
 	return bfttypes.BlockID{
 		Hash: blockID.Hash,
