@@ -109,8 +109,9 @@ func migrateParams(ctx context.Context, cdc codec.Codec, govKeeper *govkeeper.Ke
 	}
 
 	// Set new params fields to default values
-	defaultParams := sdkgovv1.DefaultParams()
-	params.ProposalCancelRatio = defaultParams.ProposalCancelRatio
+	defaultSDKParams := sdkgovv1.DefaultParams()
+	defaultParams := v1.DefaultParams()
+	params.ProposalCancelRatio = defaultSDKParams.ProposalCancelRatio
 	params.ProposalCancelDest = authtypes.NewModuleAddress(sdkgov.ModuleName).String()
 	params.MinDepositRatio = defaultParams.MinDepositRatio
 	params.GovernorStatusChangePeriod = defaultParams.GovernorStatusChangePeriod
