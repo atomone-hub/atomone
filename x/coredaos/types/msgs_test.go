@@ -1,11 +1,13 @@
 package types_test
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/atomone-hub/atomone/x/coredaos/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 var addrs = []sdk.AccAddress{
@@ -22,6 +24,7 @@ func TestMsgAnnotateProposal_ValidateBasic(t *testing.T) {
 	}{
 		{sdk.AccAddress{}, 0, "annotation", false},
 		{addrs[0], 0, "", false},
+		{addrs[0], 0, strings.Repeat("x", 3001), false},
 		{addrs[0], 0, "annotation", true},
 	}
 	for i, tc := range tests {
