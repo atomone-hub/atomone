@@ -12,7 +12,7 @@ func TestGetParams(t *testing.T) {
 	k, _, ctx := testutil.SetupPhotonKeeper(t)
 	params := types.DefaultParams()
 
-	k.SetParams(ctx, params)
+	require.NoError(t, k.SetParams(ctx, params))
 	got := k.GetParams(ctx)
 
 	require.EqualValues(t, params, got)

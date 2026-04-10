@@ -12,7 +12,7 @@ import (
 func TestParamsQuery(t *testing.T) {
 	k, _, ctx := testutil.SetupCoredaosKeeper(t)
 	params := types.DefaultParams()
-	k.Params.Set(ctx, params)
+	require.NoError(t, k.Params.Set(ctx, params))
 	q := keeper.NewQuerier(*k)
 	resp, err := q.Params(ctx, &types.QueryParamsRequest{})
 

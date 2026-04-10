@@ -75,7 +75,7 @@ func TestMsgServerUpdateParams(t *testing.T) {
 					VotingPeriodExtensionDuration: &timeDuration,
 				},
 			},
-			expectedErr: "cannot update params while Steering DAO have bonded or unbonding tokens: core DAOs cannot stake",
+			expectedErr: "cannot update params while Steering DAO has bonded or unbonding tokens: core DAOs cannot stake",
 			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
 				m.StakingKeeper.EXPECT().GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(bondedAcc)).Return(math.NewInt(10), nil)
 				m.StakingKeeper.EXPECT().GetDelegatorUnbonding(ctx, sdk.MustAccAddressFromBech32(bondedAcc)).Return(math.NewInt(0), nil)
@@ -90,7 +90,7 @@ func TestMsgServerUpdateParams(t *testing.T) {
 					VotingPeriodExtensionDuration: &timeDuration,
 				},
 			},
-			expectedErr: "cannot update params while Oversight DAO have bonded or unbonding tokens: core DAOs cannot stake",
+			expectedErr: "cannot update params while Oversight DAO has bonded or unbonding tokens: core DAOs cannot stake",
 			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
 				m.StakingKeeper.EXPECT().GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(bondedAcc)).Return(math.NewInt(10), nil)
 				m.StakingKeeper.EXPECT().GetDelegatorUnbonding(ctx, sdk.MustAccAddressFromBech32(bondedAcc)).Return(math.NewInt(0), nil)
@@ -129,7 +129,7 @@ func TestMsgServerUpdateParams(t *testing.T) {
 					VotingPeriodExtensionDuration: &timeDuration,
 				},
 			},
-			expectedErr: "cannot update params while Steering DAO have bonded or unbonding tokens: core DAOs cannot stake",
+			expectedErr: "cannot update params while Steering DAO has bonded or unbonding tokens: core DAOs cannot stake",
 			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
 				// Address is in unbonding
 				m.StakingKeeper.EXPECT().GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(unbondingAcc)).Return(math.NewInt(0), nil)
@@ -145,7 +145,7 @@ func TestMsgServerUpdateParams(t *testing.T) {
 					VotingPeriodExtensionDuration: &timeDuration,
 				},
 			},
-			expectedErr: "cannot update params while Oversight DAO have bonded or unbonding tokens: core DAOs cannot stake",
+			expectedErr: "cannot update params while Oversight DAO has bonded or unbonding tokens: core DAOs cannot stake",
 			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
 				// Address is in unbonding
 				m.StakingKeeper.EXPECT().GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(unbondingAcc)).Return(math.NewInt(0), nil)
@@ -204,7 +204,7 @@ func TestMsgServerUpdateParams(t *testing.T) {
 			ms, k, m, ctx := testutil.SetupMsgServer(t)
 			tt.setupMocks(ctx, &m)
 			params := types.DefaultParams()
-			k.Params.Set(ctx, params)
+			require.NoError(t, k.Params.Set(ctx, params))
 
 			if err := tt.msg.ValidateBasic(); err != nil {
 				if tt.expectedErr != "" {
@@ -370,7 +370,7 @@ func TestMsgServerAnnotateProposal(t *testing.T) {
 			if tt.setSteeringDAO {
 				params.SteeringDaoAddress = steeringDAOAcc
 			}
-			k.Params.Set(ctx, params)
+			require.NoError(t, k.Params.Set(ctx, params))
 			if err := tt.msg.ValidateBasic(); err != nil {
 				if tt.expectedErr != "" {
 					require.EqualError(t, err, tt.expectedErr)
@@ -505,7 +505,7 @@ func TestMsgServerEndorseProposal(t *testing.T) {
 			if tt.setSteeringDAO {
 				params.SteeringDaoAddress = steeringDAOAcc
 			}
-			k.Params.Set(ctx, params)
+			require.NoError(t, k.Params.Set(ctx, params))
 			if err := tt.msg.ValidateBasic(); err != nil {
 				if tt.expectedErr != "" {
 					require.EqualError(t, err, tt.expectedErr)
@@ -650,7 +650,7 @@ func TestMsgServerExtendVotingPeriod(t *testing.T) {
 			if tt.setSteeringDAO {
 				params.SteeringDaoAddress = steeringDAOAcc
 			}
-			k.Params.Set(ctx, params)
+			require.NoError(t, k.Params.Set(ctx, params))
 			if err := tt.msg.ValidateBasic(); err != nil {
 				if tt.expectedErr != "" {
 					require.EqualError(t, err, tt.expectedErr)
@@ -849,7 +849,7 @@ func TestMsgServerVetoProposal(t *testing.T) {
 			if tt.setOversightDAO {
 				params.OversightDaoAddress = oversightDAOAcc
 			}
-			k.Params.Set(ctx, params)
+			require.NoError(t, k.Params.Set(ctx, params))
 			if err := tt.msg.ValidateBasic(); err != nil {
 				if tt.expectedErr != "" {
 					require.EqualError(t, err, tt.expectedErr)
