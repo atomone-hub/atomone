@@ -42,18 +42,29 @@ func DefaultParams() Params {
 
 // Validate validates the set of params
 func (p Params) ValidateBasic() error {
+	var (
+		steeringDaoAddr  sdk.AccAddress
+		oversightDaoAddr sdk.AccAddress
+		err              error
+	)
+
 	// Steering DAO address can only be empty (disabled) or a valid Bech32 address
 	if p.SteeringDaoAddress != "" {
-		if _, err := sdk.AccAddressFromBech32(p.SteeringDaoAddress); err != nil {
+		if steeringDaoAddr, err = sdk.AccAddressFromBech32(p.SteeringDaoAddress); err != nil {
 			return fmt.Errorf("invalid steering DAO address: %s: %w", p.SteeringDaoAddress, err)
 		}
 	}
 
 	// Oversight DAO address can only be empty (disabled) or a valid Bech32 address
 	if p.OversightDaoAddress != "" {
-		if _, err := sdk.AccAddressFromBech32(p.OversightDaoAddress); err != nil {
+		if oversightDaoAddr, err = sdk.AccAddressFromBech32(p.OversightDaoAddress); err != nil {
 			return fmt.Errorf("invalid oversight DAO address: %s: %w", p.OversightDaoAddress, err)
 		}
+	}
+
+	// Oversight DAO cannot be the same as the Steering DAO
+	if p.SteeringDaoAddress != "" && p.OversightDaoAddress != "" && steeringDaoAddr.Equals(oversightDaoAddr) {
+		return fmt.Errorf("steering DAO address and oversight DAO address cannot be the same: %s", p.SteeringDaoAddress)
 	}
 
 	// VotingPeriodExtensionDuration must be a positive duration

@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"strings"
 	"testing"
 	"time"
 
@@ -18,10 +19,11 @@ import (
 
 func TestMsgServerUpdateParams(t *testing.T) {
 	timeDuration := time.Duration(1)
-	testAcc := simtestutil.CreateRandomAccounts(3)
+	testAcc := simtestutil.CreateRandomAccounts(4)
 	bondedAcc := testAcc[0].String()
 	unbondingAcc := testAcc[1].String()
 	unbondedAcc := testAcc[2].String()
+	unbondedAcc2 := testAcc[3].String()
 
 	tests := []struct {
 		name        string
@@ -188,15 +190,43 @@ func TestMsgServerUpdateParams(t *testing.T) {
 				Authority: "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
 				Params: types.Params{
 					SteeringDaoAddress:            unbondedAcc,
-					OversightDaoAddress:           unbondedAcc,
+					OversightDaoAddress:           unbondedAcc2,
 					VotingPeriodExtensionDuration: &timeDuration,
 				},
 			},
 			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
 				// Address is not bonded or in unbonding
-				m.StakingKeeper.EXPECT().GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(unbondedAcc)).Return(math.NewInt(0), nil).Times(2)
-				m.StakingKeeper.EXPECT().GetDelegatorUnbonding(ctx, sdk.MustAccAddressFromBech32(unbondedAcc)).Return(math.NewInt(0), nil).Times(2)
+				m.StakingKeeper.EXPECT().GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(unbondedAcc)).Return(math.NewInt(0), nil)
+				m.StakingKeeper.EXPECT().GetDelegatorUnbonding(ctx, sdk.MustAccAddressFromBech32(unbondedAcc)).Return(math.NewInt(0), nil)
+				m.StakingKeeper.EXPECT().GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(unbondedAcc2)).Return(math.NewInt(0), nil)
+				m.StakingKeeper.EXPECT().GetDelegatorUnbonding(ctx, sdk.MustAccAddressFromBech32(unbondedAcc2)).Return(math.NewInt(0), nil)
 			},
+		},
+		{
+			name: "steeringdao and oversight same address",
+			msg: &types.MsgUpdateParams{
+				Authority: "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
+				Params: types.Params{
+					SteeringDaoAddress:            unbondedAcc,
+					OversightDaoAddress:           unbondedAcc,
+					VotingPeriodExtensionDuration: &timeDuration,
+				},
+			},
+			expectedErr: "steering DAO address and oversight DAO address cannot be the same: " + unbondedAcc,
+			setupMocks:  func(ctx sdk.Context, m *testutil.Mocks) {},
+		},
+		{
+			name: "steeringdao and oversight same address but different case",
+			msg: &types.MsgUpdateParams{
+				Authority: "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
+				Params: types.Params{
+					SteeringDaoAddress:            unbondedAcc,
+					OversightDaoAddress:           strings.ToUpper(unbondedAcc),
+					VotingPeriodExtensionDuration: &timeDuration,
+				},
+			},
+			expectedErr: "steering DAO address and oversight DAO address cannot be the same: " + unbondedAcc,
+			setupMocks:  func(ctx sdk.Context, m *testutil.Mocks) {},
 		},
 	}
 	for _, tt := range tests {
