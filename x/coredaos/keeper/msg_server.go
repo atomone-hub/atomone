@@ -48,7 +48,7 @@ func (ms MsgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdatePara
 		}
 		if delegatorBonded.GT(math.ZeroInt()) ||
 			delegatorUnbonded.GT(math.ZeroInt()) {
-			return nil, types.ErrCannotStake.Wrapf("cannot update params while Steering DAO have bonded or unbonding tokens")
+			return nil, types.ErrCannotStake.Wrapf("cannot update params while Steering DAO has bonded or unbonding tokens")
 		}
 	}
 	if params.OversightDaoAddress != "" {
@@ -62,7 +62,7 @@ func (ms MsgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdatePara
 		}
 		if delegatorBonded.GT(math.ZeroInt()) ||
 			delegatorUnbonded.GT(math.ZeroInt()) {
-			return nil, types.ErrCannotStake.Wrapf("cannot update params while Oversight DAO have bonded or unbonding tokens")
+			return nil, types.ErrCannotStake.Wrapf("cannot update params while Oversight DAO has bonded or unbonding tokens")
 		}
 	}
 	if err := ms.k.Params.Set(ctx, params); err != nil {

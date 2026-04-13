@@ -53,10 +53,10 @@ func validateTallyParams(i any) error {
 		return fmt.Errorf("invalid quorum string: %w", err)
 	}
 	if quorum.IsNegative() {
-		return fmt.Errorf("quorom cannot be negative: %s", quorum)
+		return fmt.Errorf("quorum cannot be negative: %s", quorum)
 	}
 	if quorum.GT(math.LegacyOneDec()) {
-		return fmt.Errorf("quorom too large: %s", v)
+		return fmt.Errorf("quorum too large: %s", v)
 	}
 
 	threshold, err := math.LegacyNewDecFromStr(v.Threshold)

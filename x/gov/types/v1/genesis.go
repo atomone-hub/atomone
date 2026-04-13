@@ -6,6 +6,8 @@ import (
 
 	"golang.org/x/sync/errgroup"
 
+	"cosmossdk.io/math"
+
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkgovtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
@@ -47,6 +49,16 @@ func (data GenesisState) Empty() bool {
 func ValidateGenesis(data *GenesisState) error {
 	if data.StartingProposalId == 0 {
 		return errors.New("starting proposal id must be greater than 0")
+	}
+
+	if err := validateParticipationEma(data.ParticipationEma, "participation_ema"); err != nil {
+		return err
+	}
+	if err := validateParticipationEma(data.ConstitutionAmendmentParticipationEma, "constitution_amendment_participation_ema"); err != nil {
+		return err
+	}
+	if err := validateParticipationEma(data.LawParticipationEma, "law_participation_ema"); err != nil {
+		return err
 	}
 
 	var errGroup errgroup.Group
@@ -150,6 +162,20 @@ func ValidateGenesis(data *GenesisState) error {
 	})
 
 	return errGroup.Wait()
+}
+
+func validateParticipationEma(value, field string) error {
+	dec, err := math.LegacyNewDecFromStr(value)
+	if err != nil {
+		return fmt.Errorf("invalid %s: %w", field, err)
+	}
+	if dec.IsNegative() {
+		return fmt.Errorf("%s must not be negative: %s", field, value)
+	}
+	if dec.GT(math.LegacyOneDec()) {
+		return fmt.Errorf("%s must not be greater than 1: %s", field, value)
+	}
+	return nil
 }
 
 var _ codectypes.UnpackInterfacesMessage = GenesisState{}
