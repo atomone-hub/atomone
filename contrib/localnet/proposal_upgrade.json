@@ -1,19 +1,19 @@
 {
- "messages": [
-  {
-   "@type": "/cosmos.upgrade.v1beta1.MsgSoftwareUpgrade",
-   "authority": "atone10d07y265gmmuvt4z0w9aw880jnsr700j5z0zqt",
-   "plan": {
-    "name": "v3",
-    "time": "0001-01-01T00:00:00Z",
-    "height": "80",
-    "info": "",
-    "upgraded_client_state": null
-   }
-  }
- ],
- "metadata": "ipfs://CID",
- "deposit": "512000000uatone",
- "title": "v3",
- "summary": "v3"
+  "messages": [
+    {
+      "@type": "/cosmos.upgrade.v1beta1.MsgSoftwareUpgrade",
+      "authority": "atone10d07y265gmmuvt4z0w9aw880jnsr700j5z0zqt",
+      "plan": {
+        "name": "v4",
+        "time": "0001-01-01T00:00:00Z",
+        "height": "30",
+        "info": "",
+        "upgraded_client_state": null
+      }
+    }
+  ],
+  "metadata": "ipfs://CID",
+  "deposit": "512000000uatone",
+  "title": "v4",
+  "summary": "v4"
 }

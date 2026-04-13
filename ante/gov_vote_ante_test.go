@@ -11,6 +11,8 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkgovv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
+	sdkgovv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	"github.com/atomone-hub/atomone/ante"
@@ -43,10 +45,10 @@ func TestVoteSpamDecoratorGovV1Beta1(t *testing.T) {
 	require.NoError(t, err)
 	// Make sure the validator is bonded so it's not removed on Undelegate
 	validator2.Status = stakingtypes.Bonded
-	stakingKeeper.SetValidator(ctx, validator2)
+	require.NoError(t, stakingKeeper.SetValidator(ctx, validator2))
 	err = stakingKeeper.SetValidatorByConsAddr(ctx, validator2)
 	require.NoError(t, err)
-	stakingKeeper.SetNewValidatorByPowerIndex(ctx, validator2)
+	require.NoError(t, stakingKeeper.SetNewValidatorByPowerIndex(ctx, validator2))
 
 	valAddr2, err := stakingKeeper.ValidatorAddressCodec().StringToBytes(validator2.OperatorAddress)
 	require.NoError(t, err)
@@ -139,6 +141,21 @@ func TestVoteSpamDecoratorGovV1Beta1(t *testing.T) {
 		} else {
 			require.Error(t, err, "expected %v to fail", tc.name)
 		}
+
+		// Create sdk vote message
+		sdkMsg := sdkgovv1beta1.NewMsgVote(
+			delegator,
+			0,
+			sdkgovv1beta1.OptionYes,
+		)
+
+		// Validate sdk vote message
+		err = decorator.ValidateVoteMsgs(ctx, []sdk.Msg{sdkMsg})
+		if tc.expectPass {
+			require.NoError(t, err, "expected %v to pass", tc.name)
+		} else {
+			require.Error(t, err, "expected %v to fail", tc.name)
+		}
 	}
 }
 
@@ -166,10 +183,10 @@ func TestVoteWeightedSpamDecoratorGovV1Beta1(t *testing.T) {
 	require.NoError(t, err)
 	// Make sure the validator is bonded so it's not removed on Undelegate
 	validator2.Status = stakingtypes.Bonded
-	stakingKeeper.SetValidator(ctx, validator2)
+	require.NoError(t, stakingKeeper.SetValidator(ctx, validator2))
 	err = stakingKeeper.SetValidatorByConsAddr(ctx, validator2)
 	require.NoError(t, err)
-	stakingKeeper.SetNewValidatorByPowerIndex(ctx, validator2)
+	require.NoError(t, stakingKeeper.SetNewValidatorByPowerIndex(ctx, validator2))
 
 	valAddr2, err := stakingKeeper.ValidatorAddressCodec().StringToBytes(validator2.OperatorAddress)
 	require.NoError(t, err)
@@ -264,6 +281,22 @@ func TestVoteWeightedSpamDecoratorGovV1Beta1(t *testing.T) {
 		} else {
 			require.Error(t, err, "expected %v to fail", tc.name)
 		}
+
+		sdkWeightedVoteOptions := govv1beta1.ConvertAtomOneWeightedVoteOptionsToSDK(weightedVoteOptions)
+		// Create sdk vote message
+		sdkMsg := sdkgovv1beta1.NewMsgVoteWeighted(
+			delegator,
+			0,
+			sdkWeightedVoteOptions,
+		)
+
+		// Validate sdk vote message
+		err = decorator.ValidateVoteMsgs(ctx, []sdk.Msg{sdkMsg})
+		if tc.expectPass {
+			require.NoError(t, err, "expected %v to pass", tc.name)
+		} else {
+			require.Error(t, err, "expected %v to fail", tc.name)
+		}
 	}
 }
 
@@ -296,10 +329,10 @@ func TestVoteSpamDecoratorGovV1(t *testing.T) {
 	require.NoError(t, err)
 	// Make sure the validator is bonded so it's not removed on Undelegate
 	validator2.Status = stakingtypes.Bonded
-	stakingKeeper.SetValidator(ctx, validator2)
+	require.NoError(t, stakingKeeper.SetValidator(ctx, validator2))
 	err = stakingKeeper.SetValidatorByConsAddr(ctx, validator2)
 	require.NoError(t, err)
-	stakingKeeper.SetNewValidatorByPowerIndex(ctx, validator2)
+	require.NoError(t, stakingKeeper.SetNewValidatorByPowerIndex(ctx, validator2))
 	err = stakingKeeper.Hooks().AfterValidatorCreated(ctx, valAddr2)
 	require.NoError(t, err)
 
@@ -390,6 +423,22 @@ func TestVoteSpamDecoratorGovV1(t *testing.T) {
 		} else {
 			require.Error(t, err, "expected %v to fail", tc.name)
 		}
+
+		// Create sdk vote message
+		sdkMsg := sdkgovv1.NewMsgVote(
+			delegator,
+			0,
+			sdkgovv1.VoteOption_VOTE_OPTION_YES,
+			"new-v1-vote-message-test",
+		)
+
+		// Validate sdk vote message
+		err = decorator.ValidateVoteMsgs(ctx, []sdk.Msg{sdkMsg})
+		if tc.expectPass {
+			require.NoError(t, err, "expected %v to pass", tc.name)
+		} else {
+			require.Error(t, err, "expected %v to fail", tc.name)
+		}
 	}
 }
 
@@ -421,10 +470,10 @@ func TestVoteWeightedSpamDecoratorGovV1(t *testing.T) {
 	require.NoError(t, err)
 	// Make sure the validator is bonded so it's not removed on Undelegate
 	validator2.Status = stakingtypes.Bonded
-	stakingKeeper.SetValidator(ctx, validator2)
+	require.NoError(t, stakingKeeper.SetValidator(ctx, validator2))
 	err = stakingKeeper.SetValidatorByConsAddr(ctx, validator2)
 	require.NoError(t, err)
-	stakingKeeper.SetNewValidatorByPowerIndex(ctx, validator2)
+	require.NoError(t, stakingKeeper.SetNewValidatorByPowerIndex(ctx, validator2))
 	err = stakingKeeper.Hooks().AfterValidatorCreated(ctx, valAddr2)
 	require.NoError(t, err)
 
@@ -512,6 +561,23 @@ func TestVoteWeightedSpamDecoratorGovV1(t *testing.T) {
 
 		// Validate vote message
 		err = decorator.ValidateVoteMsgs(ctx, []sdk.Msg{msg})
+		if tc.expectPass {
+			require.NoError(t, err, "expected %v to pass", tc.name)
+		} else {
+			require.Error(t, err, "expected %v to fail", tc.name)
+		}
+
+		sdkWeightedVoteOptions := govv1.ConvertAtomOneWeightedVoteOptionsToSDK(weightedVoteOptions)
+		// Create sdk vote message
+		sdkMsg := sdkgovv1.NewMsgVoteWeighted(
+			delegator,
+			0,
+			sdkWeightedVoteOptions,
+			"new-v1-weighted-vote-message-test",
+		)
+
+		// Validate sdk vote message
+		err = decorator.ValidateVoteMsgs(ctx, []sdk.Msg{sdkMsg})
 		if tc.expectPass {
 			require.NoError(t, err, "expected %v to pass", tc.name)
 		} else {

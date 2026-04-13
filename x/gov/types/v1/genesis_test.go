@@ -394,6 +394,54 @@ func TestValidateGenesis(t *testing.T) {
 			expErrMsg: "duplicate deposit: proposal_id:1 depositor:\"depositor\"",
 		},
 		{
+			name: "invalid participation_ema - not a decimal",
+			genesisState: func() *v1.GenesisState {
+				params := v1.DefaultParams()
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, "notadecimal", v1.DefaultParticipationEma, v1.DefaultParticipationEma, params)
+			},
+			expErrMsg: "invalid participation_ema",
+		},
+		{
+			name: "negative participation_ema",
+			genesisState: func() *v1.GenesisState {
+				params := v1.DefaultParams()
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, "-0.1", v1.DefaultParticipationEma, v1.DefaultParticipationEma, params)
+			},
+			expErrMsg: "participation_ema must not be negative",
+		},
+		{
+			name: "participation_ema greater than 1",
+			genesisState: func() *v1.GenesisState {
+				params := v1.DefaultParams()
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, "1.1", v1.DefaultParticipationEma, v1.DefaultParticipationEma, params)
+			},
+			expErrMsg: "participation_ema must not be greater than 1",
+		},
+		{
+			name: "invalid constitution_amendment_participation_ema",
+			genesisState: func() *v1.GenesisState {
+				params := v1.DefaultParams()
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, v1.DefaultParticipationEma, "notadecimal", v1.DefaultParticipationEma, params)
+			},
+			expErrMsg: "invalid constitution_amendment_participation_ema",
+		},
+		{
+			name: "negative constitution_amendment_participation_ema",
+			genesisState: func() *v1.GenesisState {
+				params := v1.DefaultParams()
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, v1.DefaultParticipationEma, "-0.5", v1.DefaultParticipationEma, params)
+			},
+			expErrMsg: "constitution_amendment_participation_ema must not be negative",
+		},
+		{
+			name: "invalid law_participation_ema",
+			genesisState: func() *v1.GenesisState {
+				params := v1.DefaultParams()
+				return v1.NewGenesisState(v1.DefaultStartingProposalID, v1.DefaultParticipationEma, v1.DefaultParticipationEma, "2.0", params)
+			},
+			expErrMsg: "law_participation_ema must not be greater than 1",
+		},
+		{
 			name: "non-existent proposal id in votes",
 			genesisState: func() *v1.GenesisState {
 				params := v1.DefaultParams()
@@ -426,7 +474,6 @@ func TestValidateGenesis(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			err := v1.ValidateGenesis(tc.genesisState())
 			if tc.expErrMsg != "" {

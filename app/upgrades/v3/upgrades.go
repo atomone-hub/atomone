@@ -9,6 +9,7 @@ import (
 	"cosmossdk.io/math"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 
+	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
@@ -24,6 +25,7 @@ import (
 // CreateUpgradeHandler returns a upgrade handler for AtomOne v3
 func CreateUpgradeHandler(
 	mm *module.Manager,
+	_ codec.Codec,
 	configurator module.Configurator,
 	keepers *keepers.AppKeepers,
 ) upgradetypes.UpgradeHandler {

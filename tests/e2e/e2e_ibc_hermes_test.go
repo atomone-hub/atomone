@@ -113,7 +113,7 @@ func (s *IntegrationTestSuite) executeHermesCommand(ctx context.Context, hermesC
 	scanner := bufio.NewScanner(&outBuf)
 	for scanner.Scan() {
 		stdOut = scanner.Bytes()
-		var out map[string]interface{}
+		var out map[string]any
 		err = json.Unmarshal(stdOut, &out)
 		s.Require().NoError(err)
 		if err != nil {

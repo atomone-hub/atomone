@@ -92,7 +92,7 @@ func httpGet_(endpoint string, attempt int) ([]byte, error) {
 	return body, nil
 }
 
-func readJSON(resp *http.Response) (map[string]interface{}, error) {
+func readJSON(resp *http.Response) (map[string]any, error) {
 	defer resp.Body.Close()
 
 	body, readErr := io.ReadAll(resp.Body)
@@ -100,7 +100,7 @@ func readJSON(resp *http.Response) (map[string]interface{}, error) {
 		return nil, fmt.Errorf("failed to read Body")
 	}
 
-	var data map[string]interface{}
+	var data map[string]any
 	err := json.Unmarshal(body, &data)
 	if err != nil {
 		return nil, fmt.Errorf("failed to unmarshal response body")

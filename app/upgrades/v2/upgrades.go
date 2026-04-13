@@ -5,6 +5,7 @@ import (
 
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 
+	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
@@ -19,6 +20,7 @@ import (
 //   - add new denom metadata for photon in the bank module store.
 func CreateUpgradeHandler(
 	mm *module.Manager,
+	_ codec.Codec,
 	configurator module.Configurator,
 	keepers *keepers.AppKeepers,
 ) upgradetypes.UpgradeHandler {
