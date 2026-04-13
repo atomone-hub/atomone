@@ -5,8 +5,9 @@ import (
 	"testing"
 	"time"
 
-	"cosmossdk.io/math"
 	"github.com/stretchr/testify/require"
+
+	"cosmossdk.io/math"
 
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -201,6 +202,30 @@ func TestMsgServerUpdateParams(t *testing.T) {
 				m.StakingKeeper.EXPECT().GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(unbondedAcc2)).Return(math.NewInt(0), nil)
 				m.StakingKeeper.EXPECT().GetDelegatorUnbonding(ctx, sdk.MustAccAddressFromBech32(unbondedAcc2)).Return(math.NewInt(0), nil)
 			},
+		},
+		{
+			name: "steeringdao set to authority address",
+			msg: &types.MsgUpdateParams{
+				Authority: "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
+				Params: types.Params{
+					SteeringDaoAddress:            "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
+					VotingPeriodExtensionDuration: &timeDuration,
+				},
+			},
+			expectedErr: "authority address cannot be the same as steering DAO address: invalid address",
+			setupMocks:  func(ctx sdk.Context, m *testutil.Mocks) {},
+		},
+		{
+			name: "oversightdao set to authority address",
+			msg: &types.MsgUpdateParams{
+				Authority: "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
+				Params: types.Params{
+					OversightDaoAddress:           "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
+					VotingPeriodExtensionDuration: &timeDuration,
+				},
+			},
+			expectedErr: "authority address cannot be the same as oversight DAO address: invalid address",
+			setupMocks:  func(ctx sdk.Context, m *testutil.Mocks) {},
 		},
 		{
 			name: "steeringdao and oversight same address",
