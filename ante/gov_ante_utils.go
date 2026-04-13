@@ -13,6 +13,7 @@ import (
 
 // iterateMsg calls fn for each message in msgs. For authz.MsgExec messages,
 // fn is called for each inner message instead of the exec message itself.
+// Nested MsgExec wrappers are expanded recursively.
 // Returns ErrUnauthorized if an inner message cannot be unpacked.
 func iterateMsg(cdc codec.BinaryCodec, msgs []sdk.Msg, fn func(sdk.Msg) error) error {
 	for _, m := range msgs {
@@ -22,7 +23,8 @@ func iterateMsg(cdc codec.BinaryCodec, msgs []sdk.Msg, fn func(sdk.Msg) error) e
 				if err := cdc.UnpackAny(anyInner, &inner); err != nil {
 					return errorsmod.Wrap(atomoneerrors.ErrUnauthorized, "cannot unmarshal authz exec msgs")
 				}
-				if err := fn(inner); err != nil {
+				// Recurse to handle nested MsgExec wrappers.
+				if err := iterateMsg(cdc, []sdk.Msg{inner}, fn); err != nil {
 					return err
 				}
 			}
