@@ -277,9 +277,8 @@ func NewAppKeeper(
 	appKeepers.ProviderKeeper = ibcproviderkeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(appKeepers.keys[providertypes.StoreKey]),
-		appKeepers.IBCKeeper.ChannelKeeper,
-		appKeepers.IBCKeeper.ConnectionKeeper,
 		appKeepers.IBCKeeper.ClientKeeper,
+		appKeepers.IBCKeeper.ClientV2Keeper,
 		appKeepers.StakingKeeper,
 		appKeepers.SlashingKeeper,
 		appKeepers.AccountKeeper,
@@ -381,18 +380,15 @@ func NewAppKeeper(
 		icaControllerStack porttypes.IBCModule = icacontroller.NewIBCMiddleware(appKeepers.ICAControllerKeeper)
 	)
 
-	providerModule := ibcprovider.NewAppModule(&appKeepers.ProviderKeeper)
-
 	// Create IBC Router & seal
 	ibcRouter := porttypes.NewRouter().
 		AddRoute(icahosttypes.SubModuleName, icaHostStack).
 		AddRoute(icacontrollertypes.SubModuleName, icaControllerStack).
-		AddRoute(ibctransfertypes.ModuleName, transferStack).
-		AddRoute(providertypes.ModuleName, providerModule)
+		AddRoute(ibctransfertypes.ModuleName, transferStack)
 
 	ibcv2Router := ibcapi.NewRouter().
 		AddRoute(ibctransfertypes.PortID, transferStackV2).
-		AddRoute(providertypes.ModuleName, ibcprovider.NewIBCModuleV2(&appKeepers.ProviderKeeper))
+		AddRoute(providertypes.ModuleName, ibcprovider.NewIBCModule(&appKeepers.ProviderKeeper))
 
 	appKeepers.IBCKeeper.SetRouter(ibcRouter)
 	appKeepers.IBCKeeper.SetRouterV2(ibcv2Router)

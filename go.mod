@@ -7,7 +7,7 @@ replace (
 	cosmossdk.io/x/feegrant => cosmossdk.io/x/feegrant v0.1.1
 	cosmossdk.io/x/upgrade => github.com/atomone-hub/cosmos-sdk/x/upgrade v0.1.5-atomone.2
 	// https://github.com/allinbits/vaas/pull/18
-	github.com/allinbits/vaas => github.com/allinbits/vaas v0.0.0-20260303111645-6fb95c511621
+	github.com/allinbits/vaas => github.com/allinbits/vaas v0.0.0-20260413182122-e89d9a05ccfc
 	github.com/cosmos/cosmos-sdk => github.com/atomone-hub/cosmos-sdk v0.50.15-atomone.1
 	github.com/cosmos/ibc-go/v10 => github.com/cosmos/ibc-go/v10 v10.5.0
 )
