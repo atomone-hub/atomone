@@ -100,7 +100,7 @@ func (d GovernorDescription) UpdateDescription(d2 GovernorDescription) (Governor
 	).EnsureLength()
 }
 
-// EnsureLength ensures the length of a vovernor's description.
+// EnsureLength ensures the length of a governor's description.
 func (d GovernorDescription) EnsureLength() (GovernorDescription, error) {
 	if len(d.Moniker) > stakingtypes.MaxMonikerLength {
 		return d, errors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid moniker length; got: %d, max: %d", len(d.Moniker), stakingtypes.MaxMonikerLength)

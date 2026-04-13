@@ -14,7 +14,7 @@ import (
 func TestParamsQuery(t *testing.T) {
 	k, _, ctx := testutil.SetupPhotonKeeper(t)
 	params := types.DefaultParams()
-	k.SetParams(ctx, params)
+	require.NoError(t, k.SetParams(ctx, params))
 
 	resp, err := k.Params(ctx, &types.QueryParamsRequest{})
 
