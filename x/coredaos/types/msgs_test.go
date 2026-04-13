@@ -24,7 +24,7 @@ func TestMsgAnnotateProposal_ValidateBasic(t *testing.T) {
 	}{
 		{sdk.AccAddress{}, 0, "annotation", false},
 		{addrs[0], 0, "", false},
-		{addrs[0], 0, strings.Repeat("x", 3001), false},
+		{addrs[0], 0, strings.Repeat("x", 5001), false},
 		{addrs[0], 0, "annotation", true},
 	}
 	for i, tc := range tests {
