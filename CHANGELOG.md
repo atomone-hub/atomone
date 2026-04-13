@@ -25,6 +25,7 @@
 - Migrate `x/gov` fork from Atom One to Atom One SDK [#248](https://github.com/atomone-hub/atomone/pull/248)
 - Add governors to `x/gov` module [#258](https://github.com/atomone-hub/atomone/pull/258)
 - Prevent Oversight DAO from vetoing proposals that include a change to the Oversight DAO address [#275](https://github.com/atomone-hub/atomone/pull/275) [#299](https://github.com/atomone-hub/atomone/pull/299)
+- Set chain-wide `MaxCommissionRate` and `MinCommissionRate` to 5% and update validator commission rates accordingly [#300](https://github.com/atomone-hub/atomone/pull/300)
 - Prevent Oversight DAO change to be bundled in proposals [#316](https://github.com/atomone-hub/atomone/pull/316)
 
 ### STATE BREAKING
