@@ -14,7 +14,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
 	sdkgov "github.com/cosmos/cosmos-sdk/x/gov/types"
 	sdkgovv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
@@ -109,10 +108,7 @@ func migrateParams(ctx context.Context, cdc codec.Codec, govKeeper *govkeeper.Ke
 	}
 
 	// Set new params fields to default values
-	defaultSDKParams := sdkgovv1.DefaultParams()
-	defaultParams := v1.DefaultParams()
-	params.ProposalCancelRatio = defaultSDKParams.ProposalCancelRatio
-	params.ProposalCancelDest = authtypes.NewModuleAddress(sdkgov.ModuleName).String()
+	defaultParams := sdkgovv1.DefaultParams()
 	params.MinDepositRatio = defaultParams.MinDepositRatio
 	params.GovernorStatusChangePeriod = defaultParams.GovernorStatusChangePeriod
 	params.MinGovernorSelfDelegation = math.NewInt(10000_000000).String() // to be eligible as governor must have 10K ATONE staked
