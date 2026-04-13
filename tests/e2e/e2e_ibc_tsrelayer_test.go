@@ -141,7 +141,7 @@ func (s *IntegrationTestSuite) executeTsRelayerCommand(ctx context.Context, args
 			break
 		}
 	}
-	s.Require().Equal(0, exitCode, "error in ts-relayer cmd '%s', err=%v, exitCode=%d, out=%s", strings.Join(cmd, " "), exitCode, err, out.String())
+	s.Require().Equal(0, exitCode, "error in ts-relayer cmd '%s', err=%v, exitCode=%d, out=%s", strings.Join(cmd, " "), err, exitCode, out.String())
 	return out.Bytes()
 }
 
@@ -154,7 +154,7 @@ func (s *IntegrationTestSuite) tsRelayerAddMnemonic(chainID, mnemonic string) {
 	args := []string{
 		"add-mnemonic",
 		"-c", chainID,
-		mnemonic,
+		"--mnemonic", mnemonic,
 	}
 	s.executeTsRelayerCommand(ctx, args)
 
@@ -203,6 +203,6 @@ func (s *IntegrationTestSuite) tsRelayerDumpPaths() []tsRelayerPath {
 	out := s.executeTsRelayerCommand(ctx, args)
 	var paths []tsRelayerPath
 	err := json.Unmarshal(out, &paths)
-	s.Require().NoError(err)
+	s.Require().NoError(err, "parsing output of ts-relayer dump-paths command, expected JSON, got %s", out)
 	return paths
 }

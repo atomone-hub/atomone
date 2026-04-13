@@ -28,8 +28,12 @@ func ConvertToGnoValidatorSet(valSet *ValidatorSet) (*bfttypes.ValidatorSet, err
 		if key.GetEd25519() == nil {
 			return nil, errorsmod.Wrap(clienttypes.ErrInvalidHeader, "validator pubkey is not ed25519")
 		}
+		address, err := crypto.AddressFromString(val.Address)
+		if err != nil {
+			return nil, errorsmod.Wrap(clienttypes.ErrInvalidHeader, "invalid validator address")
+		}
 		gnoValset.Validators[i] = &bfttypes.Validator{
-			Address:          crypto.MustAddressFromString(val.Address),
+			Address:          address,
 			PubKey:           ed25519.PubKeyEd25519(key.GetEd25519()),
 			VotingPower:      val.VotingPower,
 			ProposerPriority: val.ProposerPriority,
@@ -51,6 +55,13 @@ func ConvertToGnoCommit(commit *Commit) (*bfttypes.Commit, error) {
 		return nil, errorsmod.Wrap(clienttypes.ErrInvalidHeader, "commit is nil")
 	}
 
+	if commit.BlockId == nil {
+		return nil, errorsmod.Wrap(clienttypes.ErrInvalidHeader, "commit block ID is nil")
+	}
+	if commit.BlockId.PartsHeader == nil {
+		return nil, errorsmod.Wrap(clienttypes.ErrInvalidHeader, "commit block ID parts header is nil")
+	}
+
 	gnoCommit := bfttypes.Commit{
 		BlockID: bfttypes.BlockID{
 			Hash: commit.BlockId.Hash,
@@ -69,6 +80,16 @@ func ConvertToGnoCommit(commit *Commit) (*bfttypes.Commit, error) {
 		if sig == nil || len(sig.Signature) == 0 {
 			continue
 		}
+		if sig.BlockId == nil {
+			return nil, errorsmod.Wrap(clienttypes.ErrInvalidHeader, "precommit block ID is nil")
+		}
+		if sig.BlockId.PartsHeader == nil {
+			return nil, errorsmod.Wrap(clienttypes.ErrInvalidHeader, "precommit block ID parts header is nil")
+		}
+		address, err := crypto.AddressFromString(sig.ValidatorAddress)
+		if err != nil {
+			return nil, errorsmod.Wrap(clienttypes.ErrInvalidHeader, "invalid validator address")
+		}
 		gnoCommit.Precommits[i] = &bfttypes.CommitSig{
 			ValidatorIndex: int(sig.ValidatorIndex),
 			Signature:      sig.Signature,
@@ -83,7 +104,7 @@ func ConvertToGnoCommit(commit *Commit) (*bfttypes.Commit, error) {
 			Height:           sig.Height,
 			Round:            int(sig.Round),
 			Timestamp:        sig.Timestamp,
-			ValidatorAddress: crypto.MustAddressFromString(sig.ValidatorAddress),
+			ValidatorAddress: address,
 		}
 	}
 
@@ -105,6 +126,17 @@ func ConvertToGnoHeader(header *GnoHeader) (*bfttypes.Header, error) {
 		lastResultsHash = header.LastResultsHash
 	}
 
+	if header.LastBlockId == nil {
+		return nil, errorsmod.Wrap(clienttypes.ErrInvalidHeader, "header last block ID is nil")
+	}
+	if header.LastBlockId.PartsHeader == nil {
+		return nil, errorsmod.Wrap(clienttypes.ErrInvalidHeader, "header last block ID parts header is nil")
+	}
+
+	address, err := crypto.AddressFromString(header.ProposerAddress)
+	if err != nil {
+		return nil, errorsmod.Wrap(clienttypes.ErrInvalidHeader, "invalid validator address")
+	}
 	gnoHeader := bfttypes.Header{
 		Version:    header.Version,
 		ChainID:    header.ChainId,
@@ -127,7 +159,7 @@ func ConvertToGnoHeader(header *GnoHeader) (*bfttypes.Header, error) {
 		ConsensusHash:      header.ConsensusHash,
 		AppHash:            header.AppHash,
 		LastResultsHash:    lastResultsHash,
-		ProposerAddress:    crypto.MustAddressFromString(header.ProposerAddress),
+		ProposerAddress:    address,
 	}
 
 	return &gnoHeader, nil
@@ -159,6 +191,11 @@ func ConvertToGnoSignedHeader(signedHeader *SignedHeader) (*bfttypes.SignedHeade
 func ConvertToGnoBlockID(blockID *BlockID) bfttypes.BlockID {
 	if blockID == nil {
 		return bfttypes.BlockID{}
+	}
+	if blockID.PartsHeader == nil {
+		return bfttypes.BlockID{
+			Hash: blockID.Hash,
+		}
 	}
 	return bfttypes.BlockID{
 		Hash: blockID.Hash,
