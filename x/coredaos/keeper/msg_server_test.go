@@ -1,11 +1,13 @@
 package keeper_test
 
 import (
+	"strings"
 	"testing"
 	"time"
 
-	"cosmossdk.io/math"
 	"github.com/stretchr/testify/require"
+
+	"cosmossdk.io/math"
 
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -18,10 +20,11 @@ import (
 
 func TestMsgServerUpdateParams(t *testing.T) {
 	timeDuration := time.Duration(1)
-	testAcc := simtestutil.CreateRandomAccounts(3)
+	testAcc := simtestutil.CreateRandomAccounts(4)
 	bondedAcc := testAcc[0].String()
 	unbondingAcc := testAcc[1].String()
 	unbondedAcc := testAcc[2].String()
+	unbondedAcc2 := testAcc[3].String()
 
 	tests := []struct {
 		name        string
@@ -75,7 +78,7 @@ func TestMsgServerUpdateParams(t *testing.T) {
 					VotingPeriodExtensionDuration: &timeDuration,
 				},
 			},
-			expectedErr: "cannot update params while Steering DAO have bonded or unbonding tokens: core DAOs cannot stake",
+			expectedErr: "cannot update params while Steering DAO has bonded or unbonding tokens: core DAOs cannot stake",
 			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
 				m.StakingKeeper.EXPECT().GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(bondedAcc)).Return(math.NewInt(10), nil)
 				m.StakingKeeper.EXPECT().GetDelegatorUnbonding(ctx, sdk.MustAccAddressFromBech32(bondedAcc)).Return(math.NewInt(0), nil)
@@ -90,7 +93,7 @@ func TestMsgServerUpdateParams(t *testing.T) {
 					VotingPeriodExtensionDuration: &timeDuration,
 				},
 			},
-			expectedErr: "cannot update params while Oversight DAO have bonded or unbonding tokens: core DAOs cannot stake",
+			expectedErr: "cannot update params while Oversight DAO has bonded or unbonding tokens: core DAOs cannot stake",
 			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
 				m.StakingKeeper.EXPECT().GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(bondedAcc)).Return(math.NewInt(10), nil)
 				m.StakingKeeper.EXPECT().GetDelegatorUnbonding(ctx, sdk.MustAccAddressFromBech32(bondedAcc)).Return(math.NewInt(0), nil)
@@ -129,7 +132,7 @@ func TestMsgServerUpdateParams(t *testing.T) {
 					VotingPeriodExtensionDuration: &timeDuration,
 				},
 			},
-			expectedErr: "cannot update params while Steering DAO have bonded or unbonding tokens: core DAOs cannot stake",
+			expectedErr: "cannot update params while Steering DAO has bonded or unbonding tokens: core DAOs cannot stake",
 			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
 				// Address is in unbonding
 				m.StakingKeeper.EXPECT().GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(unbondingAcc)).Return(math.NewInt(0), nil)
@@ -145,7 +148,7 @@ func TestMsgServerUpdateParams(t *testing.T) {
 					VotingPeriodExtensionDuration: &timeDuration,
 				},
 			},
-			expectedErr: "cannot update params while Oversight DAO have bonded or unbonding tokens: core DAOs cannot stake",
+			expectedErr: "cannot update params while Oversight DAO has bonded or unbonding tokens: core DAOs cannot stake",
 			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
 				// Address is in unbonding
 				m.StakingKeeper.EXPECT().GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(unbondingAcc)).Return(math.NewInt(0), nil)
@@ -188,15 +191,67 @@ func TestMsgServerUpdateParams(t *testing.T) {
 				Authority: "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
 				Params: types.Params{
 					SteeringDaoAddress:            unbondedAcc,
-					OversightDaoAddress:           unbondedAcc,
+					OversightDaoAddress:           unbondedAcc2,
 					VotingPeriodExtensionDuration: &timeDuration,
 				},
 			},
 			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
 				// Address is not bonded or in unbonding
-				m.StakingKeeper.EXPECT().GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(unbondedAcc)).Return(math.NewInt(0), nil).Times(2)
-				m.StakingKeeper.EXPECT().GetDelegatorUnbonding(ctx, sdk.MustAccAddressFromBech32(unbondedAcc)).Return(math.NewInt(0), nil).Times(2)
+				m.StakingKeeper.EXPECT().GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(unbondedAcc)).Return(math.NewInt(0), nil)
+				m.StakingKeeper.EXPECT().GetDelegatorUnbonding(ctx, sdk.MustAccAddressFromBech32(unbondedAcc)).Return(math.NewInt(0), nil)
+				m.StakingKeeper.EXPECT().GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(unbondedAcc2)).Return(math.NewInt(0), nil)
+				m.StakingKeeper.EXPECT().GetDelegatorUnbonding(ctx, sdk.MustAccAddressFromBech32(unbondedAcc2)).Return(math.NewInt(0), nil)
 			},
+		},
+		{
+			name: "steeringdao set to authority address",
+			msg: &types.MsgUpdateParams{
+				Authority: "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
+				Params: types.Params{
+					SteeringDaoAddress:            "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
+					VotingPeriodExtensionDuration: &timeDuration,
+				},
+			},
+			expectedErr: "authority address cannot be the same as steering DAO address: invalid address",
+			setupMocks:  func(ctx sdk.Context, m *testutil.Mocks) {},
+		},
+		{
+			name: "oversightdao set to authority address",
+			msg: &types.MsgUpdateParams{
+				Authority: "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
+				Params: types.Params{
+					OversightDaoAddress:           "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
+					VotingPeriodExtensionDuration: &timeDuration,
+				},
+			},
+			expectedErr: "authority address cannot be the same as oversight DAO address: invalid address",
+			setupMocks:  func(ctx sdk.Context, m *testutil.Mocks) {},
+		},
+		{
+			name: "steeringdao and oversight same address",
+			msg: &types.MsgUpdateParams{
+				Authority: "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
+				Params: types.Params{
+					SteeringDaoAddress:            unbondedAcc,
+					OversightDaoAddress:           unbondedAcc,
+					VotingPeriodExtensionDuration: &timeDuration,
+				},
+			},
+			expectedErr: "steering DAO address and oversight DAO address cannot be the same: " + unbondedAcc,
+			setupMocks:  func(ctx sdk.Context, m *testutil.Mocks) {},
+		},
+		{
+			name: "steeringdao and oversight same address but different case",
+			msg: &types.MsgUpdateParams{
+				Authority: "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
+				Params: types.Params{
+					SteeringDaoAddress:            unbondedAcc,
+					OversightDaoAddress:           strings.ToUpper(unbondedAcc),
+					VotingPeriodExtensionDuration: &timeDuration,
+				},
+			},
+			expectedErr: "steering DAO address and oversight DAO address cannot be the same: " + unbondedAcc,
+			setupMocks:  func(ctx sdk.Context, m *testutil.Mocks) {},
 		},
 	}
 	for _, tt := range tests {
@@ -204,7 +259,7 @@ func TestMsgServerUpdateParams(t *testing.T) {
 			ms, k, m, ctx := testutil.SetupMsgServer(t)
 			tt.setupMocks(ctx, &m)
 			params := types.DefaultParams()
-			k.Params.Set(ctx, params)
+			require.NoError(t, k.Params.Set(ctx, params))
 
 			if err := tt.msg.ValidateBasic(); err != nil {
 				if tt.expectedErr != "" {
@@ -370,7 +425,7 @@ func TestMsgServerAnnotateProposal(t *testing.T) {
 			if tt.setSteeringDAO {
 				params.SteeringDaoAddress = steeringDAOAcc
 			}
-			k.Params.Set(ctx, params)
+			require.NoError(t, k.Params.Set(ctx, params))
 			if err := tt.msg.ValidateBasic(); err != nil {
 				if tt.expectedErr != "" {
 					require.EqualError(t, err, tt.expectedErr)
@@ -505,7 +560,7 @@ func TestMsgServerEndorseProposal(t *testing.T) {
 			if tt.setSteeringDAO {
 				params.SteeringDaoAddress = steeringDAOAcc
 			}
-			k.Params.Set(ctx, params)
+			require.NoError(t, k.Params.Set(ctx, params))
 			if err := tt.msg.ValidateBasic(); err != nil {
 				if tt.expectedErr != "" {
 					require.EqualError(t, err, tt.expectedErr)
@@ -650,7 +705,7 @@ func TestMsgServerExtendVotingPeriod(t *testing.T) {
 			if tt.setSteeringDAO {
 				params.SteeringDaoAddress = steeringDAOAcc
 			}
-			k.Params.Set(ctx, params)
+			require.NoError(t, k.Params.Set(ctx, params))
 			if err := tt.msg.ValidateBasic(); err != nil {
 				if tt.expectedErr != "" {
 					require.EqualError(t, err, tt.expectedErr)
@@ -708,6 +763,20 @@ func TestMsgServerVetoProposal(t *testing.T) {
 		Id:       4,
 		Status:   govtypesv1.StatusVotingPeriod,
 		Messages: proposalWithChangeOversightDAOMsgs,
+	}
+	proposalWithEmptyOversightDAOMsgs, err := sdktx.SetMsgs([]sdk.Msg{&types.MsgUpdateParams{
+		Authority: "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
+		Params: types.Params{
+			OversightDaoAddress: "",
+		},
+	}})
+	require.NoError(t, err)
+	proposalWithEmptyOversightDAO := govtypesv1.Proposal{
+		Title:    "Test Proposal",
+		Summary:  "A proposal to set empty oversight DAO address",
+		Id:       5,
+		Status:   govtypesv1.StatusVotingPeriod,
+		Messages: proposalWithEmptyOversightDAOMsgs,
 	}
 	tests := []struct {
 		name            string
@@ -840,6 +909,18 @@ func TestMsgServerVetoProposal(t *testing.T) {
 			},
 			setOversightDAO: true,
 		},
+		{
+			name: "veto proposal with disablement of oversight DAO",
+			msg: &types.MsgVetoProposal{
+				Vetoer:     oversightDAOAcc,
+				ProposalId: 5,
+			},
+			expectedErr: "proposal with ID 5 contains a change of the oversight DAO address, vetoing it would prevent the replacement of the current oversight DAO: oversight DAO cannot veto this proposal",
+			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
+				m.GovKeeper.EXPECT().GetProposal(ctx, uint64(5)).Return(proposalWithEmptyOversightDAO, true)
+			},
+			setOversightDAO: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -849,7 +930,7 @@ func TestMsgServerVetoProposal(t *testing.T) {
 			if tt.setOversightDAO {
 				params.OversightDaoAddress = oversightDAOAcc
 			}
-			k.Params.Set(ctx, params)
+			require.NoError(t, k.Params.Set(ctx, params))
 			if err := tt.msg.ValidateBasic(); err != nil {
 				if tt.expectedErr != "" {
 					require.EqualError(t, err, tt.expectedErr)

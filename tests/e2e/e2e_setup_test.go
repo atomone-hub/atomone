@@ -3,7 +3,9 @@ package e2e
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io/fs"
 	"math/rand"
 	"os"
 	"os/exec"
@@ -211,16 +213,35 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 	if s.initializedForIBC {
 		s.tearDownHermesRelayer()
 		s.tearDownTsRelayer()
-		os.RemoveAll(s.chainB.dataDir)
+		s.removeAllTestDir(s.chainB.dataDir)
 	}
 
 	s.Require().NoError(s.dkrPool.RemoveNetwork(s.dkrNet))
 
-	os.RemoveAll(s.chainA.dataDir)
+	s.removeAllTestDir(s.chainA.dataDir)
 
 	for _, td := range s.tmpDirs {
-		os.RemoveAll(td)
+		s.removeAllTestDir(td)
 	}
+}
+
+func (s *IntegrationTestSuite) removeAllTestDir(path string) {
+	s.T().Helper()
+
+	err := os.RemoveAll(path)
+	if err == nil {
+		return
+	}
+
+	// Validator bind mounts can leave CI-owned WAL directories unreadable to the
+	// host after the software-upgrade halt test. Log and continue so the suite
+	// can restart on a fresh temp dir.
+	if errors.Is(err, fs.ErrPermission) {
+		s.T().Logf("skipping cleanup for %s: %v", path, err)
+		return
+	}
+
+	s.Require().NoError(err)
 }
 
 func (s *IntegrationTestSuite) initNodes(c *chain) {

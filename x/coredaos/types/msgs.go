@@ -7,6 +7,10 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
+const (
+	MaxAnnotationLength = 5000
+)
+
 var _, _, _, _, _ sdk.Msg = &MsgAnnotateProposal{}, &MsgEndorseProposal{}, &MsgExtendVotingPeriod{}, &MsgVetoProposal{}, &MsgUpdateParams{}
 
 // NewMsgAnnotateProposal creates a new MsgAnnotateProposal instance
@@ -35,6 +39,11 @@ func (msg *MsgAnnotateProposal) ValidateBasic() error {
 	}
 	if len(msg.Annotation) == 0 {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "annotation cannot be empty")
+	}
+	if len(msg.Annotation) > MaxAnnotationLength {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest,
+			"invalid annotation length; got: %d, max: %d", len(msg.Annotation), MaxAnnotationLength,
+		)
 	}
 	return nil
 }
@@ -138,9 +147,29 @@ func (msg *MsgUpdateParams) Type() string {
 
 // ValidateBasic implements the sdk.Msg interface.
 func (msg *MsgUpdateParams) ValidateBasic() error {
-	if _, err := sdk.AccAddressFromBech32(msg.Authority); err != nil {
+	authority, err := sdk.AccAddressFromBech32(msg.Authority)
+	if err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", err)
 	}
 
-	return msg.Params.ValidateBasic()
+	if err := msg.Params.ValidateBasic(); err != nil {
+		return err
+	}
+
+	// none of the dao addresses can be same as the authority
+	// assumes address validation has already been done in Params.ValidateBasic
+	if msg.Params.OversightDaoAddress != "" {
+		oversightDaoAddr := sdk.MustAccAddressFromBech32(msg.Params.OversightDaoAddress)
+		if authority.Equals(oversightDaoAddr) {
+			return sdkerrors.ErrInvalidAddress.Wrapf("authority address cannot be the same as oversight DAO address")
+		}
+	}
+	if msg.Params.SteeringDaoAddress != "" {
+		steeringDaoAddr := sdk.MustAccAddressFromBech32(msg.Params.SteeringDaoAddress)
+		if authority.Equals(steeringDaoAddr) {
+			return sdkerrors.ErrInvalidAddress.Wrapf("authority address cannot be the same as steering DAO address")
+		}
+	}
+
+	return nil
 }

@@ -4,7 +4,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 )
 
-// x/photon module sentinel errors
+// x/coredaos module sentinel errors
 var (
 	ErrInvalidSigner            = errorsmod.Register(ModuleName, 1, "expected core DAO account as only signer for this message")
 	ErrAnnotationAlreadyPresent = errorsmod.Register(ModuleName, 2, "annotation already present")
