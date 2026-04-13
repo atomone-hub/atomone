@@ -12,6 +12,7 @@
 - Fix missing ICA controller configuration [#257](https://github.com/atomone-hub/atomone/pull/257)
 - Fix wrapper converters for `x/gov` [#276](https://github.com/atomone-hub/atomone/pull/276)
 - Add min-stake filtering for cosmos-sdk votes in the gov ante handler [#279](https://github.com/atomone-hub/atomone/pull/279)
+- Prevent the designated authority to be set as the Oversight or Steering DAO address [#314](https://github.com/atomone-hub/atomone/pull/314)
 - Oversight DAO and Steering DAO addresses cannot be the same [#309](https://github.com/atomone-hub/atomone/pull/309)
 
 ### DEPENDENCIES
@@ -23,7 +24,7 @@
 
 - Migrate `x/gov` fork from Atom One to Atom One SDK [#248](https://github.com/atomone-hub/atomone/pull/248)
 - Add governors to `x/gov` module [#258](https://github.com/atomone-hub/atomone/pull/258)
-- Prevent Oversight DAO from vetoing proposals that include a change to the Oversight DAO address [#275](https://github.com/atomone-hub/atomone/pull/275)
+- Prevent Oversight DAO from vetoing proposals that include a change to the Oversight DAO address [#275](https://github.com/atomone-hub/atomone/pull/275) [#299](https://github.com/atomone-hub/atomone/pull/299)
 - Prevent Oversight DAO change to be bundled in proposals [#316](https://github.com/atomone-hub/atomone/pull/316)
 
 ### STATE BREAKING
