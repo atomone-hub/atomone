@@ -118,7 +118,7 @@ func TestMsgServerMintPhoton(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			ms, k, mocks, ctx := testutil.SetupMsgServer(t)
-			k.SetParams(ctx, tt.params)
+			require.NoError(t, k.SetParams(ctx, tt.params))
 			if tt.setup != nil {
 				tt.setup(ctx, mocks)
 			}
@@ -169,7 +169,7 @@ func TestMsgServerUpdateParams(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			ms, k, _, ctx := testutil.SetupMsgServer(t)
 			params := types.DefaultParams()
-			k.SetParams(ctx, params)
+			require.NoError(t, k.SetParams(ctx, params))
 
 			_, err := ms.UpdateParams(ctx, tt.msg)
 

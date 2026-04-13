@@ -8,11 +8,11 @@
 - 17 Dec 2024: Finalize first revision
 - 26 Mar 2025: Revise model
 
-## **Status[](https://docs.cosmos.network/main/architecture/adr-template#status)**
+## **Status**
 
 Implemented (https://github.com/atomone-hub/atomone/pull/69)
 
-## **Abstract[](https://docs.cosmos.network/main/architecture/adr-template#abstract)**
+## **Abstract**
 
 This ADR proposes a mechanism to dynamically adjust the value of `MinDeposit` in the `x/gov` module, and potentially the value `MinInitialDeposit` with a similar but independent mechanism. These parameters represent the minimum deposit required to submit a proposal (`MinInitialDeposit`) and to start its voting period (`MinDeposit`) - or *activate* a proposal. 
 
@@ -22,7 +22,7 @@ While the ADR is focused on presenting the dynamic adjustment of `MinDeposit`, t
 
 The proposed mechanism can be vaguely compared to the auto-adjusting inflation rate that targets a 2/3 bonding ratio. However, in this case, it is used to automatically adjust the deposit based on the number of proposals.
 
-## **Context[](https://docs.cosmos.network/main/architecture/adr-template#context)**
+## **Context**
 
 At the time of writing, the `x/gov` module on AtomOne uses a `MinDeposit` parameter set to 512 ATONEs, while the `MinInitialDepositRatio` is equal to 10% of the `MinDeposit`, which makes the `MinInitialDeposit` to be 51.2 ATONEs.
 
@@ -36,7 +36,7 @@ Some mitigations have been designed, like the [initial deposit requirement for 
 
 Having too many active proposals at a time can be confusing, and dealing with them labor-intensive. The lower the number, the more attention stakers can pay to proposals without getting overwhelmed. This allows the chain governance to remain focused at all times, which will also increases its robustness.
 
-## **Alternatives[](https://docs.cosmos.network/main/architecture/adr-template#alternatives)**
+## **Alternatives**
 
 - Spam should also be filtered at the front-end level. This is already done by platforms like Mintscan or Keplr and a [set of filtering rules](https://docs.google.com/document/d/11FknyQr-hMsnfMkRfBUGHsLR18ZwttXZtPa7ZEQBXWg/edit) was already suggested.
 - Query filtering: this is an other alternative suggested [in the same document](https://docs.google.com/document/d/11FknyQr-hMsnfMkRfBUGHsLR18ZwttXZtPa7ZEQBXWg/edit) as vote-based filtering rules are provided. The idea is to update the list of proposal endpoints, allowing the ability to toggle a filtering option on and off.
@@ -53,7 +53,7 @@ Since spam proposals are also occasionally entering the voting period on some Co
 
 Moreover, there is currently no real alternative to throttle the number of *active* proposals for the purpose of mitigating voters fatigue.
 
-## **Decision[](https://docs.cosmos.network/main/architecture/adr-template#decision)**
+## **Decision**
 
 The `MinDeposit` parameter is replaced with a dynamically set variable that can be queried separately through a dedicated query. The `MinDeposit` parameter is therefore deprecated.
 
@@ -138,25 +138,25 @@ The two systems should be independent of each other and have no relation. The va
 
 Simply put, if the total number of active proposals exceeds the target, the `MinDeposit` will start exponentially increasing as more proposals become active. The `MinDeposit` can also decrease with time if the number of active proposals goes below the target, with a faster decrease the lower the number of active proposals. However, the value cannot go lower than a set `MinDepositFloor`.
 
-### **Backwards Compatibility[](https://docs.cosmos.network/main/architecture/adr-template#backwards-compatibility)**
+### **Backwards Compatibility**
 
 Existing non-active proposals will potentially see their `MinDeposit` requirement increase after the release of this feature. This will depend also on whether there are active proposals at the time of the upgrade.
 
-### **Positive[](https://docs.cosmos.network/main/architecture/adr-template#positive)**
+### **Positive**
 
 - Many active proposals are discouraged, but not prohibited.
 - With a similar mechanism for the `MinInitialDeposit`, spamming governance proposals could become very costly especially if done in large numbers.
 
-### **Negative[](https://docs.cosmos.network/main/architecture/adr-template#negative)**
+### **Negative**
 
 - The cost of deposit can become prohibitive for regular users and price them out. However, this should be mitigated by the fact that total deposit can be crowdsourced.
 - Increase the complexity of computing the deposit amount. Currently, the deposit is directly read from the governance parameters. With this change, it will come from a state variable that is re-evaluated every time new proposals enter or exit the voting period.
 
-### **Neutral[](https://docs.cosmos.network/main/architecture/adr-template#neutral)**
+### **Neutral**
 
 - Increase the number of governance parameters
 - Adds a new endpoint to query the `MinDeposit` value.
 
-## **References[](https://docs.cosmos.network/main/architecture/adr-template#references)**
+## **References**
 
 - [https://forum.cosmos.network/t/governance-proposal-deposit-auto-throttler/10121](https://forum.cosmos.network/t/governance-proposal-deposit-auto-throttler/10121)

@@ -11,7 +11,8 @@ deps:
   - buf.build/cosmos/gogo-proto
   - buf.build/googleapis/googleapis
   - buf.build/protocolbuffers/wellknowntypes
-
+  - buf.build/cosmos/ibc
+  - buf.build/cosmos/ics23
 breaking:
   use:
     - FILE

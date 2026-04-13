@@ -120,6 +120,7 @@ func appModules(
 		app.TransferModule,
 		app.ICAModule,
 		app.TMClientModule,
+		app.GnoClientModule,
 	}
 }
 
@@ -172,8 +173,8 @@ thus, gov.EndBlock must be executed before staking.EndBlock
 func orderEndBlockers() []string {
 	return []string{
 		dynamicfeetypes.ModuleName,
-		stakingtypes.ModuleName,
 		govtypes.ModuleName,
+		stakingtypes.ModuleName,
 		ibcexported.ModuleName,
 		ibctransfertypes.ModuleName,
 		icatypes.ModuleName,
