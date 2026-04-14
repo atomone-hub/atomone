@@ -241,7 +241,7 @@ func SimulateMsgVetoProposal(gk types.GovKeeper, sk types.StakingKeeper, ak type
 				if err := updateParamsMsg.Unmarshal(msg.GetValue()); err != nil {
 					return simtypes.NoOpMsg(types.ModuleName, TypeMsgVetoProposal, "unable check proposal msgs"), nil, nil
 				}
-				if updateParamsMsg.Params.OversightDaoAddress != "" && updateParamsMsg.Params.OversightDaoAddress != params.OversightDaoAddress {
+				if updateParamsMsg.Params.OversightDaoAddress != params.OversightDaoAddress {
 					return simtypes.NoOpMsg(types.ModuleName, TypeMsgVetoProposal, "skip invalid proposal"), nil, nil
 				}
 			}
