@@ -98,8 +98,8 @@ github.com/armon/go-metrics v0.0.0-20180917152333-f0300d1749da/go.mod h1:Q73ZrmV
 github.com/armon/go-metrics v0.4.1/go.mod h1:E6amYzXo6aW1tqzoZGT755KkbgrJsSdpwZ+3JqfkOG4=
 github.com/armon/go-radix v0.0.0-20180808171621-7fddfc383310/go.mod h1:ufUuZ+zHj4x4TnLV4JWEpy2hxWSpsRywHrMgIH9cCH8=
 github.com/aryann/difflib v0.0.0-20170710044230-e206f873d14a/go.mod h1:DAHtR1m6lCRdSC2Tm3DSWRPvIPr6xNKyeHdqDQSQT+A=
-github.com/atomone-hub/cosmos-sdk v0.50.15-atomone.1 h1:ycC9V2AWNG1kyE27Ln1sGrN1pGaJjaoRqtiEpFcA/k0=
-github.com/atomone-hub/cosmos-sdk v0.50.15-atomone.1/go.mod h1:3lw4iUC57NuskCeAXFYzFNa2ZUGj1mXxOXdxVBdqrhg=
+github.com/atomone-hub/cosmos-sdk v0.500.0-rc.1 h1:ZVmNqk2Rl8UO0xYijR3S4jlH/iAP03/n4cUm/vSEMpg=
+github.com/atomone-hub/cosmos-sdk v0.500.0-rc.1/go.mod h1:bV+SvzTTjmJ10xv0SaROxOZxp96Q4bmi8nnT2CpxkWc=
 github.com/atomone-hub/cosmos-sdk/x/upgrade v0.1.5-atomone.2 h1:SVPsm3c8pymdbwNjKHF5vwM0B6x4dgkVTbhbYctwBoE=
 github.com/atomone-hub/cosmos-sdk/x/upgrade v0.1.5-atomone.2/go.mod h1:78DcDK3kSaNN7dObcV1FIypDDIfl5W5X1uDyrUyZmWY=
 github.com/aws/aws-lambda-go v1.13.3/go.mod h1:4UKl9IzQMoD+QF79YdCuzCwp8VbmG4VAQwij/eHl5CU=
