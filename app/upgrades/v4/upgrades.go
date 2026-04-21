@@ -580,7 +580,6 @@ func governorValSharesValueCodec(cdc codec.Codec) collcodec.ValueCodec[sdkgovv1.
 func migrateValidatorsCommission(ctx context.Context, stakingKeeper *stakingkeeper.Keeper) error {
 	// Set chain-wide commission to 5%
 	params, err := stakingKeeper.GetParams(ctx)
-
 	if err != nil {
 		return err
 	}
