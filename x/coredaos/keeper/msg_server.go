@@ -38,11 +38,12 @@ func (ms MsgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdatePara
 	params := msg.Params
 	// check if any of the core DAOs has bonded or unbonding tokens, and if so return an error
 	if params.SteeringDaoAddress != "" {
-		delegatorBonded, err := ms.k.stakingKeeper.GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(params.SteeringDaoAddress))
+		steeringDaoAddr := sdk.MustAccAddressFromBech32(params.SteeringDaoAddress)
+		delegatorBonded, err := ms.k.stakingKeeper.GetDelegatorBonded(ctx, steeringDaoAddr)
 		if err != nil {
 			return nil, err
 		}
-		delegatorUnbonded, err := ms.k.stakingKeeper.GetDelegatorUnbonding(ctx, sdk.MustAccAddressFromBech32(params.SteeringDaoAddress))
+		delegatorUnbonded, err := ms.k.stakingKeeper.GetDelegatorUnbonding(ctx, steeringDaoAddr)
 		if err != nil {
 			return nil, err
 		}
@@ -50,13 +51,18 @@ func (ms MsgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdatePara
 			delegatorUnbonded.GT(math.ZeroInt()) {
 			return nil, types.ErrCannotStake.Wrapf("cannot update params while Steering DAO has bonded or unbonding tokens")
 		}
+
+		// normalize address
+		params.SteeringDaoAddress = steeringDaoAddr.String()
 	}
 	if params.OversightDaoAddress != "" {
-		delegatorBonded, err := ms.k.stakingKeeper.GetDelegatorBonded(ctx, sdk.MustAccAddressFromBech32(params.OversightDaoAddress))
+		oversightDaoAddr := sdk.MustAccAddressFromBech32(params.OversightDaoAddress)
+
+		delegatorBonded, err := ms.k.stakingKeeper.GetDelegatorBonded(ctx, oversightDaoAddr)
 		if err != nil {
 			return nil, err
 		}
-		delegatorUnbonded, err := ms.k.stakingKeeper.GetDelegatorUnbonding(ctx, sdk.MustAccAddressFromBech32(params.OversightDaoAddress))
+		delegatorUnbonded, err := ms.k.stakingKeeper.GetDelegatorUnbonding(ctx, oversightDaoAddr)
 		if err != nil {
 			return nil, err
 		}
@@ -64,6 +70,9 @@ func (ms MsgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdatePara
 			delegatorUnbonded.GT(math.ZeroInt()) {
 			return nil, types.ErrCannotStake.Wrapf("cannot update params while Oversight DAO has bonded or unbonding tokens")
 		}
+
+		// normalize address
+		params.OversightDaoAddress = oversightDaoAddr.String()
 	}
 	if err := ms.k.Params.Set(ctx, params); err != nil {
 		return nil, errors.Wrapf(err, "error setting params")
@@ -88,7 +97,7 @@ func (ms MsgServer) AnnotateProposal(goCtx context.Context, msg *types.MsgAnnota
 		return nil, types.ErrFunctionDisabled.Wrapf("Steering DAO address is not set")
 	}
 
-	if msg.Annotator != params.SteeringDaoAddress {
+	if !sdk.MustAccAddressFromBech32(msg.Annotator).Equals(sdk.MustAccAddressFromBech32(params.SteeringDaoAddress)) {
 		logger.Error(
 			"invalid authority for annotating proposal",
 			"expected", params.SteeringDaoAddress,
@@ -166,7 +175,7 @@ func (ms MsgServer) EndorseProposal(goCtx context.Context, msg *types.MsgEndorse
 		return nil, types.ErrFunctionDisabled.Wrapf("Steering DAO address is not set")
 	}
 
-	if msg.Endorser != params.SteeringDaoAddress {
+	if !sdk.MustAccAddressFromBech32(msg.Endorser).Equals(sdk.MustAccAddressFromBech32(params.SteeringDaoAddress)) {
 		logger.Error(
 			"invalid authority for endorsing proposal",
 			"expected", params.SteeringDaoAddress,
@@ -244,7 +253,10 @@ func (ms MsgServer) ExtendVotingPeriod(goCtx context.Context, msg *types.MsgExte
 		return nil, types.ErrFunctionDisabled.Wrapf("Steering DAO address and Oversight DAO address are not set")
 	}
 
-	if msg.Extender != params.SteeringDaoAddress && msg.Extender != params.OversightDaoAddress {
+	extenderAddr := sdk.MustAccAddressFromBech32(msg.Extender)
+	isSteeringDao := params.SteeringDaoAddress != "" && extenderAddr.Equals(sdk.MustAccAddressFromBech32(params.SteeringDaoAddress))
+	isOversightDao := params.OversightDaoAddress != "" && extenderAddr.Equals(sdk.MustAccAddressFromBech32(params.OversightDaoAddress))
+	if !isSteeringDao && !isOversightDao {
 		// one of the two addresses must be set otherwise it would have been caught earlier
 		addressesString := fmt.Sprintf("%s or %s", params.SteeringDaoAddress, params.OversightDaoAddress)
 		if params.SteeringDaoAddress == "" {
@@ -340,7 +352,7 @@ func (ms MsgServer) VetoProposal(goCtx context.Context, msg *types.MsgVetoPropos
 		return nil, types.ErrFunctionDisabled.Wrapf("Oversight DAO address is not set")
 	}
 
-	if msg.Vetoer != params.OversightDaoAddress {
+	if !sdk.MustAccAddressFromBech32(msg.Vetoer).Equals(sdk.MustAccAddressFromBech32(params.OversightDaoAddress)) {
 		logger.Error(
 			"invalid authority for vetoing proposal",
 			"expected", params.OversightDaoAddress,
@@ -385,7 +397,9 @@ func (ms MsgServer) VetoProposal(goCtx context.Context, msg *types.MsgVetoPropos
 
 				return nil, err
 			}
-			if updateParamsMsg.Params.OversightDaoAddress != params.OversightDaoAddress {
+			proposedOversightAddr, err := sdk.AccAddressFromBech32(updateParamsMsg.Params.OversightDaoAddress)
+			// treat parse error as a change of address, not using MustAccAddressFromBech32 because address could be empty
+			if err != nil || !proposedOversightAddr.Equals(sdk.MustAccAddressFromBech32(params.OversightDaoAddress)) {
 				logger.Error(
 					"proposal contains a change of the oversight DAO address, vetoing it would prevent the replacement of the current oversight DAO",
 					"proposal", proposal.Id,
