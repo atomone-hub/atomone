@@ -35,4 +35,3 @@ func iterateMsg(cdc codec.BinaryCodec, msgs []sdk.Msg, fn func(sdk.Msg) error) e
 	}
 	return nil
 }
-
