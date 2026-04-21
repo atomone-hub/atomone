@@ -384,31 +384,24 @@ func (ms MsgServer) VetoProposal(goCtx context.Context, msg *types.MsgVetoPropos
 	}
 
 	// Check if the proposal contains a change of the oversight DAO address.
-	// If so, vetoing the proposal would create a scenario where the current oversight DAO can prevent its own replacement
-	for _, msg := range proposal.Messages {
-		if msg.GetTypeUrl() == sdk.MsgTypeURL(&types.MsgUpdateParams{}) {
-			var updateParamsMsg types.MsgUpdateParams
-			if err := updateParamsMsg.Unmarshal(msg.GetValue()); err != nil {
-				logger.Error(
-					"failed to unmarshal MsgUpdateParams from proposal messages",
-					"proposal", proposal.Id,
-					"error", err,
-				)
+	// If so, vetoing the proposal would create a scenario where the current oversight DAO can prevent its own replacement.
+	// authz.MsgExec wrappers are expanded recursively so the check cannot be bypassed by wrapping MsgUpdateParams.
+	for _, flatMsg := range types.FlattenAnyMsgs(ms.k.cdc, proposal.Messages) {
+		updateParamsMsg, ok := flatMsg.(*types.MsgUpdateParams)
+		if !ok {
+			continue
+		}
+		proposedOversightAddr, err := sdk.AccAddressFromBech32(updateParamsMsg.Params.OversightDaoAddress)
+		// treat parse error as a change of address, not using MustAccAddressFromBech32 because address could be empty
+		if err != nil || !proposedOversightAddr.Equals(sdk.MustAccAddressFromBech32(params.OversightDaoAddress)) {
+			logger.Error(
+				"proposal contains a change of the oversight DAO address, vetoing it would prevent the replacement of the current oversight DAO",
+				"proposal", proposal.Id,
+				"current_oversight_dao_address", params.OversightDaoAddress,
+				"new_oversight_dao_address", updateParamsMsg.Params.OversightDaoAddress,
+			)
 
-				return nil, err
-			}
-			proposedOversightAddr, err := sdk.AccAddressFromBech32(updateParamsMsg.Params.OversightDaoAddress)
-			// treat parse error as a change of address, not using MustAccAddressFromBech32 because address could be empty
-			if err != nil || !proposedOversightAddr.Equals(sdk.MustAccAddressFromBech32(params.OversightDaoAddress)) {
-				logger.Error(
-					"proposal contains a change of the oversight DAO address, vetoing it would prevent the replacement of the current oversight DAO",
-					"proposal", proposal.Id,
-					"current_oversight_dao_address", params.OversightDaoAddress,
-					"new_oversight_dao_address", updateParamsMsg.Params.OversightDaoAddress,
-				)
-
-				return nil, types.ErrInvalidVeto.Wrapf("proposal with ID %d contains a change of the oversight DAO address, vetoing it would prevent the replacement of the current oversight DAO", proposal.Id)
-			}
+			return nil, types.ErrInvalidVeto.Wrapf("proposal with ID %d contains a change of the oversight DAO address, vetoing it would prevent the replacement of the current oversight DAO", proposal.Id)
 		}
 	}
 
