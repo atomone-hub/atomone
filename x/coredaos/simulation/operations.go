@@ -241,7 +241,9 @@ func SimulateMsgVetoProposal(gk types.GovKeeper, sk types.StakingKeeper, ak type
 				if err := updateParamsMsg.Unmarshal(msg.GetValue()); err != nil {
 					return simtypes.NoOpMsg(types.ModuleName, TypeMsgVetoProposal, "unable check proposal msgs"), nil, nil
 				}
-				if updateParamsMsg.Params.OversightDaoAddress != params.OversightDaoAddress {
+				proposedOversightAddr, err := sdk.AccAddressFromBech32(updateParamsMsg.Params.OversightDaoAddress)
+				// treat parse error as a change of address, not using MustAccAddressFromBech32 because address could be empty
+				if err != nil || !proposedOversightAddr.Equals(sdk.MustAccAddressFromBech32(params.OversightDaoAddress)) {
 					return simtypes.NoOpMsg(types.ModuleName, TypeMsgVetoProposal, "skip invalid proposal"), nil, nil
 				}
 			}
