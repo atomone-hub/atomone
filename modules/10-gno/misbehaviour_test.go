@@ -69,10 +69,10 @@ func TestMisbehaviour_GetTime(t *testing.T) {
 
 func TestMisbehaviour_ValidateBasic(t *testing.T) {
 	testCases := []struct {
-		name        string
+		name         string
 		misbehaviour func() *Misbehaviour
-		expectErr   bool
-		errContains string
+		expectErr    bool
+		errContains  string
 	}{
 		{
 			name: "nil header1",

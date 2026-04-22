@@ -38,10 +38,10 @@ func TestUpdateStateOnMisbehaviour(t *testing.T) {
 
 func TestCheckTrustedHeader(t *testing.T) {
 	testCases := []struct {
-		name        string
-		setupHeader func() *Header
+		name           string
+		setupHeader    func() *Header
 		setupConsState func() *ConsensusState
-		expectErr   bool
+		expectErr      bool
 	}{
 		{
 			name: "error - mismatched validators hash",

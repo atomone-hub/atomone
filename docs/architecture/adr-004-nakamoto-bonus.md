@@ -3,6 +3,7 @@
 ## Changelog
 
 - 19 May 2025: Initial version
+- 22 April 2024: Added Addendum
 
 ## Status
 
@@ -198,3 +199,81 @@ For example, assuming $k=1$ and $r=2$, if one validator of 10% faults, it gets a
 [^2]: [ADR-014 - Proportional Slashing](https://github.com/cosmos/cosmos-sdk/blob/main/docs/architecture/adr-014-proportional-slashing.md)
 [^3]: [AtomOne Constitution, Article 3, Section 9](https://github.com/atomone-hub/genesis/blob/50882cac6ea4e56b6703d7e3325f35073c75aa6b/CONSTITUTION.md#section-9-validators)
 
+# Addendum
+
+This addendum extends ADR-004 by adding further considerations regarding the Nakamoto Bonus Coefficient and the potential incentivization of Sybil attacks.
+
+## Considerations on the Nakamoto Bonus Coefficient
+
+This section discusses the need to introduce bounds on the Nakamoto Bonus Coefficient as well as adjustments to its rate of change.
+
+### Bounds
+
+In the original ADR, the Nakamoto Bonus Coefficient, denoted by *η*, was defined within the interval [0, 1]. This allowed two extreme cases:
+- When *η* = 0: The Nakamoto Bonus is disabled and the entire block reward is distributed proportionally.
+- When *η* = 1: The entire block reward is distributed uniformly.
+If *η* = 0, the system effectively reverts to having no Nakamoto Bonus. In this case, incentives for delegators to support smaller validators are removed. According to the update rule, *η* decreases when the average voting power of top validators is less than three times that of the bottom validators. If the chain enters such a state, *η* may continue decreasing until reaching zero, even if the distribution of voting power remains far from ideal (i.e., equal across validators). With no incentive remaining for delegators, the chain may stagnate at this suboptimal state.
+
+For this reason, **we propose adding a positive floor value for *η*** to maintain a minimum incentive for delegating to lower-stake validators.
+
+Conversely, simulations suggest that the gains from a Sybil attack scale proportionally with *η*. Although these gains are not sufficient to make such attacks profitable, establishing a maximum cap on *η*—modifiable via governance—is an effective mitigation strategy. **We therefore propose to set an initial cap of 1, with the possibility of adjusting it by governance vote.**
+
+### Rate of Change
+
+In ADR-004, the proposed update rule for *η* allowed changes of ±3% per 120,000 blocks (approximately one week), with *η* initially set at 3%. Under this rule, *η* could reach 9% within two weeks of the feature activation. We believe this rate is too fast for delegators to adjust their strategies to the new reward distribution. Therefore, **we propose reducing the rate of change to ±1%**.
+Additionally, to improve predictability, **we recommend defining the update interval in terms of real time (one week) rather than block count**.
+
+## Incentivization of Sybil Attacks
+
+ADR-004 acknowledges that additional mechanisms may be needed to mitigate Sybil attacks. This section quantitatively analyzes the risk posed by such attacks and assesses whether further measures are necessary.
+
+### Methodology
+
+To determine whether Sybil attacks pose a real threat under the Nakamoto Bonus, we must first evaluate whether such attacks are profitable. From a validator’s perspective, a Sybil attack is profitable only if splitting its stake into multiple validators yields higher rewards than operating a single node.
+
+### Optimal Delegation Strategy
+
+Before evaluating Sybil incentives, we must define the optimal delegation strategy under the new reward system. The problem is non-trivial due to non linear terms in the reward formula. The optimal strategy can be expressed as the maximization of the following constrained optimization problem:
+
+$R = \sum_{i=0}^{VN} \left( BR(1 - \eta) \cdot \frac{D_i + V_i}{TS} + \frac{BR \cdot \eta}{VN} \right) \cdot \left( (1 - c) \cdot \frac{D_i}{D_i + V_i} + O_i \cdot c \right)$
+
+Subjected to
+
+$\sum_{i=0}^{VN} D_i \leq TD$
+
+Where:
+
+- R: Delegator’s total reward for the block
+- BR: Block reward
+- *η*: Nakamoto Bonus Coefficient
+- $*D_i*$: Delegations to validator i
+- $*V_i:*$ Validator i’s self-stake
+- TS: Total stake (sum of all validators’ stakes)
+- VN: Number of validators
+- c: Commission rate
+- $*O_i*$: Ownership flag (1 if the delegator receives commission from validator i, 0 otherwise)
+- TD: Total amount delegated
+
+### Quantifying Sybil Benefits
+
+To quantify potential benefits of a Sybil attack, we performed the following procedure:
+1. Collected the AtomOne chain’s stake distribution.
+2. Selected a target validator.
+3. Separated the validator’s self-delegation from external delegations.
+4. Computed the optimal reward obtained by reallocating the validator’s self-delegation under two scenarios:
+A) No Sybil (baseline)
+B) A Sybil node is created that replaces the lowest-ranked validator
+5. Compared the resulting rewards.
+
+The chart below presents the most favorable case identified for a Sybil attack.
+
+![adr-004-gains-from-sybil.png](img/adr-004-gains-from-sybil.png)
+
+The x-axis shows *η* ranging from 0 to 1. The y-axis shows the percentage gain from adding a Sybil validator. The dashed blue line represents the scenario in which no delegator responds to the Sybil. For example, if *η* = 0.2, a Sybil would yield a +14.4% reward increase for the attacking validator.
+
+As *η* increases, Sybil gains rise sub-linearly, reaching +35.46% at *η* = 1. At first glance, this seems to indicate that a Sybil attack is profitable.
+
+However, the full red line models a more realistic scenario in which other delegators shift 0.1% of their stake to the Sybil, since the Sybil validator becomes the most favorable choice for delegators. Under this assumption, the validator’s Sybil-related profit margin rapidly shrinks and can even become negative.
+
+**Conclusion:**
+While a validator may experience a brief instantaneous benefit right after creating a Sybil, the advantage disappears once other delegators redistribute their stakes. Even if operational costs are not considered (which are not included in this analysis), and even in the most favorable scenarios, maintaining a Sybil is unprofitable. For this reason, **no additional mechanism is required to prevent Sybil attacks.**
