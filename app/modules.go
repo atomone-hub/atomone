@@ -30,6 +30,8 @@ import (
 	consensusparamtypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
 	distr "github.com/cosmos/cosmos-sdk/x/distribution"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
+	"github.com/cosmos/cosmos-sdk/x/epochs"
+	epochstypes "github.com/cosmos/cosmos-sdk/x/epochs/types"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	"github.com/cosmos/cosmos-sdk/x/gov"
@@ -116,6 +118,7 @@ func appModules(
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
 		dynamicfee.NewAppModule(appCodec, *app.DynamicfeeKeeper),
 		coredaos.NewAppModule(appCodec, *app.CoreDaosKeeper, app.GovKeeperWrapper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
+		epochs.NewAppModule(&app.EpochsKeeper),
 
 		app.TransferModule,
 		app.ICAModule,
@@ -141,6 +144,7 @@ func orderBeginBlockers() []string {
 		upgradetypes.ModuleName,
 		minttypes.ModuleName,
 		dynamicfeetypes.ModuleName,
+		epochstypes.ModuleName,
 		distrtypes.ModuleName,
 		slashingtypes.ModuleName,
 		evidencetypes.ModuleName,
@@ -159,6 +163,7 @@ func orderBeginBlockers() []string {
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		coredaostypes.ModuleName,
+		epochstypes.ModuleName,
 	}
 }
 
@@ -193,6 +198,7 @@ func orderEndBlockers() []string {
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		coredaostypes.ModuleName,
+		epochstypes.ModuleName,
 	}
 }
 
@@ -226,5 +232,6 @@ func orderInitBlockers() []string {
 		consensusparamtypes.ModuleName,
 		dynamicfeetypes.ModuleName,
 		coredaostypes.ModuleName,
+		epochstypes.ModuleName,
 	}
 }
