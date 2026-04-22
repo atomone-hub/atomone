@@ -16,6 +16,7 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	consensusparamtypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
+	epochstypes "github.com/cosmos/cosmos-sdk/x/epochs/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
@@ -51,6 +52,7 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 		photontypes.StoreKey,
 		dynamicfeetypes.StoreKey,
 		coredaostypes.StoreKey,
+		epochstypes.StoreKey,
 	)
 
 	// Define transient store keys
