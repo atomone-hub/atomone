@@ -163,7 +163,6 @@ func orderBeginBlockers() []string {
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		coredaostypes.ModuleName,
-		epochstypes.ModuleName,
 	}
 }
 
