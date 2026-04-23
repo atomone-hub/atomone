@@ -3,7 +3,7 @@
 ## Changelog
 
 - 19 May 2025: Initial version
-- 22 April 2024: Added Addendum
+- 22 April 2026: Added Addendum
 
 ## Status
 

@@ -12,8 +12,8 @@ import (
 
 func TestIsMatchingClientState(t *testing.T) {
 	testCases := []struct {
-		name       string
-		subject    func() ClientState
+		name      string
+		subject   func() ClientState
 		substitute func() ClientState
 		isMatching bool
 	}{
@@ -141,9 +141,9 @@ func TestIsMatchingClientState(t *testing.T) {
 
 func TestCheckSubstituteAndUpdateState(t *testing.T) {
 	testCases := []struct {
-		name        string
-		setup       func() (*ClientState, *ClientState, *ConsensusState)
-		expectErr   bool
+		name      string
+		setup     func() (*ClientState, *ClientState, *ConsensusState)
+		expectErr bool
 		errContains string
 	}{
 		{

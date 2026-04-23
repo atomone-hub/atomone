@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
-	cmtmath "github.com/cometbft/cometbft/libs/math"
 	"github.com/cometbft/cometbft/light"
+	cmtmath "github.com/cometbft/cometbft/libs/math"
 	"github.com/gnolang/gno/tm2/pkg/crypto/ed25519"
 	"github.com/stretchr/testify/require"
 )
@@ -17,49 +17,49 @@ func TestLCDefaultTrustLevel(t *testing.T) {
 
 func TestValidateTrustLevel(t *testing.T) {
 	testCases := []struct {
-		name       string
+		name      string
 		trustLevel cmtmath.Fraction
-		expectErr  bool
+		expectErr bool
 	}{
 		{
-			name:       "valid - exactly 1/3",
+			name:      "valid - exactly 1/3",
 			trustLevel: cmtmath.Fraction{Numerator: 1, Denominator: 3},
-			expectErr:  false,
+			expectErr: false,
 		},
 		{
-			name:       "valid - 2/3",
+			name:      "valid - 2/3",
 			trustLevel: cmtmath.Fraction{Numerator: 2, Denominator: 3},
-			expectErr:  false,
+			expectErr: false,
 		},
 		{
-			name:       "valid - exactly 1",
+			name:      "valid - exactly 1",
 			trustLevel: cmtmath.Fraction{Numerator: 1, Denominator: 1},
-			expectErr:  false,
+			expectErr: false,
 		},
 		{
-			name:       "valid - 1/2",
+			name:      "valid - 1/2",
 			trustLevel: cmtmath.Fraction{Numerator: 1, Denominator: 2},
-			expectErr:  false,
+			expectErr: false,
 		},
 		{
-			name:       "invalid - less than 1/3 (1/4)",
+			name:      "invalid - less than 1/3 (1/4)",
 			trustLevel: cmtmath.Fraction{Numerator: 1, Denominator: 4},
-			expectErr:  true,
+			expectErr: true,
 		},
 		{
-			name:       "invalid - numerator > denominator",
+			name:      "invalid - numerator > denominator",
 			trustLevel: cmtmath.Fraction{Numerator: 4, Denominator: 3},
-			expectErr:  true,
+			expectErr: true,
 		},
 		{
-			name:       "invalid - denominator is zero",
+			name:      "invalid - denominator is zero",
 			trustLevel: cmtmath.Fraction{Numerator: 1, Denominator: 0},
-			expectErr:  true,
+			expectErr: true,
 		},
 		{
-			name:       "invalid - both zero",
+			name:      "invalid - both zero",
 			trustLevel: cmtmath.Fraction{Numerator: 0, Denominator: 0},
-			expectErr:  true,
+			expectErr: true,
 		},
 	}
 
@@ -77,52 +77,52 @@ func TestValidateTrustLevel(t *testing.T) {
 
 func TestSafeMul(t *testing.T) {
 	testCases := []struct {
-		name             string
-		a                int64
-		b                int64
-		expectedResult   int64
+		name          string
+		a             int64
+		b             int64
+		expectedResult int64
 		expectedOverflow bool
 	}{
 		{
-			name:             "no overflow - positive numbers",
-			a:                100,
-			b:                200,
-			expectedResult:   20000,
+			name:          "no overflow - positive numbers",
+			a:             100,
+			b:             200,
+			expectedResult: 20000,
 			expectedOverflow: false,
 		},
 		{
-			name:             "no overflow - zero and positive",
-			a:                0,
-			b:                100,
-			expectedResult:   0,
+			name:          "no overflow - zero and positive",
+			a:             0,
+			b:             100,
+			expectedResult: 0,
 			expectedOverflow: false,
 		},
 		{
-			name:             "no overflow - negative numbers",
-			a:                -100,
-			b:                200,
-			expectedResult:   -20000,
+			name:          "no overflow - negative numbers",
+			a:             -100,
+			b:             200,
+			expectedResult: -20000,
 			expectedOverflow: false,
 		},
 		{
-			name:             "no overflow - both negative",
-			a:                -100,
-			b:                -200,
-			expectedResult:   20000,
+			name:          "no overflow - both negative",
+			a:             -100,
+			b:             -200,
+			expectedResult: 20000,
 			expectedOverflow: false,
 		},
 		{
-			name:             "overflow - large positive numbers",
-			a:                9223372036854775807, // max int64
-			b:                2,
-			expectedResult:   0,
+			name:          "overflow - large positive numbers",
+			a:             9223372036854775807, // max int64
+			b:             2,
+			expectedResult: 0,
 			expectedOverflow: true,
 		},
 		{
-			name:             "no overflow - one is 1",
-			a:                9223372036854775807,
-			b:                1,
-			expectedResult:   9223372036854775807,
+			name:          "no overflow - one is 1",
+			a:             9223372036854775807,
+			b:             1,
+			expectedResult: 9223372036854775807,
 			expectedOverflow: false,
 		},
 	}
