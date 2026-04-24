@@ -14,6 +14,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	dynamicfeekeeper "github.com/cosmos/cosmos-sdk/x/dynamicfee/keeper"
 	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
 	sdkgov "github.com/cosmos/cosmos-sdk/x/gov/types"
 	sdkgovv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
@@ -44,6 +45,10 @@ func CreateUpgradeHandler(
 		}
 
 		if err := migrateValidatorsCommission(ctx, keepers.StakingKeeper); err != nil {
+			return vm, err
+		}
+
+		if err := initDynamicfeeParams(ctx, keepers.DynamicfeeKeeper); err != nil {
 			return vm, err
 		}
 
@@ -610,6 +615,24 @@ func migrateValidatorsCommission(ctx context.Context, stakingKeeper *stakingkeep
 		if err := stakingKeeper.SetValidator(ctx, validator); err != nil {
 			return err
 		}
+	}
+	return nil
+}
+
+func initDynamicfeeParams(ctx context.Context, dynamicfeeKeeper *dynamicfeekeeper.Keeper) error {
+	params, err := dynamicfeeKeeper.GetParams(ctx)
+	if err != nil {
+		return err
+	}
+
+	// Option C from issue #285: https://github.com/atomone-hub/atomone/issues/285
+	// MinLearningRate: 0.01 -> 0.125 and Window: 8 -> 4 to guarantee responsiveness
+	// under persistent moderate congestion (66M gas with target 50M).
+	params.MinLearningRate = math.LegacyMustNewDecFromStr("0.125")
+	params.Window = 4
+
+	if err := dynamicfeeKeeper.SetParams(ctx, params); err != nil {
+		return fmt.Errorf("failed to set dynamicfee params: %w", err)
 	}
 	return nil
 }
