@@ -620,7 +620,7 @@ func migrateValidatorsCommission(ctx context.Context, stakingKeeper *stakingkeep
 
 // migrateParticipationEMAs re-encodes the three participation EMA values from the old
 // atomone decimal-string format ("0.58...") to the scaled-integer bytes expected by
-// legacyDecValueCodec. Without this, GetQuorum panics on the first post-upgrade query.
+// legacyDecValueCodec.
 func migrateParticipationEMAs(ctx context.Context, govKeeper *govkeeper.Keeper, sb *collections.SchemaBuilder) error {
 	// big.Int.UnmarshalText rejects decimal points, so the primary codec fails on the old
 	// "0.581818..." bytes. The fallback handles them via LegacyNewDecFromStr.
