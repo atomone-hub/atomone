@@ -3,8 +3,9 @@ package v3
 import (
 	storetypes "cosmossdk.io/store/types"
 
+	dynamicfeetypes "github.com/cosmos/cosmos-sdk/x/dynamicfee/types"
+
 	"github.com/atomone-hub/atomone/app/upgrades"
-	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
 )
 
 const (

@@ -611,6 +611,5 @@ func migrateValidatorsCommission(ctx context.Context, stakingKeeper *stakingkeep
 			return err
 		}
 	}
-
 	return nil
 }
