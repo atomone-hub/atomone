@@ -672,6 +672,6 @@ func initDynamicfeeParams(ctx context.Context, dynamicfeeKeeper *dynamicfeekeepe
 	if err := dynamicfeeKeeper.SetParams(ctx, params); err != nil {
 		return fmt.Errorf("failed to set dynamicfee params: %w", err)
 	}
-  
-  return nil
+
+	return nil
 }
