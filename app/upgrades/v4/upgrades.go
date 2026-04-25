@@ -105,6 +105,10 @@ func migrateGovState(ctx context.Context, cdc codec.Codec, govKeeper *govkeeper.
 		errs = errors.Join(errs, fmt.Errorf("failed to migrate gov validator shares by governor: %w", err))
 	}
 
+	if err := migrateParticipationEMAs(ctx, govKeeper, sb); err != nil {
+		errs = errors.Join(errs, fmt.Errorf("failed to migrate gov participation EMAs: %w", err))
+	}
+
 	return errs
 }
 
@@ -619,6 +623,40 @@ func migrateValidatorsCommission(ctx context.Context, stakingKeeper *stakingkeep
 	return nil
 }
 
+// migrateParticipationEMAs re-encodes the three participation EMA values from the old
+// atomone decimal-string format ("0.58...") to the scaled-integer bytes expected by
+// legacyDecValueCodec.
+func migrateParticipationEMAs(ctx context.Context, govKeeper *govkeeper.Keeper, sb *collections.SchemaBuilder) error {
+	// big.Int.UnmarshalText rejects decimal points, so the primary codec fails on the old
+	// "0.581818..." bytes. The fallback handles them via LegacyNewDecFromStr.
+	altCodec := collcodec.NewAltValueCodec(sdk.LegacyDecValue, func(b []byte) (math.LegacyDec, error) {
+		return math.LegacyNewDecFromStr(string(b))
+	})
+
+	migrate := func(prefix collections.Prefix, name string, dest collections.Item[math.LegacyDec]) error {
+		ema, err := collections.NewItem(sb, prefix, name, altCodec).Get(ctx)
+		switch {
+		case errors.Is(err, collections.ErrNotFound):
+			ema = math.LegacyNewDecWithPrec(12, 2) // matches SDK v5.MigrateStore initial value
+		case err != nil:
+			return fmt.Errorf("get %s: %w", name, err)
+		}
+		return dest.Set(ctx, ema)
+	}
+
+	if err := migrate(collections.NewPrefix(80), "participation_ema_legacy", govKeeper.ParticipationEMA); err != nil {
+		return fmt.Errorf("migrate participation EMA: %w", err)
+	}
+	if err := migrate(collections.NewPrefix(96), "constitution_amendment_participation_ema_legacy", govKeeper.ConstitutionAmendmentParticipationEMA); err != nil {
+		return fmt.Errorf("migrate constitution amendment participation EMA: %w", err)
+	}
+	if err := migrate(collections.NewPrefix(112), "law_participation_ema_legacy", govKeeper.LawParticipationEMA); err != nil {
+		return fmt.Errorf("migrate law participation EMA: %w", err)
+	}
+
+	return nil
+}
+
 func initDynamicfeeParams(ctx context.Context, dynamicfeeKeeper *dynamicfeekeeper.Keeper) error {
 	params, err := dynamicfeeKeeper.GetParams(ctx)
 	if err != nil {
@@ -634,5 +672,6 @@ func initDynamicfeeParams(ctx context.Context, dynamicfeeKeeper *dynamicfeekeepe
 	if err := dynamicfeeKeeper.SetParams(ctx, params); err != nil {
 		return fmt.Errorf("failed to set dynamicfee params: %w", err)
 	}
-	return nil
+  
+  return nil
 }
