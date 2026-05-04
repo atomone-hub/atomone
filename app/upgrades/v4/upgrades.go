@@ -251,7 +251,7 @@ func migrateLastMinDeposit(ctx context.Context, cdc codec.Codec, govKeeper *govk
 	lastMinDeposit, err := lastMinDepositItem.Get(ctx)
 	if err != nil {
 		// If not set, skip migration
-		if err.Error() == "collections: not found" {
+		if errors.Is(err, collections.ErrNotFound) {
 			return nil
 		}
 		return fmt.Errorf("failed to get last min deposit: %w", err)
@@ -277,7 +277,7 @@ func migrateLastMinInitialDeposit(ctx context.Context, cdc codec.Codec, govKeepe
 	lastMinInitialDeposit, err := lastMinInitialDepositItem.Get(ctx)
 	if err != nil {
 		// If not set, skip migration
-		if err.Error() == "collections: not found" {
+		if errors.Is(err, collections.ErrNotFound) {
 			return nil
 		}
 		return fmt.Errorf("failed to get last min initial deposit: %w", err)
