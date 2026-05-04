@@ -15,6 +15,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	dynamicfeekeeper "github.com/cosmos/cosmos-sdk/x/dynamicfee/keeper"
+	dynamicfeetypes "github.com/cosmos/cosmos-sdk/x/dynamicfee/types"
 	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
 	sdkgov "github.com/cosmos/cosmos-sdk/x/gov/types"
 	sdkgovv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
@@ -671,6 +672,11 @@ func initDynamicfeeParams(ctx context.Context, dynamicfeeKeeper *dynamicfeekeepe
 
 	if err := dynamicfeeKeeper.SetParams(ctx, params); err != nil {
 		return fmt.Errorf("failed to set dynamicfee params: %w", err)
+	}
+
+	newState := dynamicfeetypes.NewState(params.Window, params.MinBaseGasPrice, params.MinLearningRate)
+	if err := dynamicfeeKeeper.SetState(ctx, newState); err != nil {
+		return fmt.Errorf("error setting state: %w", err)
 	}
 
 	return nil
