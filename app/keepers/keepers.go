@@ -74,6 +74,7 @@ import (
 	ibcprovider "github.com/allinbits/vaas/x/vaas/provider"
 	ibcproviderkeeper "github.com/allinbits/vaas/x/vaas/provider/keeper"
 	providertypes "github.com/allinbits/vaas/x/vaas/provider/types"
+	vaastypes "github.com/allinbits/vaas/x/vaas/types"
 )
 
 type AppKeepers struct {
@@ -397,7 +398,7 @@ func NewAppKeeper(
 
 	ibcv2Router := ibcapi.NewRouter().
 		AddRoute(ibctransfertypes.PortID, transferStackV2).
-		AddRoute(providertypes.ModuleName, ibcprovider.NewIBCModule(&appKeepers.ProviderKeeper))
+		AddRoute(vaastypes.ProviderAppID, ibcprovider.NewIBCModule(&appKeepers.ProviderKeeper))
 
 	appKeepers.IBCKeeper.SetRouter(ibcRouter)
 	appKeepers.IBCKeeper.SetRouterV2(ibcv2Router)
