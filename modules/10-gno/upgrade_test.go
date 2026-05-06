@@ -48,9 +48,9 @@ func TestCalculateNewTrustingPeriod(t *testing.T) {
 	}{
 		{
 			name:                "unbonding period halved",
-			trustingPeriod:      time.Hour * 24 * 14, // 14 days
-			originalUnbonding:   time.Hour * 24 * 21, // 21 days
-			newUnbonding:        time.Hour * 24 * 10, // ~10 days (about half)
+			trustingPeriod:      time.Hour * 24 * 14,           // 14 days
+			originalUnbonding:   time.Hour * 24 * 21,           // 21 days
+			newUnbonding:        time.Hour * 24 * 10,           // ~10 days (about half)
 			expectedTrustPeriod: time.Hour * 24 * 14 * 10 / 21, // roughly 6.67 days
 		},
 		{

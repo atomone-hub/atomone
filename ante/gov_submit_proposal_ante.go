@@ -93,7 +93,7 @@ func addressChanged(newAddr, currentAddr string) (bool, error) {
 // bundled with other messages. authz.MsgExec wrappers are expanded recursively
 // so that nested oversight-DAO changes are also detected.
 func (g GovSubmitProposalDecorator) validateProposalMessages(ctx sdk.Context, anyMsgs []*codectypes.Any) error {
-	effectiveMsgs := flattenAnyMsgs(g.cdc, anyMsgs)
+	effectiveMsgs := coredaostypes.FlattenAnyMsgs(g.cdc, anyMsgs)
 
 	// Bundling is only possible when there is more than one effective message.
 	if len(effectiveMsgs) <= 1 {

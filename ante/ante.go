@@ -9,11 +9,11 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
+	dynamicfeeante "github.com/cosmos/cosmos-sdk/x/dynamicfee/ante"
+	dynamicfeekeeper "github.com/cosmos/cosmos-sdk/x/dynamicfee/keeper"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 
 	atomoneerrors "github.com/atomone-hub/atomone/types/errors"
-	dynamicfeeante "github.com/atomone-hub/atomone/x/dynamicfee/ante"
-	dynamicfeekeeper "github.com/atomone-hub/atomone/x/dynamicfee/keeper"
 	photonante "github.com/atomone-hub/atomone/x/photon/ante"
 	photonkeeper "github.com/atomone-hub/atomone/x/photon/keeper"
 )

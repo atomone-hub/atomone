@@ -9,9 +9,11 @@ import (
 
 	"cosmossdk.io/math"
 
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdktx "github.com/cosmos/cosmos-sdk/types/tx"
+	"github.com/cosmos/cosmos-sdk/x/authz"
 
 	"github.com/atomone-hub/atomone/x/coredaos/testutil"
 	"github.com/atomone-hub/atomone/x/coredaos/types"
@@ -778,6 +780,46 @@ func TestMsgServerVetoProposal(t *testing.T) {
 		Status:   govtypesv1.StatusVotingPeriod,
 		Messages: proposalWithEmptyOversightDAOMsgs,
 	}
+
+	// authz-wrapped proposals: MsgUpdateParams inside authz.MsgExec
+	govAuthority := "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn"
+	innerChangeAny, err := codectypes.NewAnyWithValue(&types.MsgUpdateParams{
+		Authority: govAuthority,
+		Params:    types.Params{OversightDaoAddress: testAcc[2].String()},
+	})
+	require.NoError(t, err)
+	wrappedChangeMsgs, err := sdktx.SetMsgs([]sdk.Msg{&authz.MsgExec{
+		Grantee: govAuthority,
+		Msgs:    []*codectypes.Any{innerChangeAny},
+	}})
+	require.NoError(t, err)
+	proposalWithWrappedChangeOversightDAO := govtypesv1.Proposal{
+		Title:    "Test Proposal",
+		Summary:  "A proposal to change oversight DAO address wrapped in authz.MsgExec",
+		Id:       6,
+		Status:   govtypesv1.StatusVotingPeriod,
+		Messages: wrappedChangeMsgs,
+	}
+
+	// double-wrapped: MsgUpdateParams inside MsgExec inside MsgExec
+	execAny, err := codectypes.NewAnyWithValue(&authz.MsgExec{
+		Grantee: govAuthority,
+		Msgs:    []*codectypes.Any{innerChangeAny},
+	})
+	require.NoError(t, err)
+	doubleWrappedChangeMsgs, err := sdktx.SetMsgs([]sdk.Msg{&authz.MsgExec{
+		Grantee: govAuthority,
+		Msgs:    []*codectypes.Any{execAny},
+	}})
+	require.NoError(t, err)
+	proposalWithDoubleWrappedChangeOversightDAO := govtypesv1.Proposal{
+		Title:    "Test Proposal",
+		Summary:  "A proposal to change oversight DAO address double-wrapped in authz.MsgExec",
+		Id:       7,
+		Status:   govtypesv1.StatusVotingPeriod,
+		Messages: doubleWrappedChangeMsgs,
+	}
+
 	tests := []struct {
 		name            string
 		msg             *types.MsgVetoProposal
@@ -918,6 +960,30 @@ func TestMsgServerVetoProposal(t *testing.T) {
 			expectedErr: "proposal with ID 5 contains a change of the oversight DAO address, vetoing it would prevent the replacement of the current oversight DAO: oversight DAO cannot veto this proposal",
 			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
 				m.GovKeeper.EXPECT().GetProposal(ctx, uint64(5)).Return(proposalWithEmptyOversightDAO, true)
+			},
+			setOversightDAO: true,
+		},
+		{
+			name: "veto proposal with change to oversight DAO address wrapped in authz.MsgExec",
+			msg: &types.MsgVetoProposal{
+				Vetoer:     oversightDAOAcc,
+				ProposalId: 6,
+			},
+			expectedErr: "proposal with ID 6 contains a change of the oversight DAO address, vetoing it would prevent the replacement of the current oversight DAO: oversight DAO cannot veto this proposal",
+			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
+				m.GovKeeper.EXPECT().GetProposal(ctx, uint64(6)).Return(proposalWithWrappedChangeOversightDAO, true)
+			},
+			setOversightDAO: true,
+		},
+		{
+			name: "veto proposal with change to oversight DAO address double-wrapped in authz.MsgExec",
+			msg: &types.MsgVetoProposal{
+				Vetoer:     oversightDAOAcc,
+				ProposalId: 7,
+			},
+			expectedErr: "proposal with ID 7 contains a change of the oversight DAO address, vetoing it would prevent the replacement of the current oversight DAO: oversight DAO cannot veto this proposal",
+			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
+				m.GovKeeper.EXPECT().GetProposal(ctx, uint64(7)).Return(proposalWithDoubleWrappedChangeOversightDAO, true)
 			},
 			setOversightDAO: true,
 		},

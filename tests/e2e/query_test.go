@@ -23,9 +23,9 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	channeltypes "github.com/cosmos/ibc-go/v10/modules/core/04-channel/types"
 
-	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
 	govtypesv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
+	dynamicfeetypes "github.com/cosmos/cosmos-sdk/x/dynamicfee/types"
 )
 
 func (s *IntegrationTestSuite) waitAtomOneTx(endpoint, txHash string, msgResp codec.ProtoMarshaler) (err error) {
@@ -415,7 +415,7 @@ func (s *IntegrationTestSuite) queryPhotonParams(endpoint string) photontypes.Qu
 }
 
 func (s *IntegrationTestSuite) queryDynamicfeeParams(endpoint string) dynamicfeetypes.ParamsResponse {
-	body, err := httpGet(fmt.Sprintf("%s/atomone/dynamicfee/v1/params", endpoint))
+	body, err := httpGet(fmt.Sprintf("%s/cosmos/dynamicfee/v1/params", endpoint))
 	s.Require().NoError(err)
 	var res dynamicfeetypes.ParamsResponse
 	err = s.cdc.UnmarshalJSON(body, &res)
@@ -424,7 +424,7 @@ func (s *IntegrationTestSuite) queryDynamicfeeParams(endpoint string) dynamicfee
 }
 
 func (s *IntegrationTestSuite) queryDynamicfeeState(endpoint string) dynamicfeetypes.StateResponse {
-	body, err := httpGet(fmt.Sprintf("%s/atomone/dynamicfee/v1/state", endpoint))
+	body, err := httpGet(fmt.Sprintf("%s/cosmos/dynamicfee/v1/state", endpoint))
 	s.Require().NoError(err)
 	var res dynamicfeetypes.StateResponse
 	err = s.cdc.UnmarshalJSON(body, &res)
@@ -434,7 +434,7 @@ func (s *IntegrationTestSuite) queryDynamicfeeState(endpoint string) dynamicfeet
 
 func (s *IntegrationTestSuite) queryDynamicfeeStateAtHeight(endpoint string, height string) dynamicfeetypes.StateResponse {
 	headers := addHeader(nil, "x-cosmos-block-height", height)
-	body, err := httpGetWithHeader(fmt.Sprintf("%s/atomone/dynamicfee/v1/state", endpoint), headers)
+	body, err := httpGetWithHeader(fmt.Sprintf("%s/cosmos/dynamicfee/v1/state", endpoint), headers)
 	s.Require().NoError(err)
 	var res dynamicfeetypes.StateResponse
 	err = s.cdc.UnmarshalJSON(body, &res)
@@ -443,7 +443,7 @@ func (s *IntegrationTestSuite) queryDynamicfeeStateAtHeight(endpoint string, hei
 }
 
 func (s *IntegrationTestSuite) queryDynamicfeeGasPrice(endpoint string, denom string) dynamicfeetypes.GasPriceResponse {
-	body, err := httpGet(fmt.Sprintf("%s/atomone/dynamicfee/v1/gas_price/%s", endpoint, denom))
+	body, err := httpGet(fmt.Sprintf("%s/cosmos/dynamicfee/v1/gas_price/%s", endpoint, denom))
 	s.Require().NoError(err)
 	var res dynamicfeetypes.GasPriceResponse
 	err = s.cdc.UnmarshalJSON(body, &res)
@@ -452,7 +452,7 @@ func (s *IntegrationTestSuite) queryDynamicfeeGasPrice(endpoint string, denom st
 }
 
 func (s *IntegrationTestSuite) queryDynamicfeeGasPrices(endpoint string) dynamicfeetypes.GasPricesResponse {
-	body, err := httpGet(fmt.Sprintf("%s/atomone/dynamicfee/v1/gas_prices", endpoint))
+	body, err := httpGet(fmt.Sprintf("%s/cosmos/dynamicfee/v1/gas_prices", endpoint))
 	s.Require().NoError(err)
 	var res dynamicfeetypes.GasPricesResponse
 	err = s.cdc.UnmarshalJSON(body, &res)

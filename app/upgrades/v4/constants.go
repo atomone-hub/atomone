@@ -5,6 +5,8 @@ import (
 
 	store "cosmossdk.io/store/types"
 
+	epochstypes "github.com/cosmos/cosmos-sdk/x/epochs/types"
+
 	"github.com/atomone-hub/atomone/app/upgrades"
 	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
 )
@@ -22,6 +24,7 @@ var Upgrade = upgrades.Upgrade{
 			// new module added in v4
 			coredaostypes.StoreKey,
 			icacontrollertypes.StoreKey,
+			epochstypes.StoreKey,
 			// x/gov has been added but it uses the same store key as the x/gov fork from v3
 		},
 		Deleted: []string{

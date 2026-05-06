@@ -45,6 +45,10 @@ import (
 	consensusparamtypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
 	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
+	dynamicfeekeeper "github.com/cosmos/cosmos-sdk/x/dynamicfee/keeper"
+	dynamicfeetypes "github.com/cosmos/cosmos-sdk/x/dynamicfee/types"
+	epochskeeper "github.com/cosmos/cosmos-sdk/x/epochs/keeper"
+	epochstypes "github.com/cosmos/cosmos-sdk/x/epochs/types"
 	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	govv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
@@ -63,8 +67,6 @@ import (
 	ibcgno "github.com/atomone-hub/atomone/modules/10-gno"
 	coredaoskeeper "github.com/atomone-hub/atomone/x/coredaos/keeper"
 	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
-	dynamicfeekeeper "github.com/atomone-hub/atomone/x/dynamicfee/keeper"
-	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
 	atomonegovkeeper "github.com/atomone-hub/atomone/x/gov/keeper"
 	photonkeeper "github.com/atomone-hub/atomone/x/photon/keeper"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
@@ -104,6 +106,7 @@ type AppKeepers struct {
 	DynamicfeeKeeper      *dynamicfeekeeper.Keeper
 	CoreDaosKeeper        *coredaoskeeper.Keeper
 	ProviderKeeper        ibcproviderkeeper.Keeper
+	EpochsKeeper          epochskeeper.Keeper
 
 	// Modules
 	ICAModule       ica.AppModule
@@ -221,6 +224,12 @@ func NewAppKeeper(
 		authtypes.FeeCollectorName,
 		authorityStr,
 	)
+
+	appKeepers.EpochsKeeper = epochskeeper.NewKeeper(
+		runtime.NewKVStoreService(appKeepers.keys[epochstypes.StoreKey]),
+		appCodec,
+	)
+	appKeepers.EpochsKeeper.SetHooks(appKeepers.DistrKeeper.Hooks())
 
 	appKeepers.SlashingKeeper = slashingkeeper.NewKeeper(
 		appCodec,

@@ -30,6 +30,10 @@ import (
 	consensusparamtypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
 	distr "github.com/cosmos/cosmos-sdk/x/distribution"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
+	"github.com/cosmos/cosmos-sdk/x/dynamicfee"
+	dynamicfeetypes "github.com/cosmos/cosmos-sdk/x/dynamicfee/types"
+	"github.com/cosmos/cosmos-sdk/x/epochs"
+	epochstypes "github.com/cosmos/cosmos-sdk/x/epochs/types"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	"github.com/cosmos/cosmos-sdk/x/gov"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
@@ -43,8 +47,6 @@ import (
 
 	"github.com/atomone-hub/atomone/x/coredaos"
 	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
-	"github.com/atomone-hub/atomone/x/dynamicfee"
-	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
 	atomonegov "github.com/atomone-hub/atomone/x/gov"
 	atomonegovv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	"github.com/atomone-hub/atomone/x/photon"
@@ -120,6 +122,8 @@ func appModules(
 		dynamicfee.NewAppModule(appCodec, *app.DynamicfeeKeeper),
 		coredaos.NewAppModule(appCodec, *app.CoreDaosKeeper, app.GovKeeperWrapper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
 		ibcprovider.NewAppModule(&app.ProviderKeeper),
+		epochs.NewAppModule(&app.EpochsKeeper),
+
 		app.TransferModule,
 		app.ICAModule,
 		app.TMClientModule,
@@ -144,6 +148,7 @@ func orderBeginBlockers() []string {
 		upgradetypes.ModuleName,
 		minttypes.ModuleName,
 		dynamicfeetypes.ModuleName,
+		epochstypes.ModuleName,
 		distrtypes.ModuleName,
 		slashingtypes.ModuleName,
 		evidencetypes.ModuleName,
@@ -198,6 +203,7 @@ func orderEndBlockers() []string {
 		consensusparamtypes.ModuleName,
 		coredaostypes.ModuleName,
 		providertypes.ModuleName,
+		epochstypes.ModuleName,
 	}
 }
 
@@ -232,5 +238,6 @@ func orderInitBlockers() []string {
 		dynamicfeetypes.ModuleName,
 		coredaostypes.ModuleName,
 		providertypes.ModuleName,
+		epochstypes.ModuleName,
 	}
 }
