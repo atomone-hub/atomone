@@ -69,3 +69,88 @@ localnet.
    the chain data). Block production should restart.
 10. Check that the upgrade procedure has been executed properly.
 11. Restart the node to ensure it continues producing blocks after the upgrade.
+
+## In-place Testnet from Mainnet State
+
+The `in-place-testnet` command takes an existing chain's data directory
+(typically a mainnet snapshot) and converts it into a single-validator
+testnet running locally. This is useful to:
+
+- Dry-run an upgrade handler against real mainnet state.
+- Reproduce a mainnet bug locally with full balances and history.
+- Test governance flows that require concentrated voting power (your sole
+  validator can pass any active proposal in seconds).
+
+### Setup
+
+1. Initialize a fresh node home:
+   ```sh
+   atomoned init localnet --home ~/.atomone/validator1 --chain-id atomone-1
+   ```
+
+2. Replace the generated genesis with the `atomone-1` mainnet genesis:
+   ```sh
+   wget -O ~/.atomone/validator1/config/genesis.json \
+     https://snapshots.polkachu.com/genesis/atomone/genesis.json
+   ```
+
+3. Set `minimum-gas-prices` in `~/.atomone/validator1/config/app.toml` (e.g.
+   `0uatone`) and wire `seeds` / `persistent_peers` in `config.toml` from the
+   [`atomone-hub/networks`](https://github.com/atomone-hub/networks/tree/main/atomone-1)
+   repo.
+
+4. Download a recent mainnet snapshot (e.g. from
+   [polkachu](https://polkachu.com/tendermint_snapshots/atomone) or itrocket)
+   and extract it. `lz4` is required for decompression.
+   ```sh
+   rm -rf ~/.atomone/validator1/data && mkdir ~/.atomone/validator1/data
+   echo '{ "height": "0", "round": 0, "step": 0 }' \
+     > ~/.atomone/validator1/data/priv_validator_state.json
+   lz4 -d <snapshot>.tar.lz4 -c | tar -x -C ~/.atomone/validator1
+   ```
+
+5. Start the node so it loads the snapshot, then stop it cleanly with
+   `Ctrl-C` once `atomoned status` shows the snapshot height. The node does
+   not need to be caught up to tip; `in-place-testnet` only needs the latest
+   committed block in the blockstore.
+   ```sh
+   atomoned start --home ~/.atomone/validator1 --x-crisis-skip-assert-invariants
+   ```
+
+   The binary version must be compatible with the snapshot height (e.g.
+   `v3.3.0` for a current mainnet snapshot). To dry-run a future upgrade,
+   load the snapshot with the pre-upgrade binary first, then run
+   `in-place-testnet` with the post-upgrade binary and
+   `--trigger-testnet-upgrade=<plan-name>`.
+
+### Convert to Testnet
+
+1. Add a local key whose valoper address will become the new sole validator:
+   ```sh
+   atomoned keys add testnet-val --home ~/.atomone/validator1 --keyring-backend test
+   VAL_OPER=$(atomoned keys show testnet-val --bech val -a \
+     --home ~/.atomone/validator1 --keyring-backend test)
+   ACCOUNT=$(atomoned keys show testnet-val -a \
+     --home ~/.atomone/validator1 --keyring-backend test)
+   ```
+
+2. Run `in-place-testnet`:
+   ```sh
+   atomoned in-place-testnet testing-1 "$VAL_OPER" \
+     --home ~/.atomone/validator1 \
+     --accounts-to-fund="$ACCOUNT"
+   ```
+   Confirm with `y` when prompted. The node will restart with chain-id
+   `testing-1`, your local key as the only validator, and the funded
+   accounts holding 1000 ATONE each.
+
+3. Verify:
+   ```sh
+   atomoned status --home ~/.atomone/validator1 \
+     | jq '.NodeInfo.network, .ValidatorInfo'
+   atomoned q staking validators --home ~/.atomone/validator1 -o json \
+     | jq '.validators | length'
+   atomoned q bank balances "$ACCOUNT" --home ~/.atomone/validator1
+   ```
+   Expect `network: "testing-1"`, exactly one validator, and
+   `1000000000 uatone` on the funded account.
