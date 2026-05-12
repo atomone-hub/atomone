@@ -19,6 +19,7 @@
 
 - Upgrade CometBFT to v0.38.19 to fix security issue (ASA-2025-003) [#234](https://github.com/atomone-hub/atomone/pull/234)
 - Upgrade CometBFT to v0.38.21 to fix security issue (CSA-2026-001) [#270](https://github.com/atomone-hub/atomone/pull/270)
+- Upgrade CometBFT to v0.38.23 to fix security issue [#332](https://github.com/atomone-hub/atomone/pull/332)
 
 ### FEATURES
 
