@@ -21,7 +21,10 @@ import (
 	sdkgovv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 
+	ibckeeper "github.com/cosmos/ibc-go/v10/modules/core/keeper"
+
 	"github.com/atomone-hub/atomone/app/keepers"
+	ibcgno "github.com/atomone-hub/atomone/modules/10-gno"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 )
 
@@ -53,8 +56,28 @@ func CreateUpgradeHandler(
 			return vm, err
 		}
 
+		if err := addGnoToIBCAllowedClients(ctx, keepers.IBCKeeper); err != nil {
+			return vm, err
+		}
+
 		return vm, nil
 	}
+}
+
+// addGnoToIBCAllowedClients appends the 10-gno light client type to the
+// IBC 02-client AllowedClients param so gno clients can be created.
+func addGnoToIBCAllowedClients(ctx context.Context, ibcKeeper *ibckeeper.Keeper) error {
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+	params := ibcKeeper.ClientKeeper.GetParams(sdkCtx)
+	if params.IsAllowedClient(ibcgno.ModuleName) {
+		return nil
+	}
+	params.AllowedClients = append(params.AllowedClients, ibcgno.ModuleName)
+	if err := params.Validate(); err != nil {
+		return fmt.Errorf("failed to validate ibc client params: %w", err)
+	}
+	ibcKeeper.ClientKeeper.SetParams(sdkCtx, params)
+	return nil
 }
 
 // migrateGovState migrates all gov state from atomone.gov.v1 proto types to cosmos.gov.v1 proto types
