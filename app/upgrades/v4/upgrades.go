@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 
+	ibckeeper "github.com/cosmos/ibc-go/v10/modules/core/keeper"
+
 	"cosmossdk.io/collections"
 	collcodec "cosmossdk.io/collections/codec"
 	"cosmossdk.io/math"
@@ -20,8 +22,6 @@ import (
 	sdkgov "github.com/cosmos/cosmos-sdk/x/gov/types"
 	sdkgovv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
-
-	ibckeeper "github.com/cosmos/ibc-go/v10/modules/core/keeper"
 
 	"github.com/atomone-hub/atomone/app/keepers"
 	ibcgno "github.com/atomone-hub/atomone/modules/10-gno"
