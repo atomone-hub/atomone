@@ -440,7 +440,7 @@ func collectGenFiles(
 			return err
 		}
 
-		nodeAppState, err := genutil.GenAppStateFromConfig(clientCtx.Codec, clientCtx.TxConfig, nodeConfig, initCfg, appGenesis, genBalIterator, genutiltypes.DefaultMessageValidator, clientCtx.InterfaceRegistry.SigningContext().AddressCodec())
+		nodeAppState, err := genutil.GenAppStateFromConfig(clientCtx.Codec, clientCtx.TxConfig, nodeConfig, initCfg, appGenesis, genBalIterator, genutiltypes.DefaultMessageValidator, clientCtx.InterfaceRegistry.SigningContext().ValidatorAddressCodec())
 		if err != nil {
 			return err
 		}
@@ -540,7 +540,7 @@ func startTestnet(cmd *cobra.Command, args startArgs) error {
 }
 
 func NewTestNetworkFixture() network.TestFixture {
-	dir, err := os.MkdirTemp("", atomone.DefaultNodeHome)
+	dir, err := os.MkdirTemp("", filepath.Base(atomone.DefaultNodeHome))
 	if err != nil {
 		panic(fmt.Sprintf("failed creating temporary directory: %v", err))
 	}
