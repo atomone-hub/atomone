@@ -96,7 +96,7 @@ testnet running locally. This is useful to:
 
 3. Set `minimum-gas-prices` in `~/.atomone/validator1/config/app.toml` (e.g.
    `0uatone`) and wire `seeds` / `persistent_peers` in `config.toml` from the
-   [`atomone-hub/networks`](https://github.com/atomone-hub/networks/tree/main/atomone-1)
+   [`atomone-hub/networks`](https://github.com/atomone-hub/networks/tree/master/atomone-1)
    repo.
 
 4. Download a recent mainnet snapshot (e.g. from
