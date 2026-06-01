@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 
+	ibckeeper "github.com/cosmos/ibc-go/v10/modules/core/keeper"
+
 	"cosmossdk.io/collections"
 	collcodec "cosmossdk.io/collections/codec"
 	"cosmossdk.io/math"
@@ -14,12 +16,15 @@ import (
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	dynamicfeekeeper "github.com/cosmos/cosmos-sdk/x/dynamicfee/keeper"
+	dynamicfeetypes "github.com/cosmos/cosmos-sdk/x/dynamicfee/types"
 	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
 	sdkgov "github.com/cosmos/cosmos-sdk/x/gov/types"
 	sdkgovv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 
 	"github.com/atomone-hub/atomone/app/keepers"
+	ibcgno "github.com/atomone-hub/atomone/modules/10-gno"
 	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 )
 
@@ -47,8 +52,32 @@ func CreateUpgradeHandler(
 			return vm, err
 		}
 
+		if err := initDynamicfeeParams(ctx, keepers.DynamicfeeKeeper); err != nil {
+			return vm, err
+		}
+
+		if err := addGnoToIBCAllowedClients(ctx, keepers.IBCKeeper); err != nil {
+			return vm, err
+		}
+
 		return vm, nil
 	}
+}
+
+// addGnoToIBCAllowedClients appends the 10-gno light client type to the
+// IBC 02-client AllowedClients param so gno clients can be created.
+func addGnoToIBCAllowedClients(ctx context.Context, ibcKeeper *ibckeeper.Keeper) error {
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+	params := ibcKeeper.ClientKeeper.GetParams(sdkCtx)
+	if params.IsAllowedClient(ibcgno.ModuleName) {
+		return nil
+	}
+	params.AllowedClients = append(params.AllowedClients, ibcgno.ModuleName)
+	if err := params.Validate(); err != nil {
+		return fmt.Errorf("failed to validate ibc client params: %w", err)
+	}
+	ibcKeeper.ClientKeeper.SetParams(sdkCtx, params)
+	return nil
 }
 
 // migrateGovState migrates all gov state from atomone.gov.v1 proto types to cosmos.gov.v1 proto types
@@ -98,6 +127,10 @@ func migrateGovState(ctx context.Context, cdc codec.Codec, govKeeper *govkeeper.
 
 	if err := migrateValidatorSharesByGovernor(ctx, cdc, govKeeper, sb); err != nil {
 		errs = errors.Join(errs, fmt.Errorf("failed to migrate gov validator shares by governor: %w", err))
+	}
+
+	if err := migrateParticipationEMAs(ctx, govKeeper, sb); err != nil {
+		errs = errors.Join(errs, fmt.Errorf("failed to migrate gov participation EMAs: %w", err))
 	}
 
 	return errs
@@ -242,7 +275,7 @@ func migrateLastMinDeposit(ctx context.Context, cdc codec.Codec, govKeeper *govk
 	lastMinDeposit, err := lastMinDepositItem.Get(ctx)
 	if err != nil {
 		// If not set, skip migration
-		if err.Error() == "collections: not found" {
+		if errors.Is(err, collections.ErrNotFound) {
 			return nil
 		}
 		return fmt.Errorf("failed to get last min deposit: %w", err)
@@ -268,7 +301,7 @@ func migrateLastMinInitialDeposit(ctx context.Context, cdc codec.Codec, govKeepe
 	lastMinInitialDeposit, err := lastMinInitialDepositItem.Get(ctx)
 	if err != nil {
 		// If not set, skip migration
-		if err.Error() == "collections: not found" {
+		if errors.Is(err, collections.ErrNotFound) {
 			return nil
 		}
 		return fmt.Errorf("failed to get last min initial deposit: %w", err)
@@ -611,5 +644,63 @@ func migrateValidatorsCommission(ctx context.Context, stakingKeeper *stakingkeep
 			return err
 		}
 	}
+	return nil
+}
+
+// migrateParticipationEMAs re-encodes the three participation EMA values from the old
+// atomone decimal-string format ("0.58...") to the scaled-integer bytes expected by
+// legacyDecValueCodec.
+func migrateParticipationEMAs(ctx context.Context, govKeeper *govkeeper.Keeper, sb *collections.SchemaBuilder) error {
+	// big.Int.UnmarshalText rejects decimal points, so the primary codec fails on the old
+	// "0.581818..." bytes. The fallback handles them via LegacyNewDecFromStr.
+	altCodec := collcodec.NewAltValueCodec(sdk.LegacyDecValue, func(b []byte) (math.LegacyDec, error) {
+		return math.LegacyNewDecFromStr(string(b))
+	})
+
+	migrate := func(prefix collections.Prefix, name string, dest collections.Item[math.LegacyDec]) error {
+		ema, err := collections.NewItem(sb, prefix, name, altCodec).Get(ctx)
+		switch {
+		case errors.Is(err, collections.ErrNotFound):
+			ema = math.LegacyNewDecWithPrec(12, 2) // matches SDK v5.MigrateStore initial value
+		case err != nil:
+			return fmt.Errorf("get %s: %w", name, err)
+		}
+		return dest.Set(ctx, ema)
+	}
+
+	if err := migrate(collections.NewPrefix(80), "participation_ema_legacy", govKeeper.ParticipationEMA); err != nil {
+		return fmt.Errorf("migrate participation EMA: %w", err)
+	}
+	if err := migrate(collections.NewPrefix(96), "constitution_amendment_participation_ema_legacy", govKeeper.ConstitutionAmendmentParticipationEMA); err != nil {
+		return fmt.Errorf("migrate constitution amendment participation EMA: %w", err)
+	}
+	if err := migrate(collections.NewPrefix(112), "law_participation_ema_legacy", govKeeper.LawParticipationEMA); err != nil {
+		return fmt.Errorf("migrate law participation EMA: %w", err)
+	}
+
+	return nil
+}
+
+func initDynamicfeeParams(ctx context.Context, dynamicfeeKeeper *dynamicfeekeeper.Keeper) error {
+	params, err := dynamicfeeKeeper.GetParams(ctx)
+	if err != nil {
+		return err
+	}
+
+	// Option C from issue #285: https://github.com/atomone-hub/atomone/issues/285
+	// MinLearningRate: 0.01 -> 0.125 and Window: 8 -> 4 to guarantee responsiveness
+	// under persistent moderate congestion (66M gas with target 50M).
+	params.MinLearningRate = math.LegacyMustNewDecFromStr("0.125")
+	params.Window = 4
+
+	if err := dynamicfeeKeeper.SetParams(ctx, params); err != nil {
+		return fmt.Errorf("failed to set dynamicfee params: %w", err)
+	}
+
+	newState := dynamicfeetypes.NewState(params.Window, params.MinBaseGasPrice, params.MinLearningRate)
+	if err := dynamicfeeKeeper.SetState(ctx, newState); err != nil {
+		return fmt.Errorf("error setting state: %w", err)
+	}
+
 	return nil
 }

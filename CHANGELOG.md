@@ -14,11 +14,13 @@
 - Add min-stake filtering for cosmos-sdk votes in the gov ante handler [#279](https://github.com/atomone-hub/atomone/pull/279)
 - Prevent the designated authority to be set as the Oversight or Steering DAO address [#314](https://github.com/atomone-hub/atomone/pull/314)
 - Oversight DAO and Steering DAO addresses cannot be the same [#309](https://github.com/atomone-hub/atomone/pull/309)
+- Fix broken testnet subcommands [#337](https://github.com/atomone-hub/atomone/pull/337)
 
 ### DEPENDENCIES
 
 - Upgrade CometBFT to v0.38.19 to fix security issue (ASA-2025-003) [#234](https://github.com/atomone-hub/atomone/pull/234)
 - Upgrade CometBFT to v0.38.21 to fix security issue (CSA-2026-001) [#270](https://github.com/atomone-hub/atomone/pull/270)
+- Upgrade CometBFT to v0.38.23 to fix security issue [#332](https://github.com/atomone-hub/atomone/pull/332)
 
 ### FEATURES
 
@@ -28,6 +30,7 @@
 - Set chain-wide `MaxCommissionRate` and `MinCommissionRate` to 5% and update validator commission rates accordingly [#300](https://github.com/atomone-hub/atomone/pull/300)
 - Prevent Oversight DAO change to be bundled in proposals [#316](https://github.com/atomone-hub/atomone/pull/316)
 - Migrate `x/dynamicfee` from Atom One to Atom One SDK [#322](https://github.com/atomone-hub/atomone/pull/322)
+- Add 10-gno to IBC allowed clients [#333](https://github.com/atomone-hub/atomone/pull/333)
 
 ### STATE BREAKING
 
