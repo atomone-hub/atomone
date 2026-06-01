@@ -70,6 +70,11 @@ import (
 	atomonegovkeeper "github.com/atomone-hub/atomone/x/gov/keeper"
 	photonkeeper "github.com/atomone-hub/atomone/x/photon/keeper"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
+
+	ibcprovider "github.com/allinbits/vaas/x/vaas/provider"
+	ibcproviderkeeper "github.com/allinbits/vaas/x/vaas/provider/keeper"
+	providertypes "github.com/allinbits/vaas/x/vaas/provider/types"
+	vaastypes "github.com/allinbits/vaas/x/vaas/types"
 )
 
 type AppKeepers struct {
@@ -101,6 +106,7 @@ type AppKeepers struct {
 	PhotonKeeper          *photonkeeper.Keeper
 	DynamicfeeKeeper      *dynamicfeekeeper.Keeper
 	CoreDaosKeeper        *coredaoskeeper.Keeper
+	ProviderKeeper        ibcproviderkeeper.Keeper
 	EpochsKeeper          epochskeeper.Keeper
 
 	// Modules
@@ -125,6 +131,7 @@ func NewAppKeeper(
 ) AppKeepers {
 	authorityStr := authtypes.NewModuleAddress(govtypes.ModuleName).String()
 	addressCodec := addresscodec.NewBech32Codec(sdk.GetConfig().GetBech32AccountAddrPrefix())
+	consAddressCodec := addresscodec.NewBech32Codec(sdk.GetConfig().GetBech32ConsensusAddrPrefix())
 
 	appKeepers := AppKeepers{}
 	// Set keys KVStoreKey, TransientStoreKey, MemoryStoreKey
@@ -277,6 +284,22 @@ func NewAppKeeper(
 
 	appKeepers.GovKeeperWrapper = atomonegovkeeper.NewKeeper(appKeepers.GovKeeper)
 
+	appKeepers.ProviderKeeper = ibcproviderkeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(appKeepers.keys[providertypes.StoreKey]),
+		appKeepers.IBCKeeper.ClientKeeper,
+		appKeepers.IBCKeeper.ClientV2Keeper,
+		appKeepers.StakingKeeper,
+		appKeepers.SlashingKeeper,
+		appKeepers.AccountKeeper,
+		appKeepers.BankKeeper,
+		*appKeepers.GovKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		appCodec.InterfaceRegistry().SigningContext().ValidatorAddressCodec(),
+		consAddressCodec,
+		authtypes.FeeCollectorName,
+	)
+
 	appKeepers.CoreDaosKeeper = coredaoskeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(appKeepers.keys[coredaostypes.StoreKey]),
@@ -374,7 +397,8 @@ func NewAppKeeper(
 		AddRoute(ibctransfertypes.ModuleName, transferStack)
 
 	ibcv2Router := ibcapi.NewRouter().
-		AddRoute(ibctransfertypes.PortID, transferStackV2)
+		AddRoute(ibctransfertypes.PortID, transferStackV2).
+		AddRoute(vaastypes.ProviderAppID, ibcprovider.NewIBCModule(&appKeepers.ProviderKeeper))
 
 	appKeepers.IBCKeeper.SetRouter(ibcRouter)
 	appKeepers.IBCKeeper.SetRouterV2(ibcv2Router)

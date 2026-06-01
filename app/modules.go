@@ -34,7 +34,6 @@ import (
 	dynamicfeetypes "github.com/cosmos/cosmos-sdk/x/dynamicfee/types"
 	"github.com/cosmos/cosmos-sdk/x/epochs"
 	epochstypes "github.com/cosmos/cosmos-sdk/x/epochs/types"
-	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	"github.com/cosmos/cosmos-sdk/x/gov"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
@@ -44,7 +43,6 @@ import (
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
-	"github.com/cosmos/cosmos-sdk/x/staking"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	"github.com/atomone-hub/atomone/x/coredaos"
@@ -53,6 +51,11 @@ import (
 	atomonegovv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 	"github.com/atomone-hub/atomone/x/photon"
 	photontypes "github.com/atomone-hub/atomone/x/photon/types"
+
+	no_valupdates_genutil "github.com/allinbits/vaas/x/vaas/no_valupdates_genutil"
+	no_valupdates_staking "github.com/allinbits/vaas/x/vaas/no_valupdates_staking"
+	ibcprovider "github.com/allinbits/vaas/x/vaas/provider"
+	providertypes "github.com/allinbits/vaas/x/vaas/provider/types"
 )
 
 var maccPerms = map[string][]string{
@@ -93,7 +96,7 @@ func appModules(
 	)}
 
 	return []module.AppModule{
-		genutil.NewAppModule(
+		no_valupdates_genutil.NewAppModule(
 			app.AccountKeeper,
 			app.StakingKeeper,
 			app.BaseApp,
@@ -107,7 +110,7 @@ func appModules(
 		mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper, nil, app.GetSubspace(minttypes.ModuleName)),
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(slashingtypes.ModuleName), app.interfaceRegistry),
 		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(distrtypes.ModuleName)),
-		staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
+		no_valupdates_staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
 		photon.NewAppModule(appCodec, *app.PhotonKeeper, app.BankKeeper, app.AccountKeeper, app.StakingKeeper),
 		upgrade.NewAppModule(app.UpgradeKeeper, app.AccountKeeper.AddressCodec()),
 		evidence.NewAppModule(app.EvidenceKeeper),
@@ -118,6 +121,7 @@ func appModules(
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
 		dynamicfee.NewAppModule(appCodec, *app.DynamicfeeKeeper),
 		coredaos.NewAppModule(appCodec, *app.CoreDaosKeeper, app.GovKeeperWrapper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
+		ibcprovider.NewAppModule(&app.ProviderKeeper),
 		epochs.NewAppModule(&app.EpochsKeeper),
 
 		app.TransferModule,
@@ -163,6 +167,7 @@ func orderBeginBlockers() []string {
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		coredaostypes.ModuleName,
+		providertypes.ModuleName,
 	}
 }
 
@@ -197,6 +202,7 @@ func orderEndBlockers() []string {
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		coredaostypes.ModuleName,
+		providertypes.ModuleName,
 		epochstypes.ModuleName,
 	}
 }
@@ -231,6 +237,7 @@ func orderInitBlockers() []string {
 		consensusparamtypes.ModuleName,
 		dynamicfeetypes.ModuleName,
 		coredaostypes.ModuleName,
+		providertypes.ModuleName,
 		epochstypes.ModuleName,
 	}
 }
