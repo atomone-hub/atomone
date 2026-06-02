@@ -1,6 +1,7 @@
 package gno
 
 import (
+	"math/bits"
 	"strings"
 	"time"
 
@@ -296,7 +297,13 @@ func verifyDelayPeriodPassed(ctx sdk.Context, store storetypes.KVStore, proofHei
 		}
 
 		currentTimestamp := uint64(ctx.BlockTime().UnixNano())
-		validTime := processedTime + delayTimePeriod
+		validTime, carry := bits.Add64(processedTime, delayTimePeriod, 0)
+		if carry != 0 {
+			// processedTime + delayTimePeriod overflows uint64; the delay can never be
+			// represented and therefore cannot be considered satisfied.
+			return errorsmod.Wrapf(ErrDelayPeriodNotPassed, "time delay period overflows uint64: processed time %d, delay %d",
+				processedTime, delayTimePeriod)
+		}
 
 		// NOTE: delay time period is inclusive, so if currentTimestamp is validTime, then we return no error
 		if currentTimestamp < validTime {
@@ -313,7 +320,14 @@ func verifyDelayPeriodPassed(ctx sdk.Context, store storetypes.KVStore, proofHei
 		}
 
 		currentHeight := clienttypes.GetSelfHeight(ctx)
-		validHeight := clienttypes.NewHeight(processedHeight.GetRevisionNumber(), processedHeight.GetRevisionHeight()+delayBlockPeriod)
+		validRevisionHeight, carry := bits.Add64(processedHeight.GetRevisionHeight(), delayBlockPeriod, 0)
+		if carry != 0 {
+			// processedHeight + delayBlockPeriod overflows uint64; the delay can never be
+			// represented and therefore cannot be considered satisfied.
+			return errorsmod.Wrapf(ErrDelayPeriodNotPassed, "block delay period overflows uint64: processed height %d, delay %d",
+				processedHeight.GetRevisionHeight(), delayBlockPeriod)
+		}
+		validHeight := clienttypes.NewHeight(processedHeight.GetRevisionNumber(), validRevisionHeight)
 
 		// NOTE: delay block period is inclusive, so if currentHeight is validHeight, then we return no error
 		if currentHeight.LT(validHeight) {

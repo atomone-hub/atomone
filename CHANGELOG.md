@@ -15,6 +15,7 @@
 - Prevent the designated authority to be set as the Oversight or Steering DAO address [#314](https://github.com/atomone-hub/atomone/pull/314)
 - Oversight DAO and Steering DAO addresses cannot be the same [#309](https://github.com/atomone-hub/atomone/pull/309)
 - Fix broken testnet subcommands [#337](https://github.com/atomone-hub/atomone/pull/337)
+- Use checked addition when computing `10-gno` light client delay periods to avoid `uint64` overflow bypassing the delay gate
 
 ### DEPENDENCIES
 
