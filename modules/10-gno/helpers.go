@@ -11,8 +11,17 @@ import (
 )
 
 // ConvertToGnoValidatorSet converts a protobuf ValidatorSet to a bfttypes.ValidatorSet.
-// It returns an error if any validator has a non-ed25519 public key or if the resulting
-// validator set is nil or empty.
+// It returns an error if any validator has a non-ed25519 public key, an invalid address,
+// non-positive or out-of-bounds voting power, if any address is duplicated, if the total
+// voting power exceeds the allowed bound, or if the resulting validator set is nil or empty.
+//
+// Unlike Gno's NewValidatorSet constructor (which sorts validators by address), this function
+// preserves the input order because GetByIndex-based commit verification relies on the proto
+// validator set ordering matching the commit precommit ordering. The validation below therefore
+// replicates the safety checks performed by Gno's updateWithChangeSet/processChanges without
+// reordering the set. Skipping these checks would allow a relayer-supplied set with negative
+// voting power to produce a negative total, making the +2/3 commit threshold negative and
+// satisfiable by a single signature.
 func ConvertToGnoValidatorSet(valSet *ValidatorSet) (*bfttypes.ValidatorSet, error) {
 	if valSet == nil {
 		return nil, errorsmod.Wrap(clienttypes.ErrInvalidHeader, "validator set is nil")
@@ -23,6 +32,8 @@ func ConvertToGnoValidatorSet(valSet *ValidatorSet) (*bfttypes.ValidatorSet, err
 		Proposer:   nil,
 	}
 
+	seen := make(map[string]struct{}, len(valSet.Validators))
+	totalVotingPower := int64(0)
 	for i, val := range valSet.Validators {
 		key := val.PubKey
 		if key.GetEd25519() == nil {
@@ -32,6 +43,25 @@ func ConvertToGnoValidatorSet(valSet *ValidatorSet) (*bfttypes.ValidatorSet, err
 		if err != nil {
 			return nil, errorsmod.Wrap(clienttypes.ErrInvalidHeader, "invalid validator address")
 		}
+		if _, ok := seen[val.Address]; ok {
+			return nil, errorsmod.Wrapf(ErrInvalidValidatorSet, "duplicate validator address %s", val.Address)
+		}
+		seen[val.Address] = struct{}{}
+
+		// Reject non-positive voting power: a real Gno validator set never contains
+		// negative- or zero-power members (zero-power entries are removed during updates).
+		// A negative power would corrupt the total and the +2/3 commit threshold.
+		if val.VotingPower <= 0 {
+			return nil, errorsmod.Wrapf(ErrInvalidValidatorSet, "validator %s has non-positive voting power %d", val.Address, val.VotingPower)
+		}
+		if val.VotingPower > bfttypes.MaxTotalVotingPower {
+			return nil, errorsmod.Wrapf(ErrInvalidValidatorSet, "validator %s voting power %d exceeds max %d", val.Address, val.VotingPower, bfttypes.MaxTotalVotingPower)
+		}
+		totalVotingPower += val.VotingPower
+		if totalVotingPower > bfttypes.MaxTotalVotingPower {
+			return nil, errorsmod.Wrapf(ErrInvalidValidatorSet, "total voting power exceeds max %d", bfttypes.MaxTotalVotingPower)
+		}
+
 		gnoValset.Validators[i] = &bfttypes.Validator{
 			Address:          address,
 			PubKey:           ed25519.PubKeyEd25519(key.GetEd25519()),
