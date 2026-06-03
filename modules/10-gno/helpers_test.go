@@ -5,6 +5,10 @@ import (
 	"testing"
 	"time"
 
+	bfttypes "github.com/gnolang/gno/tm2/pkg/bft/types"
+	"github.com/gnolang/gno/tm2/pkg/crypto"
+	"github.com/gnolang/gno/tm2/pkg/crypto/ed25519"
+
 	"github.com/stretchr/testify/require"
 )
 
@@ -57,6 +61,85 @@ func TestConvertToGnoCommit_AllAbsent(t *testing.T) {
 
 	for i, pc := range gnoCommit.Precommits {
 		require.Nil(t, pc, "precommit %d should be nil for absent validator", i)
+	}
+}
+
+// TestConvertToGnoValidatorSet_RejectsMalformedSets ensures that
+// ConvertToGnoValidatorSet validates relayer-supplied validator sets the same way
+// Gno's NewValidatorSet constructor does. A set containing negative voting power must
+// be rejected: otherwise the total voting power can become negative, making the +2/3
+// commit threshold negative and satisfiable by a single signature, which would allow a
+// forged light-client update.
+func TestConvertToGnoValidatorSet_RejectsMalformedSets(t *testing.T) {
+	valA, keyA := createTestValidator(1)
+	valB, keyB := createTestValidator(10)
+	// A duplicate of valA (same address) for the duplicate-address case.
+	dupA := createTestValidatorWithKey(5, keyA)
+
+	t.Run("negative voting power", func(t *testing.T) {
+		neg := createTestValidatorWithKey(-10, keyB)
+		_, err := ConvertToGnoValidatorSet(&ValidatorSet{Validators: []*Validator{valA, neg}})
+		require.Error(t, err)
+		require.ErrorIs(t, err, ErrInvalidValidatorSet)
+
+		// Sanity check: Gno's own constructor also rejects this set.
+		require.Panics(t, func() {
+			bfttypes.NewValidatorSet([]*bfttypes.Validator{
+				toBftValidator(valA), toBftValidator(neg),
+			})
+		})
+	})
+
+	t.Run("zero voting power", func(t *testing.T) {
+		zero := createTestValidatorWithKey(0, keyB)
+		_, err := ConvertToGnoValidatorSet(&ValidatorSet{Validators: []*Validator{valA, zero}})
+		require.Error(t, err)
+		require.ErrorIs(t, err, ErrInvalidValidatorSet)
+	})
+
+	t.Run("duplicate address", func(t *testing.T) {
+		_, err := ConvertToGnoValidatorSet(&ValidatorSet{Validators: []*Validator{valA, dupA}})
+		require.Error(t, err)
+		require.ErrorIs(t, err, ErrInvalidValidatorSet)
+	})
+
+	t.Run("voting power exceeds max", func(t *testing.T) {
+		tooBig := createTestValidatorWithKey(bfttypes.MaxTotalVotingPower+1, keyB)
+		_, err := ConvertToGnoValidatorSet(&ValidatorSet{Validators: []*Validator{tooBig}})
+		require.Error(t, err)
+		require.ErrorIs(t, err, ErrInvalidValidatorSet)
+	})
+
+	t.Run("total voting power exceeds max", func(t *testing.T) {
+		half := createTestValidatorWithKey(bfttypes.MaxTotalVotingPower-1, keyA)
+		half2 := createTestValidatorWithKey(bfttypes.MaxTotalVotingPower-1, keyB)
+		_, err := ConvertToGnoValidatorSet(&ValidatorSet{Validators: []*Validator{half, half2}})
+		require.Error(t, err)
+		require.ErrorIs(t, err, ErrInvalidValidatorSet)
+	})
+
+	t.Run("valid set is accepted with order and total preserved", func(t *testing.T) {
+		vals, err := ConvertToGnoValidatorSet(&ValidatorSet{Validators: []*Validator{valA, valB}})
+		require.NoError(t, err)
+		require.Equal(t, int64(11), vals.TotalVotingPower())
+		require.Len(t, vals.Validators, 2)
+		// Input order must be preserved (commit verification relies on index ordering).
+		require.Equal(t, valA.Address, vals.Validators[0].Address.String())
+		require.Equal(t, valB.Address, vals.Validators[1].Address.String())
+	})
+}
+
+// toBftValidator converts a proto test Validator to a bfttypes.Validator for
+// cross-checking against Gno's native constructor.
+func toBftValidator(v *Validator) *bfttypes.Validator {
+	addr, err := crypto.AddressFromString(v.Address)
+	if err != nil {
+		panic(err)
+	}
+	return &bfttypes.Validator{
+		Address:     addr,
+		PubKey:      ed25519.PubKeyEd25519(v.PubKey.GetEd25519()),
+		VotingPower: v.VotingPower,
 	}
 }
 
