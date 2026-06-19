@@ -23,6 +23,9 @@
 - Upgrade CometBFT to v0.38.19 to fix security issue (ASA-2025-003) [#234](https://github.com/atomone-hub/atomone/pull/234)
 - Upgrade CometBFT to v0.38.21 to fix security issue (CSA-2026-001) [#270](https://github.com/atomone-hub/atomone/pull/270)
 - Upgrade CometBFT to v0.38.23 to fix security issue [#332](https://github.com/atomone-hub/atomone/pull/332)
+- Upgrade ibc-go to v10.7.0 [#343](https://github.com/atomone-hub/atomone/pull/343)
+- Upgrade Go to 1.26.4 to fix standard library security issues reported by `govulncheck` [#343](https://github.com/atomone-hub/atomone/pull/343)
+- Upgrade `golang.org/x/net`, `google.golang.org/grpc`, `github.com/go-jose/go-jose/v4`, `github.com/go-viper/mapstructure/v2`, and `github.com/ethereum/go-ethereum` to fix security issues reported by `govulncheck` [#343](https://github.com/atomone-hub/atomone/pull/343)
 
 ### FEATURES
 
