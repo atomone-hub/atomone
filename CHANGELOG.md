@@ -1,8 +1,8 @@
 # CHANGELOG
 
-## Unreleased
+## v4.0.0
 
-*Release date*
+*Jun 22nd, 2026*
 
 ### API BREAKING
 
@@ -21,6 +21,7 @@
 
 ### DEPENDENCIES
 
+- Upgrade Cosmos SDK to the Atom One `v0.50` fork (`v0.500.0`) [#340](https://github.com/atomone-hub/atomone/pull/340) [#346](https://github.com/atomone-hub/atomone/pull/346)
 - Upgrade CometBFT to v0.38.19 to fix security issue (ASA-2025-003) [#234](https://github.com/atomone-hub/atomone/pull/234)
 - Upgrade CometBFT to v0.38.21 to fix security issue (CSA-2026-001) [#270](https://github.com/atomone-hub/atomone/pull/270)
 - Upgrade CometBFT to v0.38.23 to fix security issue [#332](https://github.com/atomone-hub/atomone/pull/332)
