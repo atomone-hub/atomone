@@ -17,6 +17,7 @@
 - Fix broken testnet subcommands [#337](https://github.com/atomone-hub/atomone/pull/337)
 - Use checked addition when computing `10-gno` light client delay periods to avoid `uint64` overflow bypassing the delay gate [#341](https://github.com/atomone-hub/atomone/pull/341)
 - Validate `10-gno` validator sets during conversion (reject negative/zero voting power, duplicate addresses, and out-of-bounds totals) to prevent forged light client updates [#341](https://github.com/atomone-hub/atomone/pull/341)
+- Limit `authz.MsgExec` nesting depth for ante decorators and coredaos veto message [#344](https://github.com/atomone-hub/atomone/pull/344)
 
 ### DEPENDENCIES
 
