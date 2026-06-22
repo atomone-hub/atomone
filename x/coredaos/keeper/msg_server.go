@@ -386,7 +386,11 @@ func (ms MsgServer) VetoProposal(goCtx context.Context, msg *types.MsgVetoPropos
 	// Check if the proposal contains a change of the oversight DAO address.
 	// If so, vetoing the proposal would create a scenario where the current oversight DAO can prevent its own replacement.
 	// authz.MsgExec wrappers are expanded recursively so the check cannot be bypassed by wrapping MsgUpdateParams.
-	for _, flatMsg := range types.FlattenAnyMsgs(ms.k.cdc, proposal.Messages) {
+	effectiveMsgs, err := types.FlattenAnyMsgs(ms.k.cdc, proposal.Messages)
+	if err != nil {
+		return nil, err
+	}
+	for _, flatMsg := range effectiveMsgs {
 		updateParamsMsg, ok := flatMsg.(*types.MsgUpdateParams)
 		if !ok {
 			continue
