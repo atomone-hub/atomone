@@ -48,7 +48,7 @@ func CreateUpgradeHandler(
 			return vm, err
 		}
 
-		if err := migrateStakingParams(ctx, keepers.StakingKeeper); err != nil {
+		if err := MigrateStakingParams(ctx, keepers.StakingKeeper); err != nil {
 			return vm, err
 		}
 
@@ -609,11 +609,11 @@ func governorValSharesValueCodec(cdc codec.Codec) collcodec.ValueCodec[sdkgovv1.
 	})
 }
 
-// migrateStakingParams sets the chain-wide commission to the
+// MigrateStakingParams sets the chain-wide commission to the
 // constitutionally-mandated 5% and updates all existing validator's commission
 // accordingly. It also initializes the KeyRotationFee param introduced by the
 // consensus pubkey rotation feature.
-func migrateStakingParams(ctx context.Context, stakingKeeper *stakingkeeper.Keeper) error {
+func MigrateStakingParams(ctx context.Context, stakingKeeper *stakingkeeper.Keeper) error {
 	// Set chain-wide commission to 5%
 	params, err := stakingKeeper.GetParams(ctx)
 	if err != nil {
