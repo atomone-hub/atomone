@@ -219,6 +219,8 @@ func NewAppKeeper(
 		authorityStr,
 	)
 
+	appKeepers.StakingKeeper.SetDistributionKeeper(appKeepers.DistrKeeper)
+
 	appKeepers.EpochsKeeper = epochskeeper.NewKeeper(
 		runtime.NewKVStoreService(appKeepers.keys[epochstypes.StoreKey]),
 		appCodec,

@@ -15,7 +15,7 @@ DOCKER := $(shell which docker)
 BUILDDIR ?= $(CURDIR)/build
 TEST_DOCKER_REPO=cosmos/contrib-atomonetest
 
-GO_SYSTEM_VERSION = $(shell go env GOVERSION | cut -c 3-)
+GO_SYSTEM_VERSION = $(shell go env GOVERSION | sed 's/^go//;s/-.*//')
 GO_REQUIRED_VERSION = $(shell go list -f {{.GoVersion}} -m)
 
 # command to run dependency utilities

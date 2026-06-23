@@ -48,7 +48,7 @@ func CreateUpgradeHandler(
 			return vm, err
 		}
 
-		if err := migrateValidatorsCommission(ctx, keepers.StakingKeeper); err != nil {
+		if err := MigrateStakingParams(ctx, keepers.StakingKeeper); err != nil {
 			return vm, err
 		}
 
@@ -609,8 +609,11 @@ func governorValSharesValueCodec(cdc codec.Codec) collcodec.ValueCodec[sdkgovv1.
 	})
 }
 
-// migrateValidatorsCommission sets the chain-wide commission to the constitutionally-mandated 5% and updates all existing validator's commission accordingly.
-func migrateValidatorsCommission(ctx context.Context, stakingKeeper *stakingkeeper.Keeper) error {
+// MigrateStakingParams sets the chain-wide commission to the
+// constitutionally-mandated 5% and updates all existing validator's commission
+// accordingly. It also initializes the KeyRotationFee param introduced by the
+// consensus pubkey rotation feature.
+func MigrateStakingParams(ctx context.Context, stakingKeeper *stakingkeeper.Keeper) error {
 	// Set chain-wide commission to 5%
 	params, err := stakingKeeper.GetParams(ctx)
 	if err != nil {
@@ -621,6 +624,10 @@ func migrateValidatorsCommission(ctx context.Context, stakingKeeper *stakingkeep
 
 	params.MaxCommissionRate = fivePercent
 	params.MinCommissionRate = fivePercent
+
+	// Initialize the consensus pubkey rotation fee to 100 ATONEs
+	params.KeyRotationFee = sdk.NewCoin(params.BondDenom, math.NewInt(100_000000))
+
 	if err := stakingKeeper.SetParams(ctx, params); err != nil {
 		return err
 	}
