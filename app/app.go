@@ -59,7 +59,6 @@ import (
 	atomoneante "github.com/atomone-hub/atomone/ante"
 	"github.com/atomone-hub/atomone/app/keepers"
 	"github.com/atomone-hub/atomone/app/upgrades"
-	v4 "github.com/atomone-hub/atomone/app/upgrades/v4"
 	v41 "github.com/atomone-hub/atomone/app/upgrades/v4_1"
 	"github.com/atomone-hub/atomone/client/docs"
 	atomonepost "github.com/atomone-hub/atomone/post"
@@ -69,7 +68,7 @@ var (
 	// DefaultNodeHome default home directories for the application daemon
 	DefaultNodeHome string
 
-	Upgrades = []upgrades.Upgrade{v4.Upgrade, v41.Upgrade}
+	Upgrades = []upgrades.Upgrade{v41.Upgrade}
 )
 
 var (
