@@ -625,8 +625,8 @@ func MigrateStakingParams(ctx context.Context, stakingKeeper *stakingkeeper.Keep
 	params.MaxCommissionRate = fivePercent
 	params.MinCommissionRate = fivePercent
 
-	// Initialize the consensus pubkey rotation fee to 1 ATONE, denominated in the chain bond denom.
-	params.KeyRotationFee = sdk.NewCoin(params.BondDenom, math.NewInt(1_000_000))
+	// Initialize the consensus pubkey rotation fee to 100 ATONEs
+	params.KeyRotationFee = sdk.NewCoin(params.BondDenom, math.NewInt(100_000000))
 
 	if err := stakingKeeper.SetParams(ctx, params); err != nil {
 		return err
