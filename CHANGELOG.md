@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## Unreleased
+
+### API BREAKING
+
+### BUG FIXES
+
+- Prevent bundling the wildcard symbol in `TxFeeExceptions` with other exceptions in `x/photon` [#352](https://github.com/atomone-hub/atomone/pull/352)
+
+### DEPENDENCIES
+
+### FEATURES
+
+### STATE BREAKING
+
+### IMPROVEMENTS
+
 ## v4.0.0
 
 *Jun 23nd, 2026*
