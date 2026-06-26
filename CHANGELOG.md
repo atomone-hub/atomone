@@ -16,6 +16,8 @@
 
 ### IMPROVEMENTS
 
+- migrate `x/coredaos` away from atomone `x/gov` wrapper [#353](https://github.com/atomone-hub/atomone/pull/353)
+
 ## v4.0.0
 
 *Jun 23nd, 2026*
