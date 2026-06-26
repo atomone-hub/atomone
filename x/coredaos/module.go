@@ -18,12 +18,13 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	"github.com/atomone-hub/atomone/x/coredaos/client/cli"
 	"github.com/atomone-hub/atomone/x/coredaos/keeper"
 	"github.com/atomone-hub/atomone/x/coredaos/types"
 	modulev1 "github.com/atomone-hub/atomone/x/coredaos/types/module"
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 )
 
 // ConsensusVersion is the x/coredaos module's consensus version identifier.
@@ -105,7 +106,7 @@ type AppModule struct {
 	AppModuleBasic
 
 	keeper        keeper.Keeper
-	govKeeper     types.GovKeeper
+	govKeeper     *govkeeper.Keeper
 	stakingKeeper types.StakingKeeper
 	accountKeeper types.AccountKeeper
 	bankKeeper    types.BankKeeper
@@ -114,7 +115,7 @@ type AppModule struct {
 func NewAppModule(
 	cdc codec.Codec,
 	keeper keeper.Keeper,
-	gk types.GovKeeper,
+	gk *govkeeper.Keeper,
 	sk types.StakingKeeper,
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
@@ -176,7 +177,7 @@ type Inputs struct {
 	StoreService store.KVStoreService
 	Cdc          codec.Codec
 
-	GovKeeper     types.GovKeeper
+	GovKeeper     *govkeeper.Keeper
 	StakingKeeper types.StakingKeeper
 	AccountKeeper types.AccountKeeper
 	BankKeeper    types.BankKeeper

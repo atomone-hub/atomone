@@ -7,6 +7,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
 
 	"github.com/atomone-hub/atomone/x/coredaos/types"
 )
@@ -16,7 +17,7 @@ type Keeper struct {
 	storeService store.KVStoreService
 	authority    string
 
-	govKeeper     types.GovKeeper
+	govKeeper     *govkeeper.Keeper
 	stakingKeeper types.StakingKeeper
 
 	Schema collections.Schema
@@ -27,7 +28,7 @@ func NewKeeper(
 	cdc codec.BinaryCodec,
 	storeService store.KVStoreService,
 	authority string,
-	govKeeper types.GovKeeper,
+	govKeeper *govkeeper.Keeper,
 	stakingKeeper types.StakingKeeper,
 ) *Keeper {
 	if _, err := sdk.AccAddressFromBech32(authority); err != nil {

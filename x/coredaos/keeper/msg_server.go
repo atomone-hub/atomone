@@ -4,15 +4,15 @@ import (
 	"context"
 	"fmt"
 
+	"cosmossdk.io/collections"
 	"cosmossdk.io/errors"
 	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkgovtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	govv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 
 	"github.com/atomone-hub/atomone/x/coredaos/types"
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
-	govtypesv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 )
 
 var _ types.MsgServer = (*MsgServer)(nil)
@@ -107,17 +107,17 @@ func (ms MsgServer) AnnotateProposal(goCtx context.Context, msg *types.MsgAnnota
 		return nil, types.ErrInvalidSigner.Wrapf("invalid authority; expected %s, got %s", params.SteeringDaoAddress, msg.Annotator)
 	}
 
-	proposal, found := ms.k.govKeeper.GetProposal(ctx, msg.ProposalId)
-	if !found {
+	proposal, err := ms.k.govKeeper.Proposals.Get(ctx, msg.ProposalId)
+	if err != nil {
 		logger.Error(
 			"proposal not found",
 			"proposal_id", msg.ProposalId,
 			"authority", msg.Annotator,
 		)
 
-		return nil, govtypes.ErrUnknownProposal.Wrapf("proposal with ID %d not found", msg.ProposalId)
+		return nil, types.ErrUnknownProposal.Wrapf("proposal with ID %d not found", msg.ProposalId)
 	}
-	if proposal.Status != govtypesv1.StatusVotingPeriod {
+	if proposal.Status != govv1.StatusVotingPeriod {
 		logger.Error(
 			"proposal is not in voting period",
 			"proposal", proposal.Id,
@@ -140,7 +140,9 @@ func (ms MsgServer) AnnotateProposal(goCtx context.Context, msg *types.MsgAnnota
 	}
 
 	proposal.Annotation = msg.Annotation
-	ms.k.govKeeper.SetProposal(ctx, proposal)
+	if err := ms.k.govKeeper.SetProposal(ctx, proposal); err != nil {
+		return nil, errors.Wrapf(err, "error setting proposal")
+	}
 
 	logger.Info(
 		"proposal annotated",
@@ -185,17 +187,17 @@ func (ms MsgServer) EndorseProposal(goCtx context.Context, msg *types.MsgEndorse
 		return nil, types.ErrInvalidSigner.Wrapf("invalid authority; expected %s, got %s", params.SteeringDaoAddress, msg.Endorser)
 	}
 
-	proposal, found := ms.k.govKeeper.GetProposal(ctx, msg.ProposalId)
-	if !found {
+	proposal, err := ms.k.govKeeper.Proposals.Get(ctx, msg.ProposalId)
+	if err != nil {
 		logger.Error(
 			"proposal not found",
 			"proposal_id", msg.ProposalId,
 			"authority", msg.Endorser,
 		)
 
-		return nil, govtypes.ErrUnknownProposal.Wrapf("proposal with ID %d not found", msg.ProposalId)
+		return nil, types.ErrUnknownProposal.Wrapf("proposal with ID %d not found", msg.ProposalId)
 	}
-	if proposal.Status != govtypesv1.StatusVotingPeriod {
+	if proposal.Status != govv1.StatusVotingPeriod {
 		logger.Error(
 			"proposal is not in voting period",
 			"proposal", proposal.Id,
@@ -216,7 +218,9 @@ func (ms MsgServer) EndorseProposal(goCtx context.Context, msg *types.MsgEndorse
 	}
 
 	proposal.Endorsed = true
-	ms.k.govKeeper.SetProposal(ctx, proposal)
+	if err := ms.k.govKeeper.SetProposal(ctx, proposal); err != nil {
+		return nil, errors.Wrapf(err, "error setting proposal")
+	}
 
 	logger.Info(
 		"proposal endorsed",
@@ -274,17 +278,17 @@ func (ms MsgServer) ExtendVotingPeriod(goCtx context.Context, msg *types.MsgExte
 		return nil, types.ErrInvalidSigner.Wrapf("invalid authority; expected %s, got %s", addressesString, msg.Extender)
 	}
 
-	proposal, found := ms.k.govKeeper.GetProposal(ctx, msg.ProposalId)
-	if !found {
+	proposal, err := ms.k.govKeeper.Proposals.Get(ctx, msg.ProposalId)
+	if err != nil {
 		logger.Error(
 			"proposal not found",
 			"proposal_id", msg.ProposalId,
 			"authority", msg.Extender,
 		)
 
-		return nil, govtypes.ErrUnknownProposal.Wrapf("proposal with ID %d not found", msg.ProposalId)
+		return nil, types.ErrUnknownProposal.Wrapf("proposal with ID %d not found", msg.ProposalId)
 	}
-	if proposal.Status != govtypesv1.StatusVotingPeriod {
+	if proposal.Status != govv1.StatusVotingPeriod {
 		logger.Error(
 			"proposal is not in voting period",
 			"proposal", proposal.Id,
@@ -308,12 +312,18 @@ func (ms MsgServer) ExtendVotingPeriod(goCtx context.Context, msg *types.MsgExte
 	newEndTime := proposal.VotingEndTime.Add(*params.VotingPeriodExtensionDuration)
 
 	// Update ActiveProposalsQueue with new VotingEndTime
-	ms.k.govKeeper.RemoveFromActiveProposalQueue(ctx, proposal.Id, *proposal.VotingEndTime)
+	if err := ms.k.govKeeper.ActiveProposalsQueue.Remove(ctx, collections.Join(*proposal.VotingEndTime, proposal.Id)); err != nil {
+		return nil, errors.Wrapf(err, "error removing proposal from active proposal queue")
+	}
 	proposal.VotingEndTime = &newEndTime
-	ms.k.govKeeper.InsertActiveProposalQueue(ctx, proposal.Id, *proposal.VotingEndTime)
+	if err := ms.k.govKeeper.ActiveProposalsQueue.Set(ctx, collections.Join(*proposal.VotingEndTime, proposal.Id), proposal.Id); err != nil {
+		return nil, errors.Wrapf(err, "error inserting proposal into active proposal queue")
+	}
 
 	proposal.TimesVotingPeriodExtended++
-	ms.k.govKeeper.SetProposal(ctx, proposal)
+	if err := ms.k.govKeeper.SetProposal(ctx, proposal); err != nil {
+		return nil, errors.Wrapf(err, "error setting proposal")
+	}
 
 	logger.Info(
 		"voting period extended",
@@ -362,17 +372,17 @@ func (ms MsgServer) VetoProposal(goCtx context.Context, msg *types.MsgVetoPropos
 		return nil, types.ErrInvalidSigner.Wrapf("invalid authority; expected %s, got %s", params.OversightDaoAddress, msg.Vetoer)
 	}
 
-	proposal, found := ms.k.govKeeper.GetProposal(ctx, msg.ProposalId)
-	if !found {
+	proposal, err := ms.k.govKeeper.Proposals.Get(ctx, msg.ProposalId)
+	if err != nil {
 		logger.Error(
 			"proposal not found",
 			"proposal_id", msg.ProposalId,
 			"authority", msg.Vetoer,
 		)
 
-		return nil, govtypes.ErrUnknownProposal.Wrapf("proposal with ID %d not found", msg.ProposalId)
+		return nil, types.ErrUnknownProposal.Wrapf("proposal with ID %d not found", msg.ProposalId)
 	}
-	if proposal.Status != govtypesv1.StatusVotingPeriod {
+	if proposal.Status != govv1.StatusVotingPeriod {
 		logger.Error(
 			"proposal is not in voting period",
 			"proposal", proposal.Id,
@@ -411,23 +421,35 @@ func (ms MsgServer) VetoProposal(goCtx context.Context, msg *types.MsgVetoPropos
 
 	// follows the same logic as in x/gov/abci.go for rejected proposals
 	if msg.BurnDeposit {
-		ms.k.govKeeper.DeleteAndBurnDeposits(ctx, proposal.Id)
+		if err := ms.k.govKeeper.DeleteAndBurnDeposits(ctx, proposal.Id); err != nil {
+			return nil, errors.Wrapf(err, "error deleting and burning deposits")
+		}
 	} else {
-		ms.k.govKeeper.RefundAndDeleteDeposits(ctx, proposal.Id)
+		if err := ms.k.govKeeper.RefundAndDeleteDeposits(ctx, proposal.Id); err != nil {
+			return nil, errors.Wrapf(err, "error refunding and deleting deposits")
+		}
 	}
-	proposal.Status = govtypesv1.StatusVetoed
+	proposal.Status = govv1.StatusVetoed
 
 	// Since the proposal is vetoed, we set the final tally result to an empty tally
 	// and the voting period ends immediately
-	emptyTally := govtypesv1.EmptyTallyResult()
+	emptyTally := govv1.EmptyTallyResult()
 	proposal.FinalTallyResult = &emptyTally
 	origEndTime := proposal.VotingEndTime
 	blockTime := ctx.BlockTime()
 	proposal.VotingEndTime = &blockTime
 
-	ms.k.govKeeper.SetProposal(ctx, proposal)
-	ms.k.govKeeper.DeleteVotes(ctx, proposal.Id)
-	ms.k.govKeeper.RemoveFromActiveProposalQueue(ctx, proposal.Id, *origEndTime)
+	if err := ms.k.govKeeper.SetProposal(ctx, proposal); err != nil {
+		return nil, errors.Wrapf(err, "error setting proposal")
+	}
+	// Delete all votes for the proposal. Votes are stored as
+	// collections.Map[collections.Pair[uint64, sdk.AccAddress], v1.Vote].
+	if err := ms.k.govKeeper.Votes.Clear(ctx, collections.NewPrefixedPairRange[uint64, sdk.AccAddress](proposal.Id)); err != nil {
+		return nil, errors.Wrapf(err, "error deleting votes")
+	}
+	if err := ms.k.govKeeper.ActiveProposalsQueue.Remove(ctx, collections.Join(*origEndTime, proposal.Id)); err != nil {
+		return nil, errors.Wrapf(err, "error removing proposal from active proposal queue")
+	}
 
 	ms.k.govKeeper.UpdateMinInitialDeposit(ctx, true)
 	ms.k.govKeeper.UpdateMinDeposit(ctx, true)
