@@ -276,7 +276,6 @@ func NewAtomOneApp(
 			// If TxFeeChecker is nil the default ante TxFeeChecker is used
 			TxFeeChecker:     nil,
 			DynamicfeeKeeper: app.DynamicfeeKeeper,
-			CoreDAOsKeeper:   app.CoreDaosKeeper,
 		},
 	)
 	if err != nil {
