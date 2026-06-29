@@ -16,14 +16,13 @@ import (
 	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/authz"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	"github.com/atomone-hub/atomone/x/coredaos/keeper"
 	"github.com/atomone-hub/atomone/x/coredaos/types"
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
 )
 
 type Mocks struct {
-	GovKeeper     *MockGovKeeper
 	StakingKeeper *MockStakingKeeper
 }
 
@@ -41,7 +40,6 @@ func SetupCoredaosKeeper(t *testing.T) (
 	t.Helper()
 	ctrl := gomock.NewController(t)
 	m := Mocks{
-		GovKeeper:     NewMockGovKeeper(ctrl),
 		StakingKeeper: NewMockStakingKeeper(ctrl),
 	}
 
@@ -53,5 +51,8 @@ func SetupCoredaosKeeper(t *testing.T) (
 	types.RegisterInterfaces(encCfg.InterfaceRegistry)
 	authz.RegisterInterfaces(encCfg.InterfaceRegistry)
 	authority := authtypes.NewModuleAddress(govtypes.ModuleName).String()
-	return keeper.NewKeeper(encCfg.Codec, storeService, authority, m.GovKeeper, m.StakingKeeper), m, ctx
+	// The gov keeper is not exercised by tests that use this lightweight
+	// harness (e.g. UpdateParams), so a nil gov keeper is sufficient here.
+	// Tests that interact with gov use the full app via helpers.Setup.
+	return keeper.NewKeeper(encCfg.Codec, storeService, authority, nil, m.StakingKeeper), m, ctx
 }

@@ -7,17 +7,25 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+
+	"cosmossdk.io/collections"
 	"cosmossdk.io/math"
 
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdktx "github.com/cosmos/cosmos-sdk/types/tx"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/authz"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	govv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 
+	atomoneapp "github.com/atomone-hub/atomone/app"
+	"github.com/atomone-hub/atomone/app/helpers"
+	coredaoskeeper "github.com/atomone-hub/atomone/x/coredaos/keeper"
 	"github.com/atomone-hub/atomone/x/coredaos/testutil"
 	"github.com/atomone-hub/atomone/x/coredaos/types"
-	govtypesv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 )
 
 func TestMsgServerUpdateParams(t *testing.T) {
@@ -282,41 +290,67 @@ func TestMsgServerUpdateParams(t *testing.T) {
 	}
 }
 
+// govModuleAddr returns the gov module account address, which is the required
+// signer for all messages contained in a governance proposal.
+func govModuleAddr() string {
+	return authtypes.NewModuleAddress(govtypes.ModuleName).String()
+}
+
+// collectionsJoin is a small alias to build the composite key used by the
+// gov ActiveProposalsQueue (Pair[time.Time, uint64]).
+func collectionsJoin(t time.Time, id uint64) collections.Pair[time.Time, uint64] {
+	return collections.Join(t, id)
+}
+
+// submitProposalReal submits a proposal with the given messages into the real
+// gov keeper. The proposal is left in the deposit period unless activate is
+// true, in which case it is moved to the voting period.
+func submitProposalReal(t *testing.T, app *atomoneapp.AtomOneApp, ctx sdk.Context, msgs []sdk.Msg, activate bool) govv1.Proposal {
+	t.Helper()
+	govAddr := authtypes.NewModuleAddress(govtypes.ModuleName)
+	proposal, err := app.GovKeeper.SubmitProposal(ctx, msgs, "", "title", "summary", govAddr)
+	require.NoError(t, err)
+	if activate {
+		require.NoError(t, app.GovKeeper.ActivateVotingPeriod(ctx, proposal))
+		// re-fetch to get the populated VotingEndTime / StatusVotingPeriod
+		proposal, err = app.GovKeeper.Proposals.Get(ctx, proposal.Id)
+		require.NoError(t, err)
+	}
+	return proposal
+}
+
+// submitBankSendProposalReal submits a proposal whose only message is a bank
+// MsgSend signed by the gov module account.
+func submitBankSendProposalReal(t *testing.T, app *atomoneapp.AtomOneApp, ctx sdk.Context, activate bool) govv1.Proposal {
+	t.Helper()
+	govAddr := authtypes.NewModuleAddress(govtypes.ModuleName)
+	recipient := sdk.AccAddress([]byte("recipient___________"))
+	sendMsg := banktypes.NewMsgSend(govAddr, recipient, sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(1))))
+	return submitProposalReal(t, app, ctx, []sdk.Msg{sendMsg}, activate)
+}
+
 func TestMsgServerAnnotateProposal(t *testing.T) {
 	testAcc := simtestutil.CreateRandomAccounts(2)
 	annotatorAcc := testAcc[0].String()
 	steeringDAOAcc := testAcc[1].String()
-	votingPeriodProposal := govtypesv1.Proposal{
-		Title:   "Test Proposal",
-		Summary: "A proposal",
-		Id:      1,
-		Status:  govtypesv1.StatusVotingPeriod,
-	}
-	votingPeriodProposalWithAnnotation := govtypesv1.Proposal{
-		Title:      "Test Proposal",
-		Summary:    "A proposal",
-		Id:         1,
-		Status:     govtypesv1.StatusVotingPeriod,
-		Annotation: "Something",
-	}
-	depositPeriodProposal := govtypesv1.Proposal{
-		Title:   "Test Proposal",
-		Summary: "A proposal",
-		Id:      2,
-		Status:  govtypesv1.StatusDepositPeriod,
-	}
+
 	tests := []struct {
-		name           string
-		msg            *types.MsgAnnotateProposal
-		expectedErr    string
-		setupMocks     func(sdk.Context, *testutil.Mocks)
+		name        string
+		msg         *types.MsgAnnotateProposal
+		expectedErr string
+		// proposalState describes how to set up the proposal in the real gov
+		// keeper before calling the method: "none", "voting", "deposit",
+		// "voting-annotated".
+		proposalState  string
 		setSteeringDAO bool
+		// assertAnnotation, if non-empty, is the expected annotation after a
+		// successful call.
+		assertAnnotation string
 	}{
 		{
 			name:        "empty msg",
 			msg:         &types.MsgAnnotateProposal{},
 			expectedErr: "invalid annotator address: empty address string is not allowed: invalid address",
-			setupMocks:  func(ctx sdk.Context, m *testutil.Mocks) {},
 		},
 		{
 			name: "wrong addr annotator",
@@ -324,7 +358,6 @@ func TestMsgServerAnnotateProposal(t *testing.T) {
 				Annotator: "cosmosincorrectaddress",
 			},
 			expectedErr: "invalid annotator address: decoding bech32 failed: invalid separator index -1: invalid address",
-			setupMocks:  func(ctx sdk.Context, m *testutil.Mocks) {},
 		},
 		{
 			name: "empty annotation",
@@ -332,7 +365,6 @@ func TestMsgServerAnnotateProposal(t *testing.T) {
 				Annotator: annotatorAcc,
 			},
 			expectedErr: "annotation cannot be empty: invalid request",
-			setupMocks:  func(ctx sdk.Context, m *testutil.Mocks) {},
 		},
 		{
 			name: "annotator empty annotation",
@@ -341,7 +373,6 @@ func TestMsgServerAnnotateProposal(t *testing.T) {
 				Annotation: "Something",
 			},
 			expectedErr: "Steering DAO address is not set: function is disabled",
-			setupMocks:  func(ctx sdk.Context, m *testutil.Mocks) {},
 		},
 		{
 			name: "wrong annotator account",
@@ -350,7 +381,6 @@ func TestMsgServerAnnotateProposal(t *testing.T) {
 				Annotation: "Something",
 			},
 			expectedErr:    "invalid authority; expected " + steeringDAOAcc + ", got " + annotatorAcc + ": expected core DAO account as only signer for this message",
-			setupMocks:     func(ctx sdk.Context, m *testutil.Mocks) {},
 			setSteeringDAO: true,
 		},
 		{
@@ -358,11 +388,10 @@ func TestMsgServerAnnotateProposal(t *testing.T) {
 			msg: &types.MsgAnnotateProposal{
 				Annotator:  steeringDAOAcc,
 				Annotation: "Something",
+				ProposalId: 9999,
 			},
-			expectedErr: "proposal with ID 0 not found: unknown proposal",
-			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
-				m.GovKeeper.EXPECT().GetProposal(ctx, uint64(0)).Return(govtypesv1.Proposal{}, false)
-			},
+			expectedErr:    "proposal with ID 9999 not found: unknown proposal",
+			proposalState:  "none",
 			setSteeringDAO: true,
 		},
 		{
@@ -370,25 +399,19 @@ func TestMsgServerAnnotateProposal(t *testing.T) {
 			msg: &types.MsgAnnotateProposal{
 				Annotator:  steeringDAOAcc,
 				Annotation: "Something",
-				ProposalId: 1,
 			},
-			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
-				call1 := m.GovKeeper.EXPECT().GetProposal(ctx, uint64(1)).Return(votingPeriodProposal, true)
-				m.GovKeeper.EXPECT().SetProposal(ctx, votingPeriodProposalWithAnnotation).After(call1)
-			},
-			setSteeringDAO: true,
+			proposalState:    "voting",
+			setSteeringDAO:   true,
+			assertAnnotation: "Something",
 		},
 		{
 			name: "proposal not in voting period",
 			msg: &types.MsgAnnotateProposal{
 				Annotator:  steeringDAOAcc,
 				Annotation: "Something",
-				ProposalId: 2,
 			},
-			expectedErr: "proposal with ID 2 is not in voting period: inactive proposal",
-			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
-				m.GovKeeper.EXPECT().GetProposal(ctx, uint64(2)).Return(depositPeriodProposal, true)
-			},
+			expectedErr:    "is not in voting period: inactive proposal",
+			proposalState:  "deposit",
 			setSteeringDAO: true,
 		},
 		{
@@ -396,38 +419,50 @@ func TestMsgServerAnnotateProposal(t *testing.T) {
 			msg: &types.MsgAnnotateProposal{
 				Annotator:  steeringDAOAcc,
 				Annotation: "Something",
-				ProposalId: 3,
 			},
-			expectedErr: "proposal with ID 3 already has an annotation: annotation already present",
-			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
-				m.GovKeeper.EXPECT().GetProposal(ctx, uint64(3)).Return(votingPeriodProposalWithAnnotation, true)
-			},
+			expectedErr:    "already has an annotation: annotation already present",
+			proposalState:  "voting-annotated",
 			setSteeringDAO: true,
 		},
 		{
 			name: "already annotated proposal but overwrite",
 			msg: &types.MsgAnnotateProposal{
 				Annotator:  steeringDAOAcc,
-				Annotation: "Something",
-				ProposalId: 3,
+				Annotation: "New annotation",
 				Overwrite:  true,
 			},
-			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
-				m.GovKeeper.EXPECT().GetProposal(ctx, uint64(3)).Return(votingPeriodProposalWithAnnotation, true)
-				m.GovKeeper.EXPECT().SetProposal(ctx, votingPeriodProposalWithAnnotation)
-			},
-			setSteeringDAO: true,
+			proposalState:    "voting-annotated",
+			setSteeringDAO:   true,
+			assertAnnotation: "New annotation",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ms, k, m, ctx := testutil.SetupMsgServer(t)
-			tt.setupMocks(ctx, &m)
+			app := helpers.Setup(t)
+			ctx := app.NewUncachedContext(true, tmproto.Header{Time: time.Now()})
+			ms := coredaoskeeper.NewMsgServer(app.CoreDaosKeeper)
+
 			params := types.DefaultParams()
 			if tt.setSteeringDAO {
 				params.SteeringDaoAddress = steeringDAOAcc
 			}
-			require.NoError(t, k.Params.Set(ctx, params))
+			require.NoError(t, app.CoreDaosKeeper.Params.Set(ctx, params))
+
+			// Set up the proposal in the real gov keeper as required.
+			switch tt.proposalState {
+			case "voting":
+				p := submitBankSendProposalReal(t, app, ctx, true)
+				tt.msg.ProposalId = p.Id
+			case "deposit":
+				p := submitBankSendProposalReal(t, app, ctx, false)
+				tt.msg.ProposalId = p.Id
+			case "voting-annotated":
+				p := submitBankSendProposalReal(t, app, ctx, true)
+				p.Annotation = "Existing"
+				require.NoError(t, app.GovKeeper.SetProposal(ctx, p))
+				tt.msg.ProposalId = p.Id
+			}
+
 			if err := tt.msg.ValidateBasic(); err != nil {
 				if tt.expectedErr != "" {
 					require.EqualError(t, err, tt.expectedErr)
@@ -437,10 +472,16 @@ func TestMsgServerAnnotateProposal(t *testing.T) {
 			}
 			_, err := ms.AnnotateProposal(ctx, tt.msg)
 			if tt.expectedErr != "" {
-				require.EqualError(t, err, tt.expectedErr)
+				require.Error(t, err)
+				require.Contains(t, err.Error(), tt.expectedErr)
 				return
 			}
 			require.NoError(t, err)
+			if tt.assertAnnotation != "" {
+				got, err := app.GovKeeper.Proposals.Get(ctx, tt.msg.ProposalId)
+				require.NoError(t, err)
+				require.Equal(t, tt.assertAnnotation, got.Annotation)
+			}
 		})
 	}
 }
@@ -449,37 +490,19 @@ func TestMsgServerEndorseProposal(t *testing.T) {
 	testAcc := simtestutil.CreateRandomAccounts(2)
 	endorserAcc := testAcc[0].String()
 	steeringDAOAcc := testAcc[1].String()
-	votingPeriodProposal := govtypesv1.Proposal{
-		Title:   "Test Proposal",
-		Summary: "A proposal",
-		Id:      1,
-		Status:  govtypesv1.StatusVotingPeriod,
-	}
-	votingPeriodProposalWithEndorsement := govtypesv1.Proposal{
-		Title:    "Test Proposal",
-		Summary:  "A proposal",
-		Id:       1,
-		Status:   govtypesv1.StatusVotingPeriod,
-		Endorsed: true,
-	}
-	depositPeriodProposal := govtypesv1.Proposal{
-		Title:   "Test Proposal",
-		Summary: "A proposal",
-		Id:      2,
-		Status:  govtypesv1.StatusDepositPeriod,
-	}
+
 	tests := []struct {
 		name           string
 		msg            *types.MsgEndorseProposal
 		expectedErr    string
-		setupMocks     func(sdk.Context, *testutil.Mocks)
+		proposalState  string
 		setSteeringDAO bool
+		assertEndorsed bool
 	}{
 		{
 			name:        "empty msg",
 			msg:         &types.MsgEndorseProposal{},
 			expectedErr: "invalid endorser address: empty address string is not allowed: invalid address",
-			setupMocks:  func(ctx sdk.Context, m *testutil.Mocks) {},
 		},
 		{
 			name: "wrong addr endorser",
@@ -487,7 +510,6 @@ func TestMsgServerEndorseProposal(t *testing.T) {
 				Endorser: "cosmosincorrectaddress",
 			},
 			expectedErr: "invalid endorser address: decoding bech32 failed: invalid separator index -1: invalid address",
-			setupMocks:  func(ctx sdk.Context, m *testutil.Mocks) {},
 		},
 		{
 			name: "no steeringdao address",
@@ -495,7 +517,6 @@ func TestMsgServerEndorseProposal(t *testing.T) {
 				Endorser: endorserAcc,
 			},
 			expectedErr: "Steering DAO address is not set: function is disabled",
-			setupMocks:  func(ctx sdk.Context, m *testutil.Mocks) {},
 		},
 		{
 			name: "wrong endorser account",
@@ -503,66 +524,72 @@ func TestMsgServerEndorseProposal(t *testing.T) {
 				Endorser: endorserAcc,
 			},
 			expectedErr:    "invalid authority; expected " + steeringDAOAcc + ", got " + endorserAcc + ": expected core DAO account as only signer for this message",
-			setupMocks:     func(ctx sdk.Context, m *testutil.Mocks) {},
 			setSteeringDAO: true,
 		},
 		{
 			name: "non existing proposal",
 			msg: &types.MsgEndorseProposal{
-				Endorser: steeringDAOAcc,
+				Endorser:   steeringDAOAcc,
+				ProposalId: 9999,
 			},
-			expectedErr: "proposal with ID 0 not found: unknown proposal",
-			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
-				m.GovKeeper.EXPECT().GetProposal(ctx, uint64(0)).Return(govtypesv1.Proposal{}, false)
-			},
+			expectedErr:    "proposal with ID 9999 not found: unknown proposal",
+			proposalState:  "none",
 			setSteeringDAO: true,
 		},
 		{
 			name: "ok",
 			msg: &types.MsgEndorseProposal{
-				Endorser:   steeringDAOAcc,
-				ProposalId: 1,
+				Endorser: steeringDAOAcc,
 			},
-			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
-				m.GovKeeper.EXPECT().GetProposal(ctx, uint64(1)).Return(votingPeriodProposal, true)
-				m.GovKeeper.EXPECT().SetProposal(ctx, votingPeriodProposalWithEndorsement)
-			},
+			proposalState:  "voting",
 			setSteeringDAO: true,
+			assertEndorsed: true,
 		},
 		{
 			name: "proposal not in voting period",
 			msg: &types.MsgEndorseProposal{
-				Endorser:   steeringDAOAcc,
-				ProposalId: 2,
+				Endorser: steeringDAOAcc,
 			},
-			expectedErr: "proposal with ID 2 is not in voting period: inactive proposal",
-			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
-				m.GovKeeper.EXPECT().GetProposal(ctx, uint64(2)).Return(depositPeriodProposal, true)
-			},
+			expectedErr:    "is not in voting period: inactive proposal",
+			proposalState:  "deposit",
 			setSteeringDAO: true,
 		},
 		{
 			name: "already endorsed proposal",
 			msg: &types.MsgEndorseProposal{
-				Endorser:   steeringDAOAcc,
-				ProposalId: 3,
+				Endorser: steeringDAOAcc,
 			},
-			expectedErr: "proposal with ID 3 has already been endorsed: proposal already endorsed",
-			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
-				m.GovKeeper.EXPECT().GetProposal(ctx, uint64(3)).Return(votingPeriodProposalWithEndorsement, true)
-			},
+			expectedErr:    "has already been endorsed: proposal already endorsed",
+			proposalState:  "voting-endorsed",
 			setSteeringDAO: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ms, k, m, ctx := testutil.SetupMsgServer(t)
-			tt.setupMocks(ctx, &m)
+			app := helpers.Setup(t)
+			ctx := app.NewUncachedContext(true, tmproto.Header{Time: time.Now()})
+			ms := coredaoskeeper.NewMsgServer(app.CoreDaosKeeper)
+
 			params := types.DefaultParams()
 			if tt.setSteeringDAO {
 				params.SteeringDaoAddress = steeringDAOAcc
 			}
-			require.NoError(t, k.Params.Set(ctx, params))
+			require.NoError(t, app.CoreDaosKeeper.Params.Set(ctx, params))
+
+			switch tt.proposalState {
+			case "voting":
+				p := submitBankSendProposalReal(t, app, ctx, true)
+				tt.msg.ProposalId = p.Id
+			case "deposit":
+				p := submitBankSendProposalReal(t, app, ctx, false)
+				tt.msg.ProposalId = p.Id
+			case "voting-endorsed":
+				p := submitBankSendProposalReal(t, app, ctx, true)
+				p.Endorsed = true
+				require.NoError(t, app.GovKeeper.SetProposal(ctx, p))
+				tt.msg.ProposalId = p.Id
+			}
+
 			if err := tt.msg.ValidateBasic(); err != nil {
 				if tt.expectedErr != "" {
 					require.EqualError(t, err, tt.expectedErr)
@@ -572,10 +599,16 @@ func TestMsgServerEndorseProposal(t *testing.T) {
 			}
 			_, err := ms.EndorseProposal(ctx, tt.msg)
 			if tt.expectedErr != "" {
-				require.EqualError(t, err, tt.expectedErr)
+				require.Error(t, err)
+				require.Contains(t, err.Error(), tt.expectedErr)
 				return
 			}
 			require.NoError(t, err)
+			if tt.assertEndorsed {
+				got, err := app.GovKeeper.Proposals.Get(ctx, tt.msg.ProposalId)
+				require.NoError(t, err)
+				require.True(t, got.Endorsed)
+			}
 		})
 	}
 }
@@ -584,52 +617,25 @@ func TestMsgServerExtendVotingPeriod(t *testing.T) {
 	testAcc := simtestutil.CreateRandomAccounts(2)
 	extenderAcc := testAcc[0].String()
 	steeringDAOAcc := testAcc[1].String()
-	params := types.DefaultParams()
-	votingEndTime := time.Now().Add(time.Hour * time.Duration(1))
-	votingEndTimeExtended := votingEndTime.Add(*params.VotingPeriodExtensionDuration)
 
-	votingPeriodProposal := govtypesv1.Proposal{
-		Title:                     "Test Proposal",
-		Summary:                   "A proposal",
-		Id:                        1,
-		Status:                    govtypesv1.StatusVotingPeriod,
-		VotingEndTime:             &votingEndTime,
-		TimesVotingPeriodExtended: 2,
-	}
-	votingPeriodProposalWithExtension := govtypesv1.Proposal{
-		Title:                     "Test Proposal",
-		Summary:                   "A proposal",
-		Id:                        1,
-		Status:                    govtypesv1.StatusVotingPeriod,
-		VotingEndTime:             &votingEndTimeExtended,
-		TimesVotingPeriodExtended: 3,
-	}
-	depositPeriodProposal := govtypesv1.Proposal{
-		Title:         "Test Proposal",
-		Summary:       "A proposal",
-		Id:            2,
-		Status:        govtypesv1.StatusDepositPeriod,
-		VotingEndTime: &votingEndTime,
-	}
 	tests := []struct {
 		name           string
 		msg            *types.MsgExtendVotingPeriod
 		expectedErr    string
-		setupMocks     func(sdk.Context, *testutil.Mocks)
+		proposalState  string
 		setSteeringDAO bool
+		assertExtended bool
 	}{
 		{
 			name:        "empty msg",
 			msg:         &types.MsgExtendVotingPeriod{},
 			expectedErr: "invalid extender address: empty address string is not allowed: invalid address",
-			setupMocks:  func(ctx sdk.Context, m *testutil.Mocks) {},
 		},
 		{
 			name: "wrong addr extender",
 			msg: &types.MsgExtendVotingPeriod{
 				Extender: "cosmosincorrectaddress",
 			},
-			setupMocks:  func(ctx sdk.Context, m *testutil.Mocks) {},
 			expectedErr: "invalid extender address: decoding bech32 failed: invalid separator index -1: invalid address",
 		},
 		{
@@ -637,7 +643,6 @@ func TestMsgServerExtendVotingPeriod(t *testing.T) {
 			msg: &types.MsgExtendVotingPeriod{
 				Extender: extenderAcc,
 			},
-			setupMocks:  func(ctx sdk.Context, m *testutil.Mocks) {},
 			expectedErr: "Steering DAO address and Oversight DAO address are not set: function is disabled",
 		},
 		{
@@ -646,68 +651,74 @@ func TestMsgServerExtendVotingPeriod(t *testing.T) {
 				Extender: extenderAcc,
 			},
 			expectedErr:    "invalid authority; expected " + steeringDAOAcc + ", got " + extenderAcc + ": expected core DAO account as only signer for this message",
-			setupMocks:     func(ctx sdk.Context, m *testutil.Mocks) {},
 			setSteeringDAO: true,
 		},
 		{
 			name: "non existing proposal",
 			msg: &types.MsgExtendVotingPeriod{
-				Extender: steeringDAOAcc,
+				Extender:   steeringDAOAcc,
+				ProposalId: 9999,
 			},
-			expectedErr: "proposal with ID 0 not found: unknown proposal",
-			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
-				m.GovKeeper.EXPECT().GetProposal(ctx, uint64(0)).Return(govtypesv1.Proposal{}, false)
-			},
+			expectedErr:    "proposal with ID 9999 not found: unknown proposal",
+			proposalState:  "none",
 			setSteeringDAO: true,
 		},
 		{
 			name: "ok",
 			msg: &types.MsgExtendVotingPeriod{
-				Extender:   steeringDAOAcc,
-				ProposalId: 1,
+				Extender: steeringDAOAcc,
 			},
-			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
-				m.GovKeeper.EXPECT().GetProposal(ctx, uint64(1)).Return(votingPeriodProposal, true)
-				m.GovKeeper.EXPECT().RemoveFromActiveProposalQueue(ctx, uint64(1), votingEndTime)
-				m.GovKeeper.EXPECT().InsertActiveProposalQueue(ctx, uint64(1), votingEndTimeExtended)
-				m.GovKeeper.EXPECT().SetProposal(ctx, votingPeriodProposalWithExtension)
-			},
+			proposalState:  "voting",
 			setSteeringDAO: true,
+			assertExtended: true,
 		},
 		{
 			name: "proposal not in voting period",
 			msg: &types.MsgExtendVotingPeriod{
-				Extender:   steeringDAOAcc,
-				ProposalId: 2,
+				Extender: steeringDAOAcc,
 			},
-			expectedErr: "proposal with ID 2 is not in voting period: inactive proposal",
-			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
-				m.GovKeeper.EXPECT().GetProposal(ctx, uint64(2)).Return(depositPeriodProposal, true)
-			},
+			expectedErr:    "is not in voting period: inactive proposal",
+			proposalState:  "deposit",
 			setSteeringDAO: true,
 		},
 		{
 			name: "proposal cannot be extended",
 			msg: &types.MsgExtendVotingPeriod{
-				Extender:   steeringDAOAcc,
-				ProposalId: 3,
+				Extender: steeringDAOAcc,
 			},
-			expectedErr: "proposal with ID 3 has reached the maximum number of voting period extensions: invalid proposal content",
-			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
-				m.GovKeeper.EXPECT().GetProposal(ctx, uint64(3)).Return(votingPeriodProposalWithExtension, true)
-			},
+			expectedErr:    "has reached the maximum number of voting period extensions: invalid proposal content",
+			proposalState:  "voting-maxed",
 			setSteeringDAO: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ms, k, m, ctx := testutil.SetupMsgServer(t)
-			tt.setupMocks(ctx, &m)
+			app := helpers.Setup(t)
+			ctx := app.NewUncachedContext(true, tmproto.Header{Time: time.Now()})
+			ms := coredaoskeeper.NewMsgServer(app.CoreDaosKeeper)
+
 			params := types.DefaultParams()
 			if tt.setSteeringDAO {
 				params.SteeringDaoAddress = steeringDAOAcc
 			}
-			require.NoError(t, k.Params.Set(ctx, params))
+			require.NoError(t, app.CoreDaosKeeper.Params.Set(ctx, params))
+
+			var origEndTime time.Time
+			switch tt.proposalState {
+			case "voting":
+				p := submitBankSendProposalReal(t, app, ctx, true)
+				origEndTime = *p.VotingEndTime
+				tt.msg.ProposalId = p.Id
+			case "deposit":
+				p := submitBankSendProposalReal(t, app, ctx, false)
+				tt.msg.ProposalId = p.Id
+			case "voting-maxed":
+				p := submitBankSendProposalReal(t, app, ctx, true)
+				p.TimesVotingPeriodExtended = params.VotingPeriodExtensionsLimit
+				require.NoError(t, app.GovKeeper.SetProposal(ctx, p))
+				tt.msg.ProposalId = p.Id
+			}
+
 			if err := tt.msg.ValidateBasic(); err != nil {
 				if tt.expectedErr != "" {
 					require.EqualError(t, err, tt.expectedErr)
@@ -717,10 +728,22 @@ func TestMsgServerExtendVotingPeriod(t *testing.T) {
 			}
 			_, err := ms.ExtendVotingPeriod(ctx, tt.msg)
 			if tt.expectedErr != "" {
-				require.EqualError(t, err, tt.expectedErr)
+				require.Error(t, err)
+				require.Contains(t, err.Error(), tt.expectedErr)
 				return
 			}
 			require.NoError(t, err)
+			if tt.assertExtended {
+				got, err := app.GovKeeper.Proposals.Get(ctx, tt.msg.ProposalId)
+				require.NoError(t, err)
+				expectedEndTime := origEndTime.Add(*params.VotingPeriodExtensionDuration)
+				require.WithinDuration(t, expectedEndTime, *got.VotingEndTime, time.Second)
+				require.Equal(t, uint32(1), got.TimesVotingPeriodExtended)
+				// the proposal must have been re-queued under the new end time
+				has, err := app.GovKeeper.ActiveProposalsQueue.Has(ctx, collectionsJoin(*got.VotingEndTime, got.Id))
+				require.NoError(t, err)
+				require.True(t, has)
+			}
 		})
 	}
 }
@@ -729,110 +752,21 @@ func TestMsgServerVetoProposal(t *testing.T) {
 	testAcc := simtestutil.CreateRandomAccounts(3)
 	vetoerAcc := testAcc[0].String()
 	oversightDAOAcc := testAcc[1].String()
-	emptyTally := govtypesv1.EmptyTallyResult()
-	votingEndTime := time.Now().Add(time.Hour * time.Duration(1))
-	votingPeriodProposal := govtypesv1.Proposal{
-		Title:         "Test Proposal",
-		Summary:       "A proposal",
-		Id:            1,
-		Status:        govtypesv1.StatusVotingPeriod,
-		VotingEndTime: &votingEndTime,
-	}
-	proposalWithVeto := govtypesv1.Proposal{
-		Title:            "Test Proposal",
-		Summary:          "A proposal",
-		Id:               1,
-		Status:           govtypesv1.StatusVetoed,
-		FinalTallyResult: &emptyTally,
-		VotingEndTime:    &votingEndTime, // will be overwritten in the test
-	}
-	depositPeriodProposal := govtypesv1.Proposal{
-		Title:   "Test Proposal",
-		Summary: "A proposal",
-		Id:      2,
-		Status:  govtypesv1.StatusDepositPeriod,
-	}
-	proposalWithChangeOversightDAOMsgs, err := sdktx.SetMsgs([]sdk.Msg{&types.MsgUpdateParams{
-		Authority: "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
-		Params: types.Params{
-			OversightDaoAddress: testAcc[2].String(),
-		},
-	}})
-	require.NoError(t, err)
-	proposalWithChangeOversightDAO := govtypesv1.Proposal{
-		Title:    "Test Proposal",
-		Summary:  "A proposal to change oversight DAO address",
-		Id:       4,
-		Status:   govtypesv1.StatusVotingPeriod,
-		Messages: proposalWithChangeOversightDAOMsgs,
-	}
-	proposalWithEmptyOversightDAOMsgs, err := sdktx.SetMsgs([]sdk.Msg{&types.MsgUpdateParams{
-		Authority: "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
-		Params: types.Params{
-			OversightDaoAddress: "",
-		},
-	}})
-	require.NoError(t, err)
-	proposalWithEmptyOversightDAO := govtypesv1.Proposal{
-		Title:    "Test Proposal",
-		Summary:  "A proposal to set empty oversight DAO address",
-		Id:       5,
-		Status:   govtypesv1.StatusVotingPeriod,
-		Messages: proposalWithEmptyOversightDAOMsgs,
-	}
-
-	// authz-wrapped proposals: MsgUpdateParams inside authz.MsgExec
-	govAuthority := "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn"
-	innerChangeAny, err := codectypes.NewAnyWithValue(&types.MsgUpdateParams{
-		Authority: govAuthority,
-		Params:    types.Params{OversightDaoAddress: testAcc[2].String()},
-	})
-	require.NoError(t, err)
-	wrappedChangeMsgs, err := sdktx.SetMsgs([]sdk.Msg{&authz.MsgExec{
-		Grantee: govAuthority,
-		Msgs:    []*codectypes.Any{innerChangeAny},
-	}})
-	require.NoError(t, err)
-	proposalWithWrappedChangeOversightDAO := govtypesv1.Proposal{
-		Title:    "Test Proposal",
-		Summary:  "A proposal to change oversight DAO address wrapped in authz.MsgExec",
-		Id:       6,
-		Status:   govtypesv1.StatusVotingPeriod,
-		Messages: wrappedChangeMsgs,
-	}
-
-	// double-wrapped: MsgUpdateParams inside MsgExec inside MsgExec
-	execAny, err := codectypes.NewAnyWithValue(&authz.MsgExec{
-		Grantee: govAuthority,
-		Msgs:    []*codectypes.Any{innerChangeAny},
-	})
-	require.NoError(t, err)
-	doubleWrappedChangeMsgs, err := sdktx.SetMsgs([]sdk.Msg{&authz.MsgExec{
-		Grantee: govAuthority,
-		Msgs:    []*codectypes.Any{execAny},
-	}})
-	require.NoError(t, err)
-	proposalWithDoubleWrappedChangeOversightDAO := govtypesv1.Proposal{
-		Title:    "Test Proposal",
-		Summary:  "A proposal to change oversight DAO address double-wrapped in authz.MsgExec",
-		Id:       7,
-		Status:   govtypesv1.StatusVotingPeriod,
-		Messages: doubleWrappedChangeMsgs,
-	}
+	newOversightAddr := testAcc[2].String()
+	extDuration := time.Hour
 
 	tests := []struct {
 		name            string
 		msg             *types.MsgVetoProposal
 		expectedErr     string
-		setupMocks      func(sdk.Context, *testutil.Mocks)
-		setSteeringDAO  bool
+		proposalState   string
 		setOversightDAO bool
+		assertVetoed    bool
 	}{
 		{
 			name:        "empty msg",
 			msg:         &types.MsgVetoProposal{},
 			expectedErr: "invalid vetoer address: empty address string is not allowed: invalid address",
-			setupMocks:  func(ctx sdk.Context, m *testutil.Mocks) {},
 		},
 		{
 			name: "wrong addr vetoer",
@@ -840,7 +774,6 @@ func TestMsgServerVetoProposal(t *testing.T) {
 				Vetoer: "cosmosincorrectaddress",
 			},
 			expectedErr: "invalid vetoer address: decoding bech32 failed: invalid separator index -1: invalid address",
-			setupMocks:  func(ctx sdk.Context, m *testutil.Mocks) {},
 		},
 		{
 			name: "function disabled",
@@ -848,7 +781,6 @@ func TestMsgServerVetoProposal(t *testing.T) {
 				Vetoer: vetoerAcc,
 			},
 			expectedErr: "Oversight DAO address is not set: function is disabled",
-			setupMocks:  func(ctx sdk.Context, m *testutil.Mocks) {},
 		},
 		{
 			name: "wrong vetoer account",
@@ -856,147 +788,142 @@ func TestMsgServerVetoProposal(t *testing.T) {
 				Vetoer: vetoerAcc,
 			},
 			expectedErr:     "invalid authority; expected " + oversightDAOAcc + ", got " + vetoerAcc + ": expected core DAO account as only signer for this message",
-			setupMocks:      func(ctx sdk.Context, m *testutil.Mocks) {},
 			setOversightDAO: true,
 		},
 		{
 			name: "non existing proposal",
 			msg: &types.MsgVetoProposal{
-				Vetoer: oversightDAOAcc,
+				Vetoer:     oversightDAOAcc,
+				ProposalId: 9999,
 			},
-			expectedErr: "proposal with ID 0 not found: unknown proposal",
-			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
-				m.GovKeeper.EXPECT().GetProposal(ctx, uint64(0)).Return(govtypesv1.Proposal{}, false)
-			},
+			expectedErr:     "proposal with ID 9999 not found: unknown proposal",
+			proposalState:   "none",
 			setOversightDAO: true,
 		},
 		{
 			name: "ok",
 			msg: &types.MsgVetoProposal{
-				Vetoer:     oversightDAOAcc,
-				ProposalId: 1,
+				Vetoer: oversightDAOAcc,
 			},
-			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
-				// ensure proposalWithVeto has the correct VotingEndTime set
-				// can only do it here because ctx is needed
-				newVotingEndTime := ctx.BlockTime()
-				proposalWithVeto.VotingEndTime = &newVotingEndTime
-
-				call1 := m.GovKeeper.EXPECT().GetProposal(ctx, uint64(1)).Return(votingPeriodProposal, true)
-				m.GovKeeper.EXPECT().RefundAndDeleteDeposits(ctx, uint64(1)).After(call1)
-				m.GovKeeper.EXPECT().SetProposal(ctx, proposalWithVeto).After(call1)
-				m.GovKeeper.EXPECT().DeleteVotes(ctx, uint64(1)).After(call1)
-				call2 := m.GovKeeper.EXPECT().RemoveFromActiveProposalQueue(ctx, uint64(1), votingEndTime).After(call1)
-				m.GovKeeper.EXPECT().UpdateMinInitialDeposit(ctx, true).After(call2)
-				m.GovKeeper.EXPECT().UpdateMinDeposit(ctx, true).After(call2)
-			},
+			proposalState:   "voting",
 			setOversightDAO: true,
+			assertVetoed:    true,
 		},
 		{
 			name: "ok burn deposit",
 			msg: &types.MsgVetoProposal{
 				Vetoer:      oversightDAOAcc,
-				ProposalId:  1,
 				BurnDeposit: true,
 			},
-			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
-				// ensure proposalWithVeto has the correct VotingEndTime set
-				// can only do it here because ctx is needed
-				newVotingEndTime := ctx.BlockTime()
-				proposalWithVeto.VotingEndTime = &newVotingEndTime
-
-				call1 := m.GovKeeper.EXPECT().GetProposal(ctx, uint64(1)).Return(votingPeriodProposal, true)
-				m.GovKeeper.EXPECT().DeleteAndBurnDeposits(ctx, uint64(1)).MaxTimes(1)
-				m.GovKeeper.EXPECT().SetProposal(ctx, proposalWithVeto).After(call1)
-				m.GovKeeper.EXPECT().DeleteVotes(ctx, uint64(1)).After(call1)
-				call2 := m.GovKeeper.EXPECT().RemoveFromActiveProposalQueue(ctx, uint64(1), votingEndTime).After(call1)
-				m.GovKeeper.EXPECT().UpdateMinInitialDeposit(ctx, true).After(call2)
-				m.GovKeeper.EXPECT().UpdateMinDeposit(ctx, true).After(call2)
-			},
+			proposalState:   "voting",
 			setOversightDAO: true,
+			assertVetoed:    true,
 		},
 		{
 			name: "proposal not in voting period",
 			msg: &types.MsgVetoProposal{
-				Vetoer:     oversightDAOAcc,
-				ProposalId: 2,
+				Vetoer: oversightDAOAcc,
 			},
-			expectedErr: "proposal with ID 2 is not in voting period: inactive proposal",
-			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
-				m.GovKeeper.EXPECT().GetProposal(ctx, uint64(2)).Return(depositPeriodProposal, true)
-			},
-			setOversightDAO: true,
-		},
-		{
-			name: "proposal already vetoed",
-			msg: &types.MsgVetoProposal{
-				Vetoer:     oversightDAOAcc,
-				ProposalId: 3,
-			},
-			expectedErr: "proposal with ID 3 is not in voting period: inactive proposal",
-			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
-				m.GovKeeper.EXPECT().GetProposal(ctx, uint64(3)).Return(proposalWithVeto, true)
-			},
+			expectedErr:     "is not in voting period: inactive proposal",
+			proposalState:   "deposit",
 			setOversightDAO: true,
 		},
 		{
 			name: "veto proposal with change to oversight DAO address",
 			msg: &types.MsgVetoProposal{
-				Vetoer:     oversightDAOAcc,
-				ProposalId: 4,
+				Vetoer: oversightDAOAcc,
 			},
-			expectedErr: "proposal with ID 4 contains a change of the oversight DAO address, vetoing it would prevent the replacement of the current oversight DAO: oversight DAO cannot veto this proposal",
-			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
-				m.GovKeeper.EXPECT().GetProposal(ctx, uint64(4)).Return(proposalWithChangeOversightDAO, true)
-			},
+			expectedErr:     "contains a change of the oversight DAO address, vetoing it would prevent the replacement of the current oversight DAO: oversight DAO cannot veto this proposal",
+			proposalState:   "voting-change-oversight",
 			setOversightDAO: true,
 		},
 		{
 			name: "veto proposal with disablement of oversight DAO",
 			msg: &types.MsgVetoProposal{
-				Vetoer:     oversightDAOAcc,
-				ProposalId: 5,
+				Vetoer: oversightDAOAcc,
 			},
-			expectedErr: "proposal with ID 5 contains a change of the oversight DAO address, vetoing it would prevent the replacement of the current oversight DAO: oversight DAO cannot veto this proposal",
-			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
-				m.GovKeeper.EXPECT().GetProposal(ctx, uint64(5)).Return(proposalWithEmptyOversightDAO, true)
-			},
+			expectedErr:     "contains a change of the oversight DAO address, vetoing it would prevent the replacement of the current oversight DAO: oversight DAO cannot veto this proposal",
+			proposalState:   "voting-disable-oversight",
 			setOversightDAO: true,
 		},
 		{
 			name: "veto proposal with change to oversight DAO address wrapped in authz.MsgExec",
 			msg: &types.MsgVetoProposal{
-				Vetoer:     oversightDAOAcc,
-				ProposalId: 6,
+				Vetoer: oversightDAOAcc,
 			},
-			expectedErr: "proposal with ID 6 contains a change of the oversight DAO address, vetoing it would prevent the replacement of the current oversight DAO: oversight DAO cannot veto this proposal",
-			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
-				m.GovKeeper.EXPECT().GetProposal(ctx, uint64(6)).Return(proposalWithWrappedChangeOversightDAO, true)
-			},
+			expectedErr:     "contains a change of the oversight DAO address, vetoing it would prevent the replacement of the current oversight DAO: oversight DAO cannot veto this proposal",
+			proposalState:   "voting-change-oversight-wrapped",
 			setOversightDAO: true,
 		},
 		{
 			name: "veto proposal with change to oversight DAO address double-wrapped in authz.MsgExec",
 			msg: &types.MsgVetoProposal{
-				Vetoer:     oversightDAOAcc,
-				ProposalId: 7,
+				Vetoer: oversightDAOAcc,
 			},
-			expectedErr: "proposal with ID 7 contains a change of the oversight DAO address, vetoing it would prevent the replacement of the current oversight DAO: oversight DAO cannot veto this proposal",
-			setupMocks: func(ctx sdk.Context, m *testutil.Mocks) {
-				m.GovKeeper.EXPECT().GetProposal(ctx, uint64(7)).Return(proposalWithDoubleWrappedChangeOversightDAO, true)
-			},
+			expectedErr:     "contains a change of the oversight DAO address, vetoing it would prevent the replacement of the current oversight DAO: oversight DAO cannot veto this proposal",
+			proposalState:   "voting-change-oversight-double-wrapped",
 			setOversightDAO: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ms, k, m, ctx := testutil.SetupMsgServer(t)
-			tt.setupMocks(ctx, &m)
+			app := helpers.Setup(t)
+			ctx := app.NewUncachedContext(true, tmproto.Header{Time: time.Now()})
+			ms := coredaoskeeper.NewMsgServer(app.CoreDaosKeeper)
+
 			params := types.DefaultParams()
 			if tt.setOversightDAO {
 				params.OversightDaoAddress = oversightDAOAcc
 			}
-			require.NoError(t, k.Params.Set(ctx, params))
+			require.NoError(t, app.CoreDaosKeeper.Params.Set(ctx, params))
+
+			govAddr := govModuleAddr()
+			// a MsgUpdateParams that changes the oversight DAO address.
+			changeOversightMsg := &types.MsgUpdateParams{
+				Authority: govAddr,
+				Params: types.Params{
+					OversightDaoAddress:           newOversightAddr,
+					VotingPeriodExtensionDuration: &extDuration,
+				},
+			}
+			// a MsgUpdateParams that disables (empties) the oversight DAO address.
+			disableOversightMsg := &types.MsgUpdateParams{
+				Authority: govAddr,
+				Params: types.Params{
+					OversightDaoAddress:           "",
+					VotingPeriodExtensionDuration: &extDuration,
+				},
+			}
+
+			switch tt.proposalState {
+			case "voting":
+				p := submitBankSendProposalReal(t, app, ctx, true)
+				tt.msg.ProposalId = p.Id
+			case "deposit":
+				p := submitBankSendProposalReal(t, app, ctx, false)
+				tt.msg.ProposalId = p.Id
+			case "voting-change-oversight":
+				p := submitProposalReal(t, app, ctx, []sdk.Msg{changeOversightMsg}, true)
+				tt.msg.ProposalId = p.Id
+			case "voting-disable-oversight":
+				p := submitProposalReal(t, app, ctx, []sdk.Msg{disableOversightMsg}, true)
+				tt.msg.ProposalId = p.Id
+			case "voting-change-oversight-wrapped":
+				inner, err := codectypes.NewAnyWithValue(changeOversightMsg)
+				require.NoError(t, err)
+				exec := &authz.MsgExec{Grantee: govAddr, Msgs: []*codectypes.Any{inner}}
+				p := submitProposalReal(t, app, ctx, []sdk.Msg{exec}, true)
+				tt.msg.ProposalId = p.Id
+			case "voting-change-oversight-double-wrapped":
+				inner, err := codectypes.NewAnyWithValue(changeOversightMsg)
+				require.NoError(t, err)
+				execAny, err := codectypes.NewAnyWithValue(&authz.MsgExec{Grantee: govAddr, Msgs: []*codectypes.Any{inner}})
+				require.NoError(t, err)
+				outer := &authz.MsgExec{Grantee: govAddr, Msgs: []*codectypes.Any{execAny}}
+				p := submitProposalReal(t, app, ctx, []sdk.Msg{outer}, true)
+				tt.msg.ProposalId = p.Id
+			}
+
 			if err := tt.msg.ValidateBasic(); err != nil {
 				if tt.expectedErr != "" {
 					require.EqualError(t, err, tt.expectedErr)
@@ -1006,10 +933,25 @@ func TestMsgServerVetoProposal(t *testing.T) {
 			}
 			_, err := ms.VetoProposal(ctx, tt.msg)
 			if tt.expectedErr != "" {
-				require.EqualError(t, err, tt.expectedErr)
+				require.Error(t, err)
+				require.Contains(t, err.Error(), tt.expectedErr)
 				return
 			}
 			require.NoError(t, err)
+			if tt.assertVetoed {
+				got, err := app.GovKeeper.Proposals.Get(ctx, tt.msg.ProposalId)
+				require.NoError(t, err)
+				require.Equal(t, govv1.StatusVetoed, got.Status)
+				// final tally must be reset to empty
+				emptyTally := govv1.EmptyTallyResult()
+				require.Equal(t, &emptyTally, got.FinalTallyResult)
+				// voting ends immediately (set to block time)
+				require.WithinDuration(t, ctx.BlockTime(), *got.VotingEndTime, time.Second)
+				// proposal removed from active queue under its original end time
+				has, err := app.GovKeeper.ActiveProposalsQueue.Has(ctx, collectionsJoin(*got.VotingEndTime, got.Id))
+				require.NoError(t, err)
+				require.False(t, has)
+			}
 		})
 	}
 }

@@ -36,7 +36,6 @@ go test ./x/photon/keeper/... -run TestMintPhoton -v
 **Custom modules (`x/`):**
 - `x/gov` — Governance wrapper augmenting Cosmos SDK gov (restricts validator voting via delegation)
 - `x/photon` — Photon token minting/burning with fee exceptions
-- `x/dynamicfee` — Dynamic fee market calculations (ante + post handlers)
 - `x/coredaos` — Core DAO address management (Oversight, Photon DAOs)
 
 Each module follows standard Cosmos SDK structure: `keeper/`, `types/`, `client/cli/`, `ante/` or `post/`, `testutil/`, `module.go`.
