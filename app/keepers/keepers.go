@@ -298,6 +298,9 @@ func NewAppKeeper(
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	appKeepers.EvidenceKeeper = *evidenceKeeper
 
+	// Register coredaos gov hooks (rejects bundling an oversight-DAO change with other messages).
+	appKeepers.GovKeeper = appKeepers.GovKeeper.SetHooks(appKeepers.CoreDaosKeeper.GovHooks())
+
 	// register the staking hooks
 	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
 	appKeepers.StakingKeeper.SetHooks(

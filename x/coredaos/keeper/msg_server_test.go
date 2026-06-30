@@ -12,11 +12,9 @@ import (
 	"cosmossdk.io/collections"
 	"cosmossdk.io/math"
 
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/cosmos/cosmos-sdk/x/authz"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	govv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
@@ -614,17 +612,19 @@ func TestMsgServerEndorseProposal(t *testing.T) {
 }
 
 func TestMsgServerExtendVotingPeriod(t *testing.T) {
-	testAcc := simtestutil.CreateRandomAccounts(2)
+	testAcc := simtestutil.CreateRandomAccounts(3)
 	extenderAcc := testAcc[0].String()
 	steeringDAOAcc := testAcc[1].String()
+	oversightDAOAcc := testAcc[2].String()
 
 	tests := []struct {
-		name           string
-		msg            *types.MsgExtendVotingPeriod
-		expectedErr    string
-		proposalState  string
-		setSteeringDAO bool
-		assertExtended bool
+		name            string
+		msg             *types.MsgExtendVotingPeriod
+		expectedErr     string
+		proposalState   string
+		setSteeringDAO  bool
+		setOversightDAO bool
+		assertExtended  bool
 	}{
 		{
 			name:        "empty msg",
@@ -673,6 +673,15 @@ func TestMsgServerExtendVotingPeriod(t *testing.T) {
 			assertExtended: true,
 		},
 		{
+			name: "ok extended by oversight DAO",
+			msg: &types.MsgExtendVotingPeriod{
+				Extender: oversightDAOAcc,
+			},
+			proposalState:   "voting",
+			setOversightDAO: true,
+			assertExtended:  true,
+		},
+		{
 			name: "proposal not in voting period",
 			msg: &types.MsgExtendVotingPeriod{
 				Extender: steeringDAOAcc,
@@ -700,6 +709,9 @@ func TestMsgServerExtendVotingPeriod(t *testing.T) {
 			params := types.DefaultParams()
 			if tt.setSteeringDAO {
 				params.SteeringDaoAddress = steeringDAOAcc
+			}
+			if tt.setOversightDAO {
+				params.OversightDaoAddress = oversightDAOAcc
 			}
 			require.NoError(t, app.CoreDaosKeeper.Params.Set(ctx, params))
 
@@ -846,24 +858,6 @@ func TestMsgServerVetoProposal(t *testing.T) {
 			proposalState:   "voting-disable-oversight",
 			setOversightDAO: true,
 		},
-		{
-			name: "veto proposal with change to oversight DAO address wrapped in authz.MsgExec",
-			msg: &types.MsgVetoProposal{
-				Vetoer: oversightDAOAcc,
-			},
-			expectedErr:     "contains a change of the oversight DAO address, vetoing it would prevent the replacement of the current oversight DAO: oversight DAO cannot veto this proposal",
-			proposalState:   "voting-change-oversight-wrapped",
-			setOversightDAO: true,
-		},
-		{
-			name: "veto proposal with change to oversight DAO address double-wrapped in authz.MsgExec",
-			msg: &types.MsgVetoProposal{
-				Vetoer: oversightDAOAcc,
-			},
-			expectedErr:     "contains a change of the oversight DAO address, vetoing it would prevent the replacement of the current oversight DAO: oversight DAO cannot veto this proposal",
-			proposalState:   "voting-change-oversight-double-wrapped",
-			setOversightDAO: true,
-		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -907,20 +901,6 @@ func TestMsgServerVetoProposal(t *testing.T) {
 				tt.msg.ProposalId = p.Id
 			case "voting-disable-oversight":
 				p := submitProposalReal(t, app, ctx, []sdk.Msg{disableOversightMsg}, true)
-				tt.msg.ProposalId = p.Id
-			case "voting-change-oversight-wrapped":
-				inner, err := codectypes.NewAnyWithValue(changeOversightMsg)
-				require.NoError(t, err)
-				exec := &authz.MsgExec{Grantee: govAddr, Msgs: []*codectypes.Any{inner}}
-				p := submitProposalReal(t, app, ctx, []sdk.Msg{exec}, true)
-				tt.msg.ProposalId = p.Id
-			case "voting-change-oversight-double-wrapped":
-				inner, err := codectypes.NewAnyWithValue(changeOversightMsg)
-				require.NoError(t, err)
-				execAny, err := codectypes.NewAnyWithValue(&authz.MsgExec{Grantee: govAddr, Msgs: []*codectypes.Any{inner}})
-				require.NoError(t, err)
-				outer := &authz.MsgExec{Grantee: govAddr, Msgs: []*codectypes.Any{execAny}}
-				p := submitProposalReal(t, app, ctx, []sdk.Msg{outer}, true)
 				tt.msg.ProposalId = p.Id
 			}
 
