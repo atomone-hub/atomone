@@ -8,6 +8,7 @@ import (
 
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/x/authz"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
@@ -104,18 +105,60 @@ func (k Keeper) GovHooks() Hooks {
 	return Hooks{k}
 }
 
-// AfterProposalSubmission rejects a proposal that bundles a coredaos MsgUpdateParams
-// changing the oversight DAO address together with other messages. Self-executing
-// authz.MsgExec wrappers are rejected upstream in gov's SubmitProposal, so only
-// top-level messages need inspection here.
+// AfterProposalSubmission enforces two coredaos invariants on a submitted proposal:
+//
+//  1. coredaos MsgUpdateParams may never be delegated via authz. Its authority is the
+//     governance account, so delegating it to any other account would hand governance-only
+//     power to that account, which is unconsitutional as it provides control over core DAOs
+//     to a delegate. Inspecting only top-level MsgGrant messages catches every such
+//     delegation, because a gov->grantee grant for this message can arise nowhere else:
+//     - It can only be created inside a governance proposal. A MsgGrant is signed by its
+//     granter, and here the granter must be the gov account (authz keys the grant by the
+//     executed message's signer, which is MsgUpdateParams.Authority == gov). The gov
+//     module account has no key and cannot sign a transaction, so no standalone tx can
+//     create the grant; proposal execution is the only path, and it is what this hook sees.
+//     - Within a proposal it must be a top-level message. A MsgGrant nested inside an
+//     authz.MsgExec is either self-executing (grantee == gov), which gov's SubmitProposal
+//     already rejects, or requires a pre-existing grant to be dispatched, i.e. is circular.
+//
+//  2. A proposal that changes the oversight DAO address may not be bundled with other
+//     messages. Only top-level messages are inspected: a MsgUpdateParams hidden below the top
+//     level (e.g. inside a non-self-executing authz.MsgExec) could only ever take effect via
+//     an authz grant, which invariant (1) has already made impossible to create.
 func (h Hooks) AfterProposalSubmission(ctx context.Context, proposalID uint64) error {
-	params := h.k.GetParams(ctx)
-	if params.OversightDaoAddress == "" {
-		return nil
-	}
 	proposal, err := h.k.govKeeper.Proposals.Get(ctx, proposalID)
 	if err != nil {
 		return nil // proposal not found; nothing to enforce
+	}
+
+	updateParamsTypeURL := sdk.MsgTypeURL(&types.MsgUpdateParams{})
+
+	// (1) Reject any authz grant that would delegate coredaos MsgUpdateParams. This is
+	// unconditional: it does not depend on whether an oversight DAO is currently set, because
+	// MsgUpdateParams governs every coredaos parameter.
+	for _, anyMsg := range proposal.Messages {
+		var msg sdk.Msg
+		if err := h.k.cdc.UnpackAny(anyMsg, &msg); err != nil {
+			continue
+		}
+		grant, ok := msg.(*authz.MsgGrant)
+		if !ok {
+			continue
+		}
+		var authorization authz.Authorization
+		if err := h.k.cdc.UnpackAny(grant.Grant.Authorization, &authorization); err != nil {
+			continue
+		}
+		if authorization.MsgTypeURL() == updateParamsTypeURL {
+			return errorsmod.Wrap(atomoneerrors.ErrUnauthorized,
+				"coredaos MsgUpdateParams authority cannot be delegated via authz")
+		}
+	}
+
+	// (2) Reject bundling an oversight-DAO address change with other messages.
+	params := h.k.GetParams(ctx)
+	if params.OversightDaoAddress == "" {
+		return nil
 	}
 	if len(proposal.Messages) <= 1 {
 		return nil // bundling requires more than one message

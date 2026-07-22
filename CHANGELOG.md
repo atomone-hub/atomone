@@ -18,6 +18,7 @@
 
 - Migrate `x/coredaos` away from atomone `x/gov` wrapper [#353](https://github.com/atomone-hub/atomone/pull/353)
 - Move oversightDAO update bundling prevention from the ante to a coredaos gov hook [#354](https://github.com/atomone-hub/atomone/pull/354)
+- Reject proposals that delegate `x/coredaos` `MsgUpdateParams` via authz [358](https://github.com/atomone-hub/atomone/pull/358)
 
 ## v4.0.0
 
