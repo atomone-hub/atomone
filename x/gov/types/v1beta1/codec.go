@@ -1,6 +1,8 @@
 package v1beta1
 
 import (
+	ibcclienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
+
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -49,6 +51,16 @@ func RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 	registry.RegisterImplementations(
 		(*Content)(nil),
 		&upgradetypes.CancelSoftwareUpgradeProposal{}, //nolint:staticcheck
+	)
+	// Legacy IBC 02-client proposal content types. These are registered by
+	// ibc-go against the SDK's gov Content interface, but not against ours, so
+	// we must register them manually. Historical mainnet proposals wrapping a
+	// ClientUpdateProposal or UpgradeProposal in a MsgExecLegacyContent would
+	// otherwise fail to unpack.
+	registry.RegisterImplementations(
+		(*Content)(nil),
+		&ibcclienttypes.ClientUpdateProposal{}, //nolint:staticcheck
+		&ibcclienttypes.UpgradeProposal{},      //nolint:staticcheck
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
