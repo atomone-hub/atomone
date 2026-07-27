@@ -2,11 +2,15 @@
 
 ## v4.1.0
 
+_Jul 27th, 2026_
+
 ### BUG FIXES
 
 - Update AtomOne SDK to v0.500.2 [#360](https://github.com/atomone-hub/atomone/pull/360)
 
 ## v4.0.1
+
+_Jul 22nd, 2026_
 
 ### BUG FIXES
 
