@@ -4,7 +4,7 @@
 
 ### BUG FIXES
 
-- Update AtomOne SDK to v0.500.2
+- Update AtomOne SDK to v0.500.2 [#360](https://github.com/atomone-hub/atomone/pull/360)
 
 ## v4.0.1
 
