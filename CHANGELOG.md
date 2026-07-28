@@ -22,7 +22,7 @@
 
 ## v4.1.0
 
-_Jul 27th, 2026_
+*Jul 27th, 2026*
 
 ### BUG FIXES
 
@@ -30,7 +30,7 @@ _Jul 27th, 2026_
 
 ## v4.0.1
 
-_Jul 22nd, 2026_
+*Jul 22nd, 2026*
 
 ### BUG FIXES
 
@@ -38,7 +38,7 @@ _Jul 22nd, 2026_
 
 ## v4.0.0
 
-_Jun 23nd, 2026_
+*Jun 23nd, 2026*
 
 ### API BREAKING
 
@@ -83,7 +83,7 @@ _Jun 23nd, 2026_
 
 ## v3.0.3
 
-_Oct 20th, 2025_
+*Oct 20th, 2025*
 
 ### DEPENDENCIES
 
@@ -91,7 +91,7 @@ _Oct 20th, 2025_
 
 ## v3.0.2
 
-_Oct 1st, 2025_
+*Oct 1st, 2025*
 
 ### API BREAKING
 
@@ -99,7 +99,7 @@ _Oct 1st, 2025_
 
 ## v3.0.1
 
-_Aug 22th, 2025_
+*Aug 22th, 2025*
 
 ### BUG FIXES
 
@@ -107,7 +107,7 @@ _Aug 22th, 2025_
 
 ## v3.0.0
 
-_Aug 4th, 2025_
+*Aug 4th, 2025*
 
 ### BUG FIXES
 
@@ -135,7 +135,7 @@ _Aug 4th, 2025_
 
 ## v2.0.0
 
-_May 1st, 2025_
+*May 1st, 2025*
 
 ### BUG FIXES
 
@@ -164,7 +164,7 @@ _May 1st, 2025_
 
 ## v1.0.0
 
-_Sep 26th, 2024_
+*Sep 26th, 2024*
 
 ### FEATURES
 
