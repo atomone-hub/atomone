@@ -1,8 +1,24 @@
 # CHANGELOG
 
+## v4.1.0
+
+_Jul 27th, 2026_
+
+### BUG FIXES
+
+- Update AtomOne SDK to v0.500.2 [#360](https://github.com/atomone-hub/atomone/pull/360)
+
+## v4.0.1
+
+_Jul 22nd, 2026_
+
+### BUG FIXES
+
+- Register legacy IBC gov proposal content types in atomone gov fork [#356](https://github.com/atomone-hub/atomone/pull/356)
+
 ## v4.0.0
 
-*Jun 23nd, 2026*
+_Jun 23nd, 2026_
 
 ### API BREAKING
 
@@ -47,7 +63,7 @@
 
 ## v3.0.3
 
-*Oct 20th, 2025*
+_Oct 20th, 2025_
 
 ### DEPENDENCIES
 
@@ -55,7 +71,7 @@
 
 ## v3.0.2
 
-*Oct 1st, 2025*
+_Oct 1st, 2025_
 
 ### API BREAKING
 
@@ -63,7 +79,7 @@
 
 ## v3.0.1
 
-*Aug 22th, 2025*
+_Aug 22th, 2025_
 
 ### BUG FIXES
 
@@ -71,7 +87,7 @@
 
 ## v3.0.0
 
-*Aug 4th, 2025*
+_Aug 4th, 2025_
 
 ### BUG FIXES
 
@@ -99,7 +115,7 @@
 
 ## v2.0.0
 
-*May 1st, 2025*
+_May 1st, 2025_
 
 ### BUG FIXES
 
@@ -120,7 +136,7 @@
 - Remove `x/crisis` [#93](https://github.com/atomone-hub/atomone/pull/93)
 - Upgrade ibc-go to v7.10.0 to fix ASA-2025-004 and ISA-2025-001 [#84](https://github.com/atomone-hub/atomone/pull/84) [#85](https://github.com/atomone-hub/atomone/pull/85) [#98](https://github.com/atomone-hub/atomone/pull/98)
 - Upgrade Cosmos SDK to v0.47.17 [#98](https://github.com/atomone-hub/atomone/pull/98)
-  
+
 ### IMPROVEMENTS
 
 - (x/gov): override MinVotingPeriod with ldflags [#63](https://github.com/atomone-hub/atomone/pull/63)
@@ -128,7 +144,7 @@
 
 ## v1.0.0
 
-*Sep 26th, 2024*
+_Sep 26th, 2024_
 
 ### FEATURES
 
