@@ -142,8 +142,9 @@ testnet running locally. This is useful to:
    repo.
 
 4. Download a recent mainnet snapshot (e.g. from
-   [polkachu](https://polkachu.com/tendermint_snapshots/atomone) or itrocket)
-   and extract it. `lz4` is required for decompression.
+   [nodeshub](https://services.nodeshub.online/mainnet/atomone/snapshot) or
+   [itrocket](https://itrocket.space/services/mainnet/atomone)) and extract it.
+   `lz4` is required for decompression.
    ```sh
    rm -rf ~/.atomone/validator1/data && mkdir ~/.atomone/validator1/data
    echo '{ "height": "0", "round": 0, "step": 0 }' \
