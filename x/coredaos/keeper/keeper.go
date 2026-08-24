@@ -22,6 +22,10 @@ type Keeper struct {
 
 	Schema collections.Schema
 	Params collections.Item[types.Params]
+	// VetoCleanupQueue holds the ids of proposals vetoed during the current
+	// block whose deposits and votes still need to be cleaned up, mapped to
+	// their BurnDeposit flag. It is drained in the EndBlocker (see abci.go).
+	VetoCleanupQueue collections.Map[uint64, bool]
 }
 
 func NewKeeper(
@@ -43,6 +47,10 @@ func NewKeeper(
 		govKeeper:     govKeeper,
 		stakingKeeper: stakingKeeper,
 		Params:        collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
+		VetoCleanupQueue: collections.NewMap(
+			sb, types.VetoCleanupQueueKey, "veto_cleanup_queue",
+			collections.Uint64Key, collections.BoolValue,
+		),
 	}
 
 	schema, err := sb.Build()
