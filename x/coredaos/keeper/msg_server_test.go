@@ -931,6 +931,15 @@ func TestMsgServerVetoProposal(t *testing.T) {
 				has, err := app.GovKeeper.ActiveProposalsQueue.Has(ctx, collectionsJoin(*got.VotingEndTime, got.Id))
 				require.NoError(t, err)
 				require.False(t, has)
+				// deposit/vote cleanup is deferred: the proposal must be enqueued
+				// right after the veto and drained by the EndBlocker.
+				enqueued, err := app.CoreDaosKeeper.VetoCleanupQueue.Has(ctx, got.Id)
+				require.NoError(t, err)
+				require.True(t, enqueued)
+				require.NoError(t, app.CoreDaosKeeper.EndBlocker(ctx))
+				drained, err := app.CoreDaosKeeper.VetoCleanupQueue.Has(ctx, got.Id)
+				require.NoError(t, err)
+				require.False(t, drained)
 			}
 		})
 	}
