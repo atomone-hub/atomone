@@ -173,10 +173,15 @@ thus, staking.EndBlock must be executed before provider.EndBlock;
 - creating a new consumer chain requires the following order,
 CreateChildClient(), staking.EndBlock, provider.EndBlock;
 thus, gov.EndBlock must be executed before staking.EndBlock
+
+coredaos.EndBlock must be executed before gov.EndBlock: it cleans up the votes of
+vetoed proposals, and gov's quorum check must not observe those votes, otherwise
+a vetoed proposal could pass quorum and be re-inserted into the active queue.
 */
 func orderEndBlockers() []string {
 	return []string{
 		dynamicfeetypes.ModuleName,
+		coredaostypes.ModuleName,
 		govtypes.ModuleName,
 		stakingtypes.ModuleName,
 		ibcexported.ModuleName,
@@ -196,7 +201,6 @@ func orderEndBlockers() []string {
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
-		coredaostypes.ModuleName,
 		epochstypes.ModuleName,
 	}
 }

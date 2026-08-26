@@ -18,6 +18,11 @@ import (
 // ran inside the metered veto transaction. This mirrors how x/gov cleans up
 // rejected proposals from its own EndBlocker.
 //
+// This module's EndBlocker MUST run before x/gov's (see orderEndBlockers): the
+// cleanup deletes the vetoed proposal's votes, and gov's quorum check must not
+// observe those votes, otherwise it could pass quorum and re-insert the vetoed
+// proposal into the ActiveProposalsQueue.
+//
 // The queue is drained fully every block, so it is always empty at a block
 // boundary and needs no genesis import/export.
 func (k Keeper) EndBlocker(ctx context.Context) error {
