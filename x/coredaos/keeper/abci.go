@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"cosmossdk.io/collections"
-	"cosmossdk.io/errors"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -25,29 +24,48 @@ import (
 //
 // The queue is drained fully every block, so it is always empty at a block
 // boundary and needs no genesis import/export.
-func (k Keeper) EndBlocker(ctx context.Context) error {
+func (k Keeper) EndBlocker(goCtx context.Context) error {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
 	return k.VetoCleanupQueue.Walk(ctx, nil, func(proposalID uint64, burnDeposit bool) (bool, error) {
-		// follows the same logic as in x/gov/abci.go for rejected proposals
-		if burnDeposit {
-			if err := k.govKeeper.DeleteAndBurnDeposits(ctx, proposalID); err != nil {
-				return false, errors.Wrapf(err, "error deleting and burning deposits for vetoed proposal %d", proposalID)
-			}
-		} else {
-			if err := k.govKeeper.RefundAndDeleteDeposits(ctx, proposalID); err != nil {
-				return false, errors.Wrapf(err, "error refunding and deleting deposits for vetoed proposal %d", proposalID)
-			}
+		// Each proposal is cleaned up in its own cached context: this is deferred
+		// best-effort work, so a failure must never halt the chain. On success we
+		// commit the changes (which include removing the proposal from the queue);
+		// on error we log and leave the entry queued to be retried next block.
+		cacheCtx, writeCache := ctx.CacheContext()
+		if err := k.cleanupVetoedProposal(cacheCtx, proposalID, burnDeposit); err != nil {
+			k.Logger(ctx).Error(
+				"failed to clean up vetoed proposal deposits/votes, will retry next block",
+				"proposal_id", proposalID,
+				"error", err,
+			)
+			return false, nil
 		}
-		// Delete all votes for the proposal. Votes are stored as
-		// collections.Map[collections.Pair[uint64, sdk.AccAddress], v1.Vote].
-		if err := k.govKeeper.Votes.Clear(ctx, collections.NewPrefixedPairRange[uint64, sdk.AccAddress](proposalID)); err != nil {
-			return false, errors.Wrapf(err, "error deleting votes for vetoed proposal %d", proposalID)
-		}
-		// The collections walk tolerates removing the current key within the
-		// iteration, as x/gov's own EndBlocker does for its queues.
-		if err := k.VetoCleanupQueue.Remove(ctx, proposalID); err != nil {
-			return false, errors.Wrapf(err, "error removing vetoed proposal %d from cleanup queue", proposalID)
-		}
+		writeCache()
 
 		return false, nil
 	})
+}
+
+// cleanupVetoedProposal refunds or burns every deposit of the proposal, deletes
+// every vote, and removes the proposal from the veto cleanup queue. It follows
+// the same logic as x/gov/abci.go for rejected proposals. The collections walk
+// in EndBlocker tolerates the queue removal happening within the iteration.
+func (k Keeper) cleanupVetoedProposal(ctx sdk.Context, proposalID uint64, burnDeposit bool) error {
+	if burnDeposit {
+		if err := k.govKeeper.DeleteAndBurnDeposits(ctx, proposalID); err != nil {
+			return err
+		}
+	} else {
+		if err := k.govKeeper.RefundAndDeleteDeposits(ctx, proposalID); err != nil {
+			return err
+		}
+	}
+	// Delete all votes for the proposal. Votes are stored as
+	// collections.Map[collections.Pair[uint64, sdk.AccAddress], v1.Vote].
+	if err := k.govKeeper.Votes.Clear(ctx, collections.NewPrefixedPairRange[uint64, sdk.AccAddress](proposalID)); err != nil {
+		return err
+	}
+
+	return k.VetoCleanupQueue.Remove(ctx, proposalID)
 }
