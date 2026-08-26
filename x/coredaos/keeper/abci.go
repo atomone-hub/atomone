@@ -26,40 +26,28 @@ import (
 // The queue is drained fully every block, so it is always empty at a block
 // boundary and needs no genesis import/export.
 func (k Keeper) EndBlocker(ctx context.Context) error {
-	// Collect the ids first: the cleanup callbacks below must not mutate the
-	// VetoCleanupQueue while it is being walked.
-	var (
-		ids   []uint64
-		burns []bool
-	)
-	if err := k.VetoCleanupQueue.Walk(ctx, nil, func(proposalID uint64, burnDeposit bool) (bool, error) {
-		ids = append(ids, proposalID)
-		burns = append(burns, burnDeposit)
-		return false, nil
-	}); err != nil {
-		return errors.Wrap(err, "error walking veto cleanup queue")
-	}
-
-	for i, proposalID := range ids {
+	return k.VetoCleanupQueue.Walk(ctx, nil, func(proposalID uint64, burnDeposit bool) (bool, error) {
 		// follows the same logic as in x/gov/abci.go for rejected proposals
-		if burns[i] {
+		if burnDeposit {
 			if err := k.govKeeper.DeleteAndBurnDeposits(ctx, proposalID); err != nil {
-				return errors.Wrapf(err, "error deleting and burning deposits for vetoed proposal %d", proposalID)
+				return false, errors.Wrapf(err, "error deleting and burning deposits for vetoed proposal %d", proposalID)
 			}
 		} else {
 			if err := k.govKeeper.RefundAndDeleteDeposits(ctx, proposalID); err != nil {
-				return errors.Wrapf(err, "error refunding and deleting deposits for vetoed proposal %d", proposalID)
+				return false, errors.Wrapf(err, "error refunding and deleting deposits for vetoed proposal %d", proposalID)
 			}
 		}
 		// Delete all votes for the proposal. Votes are stored as
 		// collections.Map[collections.Pair[uint64, sdk.AccAddress], v1.Vote].
 		if err := k.govKeeper.Votes.Clear(ctx, collections.NewPrefixedPairRange[uint64, sdk.AccAddress](proposalID)); err != nil {
-			return errors.Wrapf(err, "error deleting votes for vetoed proposal %d", proposalID)
+			return false, errors.Wrapf(err, "error deleting votes for vetoed proposal %d", proposalID)
 		}
+		// The collections walk tolerates removing the current key within the
+		// iteration, as x/gov's own EndBlocker does for its queues.
 		if err := k.VetoCleanupQueue.Remove(ctx, proposalID); err != nil {
-			return errors.Wrapf(err, "error removing vetoed proposal %d from cleanup queue", proposalID)
+			return false, errors.Wrapf(err, "error removing vetoed proposal %d from cleanup queue", proposalID)
 		}
-	}
 
-	return nil
+		return false, nil
+	})
 }
