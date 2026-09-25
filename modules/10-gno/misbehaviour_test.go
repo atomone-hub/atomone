@@ -1,6 +1,7 @@
 package gno
 
 import (
+	"math"
 	"testing"
 	"time"
 
@@ -214,6 +215,26 @@ func TestMisbehaviour_ValidateBasic_CommitBlockID(t *testing.T) {
 	err := misbehaviour.ValidateBasic()
 	require.NoError(t, err, "valid fork misbehaviour should pass ValidateBasic; "+
 		"if this fails, validCommit may be using Header.LastBlockId instead of Commit.BlockId")
+}
+
+// TestMisbehaviour_ValidateBasic_RejectsOversizedPrecommitPartsTotal ensures that a
+// precommit carrying a PartSetHeader.Total beyond the uint32 range is rejected with
+// an error at conversion instead of reaching gno's CanonicalizePartSetHeader,
+// which panics on it while computing vote sign bytes during commit verification.
+func TestMisbehaviour_ValidateBasic_RejectsOversizedPrecommitPartsTotal(t *testing.T) {
+	blockTime := time.Now().UTC()
+	header1 := createTestHeader(t, testChainID, 100, clienttypes.NewHeight(1, 50), blockTime)
+	header2 := createTestHeader(t, testChainID, 100, clienttypes.NewHeight(1, 50), blockTime.Add(time.Second))
+
+	// Only the precommit is malformed; the commit block ID itself stays valid so
+	// the misbehaviour reaches commit verification.
+	header1.SignedHeader.Commit.Precommits[0].BlockId.PartsHeader.Total = math.MaxUint32 + 1
+
+	misbehaviour := NewMisbehaviour(testClientID, header1, header2)
+	var err error
+	require.NotPanics(t, func() { err = misbehaviour.ValidateBasic() })
+	require.Error(t, err)
+	require.Contains(t, err.Error(), "parts header total")
 }
 
 // TestCheckForMisbehaviour_ForkDetection tests that CheckForMisbehaviour

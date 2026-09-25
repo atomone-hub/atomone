@@ -3,6 +3,7 @@ package e2e
 import (
 	"fmt"
 	"strconv"
+	"time"
 
 	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
 	govtypesv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
@@ -115,6 +116,20 @@ func (s *IntegrationTestSuite) testCoreDAOs() {
 		proposalID := s.submitVotingPeriodLawProposal(s.chainA)
 		proposalBeforeVeto := s.queryGovV1Proposal(chainAAPIEndpoint, proposalID)
 
+		// A distinct depositor tops up the proposal during its voting period.
+		// The veto's deposit cleanup is deferred to the coredaos EndBlocker, and
+		// this deposit must be refunded there — this exercises the deferred
+		// cleanup path on a live chain (see the gas-exhaustion fix).
+		depositor, err := s.chainA.genesisAccounts[3].keyInfo.GetAddress()
+		s.Require().NoError(err)
+		minDeposit := s.queryGovMinDeposit(chainAAPIEndpoint)
+		s.submitGovCommand(chainAAPIEndpoint, depositor.String(), proposalID, "deposit",
+			[]string{strconv.Itoa(proposalID), minDeposit.String()}, govtypesv1.StatusVotingPeriod)
+
+		// submitGovCommand only returns after the deposit tx is committed, so the
+		// depositor's balance already reflects the locked deposit (and its fee).
+		balanceAfterDeposit := s.queryBalance(chainAAPIEndpoint, depositor.String(), uatoneDenom)
+
 		atomoneCommand := []string{
 			atomonedBinary,
 			txCommand,
@@ -128,6 +143,12 @@ func (s *IntegrationTestSuite) testCoreDAOs() {
 
 		s.Require().Equal(govtypesv1.StatusVotingPeriod, proposalBeforeVeto.Proposal.Status)
 		s.Require().Equal(govtypesv1.StatusVetoed, proposalAfterVeto.Proposal.Status)
+
+		// The deferred EndBlocker cleanup must refund the depositor in full.
+		s.Require().Eventually(func() bool {
+			bal := s.queryBalance(chainAAPIEndpoint, depositor.String(), uatoneDenom)
+			return bal.Equal(balanceAfterDeposit.Add(minDeposit))
+		}, 30*time.Second, 2*time.Second)
 	})
 
 	s.Run("coredaos cannot stake", func() {
