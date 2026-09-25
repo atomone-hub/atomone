@@ -418,16 +418,13 @@ func (ms MsgServer) VetoProposal(goCtx context.Context, msg *types.MsgVetoPropos
 		}
 	}
 
-	// follows the same logic as in x/gov/abci.go for rejected proposals
-	if msg.BurnDeposit {
-		if err := ms.k.govKeeper.DeleteAndBurnDeposits(ctx, proposal.Id); err != nil {
-			return nil, errors.Wrapf(err, "error deleting and burning deposits")
-		}
-	} else {
-		if err := ms.k.govKeeper.RefundAndDeleteDeposits(ctx, proposal.Id); err != nil {
-			return nil, errors.Wrapf(err, "error refunding and deleting deposits")
-		}
-	}
+	// Mark the proposal as vetoed. This is O(1) and cannot be priced out of a
+	// block. The potentially unbounded cleanup (refunding/burning every deposit
+	// and deleting every vote) is deferred to the module EndBlocker, which runs
+	// under the infinite block gas meter, exactly as x/gov cleans up rejected
+	// proposals. Doing that work here — under the metered transaction gas meter,
+	// itself capped by block.max_gas — would let anyone make a proposal
+	// unvetoable simply by inflating its deposit or vote count.
 	proposal.Status = govv1.StatusVetoed
 
 	// Since the proposal is vetoed, we set the final tally result to an empty tally
@@ -441,13 +438,14 @@ func (ms MsgServer) VetoProposal(goCtx context.Context, msg *types.MsgVetoPropos
 	if err := ms.k.govKeeper.SetProposal(ctx, proposal); err != nil {
 		return nil, errors.Wrapf(err, "error setting proposal")
 	}
-	// Delete all votes for the proposal. Votes are stored as
-	// collections.Map[collections.Pair[uint64, sdk.AccAddress], v1.Vote].
-	if err := ms.k.govKeeper.Votes.Clear(ctx, collections.NewPrefixedPairRange[uint64, sdk.AccAddress](proposal.Id)); err != nil {
-		return nil, errors.Wrapf(err, "error deleting votes")
-	}
+	// Remove the proposal from the active queue so that x/gov's EndBlocker never
+	// tallies or executes it.
 	if err := ms.k.govKeeper.ActiveProposalsQueue.Remove(ctx, collections.Join(*origEndTime, proposal.Id)); err != nil {
 		return nil, errors.Wrapf(err, "error removing proposal from active proposal queue")
+	}
+	// Enqueue the deposit and vote cleanup for the EndBlocker.
+	if err := ms.k.VetoCleanupQueue.Set(ctx, proposal.Id, msg.BurnDeposit); err != nil {
+		return nil, errors.Wrapf(err, "error enqueuing proposal for veto cleanup")
 	}
 
 	ms.k.govKeeper.UpdateMinInitialDeposit(ctx, true)

@@ -35,7 +35,8 @@ var (
 	_ module.HasServices    = AppModule{}
 	_ module.HasGenesis     = AppModule{}
 
-	_ appmodule.AppModule = AppModule{}
+	_ appmodule.AppModule     = AppModule{}
+	_ appmodule.HasEndBlocker = AppModule{}
 )
 
 // ----------------------------------------------------------------------------
@@ -138,6 +139,11 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 
 // RegisterInvariants registers the invariants of the module. If an invariant deviates from its predicted value, the InvariantRegistry triggers appropriate logic (most often the chain will be halted)
 func (am AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
+
+// EndBlock executes the deferred cleanup of vetoed proposals.
+func (am AppModule) EndBlock(ctx context.Context) error {
+	return am.keeper.EndBlocker(ctx)
+}
 
 // InitGenesis performs the module's genesis initialization. It returns no validator updates.
 func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, gs json.RawMessage) {
