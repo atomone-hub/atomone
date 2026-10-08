@@ -1,0 +1,308 @@
+syntax = "proto3";
+
+package ibc.lightclients.spectre.v1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/atomone-hub/atomone/modules/spectre;spectre";
+
+// ClientState tracks a fork of the Ethereum beacon chain that this client
+// follows. It mirrors the client state of spectre's cw-ics08-wasm-eth
+// contract, adapted to a native light client module.
+message ClientState {
+  option (gogoproto.goproto_getters) = false;
+
+  // chain_id is the Ethereum chain ID (EIP-155) of the chain being tracked.
+  uint64 chain_id = 1;
+  // genesis_validators_root is the hash tree root of the genesis validator
+  // set, used in the signature domain.
+  bytes genesis_validators_root = 2;
+  // min_sync_committee_participants is the minimum number of sync committee
+  // participants required to accept a light client update.
+  uint64 min_sync_committee_participants = 3;
+  // sync_committee_size is the maximum number of sync committee participants.
+  uint64 sync_committee_size = 4;
+  // genesis_time is the genesis timestamp in seconds.
+  uint64 genesis_time = 5;
+  // genesis_slot is the slot number of the genesis block.
+  uint64 genesis_slot = 6;
+  // fork_parameters holds the fork schedule of the chain.
+  ForkParameters fork_parameters = 7 [(gogoproto.nullable) = false];
+  // seconds_per_slot is the slot duration in seconds.
+  uint64 seconds_per_slot = 8;
+  // slots_per_epoch is the number of slots per epoch.
+  uint64 slots_per_epoch = 9;
+  // epochs_per_sync_committee_period is the number of epochs per sync
+  // committee period.
+  uint64 epochs_per_sync_committee_period = 10;
+  // latest_slot is the slot of the latest finalized header tracked by the
+  // client.
+  uint64 latest_slot = 11;
+  // latest_execution_block_number is the execution block number of the latest
+  // finalized header, kept for relayer convenience.
+  uint64 latest_execution_block_number = 12;
+  // frozen indicates that misbehaviour was detected and the client is frozen.
+  bool frozen = 13;
+  // ibc_contract_address is the address of the IBC router contract on
+  // Ethereum whose storage is proven via membership proofs.
+  bytes ibc_contract_address = 14;
+  // ibc_commitment_slot is the storage slot of the commitments mapping in the
+  // IBC router contract, as a 32-byte big-endian integer.
+  bytes ibc_commitment_slot = 15;
+}
+
+// ForkParameters is the fork schedule used to compute the fork version of a
+// slot for signature domain computation.
+message ForkParameters {
+  option (gogoproto.goproto_getters) = false;
+
+  // genesis_fork_version is the fork version at genesis.
+  bytes genesis_fork_version = 1;
+  // genesis_slot is the slot of genesis.
+  uint64 genesis_slot = 2;
+  // altair fork schedule.
+  Fork altair = 3 [(gogoproto.nullable) = false];
+  // bellatrix fork schedule.
+  Fork bellatrix = 4 [(gogoproto.nullable) = false];
+  // capella fork schedule.
+  Fork capella = 5 [(gogoproto.nullable) = false];
+  // deneb fork schedule.
+  Fork deneb = 6 [(gogoproto.nullable) = false];
+  // electra fork schedule.
+  Fork electra = 7 [(gogoproto.nullable) = false];
+  // fulu fork schedule. An unscheduled fork is encoded with epoch = 2^64 - 1.
+  Fork fulu = 8 [(gogoproto.nullable) = false];
+}
+
+// Fork describes a single fork in the schedule.
+message Fork {
+  option (gogoproto.goproto_getters) = false;
+
+  // version is the 4-byte fork version.
+  bytes version = 1;
+  // epoch is the epoch at which the fork activates.
+  uint64 epoch = 2;
+}
+
+// ConsensusState is the state of the Ethereum chain at a finalized slot as
+// tracked by the light client.
+message ConsensusState {
+  option (gogoproto.goproto_getters) = false;
+
+  // slot is the beacon slot of the finalized header.
+  uint64 slot = 1;
+  // state_root is the execution state root of the finalized header.
+  bytes state_root = 2;
+  // timestamp is the execution timestamp (seconds) of the finalized header.
+  uint64 timestamp = 3;
+  // current_sync_committee is the summary of the sync committee for the
+  // period containing the finalized slot.
+  SummarizedSyncCommittee current_sync_committee = 4 [(gogoproto.nullable) = false];
+  // next_sync_committee is the summary of the sync committee for the next
+  // period, if known.
+  SummarizedSyncCommittee next_sync_committee = 5;
+}
+
+// SummarizedSyncCommittee is the compressed representation of a sync
+// committee kept in the consensus state.
+message SummarizedSyncCommittee {
+  option (gogoproto.goproto_getters) = false;
+
+  // pubkeys_hash is the SSZ hash tree root of the committee pubkeys.
+  bytes pubkeys_hash = 1;
+  // aggregate_pubkey is the aggregated BLS public key of the committee.
+  bytes aggregate_pubkey = 2;
+}
+
+// SyncCommittee is the full sync committee provided in light client updates.
+message SyncCommittee {
+  option (gogoproto.goproto_getters) = false;
+
+  // pubkeys are the 48-byte compressed BLS public keys of the committee.
+  repeated bytes pubkeys = 1;
+  // aggregate_pubkey is the aggregated BLS public key.
+  bytes aggregate_pubkey = 2;
+}
+
+// Header is the client message used to update the spectre client. It wraps a
+// beacon light client update with the full sync committee used to verify its
+// signature.
+message Header {
+  option (gogoproto.goproto_getters) = false;
+
+  // trusted_slot is the slot of the stored consensus state the update is
+  // verified against. The client must have a consensus state at this slot.
+  uint64 trusted_slot = 1;
+  // active_sync_committee is the full committee matching the consensus state
+  // at trusted_slot; it is either the current or the next committee.
+  SyncCommittee active_sync_committee = 2;
+  // is_next_committee selects which stored committee summary the active
+  // sync committee must match: false for the current committee, true for the
+  // next committee.
+  bool is_next_committee = 3;
+  // consensus_update is the beacon light client update.
+  LightClientUpdate consensus_update = 4 [(gogoproto.nullable) = false];
+}
+
+// LightClientUpdate is an altair-style beacon light client update.
+message LightClientUpdate {
+  option (gogoproto.goproto_getters) = false;
+
+  // attested_header is the header the sync committee attested to.
+  LightClientHeader attested_header = 1 [(gogoproto.nullable) = false];
+  // next_sync_committee is the committee for the next period, when included.
+  SyncCommittee next_sync_committee = 2;
+  // next_sync_committee_branch proves next_sync_committee against the
+  // attested header state root, when included.
+  repeated bytes next_sync_committee_branch = 3;
+  // finalized_header is the header proven finalized by the attested header.
+  LightClientHeader finalized_header = 4 [(gogoproto.nullable) = false];
+  // finality_branch proves the finalized header root against the attested
+  // header state root.
+  repeated bytes finality_branch = 5;
+  // sync_aggregate is the sync committee signature over the attested header.
+  SyncAggregate sync_aggregate = 6 [(gogoproto.nullable) = false];
+  // signature_slot is the slot at which the aggregate signature was created.
+  uint64 signature_slot = 7;
+}
+
+// LightClientHeader is a beacon header paired with its execution payload
+// header and the branch proving the latter from the beacon body root.
+message LightClientHeader {
+  option (gogoproto.goproto_getters) = false;
+
+  // beacon is the beacon block header.
+  BeaconBlockHeader beacon = 1 [(gogoproto.nullable) = false];
+  // execution is the execution payload header.
+  ExecutionPayloadHeader execution = 2 [(gogoproto.nullable) = false];
+  // execution_branch proves the execution payload header from the beacon
+  // body root.
+  repeated bytes execution_branch = 3;
+}
+
+// BeaconBlockHeader is the beacon chain block header.
+message BeaconBlockHeader {
+  option (gogoproto.goproto_getters) = false;
+
+  // slot is the slot of the block.
+  uint64 slot = 1;
+  // proposer_index is the index of the proposing validator.
+  uint64 proposer_index = 2;
+  // parent_root is the root of the parent block.
+  bytes parent_root = 3;
+  // state_root is the root of the beacon state.
+  bytes state_root = 4;
+  // body_root is the root of the beacon block body.
+  bytes body_root = 5;
+}
+
+// ExecutionPayloadHeader is the execution layer payload header.
+message ExecutionPayloadHeader {
+  option (gogoproto.goproto_getters) = false;
+
+  // parent_hash is the hash of the parent execution block.
+  bytes parent_hash = 1;
+  // fee_recipient is the address receiving the block fees.
+  bytes fee_recipient = 2;
+  // state_root is the execution state root (post-state of the block).
+  bytes state_root = 3;
+  // receipts_root is the root of the receipts trie.
+  bytes receipts_root = 4;
+  // logs_bloom is the bloom filter of the logs.
+  bytes logs_bloom = 5;
+  // prev_randao is the previous randao value.
+  bytes prev_randao = 6;
+  // block_number is the execution block number.
+  uint64 block_number = 7;
+  // gas_limit is the block gas limit.
+  uint64 gas_limit = 8;
+  // gas_used is the gas used by the block.
+  uint64 gas_used = 9;
+  // timestamp is the block timestamp (seconds).
+  uint64 timestamp = 10;
+  // extra_data is the block extra data.
+  bytes extra_data = 11;
+  // base_fee_per_gas is the base fee, as a 32-byte big-endian integer.
+  bytes base_fee_per_gas = 12;
+  // block_hash is the execution block hash.
+  bytes block_hash = 13;
+  // transactions_root is the root of the transactions trie.
+  bytes transactions_root = 14;
+  // withdrawals_root is the root of the withdrawals list.
+  bytes withdrawals_root = 15;
+  // blob_gas_used is the blob gas used (Deneb).
+  uint64 blob_gas_used = 16;
+  // excess_blob_gas is the excess blob gas (Deneb).
+  uint64 excess_blob_gas = 17;
+}
+
+// SyncAggregate is the sync committee's aggregate signature and participation.
+message SyncAggregate {
+  option (gogoproto.goproto_getters) = false;
+
+  // sync_committee_bits is the participation bitfield, one bit per committee
+  // member.
+  bytes sync_committee_bits = 1;
+  // sync_committee_signature is the 96-byte compressed BLS signature.
+  bytes sync_committee_signature = 2;
+}
+
+// Misbehaviour is a client message carrying two conflicting light client
+// updates for the same attested slot, each individually verifiable.
+message Misbehaviour {
+  option (gogoproto.goproto_getters) = false;
+
+  // trusted_slot is the slot of the stored consensus state the updates are
+  // verified against.
+  uint64 trusted_slot = 1;
+  // active_sync_committee is the full committee matching the consensus state
+  // at trusted_slot; it is either the current or the next committee.
+  SyncCommittee active_sync_committee = 2;
+  // is_next_committee selects which stored committee summary the active
+  // sync committee must match.
+  bool is_next_committee = 3;
+  // update_1 is the first conflicting light client update.
+  LightClientUpdate update_1 = 4 [(gogoproto.nullable) = false];
+  // update_2 is the second conflicting light client update.
+  LightClientUpdate update_2 = 5 [(gogoproto.nullable) = false];
+}
+
+// MembershipProof is an Ethereum state proof for a storage slot of the IBC
+// router contract: an account proof into the state trie and a storage proof
+// into the contract's storage trie.
+message MembershipProof {
+  option (gogoproto.goproto_getters) = false;
+
+  // account_proof proves the contract account (and its storage root) from
+  // the state root of a finalized header.
+  AccountProof account_proof = 1 [(gogoproto.nullable) = false];
+  // storage_proof proves the value (or absence) of the commitment slot in
+  // the contract storage trie.
+  StorageProof storage_proof = 2 [(gogoproto.nullable) = false];
+}
+
+// AccountProof is the inclusion proof of the IBC contract account in the
+// Ethereum state trie.
+message AccountProof {
+  option (gogoproto.goproto_getters) = false;
+
+  // storage_root is the claimed storage root of the contract, proven by the
+  // proof nodes.
+  bytes storage_root = 1;
+  // proof is the list of RLP-encoded state trie nodes.
+  repeated bytes proof = 2;
+}
+
+// StorageProof is an inclusion or exclusion proof of a storage slot in the
+// contract storage trie.
+message StorageProof {
+  option (gogoproto.goproto_getters) = false;
+
+  // key is the 32-byte storage key being proven.
+  bytes key = 1;
+  // value is the stored value as a 32-byte big-endian integer. Zero proves
+  // the slot is empty (used by non-membership proofs).
+  bytes value = 2;
+  // proof is the list of RLP-encoded storage trie nodes.
+  repeated bytes proof = 3;
+}
