@@ -4,7 +4,8 @@ package spectre
 // (Kurtosis ethereum-package + simapp) and converts them into the spectre
 // protobuf types. The fixtures use hex strings for byte fields and decimal
 // strings for some uint64 fields, matching the cw-ics08-wasm-eth JSON
-// encoding.
+// encoding. They are vendored under testdata, copied verbatim from
+// spectre/packages/ethereum/light-client/src/test_utils/fixtures.
 
 import (
 	"encoding/hex"
@@ -20,8 +21,8 @@ import (
 	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
 )
 
-// fixtureDir is the path to the spectre light client test fixtures.
-const fixtureDir = "../../spectre/packages/ethereum/light-client/src/test_utils/fixtures"
+// fixtureDir is the path to the vendored light client test fixtures.
+const fixtureDir = "testdata"
 
 // stepsFixture mirrors the Rust StepsFixture JSON.
 type stepsFixture struct {
