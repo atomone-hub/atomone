@@ -146,10 +146,8 @@ func trustedSyncCommittee(cs *ClientState, consState *ConsensusState, committee 
 		if !summarizeEqual(summary, consState.NextSyncCommittee) {
 			return nil, errorsmod.Wrap(ErrSyncCommitteeMismatch, "provided committee does not match stored next sync committee")
 		}
-	} else {
-		if !summarizeEqual(summary, &consState.CurrentSyncCommittee) {
-			return nil, errorsmod.Wrap(ErrSyncCommitteeMismatch, "provided committee does not match stored current sync committee")
-		}
+	} else if !summarizeEqual(summary, &consState.CurrentSyncCommittee) {
+		return nil, errorsmod.Wrap(ErrSyncCommitteeMismatch, "provided committee does not match stored current sync committee")
 	}
 
 	agg, err := aggregatePubkeys(committee.Pubkeys)

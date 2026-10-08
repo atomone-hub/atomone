@@ -12,9 +12,6 @@ const (
 	// finalizedRootGindex is get_generalized_index(BeaconState,
 	// 'finalized_checkpoint', 'root').
 	finalizedRootGindex = 169
-	// currentSyncCommitteeGindex is
-	// get_generalized_index(BeaconState, 'current_sync_committee').
-	currentSyncCommitteeGindex = 86
 	// nextSyncCommitteeGindex is
 	// get_generalized_index(BeaconState, 'next_sync_committee').
 	nextSyncCommitteeGindex = 87
