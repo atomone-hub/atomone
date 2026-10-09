@@ -61,7 +61,6 @@ import (
 	"github.com/atomone-hub/atomone/app/upgrades"
 	v4 "github.com/atomone-hub/atomone/app/upgrades/v4"
 	"github.com/atomone-hub/atomone/client/docs"
-	atomonepost "github.com/atomone-hub/atomone/post"
 )
 
 var (
@@ -282,16 +281,7 @@ func NewAtomOneApp(
 		panic(fmt.Errorf("failed to create AnteHandler: %s", err))
 	}
 
-	postHandlerOptions := atomonepost.HandlerOptions{
-		DynamicfeeKeeper: app.DynamicfeeKeeper,
-	}
-	postHandler, err := atomonepost.NewPostHandler(postHandlerOptions)
-	if err != nil {
-		panic(err)
-	}
-
 	app.SetAnteHandler(anteHandler)
-	app.SetPostHandler(postHandler)
 	app.SetInitChainer(app.InitChainer)
 	app.SetPreBlocker(app.PreBlocker)
 	app.SetBeginBlocker(app.BeginBlocker)

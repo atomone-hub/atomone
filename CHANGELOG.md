@@ -7,6 +7,7 @@
 ### BUG FIXES
 
 - Prevent bundling the wildcard symbol in `TxFeeExceptions` with other exceptions in `x/photon` [#352](https://github.com/atomone-hub/atomone/pull/352)
+- Consume failed-tx gas in dynamic fee pricing [#364](https://github.com/atomone-hub/atomone/pull/364)
 - Defer `x/coredaos` `MsgVetoProposal` deposit/vote cleanup to the module `EndBlocker` [#365](https://github.com/atomone-hub/atomone/pull/365)
 
 ### DEPENDENCIES
