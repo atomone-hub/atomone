@@ -9,7 +9,6 @@ ifeq (,$(VERSION))
   VERSION := $(PREVIOUS_TAG)-$(SHORT_COMMIT)
 endif
 
-LEDGER_ENABLED ?= false
 TM_VERSION := $(shell go list -f {{.Version}} -m github.com/cometbft/cometbft)
 DOCKER := $(shell which docker)
 BUILDDIR ?= $(CURDIR)/build
@@ -23,32 +22,9 @@ rundep=go run -modfile contrib/devdeps/go.mod
 
 # process build tags
 build_tags = netgo
-ifeq ($(LEDGER_ENABLED),false)
-  export CGO_ENABLED = 0
-else
-  $(info WARNING: Ledger build involves enabling cgo, which disables the ability to have reproducible builds.)
-  export CGO_ENABLED = 1
-  ifeq ($(OS),Windows_NT)
-    GCCEXE = $(shell where gcc.exe 2> NUL)
-    ifeq ($(GCCEXE),)
-      $(error gcc.exe not installed for ledger support, please install or set LEDGER_ENABLED=false)
-    else
-      build_tags += ledger
-    endif
-  else
-    UNAME_S = $(shell uname -s)
-    ifeq ($(UNAME_S),OpenBSD)
-      $(warning OpenBSD detected, disabling ledger support (https://github.com/cosmos/cosmos-sdk/issues/1988))
-    else
-      GCC = $(shell command -v gcc 2> /dev/null)
-      ifeq ($(GCC),)
-        $(error gcc not installed for ledger support, please install or set LEDGER_ENABLED=false)
-      else
-        build_tags += ledger
-      endif
-    endif
-  endif
-endif
+# Ledger devices are reached without CGO (pkg/ledger), so builds need none and
+# stay reproducible.
+export CGO_ENABLED = 0
 
 ifeq (cleveldb,$(findstring cleveldb,$(ATOMONE_BUILD_OPTIONS)))
   build_tags += gcc cleveldb
@@ -107,20 +83,15 @@ ifneq ($(GO_SYSTEM_VERSION), $(GO_REQUIRED_VERSION))
 	exit 1
 endif
 
-check_ledger:
-ifeq ($(LEDGER_ENABLED),false)
-	$(info Building without Ledger support. Set LEDGER_ENABLED=true or use build-ledger target to build with Ledger support.)
-endif
-
 BUILD_TARGETS := build install
 
 build: BUILD_ARGS=-o $(BUILDDIR)/
 
-$(BUILD_TARGETS): check_go_version check_ledger go.sum $(BUILDDIR)/
+$(BUILD_TARGETS): check_go_version go.sum $(BUILDDIR)/
 	go $@ -mod=readonly $(BUILD_FLAGS) $(BUILD_ARGS) ./...
 
-build-ledger: # Kept for convenience
-	$(MAKE) build LEDGER_ENABLED=true
+build-ledger: # Ledger support is built in; kept as an alias of build
+	$(MAKE) build
 
 $(BUILDDIR)/:
 	mkdir -p $(BUILDDIR)/
