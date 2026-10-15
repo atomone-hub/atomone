@@ -22,8 +22,8 @@ rundep=go run -modfile contrib/devdeps/go.mod
 
 # process build tags
 build_tags = netgo
-# Ledger devices are reached without CGO (pkg/ledger), so builds need none and
-# stay reproducible.
+# The Cosmos SDK reaches Ledger devices without CGO (atomone-sdk#127), so builds
+# need none and stay reproducible.
 export CGO_ENABLED = 0
 
 ifeq (cleveldb,$(findstring cleveldb,$(ATOMONE_BUILD_OPTIONS)))

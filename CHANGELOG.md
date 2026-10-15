@@ -15,7 +15,7 @@
 
 ### FEATURES
 
-- Ledger support in every `atomoned` build, without CGO or the `ledger` build tag [#372](https://github.com/atomone-hub/atomone/pull/372)
+- Build `atomoned` without CGO or the `ledger` build tag, relying on the SDK's CGO-free Ledger support ([atomone-sdk#127](https://github.com/atomone-hub/atomone-sdk/pull/127)) [#372](https://github.com/atomone-hub/atomone/pull/372)
 
 ### STATE BREAKING
 

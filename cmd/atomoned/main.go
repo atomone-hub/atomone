@@ -8,13 +8,9 @@ import (
 
 	app "github.com/atomone-hub/atomone/app"
 	"github.com/atomone-hub/atomone/cmd/atomoned/cmd"
-	"github.com/atomone-hub/atomone/pkg/ledger"
 )
 
 func main() {
-	// Ledger devices are reached without CGO, so in every build.
-	ledger.Register()
-
 	rootCmd, _ := cmd.NewRootCmd()
 
 	if err := svrcmd.Execute(rootCmd, "", app.DefaultNodeHome); err != nil {
