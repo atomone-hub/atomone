@@ -15,6 +15,8 @@
 
 ### FEATURES
 
+- Ledger support in every `atomoned` build, without CGO or the `ledger` build tag [#372](https://github.com/atomone-hub/atomone/pull/372)
+
 ### STATE BREAKING
 
 - fix(10-gno): bind validator addresses to pubkeys and bound PartSetHeader.Total during conversion [#367](https://github.com/atomone-hub/atomone/pull/367)
