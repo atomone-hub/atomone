@@ -22,6 +22,10 @@ const (
 	// from the target when decreasing the deposit.
 	MaxDecreaseSensitivityTargetDistanceDepositThrottler = 100
 
+	// Provide a sensible upper limit to quorum check count to avoid excessive
+	// resource consumption.
+	MaxQuorumCheckCount = 1000
+
 	// DefaultGovernorStatusChangePeriod is the default period that has to pass
 	// before a governor can change their status (e.g. from active to inactive).
 	DefaultGovernorStatusChangePeriod time.Duration = time.Hour * 24 * 28 // 28 days
@@ -347,24 +351,35 @@ func (p Params) ValidateBasic() error {
 		return fmt.Errorf("minimum deposit ratio of proposal is too large: %s", minDepositRatio)
 	}
 
-	if p.QuorumCheckCount > 0 {
-		// If quorum check is enabled, validate quorum check params
-		if p.QuorumTimeout == nil {
-			return fmt.Errorf("quorum timeout must not be nil")
-		}
-		if p.QuorumTimeout.Seconds() < 0 {
-			return fmt.Errorf("quorum timeout must be 0 or greater: %s", p.QuorumTimeout)
-		}
-		if p.QuorumTimeout.Nanoseconds() >= p.VotingPeriod.Nanoseconds() {
-			return fmt.Errorf("quorum timeout %s must be strictly less than the voting period %s", p.QuorumTimeout, p.VotingPeriod)
-		}
+	// Quorum check params must be fully valid even when quorum checks are
+	// disabled (QuorumCheckCount == 0). Quorum check queue entries created
+	// while checks were enabled persist across params updates, and the
+	// EndBlocker dereferences params.MaxVotingPeriodExtension for those
+	// entries regardless of the current QuorumCheckCount. Gating these
+	// checks on QuorumCheckCount > 0 would therefore allow nil pointers
+	// into state, crashing every validator in FinalizeBlock with a nil
+	// dereference (a permanent consensus halt, as the queue entry removal
+	// never commits).
+	if p.QuorumTimeout == nil {
+		return fmt.Errorf("quorum timeout must not be nil")
+	}
+	if p.QuorumTimeout.Seconds() < 0 {
+		return fmt.Errorf("quorum timeout must be 0 or greater: %s", p.QuorumTimeout)
+	}
+	if p.QuorumTimeout.Nanoseconds() >= p.VotingPeriod.Nanoseconds() {
+		return fmt.Errorf("quorum timeout %s must be strictly less than the voting period %s", p.QuorumTimeout, p.VotingPeriod)
+	}
 
-		if p.MaxVotingPeriodExtension == nil {
-			return fmt.Errorf("max voting period extension must not be nil")
-		}
-		if p.MaxVotingPeriodExtension.Nanoseconds() < p.VotingPeriod.Nanoseconds()-p.QuorumTimeout.Nanoseconds() {
-			return fmt.Errorf("max voting period extension %s must be greater than or equal to the difference between the voting period %s and the quorum timeout %s", p.MaxVotingPeriodExtension, p.VotingPeriod, p.QuorumTimeout)
-		}
+	if p.MaxVotingPeriodExtension == nil {
+		return fmt.Errorf("max voting period extension must not be nil")
+	}
+	if p.MaxVotingPeriodExtension.Nanoseconds() < p.VotingPeriod.Nanoseconds()-p.QuorumTimeout.Nanoseconds() {
+		return fmt.Errorf("max voting period extension %s must be greater than or equal to the difference between the voting period %s and the quorum timeout %s", p.MaxVotingPeriodExtension, p.VotingPeriod, p.QuorumTimeout)
+	}
+
+	// avoid a quorum check count that is too large
+	if p.QuorumCheckCount > MaxQuorumCheckCount {
+		return fmt.Errorf("quorum check count %d is too large, allowed max is %d", p.QuorumCheckCount, MaxQuorumCheckCount)
 	}
 
 	if p.MinDepositThrottler == nil {

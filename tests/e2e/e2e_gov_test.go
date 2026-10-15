@@ -569,7 +569,7 @@ func (s *IntegrationTestSuite) verifyChainHaltedAtUpgradeHeight(c *chain, valIdx
 			currentHeight := s.getLatestBlockHeight(c, valIdx)
 			return currentHeight == upgradeHeight
 		},
-		30*time.Second,
+		time.Duration(govProposalBlockBuffer)*3*time.Second,
 		time.Second,
 	)
 

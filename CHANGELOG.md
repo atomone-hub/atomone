@@ -1,5 +1,32 @@
 # CHANGELOG
 
+## Unreleased
+
+## v4.2.0
+
+### BUG FIXES
+
+- Prevent bundling the wildcard symbol in `TxFeeExceptions` with other exceptions in `x/photon` [#352](https://github.com/atomone-hub/atomone/pull/352)
+- Consume failed-tx gas in dynamic fee pricing [#364](https://github.com/atomone-hub/atomone/pull/364)
+- Defer `x/coredaos` `MsgVetoProposal` deposit/vote cleanup to the module `EndBlocker` [#365](https://github.com/atomone-hub/atomone/pull/365)
+- Always validate quorum check params [#371](https://github.com/atomone-hub/atomone/pull/371)
+
+### DEPENDENCIES
+
+### FEATURES
+
+### STATE BREAKING
+
+- fix(10-gno): bind validator addresses to pubkeys and bound PartSetHeader.Total during conversion [#367](https://github.com/atomone-hub/atomone/pull/367)
+
+> **Note:** both `10-gno` changes only affect malformed client messages, which are now rejected with an error where they were previously either accepted (unbound validator addresses) or failed with a recovered panic (out-of-range parts total). Legitimate gno headers are unaffected. Since the transaction error code and gas used are part of the results hash, nodes on different versions would diverge on such a message, so these changes require a coordinated upgrade.
+
+### IMPROVEMENTS
+
+- Migrate `x/coredaos` away from atomone `x/gov` wrapper [#353](https://github.com/atomone-hub/atomone/pull/353)
+- Move oversightDAO update bundling prevention from the ante to a coredaos gov hook [#354](https://github.com/atomone-hub/atomone/pull/354)
+- Reject proposals that delegate `x/coredaos` `MsgUpdateParams` via authz [358](https://github.com/atomone-hub/atomone/pull/358)
+
 ## v4.1.0
 
 _Jul 27th, 2026_

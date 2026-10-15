@@ -29,6 +29,8 @@ type Params struct {
 	// tx_fee_exceptions holds the msg type urls that are allowed to use some
 	// different tx fee coins than photon.
 	// A wildcard "*" can be used to allow all transactions to use any fee denom.
+	// When used, "*" must be the sole entry; combining it with specific message
+	// type URLs is contradictory and rejected during parameter validation.
 	TxFeeExceptions []string `protobuf:"bytes,2,rep,name=tx_fee_exceptions,json=txFeeExceptions,proto3" json:"tx_fee_exceptions,omitempty"`
 }
 

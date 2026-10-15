@@ -2,6 +2,9 @@ package gno
 
 import (
 	"crypto/rand"
+	"fmt"
+	"math"
+	"strings"
 	"testing"
 	"time"
 
@@ -10,6 +13,9 @@ import (
 	"github.com/gnolang/gno/tm2/pkg/crypto/ed25519"
 
 	"github.com/stretchr/testify/require"
+
+	cmtcrypto "github.com/cometbft/cometbft/proto/tendermint/crypto"
+	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
 )
 
 // TestConvertToGnoCommit_AbsentValidators tests that ConvertToGnoCommit correctly
@@ -118,6 +124,69 @@ func TestConvertToGnoValidatorSet_RejectsMalformedSets(t *testing.T) {
 		require.ErrorIs(t, err, ErrInvalidValidatorSet)
 	})
 
+	t.Run("address not derived from pubkey", func(t *testing.T) {
+		// valB's address paired with valA's pubkey.
+		unbound := &Validator{Address: valB.Address, PubKey: valA.PubKey, VotingPower: 10}
+		_, err := ConvertToGnoValidatorSet(&ValidatorSet{Validators: []*Validator{unbound}})
+		require.Error(t, err)
+		require.ErrorIs(t, err, ErrInvalidValidatorSet)
+		require.Contains(t, err.Error(), "does not match pubkey")
+
+		// Sanity check: Gno's own constructor also rejects this set.
+		require.Panics(t, func() {
+			bfttypes.NewValidatorSet([]*bfttypes.Validator{toBftValidator(unbound)})
+		})
+	})
+
+	t.Run("one pubkey under several distinct addresses", func(t *testing.T) {
+		// Shape of a forged set that reuses a single key, and therefore a
+		// single commit signature, across several validator slots. Every
+		// address is syntactically valid and distinct; only the binding to
+		// the pubkey is wrong. The first entry is legitimately bound, so the
+		// converter must stop at the second and name it.
+		valC, _ := createTestValidator(10)
+		forged := []*Validator{
+			createTestValidatorWithKey(100, keyA),
+			{Address: valB.Address, PubKey: valA.PubKey, VotingPower: 100},
+			{Address: valC.Address, PubKey: valA.PubKey, VotingPower: 100},
+		}
+		_, err := ConvertToGnoValidatorSet(&ValidatorSet{Validators: forged})
+		require.Error(t, err)
+		require.ErrorIs(t, err, ErrInvalidValidatorSet)
+		require.Contains(t, err.Error(), valB.Address)
+	})
+
+	t.Run("duplicate address differing only in case", func(t *testing.T) {
+		// bech32 decoding is case-insensitive, so both strings denote the
+		// same address and the duplicate check must key on the parsed value.
+		upper := createTestValidatorWithKey(5, keyA)
+		upper.Address = strings.ToUpper(upper.Address)
+		_, err := ConvertToGnoValidatorSet(&ValidatorSet{Validators: []*Validator{valA, upper}})
+		require.Error(t, err)
+		require.ErrorIs(t, err, ErrInvalidValidatorSet)
+		require.Contains(t, err.Error(), "duplicate")
+	})
+
+	t.Run("pubkey with invalid length is rejected without panicking", func(t *testing.T) {
+		short := createTestValidatorWithKey(10, keyA)
+		short.PubKey = &cmtcrypto.PublicKey{Sum: &cmtcrypto.PublicKey_Ed25519{Ed25519: []byte{1, 2, 3}}}
+		var err error
+		require.NotPanics(t, func() {
+			_, err = ConvertToGnoValidatorSet(&ValidatorSet{Validators: []*Validator{short}})
+		})
+		require.Error(t, err)
+		require.ErrorIs(t, err, ErrInvalidValidatorSet)
+	})
+
+	t.Run("nil validator entry is rejected", func(t *testing.T) {
+		var err error
+		require.NotPanics(t, func() {
+			_, err = ConvertToGnoValidatorSet(&ValidatorSet{Validators: []*Validator{valA, nil}})
+		})
+		require.Error(t, err)
+		require.ErrorIs(t, err, ErrInvalidValidatorSet)
+	})
+
 	t.Run("valid set is accepted with order and total preserved", func(t *testing.T) {
 		vals, err := ConvertToGnoValidatorSet(&ValidatorSet{Validators: []*Validator{valA, valB}})
 		require.NoError(t, err)
@@ -186,4 +255,105 @@ func TestConvertToGnoHeader_AppVersion(t *testing.T) {
 
 	require.NotEqual(t, hashWith, hashWithout,
 		"header hash must differ when AppVersion changes, proving it participates in the Merkle tree")
+}
+
+// TestConvertPartSetHeader_Bounds ensures every converter rejects a PartSetHeader whose
+// Total lies outside gno's [0, MaxBlockPartsCount] bound, or whose hash has the wrong
+// size, instead of forwarding it. gno's CanonicalizePartSetHeader panics on a
+// Total outside the uint32 range when computing vote sign bytes, and nothing in the
+// ValidateBasic chain caps Total, so the bound must be enforced at conversion.
+func TestConvertPartSetHeader_Bounds(t *testing.T) {
+	valSet, privKeys := createTestValidatorSet(1, 100)
+	signed := createTestSignedHeader(testChainID, 10, time.Now().UTC(), valSet, privKeys)
+	proposer := valSet.Validators[0].Address
+
+	psh := func(total int64, hashLen int) *PartSetHeader {
+		return &PartSetHeader{Total: total, Hash: make([]byte, hashLen)}
+	}
+	blockID := func(p *PartSetHeader) *BlockID {
+		return &BlockID{Hash: make([]byte, 32), PartsHeader: p}
+	}
+	// One conversion per cast site, in a slice so subtest order is stable.
+	converters := []struct {
+		name    string
+		convert func(*PartSetHeader) error
+	}{
+		{"commit block id", func(p *PartSetHeader) error {
+			_, err := ConvertToGnoCommit(&Commit{BlockId: blockID(p), Precommits: signed.Commit.Precommits})
+			return err
+		}},
+		{"precommit block id", func(p *PartSetHeader) error {
+			sig := *signed.Commit.Precommits[0]
+			sig.BlockId = blockID(p)
+			_, err := ConvertToGnoCommit(&Commit{BlockId: signed.Commit.BlockId, Precommits: []*CommitSig{&sig}})
+			return err
+		}},
+		{"header last block id", func(p *PartSetHeader) error {
+			h := createTestGnoHeader(testChainID, 10, time.Now().UTC(), make([]byte, 32), proposer)
+			h.LastBlockId = blockID(p)
+			_, err := ConvertToGnoHeader(h)
+			return err
+		}},
+		{"block id", func(p *PartSetHeader) error {
+			_, err := ConvertToGnoBlockID(blockID(p))
+			return err
+		}},
+	}
+
+	badTotals := []int64{-1, bfttypes.MaxBlockPartsCount + 1, math.MaxUint32 + 1, math.MaxInt64}
+	goodTotals := []int64{0, 1, bfttypes.MaxBlockPartsCount}
+
+	for _, c := range converters {
+		name, convert := c.name, c.convert
+		for _, total := range badTotals {
+			t.Run(fmt.Sprintf("%s rejects total %d", name, total), func(t *testing.T) {
+				var err error
+				require.NotPanics(t, func() { err = convert(psh(total, 32)) })
+				require.ErrorIs(t, err, clienttypes.ErrInvalidHeader)
+				require.Contains(t, err.Error(), "parts header total")
+			})
+		}
+		for _, total := range goodTotals {
+			t.Run(fmt.Sprintf("%s accepts total %d", name, total), func(t *testing.T) {
+				require.NoError(t, convert(psh(total, 32)))
+			})
+		}
+		t.Run(name+" rejects wrong hash size", func(t *testing.T) {
+			err := convert(psh(1, 31))
+			require.ErrorIs(t, err, clienttypes.ErrInvalidHeader)
+			require.Contains(t, err.Error(), "parts header hash")
+		})
+		t.Run(name+" accepts empty hash", func(t *testing.T) {
+			require.NoError(t, convert(psh(0, 0)))
+		})
+	}
+
+	t.Run("nil parts header converts to zero value", func(t *testing.T) {
+		id, err := ConvertToGnoBlockID(&BlockID{Hash: make([]byte, 32)})
+		require.NoError(t, err)
+		require.Equal(t, bfttypes.PartSetHeader{}, id.PartsHeader)
+	})
+}
+
+// TestConvertToGnoCommit_RejectsOutOfRangePrecommitType ensures a precommit Type that
+// does not fit gno's byte-sized SignedMsgType is rejected instead of being truncated
+// by the conversion, which would otherwise let a wire value such as 258 pass gno's
+// precommit type check as PrecommitType.
+func TestConvertToGnoCommit_RejectsOutOfRangePrecommitType(t *testing.T) {
+	valSet, privKeys := createTestValidatorSet(1, 100)
+	signed := createTestSignedHeader(testChainID, 10, time.Now().UTC(), valSet, privKeys)
+
+	// Sanity: the narrowing conversion alone would map this to PrecommitType.
+	wireType := uint32(bfttypes.PrecommitType) + 256
+	require.Equal(t, bfttypes.PrecommitType, bfttypes.SignedMsgType(wireType))
+
+	sig := *signed.Commit.Precommits[0]
+	sig.Type = wireType
+	_, err := ConvertToGnoCommit(&Commit{BlockId: signed.Commit.BlockId, Precommits: []*CommitSig{&sig}})
+	require.ErrorIs(t, err, clienttypes.ErrInvalidHeader)
+	require.Contains(t, err.Error(), "type")
+
+	// The in-range value is still accepted.
+	_, err = ConvertToGnoCommit(signed.Commit)
+	require.NoError(t, err)
 }

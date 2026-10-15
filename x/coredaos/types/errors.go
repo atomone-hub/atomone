@@ -12,4 +12,5 @@ var (
 	ErrFunctionDisabled         = errorsmod.Register(ModuleName, 4, "function is disabled")
 	ErrCannotStake              = errorsmod.Register(ModuleName, 5, "core DAOs cannot stake")
 	ErrInvalidVeto              = errorsmod.Register(ModuleName, 6, "oversight DAO cannot veto this proposal")
+	ErrUnknownProposal          = errorsmod.Register(ModuleName, 7, "unknown proposal")
 )

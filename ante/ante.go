@@ -28,7 +28,6 @@ type HandlerOptions struct {
 	PhotonKeeper     *photonkeeper.Keeper
 	TxFeeChecker     ante.TxFeeChecker
 	DynamicfeeKeeper *dynamicfeekeeper.Keeper
-	CoreDAOsKeeper   CoredaosParamsGetter
 }
 
 func NewAnteHandler(opts HandlerOptions) (sdk.AnteHandler, error) {
@@ -52,9 +51,6 @@ func NewAnteHandler(opts HandlerOptions) (sdk.AnteHandler, error) {
 	}
 	if opts.DynamicfeeKeeper == nil {
 		return nil, errorsmod.Wrap(atomoneerrors.ErrNotFound, "dynamicfee keeper is required for AnteHandler")
-	}
-	if opts.CoreDAOsKeeper == nil {
-		return nil, errorsmod.Wrap(atomoneerrors.ErrNotFound, "coredaos keeper is required for AnteHandler")
 	}
 
 	sigGasConsumer := opts.SigGasConsumer
@@ -87,7 +83,6 @@ func NewAnteHandler(opts HandlerOptions) (sdk.AnteHandler, error) {
 			),
 		),
 		NewGovVoteDecorator(opts.Codec, opts.StakingKeeper),
-		NewGovSubmitProposalDecorator(opts.Codec, opts.CoreDAOsKeeper),
 		ibcante.NewRedundantRelayDecorator(opts.IBCkeeper),
 	}
 

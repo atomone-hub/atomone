@@ -463,5 +463,4 @@ message GovernanceDelegation {
 
   string delegator_address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   string governor_address  = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-  ;
 }

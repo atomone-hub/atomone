@@ -89,12 +89,18 @@ func (misbehaviour Misbehaviour) ValidateBasic() error {
 		return errorsmod.Wrapf(clienttypes.ErrInvalidMisbehaviour, "Header1 height is less than Header2 height (%s < %s)", misbehaviour.Header1.GetHeight(), misbehaviour.Header2.GetHeight())
 	}
 
-	blockId1 := ConvertToGnoBlockID(misbehaviour.Header1.SignedHeader.Commit.BlockId)
-	if err := blockId1.ValidateBasic(); err != nil {
+	blockId1, err := ConvertToGnoBlockID(misbehaviour.Header1.SignedHeader.Commit.BlockId)
+	if err != nil {
 		return errorsmod.Wrap(err, "invalid block ID from header 1 in misbehaviour")
 	}
-	blockId2 := ConvertToGnoBlockID(misbehaviour.Header2.SignedHeader.Commit.BlockId)
-	if err := blockId2.ValidateBasic(); err != nil {
+	if err = blockId1.ValidateBasic(); err != nil {
+		return errorsmod.Wrap(err, "invalid block ID from header 1 in misbehaviour")
+	}
+	blockId2, err := ConvertToGnoBlockID(misbehaviour.Header2.SignedHeader.Commit.BlockId)
+	if err != nil {
+		return errorsmod.Wrap(err, "invalid block ID from header 2 in misbehaviour")
+	}
+	if err = blockId2.ValidateBasic(); err != nil {
 		return errorsmod.Wrap(err, "invalid block ID from header 2 in misbehaviour")
 	}
 
