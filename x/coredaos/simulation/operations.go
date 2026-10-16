@@ -8,11 +8,12 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
+	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
+	govv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 
 	"github.com/atomone-hub/atomone/x/coredaos/keeper"
 	"github.com/atomone-hub/atomone/x/coredaos/types"
-	govv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
 )
 
 var initialProposalID = uint64(100000000000000)
@@ -40,7 +41,7 @@ const (
 )
 
 // WeightedOperations returns all the operations from the CoreDaos module with their respective weights
-func WeightedOperations(appParams simtypes.AppParams, cdc codec.JSONCodec, gk types.GovKeeper, sk types.StakingKeeper, ak types.AccountKeeper, bk types.BankKeeper, k keeper.Keeper) simulation.WeightedOperations {
+func WeightedOperations(appParams simtypes.AppParams, cdc codec.JSONCodec, gk *govkeeper.Keeper, sk types.StakingKeeper, ak types.AccountKeeper, bk types.BankKeeper, k keeper.Keeper) simulation.WeightedOperations {
 	var weightMsgAnnotateProposal int
 	appParams.GetOrGenerate(OpWeightMsgAnnotateProposal, &weightMsgAnnotateProposal, nil,
 		func(_ *rand.Rand) {
@@ -89,7 +90,7 @@ func WeightedOperations(appParams simtypes.AppParams, cdc codec.JSONCodec, gk ty
 	}
 }
 
-func SimulateMsgAnnotateProposal(gk types.GovKeeper, sk types.StakingKeeper, ak types.AccountKeeper, bk types.BankKeeper, k keeper.Keeper) simtypes.Operation {
+func SimulateMsgAnnotateProposal(gk *govkeeper.Keeper, sk types.StakingKeeper, ak types.AccountKeeper, bk types.BankKeeper, k keeper.Keeper) simtypes.Operation {
 	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		params := k.GetParams(ctx)
@@ -128,7 +129,7 @@ func SimulateMsgAnnotateProposal(gk types.GovKeeper, sk types.StakingKeeper, ak 
 	}
 }
 
-func SimulateMsgEndorseProposal(gk types.GovKeeper, sk types.StakingKeeper, ak types.AccountKeeper, bk types.BankKeeper, k keeper.Keeper) simtypes.Operation {
+func SimulateMsgEndorseProposal(gk *govkeeper.Keeper, sk types.StakingKeeper, ak types.AccountKeeper, bk types.BankKeeper, k keeper.Keeper) simtypes.Operation {
 	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		params := k.GetParams(ctx)
@@ -166,7 +167,7 @@ func SimulateMsgEndorseProposal(gk types.GovKeeper, sk types.StakingKeeper, ak t
 	}
 }
 
-func SimulateMsgExtendVotingPeriod(gk types.GovKeeper, sk types.StakingKeeper, ak types.AccountKeeper, bk types.BankKeeper, k keeper.Keeper) simtypes.Operation {
+func SimulateMsgExtendVotingPeriod(gk *govkeeper.Keeper, sk types.StakingKeeper, ak types.AccountKeeper, bk types.BankKeeper, k keeper.Keeper) simtypes.Operation {
 	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		params := k.GetParams(ctx)
@@ -221,7 +222,7 @@ func SimulateMsgExtendVotingPeriod(gk types.GovKeeper, sk types.StakingKeeper, a
 	}
 }
 
-func SimulateMsgVetoProposal(gk types.GovKeeper, sk types.StakingKeeper, ak types.AccountKeeper, bk types.BankKeeper, k keeper.Keeper) simtypes.Operation {
+func SimulateMsgVetoProposal(gk *govkeeper.Keeper, sk types.StakingKeeper, ak types.AccountKeeper, bk types.BankKeeper, k keeper.Keeper) simtypes.Operation {
 	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		params := k.GetParams(ctx)
@@ -283,8 +284,8 @@ func SimulateMsgVetoProposal(gk types.GovKeeper, sk types.StakingKeeper, ak type
 // (defined in gov GenesisState) and the latest proposal ID
 // that has voting period status
 // It does not provide a default ID.
-func randomProposal(r *rand.Rand, k types.GovKeeper, ctx sdk.Context) (proposal govv1.Proposal, found bool) {
-	proposalID, _ := k.GetProposalID(ctx)
+func randomProposal(r *rand.Rand, k *govkeeper.Keeper, ctx sdk.Context) (proposal govv1.Proposal, found bool) {
+	proposalID, _ := k.ProposalID.Peek(ctx)
 
 	switch {
 	case proposalID > initialProposalID:
@@ -297,8 +298,8 @@ func randomProposal(r *rand.Rand, k types.GovKeeper, ctx sdk.Context) (proposal 
 		initialProposalID = proposalID
 	}
 
-	proposal, ok := k.GetProposal(ctx, proposalID)
-	if !ok || proposal.Status != govv1.StatusVotingPeriod {
+	proposal, err := k.Proposals.Get(ctx, proposalID)
+	if err != nil || proposal.Status != govv1.StatusVotingPeriod {
 		return proposal, false
 	}
 

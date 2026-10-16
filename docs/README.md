@@ -44,13 +44,55 @@ Copy/paste the mnemonic and you're done.
 
 Chain upgrade is an important procedure that should be tested carefully. This
 section aims to provide a guide for testing chain upgrades in AtomOne using a
-localnet. 
+localnet.
+
+### Automated: `contrib/scripts/upgrade-node.sh`
+
+The script runs the whole upgrade flow unattended: it starts a localnet with
+the *previous* binary, submits and passes the upgrade proposal, waits for the
+halt height, then restarts the chain with the *new* binary.
+
+1. Update `contrib/localnet/proposal_upgrade.json` with the correct plan name,
+   which means the exact `UpgradeName` used to qualify the upgrade in the
+   next version. For instance for the v4 upgrade, the plan name is `v4` (see
+   the `app/upgrades` folder).
+2. Build the two binaries, the one to upgrade from and the one to upgrade to:
+   ```sh
+   git checkout v4.1.0 && make build && cp build/atomoned /tmp/atomoned-prev
+   git checkout main   && make build && cp build/atomoned /tmp/atomoned-new
+   ```
+3. Run the script from the repository root:
+   ```sh
+   ATOMONED_BIN=/tmp/atomoned-prev \
+   ATOMONED_NEW_BIN=/tmp/atomoned-new \
+   ./contrib/scripts/upgrade-node.sh
+   ```
+
+The script fails fast if any transaction returns a non-zero code, and prints
+the last lines of the previous binary's log (which should contain the
+`UPGRADE "<plan>" NEEDED` error) before starting the new binary. Block
+production restarting with the new binary means the upgrade handler ran
+successfully.
+
+Notes:
+
+- It must be run from the repository root, as it reads
+  `contrib/localnet/constitution-mock.md` from a relative path.
+- It deletes `~/.atomone-localnet` and kills any running `atomoned start`
+  process.
+- The voting period is lowered to 60s, so the whole run takes a couple of
+  minutes. Logs are written to `prev.log` and `new.log` in the current
+  directory.
+- The previous binary must be recent enough to support the CLI and output
+  formats the script relies on (SDK v0.50, i.e. v4 and above).
+
+### Alternative: manual localnet upgrade
 
 1. Git checkout the version of AtomOne you want to upgrade from.
-2. Update `contrib/localnet/upgrade_proposal.json` with the correct plan name,
+2. Update `contrib/localnet/proposal_upgrade.json` with the correct plan name,
    which means the exact `UpgradeName` used to qualify the upgrade in the
    next version. For instance for the v2 upgrade, the plan name is `v2` (see
-   the `app/upgrade` folder).
+   the `app/upgrades` folder).
 3. Run `make localnet-start` to start a new localnet.
 4. Run `make localnet-submit-upgrade-proposal` to submit the upgrade proposal
    and give it enough yes votes for passing the tally.
@@ -100,8 +142,9 @@ testnet running locally. This is useful to:
    repo.
 
 4. Download a recent mainnet snapshot (e.g. from
-   [polkachu](https://polkachu.com/tendermint_snapshots/atomone) or itrocket)
-   and extract it. `lz4` is required for decompression.
+   [nodeshub](https://services.nodeshub.online/mainnet/atomone/snapshot) or
+   [itrocket](https://itrocket.space/services/mainnet/atomone)) and extract it.
+   `lz4` is required for decompression.
    ```sh
    rm -rf ~/.atomone/validator1/data && mkdir ~/.atomone/validator1/data
    echo '{ "height": "0", "round": 0, "step": 0 }' \

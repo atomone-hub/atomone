@@ -4,7 +4,7 @@
       "@type": "/cosmos.upgrade.v1beta1.MsgSoftwareUpgrade",
       "authority": "atone10d07y265gmmuvt4z0w9aw880jnsr700j5z0zqt",
       "plan": {
-        "name": "v4",
+        "name": "v5",
         "time": "0001-01-01T00:00:00Z",
         "height": "30",
         "info": "",
