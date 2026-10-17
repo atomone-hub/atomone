@@ -29,11 +29,11 @@ Github Release section.
 
 ## Ledger support
 
-Run `make build/install LEDGER_ENABLED=true` to have ledger support in
-`atomoned` binary.
-
-Note that this will disable reproducible builds, as it introduces OS
-dependencies.
+Every `atomoned` built for Linux, macOS or Windows, including the release
+binaries, can use a Ledger device with the Cosmos app (`--ledger` flags, such
+as `atomoned keys add --ledger`). The Cosmos SDK reaches the device without
+CGO, so builds stay reproducible. Close Ledger Wallet (Ledger Live) while using
+the device from `atomoned`.
 
 ## Genesis file
 
