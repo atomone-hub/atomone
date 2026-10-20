@@ -43,7 +43,7 @@ func validateMerkleBranch(leaf [32]byte, branch [][32]byte, gindex uint64, root 
 	index := subtreeIndex(gindex)
 
 	value := leaf
-	for i := 0; i < depth; i++ {
+	for i := range depth {
 		node := branch[i]
 		if index>>uint(i)&1 == 1 {
 			value = sha256Hash(node, value)
@@ -84,7 +84,7 @@ func isValidNormalizedMerkleBranch(leaf [32]byte, normalizedBranch [][32]byte, g
 			"normalized branch length %d is shorter than depth %d", len(normalizedBranch), depth)
 	}
 	numExtra := len(normalizedBranch) - depth
-	for i := 0; i < numExtra; i++ {
+	for i := range numExtra {
 		if normalizedBranch[i] != ([32]byte{}) {
 			return errorsmod.Wrap(ErrInvalidMerkleBranch, "normalized branch padding is non-zero")
 		}

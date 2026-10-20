@@ -83,7 +83,7 @@ func forkVersionSlot(signatureSlot uint64) uint64 {
 func (sa *SyncAggregate) numParticipants() uint64 {
 	var count uint64
 	for _, b := range sa.SyncCommitteeBits {
-		for i := 0; i < 8; i++ {
+		for i := range 8 {
 			if b&(1<<uint(i)) != 0 {
 				count++
 			}
@@ -435,14 +435,23 @@ func (cs *ClientState) verifyHeader(consState *ConsensusState, currentTimestampS
 // validateUpdateBounds enforces variable-size limits before any hashing or
 // BLS work.
 func validateUpdateBounds(update *LightClientUpdate) error {
-	const maxExtraDataBytes = 32
-	for _, extraData := range [][]byte{
-		update.AttestedHeader.Execution.ExtraData,
-		update.FinalizedHeader.Execution.ExtraData,
+	const (
+		maxExtraDataBytes = 32
+		logsBloomBytes    = 256
+	)
+	for _, exec := range []*ExecutionPayloadHeader{
+		&update.AttestedHeader.Execution,
+		&update.FinalizedHeader.Execution,
 	} {
-		if len(extraData) > maxExtraDataBytes {
+		if len(exec.ExtraData) > maxExtraDataBytes {
 			return errorsmod.Wrapf(ErrInvalidHeader,
-				"execution payload extra_data is %d bytes, maximum %d", len(extraData), maxExtraDataBytes)
+				"execution payload extra_data is %d bytes, maximum %d", len(exec.ExtraData), maxExtraDataBytes)
+		}
+		// logs_bloom is the fixed 256-byte bloom filter of the spec; any other
+		// length is malformed and would be hashed at full length.
+		if len(exec.LogsBloom) != logsBloomBytes {
+			return errorsmod.Wrapf(ErrInvalidHeader,
+				"execution payload logs_bloom is %d bytes, expected %d", len(exec.LogsBloom), logsBloomBytes)
 		}
 	}
 	return nil

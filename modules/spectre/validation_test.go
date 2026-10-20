@@ -234,6 +234,50 @@ func TestVerifyMembershipEntryPoint(t *testing.T) {
 	require.Error(t, cs.verifyNonMembership(ctx, clientStore, cdc, recv.ProofHeight, 0, 0, proofBz, nil))
 }
 
+// TestValidateUpdateBounds verifies the size bounds on variable-length
+// execution payload fields, including the fixed-size logs bloom.
+func TestValidateUpdateBounds(t *testing.T) {
+	fixture := loadFixture(t, "Test_TimeoutPacketFromCosmos")
+	headerRaw := fixtureHeaderRaw(t, fixture, 1)
+
+	mkUpdate := func(mut func(u *LightClientUpdate)) *LightClientUpdate {
+		h := decodeHeader(headerRaw).toProto()
+		mut(&h.ConsensusUpdate)
+		return &h.ConsensusUpdate
+	}
+
+	require.NoError(t, validateUpdateBounds(mkUpdate(func(u *LightClientUpdate) {})))
+
+	tests := []struct {
+		name string
+		mut  func(u *LightClientUpdate)
+	}{
+		{"short attested logs_bloom", func(u *LightClientUpdate) {
+			u.AttestedHeader.Execution.LogsBloom = u.AttestedHeader.Execution.LogsBloom[:255]
+		}},
+		{"long finalized logs_bloom", func(u *LightClientUpdate) {
+			u.FinalizedHeader.Execution.LogsBloom = append(append([]byte(nil), u.FinalizedHeader.Execution.LogsBloom...), 0)
+		}},
+		{"oversized attested logs_bloom", func(u *LightClientUpdate) {
+			u.AttestedHeader.Execution.LogsBloom = make([]byte, 1<<20)
+		}},
+		{"oversized finalized logs_bloom", func(u *LightClientUpdate) {
+			u.FinalizedHeader.Execution.LogsBloom = make([]byte, 1<<20)
+		}},
+		{"oversized attested extra_data", func(u *LightClientUpdate) {
+			u.AttestedHeader.Execution.ExtraData = make([]byte, 33)
+		}},
+		{"oversized finalized extra_data", func(u *LightClientUpdate) {
+			u.FinalizedHeader.Execution.ExtraData = make([]byte, 33)
+		}},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			require.Error(t, validateUpdateBounds(mkUpdate(tc.mut)))
+		})
+	}
+}
+
 // TestVerifyMisbehaviourPaths exercises the misbehaviour verification error
 // paths; real conflicting updates do not exist in the fixtures.
 func TestVerifyMisbehaviourPaths(t *testing.T) {

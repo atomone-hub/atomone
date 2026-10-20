@@ -44,7 +44,8 @@ func validateProofBounds(proofs ...[][]byte) error {
 // trieGet walks an Ethereum Merkle Patricia Trie from root following
 // keccak256(key). It returns the value stored at key, or nil when the proof
 // shows the key is absent. Every node in the walk must be present in the
-// proof and must hash to its position in the trie.
+// proof and must hash to its position in the trie. Each step consumes at
+// least one key nibble, so the walk terminates within len(nibbles) steps.
 func trieGet(root [32]byte, key []byte, proof [][]byte) ([]byte, error) {
 	nodes := make(map[common.Hash][]byte, len(proof))
 	for _, node := range proof {
@@ -63,11 +64,11 @@ func trieGet(root [32]byte, key []byte, proof [][]byte) ([]byte, error) {
 	idx := 0
 
 	for {
-		var decoded interface{}
+		var decoded any
 		if err := rlp.DecodeBytes(node, &decoded); err != nil {
 			return nil, errorsmod.Wrap(ErrInvalidProof, "invalid RLP node encoding")
 		}
-		list, ok := decoded.([]interface{})
+		list, ok := decoded.([]any)
 		if !ok {
 			return nil, errorsmod.Wrap(ErrInvalidProof, "trie node must be a list")
 		}
@@ -79,6 +80,12 @@ func trieGet(root [32]byte, key []byte, proof [][]byte) ([]byte, error) {
 				return nil, errorsmod.Wrap(ErrInvalidProof, "invalid path in node")
 			}
 			nodePath, isLeaf := hexPrefixDecode(pathBytes)
+			// Canonical MPT nodes carry at least one path nibble. An empty
+			// path lets a crafted proof descend (via inline children) without
+			// consuming key nibbles, amplifying decode work per proof byte.
+			if len(nodePath) == 0 {
+				return nil, errorsmod.Wrap(ErrInvalidProof, "trie node has an empty path")
+			}
 			remaining := len(nibbles) - idx
 			if len(nodePath) > remaining {
 				return nil, nil // key diverges: proven absent
@@ -141,7 +148,7 @@ func trieGet(root [32]byte, key []byte, proof [][]byte) ([]byte, error) {
 
 // resolveChild resolves a child reference: either a 32-byte keccak hash into
 // the proof node set, or an inline RLP node (decoded as a nested list).
-func resolveChild(nodes map[common.Hash][]byte, ref interface{}) ([]byte, error) {
+func resolveChild(nodes map[common.Hash][]byte, ref any) ([]byte, error) {
 	switch child := ref.(type) {
 	case []byte:
 		if len(child) == 32 {
@@ -156,7 +163,7 @@ func resolveChild(nodes map[common.Hash][]byte, ref interface{}) ([]byte, error)
 		// Inline nodes must be lists in the parent encoding; a non-empty
 		// byte string that is not a hash is invalid.
 		return nil, errorsmod.Wrap(ErrInvalidProof, "invalid child node reference")
-	case []interface{}:
+	case []any:
 		encoded, err := rlp.EncodeToBytes(child)
 		if err != nil {
 			return nil, errorsmod.Wrap(ErrInvalidProof, "failed to re-encode inline child node")

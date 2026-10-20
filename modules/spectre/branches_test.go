@@ -134,7 +134,7 @@ func mkLeaf(t *testing.T, key []byte, value []byte) []byte {
 }
 
 // mkBranchRaw builds an RLP branch node from raw (already encoded) items.
-func mkBranchRaw(t *testing.T, items []interface{}) []byte {
+func mkBranchRaw(t *testing.T, items []any) []byte {
 	t.Helper()
 	encoded, err := rlp.EncodeToBytes(items)
 	require.NoError(t, err)
@@ -144,7 +144,7 @@ func mkBranchRaw(t *testing.T, items []interface{}) []byte {
 // mkBranch builds an RLP branch node from 16 children and an optional value.
 func mkBranch(t *testing.T, children [][]byte, value []byte) []byte {
 	t.Helper()
-	var items []interface{}
+	var items []any
 	for _, child := range children {
 		items = append(items, child)
 	}
@@ -155,7 +155,7 @@ func mkBranch(t *testing.T, children [][]byte, value []byte) []byte {
 // mkExt builds an RLP extension node whose child is embedded inline.
 func mkExt(t *testing.T, key []byte, child []byte) []byte {
 	t.Helper()
-	encoded, err := rlp.EncodeToBytes([]interface{}{hexPrefix(key, false), rlp.RawValue(child)})
+	encoded, err := rlp.EncodeToBytes([]any{hexPrefix(key, false), rlp.RawValue(child)})
 	require.NoError(t, err)
 	return encoded
 }
@@ -190,7 +190,7 @@ func rlpEncodeList(t *testing.T, items ...[]byte) []byte {
 // rlpEncodeListItems encodes a full item slice as an RLP list.
 func rlpEncodeListItems(t *testing.T, items [][]byte) []byte {
 	t.Helper()
-	var asInterfaces []interface{}
+	var asInterfaces []any
 	for _, item := range items {
 		asInterfaces = append(asInterfaces, item)
 	}
@@ -293,7 +293,7 @@ func TestTrieGetWalks(t *testing.T) {
 		if len(inlineLeaf) >= 32 {
 			t.Skip("synthetic inline node too large")
 		}
-		items := make([]interface{}, 17)
+		items := make([]any, 17)
 		for i := range items {
 			items[i] = []byte{}
 		}
@@ -305,6 +305,38 @@ func TestTrieGetWalks(t *testing.T) {
 		val, err := trieGet(root, key, [][]byte{branch})
 		require.NoError(t, err)
 		require.Nil(t, val, "inline leaf with a diverging path proves absence")
+	})
+
+	t.Run("empty path nodes error", func(t *testing.T) {
+		// Canonical MPT nodes carry at least one path nibble; nodes with an
+		// empty hex-prefix path only appear in crafted proofs, where they
+		// would let the walk descend without consuming key nibbles.
+		leaf := mkLeaf(t, nibbles, []byte("value"))
+		leafHash := crypto.Keccak256Hash(leaf)
+
+		ext, err := rlp.EncodeToBytes([]any{[]byte{0x00}, leafHash[:]})
+		require.NoError(t, err)
+		root := keccakTo32(crypto.Keccak256Hash(ext))
+		_, err = trieGet(root, key, [][]byte{ext, leaf})
+		require.Error(t, err, "extension with an empty path must error")
+
+		emptyLeaf, err := rlp.EncodeToBytes([]any{[]byte{0x20}, []byte("value")})
+		require.NoError(t, err)
+		root = keccakTo32(crypto.Keccak256Hash(emptyLeaf))
+		_, err = trieGet(root, key, [][]byte{emptyLeaf})
+		require.Error(t, err, "leaf with an empty path must error")
+	})
+
+	t.Run("nested inline zero-progress chain errors", func(t *testing.T) {
+		node, err := rlp.EncodeToBytes([]any{[]byte{0x20}, []byte("value")})
+		require.NoError(t, err)
+		for range 200 {
+			node, err = rlp.EncodeToBytes([]any{[]byte{0x00}, rlp.RawValue(node)})
+			require.NoError(t, err)
+		}
+		root := keccakTo32(crypto.Keccak256Hash(node))
+		_, err = trieGet(root, key, [][]byte{node})
+		require.Error(t, err, "zero-progress inline chain must error instead of walking every level")
 	})
 
 	t.Run("malformed inputs", func(t *testing.T) {
@@ -331,7 +363,7 @@ func TestTrieGetWalks(t *testing.T) {
 		require.Error(t, err)
 
 		// A wrong-sized node list errors.
-		bad := mkBranchRaw(t, []interface{}{[]byte{}, []byte{}, []byte{}, []byte{}, []byte{}})
+		bad := mkBranchRaw(t, []any{[]byte{}, []byte{}, []byte{}, []byte{}, []byte{}})
 		_, err = trieGet(keccakTo32(crypto.Keccak256Hash(bad)), key, [][]byte{bad})
 		require.Error(t, err)
 	})

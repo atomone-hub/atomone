@@ -80,7 +80,7 @@ func uint64Chunk(v uint64) [32]byte {
 // little-endian order. uint256 values hash as their little-endian bytes.
 func uint256ChunkLE(be [32]byte) [32]byte {
 	var le [32]byte
-	for i := 0; i < 32; i++ {
+	for i := range 32 {
 		le[i] = be[31-i]
 	}
 	return le
@@ -100,10 +100,7 @@ func packBytes(b []byte) [][32]byte {
 	}
 	chunks := make([][32]byte, (len(b)+31)/32)
 	for i := range chunks {
-		end := (i + 1) * 32
-		if end > len(b) {
-			end = len(b)
-		}
+		end := min((i+1)*32, len(b))
 		copy(chunks[i][:], b[i*32:end])
 	}
 	return chunks

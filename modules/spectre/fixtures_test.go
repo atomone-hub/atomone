@@ -48,7 +48,7 @@ func loadFixture(t testT, name string) *stepsFixture {
 
 // testT is the subset of testing.T used by fixture helpers.
 type testT interface {
-	Fatalf(format string, args ...interface{})
+	Fatalf(format string, args ...any)
 	Helper()
 }
 
@@ -62,7 +62,7 @@ func jsonFixedBytes(s string) []byte {
 }
 
 // jsonUint decodes a JSON number or decimal string into uint64.
-func jsonUint(v interface{}) uint64 {
+func jsonUint(v any) uint64 {
 	switch x := v.(type) {
 	case float64:
 		return uint64(x)
@@ -98,7 +98,7 @@ func fixtureString(m map[string]json.RawMessage, key string) string {
 // fixtureUint reads a uint64 field accepting number-or-string encoding.
 func fixtureUint(m map[string]json.RawMessage, key string) uint64 {
 	if raw, ok := m[key]; ok {
-		var v interface{}
+		var v any
 		if err := json.Unmarshal(raw, &v); err == nil {
 			return jsonUint(v)
 		}
@@ -169,7 +169,7 @@ func unscheduledFork() *Fork {
 // fixtureBool reads a boolean field accepting bool-or-string encoding.
 func fixtureBool(m map[string]json.RawMessage, key string) bool {
 	if raw, ok := m[key]; ok {
-		var v interface{}
+		var v any
 		if err := json.Unmarshal(raw, &v); err == nil {
 			switch x := v.(type) {
 			case bool:
