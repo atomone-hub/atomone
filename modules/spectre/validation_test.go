@@ -278,6 +278,72 @@ func TestValidateUpdateBounds(t *testing.T) {
 	}
 }
 
+// bitsWithParticipants returns a sync committee bitfield of the given size
+// (in members) with the first n bits set.
+func bitsWithParticipants(t *testing.T, size uint64, n int) []byte {
+	t.Helper()
+	bits := make([]byte, (size+7)/8)
+	for i := range n {
+		bits[i/8] |= 1 << uint(i%8)
+	}
+	return bits
+}
+
+// TestSupermajorityRequired verifies that updates clearing the configured
+// minimum participant count but not the two-thirds supermajority are
+// rejected, both as headers and as misbehaviour updates: two conflicting
+// updates signed by disjoint small subsets must not freeze the client.
+func TestSupermajorityRequired(t *testing.T) {
+	fixture := loadFixture(t, "Test_TimeoutPacketFromCosmos")
+	runner := newFixtureRunner(t, fixture)
+	msgs := decodeRelayerMessages(t, fixture.Steps[1].Data)
+	header := msgs.headers[0]
+	trusted := runner.consStates[header.TrustedSlot]
+	currentTime := header.ConsensusUpdate.AttestedHeader.Execution.Timestamp + 1000
+	currentSlot, err := runner.clientState.computeSlotAtTimestamp(currentTime)
+	require.NoError(t, err)
+
+	// The fixture committee has 32 members with a minimum of 11 participants;
+	// 20 participants clear the minimum but not the 2/3 supermajority (22).
+	size := runner.clientState.SyncCommitteeSize
+	nParticipants := int(size*2/3) - 1
+	belowSupermajority := bitsWithParticipants(t, size, nParticipants)
+	require.Greater(t, uint64(nParticipants), runner.clientState.MinSyncCommitteeParticipants,
+		"test bitfield must clear the configured participant minimum")
+
+	headerRaw := fixtureHeaderRaw(t, fixture, 1)
+
+	t.Run("update requires a supermajority", func(t *testing.T) {
+		h := decodeHeader(headerRaw).toProto()
+		h.ConsensusUpdate.SyncAggregate.SyncCommitteeBits = belowSupermajority
+		err := runner.clientState.validateLightClientUpdate(
+			trusted, h.ActiveSyncCommittee, &h.ConsensusUpdate, currentSlot,
+		)
+		require.ErrorIs(t, err, ErrNotEnoughSignatures)
+	})
+
+	t.Run("misbehaviour updates require a supermajority", func(t *testing.T) {
+		// Decode two independent copies: proto assignments share nested slices,
+		// so mutating Update_2 would also mutate Update_1.
+		h1 := decodeHeader(headerRaw).toProto()
+		h2 := decodeHeader(headerRaw).toProto()
+		mis := &Misbehaviour{
+			TrustedSlot:         h1.TrustedSlot,
+			ActiveSyncCommittee: h1.ActiveSyncCommittee,
+			IsNextCommittee:     h1.IsNextCommittee,
+			Update_1:            h1.ConsensusUpdate,
+			Update_2:            h2.ConsensusUpdate,
+		}
+		// Conflicting state roots so the pair qualifies as a candidate conflict.
+		mis.Update_2.AttestedHeader.Execution.StateRoot[0] ^= 0xff
+		mis.Update_1.SyncAggregate.SyncCommitteeBits = belowSupermajority
+		mis.Update_2.SyncAggregate.SyncCommitteeBits = belowSupermajority
+
+		err := runner.clientState.verifyMisbehaviour(trusted, currentTime, mis)
+		require.ErrorIs(t, err, ErrNotEnoughSignatures)
+	})
+}
+
 // TestVerifyMisbehaviourPaths exercises the misbehaviour verification error
 // paths; real conflicting updates do not exist in the fixtures.
 func TestVerifyMisbehaviourPaths(t *testing.T) {

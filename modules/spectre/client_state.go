@@ -213,7 +213,16 @@ func (cs *ClientState) checkForMisbehaviour(
 }
 
 // updateState applies a verified header, storing the new consensus state and
-// updating the client state when the finalized slot advanced.
+// updating the client state when the finalized slot advanced. Updates apply
+// against the consensus state at the client's latest slot; historical
+// updates are not supported.
+//
+// The panics below are invariant guards: updateConsensusState fails only on
+// trusted/latest inconsistencies that verifyHeader rules out for verified
+// headers (a nil next sync committee exists only in the client's initial
+// sync period, where the signature period check pins updates to that
+// period). They must never fire; if one does, the verification invariants
+// were broken by a code change.
 func (cs *ClientState) updateState(
 	cdc codec.BinaryCodec,
 	clientStore storetypes.KVStore,

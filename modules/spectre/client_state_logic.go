@@ -185,8 +185,9 @@ func (cs *ClientState) isValidLightClientHeader(header *LightClientHeader) error
 
 // validateLightClientUpdate verifies a light client update against the
 // trusted consensus state, per the altair/electra light client sync
-// protocol: participant counts, slot ordering, signature period, finality
-// and next-sync-committee branches, and the aggregate BLS signature.
+// protocol: participant counts (minimum and 2/3 supermajority), slot
+// ordering, signature period, finality and next-sync-committee branches,
+// and the aggregate BLS signature.
 func (cs *ClientState) validateLightClientUpdate(
 	consState *ConsensusState,
 	committee *SyncCommittee,
@@ -203,6 +204,15 @@ func (cs *ClientState) validateLightClientUpdate(
 	if sa := update.SyncAggregate; sa.numParticipants() < cs.MinSyncCommitteeParticipants {
 		return errorsmod.Wrapf(ErrInsufficientParticipants,
 			"%d participants is below the minimum %d", sa.numParticipants(), cs.MinSyncCommitteeParticipants)
+	}
+
+	// Require a 2/3 supermajority for every verified update, including
+	// misbehaviour reports: two conflicting updates signed by disjoint small
+	// subsets are normal beacon chain activity, not misbehaviour.
+	if sa := update.SyncAggregate; !sa.hasSupermajority() {
+		return errorsmod.Wrapf(ErrNotEnoughSignatures,
+			"%d of %d participants is below the 2/3 supermajority",
+			sa.numParticipants(), sa.syncCommitteeSize())
 	}
 
 	if err := cs.isValidLightClientHeader(&update.AttestedHeader); err != nil {
@@ -404,13 +414,6 @@ func (cs *ClientState) verifyHeader(consState *ConsensusState, currentTimestampS
 		return err
 	}
 
-	if !header.ConsensusUpdate.SyncAggregate.hasSupermajority() {
-		return errorsmod.Wrapf(ErrNotEnoughSignatures,
-			"%d of %d participants is below the 2/3 supermajority",
-			header.ConsensusUpdate.SyncAggregate.numParticipants(),
-			header.ConsensusUpdate.SyncAggregate.syncCommitteeSize())
-	}
-
 	if header.ConsensusUpdate.FinalizedHeader.Beacon.Slot <= consState.Slot {
 		return errorsmod.Wrapf(ErrInvalidHeader,
 			"finalized slot %d does not advance trusted slot %d",
@@ -536,7 +539,7 @@ func (cs *ClientState) updateConsensusState(consState *ConsensusState, header *H
 		}
 	} else {
 		// Without a known next committee, the finalized period cannot
-		// advance.
+		// advance; unreachable for verified headers (see updateState).
 		if updateFinalizedPeriod != storePeriod {
 			return nil, nil, errorsmod.Wrapf(ErrInvalidSignaturePeriod,
 				"finalized period %d is beyond stored period %d but the next sync committee is unknown",

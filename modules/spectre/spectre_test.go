@@ -215,7 +215,10 @@ func TestFixtureUpdatePipeline(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			fixture := loadFixture(t, name)
 			if fixture.Steps == nil {
-				t.Skipf("fixture %s is empty", name)
+				// Vendored verbatim from upstream: the spectre repo also ships
+				// this fixture as an empty stub. The subtest runs once upstream
+				// populates it.
+				t.Skipf("fixture %s has no steps (upstream stub)", name)
 			}
 			runner := newFixtureRunner(t, fixture)
 			msgs := runner.applyAllUpdates(fixture)
