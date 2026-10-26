@@ -33,7 +33,8 @@ Every `atomoned` built for Linux, macOS or Windows, including the release
 binaries, can use a Ledger device with the Cosmos app (`--ledger` flags, such
 as `atomoned keys add --ledger`). The Cosmos SDK reaches the device without
 CGO, so builds stay reproducible. Close Ledger Wallet (Ledger Live) while using
-the device from `atomoned`.
+the device from `atomoned`: both compete for the device, and only on macOS and
+Windows does `atomoned` lock other applications out of it while signing.
 
 ## Genesis file
 

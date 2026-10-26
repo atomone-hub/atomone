@@ -28,6 +28,8 @@ export CGO_ENABLED = 0
 
 ifeq (cleveldb,$(findstring cleveldb,$(ATOMONE_BUILD_OPTIONS)))
   build_tags += gcc cleveldb
+  # cleveldb is a C library, reached through cgo (levigo).
+  CGO_ENABLED = 1
 endif
 build_tags += $(BUILD_TAGS)
 build_tags := $(strip $(build_tags))
