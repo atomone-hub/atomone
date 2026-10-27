@@ -6,10 +6,11 @@ import (
 	store "cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 
-	"github.com/atomone-hub/atomone/app/keepers"
-	"github.com/atomone-hub/atomone/app/upgrades"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/types/module"
+
+	"github.com/atomone-hub/atomone/app/keepers"
+	"github.com/atomone-hub/atomone/app/upgrades"
 )
 
 const UpgradeName = "v4.1"
