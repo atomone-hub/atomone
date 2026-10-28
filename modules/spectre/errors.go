@@ -28,4 +28,7 @@ var (
 	ErrUpdateNotValid             = errorsmod.Register(ModuleName, 21, "light client update failed verification")
 	ErrClientAndConsensusMismatch = errorsmod.Register(ModuleName, 22, "client state and consensus state slot mismatch")
 	ErrUnsupportedOperation       = errorsmod.Register(ModuleName, 23, "unsupported operation")
+	ErrTrustedSlotNotLatest       = errorsmod.Register(ModuleName, 24, "trusted slot is not the latest slot of the client")
+	ErrSignedByPastCommittee      = errorsmod.Register(ModuleName, 25, "misbehaviour signed by a past sync committee")
+	ErrInvalidExecutionHeader     = errorsmod.Register(ModuleName, 26, "invalid execution header")
 )

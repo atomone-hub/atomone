@@ -13,6 +13,38 @@ func (cs *ClientState) verifySupportedForkAtEpoch(epoch uint64) error {
 	return nil
 }
 
+// isGloasEpoch reports whether the epoch is at or after the Gloas fork.
+func (cs *ClientState) isGloasEpoch(epoch uint64) bool {
+	return epoch >= cs.ForkParameters.Gloas.Epoch
+}
+
+// finalizedRootGindexAtSlot returns the generalized index of the finalized
+// checkpoint root in the beacon state at the given slot, which depends on the
+// fork the slot belongs to.
+func (cs *ClientState) finalizedRootGindexAtSlot(slot uint64) (uint64, error) {
+	epoch := cs.computeEpochAtSlot(slot)
+	if err := cs.verifySupportedForkAtEpoch(epoch); err != nil {
+		return 0, err
+	}
+	if cs.isGloasEpoch(epoch) {
+		return finalizedRootGindexGloas, nil
+	}
+	return finalizedRootGindexElectra, nil
+}
+
+// nextSyncCommitteeGindexAtSlot returns the generalized index of the next sync
+// committee in the beacon state at the given slot.
+func (cs *ClientState) nextSyncCommitteeGindexAtSlot(slot uint64) (uint64, error) {
+	epoch := cs.computeEpochAtSlot(slot)
+	if err := cs.verifySupportedForkAtEpoch(epoch); err != nil {
+		return 0, err
+	}
+	if cs.isGloasEpoch(epoch) {
+		return nextSyncCommitteeGindexGloas, nil
+	}
+	return nextSyncCommitteeGindexElectra, nil
+}
+
 // computeSlotAtTimestamp returns the beacon slot at a wall-clock timestamp,
 // or an error if the timestamp precedes genesis.
 func (cs *ClientState) computeSlotAtTimestamp(timestampSeconds uint64) (uint64, error) {
@@ -43,6 +75,8 @@ func (cs *ClientState) computeSyncCommitteePeriodAtSlot(slot uint64) (uint64, er
 // consensus specs.
 func (fp *ForkParameters) computeForkVersion(epoch uint64) []byte {
 	switch {
+	case epoch >= fp.Gloas.Epoch:
+		return fp.Gloas.Version
 	case epoch >= fp.Fulu.Epoch:
 		return fp.Fulu.Version
 	case epoch >= fp.Electra.Epoch:
@@ -163,24 +197,56 @@ func trustedSyncCommittee(cs *ClientState, consState *ConsensusState, committee 
 	return committee, nil
 }
 
-// isValidLightClientHeader validates a light client header: the execution
-// payload header must be proven from the beacon body root via the execution
-// branch, and both headers must be in a supported fork.
+// isValidLightClientHeader validates a light client header. A header must set
+// exactly one of execution (pre-Gloas format) and execution_block_hash (Gloas
+// format). A full execution payload header is rejected at or after the Gloas
+// fork, since Gloas blocks no longer carry the payload. The execution
+// commitment is proven against the beacon body root: the payload header root
+// with the execution payload index, or the block hash with the index of the
+// header's own epoch (Gloas from the Gloas epoch, otherwise Deneb; every
+// supported fork is Electra or later).
 func (cs *ClientState) isValidLightClientHeader(header *LightClientHeader) error {
-	if err := cs.verifySupportedForkAtEpoch(cs.computeEpochAtSlot(header.Beacon.Slot)); err != nil {
+	epoch := cs.computeEpochAtSlot(header.Beacon.Slot)
+	if err := cs.verifySupportedForkAtEpoch(epoch); err != nil {
 		return err
 	}
-	if len(header.ExecutionBranch) != floorLog2(executionPayloadGindex) {
-		return errorsmod.Wrapf(ErrInvalidMerkleBranch,
-			"execution branch has %d nodes, expected %d", len(header.ExecutionBranch), floorLog2(executionPayloadGindex))
+
+	hasExecution := header.Execution != nil
+	hasBlockHash := len(header.ExecutionBlockHash) != 0
+	switch {
+	case hasExecution && !hasBlockHash:
+		if cs.isGloasEpoch(epoch) {
+			return errorsmod.Wrap(ErrInvalidHeader, "execution payload header is not allowed from the gloas epoch")
+		}
+		if err := ensureBranchLength("execution branch", header.ExecutionBranch, executionPayloadGindex); err != nil {
+			return err
+		}
+		return validateMerkleBranch(
+			executionPayloadHeaderRoot(header.Execution),
+			bytesTo32Array(header.ExecutionBranch),
+			executionPayloadGindex,
+			bytes32(header.Beacon.BodyRoot),
+		)
+	case !hasExecution && hasBlockHash:
+		// Every Gloas-format header carries the Gloas-length branch, whatever
+		// its own epoch: headers that predate Gloas arrive with leading zero
+		// nodes, which isValidNormalizedMerkleBranch checks and skips.
+		if err := ensureBranchLength("execution branch", header.ExecutionBranch, executionBlockHashGindexGloas); err != nil {
+			return err
+		}
+		gindex := uint64(executionBlockHashGindexDeneb)
+		if cs.isGloasEpoch(epoch) {
+			gindex = executionBlockHashGindexGloas
+		}
+		return isValidNormalizedMerkleBranch(
+			bytes32(header.ExecutionBlockHash),
+			bytesTo32Array(header.ExecutionBranch),
+			gindex,
+			bytes32(header.Beacon.BodyRoot),
+		)
+	default:
+		return errorsmod.Wrap(ErrInvalidHeader, "light client header must set exactly one of execution and execution_block_hash")
 	}
-	leaf := executionPayloadHeaderRoot(&header.Execution)
-	return validateMerkleBranch(
-		leaf,
-		bytesTo32Array(header.ExecutionBranch),
-		executionPayloadGindex,
-		bytes32(header.Beacon.BodyRoot),
-	)
 }
 
 // validateLightClientUpdate verifies a light client update against the
@@ -317,16 +383,25 @@ func (cs *ClientState) validateUpdateBranches(
 		return errorsmod.Wrap(err, "finalized header is invalid")
 	}
 
-	// Prove the finalized header root from the attested header state root.
+	// Prove the finalized header root from the attested header state root. The
+	// index depends on the fork of the attested slot, and the branch must have
+	// exactly its depth.
+	finalizedGindex, err := cs.finalizedRootGindexAtSlot(update.AttestedHeader.Beacon.Slot)
+	if err != nil {
+		return err
+	}
+	if err := ensureBranchLength("finality branch", update.FinalityBranch, finalizedGindex); err != nil {
+		return err
+	}
 	finalizedRoot := beaconBlockHeaderRoot(&update.FinalizedHeader.Beacon)
-	branch, err := normalizeMerkleBranch(bytesTo32Array(update.FinalityBranch), finalizedRootGindex)
+	branch, err := normalizeMerkleBranch(bytesTo32Array(update.FinalityBranch), finalizedGindex)
 	if err != nil {
 		return errorsmod.Wrap(err, "finality branch is invalid")
 	}
 	if err := isValidNormalizedMerkleBranch(
 		finalizedRoot,
 		branch,
-		finalizedRootGindex,
+		finalizedGindex,
 		bytes32(update.AttestedHeader.Beacon.StateRoot),
 	); err != nil {
 		return errorsmod.Wrap(err, "finality branch verification failed")
@@ -355,15 +430,22 @@ func (cs *ClientState) validateUpdateBranches(
 			return errorsmod.Wrap(ErrSyncCommitteeMismatch, "next sync committee does not match the stored one")
 		}
 	}
+	nextGindex, err := cs.nextSyncCommitteeGindexAtSlot(update.AttestedHeader.Beacon.Slot)
+	if err != nil {
+		return err
+	}
+	if err := ensureBranchLength("next sync committee branch", update.NextSyncCommitteeBranch, nextGindex); err != nil {
+		return err
+	}
 	nextRoot := syncCommitteeRoot(update.NextSyncCommittee)
-	branch, err = normalizeMerkleBranch(bytesTo32Array(update.NextSyncCommitteeBranch), nextSyncCommitteeGindex)
+	branch, err = normalizeMerkleBranch(bytesTo32Array(update.NextSyncCommitteeBranch), nextGindex)
 	if err != nil {
 		return errorsmod.Wrap(err, "next sync committee branch is invalid")
 	}
 	if err := isValidNormalizedMerkleBranch(
 		nextRoot,
 		branch,
-		nextSyncCommitteeGindex,
+		nextGindex,
 		bytes32(update.AttestedHeader.Beacon.StateRoot),
 	); err != nil {
 		return errorsmod.Wrap(err, "next sync committee branch verification failed")
@@ -398,6 +480,11 @@ var domainTypeSyncCommittee = [4]byte{0x07, 0x00, 0x00, 0x00}
 // consensus state at its trusted slot.
 func (cs *ClientState) verifyHeader(consState *ConsensusState, currentTimestampSeconds uint64, header *Header) error {
 	if err := validateUpdateBounds(&header.ConsensusUpdate); err != nil {
+		return err
+	}
+	// Rejects a Gloas-format finalized header whose execution header is missing
+	// or does not hash to the proven block hash, before any signature work.
+	if _, err := finalizedExecutionSummary(header); err != nil {
 		return err
 	}
 
@@ -443,9 +530,14 @@ func validateUpdateBounds(update *LightClientUpdate) error {
 		logsBloomBytes    = 256
 	)
 	for _, exec := range []*ExecutionPayloadHeader{
-		&update.AttestedHeader.Execution,
-		&update.FinalizedHeader.Execution,
+		update.AttestedHeader.Execution,
+		update.FinalizedHeader.Execution,
 	} {
+		// A Gloas-format header carries no execution payload header, so there
+		// is nothing to bound.
+		if exec == nil {
+			continue
+		}
 		if len(exec.ExtraData) > maxExtraDataBytes {
 			return errorsmod.Wrapf(ErrInvalidHeader,
 				"execution payload extra_data is %d bytes, maximum %d", len(exec.ExtraData), maxExtraDataBytes)
@@ -462,8 +554,26 @@ func validateUpdateBounds(update *LightClientUpdate) error {
 
 // verifyMisbehaviour verifies two conflicting light client updates for the
 // same attested slot. Both must pass full verification while attesting
-// different execution state roots.
+// different execution commitments.
+//
+// The consensus state the evidence is anchored at may be any the client still
+// holds, because evidence has to be anchored below its attested slot and the
+// client keeps advancing. What the client does not accept is evidence signed
+// by a committee it has left: the signature period of both updates must be the
+// period of the client's latest slot or a later one. The keys of an earlier
+// committee can belong to validators that exited long ago and carry no stake.
+// An anchor from the previous period is still enough for evidence signed by
+// the committee that took over from it, which the anchor knows as its next
+// sync committee.
 func (cs *ClientState) verifyMisbehaviour(consState *ConsensusState, currentTimestampSeconds uint64, mis *Misbehaviour) error {
+	// Bounds first, as in verifyHeader: nothing below hashes or aggregates
+	// anything for an oversized update.
+	for i, update := range []*LightClientUpdate{&mis.Update_1, &mis.Update_2} {
+		if err := validateUpdateBounds(update); err != nil {
+			return errorsmod.Wrapf(err, "update %d", i+1)
+		}
+	}
+
 	committee, err := trustedSyncCommittee(cs, consState, mis.ActiveSyncCommittee, mis.IsNextCommittee)
 	if err != nil {
 		return err
@@ -475,10 +585,27 @@ func (cs *ClientState) verifyMisbehaviour(consState *ConsensusState, currentTime
 		return errorsmod.Wrapf(ErrInvalidMisbehaviour, "attested slots differ: %d vs %d", slot1, slot2)
 	}
 
-	root1 := bytes32(mis.Update_1.AttestedHeader.Execution.StateRoot)
-	root2 := bytes32(mis.Update_2.AttestedHeader.Execution.StateRoot)
+	root1, root2, err := conflictingExecutionRoots(&mis.Update_1.AttestedHeader, &mis.Update_2.AttestedHeader)
+	if err != nil {
+		return errorsmod.Wrap(err, "attested headers are not comparable")
+	}
 	if root1 == root2 {
-		return errorsmod.Wrap(ErrInvalidMisbehaviour, "attested state roots match: no conflict")
+		return errorsmod.Wrap(ErrInvalidMisbehaviour, "attested execution commitments match: no conflict")
+	}
+
+	latestPeriod, err := cs.computeSyncCommitteePeriodAtSlot(cs.LatestSlot)
+	if err != nil {
+		return err
+	}
+	for i, update := range []*LightClientUpdate{&mis.Update_1, &mis.Update_2} {
+		signaturePeriod, err := cs.computeSyncCommitteePeriodAtSlot(update.SignatureSlot)
+		if err != nil {
+			return err
+		}
+		if signaturePeriod < latestPeriod {
+			return errorsmod.Wrapf(ErrSignedByPastCommittee,
+				"update %d: signature period %d is before the latest period %d", i+1, signaturePeriod, latestPeriod)
+		}
 	}
 
 	currentSlot, err := cs.computeSlotAtTimestamp(currentTimestampSeconds)
@@ -487,14 +614,46 @@ func (cs *ClientState) verifyMisbehaviour(consState *ConsensusState, currentTime
 	}
 
 	for i, update := range []*LightClientUpdate{&mis.Update_1, &mis.Update_2} {
-		if err := validateUpdateBounds(update); err != nil {
-			return errorsmod.Wrapf(err, "update %d", i+1)
-		}
 		if err := cs.validateLightClientUpdate(consState, committee, update, currentSlot); err != nil {
 			return errorsmod.Wrapf(err, "update %d failed verification", i+1)
 		}
 	}
 	return nil
+}
+
+// conflictingExecutionRoots returns the execution commitments of two attested
+// headers that are comparable with each other. Two pre-Gloas-format headers
+// are compared by execution state root. As soon as either header is in the
+// Gloas format, which carries no state root, both are compared by execution
+// block hash. Equal block hashes mean equal execution state, so that
+// comparison is never weaker than comparing state roots.
+func conflictingExecutionRoots(h1, h2 *LightClientHeader) ([32]byte, [32]byte, error) {
+	if h1.Execution != nil && h2.Execution != nil {
+		return bytes32(h1.Execution.StateRoot), bytes32(h2.Execution.StateRoot), nil
+	}
+	hash1, err := executionBlockHash(h1)
+	if err != nil {
+		return [32]byte{}, [32]byte{}, err
+	}
+	hash2, err := executionBlockHash(h2)
+	if err != nil {
+		return [32]byte{}, [32]byte{}, err
+	}
+	return hash1, hash2, nil
+}
+
+// executionBlockHash returns the execution block hash a light client header
+// commits to, in either format.
+func executionBlockHash(h *LightClientHeader) ([32]byte, error) {
+	switch {
+	case h.Execution != nil && len(h.ExecutionBlockHash) == 0:
+		return bytes32(h.Execution.BlockHash), nil
+	case h.Execution == nil && len(h.ExecutionBlockHash) != 0:
+		return bytes32(h.ExecutionBlockHash), nil
+	default:
+		return [32]byte{}, errorsmod.Wrap(ErrInvalidHeader,
+			"light client header must set exactly one of execution and execution_block_hash")
+	}
 }
 
 // updateConsensusState applies a verified header to the current consensus
@@ -514,6 +673,11 @@ func (cs *ClientState) updateConsensusState(consState *ConsensusState, header *H
 
 	updateFinalizedSlot := header.ConsensusUpdate.FinalizedHeader.Beacon.Slot
 	updateFinalizedPeriod, err := cs.computeSyncCommitteePeriodAtSlot(updateFinalizedSlot)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	execution, err := finalizedExecutionSummary(header)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -551,14 +715,14 @@ func (cs *ClientState) updateConsensusState(consState *ConsensusState, header *H
 	}
 
 	newConsState.Slot = updateFinalizedSlot
-	newConsState.StateRoot = header.ConsensusUpdate.FinalizedHeader.Execution.StateRoot
-	newConsState.Timestamp = header.ConsensusUpdate.FinalizedHeader.Execution.Timestamp
+	newConsState.StateRoot = execution.stateRoot
+	newConsState.Timestamp = execution.timestamp
 
 	var newClientState *ClientState
 	if updateFinalizedSlot > consState.Slot {
 		updated := cs.Clone()
 		updated.LatestSlot = updateFinalizedSlot
-		updated.LatestExecutionBlockNumber = header.ConsensusUpdate.FinalizedHeader.Execution.BlockNumber
+		updated.LatestExecutionBlockNumber = execution.blockNumber
 		newClientState = updated
 	}
 	return newConsState, newClientState, nil
@@ -584,6 +748,7 @@ func (fp *ForkParameters) Clone() *ForkParameters {
 	dup.Deneb = *fp.Deneb.Clone()
 	dup.Electra = *fp.Electra.Clone()
 	dup.Fulu = *fp.Fulu.Clone()
+	dup.Gloas = *fp.Gloas.Clone()
 	return &dup
 }
 

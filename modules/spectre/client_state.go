@@ -105,6 +105,7 @@ func validateForkParameters(fp *ForkParameters) error {
 		{"deneb", fp.Deneb.Version},
 		{"electra", fp.Electra.Version},
 		{"fulu", fp.Fulu.Version},
+		{"gloas", fp.Gloas.Version},
 	}
 	for _, v := range versions {
 		if len(v.version) != 4 {
@@ -112,22 +113,18 @@ func validateForkParameters(fp *ForkParameters) error {
 		}
 	}
 
-	// Fork epochs must be monotonically non-decreasing.
+	// Fork epochs must be monotonically non-decreasing. Equal epochs are valid:
+	// a devnet that starts every fork at genesis schedules them all at epoch 0,
+	// and computeForkVersion then selects the latest of them, as the consensus
+	// specs do. An unscheduled fork is epoch 2^64 - 1.
 	epochs := []uint64{
 		fp.Altair.Epoch, fp.Bellatrix.Epoch, fp.Capella.Epoch,
-		fp.Deneb.Epoch, fp.Electra.Epoch, fp.Fulu.Epoch,
+		fp.Deneb.Epoch, fp.Electra.Epoch, fp.Fulu.Epoch, fp.Gloas.Epoch,
 	}
 	for i := 1; i < len(epochs); i++ {
 		if epochs[i] < epochs[i-1] {
 			return errorsmod.Wrap(ErrInvalidClientState, "fork epochs must be non-decreasing")
 		}
-	}
-	// A Fulu fork scheduled at or before Electra would make computeForkVersion
-	// select Fulu for Electra epochs.
-	const notScheduled = ^uint64(0)
-	if fp.Fulu.Epoch != notScheduled && fp.Electra.Epoch != notScheduled && fp.Fulu.Epoch <= fp.Electra.Epoch {
-		return errorsmod.Wrapf(ErrInvalidClientState, "fulu epoch %d must be after electra epoch %d",
-			fp.Fulu.Epoch, fp.Electra.Epoch)
 	}
 	return nil
 }
@@ -147,6 +144,16 @@ func (cs *ClientState) initialize(
 
 	if err := consensusState.ValidateBasic(); err != nil {
 		return err
+	}
+
+	if cs.Frozen {
+		return errorsmod.Wrap(ErrInvalidClientState, "a new client state must not be frozen")
+	}
+	// A client that does not know its next sync committee cannot cross into the
+	// next sync committee period, and the committee it learns from a later
+	// update is only trusted to follow the period of its own anchor.
+	if consensusState.NextSyncCommittee == nil {
+		return errorsmod.Wrap(clienttypes.ErrInvalidConsensus, "next sync committee must be set")
 	}
 
 	if cs.LatestSlot != consensusState.Slot {
@@ -173,6 +180,15 @@ func (cs *ClientState) verifyClientMessage(
 
 	switch msg := clientMsg.(type) {
 	case *Header:
+		// A header names the consensus state it is verified against, but
+		// updateState applies the result on top of the latest one. Verifying
+		// against an older state would let the keys of a past sync committee,
+		// which carry no stake any more, forge a root and write it at a slot that
+		// is already stored. Misbehaviour evidence writes nothing and has its
+		// own rule, see verifyMisbehaviour.
+		if msg.TrustedSlot != cs.LatestSlot {
+			return errorsmod.Wrapf(ErrTrustedSlotNotLatest, "trusted slot %d, latest slot %d", msg.TrustedSlot, cs.LatestSlot)
+		}
 		consState, found := GetConsensusState(clientStore, cdc, clienttypes.NewHeight(0, msg.TrustedSlot))
 		if !found {
 			return errorsmod.Wrapf(clienttypes.ErrConsensusStateNotFound, "trusted slot %d", msg.TrustedSlot)
@@ -231,6 +247,13 @@ func (cs *ClientState) updateState(
 	header, ok := clientMsg.(*Header)
 	if !ok {
 		panic(errorsmod.Wrapf(ibcerrors.ErrInvalidType, "expected type %T, got %T", &Header{}, clientMsg))
+	}
+
+	// The header was verified against its trusted slot and is applied on top of
+	// the latest consensus state. verifyClientMessage only accepts the two being
+	// the same; this keeps the apply step from relying on that having run.
+	if header.TrustedSlot != cs.LatestSlot {
+		panic(errorsmod.Wrapf(ErrTrustedSlotNotLatest, "trusted slot %d, latest slot %d", header.TrustedSlot, cs.LatestSlot))
 	}
 
 	// The update applies against the consensus state at the client's latest

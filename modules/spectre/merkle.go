@@ -6,18 +6,33 @@ import (
 	errorsmod "cosmossdk.io/errors"
 )
 
-// Generalized indices of beacon state fields, per the Electra light client
-// sync protocol specs.
+// Generalized indices of beacon state and block body fields, per the light
+// client sync protocol specs. They mirror
+// packages/ethereum/types/src/consensus/merkle.rs in the spectre repository.
 const (
-	// finalizedRootGindex is get_generalized_index(BeaconState,
-	// 'finalized_checkpoint', 'root').
-	finalizedRootGindex = 169
-	// nextSyncCommitteeGindex is
-	// get_generalized_index(BeaconState, 'next_sync_committee').
-	nextSyncCommitteeGindex = 87
+	// finalizedRootGindexElectra is get_generalized_index(BeaconState,
+	// 'finalized_checkpoint', 'root') from Electra through Fulu.
+	finalizedRootGindexElectra = 169
+	// nextSyncCommitteeGindexElectra is
+	// get_generalized_index(BeaconState, 'next_sync_committee') from Electra
+	// through Fulu.
+	nextSyncCommitteeGindexElectra = 87
 	// executionPayloadGindex is
 	// get_generalized_index(BeaconBlockBody, 'execution_payload').
 	executionPayloadGindex = 25
+
+	// finalizedRootGindexGloas is the finalized root index from Gloas on
+	// (consensus-specs gloas/light-client/sync-protocol.md#new-constants).
+	finalizedRootGindexGloas = 735
+	// nextSyncCommitteeGindexGloas is the next sync committee index from Gloas
+	// on.
+	nextSyncCommitteeGindexGloas = 2946
+	// executionBlockHashGindexDeneb is get_generalized_index(
+	// deneb.BeaconBlockBody, 'execution_payload', 'block_hash').
+	executionBlockHashGindexDeneb = 812
+	// executionBlockHashGindexGloas is get_generalized_index(BeaconBlockBody,
+	// 'signed_execution_payload_bid', 'message', 'parent_block_hash').
+	executionBlockHashGindexGloas = 2856
 )
 
 // floorLog2 returns floor(log2(n)) for n >= 1.
@@ -56,6 +71,17 @@ func validateMerkleBranch(leaf [32]byte, branch [][32]byte, gindex uint64, root 
 		return errorsmod.Wrapf(ErrInvalidMerkleBranch,
 			"computed root %X does not match expected root %X (leaf %X, depth %d, index %d)",
 			value, root, leaf, depth, index)
+	}
+	return nil
+}
+
+// ensureBranchLength checks that a branch has exactly the depth of its
+// generalized index. The light client spec types every branch with the exact
+// length of its fork, so a branch of any other length is malformed rather than
+// merely un-normalized.
+func ensureBranchLength(name string, branch [][]byte, gindex uint64) error {
+	if want := floorLog2(gindex); len(branch) != want {
+		return errorsmod.Wrapf(ErrInvalidMerkleBranch, "%s has %d nodes, expected %d", name, len(branch), want)
 	}
 	return nil
 }

@@ -100,7 +100,7 @@ func TestValidateMerkleBranch(t *testing.T) {
 }
 
 // TestComputeForkVersion checks the fork version selection order, including
-// the unscheduled-fulu sentinel.
+// the unscheduled-fulu and unscheduled-gloas sentinels.
 func TestComputeForkVersion(t *testing.T) {
 	v := func(n byte) []byte { return []byte{n, 0, 0, 0} }
 	fp := &ForkParameters{
@@ -111,11 +111,39 @@ func TestComputeForkVersion(t *testing.T) {
 		Deneb:              Fork{Version: v(4)},
 		Electra:            Fork{Version: v(5), Epoch: 100},
 		Fulu:               Fork{Version: v(6), Epoch: ^uint64(0)},
+		Gloas:              Fork{Version: v(7), Epoch: ^uint64(0)},
 	}
 	require.Equal(t, v(5), fp.computeForkVersion(150))
-	require.Equal(t, v(5), fp.computeForkVersion(1_000_000), "unscheduled fulu must never be selected")
+	require.Equal(t, v(5), fp.computeForkVersion(1_000_000), "unscheduled fulu and gloas must never be selected")
 	require.Equal(t, v(4), fp.computeForkVersion(100-1))
 	require.Equal(t, v(4), fp.computeForkVersion(0), "deneb at epoch 0 covers the genesis range")
+
+	fp.Fulu.Epoch = 200
+	fp.Gloas.Epoch = 300
+	require.Equal(t, v(5), fp.computeForkVersion(199))
+	require.Equal(t, v(6), fp.computeForkVersion(200))
+	require.Equal(t, v(6), fp.computeForkVersion(299))
+	require.Equal(t, v(7), fp.computeForkVersion(300))
+	require.Equal(t, v(7), fp.computeForkVersion(1_000_000))
+}
+
+// TestComputeForkVersionSimultaneousForks checks that forks scheduled at the
+// same epoch, as on a devnet that starts every fork at genesis, resolve to the
+// latest of them.
+func TestComputeForkVersionSimultaneousForks(t *testing.T) {
+	v := func(n byte) []byte { return []byte{n, 0, 0, 0} }
+	fp := &ForkParameters{
+		GenesisForkVersion: v(0),
+		Altair:             Fork{Version: v(1)},
+		Bellatrix:          Fork{Version: v(2)},
+		Capella:            Fork{Version: v(3)},
+		Deneb:              Fork{Version: v(4)},
+		Electra:            Fork{Version: v(5)},
+		Fulu:               Fork{Version: v(6)},
+		Gloas:              Fork{Version: v(7), Epoch: ^uint64(0)},
+	}
+	require.Equal(t, v(6), fp.computeForkVersion(0))
+	require.Equal(t, v(6), fp.computeForkVersion(1_000_000))
 }
 
 // TestFixtureNegativeChecks verifies that tampered updates and proofs are
