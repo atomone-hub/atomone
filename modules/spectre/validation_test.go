@@ -71,8 +71,13 @@ func TestClientStateValidate(t *testing.T) {
 			cs.ForkParameters.Capella.Epoch = cs.ForkParameters.Deneb.Epoch + 1
 		}},
 		{"fulu scheduled before electra", func(cs *ClientState) {
-			cs.ForkParameters.Fulu.Epoch = cs.ForkParameters.Electra.Epoch
+			cs.ForkParameters.Fulu.Epoch = cs.ForkParameters.Electra.Epoch - 1
 		}},
+		{"gloas scheduled before fulu", func(cs *ClientState) {
+			cs.ForkParameters.Gloas.Epoch = 0
+		}},
+		{"short gloas version", func(cs *ClientState) { cs.ForkParameters.Gloas.Version = make([]byte, 3) }},
+		{"missing gloas fork", func(cs *ClientState) { cs.ForkParameters.Gloas = Fork{} }},
 		{"latest slot before electra", func(cs *ClientState) {
 			cs.ForkParameters.Electra.Epoch = cs.computeEpochAtSlot(cs.LatestSlot) + 1
 		}},
@@ -88,6 +93,25 @@ func TestClientStateValidate(t *testing.T) {
 
 	// The unmutated fixture client state validates.
 	require.NoError(t, validFixtureClientState(t).Validate())
+}
+
+// TestClientStateValidateSimultaneousForks checks that forks scheduled at the
+// same epoch are valid. A devnet that starts every fork at genesis, such as the
+// Fusaka-from-genesis devnet (fulu_fork_epoch 0 with electra at 0), schedules
+// them all at epoch 0, and the client must accept that schedule.
+func TestClientStateValidateSimultaneousForks(t *testing.T) {
+	cs := validFixtureClientState(t)
+	fp := &cs.ForkParameters
+	for _, fork := range []*Fork{&fp.Altair, &fp.Bellatrix, &fp.Capella, &fp.Deneb, &fp.Electra, &fp.Fulu} {
+		fork.Epoch = 0
+	}
+	require.NoError(t, cs.Validate(), "every fork up to fulu at genesis")
+
+	fp.Gloas.Epoch = 0
+	require.NoError(t, cs.Validate(), "gloas scheduled at the same epoch as fulu")
+
+	fp.Gloas.Epoch = ^uint64(0)
+	require.NoError(t, cs.Validate(), "gloas unscheduled")
 }
 
 // TestConsensusStateValidateBasic exercises consensus state validation.

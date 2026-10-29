@@ -72,6 +72,10 @@ message ForkParameters {
   Fork electra = 7 [(gogoproto.nullable) = false];
   // fulu fork schedule. An unscheduled fork is encoded with epoch = 2^64 - 1.
   Fork fulu = 8 [(gogoproto.nullable) = false];
+  // gloas fork schedule. An unscheduled fork is encoded with epoch = 2^64 - 1;
+  // the zero value (epoch 0) would schedule it at genesis, so a client state
+  // must always set it explicitly.
+  Fork gloas = 9 [(gogoproto.nullable) = false];
 }
 
 // Fork describes a single fork in the schedule.
@@ -142,6 +146,12 @@ message Header {
   bool is_next_committee = 3;
   // consensus_update is the beacon light client update.
   LightClientUpdate consensus_update = 4 [(gogoproto.nullable) = false];
+  // execution_header_rlp is the RLP-encoded execution block header of the
+  // finalized header. It must be set exactly when the finalized header is in
+  // the Gloas format: the client then takes the execution state root,
+  // timestamp and block number from it after checking that it hashes to the
+  // proven execution block hash.
+  bytes execution_header_rlp = 5;
 }
 
 // LightClientUpdate is an altair-style beacon light client update.
@@ -166,18 +176,30 @@ message LightClientUpdate {
   uint64 signature_slot = 7;
 }
 
-// LightClientHeader is a beacon header paired with its execution payload
-// header and the branch proving the latter from the beacon body root.
+// LightClientHeader is a beacon header paired with its execution commitment
+// and the branch proving that commitment from the beacon body root.
+//
+// Two formats exist, told apart by which execution field is set; exactly one
+// of execution and execution_block_hash must be set.
+//
+//   - Pre-Gloas format (Capella through Fulu): execution carries the full
+//     execution payload header and execution_branch proves its root.
+//   - Gloas format: the payload header is gone. execution_block_hash is
+//     proven by execution_branch, and the execution state root, timestamp and
+//     block number come from Header.execution_header_rlp instead.
 message LightClientHeader {
   option (gogoproto.goproto_getters) = false;
 
   // beacon is the beacon block header.
   BeaconBlockHeader beacon = 1 [(gogoproto.nullable) = false];
-  // execution is the execution payload header.
-  ExecutionPayloadHeader execution = 2 [(gogoproto.nullable) = false];
-  // execution_branch proves the execution payload header from the beacon
-  // body root.
+  // execution is the execution payload header (pre-Gloas format only).
+  ExecutionPayloadHeader execution = 2;
+  // execution_branch proves the execution payload header (pre-Gloas format) or
+  // the execution block hash (Gloas format) from the beacon body root.
   repeated bytes execution_branch = 3;
+  // execution_block_hash is the 32-byte execution block hash (Gloas format
+  // only).
+  bytes execution_block_hash = 4;
 }
 
 // BeaconBlockHeader is the beacon chain block header.

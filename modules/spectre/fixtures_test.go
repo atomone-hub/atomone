@@ -139,6 +139,7 @@ func decodeForkParameters(m map[string]json.RawMessage) *ForkParameters {
 		Deneb:              *decodeFork(m, "deneb"),
 		Electra:            *decodeFork(m, "electra"),
 		Fulu:               *decodeFork(m, "fulu"),
+		Gloas:              *decodeFork(m, "gloas"),
 	}
 	return fp
 }
@@ -264,14 +265,19 @@ func decodeSyncAggregate(raw json.RawMessage) *SyncAggregate {
 	}
 }
 
-// decodeLightClientHeader decodes a light client header.
+// decodeLightClientHeader decodes a light client header in either format: the
+// pre-Gloas format carries "execution", the Gloas format "execution_block_hash".
 func decodeLightClientHeader(raw json.RawMessage) *LightClientHeader {
 	m := rawJSON(raw)
-	return &LightClientHeader{
-		Beacon:          *decodeBeaconBlockHeader(m["beacon"]),
-		Execution:       *decodeExecutionPayloadHeader(m["execution"]),
-		ExecutionBranch: fixtureBytesList(m, "execution_branch"),
+	header := &LightClientHeader{
+		Beacon:             *decodeBeaconBlockHeader(m["beacon"]),
+		ExecutionBranch:    fixtureBytesList(m, "execution_branch"),
+		ExecutionBlockHash: fixtureBytes(m, "execution_block_hash"),
 	}
+	if execution, ok := m["execution"]; ok && string(execution) != "null" {
+		header.Execution = decodeExecutionPayloadHeader(execution)
+	}
+	return header
 }
 
 // decodeBeaconBlockHeader decodes a beacon block header.
@@ -336,6 +342,7 @@ type fixtureHeader struct {
 	ActiveSyncCommittee *SyncCommittee
 	IsNextCommittee     bool
 	ConsensusUpdate     LightClientUpdate
+	ExecutionHeaderRlp  []byte
 }
 
 // decodeHeader decodes a Header client message from its JSON encoding. The
@@ -344,8 +351,9 @@ type fixtureHeader struct {
 func decodeHeader(raw json.RawMessage) *fixtureHeader {
 	m := rawJSON(raw)
 	h := &fixtureHeader{
-		TrustedSlot:     fixtureUint(m, "trusted_slot"),
-		ConsensusUpdate: decodeLightClientUpdate(m["consensus_update"]),
+		TrustedSlot:        fixtureUint(m, "trusted_slot"),
+		ConsensusUpdate:    decodeLightClientUpdate(m["consensus_update"]),
+		ExecutionHeaderRlp: fixtureBytes(m, "execution_header_rlp"),
 	}
 	if asc, ok := m["active_sync_committee"]; ok {
 		tagged := rawJSON(asc)
@@ -366,6 +374,7 @@ func (h *fixtureHeader) toProto() *Header {
 		ActiveSyncCommittee: h.ActiveSyncCommittee,
 		IsNextCommittee:     h.IsNextCommittee,
 		ConsensusUpdate:     h.ConsensusUpdate,
+		ExecutionHeaderRlp:  h.ExecutionHeaderRlp,
 	}
 }
 

@@ -82,7 +82,7 @@ func TestValidateLightClientUpdateBranches(t *testing.T) {
 			u.NextSyncCommitteeBranch = nil
 		}},
 		{"next committee wrong size", func(u *LightClientUpdate, cs *ClientState) {
-			u.NextSyncCommitteeBranch = make([][]byte, floorLog2(nextSyncCommitteeGindex))
+			u.NextSyncCommitteeBranch = make([][]byte, floorLog2(nextSyncCommitteeGindexElectra))
 			u.NextSyncCommittee = &SyncCommittee{Pubkeys: make([][]byte, 3), AggregatePubkey: make([]byte, 48)}
 			for i := range u.NextSyncCommitteeBranch {
 				u.NextSyncCommitteeBranch[i] = make([]byte, 32)

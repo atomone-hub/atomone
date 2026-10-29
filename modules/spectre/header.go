@@ -27,6 +27,10 @@ func (h *Header) ValidateBasic() error {
 	if err := validateFullSyncCommittee(h.ActiveSyncCommittee); err != nil {
 		return errorsmod.Wrap(err, "invalid active sync committee")
 	}
+	if len(h.ExecutionHeaderRlp) > maxExecutionHeaderRLPBytes {
+		return errorsmod.Wrapf(ErrInvalidHeader, "execution header rlp is %d bytes, maximum %d",
+			len(h.ExecutionHeaderRlp), maxExecutionHeaderRLPBytes)
+	}
 	return validateLightClientUpdateBasic(&h.ConsensusUpdate)
 }
 
@@ -89,7 +93,16 @@ func validateLightClientUpdateBasic(update *LightClientUpdate) error {
 	if len(update.SyncAggregate.SyncCommitteeBits) == 0 {
 		return errorsmod.Wrap(ErrInvalidHeader, "sync committee bits must not be empty")
 	}
-	if err := validateBranchLengths(update.FinalityBranch, floorLog2(finalizedRootGindex), "finality"); err != nil {
+	if err := validateLightClientHeaderBasic(&update.AttestedHeader, "attested"); err != nil {
+		return err
+	}
+	if err := validateLightClientHeaderBasic(&update.FinalizedHeader, "finalized"); err != nil {
+		return err
+	}
+	// The exact branch lengths depend on the fork of the attested slot and are
+	// enforced against the client state; here only the deepest fork's depth
+	// bounds them.
+	if err := validateBranchLengths(update.FinalityBranch, floorLog2(finalizedRootGindexGloas), "finality"); err != nil {
 		return err
 	}
 	if update.NextSyncCommittee != nil && len(update.NextSyncCommitteeBranch) == 0 {
@@ -99,11 +112,26 @@ func validateLightClientUpdateBasic(update *LightClientUpdate) error {
 		return errorsmod.Wrap(ErrInvalidHeader, "next sync committee branch requires a committee")
 	}
 	if len(update.NextSyncCommitteeBranch) > 0 {
-		if err := validateBranchLengths(update.NextSyncCommitteeBranch, floorLog2(nextSyncCommitteeGindex), "next sync committee"); err != nil {
+		if err := validateBranchLengths(update.NextSyncCommitteeBranch, floorLog2(nextSyncCommitteeGindexGloas), "next sync committee"); err != nil {
 			return err
 		}
 	}
 	return nil
+}
+
+// validateLightClientHeaderBasic performs structural validation of a light
+// client header: exactly one execution commitment in the format of its fork,
+// and an execution branch no deeper than the deepest fork's.
+func validateLightClientHeaderBasic(h *LightClientHeader, name string) error {
+	hasExecution := h.Execution != nil
+	hasBlockHash := len(h.ExecutionBlockHash) != 0
+	if hasExecution == hasBlockHash {
+		return errorsmod.Wrapf(ErrInvalidHeader, "%s header must set exactly one of execution and execution_block_hash", name)
+	}
+	if hasBlockHash && len(h.ExecutionBlockHash) != 32 {
+		return errorsmod.Wrapf(ErrInvalidHeader, "%s header execution block hash must be 32 bytes", name)
+	}
+	return validateBranchLengths(h.ExecutionBranch, floorLog2(executionBlockHashGindexGloas), name+" execution")
 }
 
 // validateBranchLengths checks that a branch has at most the given depth and
