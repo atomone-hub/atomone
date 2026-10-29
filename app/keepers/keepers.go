@@ -367,7 +367,7 @@ func NewAppKeeper(
 
 	// Create Interchain Accounts Stack
 	var (
-		icaHostStack       porttypes.IBCModule = NewICAHostIBCModule(appKeepers.ICAHostKeeper, appCodec, appKeepers.StakingKeeper)
+		icaHostStack                           = NewICAHostIBCModule(appKeepers.ICAHostKeeper, appCodec, appKeepers.StakingKeeper)
 		icaControllerStack porttypes.IBCModule = icacontroller.NewIBCMiddleware(appKeepers.ICAControllerKeeper)
 	)
 
