@@ -64,6 +64,7 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	ibcgno "github.com/atomone-hub/atomone/modules/10-gno"
+	"github.com/atomone-hub/atomone/modules/spectre"
 	coredaoskeeper "github.com/atomone-hub/atomone/x/coredaos/keeper"
 	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
 	atomonegovkeeper "github.com/atomone-hub/atomone/x/gov/keeper"
@@ -107,6 +108,7 @@ type AppKeepers struct {
 	TransferModule  transfer.AppModule
 	TMClientModule  ibctm.AppModule
 	GnoClientModule ibcgno.AppModule
+	SpectreModule   spectre.AppModule
 }
 
 func NewAppKeeper(
@@ -394,6 +396,10 @@ func NewAppKeeper(
 	gnoLightClientModule := ibcgno.NewLightClientModule(appCodec, storeProvider)
 	appKeepers.IBCKeeper.ClientKeeper.AddRoute(ibcgno.ModuleName, &gnoLightClientModule)
 	appKeepers.GnoClientModule = ibcgno.NewAppModule(gnoLightClientModule)
+
+	spectreLightClientModule := spectre.NewLightClientModule(appCodec, storeProvider)
+	appKeepers.IBCKeeper.ClientKeeper.AddRoute(spectre.ModuleName, &spectreLightClientModule)
+	appKeepers.SpectreModule = spectre.NewAppModule(spectreLightClientModule)
 
 	return appKeepers
 }

@@ -51,3 +51,6 @@ contract_tests/*
 
 go.work.sum
 
+
+# spectre e2e local configuration (see tests/e2e/spectre/.env.example)
+tests/e2e/spectre/.env
