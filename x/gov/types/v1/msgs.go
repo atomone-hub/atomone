@@ -59,6 +59,27 @@ func (m *MsgSubmitProposal) SetMsgs(msgs []sdk.Msg) error {
 	return nil
 }
 
+// MaxProposalMessages caps the number of messages a single governance
+// proposal may carry.
+//
+// The gov keeper builds a comma-separated event attribute of message type
+// URLs by appending to a plain string inside its per-message loop: the
+// accumulation is quadratic in the message count and, being pure CPU work,
+// invisible to the gas meter. The tx/ICA codecs currently bound proposals at
+// well below MaxUnpackAnySubCalls (100) unpacked messages, but this explicit
+// cap keeps the unmetered cost negligible even if that codec limit is ever
+// raised.
+const MaxProposalMessages = 100
+
+// ValidateProposalMessageCount returns an error when numMessages exceeds
+// MaxProposalMessages.
+func ValidateProposalMessageCount(numMessages int) error {
+	if numMessages > MaxProposalMessages {
+		return sdkgovtypes.ErrInvalidProposalMsg.Wrapf("proposal contains %d messages, maximum allowed is %d", numMessages, MaxProposalMessages)
+	}
+	return nil
+}
+
 // ValidateBasic implements the sdk.Msg interface.
 func (m MsgSubmitProposal) ValidateBasic() error {
 	if m.Title == "" {
@@ -84,6 +105,10 @@ func (m MsgSubmitProposal) ValidateBasic() error {
 	// Check that either metadata or Msgs length is non nil.
 	if len(m.Messages) == 0 && len(m.Metadata) == 0 {
 		return sdkgovtypes.ErrNoProposalMsgs.Wrap("either metadata or Msgs length must be non-nil")
+	}
+
+	if err := ValidateProposalMessageCount(len(m.Messages)); err != nil {
+		return err
 	}
 
 	msgs, err := m.GetMsgs()

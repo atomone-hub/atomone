@@ -5,7 +5,6 @@ import (
 	icacontroller "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/controller"
 	icacontrollerkeeper "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/controller/keeper"
 	icacontrollertypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/controller/types"
-	icahost "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/host"
 	icahostkeeper "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/host/keeper"
 	icahosttypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/host/types"
 	"github.com/cosmos/ibc-go/v10/modules/apps/transfer"
@@ -370,7 +369,7 @@ func NewAppKeeper(
 
 	// Create Interchain Accounts Stack
 	var (
-		icaHostStack       porttypes.IBCModule = icahost.NewIBCModule(appKeepers.ICAHostKeeper)
+		icaHostStack                           = NewICAHostIBCModule(appKeepers.ICAHostKeeper, appCodec, appKeepers.StakingKeeper)
 		icaControllerStack porttypes.IBCModule = icacontroller.NewIBCMiddleware(appKeepers.ICAControllerKeeper)
 	)
 
