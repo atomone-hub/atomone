@@ -1,0 +1,65 @@
+name: Spectre E2E
+on:
+  workflow_dispatch:
+    inputs:
+      spectre_ref:
+        description: "spectre repo ref to test against (branch, tag or commit)"
+        default: ""
+      prover_addr:
+        description: "Groth16 prover host:port (no scheme)"
+        default: ""
+  schedule:
+    # run every day at 04:00 UTC, after the nightly e2e at 03:00
+    - cron: "0 4 * * *"
+  pull_request:
+    paths:
+      - "modules/spectre/**"
+      - "proto/atomone/spectre/**"
+      - "tests/e2e/spectre/**"
+      - ".github/workflows/spectre-e2e.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: spectre-e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  spectre-e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      SPECTRE_REF: ${{ inputs.spectre_ref || 'fc576a4' }}
+      # No hardcoded prover endpoint: set the SPECTRE_PROVER_ADDR repository
+      # variable (Settings -> Secrets and variables -> Actions -> Variables)
+      # or pass it as a workflow_dispatch input. The script fails fast when it
+      # is empty.
+      PROVER_ADDR: ${{ inputs.prover_addr || vars.SPECTRE_PROVER_ADDR }}
+      WORK: ${{ github.workspace }}/spectre-e2e-logs
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - uses: oven-sh/setup-bun@v2
+      - uses: foundry-rs/foundry-toolchain@v1
+      - name: Install Kurtosis CLI
+        run: |
+          echo "deb [trusted=yes] https://sdk.kurtosis.com/kurtosis-cli-release-artifacts/ /" | sudo tee /etc/apt/sources.list.d/kurtosis.list
+          sudo apt-get update -qq
+          sudo apt-get install -y kurtosis-cli
+          kurtosis version
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc 2>/dev/null || true
+          df -h /
+      - name: Run spectre e2e
+        run: make test-spectre-e2e
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spectre-e2e-logs-${{ github.sha }}
+          path: spectre-e2e-logs/
+          if-no-files-found: ignore
