@@ -176,6 +176,37 @@ func TestMsgSubmitProposal_ValidateBasic(t *testing.T) {
 	}
 }
 
+func TestMsgSubmitProposal_MaxMessages(t *testing.T) {
+	law := &v1.MsgProposeLaw{Authority: addrs[0].String()}
+
+	tests := []struct {
+		name    string
+		numMsgs int
+		expErr  bool
+	}{
+		{"no msgs", 0, false},
+		{"one msg", 1, false},
+		{"at cap", v1.MaxProposalMessages, false},
+		{"over cap", v1.MaxProposalMessages + 1, true},
+		{"way over cap", 5000, true},
+	}
+
+	for _, tc := range tests {
+		msgs := make([]sdk.Msg, tc.numMsgs)
+		for i := range msgs {
+			msgs[i] = law
+		}
+		msg, err := v1.NewMsgSubmitProposal(msgs, coinsZero, addrs[0].String(), "metadata", "Title", "Summary")
+		require.NoError(t, err)
+		err = msg.ValidateBasic()
+		if tc.expErr {
+			require.ErrorContains(t, err, "maximum allowed is", "test: %s", tc.name)
+		} else {
+			require.NoError(t, err, "test: %s", tc.name)
+		}
+	}
+}
+
 // this tests that Amino JSON MsgSubmitProposal.GetSignBytes() still works with Content as Any using the ModuleCdc
 func TestMsgSubmitProposal_GetSignBytes(t *testing.T) {
 	pc := codec.NewProtoCodec(types.NewInterfaceRegistry())
