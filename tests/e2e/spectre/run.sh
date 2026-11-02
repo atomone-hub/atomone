@@ -305,6 +305,17 @@ check_ack_on_atomone() {
   echo "$out" | jq -e '[.txs[] | select(.code==0)] | length > 0' > /dev/null 2>&1
 }
 
+check_tx_committed() { # tx broadcast returns after CheckTx (sync mode); wait for inclusion
+  local out code
+  out=$("$ATOMONED" q tx "$TXHASH" --node "$ATOMONE_NODE" --output json 2>/dev/null) || return 1
+  printf '%s\n' "$out" > "$WORK/send2-query.json"
+  code=$(jq -r '.code // ""' "$WORK/send2-query.json" 2>/dev/null)
+  if [ -n "$code" ] && [ "$code" != "0" ]; then
+    die "tx $TXHASH failed on deliver: code=$code raw_log=$(jq -r '.raw_log' "$WORK/send2-query.json")"
+  fi
+  jq -e '([.events[]?.type] | index("send_packet")) != null' "$WORK/send2-query.json" > /dev/null 2>&1
+}
+
 send_atomone_to_eth() {
   log "sending AtomOne -> ETH"
   local txhash bal errs abs_timeout
@@ -321,9 +332,8 @@ send_atomone_to_eth() {
   jq -e '.code == 0 and (.txhash | length > 0)' "$WORK/send2.json" > /dev/null \
     || die "AtomOne -> ETH transfer tx failed: $(jq -c '{code, raw_log}' "$WORK/send2.json")"
   txhash=$(jq -r .txhash "$WORK/send2.json")
-  "$ATOMONED" q tx "$txhash" --node "$ATOMONE_NODE" --output json \
-    | jq -e '[.events[].type] | index("send_packet") != null' > /dev/null \
-    || die "no send_packet event in tx $txhash"
+  TXHASH=$txhash
+  poll 90 2 "tx $TXHASH committed with send_packet event (latest query kept in $WORK/send2-query.json)" check_tx_committed
 
   poll 600 10 "wrapped ${AMOUNT} uatone on ETH for $DEPLOYER" check_wrapped
   poll 600 10 "acknowledgement relayed back to AtomOne" check_ack_on_atomone
