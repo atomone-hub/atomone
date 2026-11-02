@@ -40,6 +40,7 @@ SPECTRE_REF=${SPECTRE_REF:-fc576a4}
 PROVER_ADDR=${PROVER_ADDR:-}
 ATOMONE_DIR=${ATOMONE_DIR:-$(cd "$SCRIPT_DIR/../../.." && pwd)}
 ATOMONED=${ATOMONED:-$ATOMONE_DIR/build/atomoned}
+export ATOMONED
 SPECTRE_DIR=${SPECTRE_DIR:-$ATOMONE_DIR/../spectre}
 WORK=${WORK:-/tmp/atomone-devnet}
 
