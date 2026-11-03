@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
-# End-to-end test of the spectre Ethereum light client. Builds atomoned and
-# the spectre relayer, starts a Kurtosis Ethereum L1, deploys the IBC
-# contracts, starts an AtomOne devnet, creates both clients, relays one
-# ICS-20 transfer in each direction and asserts arrival plus acknowledgement
-# on both chains.
+# End-to-end test of the spectre Ethereum light client. Builds atomoned and the
+# spectre relayer, starts a Kurtosis Ethereum L1, deploys the IBC contracts,
+# starts an AtomOne devnet, creates both clients, relays one ICS-20 transfer in
+# each direction, then redeems both tokens back to their source chain (voucher
+# burn + escrow release) and asserts exact balances and acknowledgements at
+# every step.
 #
 # Requirements: docker, kurtosis, foundry (forge, cast), bun, jq, shasum, nc,
 # curl, go, and network access to the Groth16 prover (PROVER_ADDR).
@@ -55,10 +56,15 @@ ENCLAVE=my-testnet            # Kurtosis enclave
 TRANSFER_PORT=transfer
 AMOUNT=1000000                # transferred in each direction, base units
 DEPLOYER=0x8943545177806ED17B9F23F0a21ee5948eCaa776
-TEST3_UATONE_AFTER=1999999000000 # 2e12 genesis balance minus escrow
+TEST3_UATONE_AFTER=1999999000000  # after 1,000,000 uatone is escrowed
+TEST3_UATONE_FINAL=2000000000000  # after the escrow is released back
 
 ERC20=
 ICS20=
+ERC20_BAL_BEFORE=            # deployer balance before the first transfer (1e24)
+WRAPPED=                     # wrapped uatone (IBCERC20) contract on ETH
+TEST3_ADDR=
+QUERY_FILE=
 
 log() { printf '\n[spectre-e2e] %s\n' "$*"; }
 die() { printf '\n[spectre-e2e] FAIL: %s\n' "$*" >&2; exit 1; }
@@ -271,16 +277,23 @@ check_ack_on_eth() {
 send_eth_to_atomone() {
   log "sending ETH -> AtomOne"
   cd "$SPECTRE_DIR/relayer"
-  local eth_key abs_timeout
+  local eth_key abs_timeout escrowed
   eth_key=$(grep '^ETH_PRIVATE_KEY=' .env | cut -d= -f2 | tr -d '"')
   RECV=$("$ATOMONED" keys show test2 -a --keyring-backend test --home "$ATOMONE_HOME")
 
   cast send "$ERC20" "approve(address,uint256)" "$ICS20" "$AMOUNT" \
     --private-key "$eth_key" --rpc-url "$ETH_RPC" > /dev/null
+  ERC20_BAL_BEFORE=$(cast call "$ERC20" 'balanceOf(address)(uint256)' "$DEPLOYER" \
+    --rpc-url "$ETH_RPC" | awk '{print $1}')
+  [ -n "$ERC20_BAL_BEFORE" ] || die "could not read the deployer ERC20 balance"
   abs_timeout=$(( $(date +%s) + 3000 ))
   cast send "$ICS20" "sendTransfer((address,uint256,string,string,string,uint64,string))" \
     "($ERC20,$AMOUNT,$RECV,$ICS26_CLIENT_ID,$TRANSFER_PORT,$abs_timeout,\"\")" \
     --private-key "$eth_key" --rpc-url "$ETH_RPC" > /dev/null
+  escrowed=$(cast call "$ERC20" 'balanceOf(address)(uint256)' "$DEPLOYER" \
+    --rpc-url "$ETH_RPC" | awk '{print $1}')
+  [ "$escrowed" != "$ERC20_BAL_BEFORE" ] \
+    || die "deployer ERC20 balance unchanged by sendTransfer; expected the transfer to escrow $AMOUNT"
 
   EXPECTED_DENOM=ibc/$(printf 'transfer/spectre-0/%s' "$ERC20" | shasum -a 256 | awk '{print toupper($1)}')
   log "expected voucher denom: $EXPECTED_DENOM"
@@ -308,7 +321,7 @@ check_ack_on_atomone() {
 check_tx_committed() { # tx broadcast returns after CheckTx (sync mode); wait for inclusion
   local out code
   out=$("$ATOMONED" q tx "$TXHASH" --node "$ATOMONE_NODE" --output json 2>/dev/null) || return 1
-  printf '%s\n' "$out" > "$WORK/send2-query.json"
+  printf '%s\n' "$out" > "${QUERY_FILE:-$WORK/send2-query.json}"
   code=$(jq -r '.code // ""' "$WORK/send2-query.json" 2>/dev/null)
   if [ -n "$code" ] && [ "$code" != "0" ]; then
     die "tx $TXHASH failed on deliver: code=$code raw_log=$(jq -r '.raw_log' "$WORK/send2-query.json")"
@@ -316,33 +329,114 @@ check_tx_committed() { # tx broadcast returns after CheckTx (sync mode); wait fo
   jq -e '([.events[]?.type] | index("send_packet")) != null' "$WORK/send2-query.json" > /dev/null 2>&1
 }
 
-send_atomone_to_eth() {
-  log "sending AtomOne -> ETH"
-  local txhash bal errs abs_timeout
-  abs_timeout=$(( $(date +%s) + 2000 ))
-  "$ATOMONED" tx ibc-transfer transfer transfer spectre-0 "$DEPLOYER" "${AMOUNT}uatone" \
-    --from test3 --home "$ATOMONE_HOME" --chain-id "$ATOMONE_CHAIN_ID" --node "$ATOMONE_NODE" \
+atomone_send_transfer() { # atomone_send_transfer <from-key> <receiver> <coin> <result-json>
+  local from=$1 receiver=$2 coin=$3 out=$4 abs_timeout
+  abs_timeout=$(( $(date +%s) + 3000 ))
+  # The receiver lives on ETH, so the packet payload needs Solidity ABI encoding.
+  "$ATOMONED" tx ibc-transfer transfer transfer spectre-0 "$receiver" "$coin" \
+    --from "$from" --home "$ATOMONE_HOME" --chain-id "$ATOMONE_CHAIN_ID" --node "$ATOMONE_NODE" \
     --keyring-backend test --gas-prices 0.05uphoton --gas 300000 \
     --absolute-timeouts --packet-timeout-timestamp "$abs_timeout" --generate-only \
     | jq '.body.messages[0].encoding = "application/x-solidity-abi"' \
-    | "$ATOMONED" tx sign /dev/stdin --from test3 --home "$ATOMONE_HOME" \
+    | "$ATOMONED" tx sign /dev/stdin --from "$from" --home "$ATOMONE_HOME" \
       --chain-id "$ATOMONE_CHAIN_ID" --keyring-backend test \
     | "$ATOMONED" tx broadcast /dev/stdin --node "$ATOMONE_NODE" -y -o json \
-    | tee "$WORK/send2.json" > /dev/null
-  jq -e '.code == 0 and (.txhash | length > 0)' "$WORK/send2.json" > /dev/null \
-    || die "AtomOne -> ETH transfer tx failed: $(jq -c '{code, raw_log}' "$WORK/send2.json")"
-  txhash=$(jq -r .txhash "$WORK/send2.json")
-  TXHASH=$txhash
-  poll 90 2 "tx $TXHASH committed with send_packet event (latest query kept in $WORK/send2-query.json)" check_tx_committed
+    | tee "$out" > /dev/null
+  jq -e '.code == 0 and (.txhash | length > 0)' "$out" > /dev/null \
+    || die "AtomOne transfer tx from $from failed: $(jq -c '{code, raw_log}' "$out")"
+  TXHASH=$(jq -r .txhash "$out")
+  QUERY_FILE="$out-query.json"
+  poll 90 2 "tx $TXHASH committed with send_packet event (latest query kept in $QUERY_FILE)" check_tx_committed
+}
+
+send_atomone_to_eth() {
+  log "sending AtomOne -> ETH"
+  TEST3_ADDR=$("$ATOMONED" keys show test3 -a --keyring-backend test --home "$ATOMONE_HOME")
+  atomone_send_transfer test3 "$DEPLOYER" "${AMOUNT}uatone" "$WORK/send2.json"
 
   poll 600 10 "wrapped ${AMOUNT} uatone on ETH for $DEPLOYER" check_wrapped
   poll 600 10 "acknowledgement relayed back to AtomOne" check_ack_on_atomone
 
-  bal=$("$ATOMONED" q bank balances "$("$ATOMONED" keys show test3 -a --keyring-backend test --home "$ATOMONE_HOME")" \
+  local bal
+  bal=$("$ATOMONED" q bank balances "$TEST3_ADDR" \
     --node "$ATOMONE_NODE" --output json | jq -r '.balances[] | select(.denom=="uatone") | .amount')
   [ "$bal" -eq "$TEST3_UATONE_AFTER" ] 2>/dev/null \
     || die "test3 uatone balance is $bal, want $TEST3_UATONE_AFTER (1,000,000 in escrow)"
+}
 
+check_voucher_burned() {
+  local bal
+  bal=$("$ATOMONED" q bank balances "$RECV" --node "$ATOMONE_NODE" --output json 2>/dev/null \
+    | jq -r --arg d "$EXPECTED_DENOM" '.balances[] | select(.denom==$d) | .amount') || return 1
+  [ -z "$bal" ] || [ "$bal" = "0" ]
+}
+
+check_erc20_released() { # string compare: the balance (~1e24) exceeds int64
+  local bal
+  bal=$(cast call "$ERC20" 'balanceOf(address)(uint256)' "$DEPLOYER" --rpc-url "$ETH_RPC" 2>/dev/null \
+    | awk '{print $1}') || return 1
+  [ "$bal" = "$ERC20_BAL_BEFORE" ]
+}
+
+check_second_ack_on_atomone() {
+  local out n
+  out=$("$ATOMONED" q txs --query "message.action='/ibc.core.channel.v2.MsgAcknowledgement'" \
+    --node "$ATOMONE_NODE" --output json 2>/dev/null || echo '{"txs":[]}')
+  n=$(echo "$out" | jq '[.txs[] | select(.code==0)] | length' 2>/dev/null)
+  [ "${n:-0}" -ge 2 ] 2>/dev/null
+}
+
+redeem_voucher_on_eth() {
+  log "returning the ETH-origin voucher to ETH (burn + escrow release)"
+  atomone_send_transfer test2 "$DEPLOYER" "${AMOUNT}${EXPECTED_DENOM}" "$WORK/send3.json"
+
+  poll 120 5 "voucher $EXPECTED_DENOM burned for $RECV" check_voucher_burned
+  poll 600 10 "escrowed ERC20 released to $DEPLOYER (balance back to the pre-send value)" check_erc20_released
+  poll 600 10 "second acknowledgement relayed back to AtomOne" check_second_ack_on_atomone
+}
+
+check_wrapped_burned() {
+  local bal
+  bal=$(cast call "$WRAPPED" 'balanceOf(address)(uint256)' "$DEPLOYER" --rpc-url "$ETH_RPC" 2>/dev/null \
+    | awk '{print $1}') || return 1
+  [ "$bal" -eq 0 ] 2>/dev/null
+}
+
+check_uatone_released() {
+  local bal
+  bal=$("$ATOMONED" q bank balances "$TEST3_ADDR" --node "$ATOMONE_NODE" --output json 2>/dev/null \
+    | jq -r '.balances[] | select(.denom=="uatone") | .amount') || return 1
+  [ "$bal" -eq "$TEST3_UATONE_FINAL" ] 2>/dev/null
+}
+
+check_second_ack_on_eth() { # eth->cosmos packet sequence 2 is the wrapped-token return
+  grep -q 'ackPacket:2' "$WORK/relayer.log"
+}
+
+redeem_wrapped_on_atomone() {
+  log "returning the wrapped uatone to AtomOne (burn + escrow release)"
+  cd "$SPECTRE_DIR/relayer"
+  local eth_key abs_timeout
+  eth_key=$(grep '^ETH_PRIVATE_KEY=' .env | cut -d= -f2 | tr -d '"')
+  WRAPPED=$(cast call "$ICS20" 'ibcERC20Contract(string)(address)' 'transfer/atomone-1/uatone' \
+    --rpc-url "$ETH_RPC" | awk '{print $1}')
+  [ -n "$WRAPPED" ] || die "wrapped uatone contract not found on ICS20"
+
+  cast send "$WRAPPED" "approve(address,uint256)" "$ICS20" "$AMOUNT" \
+    --private-key "$eth_key" --rpc-url "$ETH_RPC" > /dev/null
+  abs_timeout=$(( $(date +%s) + 3000 ))
+  cast send "$ICS20" "sendTransfer((address,uint256,string,string,string,uint64,string))" \
+    "($WRAPPED,$AMOUNT,$TEST3_ADDR,$ICS26_CLIENT_ID,$TRANSFER_PORT,$abs_timeout,\"\")" \
+    --private-key "$eth_key" --rpc-url "$ETH_RPC" > /dev/null
+
+  poll 120 5 "wrapped token burned for $DEPLOYER" check_wrapped_burned
+  poll 900 10 "escrowed uatone released to test3 (balance back to $TEST3_UATONE_FINAL)" check_uatone_released
+  poll 600 10 "second acknowledgement relayed back to ETH" check_second_ack_on_eth
+}
+
+final_checks() {
+  log "final checks"
+  local errs
   errs=$(grep -cE 'DROP|"level":"error"' "$WORK/relayer.log" || true)
   [ "$errs" -eq 0 ] || die "relayer logged $errs error/drop lines, see $WORK/relayer.log"
 }
@@ -358,7 +452,10 @@ main() {
   start_relayer
   send_eth_to_atomone
   send_atomone_to_eth
-  log "spectre e2e PASSED: one transfer relayed and acknowledged in each direction"
+  redeem_voucher_on_eth
+  redeem_wrapped_on_atomone
+  final_checks
+  log "spectre e2e PASSED: one transfer and one escrow redemption completed in each direction"
 }
 
 main "$@"
