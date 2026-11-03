@@ -59,6 +59,7 @@ import (
 	atomoneante "github.com/atomone-hub/atomone/ante"
 	"github.com/atomone-hub/atomone/app/keepers"
 	"github.com/atomone-hub/atomone/app/upgrades"
+	v42 "github.com/atomone-hub/atomone/app/upgrades/v4_2"
 	v5 "github.com/atomone-hub/atomone/app/upgrades/v5"
 	"github.com/atomone-hub/atomone/client/docs"
 )
@@ -67,7 +68,11 @@ var (
 	// DefaultNodeHome default home directories for the application daemon
 	DefaultNodeHome string
 
-	Upgrades = []upgrades.Upgrade{v5.Upgrade}
+	// Upgrades registers one handler per on-chain upgrade plan still reachable
+	// by this binary. A handler only runs when its plan is pending, so keeping
+	// historical entries is inert on chains that already executed them, while
+	// dropping them halts any node that replays history across their height.
+	Upgrades = []upgrades.Upgrade{v42.Upgrade, v5.Upgrade}
 )
 
 var (

@@ -12,13 +12,24 @@ import (
 )
 
 // PruneConsensusStates prunes the consensus states of every spectre client
-// down to a window of keepSlots slots below each client's latest finalized
-// slot. This function may optionally be called during in-place store
-// migrations; in-flight packets must no longer reference the pruned heights.
-func PruneConsensusStates(ctx sdk.Context, cdc codec.BinaryCodec, clientKeeper ClientKeeper, keepSlots uint64) (int, error) {
-	var clientIDs []string
-	clientKeeper.IterateClientStates(ctx, []byte(spectre.ModuleName), func(clientID string, _ exported.ClientState) bool {
-		clientIDs = append(clientIDs, clientID)
+// down to the module pruning window below each client's latest finalized
+// slot. It deletes at most maxPerClient states per client per call, so a
+// single invocation does bounded work; callers repeat until it returns zero.
+//
+// The window equals the one membership verification accepts, so heights
+// below it are rejected by verification regardless: pruning at the window
+// cannot strand in-flight packets. This function may optionally be called
+// during in-place store migrations.
+func PruneConsensusStates(ctx sdk.Context, cdc codec.BinaryCodec, clientKeeper ClientKeeper, maxPerClient int) (int, error) {
+	type client struct {
+		id    string
+		state *spectre.ClientState
+	}
+	var clients []client
+	clientKeeper.IterateClientStates(ctx, []byte(spectre.ModuleName), func(clientID string, state exported.ClientState) bool {
+		if cs, ok := state.(*spectre.ClientState); ok {
+			clients = append(clients, client{id: clientID, state: cs})
+		}
 		return false
 	})
 
@@ -26,12 +37,12 @@ func PruneConsensusStates(ctx sdk.Context, cdc codec.BinaryCodec, clientKeeper C
 	// understand how much space is saved when the migration is run
 	var totalPruned int
 
-	for _, clientID := range clientIDs {
-		clientStore := clientKeeper.ClientStore(ctx, clientID)
+	for _, c := range clients {
+		clientStore := clientKeeper.ClientStore(ctx, c.id)
 
-		pruned, err := spectre.PruneConsensusStates(clientStore, cdc, keepSlots)
+		pruned, err := spectre.PruneConsensusStates(clientStore, cdc, c.state.PruneKeepSlots(), maxPerClient)
 		if err != nil {
-			return 0, errorsmod.Wrapf(err, "clientID %s", clientID)
+			return 0, errorsmod.Wrapf(err, "clientID %s", c.id)
 		}
 		totalPruned += pruned
 	}

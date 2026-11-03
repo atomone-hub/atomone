@@ -309,6 +309,9 @@ func (cs *ClientState) verifyMembership(
 		return errorsmod.Wrapf(ibcerrors.ErrInvalidHeight,
 			"client state height %d is below proof height %d", cs.LatestSlot, height.GetRevisionHeight())
 	}
+	if err := cs.validateProofHeightAboveWindow(height); err != nil {
+		return err
+	}
 
 	var membershipProof MembershipProof
 	if err := cdc.Unmarshal(proof, &membershipProof); err != nil {
@@ -353,6 +356,9 @@ func (cs *ClientState) verifyNonMembership(
 		return errorsmod.Wrapf(ibcerrors.ErrInvalidHeight,
 			"client state height %d is below proof height %d", cs.LatestSlot, height.GetRevisionHeight())
 	}
+	if err := cs.validateProofHeightAboveWindow(height); err != nil {
+		return err
+	}
 
 	var membershipProof MembershipProof
 	if err := cdc.Unmarshal(proof, &membershipProof); err != nil {
@@ -370,6 +376,19 @@ func (cs *ClientState) verifyNonMembership(
 	}
 
 	return verifyStorageNonMembership(cs, consState, &membershipProof, merklePath.KeyPath)
+}
+
+// validateProofHeightAboveWindow rejects proof heights below the pruning
+// window. Consensus states below the window are pruned, so acceptance must
+// not depend on whether pruning has run: the rule is the window itself.
+func (cs *ClientState) validateProofHeightAboveWindow(height exported.Height) error {
+	keepSlots := cs.PruneKeepSlots()
+	if cs.LatestSlot > keepSlots && height.GetRevisionHeight() < cs.LatestSlot-keepSlots {
+		return errorsmod.Wrapf(ErrProofHeightBelowWindow,
+			"proof height %d is below the pruning window [%d, %d]",
+			height.GetRevisionHeight(), cs.LatestSlot-keepSlots, cs.LatestSlot)
+	}
+	return nil
 }
 
 // validateHeight checks a proof height: revision zero, non-zero height.

@@ -1,22 +1,29 @@
 package spectre
 
 import (
+	"context"
 	"encoding/json"
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 
+	"github.com/cosmos/ibc-go/v10/modules/core/exported"
+
 	"cosmossdk.io/core/appmodule"
+	storetypes "cosmossdk.io/store/types"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 )
 
 var (
 	_ module.AppModuleBasic = (*AppModuleBasic)(nil)
 	_ appmodule.AppModule   = (*AppModule)(nil)
+
+	_ appmodule.HasEndBlocker = (*AppModule)(nil)
 )
 
 // Spectre is the client type of this module.
@@ -73,15 +80,64 @@ func (AppModuleBasic) GetQueryCmd() *cobra.Command {
 	return nil
 }
 
+// ClientKeeper is the subset of the IBC 02-client keeper the spectre module
+// needs: iterating its clients and opening their stores.
+type ClientKeeper interface {
+	IterateClientStates(ctx sdk.Context, prefix []byte, cb func(clientID string, state exported.ClientState) bool)
+	ClientStore(ctx sdk.Context, clientID string) storetypes.KVStore
+}
+
 // AppModule is the application module for the spectre client module.
 type AppModule struct {
 	AppModuleBasic
 	lightClientModule LightClientModule
+	cdc               codec.BinaryCodec
+	clientKeeper      ClientKeeper
 }
 
 // NewAppModule creates a new spectre client module.
-func NewAppModule(lightClientModule LightClientModule) AppModule {
+func NewAppModule(cdc codec.BinaryCodec, lightClientModule LightClientModule, clientKeeper ClientKeeper) AppModule {
 	return AppModule{
 		lightClientModule: lightClientModule,
+		cdc:               cdc,
+		clientKeeper:      clientKeeper,
 	}
+}
+
+// EndBlock pruning knobs. Pruning runs on every pruneIntervalBlocks-th
+// block and deletes at most pruneBatchLimit states per client per run, so
+// the worst-case per-block work stays bounded while states accumulate far
+// slower (one per Ethereum finalization) than the batch limit.
+const (
+	pruneIntervalBlocks int64 = 100
+	pruneBatchLimit           = 1000
+)
+
+// EndBlock prunes spectre consensus states below the pruning window of
+// PruneKeepDuration. Membership verification already rejects heights below
+// the window, so a running client loses nothing provable. A failing client
+// is logged and skipped: pruning is housekeeping and must not halt the
+// chain.
+func (am AppModule) EndBlock(goCtx context.Context) error {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	if ctx.BlockHeight()%pruneIntervalBlocks != 0 {
+		return nil
+	}
+
+	am.clientKeeper.IterateClientStates(ctx, []byte(ModuleName), func(clientID string, state exported.ClientState) bool {
+		clientState, ok := state.(*ClientState)
+		if !ok {
+			return false
+		}
+		pruned, err := PruneConsensusStates(am.clientKeeper.ClientStore(ctx, clientID), am.cdc, clientState.PruneKeepSlots(), pruneBatchLimit)
+		if err != nil {
+			ctx.Logger().Error("failed to prune spectre consensus states", "client-id", clientID, "error", err)
+			return false
+		}
+		if pruned > 0 {
+			ctx.Logger().Info("pruned spectre consensus states", "client-id", clientID, "count", pruned)
+		}
+		return false
+	})
+	return nil
 }

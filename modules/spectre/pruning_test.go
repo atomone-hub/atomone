@@ -34,14 +34,15 @@ func storeClientWithStates(t *testing.T, firstSlot, latestSlot uint64) storetype
 }
 
 // TestPruneConsensusStates verifies that pruning removes consensus states
-// older than the kept window and always keeps the latest state.
+// older than the kept window, always keeps the latest state, and does
+// bounded work per call.
 func TestPruneConsensusStates(t *testing.T) {
 	cdc := getTestCodec()
 
 	t.Run("keeps the recent window", func(t *testing.T) {
 		clientStore := storeClientWithStates(t, 100, 110)
 
-		pruned, err := PruneConsensusStates(clientStore, cdc, 5)
+		pruned, err := PruneConsensusStates(clientStore, cdc, 5, 100)
 		require.NoError(t, err)
 		require.Equal(t, 5, pruned, "slots 100..104 are pruned")
 
@@ -58,7 +59,7 @@ func TestPruneConsensusStates(t *testing.T) {
 	t.Run("keepSlots zero keeps only the latest", func(t *testing.T) {
 		clientStore := storeClientWithStates(t, 100, 110)
 
-		pruned, err := PruneConsensusStates(clientStore, cdc, 0)
+		pruned, err := PruneConsensusStates(clientStore, cdc, 0, 100)
 		require.NoError(t, err)
 		require.Equal(t, 10, pruned)
 
@@ -71,15 +72,62 @@ func TestPruneConsensusStates(t *testing.T) {
 	t.Run("window covering genesis keeps everything", func(t *testing.T) {
 		clientStore := storeClientWithStates(t, 100, 110)
 
-		pruned, err := PruneConsensusStates(clientStore, cdc, 110)
+		pruned, err := PruneConsensusStates(clientStore, cdc, 110, 100)
 		require.NoError(t, err)
 		require.Zero(t, pruned)
+	})
+
+	t.Run("maxPrune bounds deletions per call", func(t *testing.T) {
+		clientStore := storeClientWithStates(t, 100, 110)
+
+		pruned, err := PruneConsensusStates(clientStore, cdc, 0, 3)
+		require.NoError(t, err)
+		require.Equal(t, 3, pruned)
+
+		// Repeating the call eventually reaches a fixed point: only the
+		// latest state survives.
+		total := pruned
+		for {
+			pruned, err = PruneConsensusStates(clientStore, cdc, 0, 3)
+			require.NoError(t, err)
+			total += pruned
+			if pruned == 0 {
+				break
+			}
+		}
+		require.Equal(t, 10, total)
+		_, found := GetConsensusState(clientStore, cdc, clienttypes.NewHeight(0, 110))
+		require.True(t, found, "the latest state is always kept")
+	})
+
+	t.Run("non-positive maxPrune errors", func(t *testing.T) {
+		clientStore := storeClientWithStates(t, 100, 110)
+
+		_, err := PruneConsensusStates(clientStore, cdc, 5, 0)
+		require.ErrorIs(t, err, ErrInvalidPruning)
+	})
+
+	t.Run("malformed consensus state key errors", func(t *testing.T) {
+		clientStore := storeClientWithStates(t, 100, 110)
+		clientStore.Set([]byte("consensusStates/garbage"), []byte("garbage"))
+
+		_, err := PruneConsensusStates(clientStore, cdc, 5, 100)
+		require.ErrorIs(t, err, ErrInvalidConsensusState)
 	})
 
 	t.Run("missing client state errors", func(t *testing.T) {
 		clientStore := setupClientStore(t)
 
-		_, err := PruneConsensusStates(clientStore, cdc, 5)
+		_, err := PruneConsensusStates(clientStore, cdc, 5, 100)
 		require.Error(t, err)
 	})
+}
+
+// TestPruneKeepSlots verifies the window derivation from the slot duration.
+func TestPruneKeepSlots(t *testing.T) {
+	require.Equal(t, uint64(7*24*3600/12), (&ClientState{SecondsPerSlot: 12}).PruneKeepSlots())
+	require.Equal(t, uint64(7*24*3600/6), (&ClientState{SecondsPerSlot: 6}).PruneKeepSlots())
+	// A corrupt slot duration yields the narrowest safe window instead of
+	// dividing by zero.
+	require.Equal(t, uint64(0), (&ClientState{}).PruneKeepSlots())
 }

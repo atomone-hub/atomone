@@ -47,6 +47,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
+	"github.com/atomone-hub/atomone/modules/spectre"
 	"github.com/atomone-hub/atomone/x/coredaos"
 	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
 	atomonegov "github.com/atomone-hub/atomone/x/gov"
@@ -188,6 +189,7 @@ func orderEndBlockers() []string {
 		ibcexported.ModuleName,
 		ibctransfertypes.ModuleName,
 		icatypes.ModuleName,
+		spectre.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
 		photontypes.ModuleName,

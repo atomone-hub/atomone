@@ -246,6 +246,16 @@ func TestVerifyMembershipEntryPoint(t *testing.T) {
 	require.Error(t, cs.verifyMembership(ctx, clientStore, cdc, futureHeight, 0, 0, proofBz, path, value))
 	require.Error(t, cs.verifyNonMembership(ctx, clientStore, cdc, futureHeight, 0, 0, proofBz, path))
 
+	// Heights below the pruning window are rejected even when their
+	// consensus state is still stored: acceptance must not depend on whether
+	// pruning has run.
+	stale := cs.Clone()
+	stale.LatestSlot = cs.LatestSlot + stale.PruneKeepSlots() + 1
+	require.ErrorIs(t, stale.verifyMembership(ctx, clientStore, cdc, recv.ProofHeight, 0, 0, proofBz, path, value), ErrProofHeightBelowWindow)
+	require.ErrorIs(t, stale.verifyNonMembership(ctx, clientStore, cdc, recv.ProofHeight, 0, 0, proofBz, path), ErrProofHeightBelowWindow)
+	// The unmodified client still accepts the same proof.
+	require.NoError(t, cs.verifyMembership(ctx, clientStore, cdc, recv.ProofHeight, 0, 0, proofBz, path, value))
+
 	// Missing consensus states are rejected.
 	missingHeight := clienttypes.NewHeight(0, recv.ProofHeight.GetRevisionHeight()-1)
 	require.Error(t, cs.verifyMembership(ctx, clientStore, cdc, missingHeight, 0, 0, proofBz, path, value))
