@@ -76,7 +76,7 @@ message MsgEndorseProposalResponse {}
 // MsgExtendVotingPeriod defines a message for extending the voting period of a proposal.
 message MsgExtendVotingPeriod {
     option (cosmos.msg.v1.signer) = "extender";
-    option (amino.name) = "atomone/coredaos/v1/MsgExtendVotingPeriod";
+    option (amino.name) = "atomone/coredaos/MsgExtendVotingPeriod";
 
     // extender is the address of the dao extending the voting period.
     string extender = 1;
