@@ -207,25 +207,18 @@ func (cs *ClientState) verifyClientMessage(
 }
 
 // checkForMisbehaviour reports whether the client message is a valid
-// misbehaviour report.
-func (cs *ClientState) checkForMisbehaviour(
-	ctx sdk.Context,
-	cdc codec.BinaryCodec,
-	clientStore storetypes.KVStore,
-	clientMsg exported.ClientMessage,
-) bool {
+// misbehaviour report. ibc-go's 02-client keeper only calls it from
+// UpdateClient, immediately after VerifyClientMessage accepted the same
+// message, so a Misbehaviour reaching this point has already passed the full
+// verification, including both BLS aggregate checks; re-running them would
+// double the cost of the most expensive client message for no new
+// information. A Header is never a misbehaviour report.
+func (cs *ClientState) checkForMisbehaviour(clientMsg exported.ClientMessage) bool {
 	if cs.Frozen {
 		return false
 	}
-	mis, ok := clientMsg.(*Misbehaviour)
-	if !ok {
-		return false
-	}
-	consState, found := GetConsensusState(clientStore, cdc, clienttypes.NewHeight(0, mis.TrustedSlot))
-	if !found {
-		return false
-	}
-	return cs.verifyMisbehaviour(consState, uint64(ctx.BlockTime().Unix()), mis) == nil
+	_, ok := clientMsg.(*Misbehaviour)
+	return ok
 }
 
 // updateState applies a verified header, storing the new consensus state and

@@ -65,7 +65,7 @@ func (l LightClientModule) CheckForMisbehaviour(ctx sdk.Context, clientID string
 	if !found {
 		panic(errorsmod.Wrap(clienttypes.ErrClientNotFound, clientID))
 	}
-	return clientState.checkForMisbehaviour(ctx, l.cdc, clientStore, clientMsg)
+	return clientState.checkForMisbehaviour(clientMsg)
 }
 
 // UpdateStateOnMisbehaviour freezes the client.
