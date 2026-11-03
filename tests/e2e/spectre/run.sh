@@ -320,13 +320,14 @@ check_ack_on_atomone() {
 
 check_tx_committed() { # tx broadcast returns after CheckTx (sync mode); wait for inclusion
   local out code
+  local qfile=${QUERY_FILE:-$WORK/send2-query.json}
   out=$("$ATOMONED" q tx "$TXHASH" --node "$ATOMONE_NODE" --output json 2>/dev/null) || return 1
-  printf '%s\n' "$out" > "${QUERY_FILE:-$WORK/send2-query.json}"
-  code=$(jq -r '.code // ""' "$WORK/send2-query.json" 2>/dev/null)
+  printf '%s\n' "$out" > "$qfile"
+  code=$(jq -r '.code // ""' "$qfile" 2>/dev/null)
   if [ -n "$code" ] && [ "$code" != "0" ]; then
-    die "tx $TXHASH failed on deliver: code=$code raw_log=$(jq -r '.raw_log' "$WORK/send2-query.json")"
+    die "tx $TXHASH failed on deliver: code=$code raw_log=$(jq -r '.raw_log' "$qfile")"
   fi
-  jq -e '([.events[]?.type] | index("send_packet")) != null' "$WORK/send2-query.json" > /dev/null 2>&1
+  jq -e '([.events[]?.type] | index("send_packet")) != null' "$qfile" > /dev/null 2>&1
 }
 
 atomone_send_transfer() { # atomone_send_transfer <from-key> <receiver> <coin> <result-json>
