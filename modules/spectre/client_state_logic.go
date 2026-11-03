@@ -196,7 +196,10 @@ func trustedSyncCommittee(cs *ClientState, consState *ConsensusState, committee 
 		return nil, errorsmod.Wrap(ErrSyncCommitteeMismatch, "provided committee does not match stored current sync committee")
 	}
 
-	agg, err := aggregatePubkeys(committee.Pubkeys)
+	// The pubkeys hash binds the exact keys (lengths are validated above),
+	// so the aggregate is served from the committee cache after the first
+	// aggregation of the period.
+	agg, err := aggregatedCommitteePubkey(summary.PubkeysHash, committee.Pubkeys)
 	if err != nil {
 		return nil, err
 	}

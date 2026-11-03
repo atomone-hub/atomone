@@ -193,12 +193,17 @@ func (cs *ClientState) verifyClientMessage(
 		if !found {
 			return errorsmod.Wrapf(clienttypes.ErrConsensusStateNotFound, "trusted slot %d", msg.TrustedSlot)
 		}
+		// Charge for the committee BLS work before any of it runs: the
+		// size-based gas of the message does not cover it, and verification
+		// may fail only at the pairing check, deep inside the expensive part.
+		ctx.GasMeter().ConsumeGas(cs.GasCostHeaderVerification(), "spectre: header verification")
 		return cs.verifyHeader(consState, uint64(ctx.BlockTime().Unix()), msg)
 	case *Misbehaviour:
 		consState, found := GetConsensusState(clientStore, cdc, clienttypes.NewHeight(0, msg.TrustedSlot))
 		if !found {
 			return errorsmod.Wrapf(clienttypes.ErrConsensusStateNotFound, "trusted slot %d", msg.TrustedSlot)
 		}
+		ctx.GasMeter().ConsumeGas(cs.GasCostMisbehaviourVerification(), "spectre: misbehaviour verification")
 		return cs.verifyMisbehaviour(consState, uint64(ctx.BlockTime().Unix()), msg)
 	default:
 		return errorsmod.Wrapf(ibcerrors.ErrInvalidType, "expected type %T or %T, got %T",
