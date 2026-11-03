@@ -40,6 +40,23 @@ func verifyStorageMembership(cs *ClientState, consState *ConsensusState, proof *
 	if err := validateProofBounds(proof.AccountProof.Proof, proof.StorageProof.Proof); err != nil {
 		return err
 	}
+	// Roots, keys and values are fixed 32-byte values. Wrong-length inputs
+	// must be rejected, not converted to the zero value: a zero chunk can
+	// only ever verify where the honest tree holds zeros.
+	for _, in := range []struct {
+		name  string
+		value []byte
+	}{
+		{"consensus state root", consState.StateRoot},
+		{"account storage root", proof.AccountProof.StorageRoot},
+		{"storage key", proof.StorageProof.Key},
+		{"storage value", proof.StorageProof.Value},
+		{"expected value", value},
+	} {
+		if err := requireLen32(in.name, in.value); err != nil {
+			return err
+		}
+	}
 
 	stateRoot := bytes32(consState.StateRoot)
 	if err := verifyAccountStorageRoot(
@@ -74,6 +91,20 @@ func verifyStorageMembership(cs *ClientState, consState *ConsensusState, proof *
 func verifyStorageNonMembership(cs *ClientState, consState *ConsensusState, proof *MembershipProof, path [][]byte) error {
 	if err := validateProofBounds(proof.AccountProof.Proof, proof.StorageProof.Proof); err != nil {
 		return err
+	}
+	// Roots and keys are fixed 32-byte values; see verifyStorageMembership.
+	for _, in := range []struct {
+		name  string
+		value []byte
+	}{
+		{"consensus state root", consState.StateRoot},
+		{"account storage root", proof.AccountProof.StorageRoot},
+		{"storage key", proof.StorageProof.Key},
+		{"storage value", proof.StorageProof.Value},
+	} {
+		if err := requireLen32(in.name, in.value); err != nil {
+			return err
+		}
 	}
 
 	stateRoot := bytes32(consState.StateRoot)
@@ -112,6 +143,15 @@ func bytes32(b []byte) [32]byte {
 		copy(out[:], b)
 	}
 	return out
+}
+
+// requireLen32 checks that a fixed 32-byte input has exactly that length.
+// Call it before any bytes32 conversion of untrusted or stored input.
+func requireLen32(name string, b []byte) error {
+	if len(b) != 32 {
+		return errorsmod.Wrapf(ErrInvalidProof, "%s is %d bytes, expected 32", name, len(b))
+	}
+	return nil
 }
 
 func bytesEqual32(a, b [32]byte) bool {

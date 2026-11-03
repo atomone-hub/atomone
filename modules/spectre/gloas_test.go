@@ -196,6 +196,29 @@ func TestGloasHeaderWithWrongBlockHashIsRejected(t *testing.T) {
 	require.ErrorIs(t, cs.isValidLightClientHeader(header), ErrInvalidMerkleBranch)
 }
 
+func TestGloasHeaderWithWrongLengthBlockHashIsRejected(t *testing.T) {
+	cs := gloasClientState(testGloasEpoch)
+	header := gloasHeader(cs, gloasSlot)
+	header.ExecutionBlockHash = header.ExecutionBlockHash[:31]
+	err := cs.isValidLightClientHeader(header)
+	require.ErrorIs(t, err, ErrInvalidHeader)
+	require.ErrorContains(t, err, "expected 32")
+}
+
+func TestHeaderWithWrongLengthBeaconRootsIsRejected(t *testing.T) {
+	cs := gloasClientState(testGloasEpoch)
+
+	shortBody := gloasHeader(cs, gloasSlot)
+	shortBody.Beacon.BodyRoot = shortBody.Beacon.BodyRoot[:31]
+	err := cs.isValidLightClientHeader(shortBody)
+	require.ErrorIs(t, err, ErrInvalidHeader)
+	require.ErrorContains(t, err, "expected 32")
+
+	longBody := gloasHeader(cs, gloasSlot)
+	longBody.Beacon.BodyRoot = append(append([]byte(nil), longBody.Beacon.BodyRoot...), 0x00)
+	require.ErrorIs(t, cs.isValidLightClientHeader(longBody), ErrInvalidHeader)
+}
+
 func TestGloasEpochHeaderCannotReuseADenebDepthProof(t *testing.T) {
 	cs := gloasClientState(testGloasEpoch)
 	header := gloasHeader(cs, gloasSlot)

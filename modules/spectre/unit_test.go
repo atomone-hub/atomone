@@ -84,7 +84,10 @@ func TestComputeDomainVector(t *testing.T) {
 func TestValidateMerkleBranch(t *testing.T) {
 	branch := [][]byte{mustHex(t, "75d7411cb01daad167713b5a9b7219670f0e500653cbbcd45cfe1bfe04222459")}
 
-	normalized, err := normalizeMerkleBranch(bytesTo32Array(branch), 4)
+	branchChunks, err := bytesTo32Array(branch)
+	require.NoError(t, err)
+
+	normalized, err := normalizeMerkleBranch(branchChunks, 4)
 	require.NoError(t, err)
 	require.Len(t, normalized, 2)
 	require.Equal(t, [32]byte{}, normalized[0])
@@ -95,7 +98,11 @@ func TestValidateMerkleBranch(t *testing.T) {
 	require.Error(t, err)
 
 	// Shorter branches are rejected by validation.
-	err = validateMerkleBranch([32]byte{}, bytesTo32Array(branch), 8, [32]byte{})
+	err = validateMerkleBranch([32]byte{}, branchChunks, 8, [32]byte{})
+	require.Error(t, err)
+
+	// Branch nodes of the wrong length are malformed input.
+	_, err = bytesTo32Array([][]byte{make([]byte, 31)})
 	require.Error(t, err)
 }
 

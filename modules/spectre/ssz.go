@@ -126,9 +126,10 @@ func fixedBytesVectorRoot(b []byte) [32]byte {
 }
 
 // blsPubkeyRoot returns the hash tree root of a 48-byte BLS public key:
-// the two packed chunks (32 + 16 padded bytes) hashed together. Keys of
-// the wrong length hash as their zero-padded encoding, which fails
-// verification against well-formed counterparties.
+// the two packed chunks (32 + 16 padded bytes) hashed together. Callers
+// validate the 48-byte length first: a wrong-length key would hash as its
+// zero-padded encoding, which can collide with the honest encoding of a
+// key ending in zero bytes.
 func blsPubkeyRoot(pk []byte) [32]byte {
 	var padded [48]byte
 	copy(padded[:], pk)

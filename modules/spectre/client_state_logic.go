@@ -171,6 +171,18 @@ func trustedSyncCommittee(cs *ClientState, consState *ConsensusState, committee 
 		return nil, errorsmod.Wrapf(ErrInvalidSyncCommittee,
 			"committee has %d pubkeys, expected %d", len(committee.Pubkeys), cs.SyncCommitteeSize)
 	}
+	// Keys are fixed 48-byte values; anything else must not enter hashing or
+	// BLS work as a zero-padded encoding.
+	for i, pk := range committee.Pubkeys {
+		if len(pk) != blsPubkeySize {
+			return nil, errorsmod.Wrapf(ErrInvalidSyncCommittee,
+				"pubkey %d is %d bytes, expected %d", i, len(pk), blsPubkeySize)
+		}
+	}
+	if len(committee.AggregatePubkey) != blsPubkeySize {
+		return nil, errorsmod.Wrapf(ErrInvalidSyncCommittee,
+			"aggregate pubkey is %d bytes, expected %d", len(committee.AggregatePubkey), blsPubkeySize)
+	}
 
 	summary := committee.summarize()
 	if isNext {
@@ -211,6 +223,14 @@ func (cs *ClientState) isValidLightClientHeader(header *LightClientHeader) error
 		return err
 	}
 
+	// The body root anchors the execution commitment branch: it is a fixed
+	// 32-byte hash, and a wrong-length input must be rejected instead of
+	// zero-substituted into the zero root.
+	if len(header.Beacon.BodyRoot) != 32 {
+		return errorsmod.Wrapf(ErrInvalidHeader,
+			"beacon body root is %d bytes, expected 32", len(header.Beacon.BodyRoot))
+	}
+
 	hasExecution := header.Execution != nil
 	hasBlockHash := len(header.ExecutionBlockHash) != 0
 	switch {
@@ -221,13 +241,21 @@ func (cs *ClientState) isValidLightClientHeader(header *LightClientHeader) error
 		if err := ensureBranchLength("execution branch", header.ExecutionBranch, executionPayloadGindex); err != nil {
 			return err
 		}
+		branch, err := bytesTo32Array(header.ExecutionBranch)
+		if err != nil {
+			return err
+		}
 		return validateMerkleBranch(
 			executionPayloadHeaderRoot(header.Execution),
-			bytesTo32Array(header.ExecutionBranch),
+			branch,
 			executionPayloadGindex,
 			bytes32(header.Beacon.BodyRoot),
 		)
 	case !hasExecution && hasBlockHash:
+		if len(header.ExecutionBlockHash) != 32 {
+			return errorsmod.Wrapf(ErrInvalidHeader,
+				"execution block hash is %d bytes, expected 32", len(header.ExecutionBlockHash))
+		}
 		// Every Gloas-format header carries the Gloas-length branch, whatever
 		// its own epoch: headers that predate Gloas arrive with leading zero
 		// nodes, which isValidNormalizedMerkleBranch checks and skips.
@@ -238,9 +266,13 @@ func (cs *ClientState) isValidLightClientHeader(header *LightClientHeader) error
 		if cs.isGloasEpoch(epoch) {
 			gindex = executionBlockHashGindexGloas
 		}
+		branch, err := bytesTo32Array(header.ExecutionBranch)
+		if err != nil {
+			return err
+		}
 		return isValidNormalizedMerkleBranch(
 			bytes32(header.ExecutionBlockHash),
-			bytesTo32Array(header.ExecutionBranch),
+			branch,
 			gindex,
 			bytes32(header.Beacon.BodyRoot),
 		)
@@ -405,6 +437,13 @@ func (cs *ClientState) validateUpdateBranches(
 		return errorsmod.Wrap(err, "finalized header is invalid")
 	}
 
+	// The attested header's state root anchors the finality and next
+	// committee branches. It is a fixed 32-byte hash: a wrong-length input
+	// must be rejected instead of zero-substituted into the zero root.
+	if err := requireLen32("attested beacon state root", update.AttestedHeader.Beacon.StateRoot); err != nil {
+		return err
+	}
+
 	// Prove the finalized header root from the attested header state root. The
 	// index depends on the fork of the attested slot, and the branch must have
 	// exactly its depth.
@@ -416,7 +455,11 @@ func (cs *ClientState) validateUpdateBranches(
 		return err
 	}
 	finalizedRoot := beaconBlockHeaderRoot(&update.FinalizedHeader.Beacon)
-	branch, err := normalizeMerkleBranch(bytesTo32Array(update.FinalityBranch), finalizedGindex)
+	finalityBranch, err := bytesTo32Array(update.FinalityBranch)
+	if err != nil {
+		return errorsmod.Wrap(err, "finality branch is invalid")
+	}
+	branch, err := normalizeMerkleBranch(finalityBranch, finalizedGindex)
 	if err != nil {
 		return errorsmod.Wrap(err, "finality branch is invalid")
 	}
@@ -447,6 +490,20 @@ func (cs *ClientState) validateUpdateBranches(
 			"next sync committee has %d pubkeys, expected %d",
 			len(update.NextSyncCommittee.Pubkeys), cs.SyncCommitteeSize)
 	}
+	// Keys are fixed 48-byte values. Wrong-length keys hash as zero-padded
+	// encodings, which can collide with the honest encoding of a key ending
+	// in zero bytes; reject them instead of storing such a committee.
+	for i, pk := range update.NextSyncCommittee.Pubkeys {
+		if len(pk) != blsPubkeySize {
+			return errorsmod.Wrapf(ErrInvalidSyncCommittee,
+				"next sync committee pubkey %d is %d bytes, expected %d", i, len(pk), blsPubkeySize)
+		}
+	}
+	if len(update.NextSyncCommittee.AggregatePubkey) != blsPubkeySize {
+		return errorsmod.Wrapf(ErrInvalidSyncCommittee,
+			"next sync committee aggregate pubkey is %d bytes, expected %d",
+			len(update.NextSyncCommittee.AggregatePubkey), blsPubkeySize)
+	}
 	if periods.attested == periods.stored && periods.nextKnown {
 		if !summarizeEqual(update.NextSyncCommittee.summarize(), consState.NextSyncCommittee) {
 			return errorsmod.Wrap(ErrSyncCommitteeMismatch, "next sync committee does not match the stored one")
@@ -460,7 +517,11 @@ func (cs *ClientState) validateUpdateBranches(
 		return err
 	}
 	nextRoot := syncCommitteeRoot(update.NextSyncCommittee)
-	branch, err = normalizeMerkleBranch(bytesTo32Array(update.NextSyncCommitteeBranch), nextGindex)
+	nextCommitteeBranch, err := bytesTo32Array(update.NextSyncCommitteeBranch)
+	if err != nil {
+		return errorsmod.Wrap(err, "next sync committee branch is invalid")
+	}
+	branch, err = normalizeMerkleBranch(nextCommitteeBranch, nextGindex)
 	if err != nil {
 		return errorsmod.Wrap(err, "next sync committee branch is invalid")
 	}
@@ -781,16 +842,19 @@ func (f *Fork) Clone() *Fork {
 	return &dup
 }
 
-// bytesTo32Array converts a slice of 32-byte values to a [][32]byte slice,
-// skipping entries of the wrong length.
-func bytesTo32Array(values [][]byte) [][32]byte {
+// bytesTo32Array converts a slice of 32-byte values to a [][32]byte slice.
+// An entry of any other length is malformed input, not a zero chunk: beacon
+// tree branch nodes are fixed 32-byte hashes and nothing re-checks the
+// length after conversion.
+func bytesTo32Array(values [][]byte) ([][32]byte, error) {
 	out := make([][32]byte, 0, len(values))
-	for _, v := range values {
-		var chunk [32]byte
-		if len(v) == 32 {
-			copy(chunk[:], v)
+	for i, v := range values {
+		if len(v) != 32 {
+			return nil, errorsmod.Wrapf(ErrInvalidMerkleBranch, "node %d is %d bytes, expected 32", i, len(v))
 		}
+		var chunk [32]byte
+		copy(chunk[:], v)
 		out = append(out, chunk)
 	}
-	return out
+	return out, nil
 }

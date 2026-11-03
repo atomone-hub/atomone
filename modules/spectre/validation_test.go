@@ -263,6 +263,26 @@ func TestVerifyMembershipEntryPoint(t *testing.T) {
 	// Garbage proofs are rejected.
 	require.Error(t, cs.verifyMembership(ctx, clientStore, cdc, recv.ProofHeight, 0, 0, []byte("garbage"), path, value))
 
+	// Wrong-length proof fields are rejected instead of zero-substituted.
+	mutate := func(f func(*MembershipProof)) []byte {
+		p := decodeMembershipProof(recv.ProofCommitment)
+		f(p)
+		bz, err := cdc.Marshal(p)
+		require.NoError(t, err)
+		return bz
+	}
+	badKey := mutate(func(p *MembershipProof) { p.StorageProof.Key = p.StorageProof.Key[:31] })
+	require.ErrorIs(t, cs.verifyMembership(ctx, clientStore, cdc, recv.ProofHeight, 0, 0, badKey, path, value), ErrInvalidProof)
+	badStorageRoot := mutate(func(p *MembershipProof) {
+		p.AccountProof.StorageRoot = append(append([]byte(nil), p.AccountProof.StorageRoot...), 0x00)
+	})
+	require.ErrorIs(t, cs.verifyMembership(ctx, clientStore, cdc, recv.ProofHeight, 0, 0, badStorageRoot, path, value), ErrInvalidProof)
+	badValue := mutate(func(p *MembershipProof) { p.StorageProof.Value = p.StorageProof.Value[:31] })
+	require.ErrorIs(t, cs.verifyMembership(ctx, clientStore, cdc, recv.ProofHeight, 0, 0, badValue, path, value), ErrInvalidProof)
+	require.ErrorIs(t, cs.verifyNonMembership(ctx, clientStore, cdc, recv.ProofHeight, 0, 0, badValue, path), ErrInvalidProof)
+	// A wrong-length expected value is rejected too.
+	require.ErrorIs(t, cs.verifyMembership(ctx, clientStore, cdc, recv.ProofHeight, 0, 0, proofBz, path, value[:31]), ErrInvalidProof)
+
 	// Wrong path types are rejected.
 	require.Error(t, cs.verifyMembership(ctx, clientStore, cdc, recv.ProofHeight, 0, 0, proofBz, nil, value))
 	require.Error(t, cs.verifyNonMembership(ctx, clientStore, cdc, recv.ProofHeight, 0, 0, proofBz, nil))

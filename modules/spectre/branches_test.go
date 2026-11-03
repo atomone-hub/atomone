@@ -77,6 +77,33 @@ func TestValidateLightClientUpdateBranches(t *testing.T) {
 		{"finality branch broken", func(u *LightClientUpdate, cs *ClientState) {
 			u.FinalityBranch[0][0] ^= 0xff
 		}},
+		{"finality branch node wrong length", func(u *LightClientUpdate, cs *ClientState) {
+			u.FinalityBranch[0] = u.FinalityBranch[0][:31]
+		}},
+		{"next committee branch node wrong length", func(u *LightClientUpdate, cs *ClientState) {
+			u.NextSyncCommittee = header.ConsensusUpdate.NextSyncCommittee
+			u.NextSyncCommitteeBranch = header.ConsensusUpdate.NextSyncCommitteeBranch
+			if u.NextSyncCommitteeBranch != nil {
+				u.NextSyncCommitteeBranch[0] = append(u.NextSyncCommitteeBranch[0], 0x00)
+			}
+		}},
+		{"attested beacon state root wrong length", func(u *LightClientUpdate, cs *ClientState) {
+			u.AttestedHeader.Beacon.StateRoot = u.AttestedHeader.Beacon.StateRoot[:31]
+		}},
+		{"next committee pubkey wrong length", func(u *LightClientUpdate, cs *ClientState) {
+			u.NextSyncCommittee = header.ConsensusUpdate.NextSyncCommittee
+			u.NextSyncCommitteeBranch = header.ConsensusUpdate.NextSyncCommitteeBranch
+			if u.NextSyncCommittee != nil {
+				u.NextSyncCommittee.Pubkeys[0] = u.NextSyncCommittee.Pubkeys[0][:47]
+			}
+		}},
+		{"next committee aggregate pubkey wrong length", func(u *LightClientUpdate, cs *ClientState) {
+			u.NextSyncCommittee = header.ConsensusUpdate.NextSyncCommittee
+			u.NextSyncCommitteeBranch = header.ConsensusUpdate.NextSyncCommitteeBranch
+			if u.NextSyncCommittee != nil {
+				u.NextSyncCommittee.AggregatePubkey = u.NextSyncCommittee.AggregatePubkey[:47]
+			}
+		}},
 		{"next committee without branch", func(u *LightClientUpdate, cs *ClientState) {
 			u.NextSyncCommittee = header.ConsensusUpdate.NextSyncCommittee
 			u.NextSyncCommitteeBranch = nil
