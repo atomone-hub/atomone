@@ -10,6 +10,7 @@
 - Consume failed-tx gas in dynamic fee pricing [#364](https://github.com/atomone-hub/atomone/pull/364)
 - Defer `x/coredaos` `MsgVetoProposal` deposit/vote cleanup to the module `EndBlocker` [#365](https://github.com/atomone-hub/atomone/pull/365)
 - Always validate quorum check params [#371](https://github.com/atomone-hub/atomone/pull/371)
+- Register `x/gov` `MsgUpdateGovernorStatus` in the LegacyAmino codec and use the `amino.name` of the proto definitions for the `x/coredaos` messages [#386](https://github.com/atomone-hub/atomone/pull/386)
 
 ### DEPENDENCIES
 
@@ -20,6 +21,10 @@
 - fix(10-gno): bind validator addresses to pubkeys and bound PartSetHeader.Total during conversion [#367](https://github.com/atomone-hub/atomone/pull/367)
 
 > **Note:** both `10-gno` changes only affect malformed client messages, which are now rejected with an error where they were previously either accepted (unbound validator addresses) or failed with a recovered panic (out-of-range parts total). Legitimate gno headers are unaffected. Since the transaction error code and gas used are part of the results hash, nodes on different versions would diverge on such a message, so these changes require a coordinated upgrade.
+
+- Shorten the `amino.name` of `x/coredaos` `MsgExtendVotingPeriod` from `atomone/coredaos/v1/MsgExtendVotingPeriod` to `atomone/coredaos/MsgExtendVotingPeriod`, the former exceeding the 39 characters a Ledger can sign [#386](https://github.com/atomone-hub/atomone/pull/386)
+
+> **Note:** the `SIGN_MODE_LEGACY_AMINO_JSON` sign bytes of `MsgExtendVotingPeriod` change, so a transaction signed with the previous name no longer verifies. Signing tools that hardcode the name must be updated, and since the validity of such transactions changes this requires a coordinated upgrade.
 
 ### IMPROVEMENTS
 
