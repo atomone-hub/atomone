@@ -341,7 +341,7 @@ func TestSupermajorityRequired(t *testing.T) {
 		h := decodeHeader(headerRaw).toProto()
 		h.ConsensusUpdate.SyncAggregate.SyncCommitteeBits = belowSupermajority
 		err := runner.clientState.validateLightClientUpdate(
-			trusted, h.ActiveSyncCommittee, &h.ConsensusUpdate, currentSlot,
+			trusted, h.ActiveSyncCommittee, &h.ConsensusUpdate, currentSlot, h.IsNextCommittee,
 		)
 		require.ErrorIs(t, err, ErrNotEnoughSignatures)
 	})

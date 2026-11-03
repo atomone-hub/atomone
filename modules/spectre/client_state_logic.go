@@ -259,6 +259,7 @@ func (cs *ClientState) validateLightClientUpdate(
 	committee *SyncCommittee,
 	update *LightClientUpdate,
 	currentSlot uint64,
+	isNextCommittee bool,
 ) error {
 	// Bound the bitfield before counting participants.
 	if expectedBitsLen := (cs.SyncCommitteeSize + 7) / 8; uint64(len(update.SyncAggregate.SyncCommitteeBits)) != expectedBitsLen {
@@ -290,6 +291,25 @@ func (cs *ClientState) validateLightClientUpdate(
 		return err
 	}
 
+	// The signing committee is bound to the signature period (altair/electra
+	// light client sync protocol): a stored-period signature must come from the
+	// current committee and a stored+1 signature from the next one. Without
+	// this check a retiring committee could sign updates one period past its
+	// tenure, or an incoming committee one period early, and install an
+	// attacker-chosen committee as the stored next one.
+	required, provided := "current", "current"
+	if updatePeriods.signature == updatePeriods.stored+1 {
+		required = "next"
+	}
+	if isNextCommittee {
+		provided = "next"
+	}
+	if required != provided {
+		return errorsmod.Wrapf(ErrInvalidSignaturePeriod,
+			"signature period %d over stored period %d requires the %s committee; the update names the %s committee",
+			updatePeriods.signature, updatePeriods.stored, required, provided)
+	}
+
 	if err := cs.validateUpdateBranches(consState, update, updatePeriods); err != nil {
 		return err
 	}
@@ -300,6 +320,7 @@ func (cs *ClientState) validateLightClientUpdate(
 // updatePeriods records the period relations an update must satisfy.
 type updatePeriods struct {
 	stored              uint64
+	signature           uint64
 	attested            uint64
 	nextKnown           bool
 	nextCommitteeUpdate bool
@@ -357,6 +378,7 @@ func (cs *ClientState) validateUpdatePeriods(
 
 	periods := updatePeriods{
 		stored:              storedPeriod,
+		signature:           signaturePeriod,
 		attested:            updateAttestedPeriod,
 		nextKnown:           nextSyncCommitteeKnown,
 		nextCommitteeUpdate: len(update.NextSyncCommitteeBranch) > 0,
@@ -497,7 +519,7 @@ func (cs *ClientState) verifyHeader(consState *ConsensusState, currentTimestampS
 		return err
 	}
 
-	if err := cs.validateLightClientUpdate(consState, header.ActiveSyncCommittee, &header.ConsensusUpdate, currentSlot); err != nil {
+	if err := cs.validateLightClientUpdate(consState, header.ActiveSyncCommittee, &header.ConsensusUpdate, currentSlot, header.IsNextCommittee); err != nil {
 		return err
 	}
 
@@ -614,7 +636,7 @@ func (cs *ClientState) verifyMisbehaviour(consState *ConsensusState, currentTime
 	}
 
 	for i, update := range []*LightClientUpdate{&mis.Update_1, &mis.Update_2} {
-		if err := cs.validateLightClientUpdate(consState, committee, update, currentSlot); err != nil {
+		if err := cs.validateLightClientUpdate(consState, committee, update, currentSlot, mis.IsNextCommittee); err != nil {
 			return errorsmod.Wrapf(err, "update %d failed verification", i+1)
 		}
 	}

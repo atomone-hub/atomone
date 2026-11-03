@@ -162,6 +162,75 @@ func conflictingEvidence(t *testing.T, c *fixtureClient) (*Misbehaviour, *Header
 	}, h
 }
 
+// cloneConsensusState returns a deep copy of a consensus state, so a case can
+// mutate it.
+func cloneConsensusState(t *testing.T, cs *ConsensusState) *ConsensusState {
+	t.Helper()
+	bz, err := cs.Marshal()
+	require.NoError(t, err)
+	var out ConsensusState
+	require.NoError(t, out.Unmarshal(bz))
+	return &out
+}
+
+// The signing committee is bound to the signature period (altair/electra
+// light client sync protocol): a stored+1 signature must come from the next
+// committee and a stored signature from the current one. A committee signing
+// outside its tenure must not verify, whatever the header's is_next flag
+// claims: otherwise a retiring committee could keep signing updates one
+// period past its tenure (and install an attacker-chosen committee as the
+// stored next one), or an incoming committee could act one period early.
+func TestSigningCommitteeMustMatchTheSignaturePeriod(t *testing.T) {
+	c := newFixtureClient(t, parityFixture)
+
+	t.Run("retiring committee signing a stored+1 period is rejected", func(t *testing.T) {
+		h := cloneHeader(t, c.headers[0])
+		require.True(t, h.IsNextCommittee, "header 0 is signed by the anchor's next committee")
+		anchor := cloneConsensusState(t, c.consensusState(c.latestSlot()))
+		require.NotNil(t, anchor.NextSyncCommittee, "the anchor knows the next committee")
+
+		// Pretend the signing committee is the stored current one: the anchor
+		// now trusts it for the current period, and the header claims a
+		// signature from the next period signed by that committee.
+		anchor.CurrentSyncCommittee = *anchor.NextSyncCommittee
+		h.IsNextCommittee = false
+
+		stored, err := c.cs.computeSyncCommitteePeriodAtSlot(anchor.Slot)
+		require.NoError(t, err)
+		signature, err := c.cs.computeSyncCommitteePeriodAtSlot(h.ConsensusUpdate.SignatureSlot)
+		require.NoError(t, err)
+		require.Equal(t, stored+1, signature, "the header signs one period past the anchor")
+
+		err = c.cs.verifyHeader(anchor, uint64(c.ctxAt(h).BlockTime().Unix()), h)
+		require.ErrorIs(t, err, ErrInvalidSignaturePeriod)
+	})
+
+	t.Run("incoming committee signing the stored period is rejected", func(t *testing.T) {
+		c.apply(0) // advance to header 1's anchor
+		h := cloneHeader(t, c.headers[1])
+		require.False(t, h.IsNextCommittee, "header 1 is signed by the stored current committee")
+		anchor := cloneConsensusState(t, c.consensusState(c.latestSlot()))
+		require.Equal(t, h.TrustedSlot, anchor.Slot)
+		require.NotNil(t, anchor.NextSyncCommittee)
+
+		// Pretend the signing committee is the stored next one: the header
+		// claims a same-period signature by a committee that has not taken
+		// over yet.
+		next := anchor.CurrentSyncCommittee
+		anchor.NextSyncCommittee = &next
+		h.IsNextCommittee = true
+
+		stored, err := c.cs.computeSyncCommitteePeriodAtSlot(anchor.Slot)
+		require.NoError(t, err)
+		signature, err := c.cs.computeSyncCommitteePeriodAtSlot(h.ConsensusUpdate.SignatureSlot)
+		require.NoError(t, err)
+		require.Equal(t, stored, signature, "the header signs within the anchor's period")
+
+		err = c.cs.verifyHeader(anchor, uint64(c.ctxAt(h).BlockTime().Unix()), h)
+		require.ErrorIs(t, err, ErrInvalidSignaturePeriod)
+	})
+}
+
 func TestMisbehaviourSignedByAPastCommitteeIsRejected(t *testing.T) {
 	c := newFixtureClient(t, parityFixture)
 	require.GreaterOrEqual(t, len(c.headers), 2)
@@ -274,7 +343,7 @@ func TestUpdateBranchesMustHaveTheExactDepth(t *testing.T) {
 	validate := func(mut func(u *LightClientUpdate)) error {
 		h := cloneHeader(t, header)
 		mut(&h.ConsensusUpdate)
-		return runner.clientState.validateLightClientUpdate(trusted, h.ActiveSyncCommittee, &h.ConsensusUpdate, currentSlot)
+		return runner.clientState.validateLightClientUpdate(trusted, h.ActiveSyncCommittee, &h.ConsensusUpdate, currentSlot, h.IsNextCommittee)
 	}
 	require.NoError(t, validate(func(*LightClientUpdate) {}), "the unmutated update verifies")
 

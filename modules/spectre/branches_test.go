@@ -107,7 +107,7 @@ func TestValidateLightClientUpdateBranches(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			update, cs := mkUpdate(tc.mut)
 			err := cs.validateLightClientUpdate(
-				trusted, header.ActiveSyncCommittee, update, currentSlot,
+				trusted, header.ActiveSyncCommittee, update, currentSlot, header.IsNextCommittee,
 			)
 			require.Error(t, err, "expected rejection")
 		})
@@ -116,7 +116,7 @@ func TestValidateLightClientUpdateBranches(t *testing.T) {
 	// The unmutated update verifies.
 	validUpdate, validCS := mkUpdate(func(u *LightClientUpdate, cs *ClientState) {})
 	require.NoError(t, validCS.validateLightClientUpdate(
-		trusted, header.ActiveSyncCommittee, validUpdate, currentSlot,
+		trusted, header.ActiveSyncCommittee, validUpdate, currentSlot, header.IsNextCommittee,
 	))
 }
 
