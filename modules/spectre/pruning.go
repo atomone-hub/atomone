@@ -2,6 +2,7 @@ package spectre
 
 import (
 	"bytes"
+	"context"
 	"strconv"
 	"time"
 
@@ -51,12 +52,12 @@ func (cs *ClientState) PruneKeepSlots() uint64 {
 // keepSlots should come from PruneKeepSlots: membership verification rejects
 // heights below that window, so states below it are unreachable by proofs.
 // If more than maxPrune states are stale, callers repeat the call.
-func PruneConsensusStates(clientStore storetypes.KVStore, cdc codec.BinaryCodec, keepSlots uint64, maxPrune int) (int, error) {
+func PruneConsensusStates(ctx context.Context, clientStore storetypes.KVStore, cdc codec.BinaryCodec, keepSlots uint64, maxPrune int) (int, error) {
 	if maxPrune <= 0 {
 		return 0, errorsmod.Wrap(ErrInvalidPruning, "maxPrune must be positive")
 	}
 
-	clientState, found := getClientState(clientStore, cdc)
+	clientState, found := getClientState(ctx, clientStore, cdc)
 	if !found {
 		return 0, errorsmod.Wrap(clienttypes.ErrClientNotFound, "client store has no client state")
 	}

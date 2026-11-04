@@ -52,10 +52,10 @@ func freezeClient(t *testing.T, c *fixtureClient, clientID string) {
 	t.Helper()
 	cdc := getTestCodec()
 	store := c.provider.ClientStore(c.ctx, clientID)
-	cs, found := getClientState(store, cdc)
+	cs, found := getClientState(c.ctx, store, cdc)
 	require.True(t, found)
 	cs.Frozen = true
-	setClientState(store, cdc, cs)
+	setClientState(c.ctx, store, cdc, cs)
 }
 
 // TestRecoverClient verifies governance client recovery: a frozen subject is
@@ -92,7 +92,7 @@ func TestRecoverClient(t *testing.T) {
 
 	subjectStore := c.provider.ClientStore(c.ctx, c.clientID)
 	substituteStore := c.provider.ClientStore(c.ctx, substituteID)
-	_, found := GetConsensusState(subjectStore, cdc, clienttypes.NewHeight(0, substituteLatest))
+	_, found := GetConsensusState(c.ctx, subjectStore, cdc, clienttypes.NewHeight(0, substituteLatest))
 	require.True(t, found, "the substitute's latest consensus state is copied")
 
 	// Every state in the subject's store now comes from the substitute: the

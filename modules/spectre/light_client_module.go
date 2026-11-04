@@ -50,7 +50,7 @@ func (l LightClientModule) Initialize(ctx sdk.Context, clientID string, clientSt
 // VerifyClientMessage verifies a Header or Misbehaviour client message.
 func (l LightClientModule) VerifyClientMessage(ctx sdk.Context, clientID string, clientMsg exported.ClientMessage) error {
 	clientStore := l.storeProvider.ClientStore(ctx, clientID)
-	clientState, found := getClientState(clientStore, l.cdc)
+	clientState, found := getClientState(ctx, clientStore, l.cdc)
 	if !found {
 		return errorsmod.Wrap(clienttypes.ErrClientNotFound, clientID)
 	}
@@ -61,7 +61,7 @@ func (l LightClientModule) VerifyClientMessage(ctx sdk.Context, clientID string,
 // misbehaviour report.
 func (l LightClientModule) CheckForMisbehaviour(ctx sdk.Context, clientID string, clientMsg exported.ClientMessage) bool {
 	clientStore := l.storeProvider.ClientStore(ctx, clientID)
-	clientState, found := getClientState(clientStore, l.cdc)
+	clientState, found := getClientState(ctx, clientStore, l.cdc)
 	if !found {
 		panic(errorsmod.Wrap(clienttypes.ErrClientNotFound, clientID))
 	}
@@ -71,17 +71,17 @@ func (l LightClientModule) CheckForMisbehaviour(ctx sdk.Context, clientID string
 // UpdateStateOnMisbehaviour freezes the client.
 func (l LightClientModule) UpdateStateOnMisbehaviour(ctx sdk.Context, clientID string, clientMsg exported.ClientMessage) {
 	clientStore := l.storeProvider.ClientStore(ctx, clientID)
-	clientState, found := getClientState(clientStore, l.cdc)
+	clientState, found := getClientState(ctx, clientStore, l.cdc)
 	if !found {
 		panic(errorsmod.Wrap(clienttypes.ErrClientNotFound, clientID))
 	}
-	clientState.updateStateOnMisbehaviour(l.cdc, clientStore, clientMsg)
+	clientState.updateStateOnMisbehaviour(ctx, l.cdc, clientStore, clientMsg)
 }
 
 // UpdateState applies a verified header and stores the new states.
 func (l LightClientModule) UpdateState(ctx sdk.Context, clientID string, clientMsg exported.ClientMessage) []exported.Height {
 	clientStore := l.storeProvider.ClientStore(ctx, clientID)
-	clientState, found := getClientState(clientStore, l.cdc)
+	clientState, found := getClientState(ctx, clientStore, l.cdc)
 	if !found {
 		panic(errorsmod.Wrap(clienttypes.ErrClientNotFound, clientID))
 	}
@@ -101,7 +101,7 @@ func (l LightClientModule) VerifyMembership(
 	value []byte,
 ) error {
 	clientStore := l.storeProvider.ClientStore(ctx, clientID)
-	clientState, found := getClientState(clientStore, l.cdc)
+	clientState, found := getClientState(ctx, clientStore, l.cdc)
 	if !found {
 		return errorsmod.Wrap(clienttypes.ErrClientNotFound, clientID)
 	}
@@ -119,7 +119,7 @@ func (l LightClientModule) VerifyNonMembership(
 	path exported.Path,
 ) error {
 	clientStore := l.storeProvider.ClientStore(ctx, clientID)
-	clientState, found := getClientState(clientStore, l.cdc)
+	clientState, found := getClientState(ctx, clientStore, l.cdc)
 	if !found {
 		return errorsmod.Wrap(clienttypes.ErrClientNotFound, clientID)
 	}
@@ -129,7 +129,7 @@ func (l LightClientModule) VerifyNonMembership(
 // Status returns the status of the client.
 func (l LightClientModule) Status(ctx sdk.Context, clientID string) exported.Status {
 	clientStore := l.storeProvider.ClientStore(ctx, clientID)
-	clientState, found := getClientState(clientStore, l.cdc)
+	clientState, found := getClientState(ctx, clientStore, l.cdc)
 	if !found {
 		return exported.Unknown
 	}
@@ -139,7 +139,7 @@ func (l LightClientModule) Status(ctx sdk.Context, clientID string) exported.Sta
 // LatestHeight returns the latest finalized slot of the client.
 func (l LightClientModule) LatestHeight(ctx sdk.Context, clientID string) exported.Height {
 	clientStore := l.storeProvider.ClientStore(ctx, clientID)
-	clientState, found := getClientState(clientStore, l.cdc)
+	clientState, found := getClientState(ctx, clientStore, l.cdc)
 	if !found {
 		return clienttypes.ZeroHeight()
 	}
@@ -153,11 +153,11 @@ func (l LightClientModule) TimestampAtHeight(
 	height exported.Height,
 ) (uint64, error) {
 	clientStore := l.storeProvider.ClientStore(ctx, clientID)
-	clientState, found := getClientState(clientStore, l.cdc)
+	clientState, found := getClientState(ctx, clientStore, l.cdc)
 	if !found {
 		return 0, errorsmod.Wrap(clienttypes.ErrClientNotFound, clientID)
 	}
-	return clientState.GetTimestampAtHeight(clientStore, l.cdc, height)
+	return clientState.GetTimestampAtHeight(ctx, clientStore, l.cdc, height)
 }
 
 // RecoverClient recovers a frozen subject client from an active substitute
@@ -175,18 +175,18 @@ func (l LightClientModule) RecoverClient(ctx sdk.Context, clientID, substituteCl
 	}
 
 	clientStore := l.storeProvider.ClientStore(ctx, clientID)
-	clientState, found := getClientState(clientStore, l.cdc)
+	clientState, found := getClientState(ctx, clientStore, l.cdc)
 	if !found {
 		return errorsmod.Wrap(clienttypes.ErrClientNotFound, clientID)
 	}
 
 	substituteClientStore := l.storeProvider.ClientStore(ctx, substituteClientID)
-	substituteClientState, found := getClientState(substituteClientStore, l.cdc)
+	substituteClientState, found := getClientState(ctx, substituteClientStore, l.cdc)
 	if !found {
 		return errorsmod.Wrap(clienttypes.ErrClientNotFound, substituteClientID)
 	}
 
-	return clientState.recoverClient(l.cdc, clientStore, substituteClientStore, substituteClientState)
+	return clientState.recoverClient(ctx, l.cdc, clientStore, substituteClientStore, substituteClientState)
 }
 
 // VerifyUpgradeAndUpdateState is not supported: Ethereum hard forks are

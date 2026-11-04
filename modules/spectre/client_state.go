@@ -1,6 +1,8 @@
 package spectre
 
 import (
+	"context"
+
 	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
 	commitmenttypesv2 "github.com/cosmos/ibc-go/v10/modules/core/23-commitment/types/v2"
 	ibcerrors "github.com/cosmos/ibc-go/v10/modules/core/errors"
@@ -30,11 +32,12 @@ func (cs *ClientState) GetLatestHeight() exported.Height {
 // GetTimestampAtHeight returns the timestamp in nanoseconds of the consensus
 // state at the given height.
 func (cs *ClientState) GetTimestampAtHeight(
+	ctx context.Context,
 	clientStore storetypes.KVStore,
 	cdc codec.BinaryCodec,
 	height exported.Height,
 ) (uint64, error) {
-	consState, found := GetConsensusState(clientStore, cdc, height)
+	consState, found := GetConsensusState(ctx, clientStore, cdc, height)
 	if !found {
 		return 0, errorsmod.Wrapf(clienttypes.ErrConsensusStateNotFound, "height (%s)", height)
 	}
@@ -131,7 +134,7 @@ func validateForkParameters(fp *ForkParameters) error {
 
 // initialize stores the initial client and consensus states.
 func (cs *ClientState) initialize(
-	_ sdk.Context,
+	ctx sdk.Context,
 	cdc codec.BinaryCodec,
 	clientStore storetypes.KVStore,
 	consState exported.ConsensusState,
@@ -161,8 +164,8 @@ func (cs *ClientState) initialize(
 			"client latest slot %d does not match consensus slot %d", cs.LatestSlot, consensusState.Slot)
 	}
 
-	setClientState(clientStore, cdc, cs)
-	setConsensusState(clientStore, cdc, consensusState, cs.GetLatestHeight())
+	setClientState(ctx, clientStore, cdc, cs)
+	setConsensusState(ctx, clientStore, cdc, consensusState, cs.GetLatestHeight())
 	return nil
 }
 
@@ -189,7 +192,7 @@ func (cs *ClientState) verifyClientMessage(
 		if msg.TrustedSlot != cs.LatestSlot {
 			return errorsmod.Wrapf(ErrTrustedSlotNotLatest, "trusted slot %d, latest slot %d", msg.TrustedSlot, cs.LatestSlot)
 		}
-		consState, found := GetConsensusState(clientStore, cdc, clienttypes.NewHeight(0, msg.TrustedSlot))
+		consState, found := GetConsensusState(ctx, clientStore, cdc, clienttypes.NewHeight(0, msg.TrustedSlot))
 		if !found {
 			return errorsmod.Wrapf(clienttypes.ErrConsensusStateNotFound, "trusted slot %d", msg.TrustedSlot)
 		}
@@ -199,7 +202,7 @@ func (cs *ClientState) verifyClientMessage(
 		ctx.GasMeter().ConsumeGas(cs.GasCostHeaderVerification(), "spectre: header verification")
 		return cs.verifyHeader(consState, uint64(ctx.BlockTime().Unix()), msg)
 	case *Misbehaviour:
-		consState, found := GetConsensusState(clientStore, cdc, clienttypes.NewHeight(0, msg.TrustedSlot))
+		consState, found := GetConsensusState(ctx, clientStore, cdc, clienttypes.NewHeight(0, msg.TrustedSlot))
 		if !found {
 			return errorsmod.Wrapf(clienttypes.ErrConsensusStateNotFound, "trusted slot %d", msg.TrustedSlot)
 		}
@@ -268,7 +271,7 @@ func (cs *ClientState) updateState(
 
 	// The update applies against the consensus state at the client's latest
 	// slot; historical updates are not supported.
-	consState, found := GetConsensusState(clientStore, cdc, cs.GetLatestHeight())
+	consState, found := GetConsensusState(ctx, clientStore, cdc, cs.GetLatestHeight())
 	if !found {
 		panic(errorsmod.Wrapf(clienttypes.ErrConsensusStateNotFound, "latest slot %d", cs.LatestSlot))
 	}
@@ -279,9 +282,9 @@ func (cs *ClientState) updateState(
 	}
 
 	height := clienttypes.NewHeight(0, newConsState.Slot)
-	setConsensusState(clientStore, cdc, newConsState, height)
+	setConsensusState(ctx, clientStore, cdc, newConsState, height)
 	if newClientState != nil {
-		setClientState(clientStore, cdc, newClientState)
+		setClientState(ctx, clientStore, cdc, newClientState)
 	}
 
 	// Prune below the window, like the tendermint client: skipped in CheckTx
@@ -289,7 +292,7 @@ func (cs *ClientState) updateState(
 	// sees the pruning cost. The store operations are gas-metered through the
 	// provider, so the scan and deletions are paid for by the update tx.
 	if !ctx.IsCheckTx() && !ctx.IsReCheckTx() || ctx.ExecMode() == sdk.ExecModeSimulate {
-		if _, err := PruneConsensusStates(clientStore, cdc, cs.PruneKeepSlots(), pruneBatchLimit); err != nil {
+		if _, err := PruneConsensusStates(ctx, clientStore, cdc, cs.PruneKeepSlots(), pruneBatchLimit); err != nil {
 			ctx.Logger().Error("failed to prune spectre consensus states", "error", err)
 		}
 	}
@@ -298,6 +301,7 @@ func (cs *ClientState) updateState(
 
 // updateStateOnMisbehaviour freezes the client.
 func (cs *ClientState) updateStateOnMisbehaviour(
+	ctx context.Context,
 	cdc codec.BinaryCodec,
 	clientStore storetypes.KVStore,
 	_ exported.ClientMessage,
@@ -307,13 +311,13 @@ func (cs *ClientState) updateStateOnMisbehaviour(
 	}
 	frozen := cs.Clone()
 	frozen.Frozen = true
-	setClientState(clientStore, cdc, frozen)
+	setClientState(ctx, clientStore, cdc, frozen)
 }
 
 // verifyMembership verifies a storage membership proof of value at path at
 // the given height against the IBC router contract on Ethereum.
 func (cs *ClientState) verifyMembership(
-	_ sdk.Context,
+	ctx sdk.Context,
 	clientStore storetypes.KVStore,
 	cdc codec.BinaryCodec,
 	height exported.Height,
@@ -350,7 +354,7 @@ func (cs *ClientState) verifyMembership(
 		return errorsmod.Wrapf(ibcerrors.ErrInvalidType, "expected %T, got %T", commitmenttypesv2.MerklePath{}, path)
 	}
 
-	consState, found := GetConsensusState(clientStore, cdc, height)
+	consState, found := GetConsensusState(ctx, clientStore, cdc, height)
 	if !found {
 		return errorsmod.Wrap(clienttypes.ErrConsensusStateNotFound, "no consensus state at proof height")
 	}
@@ -361,7 +365,7 @@ func (cs *ClientState) verifyMembership(
 // verifyNonMembership verifies a storage non-membership proof at path at
 // the given height.
 func (cs *ClientState) verifyNonMembership(
-	_ sdk.Context,
+	ctx sdk.Context,
 	clientStore storetypes.KVStore,
 	cdc codec.BinaryCodec,
 	height exported.Height,
@@ -397,7 +401,7 @@ func (cs *ClientState) verifyNonMembership(
 		return errorsmod.Wrapf(ibcerrors.ErrInvalidType, "expected %T, got %T", commitmenttypesv2.MerklePath{}, path)
 	}
 
-	consState, found := GetConsensusState(clientStore, cdc, height)
+	consState, found := GetConsensusState(ctx, clientStore, cdc, height)
 	if !found {
 		return errorsmod.Wrap(clienttypes.ErrConsensusStateNotFound, "no consensus state at proof height")
 	}

@@ -40,7 +40,7 @@ func PruneConsensusStates(ctx sdk.Context, cdc codec.BinaryCodec, clientKeeper C
 	for _, c := range clients {
 		clientStore := clientKeeper.ClientStore(ctx, c.id)
 
-		pruned, err := spectre.PruneConsensusStates(clientStore, cdc, c.state.PruneKeepSlots(), maxPerClient)
+		pruned, err := spectre.PruneConsensusStates(ctx, clientStore, cdc, c.state.PruneKeepSlots(), maxPerClient)
 		if err != nil {
 			return 0, errorsmod.Wrapf(err, "clientID %s", c.id)
 		}

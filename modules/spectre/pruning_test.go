@@ -1,6 +1,7 @@
 package spectre
 
 import (
+	"context"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -29,11 +30,11 @@ func storeClientWithStates(t *testing.T, firstSlot, latestSlot uint64) storetype
 	consState := decodeConsensusState(initial["consensus_state"])
 
 	cs.LatestSlot = latestSlot
-	setClientState(clientStore, cdc, cs)
+	setClientState(context.Background(), clientStore, cdc, cs)
 	for slot := firstSlot; slot <= latestSlot; slot++ {
 		st := *consState
 		st.Slot = slot
-		setConsensusState(clientStore, cdc, &st, clienttypes.NewHeight(0, slot))
+		setConsensusState(context.Background(), clientStore, cdc, &st, clienttypes.NewHeight(0, slot))
 	}
 	return clientStore
 }
@@ -47,16 +48,16 @@ func TestPruneConsensusStates(t *testing.T) {
 	t.Run("keeps the recent window", func(t *testing.T) {
 		clientStore := storeClientWithStates(t, 100, 110)
 
-		pruned, err := PruneConsensusStates(clientStore, cdc, 5, 100)
+		pruned, err := PruneConsensusStates(context.Background(), clientStore, cdc, 5, 100)
 		require.NoError(t, err)
 		require.Equal(t, 5, pruned, "slots 100..104 are pruned")
 
 		for slot := uint64(100); slot < 105; slot++ {
-			_, found := GetConsensusState(clientStore, cdc, clienttypes.NewHeight(0, slot))
+			_, found := GetConsensusState(context.Background(), clientStore, cdc, clienttypes.NewHeight(0, slot))
 			require.False(t, found, "slot %d should be pruned", slot)
 		}
 		for slot := uint64(105); slot <= 110; slot++ {
-			_, found := GetConsensusState(clientStore, cdc, clienttypes.NewHeight(0, slot))
+			_, found := GetConsensusState(context.Background(), clientStore, cdc, clienttypes.NewHeight(0, slot))
 			require.True(t, found, "slot %d should be kept", slot)
 		}
 	})
@@ -64,20 +65,20 @@ func TestPruneConsensusStates(t *testing.T) {
 	t.Run("keepSlots zero keeps only the latest", func(t *testing.T) {
 		clientStore := storeClientWithStates(t, 100, 110)
 
-		pruned, err := PruneConsensusStates(clientStore, cdc, 0, 100)
+		pruned, err := PruneConsensusStates(context.Background(), clientStore, cdc, 0, 100)
 		require.NoError(t, err)
 		require.Equal(t, 10, pruned)
 
-		_, found := GetConsensusState(clientStore, cdc, clienttypes.NewHeight(0, 110))
+		_, found := GetConsensusState(context.Background(), clientStore, cdc, clienttypes.NewHeight(0, 110))
 		require.True(t, found, "the latest state is always kept")
-		_, found = GetConsensusState(clientStore, cdc, clienttypes.NewHeight(0, 109))
+		_, found = GetConsensusState(context.Background(), clientStore, cdc, clienttypes.NewHeight(0, 109))
 		require.False(t, found)
 	})
 
 	t.Run("window covering genesis keeps everything", func(t *testing.T) {
 		clientStore := storeClientWithStates(t, 100, 110)
 
-		pruned, err := PruneConsensusStates(clientStore, cdc, 110, 100)
+		pruned, err := PruneConsensusStates(context.Background(), clientStore, cdc, 110, 100)
 		require.NoError(t, err)
 		require.Zero(t, pruned)
 	})
@@ -85,7 +86,7 @@ func TestPruneConsensusStates(t *testing.T) {
 	t.Run("maxPrune bounds deletions per call", func(t *testing.T) {
 		clientStore := storeClientWithStates(t, 100, 110)
 
-		pruned, err := PruneConsensusStates(clientStore, cdc, 0, 3)
+		pruned, err := PruneConsensusStates(context.Background(), clientStore, cdc, 0, 3)
 		require.NoError(t, err)
 		require.Equal(t, 3, pruned)
 
@@ -93,7 +94,7 @@ func TestPruneConsensusStates(t *testing.T) {
 		// latest state survives.
 		total := pruned
 		for {
-			pruned, err = PruneConsensusStates(clientStore, cdc, 0, 3)
+			pruned, err = PruneConsensusStates(context.Background(), clientStore, cdc, 0, 3)
 			require.NoError(t, err)
 			total += pruned
 			if pruned == 0 {
@@ -101,14 +102,14 @@ func TestPruneConsensusStates(t *testing.T) {
 			}
 		}
 		require.Equal(t, 10, total)
-		_, found := GetConsensusState(clientStore, cdc, clienttypes.NewHeight(0, 110))
+		_, found := GetConsensusState(context.Background(), clientStore, cdc, clienttypes.NewHeight(0, 110))
 		require.True(t, found, "the latest state is always kept")
 	})
 
 	t.Run("non-positive maxPrune errors", func(t *testing.T) {
 		clientStore := storeClientWithStates(t, 100, 110)
 
-		_, err := PruneConsensusStates(clientStore, cdc, 5, 0)
+		_, err := PruneConsensusStates(context.Background(), clientStore, cdc, 5, 0)
 		require.ErrorIs(t, err, ErrInvalidPruning)
 	})
 
@@ -116,14 +117,14 @@ func TestPruneConsensusStates(t *testing.T) {
 		clientStore := storeClientWithStates(t, 100, 110)
 		clientStore.Set([]byte("consensusStates/garbage"), []byte("garbage"))
 
-		_, err := PruneConsensusStates(clientStore, cdc, 5, 100)
+		_, err := PruneConsensusStates(context.Background(), clientStore, cdc, 5, 100)
 		require.ErrorIs(t, err, ErrInvalidConsensusState)
 	})
 
 	t.Run("missing client state errors", func(t *testing.T) {
 		clientStore := setupClientStore(t)
 
-		_, err := PruneConsensusStates(clientStore, cdc, 5, 100)
+		_, err := PruneConsensusStates(context.Background(), clientStore, cdc, 5, 100)
 		require.Error(t, err)
 	})
 }
@@ -150,9 +151,9 @@ func TestPruneOnUpdate(t *testing.T) {
 			EpochsPerSyncCommitteePeriod: 8,
 			SyncCommitteeSize:            512,
 		}
-		setClientState(store, cdc, cs)
+		setClientState(context.Background(), store, cdc, cs)
 		for _, slot := range []uint64{staleSlot, latestSlot} {
-			setConsensusState(store, cdc, &ConsensusState{
+			setConsensusState(context.Background(), store, cdc, &ConsensusState{
 				Slot:      slot,
 				StateRoot: make([]byte, 32),
 			}, clienttypes.NewHeight(0, slot))
@@ -178,9 +179,9 @@ func TestPruneOnUpdate(t *testing.T) {
 		require.Len(t, heights, 1)
 		require.EqualValues(t, finalizedSlot, heights[0].GetRevisionHeight())
 
-		_, found := GetConsensusState(store, cdc, clienttypes.NewHeight(0, staleSlot))
+		_, found := GetConsensusState(ctx, store, cdc, clienttypes.NewHeight(0, staleSlot))
 		require.False(t, found, "the state below the window is pruned with the update")
-		_, found = GetConsensusState(store, cdc, clienttypes.NewHeight(0, finalizedSlot))
+		_, found = GetConsensusState(ctx, store, cdc, clienttypes.NewHeight(0, finalizedSlot))
 		require.True(t, found, "the new state is stored")
 	})
 
@@ -191,7 +192,7 @@ func TestPruneOnUpdate(t *testing.T) {
 		heights := cs.updateState(ctx, cdc, store, header)
 		require.Len(t, heights, 1)
 
-		_, found := GetConsensusState(store, cdc, clienttypes.NewHeight(0, staleSlot))
+		_, found := GetConsensusState(ctx, store, cdc, clienttypes.NewHeight(0, staleSlot))
 		require.True(t, found, "pruning is skipped in CheckTx")
 	})
 }

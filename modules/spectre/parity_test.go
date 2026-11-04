@@ -91,7 +91,7 @@ func (c *fixtureClient) latestSlot() uint64 {
 
 func (c *fixtureClient) consensusState(slot uint64) *ConsensusState {
 	store := c.provider.ClientStore(c.ctx, c.clientID)
-	cs, _ := GetConsensusState(store, getTestCodec(), clienttypes.NewHeight(0, slot))
+	cs, _ := GetConsensusState(c.ctx, store, getTestCodec(), clienttypes.NewHeight(0, slot))
 	return cs
 }
 

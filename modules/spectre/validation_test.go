@@ -1,6 +1,7 @@
 package spectre
 
 import (
+	"context"
 	"testing"
 	"time"
 
@@ -212,9 +213,9 @@ func TestVerifyMembershipEntryPoint(t *testing.T) {
 	clientStore := setupClientStore(t)
 	cs := runner.clientState
 	for slot, cons := range runner.consStates {
-		setConsensusState(clientStore, cdc, cons, clienttypes.NewHeight(0, slot))
+		setConsensusState(context.Background(), clientStore, cdc, cons, clienttypes.NewHeight(0, slot))
 	}
-	setClientState(clientStore, cdc, cs)
+	setClientState(context.Background(), clientStore, cdc, cs)
 
 	proofBz, err := cdc.Marshal(decodeMembershipProof(recv.ProofCommitment))
 	require.NoError(t, err)
