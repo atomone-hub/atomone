@@ -114,11 +114,16 @@ func forkVersionSlot(signatureSlot uint64) uint64 {
 }
 
 // numParticipants counts the set bits in the sync committee bitfield.
-func (sa *SyncAggregate) numParticipants() uint64 {
+// numParticipants counts the set bits of the bitvector over the first
+// committeeSize members.
+func (sa *SyncAggregate) numParticipants(committeeSize uint64) uint64 {
 	var count uint64
-	for _, b := range sa.SyncCommitteeBits {
-		for i := range 8 {
-			if b&(1<<uint(i)) != 0 {
+	for i, b := range sa.SyncCommitteeBits {
+		for j := range 8 {
+			if uint64(i*8+j) >= committeeSize {
+				return count
+			}
+			if b&(1<<uint(j)) != 0 {
 				count++
 			}
 		}
@@ -126,15 +131,11 @@ func (sa *SyncAggregate) numParticipants() uint64 {
 	return count
 }
 
-// syncCommitteeSize returns the committee size implied by the bitfield
-// length.
-func (sa *SyncAggregate) syncCommitteeSize() uint64 {
-	return uint64(len(sa.SyncCommitteeBits)) * 8
-}
-
 // hasSupermajority reports whether at least 2/3 of the sync committee signed.
-func (sa *SyncAggregate) hasSupermajority() bool {
-	return sa.numParticipants()*3 >= sa.syncCommitteeSize()*2
+// The committee size is the configured one, not the bitfield length: the
+// bitvector's padding bits are not members.
+func (sa *SyncAggregate) hasSupermajority(committeeSize uint64) bool {
+	return sa.numParticipants(committeeSize)*3 >= committeeSize*2
 }
 
 // summarize returns the compressed representation of a full sync committee.
@@ -296,25 +297,35 @@ func (cs *ClientState) validateLightClientUpdate(
 	currentSlot uint64,
 	isNextCommittee bool,
 ) error {
-	// Bound the bitfield before counting participants.
-	if expectedBitsLen := (cs.SyncCommitteeSize + 7) / 8; uint64(len(update.SyncAggregate.SyncCommitteeBits)) != expectedBitsLen {
-		return errorsmod.Wrapf(ErrInvalidSyncCommittee,
-			"bitfield length %d implies committee size %d, expected %d",
-			len(update.SyncAggregate.SyncCommitteeBits), update.SyncAggregate.syncCommitteeSize(), cs.SyncCommitteeSize)
+	if err := validateUpdateBounds(update); err != nil {
+		return err
 	}
 
-	if sa := update.SyncAggregate; sa.numParticipants() < cs.MinSyncCommitteeParticipants {
+	// Bound the bitfield before counting participants, and require the
+	// Bitvector[SYNC_COMMITTEE_SIZE] padding bits to be zero: set padding is a
+	// malformed encoding, and counting it would let fewer real signers pass
+	// the supermajority when the committee size is not a multiple of 8.
+	bits := update.SyncAggregate.SyncCommitteeBits
+	if expectedBitsLen := (cs.SyncCommitteeSize + 7) / 8; uint64(len(bits)) != expectedBitsLen {
+		return errorsmod.Wrapf(ErrInvalidSyncCommittee,
+			"bitfield length %d does not match committee size %d", len(bits), cs.SyncCommitteeSize)
+	}
+	if padding := cs.SyncCommitteeSize % 8; padding != 0 && len(bits) > 0 && bits[len(bits)-1]>>(8-padding) != 0 {
+		return errorsmod.Wrap(ErrInvalidSyncCommittee, "bitfield has set padding bits beyond the committee size")
+	}
+
+	if sa := update.SyncAggregate; sa.numParticipants(cs.SyncCommitteeSize) < cs.MinSyncCommitteeParticipants {
 		return errorsmod.Wrapf(ErrInsufficientParticipants,
-			"%d participants is below the minimum %d", sa.numParticipants(), cs.MinSyncCommitteeParticipants)
+			"%d participants is below the minimum %d", sa.numParticipants(cs.SyncCommitteeSize), cs.MinSyncCommitteeParticipants)
 	}
 
 	// Require a 2/3 supermajority for every verified update, including
 	// misbehaviour reports: two conflicting updates signed by disjoint small
 	// subsets are normal beacon chain activity, not misbehaviour.
-	if sa := update.SyncAggregate; !sa.hasSupermajority() {
+	if sa := update.SyncAggregate; !sa.hasSupermajority(cs.SyncCommitteeSize) {
 		return errorsmod.Wrapf(ErrNotEnoughSignatures,
 			"%d of %d participants is below the 2/3 supermajority",
-			sa.numParticipants(), sa.syncCommitteeSize())
+			sa.numParticipants(cs.SyncCommitteeSize), cs.SyncCommitteeSize)
 	}
 
 	if err := cs.isValidLightClientHeader(&update.AttestedHeader); err != nil {
@@ -565,9 +576,6 @@ var domainTypeSyncCommittee = [4]byte{0x07, 0x00, 0x00, 0x00}
 // verifyHeader verifies a Header client message against the stored
 // consensus state at its trusted slot.
 func (cs *ClientState) verifyHeader(consState *ConsensusState, currentTimestampSeconds uint64, header *Header) error {
-	if err := validateUpdateBounds(&header.ConsensusUpdate); err != nil {
-		return err
-	}
 	// Rejects a Gloas-format finalized header whose execution header is missing
 	// or does not hash to the proven block hash, before any signature work.
 	if _, err := finalizedExecutionSummary(header); err != nil {
@@ -608,19 +616,32 @@ func (cs *ClientState) verifyHeader(consState *ConsensusState, currentTimestampS
 	return nil
 }
 
-// validateUpdateBounds enforces variable-size limits before any hashing or
-// BLS work.
+// validateUpdateBounds enforces the byte lengths of every fixed-size field
+// before any hashing or BLS work. The SSZ helpers pad or truncate their input
+// to the chunk size, so a field one byte longer than its spec length hashes
+// like the honest encoding and passes every branch check, while raw uses of
+// the field (the stored state root, the misbehaviour conflict comparison)
+// still see the longer value: that combination stores an unprovable
+// consensus state and forges conflicts out of a single honest signature.
 func validateUpdateBounds(update *LightClientUpdate) error {
-	const (
-		maxExtraDataBytes = 32
-		logsBloomBytes    = 256
-	)
-	for _, exec := range []*ExecutionPayloadHeader{
-		update.AttestedHeader.Execution,
-		update.FinalizedHeader.Execution,
-	} {
+	const maxExtraDataBytes = 32
+	for _, header := range []*LightClientHeader{&update.AttestedHeader, &update.FinalizedHeader} {
+		for _, root := range []struct {
+			name  string
+			value []byte
+		}{
+			{"beacon parent root", header.Beacon.ParentRoot},
+			{"beacon state root", header.Beacon.StateRoot},
+			{"beacon body root", header.Beacon.BodyRoot},
+		} {
+			if len(root.value) != 32 {
+				return errorsmod.Wrapf(ErrInvalidHeader, "%s is %d bytes, expected 32", root.name, len(root.value))
+			}
+		}
+
 		// A Gloas-format header carries no execution payload header, so there
-		// is nothing to bound.
+		// are no execution fields to check.
+		exec := header.Execution
 		if exec == nil {
 			continue
 		}
@@ -628,11 +649,26 @@ func validateUpdateBounds(update *LightClientUpdate) error {
 			return errorsmod.Wrapf(ErrInvalidHeader,
 				"execution payload extra_data is %d bytes, maximum %d", len(exec.ExtraData), maxExtraDataBytes)
 		}
-		// logs_bloom is the fixed 256-byte bloom filter of the spec; any other
-		// length is malformed and would be hashed at full length.
-		if len(exec.LogsBloom) != logsBloomBytes {
-			return errorsmod.Wrapf(ErrInvalidHeader,
-				"execution payload logs_bloom is %d bytes, expected %d", len(exec.LogsBloom), logsBloomBytes)
+		for _, field := range []struct {
+			name  string
+			value []byte
+			want  int
+		}{
+			{"parent_hash", exec.ParentHash, 32},
+			{"fee_recipient", exec.FeeRecipient, 20},
+			{"state_root", exec.StateRoot, 32},
+			{"receipts_root", exec.ReceiptsRoot, 32},
+			{"logs_bloom", exec.LogsBloom, 256},
+			{"prev_randao", exec.PrevRandao, 32},
+			{"base_fee_per_gas", exec.BaseFeePerGas, 32},
+			{"block_hash", exec.BlockHash, 32},
+			{"transactions_root", exec.TransactionsRoot, 32},
+			{"withdrawals_root", exec.WithdrawalsRoot, 32},
+		} {
+			if len(field.value) != field.want {
+				return errorsmod.Wrapf(ErrInvalidHeader,
+					"execution payload %s is %d bytes, expected %d", field.name, len(field.value), field.want)
+			}
 		}
 	}
 	return nil

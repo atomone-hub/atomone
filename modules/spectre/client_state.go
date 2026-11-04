@@ -231,6 +231,13 @@ func (cs *ClientState) checkForMisbehaviour(clientMsg exported.ClientMessage) bo
 // against the consensus state at the client's latest slot; historical
 // updates are not supported.
 //
+// A Misbehaviour is not applied here: the 02-client keeper only reaches this
+// with one after CheckForMisbehaviour reported it, which freezes the client
+// through UpdateStateOnMisbehaviour instead. But the RedundantRelayDecorator
+// calls UpdateState during CheckTx for every top-level MsgUpdateClient with
+// misbehaviour checks omitted, so a non-header must return no heights rather
+// than panic, like the tendermint client.
+//
 // The panics below are invariant guards: updateConsensusState fails only on
 // trusted/latest inconsistencies that verifyHeader rules out for verified
 // headers (a nil next sync committee exists only in the client's initial
@@ -244,7 +251,8 @@ func (cs *ClientState) updateState(
 ) []exported.Height {
 	header, ok := clientMsg.(*Header)
 	if !ok {
-		panic(errorsmod.Wrapf(ibcerrors.ErrInvalidType, "expected type %T, got %T", &Header{}, clientMsg))
+		// clientMsg is a Misbehaviour, no update necessary
+		return []exported.Height{}
 	}
 
 	// The header was verified against its trusted slot and is applied on top of
