@@ -160,9 +160,33 @@ func (l LightClientModule) TimestampAtHeight(
 	return clientState.GetTimestampAtHeight(clientStore, l.cdc, height)
 }
 
-// RecoverClient is not supported by the spectre light client.
+// RecoverClient recovers a frozen subject client from an active substitute
+// client, keeping the subject's client identifier. The 02-client keeper only
+// allows it through a governance proposal, and has already verified that the
+// subject is not active, the substitute is active, and the substitute is
+// further along the chain.
 func (l LightClientModule) RecoverClient(ctx sdk.Context, clientID, substituteClientID string) error {
-	return errorsmod.Wrap(clienttypes.ErrInvalidClient, "client recovery is not supported by the spectre light client")
+	substituteClientType, _, err := clienttypes.ParseClientIdentifier(substituteClientID)
+	if err != nil {
+		return err
+	}
+	if substituteClientType != ModuleName {
+		return errorsmod.Wrapf(clienttypes.ErrInvalidClientType, "expected: %s, got: %s", ModuleName, substituteClientType)
+	}
+
+	clientStore := l.storeProvider.ClientStore(ctx, clientID)
+	clientState, found := getClientState(clientStore, l.cdc)
+	if !found {
+		return errorsmod.Wrap(clienttypes.ErrClientNotFound, clientID)
+	}
+
+	substituteClientStore := l.storeProvider.ClientStore(ctx, substituteClientID)
+	substituteClientState, found := getClientState(substituteClientStore, l.cdc)
+	if !found {
+		return errorsmod.Wrap(clienttypes.ErrClientNotFound, substituteClientID)
+	}
+
+	return clientState.recoverClient(l.cdc, clientStore, substituteClientStore, substituteClientState)
 }
 
 // VerifyUpgradeAndUpdateState is not supported: Ethereum hard forks are
