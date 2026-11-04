@@ -110,7 +110,7 @@ func NewAppModule(cdc codec.BinaryCodec, lightClientModule LightClientModule, cl
 // slower (one per Ethereum finalization) than the batch limit.
 const (
 	pruneIntervalBlocks int64 = 100
-	pruneBatchLimit           = 1000
+	pruneBatchLimit     int   = 1000
 )
 
 // EndBlock prunes spectre consensus states below the pruning window of
