@@ -399,7 +399,7 @@ func NewAppKeeper(
 
 	spectreLightClientModule := spectre.NewLightClientModule(appCodec, storeProvider)
 	appKeepers.IBCKeeper.ClientKeeper.AddRoute(spectre.ModuleName, &spectreLightClientModule)
-	appKeepers.SpectreModule = spectre.NewAppModule(appCodec, spectreLightClientModule, appKeepers.IBCKeeper.ClientKeeper)
+	appKeepers.SpectreModule = spectre.NewAppModule(spectreLightClientModule)
 
 	return appKeepers
 }

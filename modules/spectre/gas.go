@@ -4,9 +4,9 @@ import (
 	"math"
 )
 
-// Gas metering of client message verification. The gas a MsgUpdateClient
-// pays by message size does not cover the verification work: one committee
-// verification is SyncCommitteeSize BLS public key parses with subgroup
+// Gas metering of client message verification. The gas a MsgUpdateClient pays
+// by message size does not cover the verification work: one committee
+// verification is up to SyncCommitteeSize BLS public key parses with subgroup
 // checks, an aggregation, a hash-to-G2 and a pairing check, paid on every
 // CheckTx, DeliverTx and mempool recheck. Unmetered, sustained update spam
 // buys seconds of block time per block chain-wide. The cost is therefore
@@ -14,11 +14,7 @@ import (
 // committee size.
 //
 // The charge counts full passes over the committee: a Header performs one
-// committee aggregation and one signature verification, a Misbehaviour one
-// aggregation and two signature verifications. The aggregation is cached by
-// pubkeys hash, but the charge must not depend on node-local cache state:
-// an attacker with self-created clients can sustain cache misses, and
-// charging the uncached work is what bounds that.
+// signature verification pass, a Misbehaviour two (one per update).
 const (
 	// GasCostBlsPass is the fixed part charged per full pass over the sync
 	// committee: SSZ hashing of the headers, the merkle branch walks,
@@ -31,17 +27,15 @@ const (
 )
 
 // GasCostHeaderVerification returns the gas charged before verifying a
-// Header: one committee aggregation pass and one signature verification
-// pass.
+// Header: one signature verification pass.
 func (cs *ClientState) GasCostHeaderVerification() uint64 {
-	return cs.gasCostVerification(2)
+	return cs.gasCostVerification(1)
 }
 
 // GasCostMisbehaviourVerification returns the gas charged before verifying a
-// Misbehaviour: one committee aggregation pass and two signature
-// verification passes.
+// Misbehaviour: one signature verification pass per update.
 func (cs *ClientState) GasCostMisbehaviourVerification() uint64 {
-	return cs.gasCostVerification(3)
+	return cs.gasCostVerification(2)
 }
 
 // gasCostVerification computes passes*(GasCostBlsPass +

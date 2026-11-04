@@ -24,8 +24,8 @@ func TestGasCostFormula(t *testing.T) {
 	for _, size := range []uint64{32, 512} {
 		cs := &ClientState{SyncCommitteeSize: size}
 		perPass := GasCostBlsPass + GasCostPerPubkey*size
-		require.Equal(t, 2*perPass, cs.GasCostHeaderVerification(), "header: one aggregation, one verification, size %d", size)
-		require.Equal(t, 3*perPass, cs.GasCostMisbehaviourVerification(), "misbehaviour: one aggregation, two verifications, size %d", size)
+		require.Equal(t, perPass, cs.GasCostHeaderVerification(), "header: one verification pass, size %d", size)
+		require.Equal(t, 2*perPass, cs.GasCostMisbehaviourVerification(), "misbehaviour: one verification pass per update, size %d", size)
 	}
 
 	// An absurd committee size saturates instead of wrapping to cheap gas.

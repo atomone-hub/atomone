@@ -229,7 +229,10 @@ func (cs *ClientState) checkForMisbehaviour(clientMsg exported.ClientMessage) bo
 // updateState applies a verified header, storing the new consensus state and
 // updating the client state when the finalized slot advanced. Updates apply
 // against the consensus state at the client's latest slot; historical
-// updates are not supported.
+// updates are not supported. Consensus states below the pruning window are
+// pruned here, inside the relayer's metered transaction, like the tendermint
+// client; a client that stops updating stops growing, so nothing needs a
+// per-block sweeper.
 //
 // A Misbehaviour is not applied here: the 02-client keeper only reaches this
 // with one after CheckForMisbehaviour reported it, which freezes the client
@@ -245,6 +248,7 @@ func (cs *ClientState) checkForMisbehaviour(clientMsg exported.ClientMessage) bo
 // period). They must never fire; if one does, the verification invariants
 // were broken by a code change.
 func (cs *ClientState) updateState(
+	ctx sdk.Context,
 	cdc codec.BinaryCodec,
 	clientStore storetypes.KVStore,
 	clientMsg exported.ClientMessage,
@@ -278,6 +282,16 @@ func (cs *ClientState) updateState(
 	setConsensusState(clientStore, cdc, newConsState, height)
 	if newClientState != nil {
 		setClientState(clientStore, cdc, newClientState)
+	}
+
+	// Prune below the window, like the tendermint client: skipped in CheckTx
+	// and ReCheckTx for performance, but not in simulation, so gas estimation
+	// sees the pruning cost. The store operations are gas-metered through the
+	// provider, so the scan and deletions are paid for by the update tx.
+	if !ctx.IsCheckTx() && !ctx.IsReCheckTx() || ctx.ExecMode() == sdk.ExecModeSimulate {
+		if _, err := PruneConsensusStates(clientStore, cdc, cs.PruneKeepSlots(), pruneBatchLimit); err != nil {
+			ctx.Logger().Error("failed to prune spectre consensus states", "error", err)
+		}
 	}
 	return []exported.Height{height}
 }

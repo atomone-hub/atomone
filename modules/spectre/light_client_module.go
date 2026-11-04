@@ -85,7 +85,7 @@ func (l LightClientModule) UpdateState(ctx sdk.Context, clientID string, clientM
 	if !found {
 		panic(errorsmod.Wrap(clienttypes.ErrClientNotFound, clientID))
 	}
-	return clientState.updateState(l.cdc, clientStore, clientMsg)
+	return clientState.updateState(ctx, l.cdc, clientStore, clientMsg)
 }
 
 // VerifyMembership verifies a storage membership proof against the Ethereum

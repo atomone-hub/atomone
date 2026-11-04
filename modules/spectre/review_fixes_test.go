@@ -115,7 +115,7 @@ func TestUpdateStateWithMisbehaviourReturnsNoHeights(t *testing.T) {
 	mis, _ := conflictingEvidence(t, c)
 
 	store := c.provider.ClientStore(c.ctx, c.clientID)
-	heights := c.cs.updateState(getTestCodec(), store, mis)
+	heights := c.cs.updateState(c.ctx, getTestCodec(), store, mis)
 	require.Empty(t, heights)
 	require.Equal(t, exported.Active, c.module.Status(c.ctx, c.clientID),
 		"a misbehaviour passed to updateState must not freeze the client")

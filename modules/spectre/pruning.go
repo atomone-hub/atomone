@@ -22,6 +22,11 @@ import (
 // of any application routed over spectre clients.
 const PruneKeepDuration = 7 * 24 * time.Hour
 
+// pruneBatchLimit bounds the deletions of one pruning run, so a single
+// update transaction does bounded extra work no matter how far behind
+// pruning is.
+const pruneBatchLimit = 1000
+
 // PruneKeepSlots returns the pruning window in slots, derived from the
 // client's slot duration. A zero SecondsPerSlot yields a zero window: only
 // the latest state is kept.
@@ -37,6 +42,11 @@ func (cs *ClientState) PruneKeepSlots() uint64 {
 // maxPrune per call so a single invocation does bounded work. The consensus
 // state at the latest slot is always kept. Slots are read from the store
 // keys, so consensus states are never unmarshaled.
+//
+// The keys are decimal-height strings, so iteration is lexicographic rather
+// than by slot and the scan cannot stop at the cutoff: it visits every state
+// the client still holds, which the pruning window bounds, and deletes at
+// most maxPrune of them.
 //
 // keepSlots should come from PruneKeepSlots: membership verification rejects
 // heights below that window, so states below it are unreachable by proofs.

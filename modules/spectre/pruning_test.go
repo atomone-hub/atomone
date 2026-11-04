@@ -7,7 +7,12 @@ import (
 
 	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
 
+	"cosmossdk.io/log"
 	storetypes "cosmossdk.io/store/types"
+
+	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // storeClientWithStates initializes a client at latestSlot with a consensus
@@ -120,6 +125,74 @@ func TestPruneConsensusStates(t *testing.T) {
 
 		_, err := PruneConsensusStates(clientStore, cdc, 5, 100)
 		require.Error(t, err)
+	})
+}
+
+// TestPruneOnUpdate verifies pruning runs as part of applying a header
+// update, and is skipped in CheckTx, like the tendermint client.
+func TestPruneOnUpdate(t *testing.T) {
+	cdc := getTestCodec()
+	const (
+		staleSlot     = 5               // below the window of the advanced latest slot
+		latestSlot    = 605000          // window of 604800 slots: cutoff lands at 1020
+		finalizedSlot = latestSlot + 10 // same sync period as latestSlot
+	)
+
+	// A client whose application path needs no signature verification: the
+	// header is hand-crafted, and updateState only applies it.
+	newStore := func(t *testing.T) (storetypes.KVStore, *ClientState) {
+		t.Helper()
+		store := setupClientStore(t)
+		cs := &ClientState{
+			LatestSlot:                   latestSlot,
+			SecondsPerSlot:               12,
+			SlotsPerEpoch:                32,
+			EpochsPerSyncCommitteePeriod: 8,
+			SyncCommitteeSize:            512,
+		}
+		setClientState(store, cdc, cs)
+		for _, slot := range []uint64{staleSlot, latestSlot} {
+			setConsensusState(store, cdc, &ConsensusState{
+				Slot:      slot,
+				StateRoot: make([]byte, 32),
+			}, clienttypes.NewHeight(0, slot))
+		}
+		return store, cs
+	}
+
+	header := &Header{
+		TrustedSlot: latestSlot,
+		ConsensusUpdate: LightClientUpdate{
+			FinalizedHeader: LightClientHeader{
+				Beacon:    BeaconBlockHeader{Slot: finalizedSlot},
+				Execution: &ExecutionPayloadHeader{StateRoot: make([]byte, 32)},
+			},
+		},
+	}
+
+	t.Run("prunes below the window", func(t *testing.T) {
+		store, cs := newStore(t)
+		ctx := sdk.NewContext(nil, cmtproto.Header{}, false, log.NewNopLogger())
+
+		heights := cs.updateState(ctx, cdc, store, header)
+		require.Len(t, heights, 1)
+		require.EqualValues(t, finalizedSlot, heights[0].GetRevisionHeight())
+
+		_, found := GetConsensusState(store, cdc, clienttypes.NewHeight(0, staleSlot))
+		require.False(t, found, "the state below the window is pruned with the update")
+		_, found = GetConsensusState(store, cdc, clienttypes.NewHeight(0, finalizedSlot))
+		require.True(t, found, "the new state is stored")
+	})
+
+	t.Run("skips pruning in CheckTx", func(t *testing.T) {
+		store, cs := newStore(t)
+		ctx := sdk.NewContext(nil, cmtproto.Header{}, true, log.NewNopLogger())
+
+		heights := cs.updateState(ctx, cdc, store, header)
+		require.Len(t, heights, 1)
+
+		_, found := GetConsensusState(store, cdc, clienttypes.NewHeight(0, staleSlot))
+		require.True(t, found, "pruning is skipped in CheckTx")
 	})
 }
 

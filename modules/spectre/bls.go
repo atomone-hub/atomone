@@ -43,25 +43,6 @@ func parseSignature(sig []byte) (bls12381.G2Affine, error) {
 	return s, nil
 }
 
-// aggregatePubkeys sums the compressed public keys into their aggregate
-// public key, returning the serialized aggregate.
-func aggregatePubkeys(pubkeys [][]byte) ([blsPubkeySize]byte, error) {
-	var agg bls12381.G1Affine
-	for i, pk := range pubkeys {
-		p, err := parsePubkey(pk)
-		if err != nil {
-			return [blsPubkeySize]byte{}, errorsmod.Wrapf(err, "pubkey at index %d", i)
-		}
-		var sum bls12381.G1Affine
-		sum.Add(&agg, &p)
-		agg.Set(&sum)
-	}
-	if len(pubkeys) == 0 {
-		agg.SetInfinity()
-	}
-	return agg.Bytes(), nil
-}
-
 // fastAggregateVerify verifies that the signature is a valid aggregate
 // signature by the public keys over the 32-byte message, using the
 // proof-of-possession ciphersuite. With pubkeys and the message hash in G1/G2

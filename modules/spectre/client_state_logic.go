@@ -197,19 +197,10 @@ func trustedSyncCommittee(cs *ClientState, consState *ConsensusState, committee 
 		return nil, errorsmod.Wrap(ErrSyncCommitteeMismatch, "provided committee does not match stored current sync committee")
 	}
 
-	// The pubkeys hash binds the exact keys (lengths are validated above),
-	// so the aggregate is served from the committee cache after the first
-	// aggregation of the period.
-	agg, err := aggregatedCommitteePubkey(summary.PubkeysHash, committee.Pubkeys)
-	if err != nil {
-		return nil, err
-	}
-	var claimed [48]byte
-	copy(claimed[:], committee.AggregatePubkey)
-	if agg != claimed {
-		return nil, errorsmod.Wrap(ErrSyncCommitteeMismatch, "aggregate pubkey does not match the sum of pubkeys")
-	}
-
+	// The summary comparison binds the pubkeys hash and the aggregate
+	// pubkey to the stored committee, which signature verification already
+	// checked when it was stored; the aggregate is not re-derived. Only the
+	// participants' keys are ever parsed, in verifyUpdateSignature.
 	return committee, nil
 }
 
