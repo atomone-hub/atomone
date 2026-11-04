@@ -54,15 +54,19 @@ They are to be interpreted as described in [RFC 2119](https://datatracker.ietf.o
 
 ### Accepted
 
-- n/a
+- [ADR 001: Extension of Voting Period for Late Quorum in Governance Proposals](adr-001-late-quorum-extension.md)
+- [ADR 002: The Photon token](adr-002-photon-token.md)
+- [ADR 003: Governance Proposal Deposit Auto-Throttler](adr-003-governance-proposal-deposit-auto-throttler.md)
+- [ADR 005: Dynamic Quorum](adr-005-dynamic-quorum.md)
+- [ADR 006: Governors System](adr-006-governors.md)
 
 ### Proposed
 
-- n/a
+- [ADR 007: Time-based minting](adr-007-time-based-minting.md)
 
 ### Draft
 
-- n/a
+- [ADR 004: Nakamoto Bonus](adr-004-nakamoto-bonus.md)
 
 ### Rejected
 
