@@ -94,15 +94,21 @@ teardown() {
     kill -TERM "$(cat "$WORK/relayer.pid")" 2>/dev/null || true
   fi
   if [ -f "$WORK/atomone-script.pid" ]; then
-    kill -TERM "$(cat "$WORK/atomone-script.pid")" 2>/dev/null || true
+    # Kill the whole process group of the node launcher: the launcher script
+    # spawns atomoned as a child, and killing only the launcher leaves the
+    # node running. The group kill replaces a pkill on 'atomoned start',
+    # which would also stop any other atomoned the developer is running.
+    kill -TERM -- -"$(cat "$WORK/atomone-script.pid")" 2>/dev/null || \
+      kill -TERM "$(cat "$WORK/atomone-script.pid")" 2>/dev/null || true
   fi
-  pkill -TERM -f 'atomoned start' 2>/dev/null || true
   kurtosis enclave rm -f "$ENCLAVE" >/dev/null 2>&1 || true
   # Keep the final relayer config with the run logs; redact the devnet keys.
   if [ -d "$SPECTRE_DIR/relayer" ]; then
     cp -f "$SPECTRE_DIR/relayer/config.json" "$WORK/config.json.final" 2>/dev/null || true
   fi
-  sed -i 's/COSMOS_PRIVATE_KEY=.*/COSMOS_PRIVATE_KEY=<redacted>/' "$WORK/atomone-relayer.env" 2>/dev/null || true
+  # sed -i without a backup suffix is GNU-only; BSD sed (macOS) treats the
+  # next argument as the suffix, so use a portable .bak and remove it.
+  sed -i.bak 's/COSMOS_PRIVATE_KEY=.*/COSMOS_PRIVATE_KEY=<redacted>/' "$WORK/atomone-relayer.env" 2>/dev/null && rm -f "$WORK/atomone-relayer.env.bak"
   if [ "$rc" -ne 0 ]; then
     log "run failed (exit $rc); log tails:"
     for f in relayer.log atomone-node.log deploy-eth.log eth-node.log; do
@@ -204,7 +210,9 @@ start_atomone() {
   : > "$RELAYER_ENV_FILE"
   (
     cd "$SPECTRE_DIR"
-    nohup ./scripts/local/run_atomone_node.sh > "$WORK/atomone-node.log" 2>&1 &
+    # setsid gives the launcher its own process group so teardown can kill
+    # the launcher and the node it spawns without touching other processes.
+    setsid nohup ./scripts/local/run_atomone_node.sh > "$WORK/atomone-node.log" 2>&1 &
     echo $! > "$WORK/atomone-script.pid"
   )
   poll 240 3 "atomone height >= 3" check_atomone_height

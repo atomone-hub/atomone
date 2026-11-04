@@ -314,6 +314,16 @@ func (app *AtomOneApp) BasicModuleManager() module.BasicManager {
 	return app.bmm
 }
 
+// ModuleManager returns the module Manager of the app.
+func (app *AtomOneApp) ModuleManager() *module.Manager {
+	return app.mm
+}
+
+// Configurator returns the module configurator of the app.
+func (app *AtomOneApp) Configurator() module.Configurator {
+	return app.configurator
+}
+
 // PreBlocker application updates every pre block
 func (app *AtomOneApp) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) (*sdk.ResponsePreBlock, error) {
 	return app.mm.PreBlock(ctx)

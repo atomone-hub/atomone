@@ -14,7 +14,7 @@ on:
   pull_request:
     paths:
       - "modules/spectre/**"
-      - "proto/atomone/spectre/**"
+      - "proto/ibc/lightclients/spectre/**"
       - "tests/e2e/spectre/**"
       - ".github/workflows/spectre-e2e.yml"
 

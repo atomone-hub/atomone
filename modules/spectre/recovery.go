@@ -1,7 +1,7 @@
 package spectre
 
 import (
-	"reflect"
+	"bytes"
 
 	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
 	host "github.com/cosmos/ibc-go/v10/modules/core/24-host"
@@ -12,12 +12,12 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 )
 
-// recoverClient copies the verified state of an active substitute client into
-// the frozen subject client's store, unfreezing it under its own identifier.
-// Governance authorizes the recovery through MsgRecoverClient; this function
-// enforces that the substitute tracks the same Ethereum bridge, so only the
-// progress (latest slot, execution block number, consensus states) is taken
-// over, never the chain parameters.
+// recoverClient replaces the frozen subject client's state with the active
+// substitute's, unfreezing it under its own identifier. Governance
+// authorizes the recovery through MsgRecoverClient; this function enforces
+// that the substitute tracks the same Ethereum bridge, so only the progress
+// (latest slot, execution block number, consensus states) is taken over,
+// never the chain parameters.
 func (cs *ClientState) recoverClient(
 	cdc codec.BinaryCodec,
 	subjectStore, substituteStore storetypes.KVStore,
@@ -36,17 +36,24 @@ func (cs *ClientState) recoverClient(
 
 	// The substitute's latest state must exist; recovery without it would
 	// leave the client unable to verify its next update.
-	if _, found := GetConsensusState(substituteStore, cdc, substitute.GetLatestHeight()); !found {
+	latest := substitute.GetLatestHeight()
+	if _, found := GetConsensusState(substituteStore, cdc, latest); !found {
 		return errorsmod.Wrap(clienttypes.ErrConsensusStateNotFound, "substitute has no consensus state at its latest slot")
 	}
 
-	// Copy the substitute's consensus states over the subject's. The
-	// consensus state at a given finalized slot is a function of Ethereum
-	// history, so overlapping slots carry identical values; the subject's own
-	// states are kept, which preserves in-window proof heights from before
-	// the freeze.
+	// The subject's own consensus states are dropped, not kept: the freeze
+	// means two thirds of a committee signed conflicting roots, so the
+	// subject's pre-freeze states may come from the conflicting branch and
+	// would stay provable for the pruning window after recovery. Only the
+	// substitute's states, verified by a healthy client, remain.
 	prefix := []byte(host.KeyConsensusStatePrefix + "/")
-	iterator := substituteStore.Iterator(prefix, storetypes.PrefixEndBytes(prefix))
+	iterator := subjectStore.Iterator(prefix, storetypes.PrefixEndBytes(prefix))
+	for ; iterator.Valid(); iterator.Next() {
+		subjectStore.Delete(iterator.Key())
+	}
+	iterator.Close()
+
+	iterator = substituteStore.Iterator(prefix, storetypes.PrefixEndBytes(prefix))
 	for ; iterator.Valid(); iterator.Next() {
 		subjectStore.Set(iterator.Key(), iterator.Value())
 	}
@@ -64,12 +71,29 @@ func (cs *ClientState) recoverClient(
 // chain and bridge: every field except the mutable progress (frozen flag,
 // latest slot, latest execution block number) must be equal.
 func isMatchingClientState(subject, substitute *ClientState) bool {
-	normalize := func(cs *ClientState) ClientState {
-		out := *cs
-		out.Frozen = false
-		out.LatestSlot = 0
-		out.LatestExecutionBlockNumber = 0
-		return out
+	forksEqual := func(a, b *ForkParameters) bool {
+		forkEqual := func(a, b Fork) bool {
+			return a.Epoch == b.Epoch && bytes.Equal(a.Version, b.Version)
+		}
+		return bytes.Equal(a.GenesisForkVersion, b.GenesisForkVersion) &&
+			forkEqual(a.Altair, b.Altair) &&
+			forkEqual(a.Bellatrix, b.Bellatrix) &&
+			forkEqual(a.Capella, b.Capella) &&
+			forkEqual(a.Deneb, b.Deneb) &&
+			forkEqual(a.Electra, b.Electra) &&
+			forkEqual(a.Fulu, b.Fulu) &&
+			forkEqual(a.Gloas, b.Gloas)
 	}
-	return reflect.DeepEqual(normalize(subject), normalize(substitute))
+
+	return subject.ChainId == substitute.ChainId &&
+		subject.GenesisSlot == substitute.GenesisSlot &&
+		bytes.Equal(subject.GenesisValidatorsRoot, substitute.GenesisValidatorsRoot) &&
+		subject.SecondsPerSlot == substitute.SecondsPerSlot &&
+		subject.SlotsPerEpoch == substitute.SlotsPerEpoch &&
+		subject.EpochsPerSyncCommitteePeriod == substitute.EpochsPerSyncCommitteePeriod &&
+		subject.SyncCommitteeSize == substitute.SyncCommitteeSize &&
+		subject.MinSyncCommitteeParticipants == substitute.MinSyncCommitteeParticipants &&
+		bytes.Equal(subject.IbcContractAddress, substitute.IbcContractAddress) &&
+		bytes.Equal(subject.IbcCommitmentSlot, substitute.IbcCommitmentSlot) &&
+		forksEqual(&subject.ForkParameters, &substitute.ForkParameters)
 }

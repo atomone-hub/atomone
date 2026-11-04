@@ -1,13 +1,32 @@
 package spectre
 
 import (
+	"bytes"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 
 	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
 	"github.com/cosmos/ibc-go/v10/modules/core/exported"
+
+	storetypes "cosmossdk.io/store/types"
 )
+
+// consensusStoresEqual reports whether two client stores hold the same
+// consensus states.
+func consensusStoresEqual(t *testing.T, a, b storetypes.KVStore) bool {
+	t.Helper()
+	collect := func(store storetypes.KVStore) []byte {
+		var parts [][]byte
+		iterator := store.Iterator([]byte("consensusStates/"), storetypes.PrefixEndBytes([]byte("consensusStates/")))
+		for ; iterator.Valid(); iterator.Next() {
+			parts = append(parts, iterator.Key(), iterator.Value())
+		}
+		iterator.Close()
+		return bytes.Join(parts, []byte("\n"))
+	}
+	return bytes.Equal(collect(a), collect(b))
+}
 
 // bootstrapBytes returns the marshaled initial client and consensus states of
 // the fixture, optionally mutated, for initializing a second client on the
@@ -64,7 +83,6 @@ func TestRecoverClient(t *testing.T) {
 	freezeClient(t, c, c.clientID)
 	require.Equal(t, exported.Frozen, c.module.Status(c.ctx, c.clientID))
 
-	subjectOldSlot := c.headers[0].ConsensusUpdate.FinalizedHeader.Beacon.Slot
 	require.NoError(t, c.module.RecoverClient(c.ctx, c.clientID, substituteID))
 
 	// The subject is active again, at the substitute's latest slot, under its
@@ -77,12 +95,11 @@ func TestRecoverClient(t *testing.T) {
 	_, found := GetConsensusState(subjectStore, cdc, clienttypes.NewHeight(0, substituteLatest))
 	require.True(t, found, "the substitute's latest consensus state is copied")
 
-	// The subject's own states are kept: in-window proof heights from before
-	// the freeze remain verifiable.
-	_, found = GetConsensusState(subjectStore, cdc, clienttypes.NewHeight(0, subjectOldSlot))
-	require.True(t, found, "the subject's pre-freeze consensus state is kept")
-	_, found = GetConsensusState(substituteStore, cdc, clienttypes.NewHeight(0, subjectOldSlot))
-	require.True(t, found)
+	// Every state in the subject's store now comes from the substitute: the
+	// subject's own pre-freeze states are dropped, and only the substitute's
+	// (replayed through a healthy client) remain, even where slots overlap.
+	require.True(t, consensusStoresEqual(t, subjectStore, substituteStore),
+		"the subject's consensus states are exactly the substitute's")
 
 	// The recovered client is no longer frozen at verification: a stale
 	// anchor is rejected for the anchor, not for the freeze.

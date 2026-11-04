@@ -2,17 +2,14 @@ package v5
 
 import (
 	"context"
-	"fmt"
-
-	ibckeeper "github.com/cosmos/ibc-go/v10/modules/core/keeper"
 
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
 	"github.com/atomone-hub/atomone/app/keepers"
+	"github.com/atomone-hub/atomone/app/upgrades"
 	"github.com/atomone-hub/atomone/modules/spectre"
 )
 
@@ -30,28 +27,10 @@ func CreateUpgradeHandler(
 			return vm, err
 		}
 
-		if err := AddSpectreToIBCAllowedClients(ctx, keepers.IBCKeeper); err != nil {
+		if err := upgrades.AppendAllowedClient(ctx, keepers.IBCKeeper, spectre.ModuleName); err != nil {
 			return vm, err
 		}
 
 		return vm, nil
 	}
-}
-
-// AddSpectreToIBCAllowedClients appends the spectre light client type to the
-// IBC 02-client AllowedClients param so spectre clients can be created. It is
-// a no-op when spectre is already allowed, including via the allow-all
-// wildcard.
-func AddSpectreToIBCAllowedClients(ctx context.Context, ibcKeeper *ibckeeper.Keeper) error {
-	sdkCtx := sdk.UnwrapSDKContext(ctx)
-	params := ibcKeeper.ClientKeeper.GetParams(sdkCtx)
-	if params.IsAllowedClient(spectre.ModuleName) {
-		return nil
-	}
-	params.AllowedClients = append(params.AllowedClients, spectre.ModuleName)
-	if err := params.Validate(); err != nil {
-		return fmt.Errorf("failed to validate ibc client params: %w", err)
-	}
-	ibcKeeper.ClientKeeper.SetParams(sdkCtx, params)
-	return nil
 }
