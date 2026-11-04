@@ -46,11 +46,11 @@ func TestLruCacheBehavior(t *testing.T) {
 func TestLruCacheConcurrentAccess(t *testing.T) {
 	c := newLruCache(8)
 	var wg sync.WaitGroup
-	for i := 0; i < 8; i++ {
+	for i := range 8 {
 		wg.Add(1)
 		go func(i int) {
 			defer wg.Done()
-			for j := 0; j < 200; j++ {
+			for j := range 200 {
 				c.put([32]byte{byte(i)}, [blsPubkeySize]byte{byte(j)})
 				c.get([32]byte{byte(i)})
 				c.get([32]byte{byte(i + 100)})
