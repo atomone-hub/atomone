@@ -2,6 +2,7 @@ package spectre
 
 import (
 	"bytes"
+	"context"
 
 	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
 	host "github.com/cosmos/ibc-go/v10/modules/core/24-host"
@@ -19,6 +20,7 @@ import (
 // (latest slot, execution block number, consensus states) is taken over,
 // never the chain parameters.
 func (cs *ClientState) recoverClient(
+	ctx context.Context,
 	cdc codec.BinaryCodec,
 	subjectStore, substituteStore storetypes.KVStore,
 	substitute *ClientState,
@@ -37,7 +39,7 @@ func (cs *ClientState) recoverClient(
 	// The substitute's latest state must exist; recovery without it would
 	// leave the client unable to verify its next update.
 	latest := substitute.GetLatestHeight()
-	if _, found := GetConsensusState(substituteStore, cdc, latest); !found {
+	if _, found := GetConsensusState(ctx, substituteStore, cdc, latest); !found {
 		return errorsmod.Wrap(clienttypes.ErrConsensusStateNotFound, "substitute has no consensus state at its latest slot")
 	}
 
@@ -45,25 +47,37 @@ func (cs *ClientState) recoverClient(
 	// means two thirds of a committee signed conflicting roots, so the
 	// subject's pre-freeze states may come from the conflicting branch and
 	// would stay provable for the pruning window after recovery. Only the
-	// substitute's states, verified by a healthy client, remain.
+	// substitute's states, verified by a healthy client, remain. Keys are
+	// collected before deleting: the KVStore contract forbids writes within
+	// the domain of an open iterator.
 	prefix := []byte(host.KeyConsensusStatePrefix + "/")
+	var subjectKeys [][]byte
 	iterator := subjectStore.Iterator(prefix, storetypes.PrefixEndBytes(prefix))
 	for ; iterator.Valid(); iterator.Next() {
-		subjectStore.Delete(iterator.Key())
+		subjectKeys = append(subjectKeys, iterator.Key())
 	}
 	iterator.Close()
+	for _, key := range subjectKeys {
+		subjectStore.Delete(key)
+	}
 
+	var substituteEntries []struct {
+		key, value []byte
+	}
 	iterator = substituteStore.Iterator(prefix, storetypes.PrefixEndBytes(prefix))
 	for ; iterator.Valid(); iterator.Next() {
-		subjectStore.Set(iterator.Key(), iterator.Value())
+		substituteEntries = append(substituteEntries, struct{ key, value []byte }{iterator.Key(), iterator.Value()})
 	}
 	iterator.Close()
+	for _, entry := range substituteEntries {
+		subjectStore.Set(entry.key, entry.value)
+	}
 
 	recovered := cs.Clone()
 	recovered.Frozen = false
 	recovered.LatestSlot = substitute.LatestSlot
 	recovered.LatestExecutionBlockNumber = substitute.LatestExecutionBlockNumber
-	setClientState(subjectStore, cdc, recovered)
+	setClientState(ctx, subjectStore, cdc, recovered)
 	return nil
 }
 

@@ -209,10 +209,12 @@ start_atomone() {
   export RELAYER_ENV_FILE=$WORK/atomone-relayer.env
   : > "$RELAYER_ENV_FILE"
   (
+    # Job control puts the launcher in its own process group so teardown can
+    # kill the launcher and the node it spawns without touching other
+    # processes. set -m is a shell builtin, unlike setsid, which macOS lacks.
+    set -m
     cd "$SPECTRE_DIR"
-    # setsid gives the launcher its own process group so teardown can kill
-    # the launcher and the node it spawns without touching other processes.
-    setsid nohup ./scripts/local/run_atomone_node.sh > "$WORK/atomone-node.log" 2>&1 &
+    nohup ./scripts/local/run_atomone_node.sh > "$WORK/atomone-node.log" 2>&1 &
     echo $! > "$WORK/atomone-script.pid"
   )
   poll 240 3 "atomone height >= 3" check_atomone_height

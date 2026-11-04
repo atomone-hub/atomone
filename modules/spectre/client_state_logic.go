@@ -301,7 +301,11 @@ func (cs *ClientState) validateLightClientUpdate(
 		return errorsmod.Wrapf(ErrInvalidSyncCommittee,
 			"bitfield length %d does not match committee size %d", len(bits), cs.SyncCommitteeSize)
 	}
-	if padding := cs.SyncCommitteeSize % 8; padding != 0 && len(bits) > 0 && bits[len(bits)-1]>>(8-padding) != 0 {
+	// The bitvector is LSB-first: the last byte holds SyncCommitteeSize % 8
+	// valid bits in its low positions, and the padding above them must be
+	// zero. Shifting the last byte right by the valid-bit count leaves exactly
+	// the padding bits.
+	if validBits := cs.SyncCommitteeSize % 8; validBits != 0 && bits[len(bits)-1]>>validBits != 0 {
 		return errorsmod.Wrap(ErrInvalidSyncCommittee, "bitfield has set padding bits beyond the committee size")
 	}
 

@@ -126,35 +126,53 @@ func TestUpdateStateWithMisbehaviourReturnsNoHeights(t *testing.T) {
 // supermajority counts real members only, so padding cannot inflate a small
 // committee past 2/3.
 func TestSyncAggregatePaddingBitsAreRejected(t *testing.T) {
-	// Committee of 10: one byte plus 6 padding bits. Six real signers are 2/3
-	// of 10? 6*3 = 18 >= 20 is false, so 6 alone fails; adding set padding
-	// bits must not change that.
-	bits := []byte{0b00111111} // 6 real signers, 2 padding bits clear
-	sa := &SyncAggregate{SyncCommitteeBits: bits}
+	// Committee of 10: two bytes, members 0-9 in the low bits of byte two.
+	// Six real signers are not 2/3 of 10 (18 < 20), and counting the padding
+	// must not change that.
+	sa := &SyncAggregate{SyncCommitteeBits: []byte{0b00111111, 0b00000000}}
 	require.Equal(t, uint64(6), sa.numParticipants(10))
 	require.False(t, sa.hasSupermajority(10))
 
-	// Same real signers with the two padding bits set: the aggregate is now a
-	// malformed bitvector and must be rejected outright by the update check.
-	padded := &SyncAggregate{SyncCommitteeBits: []byte{0b00111111 | 0b11000000}}
+	// numParticipants stops at the committee size: members 8 and 9 are the
+	// low bits of the second byte; the padding above them does not count.
+	sa2 := &SyncAggregate{SyncCommitteeBits: []byte{0x00, 0b00000011}}
+	require.Equal(t, uint64(2), sa2.numParticipants(10))
+	sa3 := &SyncAggregate{SyncCommitteeBits: []byte{0xFF, 0b00000011}}
+	require.Equal(t, uint64(10), sa3.numParticipants(10))
 
 	fixture := loadFixture(t, "Test_TimeoutPacketFromCosmos")
 	runner := newFixtureRunner(t, fixture)
 	headerRaw := fixtureHeaderRaw(t, fixture, 1)
 
-	// A client with a committee of 10: the bitfield length must be 2 bytes.
-	small := runner.clientState.Clone()
-	small.SyncCommitteeSize = 10
-	small.MinSyncCommitteeParticipants = 1
-	padded.SyncCommitteeBits = []byte{0xFF, 0b01000000} // length 2, padding set
-	h := decodeHeader(headerRaw).toProto()
-	err := small.validateLightClientUpdate(runner.consStates[h.TrustedSlot], h.ActiveSyncCommittee, &h.ConsensusUpdate, 1<<40, h.IsNextCommittee)
-	require.Error(t, err, "set padding bits must be rejected")
+	validate := func(t *testing.T, committeeSize uint64, bits []byte) error {
+		t.Helper()
+		cs := runner.clientState.Clone()
+		cs.SyncCommitteeSize = committeeSize
+		cs.MinSyncCommitteeParticipants = 1
+		h := decodeHeader(headerRaw).toProto()
+		h.ConsensusUpdate.SyncAggregate.SyncCommitteeBits = bits
+		return cs.validateLightClientUpdate(runner.consStates[h.TrustedSlot], h.ActiveSyncCommittee, &h.ConsensusUpdate, 1<<40, h.IsNextCommittee)
+	}
 
-	// numParticipants stops at the committee size: members 8 and 9 are the low
-	// bits of the second byte; the 6 padding bits above them do not count.
-	sa2 := &SyncAggregate{SyncCommitteeBits: []byte{0x00, 0b00000011}}
-	require.Equal(t, uint64(2), sa2.numParticipants(10))
-	sa3 := &SyncAggregate{SyncCommitteeBits: []byte{0xFF, 0b00000011}}
-	require.Equal(t, uint64(10), sa3.numParticipants(10))
+	t.Run("set padding bits are rejected", func(t *testing.T) {
+		// Member 10 is padding for a committee of 10: the low second-byte
+		// position is what the wrong shift of the first fix missed.
+		err := validate(t, 10, []byte{0xFF, 0b00000100})
+		require.ErrorIs(t, err, ErrInvalidSyncCommittee)
+		require.ErrorContains(t, err, "padding")
+
+		err = validate(t, 14, []byte{0xFF, 0b01111111})
+		require.ErrorContains(t, err, "padding")
+	})
+
+	t.Run("an honest all-signed committee is not padding-rejected", func(t *testing.T) {
+		// Committee of 14 with all members signed: members 8-13 are the low
+		// six bits of the second byte. This must get past the padding check;
+		// it fails later at signature verification, which the fixture cannot
+		// satisfy for a resized committee.
+		err := validate(t, 14, []byte{0xFF, 0b00111111})
+		require.Error(t, err)
+		require.NotContains(t, err.Error(), "padding")
+		require.NotContains(t, err.Error(), "bitfield length")
+	})
 }

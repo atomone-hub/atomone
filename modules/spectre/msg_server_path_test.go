@@ -38,13 +38,12 @@ func cloneHeader(t *testing.T, h *spectre.Header) *spectre.Header {
 
 // TestMsgUpdateClientThroughKeeper drives client updates and a misbehaviour
 // submission through the real 02-client keeper, the path MsgUpdateClient
-// takes. The misbehaviour is built from fixture data and tampered (a fully
-// valid one needs the devnet committee's keys to sign conflicting roots), so
-// it must fail verification cleanly; the point of the test is that the
-// misbehaviour plumbing through the keeper and module neither panics nor
-// freezes the client. A pre-fix regression this guards against: updateState
-// panicked on any Misbehaviour, which the RedundantRelayDecorator reaches in
-// CheckTx for top-level MsgUpdateClient messages.
+// takes, plus the direct UpdateState-with-misbehaviour call the
+// RedundantRelayDecorator makes during CheckTx. The misbehaviour is built
+// from fixture data and tampered (a fully valid one needs the devnet
+// committee's keys to sign conflicting roots), so it fails verification
+// cleanly; the updateState non-header early return itself is covered by
+// TestUpdateStateWithMisbehaviourReturnsNoHeights.
 func TestMsgUpdateClientThroughKeeper(t *testing.T) {
 	app := helpers.Setup(t)
 	ctx := app.NewUncachedContext(false, cmtproto.Header{})
@@ -80,4 +79,17 @@ func TestMsgUpdateClientThroughKeeper(t *testing.T) {
 	require.Error(t, err, "the tampered update fails signature verification")
 	require.Equal(t, exported.Active, app.IBCKeeper.ClientKeeper.GetClientStatus(ctx, clientID),
 		"a failed misbehaviour does not freeze the client")
+
+	// The RedundantRelayDecorator reaches UpdateState with the misbehaviour
+	// directly in CheckTx, without the misbehaviour checks of the keeper
+	// path. That call panicked before the non-header early return; the
+	// unit-level coverage is TestUpdateStateWithMisbehaviourReturnsNoHeights.
+	clientModule, err := app.IBCKeeper.ClientKeeper.Route(ctx, clientID)
+	require.NoError(t, err)
+	var heights []exported.Height
+	require.NotPanics(t, func() {
+		heights = clientModule.UpdateState(ctxForHeader(ctx, h), clientID, mis)
+	})
+	require.Empty(t, heights, "a misbehaviour applies no state")
+	require.Equal(t, exported.Active, app.IBCKeeper.ClientKeeper.GetClientStatus(ctx, clientID))
 }
