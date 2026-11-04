@@ -68,10 +68,6 @@ var (
 	// DefaultNodeHome default home directories for the application daemon
 	DefaultNodeHome string
 
-	// Upgrades registers one handler per on-chain upgrade plan still reachable
-	// by this binary. A handler only runs when its plan is pending, so keeping
-	// historical entries is inert on chains that already executed them, while
-	// dropping them halts any node that replays history across their height.
 	Upgrades = []upgrades.Upgrade{v42.Upgrade, v5.Upgrade}
 )
 
