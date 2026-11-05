@@ -1,6 +1,7 @@
 package gno
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
@@ -71,67 +72,6 @@ func TestValidateTrustLevel(t *testing.T) {
 			} else {
 				require.NoError(t, err)
 			}
-		})
-	}
-}
-
-func TestSafeMul(t *testing.T) {
-	testCases := []struct {
-		name             string
-		a                int64
-		b                int64
-		expectedResult   int64
-		expectedOverflow bool
-	}{
-		{
-			name:             "no overflow - positive numbers",
-			a:                100,
-			b:                200,
-			expectedResult:   20000,
-			expectedOverflow: false,
-		},
-		{
-			name:             "no overflow - zero and positive",
-			a:                0,
-			b:                100,
-			expectedResult:   0,
-			expectedOverflow: false,
-		},
-		{
-			name:             "no overflow - negative numbers",
-			a:                -100,
-			b:                200,
-			expectedResult:   -20000,
-			expectedOverflow: false,
-		},
-		{
-			name:             "no overflow - both negative",
-			a:                -100,
-			b:                -200,
-			expectedResult:   20000,
-			expectedOverflow: false,
-		},
-		{
-			name:             "overflow - large positive numbers",
-			a:                9223372036854775807, // max int64
-			b:                2,
-			expectedResult:   0,
-			expectedOverflow: true,
-		},
-		{
-			name:             "no overflow - one is 1",
-			a:                9223372036854775807,
-			b:                1,
-			expectedResult:   9223372036854775807,
-			expectedOverflow: false,
-		},
-	}
-
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			result, overflow := safeMul(tc.a, tc.b)
-			require.Equal(t, tc.expectedResult, result)
-			require.Equal(t, tc.expectedOverflow, overflow)
 		})
 	}
 }
@@ -464,6 +404,66 @@ func TestVerifyLightCommit_ErrorMessageReportsCorrectThreshold(t *testing.T) {
 				tc.trustLevel.Numerator, tc.trustLevel.Denominator)
 		})
 	}
+}
+
+// TestVerifyLightCommit_TrustLevelBeyondInt64 tests that trust levels whose
+// numerator or denominator exceed math.MaxInt64 are evaluated exactly: a
+// commit with no signature from the trusted set must be rejected, and a commit
+// fully signed by the trusted set must be accepted.
+func TestVerifyLightCommit_TrustLevelBeyondInt64(t *testing.T) {
+	chainID := testChainID
+	height := int64(20)
+	blockTime := time.Now().UTC()
+
+	testCases := []struct {
+		name       string
+		trustLevel cmtmath.Fraction
+	}{
+		{
+			name:       "1/3 with denominator above MaxInt64",
+			trustLevel: cmtmath.Fraction{Numerator: 5_000_000_000_000_000_000, Denominator: 15_000_000_000_000_000_000},
+		},
+		{
+			name:       "smallest numerator allowed with denominator 2^63",
+			trustLevel: cmtmath.Fraction{Numerator: 3_074_457_345_618_258_603, Denominator: 9_223_372_036_854_775_808},
+		},
+		{
+			name:       "numerator and denominator above MaxInt64",
+			trustLevel: cmtmath.Fraction{Numerator: 10_223_372_036_854_775_808, Denominator: 11_223_372_036_854_775_808},
+		},
+	}
+
+	for _, tc := range testCases {
+		for _, totalPower := range []int64{1, 2, 3, 100} {
+			t.Run(fmt.Sprintf("%s/total power %d", tc.name, totalPower), func(t *testing.T) {
+				require.NoError(t, light.ValidateTrustLevel(tc.trustLevel))
+
+				trustedValSet, trustedPrivKeys := createTestValidatorSet(1, totalPower)
+				bftTrustedVals := createBftValidatorSet(trustedValSet.Validators, trustedPrivKeys)
+
+				untrustedValSet, untrustedPrivKeys := createTestValidatorSet(1, 1)
+				foreignCommit := toBftCommit(createTestSignedHeader(chainID, height, blockTime, untrustedValSet, untrustedPrivKeys).Commit)
+				err := VerifyLightCommit(bftTrustedVals, chainID, foreignCommit.BlockID, height, foreignCommit, tc.trustLevel)
+				require.ErrorIs(t, err, ErrNewValSetCantBeTrusted)
+				require.Contains(t, err.Error(), "insufficient old voting power: got 0")
+
+				trustedCommit := toBftCommit(createTestSignedHeader(chainID, height, blockTime, trustedValSet, trustedPrivKeys).Commit)
+				err = VerifyLightCommit(bftTrustedVals, chainID, trustedCommit.BlockID, height, trustedCommit, tc.trustLevel)
+				require.NoError(t, err)
+			})
+		}
+	}
+}
+
+// TestVerifyLightCommit_ZeroDenominator tests that a zero trust level
+// denominator returns an error instead of panicking.
+func TestVerifyLightCommit_ZeroDenominator(t *testing.T) {
+	valSet, privKeys := createTestValidatorSet(1, 1)
+	commit := toBftCommit(createTestSignedHeader(testChainID, 10, time.Now().UTC(), valSet, privKeys).Commit)
+
+	err := VerifyLightCommit(createBftValidatorSet(valSet.Validators, privKeys), testChainID, commit.BlockID, 10, commit,
+		cmtmath.Fraction{Numerator: 1, Denominator: 0})
+	require.ErrorIs(t, err, ErrNewValSetCantBeTrusted)
 }
 
 // TestVerifyAdjacent tests adjacent header verification
