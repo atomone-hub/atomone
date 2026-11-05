@@ -155,6 +155,35 @@ func TestClientState_Validate(t *testing.T) {
 			errMsg:    "invalid trust level",
 		},
 		{
+			name: "invalid trust level - denominator above MaxInt64",
+			clientState: func() *ClientState {
+				cs := createTestClientState(testChainID, clienttypes.NewHeight(1, 100), false)
+				cs.TrustLevel = Fraction{Numerator: 5_000_000_000_000_000_000, Denominator: 15_000_000_000_000_000_000}
+				return cs
+			},
+			expectErr: true,
+			errMsg:    "must not exceed",
+		},
+		{
+			name: "invalid trust level - numerator and denominator above MaxInt64",
+			clientState: func() *ClientState {
+				cs := createTestClientState(testChainID, clienttypes.NewHeight(1, 100), false)
+				cs.TrustLevel = Fraction{Numerator: 10_223_372_036_854_775_808, Denominator: 11_223_372_036_854_775_808}
+				return cs
+			},
+			expectErr: true,
+			errMsg:    "must not exceed",
+		},
+		{
+			name: "valid trust level - denominator at MaxInt64",
+			clientState: func() *ClientState {
+				cs := createTestClientState(testChainID, clienttypes.NewHeight(1, 100), false)
+				cs.TrustLevel = Fraction{Numerator: 3_074_457_345_618_258_603, Denominator: 1<<63 - 1}
+				return cs
+			},
+			expectErr: false,
+		},
+		{
 			name: "zero trusting period",
 			clientState: func() *ClientState {
 				cs := createTestClientState(testChainID, clienttypes.NewHeight(1, 100), false)
