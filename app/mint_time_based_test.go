@@ -30,6 +30,7 @@ func TestMintingIsProportionalToElapsedTime(t *testing.T) {
 	params, err := app.MintKeeper.Params.Get(committedCtx())
 	require.NoError(t, err)
 	denom := params.MintDenom
+	require.Equal(t, minttypes.DefaultMaxBlockElapsed, params.MaxBlockElapsed)
 
 	// finalize runs and commits a block at the given height and time, and
 	// returns the amount of denom minted by that block and the minter state
@@ -61,10 +62,10 @@ func TestMintingIsProportionalToElapsedTime(t *testing.T) {
 	t0 := time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC)
 
 	// Block 2: the elapsed time since the zero reference saturates and is
-	// capped at MaxBlockElapsed.
+	// capped at max_block_elapsed.
 	minted, minter := finalize(2, t0)
 	require.True(t, minter.AnnualProvisions.IsPositive())
-	require.Equal(t, expected(minter, minttypes.MaxBlockElapsed), minted)
+	require.Equal(t, expected(minter, params.MaxBlockElapsed), minted)
 
 	// Block 3: six seconds later mints six seconds' worth of provisions.
 	t1 := t0.Add(6 * time.Second)
@@ -72,10 +73,10 @@ func TestMintingIsProportionalToElapsedTime(t *testing.T) {
 	require.True(t, minted.IsPositive())
 	require.Equal(t, expected(minter, 6*time.Second), minted)
 
-	// Block 4: a ten-minute gap mints only MaxBlockElapsed worth.
+	// Block 4: a ten-minute gap mints only max_block_elapsed worth.
 	t2 := t1.Add(10 * time.Minute)
 	minted, minter = finalize(4, t2)
-	require.Equal(t, expected(minter, minttypes.MaxBlockElapsed), minted)
+	require.Equal(t, expected(minter, params.MaxBlockElapsed), minted)
 
 	// Block 5: no time elapsed, nothing minted.
 	minted, minter = finalize(5, t2)
