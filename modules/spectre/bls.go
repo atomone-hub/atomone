@@ -43,24 +43,47 @@ func parseSignature(sig []byte) (bls12381.G2Affine, error) {
 	return s, nil
 }
 
-// fastAggregateVerify verifies that the signature is a valid aggregate
-// signature by the public keys over the 32-byte message, using the
-// proof-of-possession ciphersuite. With pubkeys and the message hash in G1/G2
-// respectively, it checks e(pk_agg, H(msg)) * e(-G1_gen, sig) == 1.
-func fastAggregateVerify(pubkeys [][]byte, msg [32]byte, sig []byte) error {
-	if len(pubkeys) == 0 {
-		return errorsmod.Wrap(ErrBLSVerificationFailed, "no public keys to verify")
+// fastAggregateVerifyExcluding verifies that sig is a valid aggregate
+// signature by the committee members whose keys are NOT in nonSigners, using
+// the proof-of-possession ciphersuite. It starts from committeeAgg, the
+// aggregate over the whole committee, and subtracts the non-signers, so with
+// participation usually above 95% it decodes ~25 keys instead of ~490; key
+// decoding dominates the verification cost. With pubkeys and the message
+// hash in G1/G2 respectively, it checks
+// e(committeeAgg - sum(nonSigners), H(msg)) * e(-G1_gen, sig) == 1.
+//
+// committeeAgg must be the aggregate of the full committee key set bound to
+// stored state (for spectre, by the committee summary comparison); anything
+// else verifies a different statement.
+//
+// Accumulation runs in Jacobian coordinates: affine Add pays a field
+// inversion per key, AddMixed does not, and one conversion at the end is
+// enough. The result is rejected at the identity: keys summing to it would
+// verify the identity signature over any message, which the standard's key
+// validation forbids.
+func fastAggregateVerifyExcluding(committeeAgg []byte, nonSigners [][]byte, msg [32]byte, sig []byte) error {
+	start, err := parsePubkey(committeeAgg)
+	if err != nil {
+		return errorsmod.Wrap(err, "committee aggregate pubkey")
+	}
+	if start.IsInfinity() {
+		return errorsmod.Wrap(ErrBLSVerificationFailed, "committee aggregate pubkey is the identity")
 	}
 
-	var aggPk bls12381.G1Affine
-	for i, pk := range pubkeys {
+	var agg bls12381.G1Jac
+	agg.FromAffine(&start)
+	for i, pk := range nonSigners {
 		p, err := parsePubkey(pk)
 		if err != nil {
 			return errorsmod.Wrapf(err, "pubkey at index %d", i)
 		}
-		var sum bls12381.G1Affine
-		sum.Add(&aggPk, &p)
-		aggPk.Set(&sum)
+		p.Neg(&p)
+		agg.AddMixed(&p)
+	}
+	var aggPk bls12381.G1Affine
+	aggPk.FromJacobian(&agg)
+	if aggPk.IsInfinity() {
+		return errorsmod.Wrap(ErrBLSVerificationFailed, "aggregate of the signers is the identity")
 	}
 
 	signature, err := parseSignature(sig)

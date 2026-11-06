@@ -546,12 +546,17 @@ func (cs *ClientState) validateUpdateBranches(
 }
 
 // verifyUpdateSignature verifies the sync committee aggregate signature over
-// the attested beacon header.
+// the attested beacon header. The aggregate of the signers is derived by
+// subtracting the non-signers from the committee aggregate: participation is
+// usually above 95%, so that decodes a handful of keys instead of nearly the
+// whole committee. The committee aggregate is the message's own, which the
+// summary comparison in trustedSyncCommittee already bound to the stored
+// committee.
 func (cs *ClientState) verifyUpdateSignature(committee *SyncCommittee, update *LightClientUpdate) error {
-	var participants [][]byte
+	var nonSigners [][]byte
 	for i, pk := range committee.Pubkeys {
-		if update.SyncAggregate.SyncCommitteeBits[i/8]&(1<<uint(i%8)) != 0 {
-			participants = append(participants, pk)
+		if update.SyncAggregate.SyncCommitteeBits[i/8]&(1<<uint(i%8)) == 0 {
+			nonSigners = append(nonSigners, pk)
 		}
 	}
 
@@ -561,7 +566,7 @@ func (cs *ClientState) verifyUpdateSignature(committee *SyncCommittee, update *L
 	)
 	signingRoot := signingRoot(beaconBlockHeaderRoot(&update.AttestedHeader.Beacon), domain)
 
-	return fastAggregateVerify(participants, signingRoot, update.SyncAggregate.SyncCommitteeSignature)
+	return fastAggregateVerifyExcluding(committee.AggregatePubkey, nonSigners, signingRoot, update.SyncAggregate.SyncCommitteeSignature)
 }
 
 // domainTypeSyncCommittee is the consensus-spec domain type for sync
