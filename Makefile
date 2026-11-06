@@ -383,9 +383,11 @@ proto-gen:
 	@echo "--> Generating Protobuf files"
 	@$(protoImage) sh ./proto/scripts/protocgen.sh
 
+# The cosmos-sdk swagger files are generated from the protos of the AtomOne SDK
+# module in go.mod, mounted read-only into the container.
 proto-swagger-gen:
 	@echo "--> Generating Protobuf Swagger"
-	@$(protoImage) sh ./proto/scripts/protoc-swagger-gen.sh
+	@$(DOCKER) run --rm -v $(CURDIR):/workspace -v $(shell go list -m -f '{{.Dir}}' github.com/cosmos/cosmos-sdk)/proto:/cosmos-sdk-proto:ro --workdir /workspace $(protoImageName) sh ./proto/scripts/protoc-swagger-gen.sh
 
 proto-format:
 	@$(protoImage) find ./ -name "*.proto" -exec clang-format -i {} \;
