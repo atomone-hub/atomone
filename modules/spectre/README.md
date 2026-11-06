@@ -2,7 +2,7 @@
 
 Spectre is AtomOne's native Go implementation of an Ethereum light client, registered as an IBC light client module. It lets AtomOne verify Ethereum state without an Ethereum node: packet commitments, acknowledgements, and receipts held by the IBC router contract on Ethereum are proven against a small piece of trusted state that advances through BLS signatures. The Go module is a port of the Rust client in [trustless-protocol/spectre](https://github.com/trustless-protocol/spectre); the original lives in `packages/ethereum/light-client` there.
 
-This document explains the trust model, the module's pieces, and the guarantees each check provides. Operational instructions are separate: `devnet-runbook.en.md` and `sepolia-runbook.en.md` in the repository root.
+This document explains the trust model, the module's pieces, and the guarantees each check provides. Operational bring-up (devnet and Sepolia) is documented in the spectre repository: [`docs/E2E.md`](https://github.com/trustless-protocol/spectre/blob/main/docs/E2E.md), with the prover-side runbooks in `docs/MISBEHAVIOUR_RUNBOOK.md` and `docs/ATTESTOR_RUNBOOK.md` there.
 
 ## The bridge at a glance
 
