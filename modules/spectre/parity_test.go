@@ -147,12 +147,15 @@ func TestHeaderAnchoredAtTheLatestSlotStillAdvancesTheClient(t *testing.T) {
 }
 
 // conflictingEvidence builds misbehaviour out of the second fixture header:
-// its valid update and a copy attesting a different execution state root.
+// its valid update and a copy finalizing a different beacon header at the
+// same slot. The conflict is real (different finalized header roots), so
+// verification proceeds into the second update, whose tampered finality
+// branch no longer verifies against the attested state root.
 func conflictingEvidence(t *testing.T, c *fixtureClient) (*Misbehaviour, *Header) {
 	t.Helper()
 	h := cloneHeader(t, c.headers[1])
 	other := cloneHeader(t, c.headers[1])
-	other.ConsensusUpdate.AttestedHeader.Execution.StateRoot[0] ^= 0xff
+	other.ConsensusUpdate.FinalizedHeader.Beacon.BodyRoot[0] ^= 0xff
 	return &Misbehaviour{
 		TrustedSlot:         h.TrustedSlot,
 		ActiveSyncCommittee: h.ActiveSyncCommittee,

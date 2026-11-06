@@ -389,8 +389,9 @@ func TestSupermajorityRequired(t *testing.T) {
 			Update_1:            h1.ConsensusUpdate,
 			Update_2:            h2.ConsensusUpdate,
 		}
-		// Conflicting state roots so the pair qualifies as a candidate conflict.
-		mis.Update_2.AttestedHeader.Execution.StateRoot[0] ^= 0xff
+		// Conflicting finalized headers so the pair qualifies as a candidate
+		// conflict; the supermajority check must still reject both updates.
+		mis.Update_2.FinalizedHeader.Beacon.BodyRoot[0] ^= 0xff
 		mis.Update_1.SyncAggregate.SyncCommitteeBits = belowSupermajority
 		mis.Update_2.SyncAggregate.SyncCommitteeBits = belowSupermajority
 
@@ -410,29 +411,30 @@ func TestVerifyMisbehaviourPaths(t *testing.T) {
 	currentTime := header.ConsensusUpdate.AttestedHeader.Execution.Timestamp + 1000
 
 	mkMis := func(mut func(mis *Misbehaviour)) *Misbehaviour {
+		other := cloneHeader(t, header.toProto())
 		mis := &Misbehaviour{
 			TrustedSlot:         header.TrustedSlot,
 			ActiveSyncCommittee: header.ActiveSyncCommittee,
 			IsNextCommittee:     header.IsNextCommittee,
 			Update_1:            header.ConsensusUpdate,
-			Update_2:            header.ConsensusUpdate,
+			Update_2:            other.ConsensusUpdate,
 		}
 		mut(mis)
 		return mis
 	}
 
-	// Conflicting state roots are required.
+	// Identical finalized headers are not a conflict.
 	require.Error(t, runner.clientState.verifyMisbehaviour(trusted, currentTime, mkMis(func(m *Misbehaviour) {})),
 		"identical updates are not a conflict")
 
-	// Attested slots must match.
+	// Finalized slots must match.
 	require.Error(t, runner.clientState.verifyMisbehaviour(trusted, currentTime, mkMis(func(m *Misbehaviour) {
-		m.Update_2.AttestedHeader.Beacon.Slot = m.Update_1.AttestedHeader.Beacon.Slot + 1
+		m.Update_2.FinalizedHeader.Beacon.Slot = m.Update_1.FinalizedHeader.Beacon.Slot + 1
 	})))
 
 	// A tampered second update fails verification.
 	require.Error(t, runner.clientState.verifyMisbehaviour(trusted, currentTime, mkMis(func(m *Misbehaviour) {
-		m.Update_2.AttestedHeader.Execution.StateRoot[0] ^= 0xff
+		m.Update_2.FinalizedHeader.Beacon.BodyRoot[0] ^= 0xff
 	})))
 
 	// A tampered committee fails the trusted committee check.

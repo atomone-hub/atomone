@@ -448,34 +448,54 @@ func TestFinalizedExecutionSummary(t *testing.T) {
 	})
 }
 
-func TestConflictingExecutionRoots(t *testing.T) {
-	a := preGloasHeader(preGloasSlot)
-	b := preGloasHeader(preGloasSlot)
-	b.Execution.StateRoot = bytes32Of(0x77)
+// TestMisbehaviourConflictIsJudgedOnFinalizedHeaders verifies the conflict
+// comparison: misbehaviour requires the same finalized slot with different
+// finalized beacon headers, and format differences (pre-Gloas payload vs
+// Gloas block hash) do not matter, since the beacon header root covers the
+// execution commitment through the body root.
+func TestMisbehaviourConflictIsJudgedOnFinalizedHeaders(t *testing.T) {
+	c := newFixtureClient(t, parityFixture)
+	for i := range c.headers {
+		c.apply(i)
+	}
+	base := cloneHeader(t, c.headers[1])
+	anchor := c.consensusState(base.TrustedSlot)
+	require.NotNil(t, anchor)
+	now := uint64(c.ctxAt(base).BlockTime().Unix())
 
-	r1, r2, err := conflictingExecutionRoots(a, b)
-	require.NoError(t, err)
-	require.NotEqual(t, r1, r2, "two payload headers are compared by state root")
+	mkMis := func(mutate func(h *Header)) *Misbehaviour {
+		u1 := cloneHeader(t, base)
+		u2 := cloneHeader(t, base)
+		mutate(u2)
+		return &Misbehaviour{
+			TrustedSlot:         u1.TrustedSlot,
+			ActiveSyncCommittee: u1.ActiveSyncCommittee,
+			IsNextCommittee:     u1.IsNextCommittee,
+			Update_1:            u1.ConsensusUpdate,
+			Update_2:            u2.ConsensusUpdate,
+		}
+	}
 
-	// Equal state roots with different block hashes are not a conflict in
-	// the pre-Gloas format.
-	c := preGloasHeader(preGloasSlot)
-	c.Execution.BlockHash = bytes32Of(0x55)
-	r1, r2, err = conflictingExecutionRoots(a, c)
-	require.NoError(t, err)
-	require.Equal(t, r1, r2)
+	t.Run("same finalized slot, different finalized header is a conflict", func(t *testing.T) {
+		mis := mkMis(func(h *Header) { h.ConsensusUpdate.FinalizedHeader.Beacon.BodyRoot[0] ^= 0xff })
+		err := c.cs.verifyMisbehaviour(anchor, now, mis)
+		require.Error(t, err, "the second update's finality branch no longer verifies")
+		require.NotErrorIs(t, err, ErrInvalidMisbehaviour, "the conflict itself is valid")
+	})
 
-	// As soon as either header is in the Gloas format both are compared by
-	// execution block hash.
-	cs := gloasClientState(testGloasEpoch)
-	g := gloasHeader(cs, gloasSlot)
-	r1, r2, err = conflictingExecutionRoots(a, g)
-	require.NoError(t, err)
-	require.Equal(t, bytes32(a.Execution.BlockHash), r1)
-	require.Equal(t, bytes32(g.ExecutionBlockHash), r2)
+	t.Run("identical finalized headers are not a conflict", func(t *testing.T) {
+		mis := mkMis(func(h *Header) { h.ConsensusUpdate.AttestedHeader.Execution.StateRoot[0] ^= 0xff })
+		err := c.cs.verifyMisbehaviour(anchor, now, mis)
+		require.ErrorIs(t, err, ErrInvalidMisbehaviour)
+		require.ErrorContains(t, err, "no conflict")
+	})
 
-	_, _, err = conflictingExecutionRoots(a, &LightClientHeader{})
-	require.ErrorIs(t, err, ErrInvalidHeader)
+	t.Run("different finalized slots are not comparable", func(t *testing.T) {
+		mis := mkMis(func(h *Header) { h.ConsensusUpdate.FinalizedHeader.Beacon.Slot++ })
+		err := c.cs.verifyMisbehaviour(anchor, now, mis)
+		require.ErrorIs(t, err, ErrInvalidMisbehaviour)
+		require.ErrorContains(t, err, "finalized slots differ")
+	})
 }
 
 func TestHeaderValidateBasicBoundsTheExecutionHeaderRLP(t *testing.T) {

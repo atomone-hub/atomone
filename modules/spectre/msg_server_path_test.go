@@ -65,7 +65,7 @@ func TestMsgUpdateClientThroughKeeper(t *testing.T) {
 	// A misbehaviour whose second update is tampered fails verification
 	// cleanly through the same path.
 	other := cloneHeader(t, h)
-	other.ConsensusUpdate.AttestedHeader.Execution.StateRoot[0] ^= 0xff
+	other.ConsensusUpdate.FinalizedHeader.Beacon.BodyRoot[0] ^= 0xff
 	mis := &spectre.Misbehaviour{
 		TrustedSlot:         h.TrustedSlot,
 		ActiveSyncCommittee: h.ActiveSyncCommittee,
@@ -76,7 +76,7 @@ func TestMsgUpdateClientThroughKeeper(t *testing.T) {
 	require.NotPanics(t, func() {
 		err = app.IBCKeeper.ClientKeeper.UpdateClient(ctxForHeader(ctx, h), clientID, mis)
 	})
-	require.Error(t, err, "the tampered update fails signature verification")
+	require.Error(t, err, "the tampered update fails verification")
 	require.Equal(t, exported.Active, app.IBCKeeper.ClientKeeper.GetClientStatus(ctx, clientID),
 		"a failed misbehaviour does not freeze the client")
 

@@ -669,9 +669,14 @@ func validateUpdateBounds(update *LightClientUpdate) error {
 	return nil
 }
 
-// verifyMisbehaviour verifies two conflicting light client updates for the
-// same attested slot. Both must pass full verification while attesting
-// different execution commitments.
+// verifyMisbehaviour verifies two conflicting light client updates: both
+// must pass full verification while finalizing different beacon headers at
+// the same finalized slot. Conflicting finality is what an honest chain
+// never produces, so it is the one report that must freeze the client.
+// Comparing attested headers instead would be too eager: an honest committee
+// can sign sibling attested blocks at the same slot without any fault, and a
+// freeze on them would stop the bridge until governance recovered it.
+// Sync-committee signatures are not slashable, so nothing deters that shape.
 //
 // The consensus state the evidence is anchored at may be any the client still
 // holds, because evidence has to be anchored below its attested slot and the
@@ -696,18 +701,18 @@ func (cs *ClientState) verifyMisbehaviour(consState *ConsensusState, currentTime
 		return err
 	}
 
-	slot1 := mis.Update_1.AttestedHeader.Beacon.Slot
-	slot2 := mis.Update_2.AttestedHeader.Beacon.Slot
-	if slot1 != slot2 {
-		return errorsmod.Wrapf(ErrInvalidMisbehaviour, "attested slots differ: %d vs %d", slot1, slot2)
+	// Same finalized slot, different finalized beacon headers: conflicting
+	// finality, which an honest chain never produces. The beacon header root
+	// covers any execution difference, in either the pre-Gloas or Gloas
+	// format, since the execution commitment is proven against the beacon
+	// body root.
+	f1 := &mis.Update_1.FinalizedHeader.Beacon
+	f2 := &mis.Update_2.FinalizedHeader.Beacon
+	if f1.Slot != f2.Slot {
+		return errorsmod.Wrapf(ErrInvalidMisbehaviour, "finalized slots differ: %d vs %d", f1.Slot, f2.Slot)
 	}
-
-	root1, root2, err := conflictingExecutionRoots(&mis.Update_1.AttestedHeader, &mis.Update_2.AttestedHeader)
-	if err != nil {
-		return errorsmod.Wrap(err, "attested headers are not comparable")
-	}
-	if root1 == root2 {
-		return errorsmod.Wrap(ErrInvalidMisbehaviour, "attested execution commitments match: no conflict")
+	if beaconBlockHeaderRoot(f1) == beaconBlockHeaderRoot(f2) {
+		return errorsmod.Wrap(ErrInvalidMisbehaviour, "finalized headers match: no conflict")
 	}
 
 	latestPeriod, err := cs.computeSyncCommitteePeriodAtSlot(cs.LatestSlot)
@@ -736,41 +741,6 @@ func (cs *ClientState) verifyMisbehaviour(consState *ConsensusState, currentTime
 		}
 	}
 	return nil
-}
-
-// conflictingExecutionRoots returns the execution commitments of two attested
-// headers that are comparable with each other. Two pre-Gloas-format headers
-// are compared by execution state root. As soon as either header is in the
-// Gloas format, which carries no state root, both are compared by execution
-// block hash. Equal block hashes mean equal execution state, so that
-// comparison is never weaker than comparing state roots.
-func conflictingExecutionRoots(h1, h2 *LightClientHeader) ([32]byte, [32]byte, error) {
-	if h1.Execution != nil && h2.Execution != nil {
-		return bytes32(h1.Execution.StateRoot), bytes32(h2.Execution.StateRoot), nil
-	}
-	hash1, err := executionBlockHash(h1)
-	if err != nil {
-		return [32]byte{}, [32]byte{}, err
-	}
-	hash2, err := executionBlockHash(h2)
-	if err != nil {
-		return [32]byte{}, [32]byte{}, err
-	}
-	return hash1, hash2, nil
-}
-
-// executionBlockHash returns the execution block hash a light client header
-// commits to, in either format.
-func executionBlockHash(h *LightClientHeader) ([32]byte, error) {
-	switch {
-	case h.Execution != nil && len(h.ExecutionBlockHash) == 0:
-		return bytes32(h.Execution.BlockHash), nil
-	case h.Execution == nil && len(h.ExecutionBlockHash) != 0:
-		return bytes32(h.ExecutionBlockHash), nil
-	default:
-		return [32]byte{}, errorsmod.Wrap(ErrInvalidHeader,
-			"light client header must set exactly one of execution and execution_block_hash")
-	}
 }
 
 // updateConsensusState applies a verified header to the current consensus

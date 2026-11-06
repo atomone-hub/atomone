@@ -84,11 +84,10 @@ func TestFixedExecutionFieldLengthsAreEnforced(t *testing.T) {
 		}
 	}
 
-	// The misbehaviour shape from the review: update 2 differs from the honest
-	// update only by an oversized state root. It truncates to the same SSZ
-	// root, so every branch and signature check passes; the length check must
-	// be what rejects it, before the zero-substituted root comparison counts
-	// it as a conflict.
+	// A misbehaviour whose update 2 differs from the honest update only by an
+	// oversized state root. The bounds check must reject it before anything is
+	// hashed: the oversized field truncates to the same SSZ root, so every
+	// branch and signature check would otherwise pass.
 	h1 := decodeHeader(headerRaw).toProto()
 	h2 := decodeHeader(headerRaw).toProto()
 	h2.ConsensusUpdate.AttestedHeader.Execution.StateRoot = appendByte(h2.ConsensusUpdate.AttestedHeader.Execution.StateRoot)
