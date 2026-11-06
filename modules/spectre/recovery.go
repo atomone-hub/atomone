@@ -50,27 +50,35 @@ func (cs *ClientState) recoverClient(
 	// substitute's states, verified by a healthy client, remain. Keys are
 	// collected before deleting: the KVStore contract forbids writes within
 	// the domain of an open iterator.
-	prefix := []byte(host.KeyConsensusStatePrefix + "/")
-	var subjectKeys [][]byte
-	iterator := subjectStore.Iterator(prefix, storetypes.PrefixEndBytes(prefix))
-	for ; iterator.Valid(); iterator.Next() {
-		subjectKeys = append(subjectKeys, iterator.Key())
+	//
+	// Both prefixes are covered: the consensus states themselves and the
+	// ordered pruning index that references them.
+	prefixes := [][]byte{
+		[]byte(host.KeyConsensusStatePrefix + "/"),
+		[]byte(keyIterateConsensusStatePrefix),
 	}
-	iterator.Close()
-	for _, key := range subjectKeys {
-		subjectStore.Delete(key)
-	}
+	for _, prefix := range prefixes {
+		var subjectKeys [][]byte
+		iterator := subjectStore.Iterator(prefix, storetypes.PrefixEndBytes(prefix))
+		for ; iterator.Valid(); iterator.Next() {
+			subjectKeys = append(subjectKeys, iterator.Key())
+		}
+		iterator.Close()
+		for _, key := range subjectKeys {
+			subjectStore.Delete(key)
+		}
 
-	var substituteEntries []struct {
-		key, value []byte
-	}
-	iterator = substituteStore.Iterator(prefix, storetypes.PrefixEndBytes(prefix))
-	for ; iterator.Valid(); iterator.Next() {
-		substituteEntries = append(substituteEntries, struct{ key, value []byte }{iterator.Key(), iterator.Value()})
-	}
-	iterator.Close()
-	for _, entry := range substituteEntries {
-		subjectStore.Set(entry.key, entry.value)
+		var substituteEntries []struct {
+			key, value []byte
+		}
+		iterator = substituteStore.Iterator(prefix, storetypes.PrefixEndBytes(prefix))
+		for ; iterator.Valid(); iterator.Next() {
+			substituteEntries = append(substituteEntries, struct{ key, value []byte }{iterator.Key(), iterator.Value()})
+		}
+		iterator.Close()
+		for _, entry := range substituteEntries {
+			subjectStore.Set(entry.key, entry.value)
+		}
 	}
 
 	recovered := cs.Clone()

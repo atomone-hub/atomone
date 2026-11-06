@@ -68,4 +68,12 @@ func TestStoreLayoutMatchesCoreIBC(t *testing.T) {
 	}
 	iterator.Close()
 	require.Equal(t, 2, count)
+
+	// Each state carries an ordered index entry under a big-endian slot,
+	// whose value is the state key. Byte order of the index is slot order.
+	idx1 := store.Get(IterationKey(cons.Slot))
+	require.Equal(t, host.ConsensusStateKey(height), idx1)
+	require.Nil(t, store.Get(IterationKey(cons.Slot+42)), "no index entry for an unwritten slot")
+	require.Less(t, string(IterationKey(cons.Slot)), string(IterationKey(cons.Slot+1)),
+		"index order is slot order")
 }

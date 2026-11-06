@@ -1,13 +1,11 @@
 package spectre
 
 import (
-	"bytes"
 	"context"
-	"strconv"
+	"encoding/binary"
 	"time"
 
 	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
-	host "github.com/cosmos/ibc-go/v10/modules/core/24-host"
 
 	errorsmod "cosmossdk.io/errors"
 	storetypes "cosmossdk.io/store/types"
@@ -28,6 +26,25 @@ const PruneKeepDuration = 7 * 24 * time.Hour
 // pruning is.
 const pruneBatchLimit = 1000
 
+// keyIterateConsensusStatePrefix is the prefix of an ordered index over the
+// consensus states, mirroring 07-tendermint's iteration keys. The consensus
+// state keys themselves are decimal-height strings, so their lexicographic
+// order is not slot order; the index stores one entry per state under a
+// big-endian slot, in which byte order is slot order. Pruning iterates the
+// index and stops at the first state it keeps, instead of scanning the whole
+// window on every update.
+const keyIterateConsensusStatePrefix = "iterateConsensusStates"
+
+// IterationKey returns the ordered-index key of a consensus state slot. The
+// index is internal to the module but exported for migration tooling that
+// prepares pre-index state.
+func IterationKey(slot uint64) []byte {
+	key := make([]byte, len(keyIterateConsensusStatePrefix)+8)
+	copy(key, keyIterateConsensusStatePrefix)
+	binary.BigEndian.PutUint64(key[len(keyIterateConsensusStatePrefix):], slot)
+	return key
+}
+
 // PruneKeepSlots returns the pruning window in slots, derived from the
 // client's slot duration. A zero SecondsPerSlot yields a zero window: only
 // the latest state is kept.
@@ -41,13 +58,10 @@ func (cs *ClientState) PruneKeepSlots() uint64 {
 // PruneConsensusStates deletes the client's consensus states at finalized
 // slots older than keepSlots below the latest finalized slot, at most
 // maxPrune per call so a single invocation does bounded work. The consensus
-// state at the latest slot is always kept. Slots are read from the store
-// keys, so consensus states are never unmarshaled.
-//
-// The keys are decimal-height strings, so iteration is lexicographic rather
-// than by slot and the scan cannot stop at the cutoff: it visits every state
-// the client still holds, which the pruning window bounds, and deletes at
-// most maxPrune of them.
+// state at the latest slot is always kept. Slots are read from the ordered
+// index keys, so consensus states are never unmarshaled and the scan stops at
+// the first kept slot: an in-window client reads one index entry per stale
+// state instead of the whole window.
 //
 // keepSlots should come from PruneKeepSlots: membership verification rejects
 // heights below that window, so states below it are unreachable by proofs.
@@ -69,48 +83,31 @@ func PruneConsensusStates(ctx context.Context, clientStore storetypes.KVStore, c
 		cutoff = latest - keepSlots
 	}
 
-	prefix := []byte(host.KeyConsensusStatePrefix + "/")
+	prefix := []byte(keyIterateConsensusStatePrefix)
 	iterator := clientStore.Iterator(prefix, storetypes.PrefixEndBytes(prefix))
 
 	// Collect first, delete after: mutations during iteration are unsafe on
 	// some store implementations.
-	var staleKeys [][]byte
-	var iterErr error
+	type staleEntry struct {
+		slot uint64
+		key  []byte // consensus state key, stored as the index value
+	}
+	var stale []staleEntry
 	for ; iterator.Valid(); iterator.Next() {
-		if len(staleKeys) == maxPrune {
+		slot := binary.BigEndian.Uint64(iterator.Key()[len(prefix):])
+		if slot >= cutoff {
+			break // index order is slot order: everything from here is kept
+		}
+		if len(stale) == maxPrune {
 			break
 		}
-		slot, err := slotFromConsensusStateKey(iterator.Key())
-		if err != nil {
-			iterErr = err
-			break
-		}
-		if slot < cutoff {
-			staleKeys = append(staleKeys, iterator.Key())
-		}
+		stale = append(stale, staleEntry{slot: slot, key: append([]byte(nil), iterator.Value()...)})
 	}
 	iterator.Close()
-	if iterErr != nil {
-		return 0, iterErr
-	}
 
-	for _, key := range staleKeys {
-		clientStore.Delete(key)
+	for _, entry := range stale {
+		clientStore.Delete(entry.key)
+		clientStore.Delete(IterationKey(entry.slot))
 	}
-	return len(staleKeys), nil
-}
-
-// slotFromConsensusStateKey parses the finalized slot from a consensus state
-// store key, whose suffix is the height string "<revision>-<slot>"
-// (host.ConsensusStateKey). Keys that do not encode a height are corrupt.
-func slotFromConsensusStateKey(key []byte) (uint64, error) {
-	dash := bytes.LastIndexByte(key, '-')
-	if dash < 0 {
-		return 0, errorsmod.Wrapf(ErrInvalidConsensusState, "consensus state key %X does not encode a height", key)
-	}
-	slot, err := strconv.ParseUint(string(key[dash+1:]), 10, 64)
-	if err != nil {
-		return 0, errorsmod.Wrapf(ErrInvalidConsensusState, "consensus state key %X does not encode a height", key)
-	}
-	return slot, nil
+	return len(stale), nil
 }

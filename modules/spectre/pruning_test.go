@@ -113,12 +113,32 @@ func TestPruneConsensusStates(t *testing.T) {
 		require.ErrorIs(t, err, ErrInvalidPruning)
 	})
 
-	t.Run("malformed consensus state key errors", func(t *testing.T) {
+	t.Run("pruned states lose their index entry too", func(t *testing.T) {
 		clientStore := storeClientWithStates(t, 100, 110)
-		clientStore.Set([]byte("consensusStates/garbage"), []byte("garbage"))
 
-		_, err := PruneConsensusStates(context.Background(), clientStore, cdc, 5, 100)
-		require.ErrorIs(t, err, ErrInvalidConsensusState)
+		pruned, err := PruneConsensusStates(context.Background(), clientStore, cdc, 5, 100)
+		require.NoError(t, err)
+		require.Equal(t, 5, pruned)
+
+		for slot := uint64(100); slot < 105; slot++ {
+			require.Nil(t, clientStore.Get(IterationKey(slot)), "index entry for slot %d is pruned", slot)
+		}
+		for slot := uint64(105); slot <= 110; slot++ {
+			require.NotNil(t, clientStore.Get(IterationKey(slot)), "index entry for slot %d is kept", slot)
+		}
+	})
+
+	t.Run("an unindexed state is not pruned", func(t *testing.T) {
+		// The index is the source of iteration; a state written without one
+		// (as by a pre-index binary) is invisible to pruning.
+		clientStore := storeClientWithStates(t, 100, 110)
+		clientStore.Delete(IterationKey(100))
+
+		pruned, err := PruneConsensusStates(context.Background(), clientStore, cdc, 0, 100)
+		require.NoError(t, err)
+		require.Equal(t, 9, pruned)
+		_, found := GetConsensusState(context.Background(), clientStore, cdc, clienttypes.NewHeight(0, 100))
+		require.True(t, found, "the unindexed state is left alone")
 	})
 
 	t.Run("missing client state errors", func(t *testing.T) {

@@ -171,11 +171,13 @@ func getClientState(ctx context.Context, clientStore storetypes.KVStore, cdc cod
 	return clientState, true
 }
 
-// setConsensusState stores the consensus state at the given height.
+// setConsensusState stores the consensus state at the given height, plus
+// its ordered-index entry for pruning.
 func setConsensusState(ctx context.Context, clientStore storetypes.KVStore, cdc codec.BinaryCodec, consensusState *ConsensusState, height exported.Height) {
 	if err := newConsensusStateMap(clientStore, cdc).Set(ctx, height.String(), consensusState); err != nil {
 		panic(errorsmod.Wrap(err, "set consensus state"))
 	}
+	clientStore.Set(IterationKey(height.GetRevisionHeight()), host.ConsensusStateKey(height))
 }
 
 // GetConsensusState retrieves the consensus state at the given height from

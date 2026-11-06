@@ -74,8 +74,9 @@ func TestMigrationPruneConsensusStates(t *testing.T) {
 
 	clientStore.Set(host.ClientStateKey(), clienttypes.MustMarshalClientState(cdc, cs))
 	for slot := uint64(100); slot <= 110; slot++ {
-		clientStore.Set(host.ConsensusStateKey(clienttypes.NewHeight(0, slot)),
-			clienttypes.MustMarshalConsensusState(cdc, &spectre.ConsensusState{Slot: slot}))
+		key := host.ConsensusStateKey(clienttypes.NewHeight(0, slot))
+		clientStore.Set(key, clienttypes.MustMarshalConsensusState(cdc, &spectre.ConsensusState{Slot: slot}))
+		clientStore.Set(spectre.IterationKey(slot), key)
 	}
 
 	keeper := fakeClientKeeper{state: cs, store: clientStore}
