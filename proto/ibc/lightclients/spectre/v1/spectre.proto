@@ -3,6 +3,8 @@ syntax = "proto3";
 package ibc.lightclients.spectre.v1;
 
 import "gogoproto/gogo.proto";
+import "cosmos/msg/v1/msg.proto";
+import "amino/amino.proto";
 
 option go_package = "github.com/atomone-hub/atomone/modules/spectre;spectre";
 
@@ -328,3 +330,46 @@ message StorageProof {
   // proof is the list of RLP-encoded storage trie nodes.
   repeated bytes proof = 3;
 }
+
+// Msg is the spectre module's message service. It carries a single
+// governance-authorized message: light client updates themselves travel in
+// MsgUpdateClient on the 02-client module, not here.
+service Msg {
+  // MigrateForkParameters replaces the fork schedule of a spectre client.
+  rpc MigrateForkParameters(MsgMigrateForkParameters)
+      returns (MsgMigrateForkParametersResponse);
+}
+
+// MsgMigrateForkParameters replaces the fork schedule of an active spectre
+// client.
+//
+// The schedule a client is created with is fixed: no update message carries
+// one, and client recovery requires a substitute with an identical schedule.
+// A fork scheduled after the client's creation (for mainnet today, Gloas)
+// would therefore stop the client at its activation: signatures arrive under
+// the new fork version and new generalized indices, and verification fails
+// forever, while the client stays active and can neither expire nor be
+// recovered. Governance applies the announced schedule through this message
+// before the fork activates, and the client never stalls.
+//
+// A wrong schedule can stop verification but cannot make an update verify
+// false data: updates still need a 2/3 sync committee signature over the
+// chain's real fork domain and Merkle proofs into signed roots, so this is
+// governance-trusted by design, like client recovery.
+message MsgMigrateForkParameters {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "ibc/lightclients/spectre/v1/MsgMigrateForkParameters";
+
+  // authority must be the governance module account address.
+  string authority = 1;
+  // client_id is the spectre client whose schedule is replaced.
+  string client_id = 2;
+  // fork_parameters is the new fork schedule. Its genesis fork version must
+  // match the client's, and the client state must validate under it (fork
+  // epochs in order, Electra at or before the client's latest slot).
+  ForkParameters fork_parameters = 3 [(gogoproto.nullable) = false];
+}
+
+// MsgMigrateForkParametersResponse is the response of
+// Msg/MigrateForkParameters.
+message MsgMigrateForkParametersResponse {}

@@ -77,11 +77,19 @@ func (AppModuleBasic) GetQueryCmd() *cobra.Command {
 type AppModule struct {
 	AppModuleBasic
 	lightClientModule LightClientModule
+	keeper            *Keeper
 }
 
 // NewAppModule creates a new spectre client module.
-func NewAppModule(lightClientModule LightClientModule) AppModule {
+func NewAppModule(lightClientModule LightClientModule, keeper *Keeper) AppModule {
 	return AppModule{
 		lightClientModule: lightClientModule,
+		keeper:            keeper,
 	}
+}
+
+// RegisterServices registers the module's message service. Light client
+// updates themselves go through the 02-client module's MsgUpdateClient.
+func (am AppModule) RegisterServices(cfg module.Configurator) {
+	RegisterMsgServer(cfg.MsgServer(), NewMsgServer(am.keeper))
 }
