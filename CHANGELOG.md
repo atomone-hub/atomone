@@ -13,6 +13,8 @@
 
 ### DEPENDENCIES
 
+- Bump Go to 1.26.11 and the dependencies flagged by `govulncheck` [#TBD](https://github.com/atomone-hub/atomone/pull/TBD)
+
 ### FEATURES
 
 ### STATE BREAKING
