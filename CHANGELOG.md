@@ -18,8 +18,11 @@
 ### STATE BREAKING
 
 - fix(10-gno): bind validator addresses to pubkeys and bound PartSetHeader.Total during conversion [#367](https://github.com/atomone-hub/atomone/pull/367)
+- feat(10-gno): support secp256k1 validator keys [#391](https://github.com/atomone-hub/atomone/pull/391)
 
 > **Note:** both `10-gno` changes only affect malformed client messages, which are now rejected with an error where they were previously either accepted (unbound validator addresses) or failed with a recovered panic (out-of-range parts total). Legitimate gno headers are unaffected. Since the transaction error code and gas used are part of the results hash, nodes on different versions would diverge on such a message, so these changes require a coordinated upgrade.
+
+> **Note:** the `10-gno` light client now verifies headers and misbehaviour whose validators use secp256k1 consensus keys, alone or beside ed25519 ones (gno allows both since [gnolang/gno#6375](https://github.com/gnolang/gno/pull/6375)). Such client messages were rejected before, so this requires a coordinated upgrade. Clients of ed25519 chains are unaffected and no state migration is needed.
 
 ### IMPROVEMENTS
 

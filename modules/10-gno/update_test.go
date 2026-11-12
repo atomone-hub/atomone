@@ -5,7 +5,7 @@ import (
 	"time"
 
 	cmtmath "github.com/cometbft/cometbft/libs/math"
-	"github.com/gnolang/gno/tm2/pkg/crypto/ed25519"
+	"github.com/gnolang/gno/tm2/pkg/crypto"
 	"github.com/stretchr/testify/require"
 
 	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
@@ -186,7 +186,7 @@ func TestCheckMisbehaviourHeader_UsesClientTrustLevel(t *testing.T) {
 	votingPower := int64(100)
 
 	// Create 4 keys for the trusted set
-	allKeys := []ed25519.PrivKeyEd25519{makePrivKey(), makePrivKey(), makePrivKey(), makePrivKey()}
+	allKeys := []crypto.PrivKey{makePrivKey(), makePrivKey(), makePrivKey(), makePrivKey()}
 
 	// Sort all 4 validators by address (as they would be on-chain).
 	// ConvertToGnoValidatorSet preserves input order and GetByAddress

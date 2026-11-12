@@ -6,7 +6,7 @@ import (
 
 	cmtmath "github.com/cometbft/cometbft/libs/math"
 	"github.com/cometbft/cometbft/light"
-	"github.com/gnolang/gno/tm2/pkg/crypto/ed25519"
+	"github.com/gnolang/gno/tm2/pkg/crypto"
 	"github.com/stretchr/testify/require"
 )
 
@@ -248,7 +248,7 @@ func TestVerifyLightCommit_DifferingValSets(t *testing.T) {
 			createTestValidatorWithKey(votingPower, keyC),
 		},
 	}
-	trustedPrivKeys := []ed25519.PrivKeyEd25519{keyA, keyB, keyC}
+	trustedPrivKeys := []crypto.PrivKey{keyA, keyB, keyC}
 
 	// The untrusted commit is signed by B, C, D
 	untrustedValSet := &ValidatorSet{
@@ -258,7 +258,7 @@ func TestVerifyLightCommit_DifferingValSets(t *testing.T) {
 			createTestValidatorWithKey(votingPower, keyD),
 		},
 	}
-	untrustedPrivKeys := []ed25519.PrivKeyEd25519{keyB, keyC, keyD}
+	untrustedPrivKeys := []crypto.PrivKey{keyB, keyC, keyD}
 
 	// Create a signed header using the untrusted validator set
 	signedHeader := createTestSignedHeader(chainID, height, blockTime, untrustedValSet, untrustedPrivKeys)
@@ -312,7 +312,7 @@ func TestVerifyLightCommit_DifferentSetSizes(t *testing.T) {
 			createTestValidatorWithKey(votingPower, keyC),
 		},
 	}
-	trustedPrivKeys := []ed25519.PrivKeyEd25519{keyA, keyB, keyC}
+	trustedPrivKeys := []crypto.PrivKey{keyA, keyB, keyC}
 
 	// Untrusted commit has 4 validators: A, B, C, D (different size!)
 	untrustedValSet := &ValidatorSet{
@@ -323,7 +323,7 @@ func TestVerifyLightCommit_DifferentSetSizes(t *testing.T) {
 			createTestValidatorWithKey(votingPower, keyD),
 		},
 	}
-	untrustedPrivKeys := []ed25519.PrivKeyEd25519{keyA, keyB, keyC, keyD}
+	untrustedPrivKeys := []crypto.PrivKey{keyA, keyB, keyC, keyD}
 
 	signedHeader := createTestSignedHeader(chainID, height, blockTime, untrustedValSet, untrustedPrivKeys)
 	bftTrustedVals := createBftValidatorSet(trustedValSet.Validators, trustedPrivKeys)
@@ -362,7 +362,7 @@ func TestVerifyLightCommit_NoOverlap(t *testing.T) {
 			createTestValidatorWithKey(votingPower, keyB),
 		},
 	}
-	trustedPrivKeys := []ed25519.PrivKeyEd25519{keyA, keyB}
+	trustedPrivKeys := []crypto.PrivKey{keyA, keyB}
 
 	// Untrusted set: C, D (no overlap with trusted)
 	untrustedValSet := &ValidatorSet{
@@ -371,7 +371,7 @@ func TestVerifyLightCommit_NoOverlap(t *testing.T) {
 			createTestValidatorWithKey(votingPower, keyD),
 		},
 	}
-	untrustedPrivKeys := []ed25519.PrivKeyEd25519{keyC, keyD}
+	untrustedPrivKeys := []crypto.PrivKey{keyC, keyD}
 
 	signedHeader := createTestSignedHeader(chainID, height, blockTime, untrustedValSet, untrustedPrivKeys)
 	bftTrustedVals := createBftValidatorSet(trustedValSet.Validators, trustedPrivKeys)
@@ -413,14 +413,14 @@ func TestVerifyLightCommit_ErrorMessageReportsCorrectThreshold(t *testing.T) {
 			createTestValidatorWithKey(votingPower, keyC),
 		},
 	}
-	trustedPrivKeys := []ed25519.PrivKeyEd25519{keyA, keyB, keyC}
+	trustedPrivKeys := []crypto.PrivKey{keyA, keyB, keyC}
 
 	untrustedValSet := &ValidatorSet{
 		Validators: []*Validator{
 			createTestValidatorWithKey(votingPower, keyD),
 		},
 	}
-	untrustedPrivKeys := []ed25519.PrivKeyEd25519{keyD}
+	untrustedPrivKeys := []crypto.PrivKey{keyD}
 
 	signedHeader := createTestSignedHeader(chainID, height, blockTime, untrustedValSet, untrustedPrivKeys)
 	bftTrustedVals := createBftValidatorSet(trustedValSet.Validators, trustedPrivKeys)
