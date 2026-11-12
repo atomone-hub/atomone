@@ -22,7 +22,7 @@ import (
 )
 
 var (
-	_ module.AppModule      = AppModule{}
+	_ module.AppModule      = AppModule{} //nolint:staticcheck // SA1019
 	_ module.AppModuleBasic = AppModuleBasic{}
 )
 
