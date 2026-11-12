@@ -258,6 +258,16 @@ endif
 
 .PHONY: run-tests $(TEST_TARGETS)
 
+# End-to-end test of the spectre Ethereum light client: Kurtosis L1, spectre
+# relayer and remote Groth16 prover, ICS-20 transfers in both directions plus
+# the redemption (return) legs.
+# Requires docker, kurtosis, foundry, bun and network access to the prover.
+# See tests/e2e/spectre/run.sh for requirements and configuration.
+test-spectre-e2e:
+	@bash tests/e2e/spectre/run.sh
+
+.PHONY: test-spectre-e2e
+
 docker-build-debug:
 	@docker build -t cosmos/atomoned-e2e -f e2e.Dockerfile --build-arg GO_VERSION=$(GO_REQUIRED_VERSION) .
 
