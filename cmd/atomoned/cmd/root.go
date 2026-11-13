@@ -169,7 +169,7 @@ func initRootCmd(
 
 // genesisCommand builds genesis-related `simd genesis` command. Users may provide application specific commands as a parameter
 func genesisCommand(basicManager module.BasicManager, encodingConfig params.EncodingConfig, cmds ...*cobra.Command) *cobra.Command {
-	cmd := genutilcli.GenesisCoreCommand(encodingConfig.TxConfig, basicManager, atomone.DefaultNodeHome)
+	cmd := genutilcli.GenesisCoreCommand(encodingConfig.TxConfig, basicManager, atomone.DefaultNodeHome) //nolint:staticcheck // SA1019
 
 	for _, subCmd := range cmds {
 		cmd.AddCommand(subCmd)

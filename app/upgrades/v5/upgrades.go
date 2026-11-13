@@ -13,8 +13,9 @@ import (
 	"github.com/atomone-hub/atomone/modules/spectre"
 )
 
-// CreateUpgradeHandler returns the upgrade handler for AtomOne v5.
-// This version registers the spectre Ethereum light client.
+// CreateUpgradeHandler returns the upgrade handler for AtomOne v5. It runs the
+// pending module migrations, including the x/mint migration to time-based
+// minting, and registers the spectre Ethereum light client.
 func CreateUpgradeHandler(
 	mm *module.Manager,
 	cdc codec.Codec,
