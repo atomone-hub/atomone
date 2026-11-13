@@ -60,6 +60,7 @@ import (
 	"github.com/atomone-hub/atomone/app/keepers"
 	"github.com/atomone-hub/atomone/app/upgrades"
 	v42 "github.com/atomone-hub/atomone/app/upgrades/v4_2"
+	v5 "github.com/atomone-hub/atomone/app/upgrades/v5"
 	"github.com/atomone-hub/atomone/client/docs"
 )
 
@@ -67,7 +68,7 @@ var (
 	// DefaultNodeHome default home directories for the application daemon
 	DefaultNodeHome string
 
-	Upgrades = []upgrades.Upgrade{v42.Upgrade}
+	Upgrades = []upgrades.Upgrade{v42.Upgrade, v5.Upgrade}
 )
 
 var (
@@ -311,6 +312,16 @@ func (a *AtomOneApp) DefaultGenesis() map[string]json.RawMessage {
 // BasicModuleManager returns the BasicModuleManager of the app.
 func (app *AtomOneApp) BasicModuleManager() module.BasicManager {
 	return app.bmm
+}
+
+// ModuleManager returns the module Manager of the app.
+func (app *AtomOneApp) ModuleManager() *module.Manager {
+	return app.mm
+}
+
+// Configurator returns the module configurator of the app.
+func (app *AtomOneApp) Configurator() module.Configurator {
+	return app.configurator
 }
 
 // PreBlocker application updates every pre block
