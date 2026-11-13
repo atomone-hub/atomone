@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-AtomOne is a Cosmos SDK-based blockchain node, forked from Cosmos Hub (v15.2.0). It uses a custom Cosmos SDK fork (`atomone-hub/cosmos-sdk`) and adds custom modules for governance DAOs, dynamic fees, governance overrides, and photon tokens. The binary is `atomoned`.
+AtomOne is a Cosmos SDK-based blockchain node, forked from Cosmos Hub (v15.2.0). It uses the AtomOne SDK (`atomone-hub/atomone-sdk`, which replaces `github.com/cosmos/cosmos-sdk` in `go.mod`) and adds custom modules for governance DAOs, dynamic fees, governance overrides, and photon tokens. The binary is `atomoned`.
 
 ## Build & Development Commands
 
@@ -70,7 +70,7 @@ Two distinct mechanisms exist and must not be confused:
 
 ## Key Dependencies
 
-- Cosmos SDK: custom fork at `github.com/atomone-hub/cosmos-sdk`
+- AtomOne SDK: `github.com/atomone-hub/atomone-sdk` (module path `github.com/atomone-hub/cosmos-sdk`, replacing `github.com/cosmos/cosmos-sdk`)
 - CometBFT: v0.38.x
 - IBC-go: v10.x
 - Bech32 prefix: `atone` (not `cosmos`)
