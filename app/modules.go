@@ -124,6 +124,7 @@ func appModules(
 		app.ICAModule,
 		app.TMClientModule,
 		app.GnoClientModule,
+		app.SpectreModule,
 	}
 }
 

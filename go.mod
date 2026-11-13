@@ -25,6 +25,7 @@ require (
 	cosmossdk.io/x/tx v0.14.0
 	cosmossdk.io/x/upgrade v0.2.0
 	github.com/cometbft/cometbft v0.38.23
+	github.com/consensys/gnark-crypto v0.18.1
 	github.com/cosmos/cosmos-db v1.1.3
 	github.com/cosmos/cosmos-proto v1.0.0-beta.5
 	github.com/cosmos/cosmos-sdk v0.53.4
@@ -32,6 +33,7 @@ require (
 	github.com/cosmos/gogoproto v1.7.2
 	github.com/cosmos/ibc-go/v10 v10.7.0
 	github.com/cosmos/ics23/go v0.11.0
+	github.com/ethereum/go-ethereum v1.17.0
 	github.com/gnolang/gno v0.0.0-20260601091146-5c52b5dba76c
 	github.com/golang/mock v1.6.0
 	github.com/golang/protobuf v1.5.4
@@ -133,7 +135,6 @@ require (
 	github.com/emicklei/dot v1.11.0 // indirect
 	github.com/envoyproxy/go-control-plane/envoy v1.37.0 // indirect
 	github.com/envoyproxy/protoc-gen-validate v1.3.3 // indirect
-	github.com/ethereum/go-ethereum v1.17.0 // indirect
 	github.com/fatih/color v1.18.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect

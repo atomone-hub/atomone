@@ -9,18 +9,29 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 
 	"github.com/atomone-hub/atomone/app/keepers"
+	"github.com/atomone-hub/atomone/app/upgrades"
+	"github.com/atomone-hub/atomone/modules/spectre"
 )
 
-// CreateUpgradeHandler returns the upgrade handler for AtomOne v5, which runs
-// the pending module migrations, including the x/mint migration to time-based
-// minting.
+// CreateUpgradeHandler returns the upgrade handler for AtomOne v5. It runs the
+// pending module migrations, including the x/mint migration to time-based
+// minting, and registers the spectre Ethereum light client.
 func CreateUpgradeHandler(
 	mm *module.Manager,
-	_ codec.Codec,
+	cdc codec.Codec,
 	configurator module.Configurator,
-	_ *keepers.AppKeepers,
+	keepers *keepers.AppKeepers,
 ) upgradetypes.UpgradeHandler {
 	return func(ctx context.Context, _ upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
-		return mm.RunMigrations(ctx, configurator, vm)
+		vm, err := mm.RunMigrations(ctx, configurator, vm)
+		if err != nil {
+			return vm, err
+		}
+
+		if err := upgrades.AppendAllowedClient(ctx, keepers.IBCKeeper, spectre.ModuleName); err != nil {
+			return vm, err
+		}
+
+		return vm, nil
 	}
 }
