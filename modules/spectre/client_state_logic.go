@@ -386,7 +386,7 @@ func (cs *ClientState) validateUpdatePeriods(
 			"current slot %d is behind signature slot %d", currentSlot, update.SignatureSlot)
 	}
 
-	if !(update.SignatureSlot > updateAttestedSlot && updateAttestedSlot >= updateFinalizedSlot) {
+	if update.SignatureSlot <= updateAttestedSlot || updateAttestedSlot < updateFinalizedSlot {
 		return updatePeriods{}, errorsmod.Wrapf(ErrInvalidSlots,
 			"invalid slot ordering: signature %d, attested %d, finalized %d",
 			update.SignatureSlot, updateAttestedSlot, updateFinalizedSlot)
