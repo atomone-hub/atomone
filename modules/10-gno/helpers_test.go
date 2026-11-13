@@ -10,7 +10,6 @@ import (
 
 	bfttypes "github.com/gnolang/gno/tm2/pkg/bft/types"
 	"github.com/gnolang/gno/tm2/pkg/crypto"
-	"github.com/gnolang/gno/tm2/pkg/crypto/ed25519"
 
 	"github.com/stretchr/testify/require"
 
@@ -207,7 +206,7 @@ func toBftValidator(v *Validator) *bfttypes.Validator {
 	}
 	return &bfttypes.Validator{
 		Address:     addr,
-		PubKey:      ed25519.PubKeyEd25519(v.PubKey.GetEd25519()),
+		PubKey:      mustGnoPubKey(v.PubKey),
 		VotingPower: v.VotingPower,
 	}
 }

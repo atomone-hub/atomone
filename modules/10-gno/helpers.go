@@ -6,6 +6,9 @@ import (
 	bfttypes "github.com/gnolang/gno/tm2/pkg/bft/types"
 	"github.com/gnolang/gno/tm2/pkg/crypto"
 	"github.com/gnolang/gno/tm2/pkg/crypto/ed25519"
+	"github.com/gnolang/gno/tm2/pkg/crypto/secp256k1"
+
+	cmtcrypto "github.com/cometbft/cometbft/proto/tendermint/crypto"
 
 	clienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
 
@@ -13,7 +16,7 @@ import (
 )
 
 // ConvertToGnoValidatorSet converts a protobuf ValidatorSet to a bfttypes.ValidatorSet.
-// It returns an error if any validator has a non-ed25519 or malformed public key, an
+// It returns an error if any validator has an unsupported or malformed public key, an
 // invalid address, an address that is not derived from its public key, non-positive or
 // out-of-bounds voting power, if any address is duplicated, if the total voting power
 // exceeds the allowed bound, or if the resulting validator set is nil or empty.
@@ -46,16 +49,10 @@ func ConvertToGnoValidatorSet(valSet *ValidatorSet) (*bfttypes.ValidatorSet, err
 		if val == nil {
 			return nil, errorsmod.Wrapf(ErrInvalidValidatorSet, "validator at index %d is nil", i)
 		}
-		keyBytes := val.PubKey.GetEd25519()
-		if keyBytes == nil {
-			return nil, errorsmod.Wrap(clienttypes.ErrInvalidHeader, "validator pubkey is not ed25519")
+		pubKey, err := convertPubKey(val.PubKey)
+		if err != nil {
+			return nil, err
 		}
-		// Converting a slice to [32]byte panics when the slice is shorter, so
-		// check the length before building the key.
-		if len(keyBytes) != ed25519.PubKeyEd25519Size {
-			return nil, errorsmod.Wrapf(ErrInvalidValidatorSet, "validator pubkey has length %d, expected %d", len(keyBytes), ed25519.PubKeyEd25519Size)
-		}
-		pubKey := ed25519.PubKeyEd25519(keyBytes)
 		address, err := crypto.AddressFromString(val.Address)
 		if err != nil {
 			return nil, errorsmod.Wrap(clienttypes.ErrInvalidHeader, "invalid validator address")
@@ -98,6 +95,33 @@ func ConvertToGnoValidatorSet(valSet *ValidatorSet) (*bfttypes.ValidatorSet, err
 	}
 
 	return &gnoValset, nil
+}
+
+// convertPubKey converts a protobuf public key to the Gno key of the same type.
+// Gno validators sign with ed25519 or secp256k1 keys (a validator set may mix
+// both), so these are the two types accepted; any other, or no key at all, is
+// rejected.
+//
+// Only the length is checked. Whether the bytes are a valid curve point is
+// not: such a key cannot verify any signature, and the set that carries it
+// still has to hash to a validators hash the client trusts.
+func convertPubKey(pubKey *cmtcrypto.PublicKey) (crypto.PubKey, error) {
+	// Converting a slice to an array panics when the slice is shorter, so the
+	// length is checked before building the key.
+	switch sum := pubKey.GetSum().(type) {
+	case *cmtcrypto.PublicKey_Ed25519:
+		if len(sum.Ed25519) != ed25519.PubKeyEd25519Size {
+			return nil, errorsmod.Wrapf(ErrInvalidValidatorSet, "validator ed25519 pubkey has length %d, expected %d", len(sum.Ed25519), ed25519.PubKeyEd25519Size)
+		}
+		return ed25519.PubKeyEd25519(sum.Ed25519), nil
+	case *cmtcrypto.PublicKey_Secp256K1:
+		if len(sum.Secp256K1) != secp256k1.PubKeySecp256k1Size {
+			return nil, errorsmod.Wrapf(ErrInvalidValidatorSet, "validator secp256k1 pubkey has length %d, expected %d", len(sum.Secp256K1), secp256k1.PubKeySecp256k1Size)
+		}
+		return secp256k1.PubKeySecp256k1(sum.Secp256K1), nil
+	default:
+		return nil, errorsmod.Wrap(clienttypes.ErrInvalidHeader, "validator pubkey is neither ed25519 nor secp256k1")
+	}
 }
 
 // ConvertToGnoCommit converts a protobuf Commit to a bfttypes.Commit.

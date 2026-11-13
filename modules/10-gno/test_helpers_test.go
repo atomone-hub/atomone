@@ -9,6 +9,7 @@ import (
 	bfttypes "github.com/gnolang/gno/tm2/pkg/bft/types"
 	"github.com/gnolang/gno/tm2/pkg/crypto"
 	"github.com/gnolang/gno/tm2/pkg/crypto/ed25519"
+	"github.com/gnolang/gno/tm2/pkg/crypto/secp256k1"
 	"github.com/stretchr/testify/require"
 
 	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
@@ -38,23 +39,91 @@ const (
 	testStoreKey        = "test-store"
 )
 
-// makePrivKey creates a test ed25519 private key using proper key generation
-func makePrivKey() ed25519.PrivKeyEd25519 {
+// Key types the test validators can sign with.
+const (
+	keyTypeEd25519   = "ed25519"
+	keyTypeSecp256k1 = "secp256k1"
+	keyTypeMixed     = "mixed" // alternates between the two
+)
+
+// testKeyType is the key type makePrivKey generates. Tests change it through
+// useKeyType; the package's tests do not run in parallel.
+var (
+	testKeyType    = keyTypeEd25519
+	testKeyCounter int
+)
+
+// useKeyType makes makePrivKey generate keys of the given type until the test ends.
+func useKeyType(t *testing.T, keyType string) {
+	t.Helper()
+	prev := testKeyType
+	testKeyType = keyType
+	t.Cleanup(func() { testKeyType = prev })
+}
+
+// forEachKeyType runs fn once per key type: ed25519, secp256k1 and a mix of both.
+func forEachKeyType(t *testing.T, fn func(t *testing.T)) {
+	t.Helper()
+	for _, keyType := range []string{keyTypeEd25519, keyTypeSecp256k1, keyTypeMixed} {
+		t.Run(keyType, func(t *testing.T) {
+			useKeyType(t, keyType)
+			fn(t)
+		})
+	}
+}
+
+// makePrivKey creates a test validator private key of the current test key type.
+func makePrivKey() crypto.PrivKey {
+	keyType := testKeyType
+	if keyType == keyTypeMixed {
+		testKeyCounter++
+		keyType = keyTypeEd25519
+		if testKeyCounter%2 == 0 {
+			keyType = keyTypeSecp256k1
+		}
+	}
+	if keyType == keyTypeSecp256k1 {
+		return secp256k1.GenPrivKey()
+	}
 	return ed25519.GenPrivKey()
 }
 
 // makePubKey creates a public key from a private key
-func makePubKey(privKey ed25519.PrivKeyEd25519) ed25519.PubKeyEd25519 {
-	return privKey.PubKey().(ed25519.PubKeyEd25519)
+func makePubKey(privKey crypto.PrivKey) crypto.PubKey {
+	return privKey.PubKey()
 }
 
 // makeAddress returns the address from the public key
-func makeAddress(pubKey ed25519.PubKeyEd25519) crypto.Address {
+func makeAddress(pubKey crypto.PubKey) crypto.Address {
 	return pubKey.Address()
 }
 
+// toProtoPubKey converts a Gno public key to its protobuf form.
+func toProtoPubKey(pubKey crypto.PubKey) *cmtcrypto.PublicKey {
+	switch pk := pubKey.(type) {
+	case ed25519.PubKeyEd25519:
+		return &cmtcrypto.PublicKey{Sum: &cmtcrypto.PublicKey_Ed25519{Ed25519: pk[:]}}
+	case secp256k1.PubKeySecp256k1:
+		return &cmtcrypto.PublicKey{Sum: &cmtcrypto.PublicKey_Secp256K1{Secp256K1: pk[:]}}
+	default:
+		panic("unsupported test key type")
+	}
+}
+
+// mustGnoPubKey converts a protobuf public key to the Gno key of the same type.
+func mustGnoPubKey(pubKey *cmtcrypto.PublicKey) crypto.PubKey {
+	switch sum := pubKey.GetSum().(type) {
+	case *cmtcrypto.PublicKey_Ed25519:
+		return ed25519.PubKeyEd25519(sum.Ed25519)
+	case *cmtcrypto.PublicKey_Secp256K1:
+		return secp256k1.PubKeySecp256k1(sum.Secp256K1)
+	default:
+		panic("unsupported test key type")
+	}
+}
+
 // signVoteBytes signs the canonical vote bytes with the given private key
-func signVoteBytes(privKey ed25519.PrivKeyEd25519, chainID string, vote *bfttypes.Vote) []byte {
+func signVoteBytes(privKey crypto.PrivKey, chainID string, vote *bfttypes.Vote) []byte {
 	signBytes := vote.SignBytes(chainID)
 	sig, err := privKey.Sign(signBytes)
 	if err != nil {
@@ -66,10 +135,10 @@ func signVoteBytes(privKey ed25519.PrivKeyEd25519, chainID string, vote *bfttype
 // createBftValidatorSet creates a bfttypes.ValidatorSet from our test validators
 // This is needed to compute the correct ValidatorsHash
 // Note: NewValidatorSet sorts validators by address, so the returned order may differ
-func createBftValidatorSet(validators []*Validator, privKeys []ed25519.PrivKeyEd25519) *bfttypes.ValidatorSet {
+func createBftValidatorSet(validators []*Validator, privKeys []crypto.PrivKey) *bfttypes.ValidatorSet {
 	bftVals := make([]*bfttypes.Validator, len(validators))
 	for i, val := range validators {
-		pubKey := privKeys[i].PubKey().(ed25519.PubKeyEd25519)
+		pubKey := privKeys[i].PubKey()
 		bftVals[i] = &bfttypes.Validator{
 			Address:          pubKey.Address(),
 			PubKey:           pubKey,
@@ -82,15 +151,15 @@ func createBftValidatorSet(validators []*Validator, privKeys []ed25519.PrivKeyEd
 
 // sortedValidatorsAndKeys returns validators and private keys sorted by address
 // This matches the order that bfttypes.NewValidatorSet will use
-func sortedValidatorsAndKeys(privKeys []ed25519.PrivKeyEd25519, votingPower int64) ([]*bfttypes.Validator, []ed25519.PrivKeyEd25519) {
+func sortedValidatorsAndKeys(privKeys []crypto.PrivKey, votingPower int64) ([]*bfttypes.Validator, []crypto.PrivKey) {
 	type valWithKey struct {
 		val     *bfttypes.Validator
-		privKey ed25519.PrivKeyEd25519
+		privKey crypto.PrivKey
 	}
 
 	pairs := make([]valWithKey, len(privKeys))
 	for i, privKey := range privKeys {
-		pubKey := privKey.PubKey().(ed25519.PubKeyEd25519)
+		pubKey := privKey.PubKey()
 		pairs[i] = valWithKey{
 			val: &bfttypes.Validator{
 				Address:     pubKey.Address(),
@@ -111,7 +180,7 @@ func sortedValidatorsAndKeys(privKeys []ed25519.PrivKeyEd25519, votingPower int6
 	}
 
 	sortedVals := make([]*bfttypes.Validator, len(pairs))
-	sortedKeys := make([]ed25519.PrivKeyEd25519, len(pairs))
+	sortedKeys := make([]crypto.PrivKey, len(pairs))
 	for i, pair := range pairs {
 		sortedVals[i] = pair.val
 		sortedKeys[i] = pair.privKey
@@ -196,10 +265,9 @@ func toBftValidatorSet(vs *ValidatorSet) *bfttypes.ValidatorSet {
 	}
 	bftVals := make([]*bfttypes.Validator, len(vs.Validators))
 	for i, val := range vs.Validators {
-		key := val.PubKey.GetEd25519()
 		bftVals[i] = &bfttypes.Validator{
 			Address:          crypto.MustAddressFromString(val.Address),
-			PubKey:           ed25519.PubKeyEd25519(key),
+			PubKey:           mustGnoPubKey(val.PubKey),
 			VotingPower:      val.VotingPower,
 			ProposerPriority: val.ProposerPriority,
 		}
@@ -240,28 +308,28 @@ func createTestConsensusState(timestamp time.Time) *ConsensusState {
 
 // createTestValidator creates a test Validator with the given voting power
 // The private key is generated and returned for signing purposes
-func createTestValidator(votingPower int64) (*Validator, ed25519.PrivKeyEd25519) {
+func createTestValidator(votingPower int64) (*Validator, crypto.PrivKey) {
 	privKey := makePrivKey()
 	return createTestValidatorWithKey(votingPower, privKey), privKey
 }
 
 // createTestValidatorWithKey creates a test Validator from the given private key
-func createTestValidatorWithKey(votingPower int64, privKey ed25519.PrivKeyEd25519) *Validator {
-	pubKey := privKey.PubKey().(ed25519.PubKeyEd25519)
+func createTestValidatorWithKey(votingPower int64, privKey crypto.PrivKey) *Validator {
+	pubKey := privKey.PubKey()
 	addr := pubKey.Address()
 
 	return &Validator{
 		Address:          addr.String(),
-		PubKey:           &cmtcrypto.PublicKey{Sum: &cmtcrypto.PublicKey_Ed25519{Ed25519: pubKey[:]}},
+		PubKey:           toProtoPubKey(pubKey),
 		VotingPower:      votingPower,
 		ProposerPriority: 0,
 	}
 }
 
 // createTestValidatorSet creates a validator set with the given number of validators
-func createTestValidatorSet(numValidators int, votingPower int64) (*ValidatorSet, []ed25519.PrivKeyEd25519) {
+func createTestValidatorSet(numValidators int, votingPower int64) (*ValidatorSet, []crypto.PrivKey) {
 	validators := make([]*Validator, numValidators)
-	privKeys := make([]ed25519.PrivKeyEd25519, numValidators)
+	privKeys := make([]crypto.PrivKey, numValidators)
 
 	for i := 0; i < numValidators; i++ {
 		val, privKey := createTestValidator(votingPower)
@@ -324,7 +392,7 @@ func createTestGnoHeader(chainID string, height int64, blockTime time.Time, next
 
 // createTestSignedHeader creates a test SignedHeader with valid signatures
 // The header hash is computed and used as the BlockID in the commit
-func createTestSignedHeader(chainID string, height int64, blockTime time.Time, valSet *ValidatorSet, privKeys []ed25519.PrivKeyEd25519) *SignedHeader {
+func createTestSignedHeader(chainID string, height int64, blockTime time.Time, valSet *ValidatorSet, privKeys []crypto.PrivKey) *SignedHeader {
 	// Sort validators and keys to match the order NewValidatorSet will use
 	sortedVals, sortedKeys := sortedValidatorsAndKeys(privKeys, valSet.Validators[0].VotingPower)
 
@@ -478,7 +546,7 @@ func createTestHeader(t *testing.T, chainID string, height int64, trustedHeight 
 }
 
 // createTestHeaderWithKeys creates a test Header and returns the private keys for verification testing
-func createTestHeaderWithKeys(t *testing.T, chainID string, height int64, trustedHeight clienttypes.Height, blockTime time.Time, numValidators int, votingPower int64) (*Header, *ValidatorSet, []ed25519.PrivKeyEd25519) {
+func createTestHeaderWithKeys(t *testing.T, chainID string, height int64, trustedHeight clienttypes.Height, blockTime time.Time, numValidators int, votingPower int64) (*Header, *ValidatorSet, []crypto.PrivKey) {
 	t.Helper()
 
 	valSet, privKeys := createTestValidatorSet(numValidators, votingPower)
@@ -496,7 +564,7 @@ func createTestHeaderWithKeys(t *testing.T, chainID string, height int64, truste
 
 // createChainedTestHeaders creates two headers for adjacent verification testing
 // The first header is the "trusted" header, the second is the "untrusted" header
-func createChainedTestHeaders(t *testing.T, chainID string, trustedHeight int64, untrustedHeight int64, trustedTime time.Time, untrustedTime time.Time, numValidators int, votingPower int64) (*Header, *Header, *ValidatorSet, []ed25519.PrivKeyEd25519) {
+func createChainedTestHeaders(t *testing.T, chainID string, trustedHeight int64, untrustedHeight int64, trustedTime time.Time, untrustedTime time.Time, numValidators int, votingPower int64) (*Header, *Header, *ValidatorSet, []crypto.PrivKey) {
 	t.Helper()
 
 	valSet, privKeys := createTestValidatorSet(numValidators, votingPower)
