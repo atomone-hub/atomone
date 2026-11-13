@@ -10,8 +10,11 @@
 - Consume failed-tx gas in dynamic fee pricing [#364](https://github.com/atomone-hub/atomone/pull/364)
 - Defer `x/coredaos` `MsgVetoProposal` deposit/vote cleanup to the module `EndBlocker` [#365](https://github.com/atomone-hub/atomone/pull/365)
 - Always validate quorum check params [#371](https://github.com/atomone-hub/atomone/pull/371)
+- Align the `x/gov` and `x/coredaos` LegacyAmino registrations with the proto `amino.name` [#387](https://github.com/atomone-hub/atomone/pull/387)
 
 ### DEPENDENCIES
+
+- Bump Go to 1.26.11 and the dependencies flagged by `govulncheck` [#390](https://github.com/atomone-hub/atomone/pull/390)
 
 ### FEATURES
 
@@ -21,6 +24,8 @@
 - fix(10-gno): compare light-client trust level without int64 narrowing [#388](https://github.com/atomone-hub/atomone/pull/388)
 
 > **Note:** both `10-gno` changes only affect malformed client messages, which are now rejected with an error where they were previously either accepted (unbound validator addresses) or failed with a recovered panic (out-of-range parts total). Legitimate gno headers are unaffected. Since the transaction error code and gas used are part of the results hash, nodes on different versions would diverge on such a message, so these changes require a coordinated upgrade.
+
+- Shorten the `amino.name` of `x/coredaos` `MsgExtendVotingPeriod` to fit the Ledger name length limit [#387](https://github.com/atomone-hub/atomone/pull/387)
 
 ### IMPROVEMENTS
 
