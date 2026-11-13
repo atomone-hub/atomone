@@ -5,7 +5,7 @@ go 1.26.11
 replace (
 	cosmossdk.io/x/feegrant => cosmossdk.io/x/feegrant v0.1.1
 	cosmossdk.io/x/upgrade => github.com/atomone-hub/cosmos-sdk/x/upgrade v0.1.5-atomone.2
-	github.com/cosmos/cosmos-sdk => github.com/atomone-hub/cosmos-sdk v0.500.7-0.20261111121655-277cc1fb52f2
+	github.com/cosmos/cosmos-sdk => github.com/atomone-hub/cosmos-sdk v0.500.3-0.20261112114214-e606aa2b81b1
 	github.com/cosmos/ibc-go/v10 => github.com/cosmos/ibc-go/v10 v10.7.0
 )
 
@@ -28,7 +28,7 @@ require (
 	github.com/consensys/gnark-crypto v0.18.1
 	github.com/cosmos/cosmos-db v1.1.3
 	github.com/cosmos/cosmos-proto v1.0.0-beta.5
-	github.com/cosmos/cosmos-sdk v0.53.4
+	github.com/cosmos/cosmos-sdk v0.500.0
 	github.com/cosmos/go-bip39 v1.0.0
 	github.com/cosmos/gogoproto v1.7.2
 	github.com/cosmos/ibc-go/v10 v10.7.0
@@ -288,3 +288,5 @@ replace (
 	// replace broken cosmos-sdk dep
 	nhooyr.io/websocket => github.com/coder/websocket v1.8.6
 )
+
+replace cosmossdk.io/x/evidence => github.com/atomone-hub/cosmos-sdk/x/evidence v0.1.2-0.20261112114214-e606aa2b81b1
