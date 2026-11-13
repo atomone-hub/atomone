@@ -7,7 +7,7 @@ import (
 	_ "mvdan.cc/gofumpt"
 
 	// linter
-	_ "github.com/golangci/golangci-lint/cmd/golangci-lint"
+	_ "github.com/golangci/golangci-lint/v2/cmd/golangci-lint"
 
 	// mocks
 	_ "github.com/golang/mock/mockgen"
