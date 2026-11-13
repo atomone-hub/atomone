@@ -21,6 +21,7 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgProposeLaw{}, "atomone/x/gov/v1/MsgProposeLaw")
 	legacy.RegisterAminoMsg(cdc, &MsgCreateGovernor{}, "atomone/v1/MsgCreateGovernor")
 	legacy.RegisterAminoMsg(cdc, &MsgEditGovernor{}, "atomone/v1/MsgEditGovernor")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateGovernorStatus{}, "atomone/v1/MsgUpdateGovernorStatus")
 	legacy.RegisterAminoMsg(cdc, &MsgDelegateGovernor{}, "atomone/v1/MsgDelegateGovernor")
 	legacy.RegisterAminoMsg(cdc, &MsgUndelegateGovernor{}, "atomone/v1/MsgUndelegateGovernor")
 }
@@ -38,6 +39,7 @@ func RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 		&MsgProposeLaw{},
 		&MsgCreateGovernor{},
 		&MsgEditGovernor{},
+		&MsgUpdateGovernorStatus{},
 		&MsgDelegateGovernor{},
 		&MsgUndelegateGovernor{},
 	)
