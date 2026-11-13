@@ -1,7 +1,6 @@
 package gno
 
 import (
-	"math"
 	"math/bits"
 	"strings"
 	"time"
@@ -126,10 +125,6 @@ func (cs ClientState) Validate() error {
 
 	if err := light.ValidateTrustLevel(cs.TrustLevel.ToTendermint()); err != nil {
 		return errorsmod.Wrap(ErrInvalidTrustLevel, err.Error())
-	}
-	if cs.TrustLevel.Numerator > math.MaxInt64 || cs.TrustLevel.Denominator > math.MaxInt64 {
-		return errorsmod.Wrapf(ErrInvalidTrustLevel, "trust level numerator and denominator must not exceed %d, got %d/%d",
-			int64(math.MaxInt64), cs.TrustLevel.Numerator, cs.TrustLevel.Denominator)
 	}
 	if cs.TrustingPeriod <= 0 {
 		return errorsmod.Wrap(ErrInvalidTrustingPeriod, "trusting period must be greater than zero")
