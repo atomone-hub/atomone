@@ -14,6 +14,8 @@
 
 ### DEPENDENCIES
 
+- Bump Go to 1.26.11 and the dependencies flagged by `govulncheck` [#390](https://github.com/atomone-hub/atomone/pull/390)
+
 ### FEATURES
 
 ### STATE BREAKING
