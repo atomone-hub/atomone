@@ -1,6 +1,8 @@
 package keepers
 
 import (
+	providerstypes "github.com/allinbits/vaas/x/vaas/provider/types"
+
 	icacontrollertypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/controller/types"
 	icahosttypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/host/types"
 	ibctransfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
@@ -53,6 +55,7 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 		dynamicfeetypes.StoreKey,
 		coredaostypes.StoreKey,
 		epochstypes.StoreKey,
+		providerstypes.StoreKey,
 	)
 
 	// Define transient store keys

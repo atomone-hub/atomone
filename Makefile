@@ -78,6 +78,7 @@ ifeq (,$(findstring nostrip,$(ATOMONE_BUILD_OPTIONS)))
 endif
 ifneq ($(strip $(MIN_VOTING_PERIOD)),)
 	ldflags += -X github.com/atomone-hub/atomone/x/gov/types/v1.MinVotingPeriod=$(MIN_VOTING_PERIOD)
+	ldflags += -X github.com/cosmos/cosmos-sdk/x/gov/types/v1.MinVotingPeriod=$(MIN_VOTING_PERIOD)
 endif
 ldflags += $(LDFLAGS)
 ldflags := $(strip $(ldflags))
