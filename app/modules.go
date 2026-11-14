@@ -79,6 +79,9 @@ func (am govModuleAtomOneDefaults) DefaultGenesis(cdc codec.JSONCodec) json.RawM
 	return cdc.MustMarshalJSON(atomonegovv1.DefaultGenesisState())
 }
 
+// cosmos-sdk's module manager still takes the deprecated module.AppModule.
+//
+//nolint:staticcheck
 func appModules(
 	app *AtomOneApp,
 	appCodec codec.Codec,
