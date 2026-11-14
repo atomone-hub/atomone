@@ -304,7 +304,7 @@ func migrateQuorumCheckQueue(ctx context.Context, cdc codec.Codec, govKeeper *go
 		sb,
 		sdkgov.QuorumCheckQueuePrefix,
 		"quorum_check_queue",
-		collections.PairKeyCodec(sdk.TimeKey, collections.Uint64Key),
+		collections.PairKeyCodec(sdk.TimeKey, collections.Uint64Key), //nolint:staticcheck // the key codec the stored queue was written with
 		quorumCheckQueueEntryValueCodec(cdc),
 	)
 

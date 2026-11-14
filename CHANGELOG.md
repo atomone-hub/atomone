@@ -18,6 +18,8 @@
 
 ### FEATURES
 
+- Wire the VAAS provider module, so AtomOne leases its validator set to consumer chains over IBC v2 [#393](https://github.com/atomone-hub/atomone/pull/393)
+
 ### STATE BREAKING
 
 - fix(10-gno): bind validator addresses to pubkeys and bound PartSetHeader.Total during conversion [#367](https://github.com/atomone-hub/atomone/pull/367)

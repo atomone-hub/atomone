@@ -1,6 +1,12 @@
 package keepers
 
 import (
+	ibcprovider "github.com/allinbits/vaas/x/vaas/provider"
+	"github.com/allinbits/vaas/x/vaas/provider/govadapter"
+	ibcproviderkeeper "github.com/allinbits/vaas/x/vaas/provider/keeper"
+	providertypes "github.com/allinbits/vaas/x/vaas/provider/types"
+	vaastypes "github.com/allinbits/vaas/x/vaas/types"
+
 	ica "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts"
 	icacontroller "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/controller"
 	icacontrollerkeeper "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/controller/keeper"
@@ -102,6 +108,7 @@ type AppKeepers struct {
 	DynamicfeeKeeper      *dynamicfeekeeper.Keeper
 	CoreDaosKeeper        *coredaoskeeper.Keeper
 	EpochsKeeper          epochskeeper.Keeper
+	ProviderKeeper        ibcproviderkeeper.Keeper
 
 	// Modules
 	ICAModule       ica.AppModule
@@ -302,6 +309,33 @@ func NewAppKeeper(
 	// Register coredaos gov hooks (rejects bundling an oversight-DAO change with other messages).
 	appKeepers.GovKeeper = appKeepers.GovKeeper.SetHooks(appKeepers.CoreDaosKeeper.GovHooks())
 
+	// The VAAS provider: the chain leases its validator set to consumer
+	// chains over IBC v2. It reads x/photon's conversion rate to price the
+	// consumer fees, defers punishments behind governance's removal votes
+	// through the gov adapter, and guards the fee pools with a bank send
+	// restriction.
+	appKeepers.ProviderKeeper = ibcproviderkeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(appKeepers.keys[providertypes.StoreKey]),
+		appKeepers.IBCKeeper.ClientKeeper,
+		appKeepers.IBCKeeper.ClientV2Keeper,
+		appKeepers.IBCKeeper.ChannelKeeperV2,
+		appKeepers.StakingKeeper,
+		appKeepers.SlashingKeeper,
+		VAASPhotonRate{Photon: appKeepers.PhotonKeeper, Bank: appKeepers.BankKeeper, Staking: appKeepers.StakingKeeper},
+		appKeepers.AccountKeeper,
+		appKeepers.BankKeeper,
+		appKeepers.DistrKeeper,
+		nil, // set below, once the gov keeper is complete
+		authorityStr,
+		appCodec.InterfaceRegistry().SigningContext().ValidatorAddressCodec(),
+		addresscodec.NewBech32Codec(sdk.GetConfig().GetBech32ConsensusAddrPrefix()),
+		authtypes.FeeCollectorName,
+		photontypes.Denom,
+	)
+	appKeepers.ProviderKeeper.SetGovKeeper(govadapter.New(appKeepers.GovKeeper))
+	appKeepers.BankKeeper.AppendSendRestriction(appKeepers.ProviderKeeper.FeePoolSendRestriction())
+
 	// register the staking hooks
 	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
 	appKeepers.StakingKeeper.SetHooks(
@@ -310,6 +344,7 @@ func NewAppKeeper(
 			appKeepers.SlashingKeeper.Hooks(),
 			appKeepers.GovKeeper.StakingHooks(),
 			appKeepers.CoreDaosKeeper.StakingHooks(),
+			appKeepers.ProviderKeeper.Hooks(),
 		),
 	)
 
@@ -380,7 +415,8 @@ func NewAppKeeper(
 		AddRoute(ibctransfertypes.ModuleName, transferStack)
 
 	ibcv2Router := ibcapi.NewRouter().
-		AddRoute(ibctransfertypes.PortID, transferStackV2)
+		AddRoute(ibctransfertypes.PortID, transferStackV2).
+		AddRoute(vaastypes.ProviderAppID, ibcprovider.NewIBCModule(&appKeepers.ProviderKeeper))
 
 	appKeepers.IBCKeeper.SetRouter(ibcRouter)
 	appKeepers.IBCKeeper.SetRouterV2(ibcv2Router)

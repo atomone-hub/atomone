@@ -3,6 +3,11 @@ package atomone
 import (
 	"encoding/json"
 
+	no_valupdates_genutil "github.com/allinbits/vaas/x/vaas/no_valupdates_genutil"
+	no_valupdates_staking "github.com/allinbits/vaas/x/vaas/no_valupdates_staking"
+	ibcprovider "github.com/allinbits/vaas/x/vaas/provider"
+	providertypes "github.com/allinbits/vaas/x/vaas/provider/types"
+
 	icatypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/types"
 	ibctransfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
 	ibc "github.com/cosmos/ibc-go/v10/modules/core"
@@ -34,7 +39,6 @@ import (
 	dynamicfeetypes "github.com/cosmos/cosmos-sdk/x/dynamicfee/types"
 	"github.com/cosmos/cosmos-sdk/x/epochs"
 	epochstypes "github.com/cosmos/cosmos-sdk/x/epochs/types"
-	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	"github.com/cosmos/cosmos-sdk/x/gov"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
@@ -44,7 +48,6 @@ import (
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
-	"github.com/cosmos/cosmos-sdk/x/staking"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	"github.com/atomone-hub/atomone/x/coredaos"
@@ -67,6 +70,7 @@ var maccPerms = map[string][]string{
 	photontypes.ModuleName:         {authtypes.Minter, authtypes.Burner},
 	dynamicfeetypes.ModuleName:     nil,
 	coredaostypes.ModuleName:       nil,
+	providertypes.ModuleName:       {authtypes.Burner},
 }
 
 type govModuleAtomOneDefaults struct {
@@ -79,6 +83,9 @@ func (am govModuleAtomOneDefaults) DefaultGenesis(cdc codec.JSONCodec) json.RawM
 	return cdc.MustMarshalJSON(atomonegovv1.DefaultGenesisState())
 }
 
+// cosmos-sdk's module manager still takes the deprecated module.AppModule.
+//
+//nolint:staticcheck
 func appModules(
 	app *AtomOneApp,
 	appCodec codec.Codec,
@@ -93,7 +100,9 @@ func appModules(
 	)}
 
 	return []module.AppModule{
-		genutil.NewAppModule(
+		// The provider module hands CometBFT the validator set, so genutil
+		// and staking run without their own validator updates.
+		no_valupdates_genutil.NewAppModule(
 			app.AccountKeeper,
 			app.StakingKeeper,
 			app.BaseApp,
@@ -107,7 +116,8 @@ func appModules(
 		mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper, nil, app.GetSubspace(minttypes.ModuleName)),
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(slashingtypes.ModuleName), app.interfaceRegistry),
 		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(distrtypes.ModuleName)),
-		staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
+		no_valupdates_staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
+		ibcprovider.NewAppModule(&app.ProviderKeeper),
 		photon.NewAppModule(appCodec, *app.PhotonKeeper, app.BankKeeper, app.AccountKeeper, app.StakingKeeper),
 		upgrade.NewAppModule(app.UpgradeKeeper, app.AccountKeeper.AddressCodec()),
 		evidence.NewAppModule(app.EvidenceKeeper),
@@ -164,6 +174,7 @@ func orderBeginBlockers() []string {
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		coredaostypes.ModuleName,
+		providertypes.ModuleName,
 	}
 }
 
@@ -203,6 +214,7 @@ func orderEndBlockers() []string {
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		epochstypes.ModuleName,
+		providertypes.ModuleName,
 	}
 }
 
@@ -237,5 +249,6 @@ func orderInitBlockers() []string {
 		dynamicfeetypes.ModuleName,
 		coredaostypes.ModuleName,
 		epochstypes.ModuleName,
+		providertypes.ModuleName,
 	}
 }

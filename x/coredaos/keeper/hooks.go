@@ -219,3 +219,9 @@ func oversightDaoAddressChanged(newAddr, currentAddr string) (bool, error) {
 	}
 	return !newAccAddr.Equals(currentAccAddr), nil
 }
+
+// BeforeConsensusPubKeyRotation implements stakingtypes.StakingHooks. The
+// module takes no position on a validator's consensus-key rotation.
+func (h Hooks) BeforeConsensusPubKeyRotation(context.Context, sdk.ValAddress, cryptotypes.PubKey, cryptotypes.PubKey) error {
+	return nil
+}
