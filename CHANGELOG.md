@@ -21,9 +21,7 @@
 ### STATE BREAKING
 
 - fix(10-gno): bind validator addresses to pubkeys and bound PartSetHeader.Total during conversion [#367](https://github.com/atomone-hub/atomone/pull/367)
-
-> **Note:** both `10-gno` changes only affect malformed client messages, which are now rejected with an error where they were previously either accepted (unbound validator addresses) or failed with a recovered panic (out-of-range parts total). Legitimate gno headers are unaffected. Since the transaction error code and gas used are part of the results hash, nodes on different versions would diverge on such a message, so these changes require a coordinated upgrade.
-
+- fix(10-gno): compare light-client trust level without int64 narrowing [#388](https://github.com/atomone-hub/atomone/pull/388)
 - Shorten the `amino.name` of `x/coredaos` `MsgExtendVotingPeriod` to fit the Ledger name length limit [#387](https://github.com/atomone-hub/atomone/pull/387)
 
 ### IMPROVEMENTS
