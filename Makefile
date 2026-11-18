@@ -289,7 +289,7 @@ mocks-gen:
 ###                                Linting                                  ###
 ###############################################################################
 
-golangci_lint_cmd=$(rundep) github.com/golangci/golangci-lint/cmd/golangci-lint
+golangci_lint_cmd=$(rundep) github.com/golangci/golangci-lint/v2/cmd/golangci-lint
 
 # golangci might not work properly when run with newer versions of go, so we
 # add a restriction by adding check_go_version as a dependency.
@@ -299,7 +299,7 @@ lint: check_go_version
 
 lint-fix: check_go_version
 	@echo "--> Running linter fix"
-	@$(golangci_lint_cmd) run --fix --out-format=tab --issues-exit-code=0
+	@$(golangci_lint_cmd) run --fix --timeout=10m --issues-exit-code=0
 
 format: lint-fix
 	@echo "--> Running gofumpt"
