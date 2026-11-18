@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	math "math"
+	"math/big"
 	"time"
 
 	bfttypes "github.com/gnolang/gno/tm2/pkg/bft/types"
@@ -189,6 +189,9 @@ func verifyNewHeaderAndVals(
 }
 
 func VerifyLightCommit(vals *bfttypes.ValidatorSet, chainID string, blockID bfttypes.BlockID, height int64, commit *bfttypes.Commit, trustLevel cmtmath.Fraction) error {
+	if trustLevel.Denominator == 0 {
+		return errorsmod.Wrap(ErrNewValSetCantBeTrusted, "trust level has zero denominator")
+	}
 	if err := commit.ValidateBasic(); err != nil {
 		return err
 	}
@@ -230,38 +233,17 @@ func VerifyLightCommit(vals *bfttypes.ValidatorSet, chainID string, blockID bftt
 		// }
 	}
 
-	// safely calculate voting power needed.
-	totalVotingPowerMulByNumerator, overflow := safeMul(vals.TotalVotingPower(), int64(trustLevel.Numerator))
-	if overflow {
-		return errorsmod.Wrapf(ErrNewValSetCantBeTrusted, "int64 overflow while calculating voting power needed. please provide smaller trustLevel numerator")
-	}
-	votingPowerNeeded := totalVotingPowerMulByNumerator / int64(trustLevel.Denominator)
-	if talliedVotingPower > votingPowerNeeded {
+	// tallied/total > numerator/denominator, compared exactly in arbitrary
+	// precision so no trust level or voting power can overflow or flip sign.
+	numerator := new(big.Int).SetUint64(trustLevel.Numerator)
+	denominator := new(big.Int).SetUint64(trustLevel.Denominator)
+	talliedMulByDenominator := new(big.Int).Mul(big.NewInt(talliedVotingPower), denominator)
+	totalMulByNumerator := new(big.Int).Mul(big.NewInt(vals.TotalVotingPower()), numerator)
+	if talliedMulByDenominator.Cmp(totalMulByNumerator) > 0 {
 		return nil
 	}
+	votingPowerNeeded := new(big.Int).Quo(totalMulByNumerator, denominator)
 	return errorsmod.Wrapf(ErrNewValSetCantBeTrusted, "Invalid commit -- insufficient old voting power: got %v, needed more than %v", talliedVotingPower, votingPowerNeeded)
-}
-
-func safeMul(a, b int64) (int64, bool) {
-	if a == 0 || b == 0 {
-		return 0, false
-	}
-
-	absOfB := b
-	if b < 0 {
-		absOfB = -b
-	}
-
-	absOfA := a
-	if a < 0 {
-		absOfA = -a
-	}
-
-	if absOfA > math.MaxInt64/absOfB {
-		return 0, true
-	}
-
-	return a * b, false
 }
 
 // HeaderExpired return true if the given header expired.

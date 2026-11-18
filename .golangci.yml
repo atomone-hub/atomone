@@ -1,89 +1,93 @@
+version: "2"
 run:
   tests: false
-  # timeout for analysis, e.g. 30s, 5m, default is 1m
+  # timeout for analysis, e.g. 30s, 5m, default is 0 (disabled)
   timeout: 5m
-  skip-dirs:
-    - tests/
-  skip-files:
-    - ".*\\.pb\\.go$"
-    - ".*\\.pb\\.gw\\.go$"
-    - x/gov/types/v1/wrapper.go
-    - x/gov/types/v1beta1/wrapper.go
-
 linters:
-  disable-all: true
+  default: none
   enable:
     - dogsled
     - errcheck
-    - gci
     - goconst
     - gocritic
-    - gofumpt
     - gosec
-    - gosimple
     - govet
     - ineffassign
     - misspell
     - nakedret
     - nolintlint
     - staticcheck
-    - stylecheck
-    - typecheck
     - thelper
     - unconvert
     - unparam
     - unused
-
+  settings:
+    dogsled:
+      max-blank-identifiers: 3
+    nolintlint:
+      allow-unused: false
+      require-explanation: false
+      require-specific: false
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    rules:
+      - linters:
+          - gosec
+        text: Use of weak random number generator
+      - linters:
+          - staticcheck
+        text: "ST1003:"
+      # FIXME: Disabled until golangci-lint updates stylecheck with this fix:
+      # https://github.com/dominikh/go-tools/issues/389
+      - linters:
+          - staticcheck
+        text: "ST1016:"
+      - linters:
+          - staticcheck
+        path: migrations
+        text: "SA1019:"
+      - linters:
+          - gosec
+        text: "G115: integer overflow conversion"
+      - linters:
+          - nolintlint
+        text: leading space
+    paths:
+      - tests/
+      - .*\.pb\.go$
+      - .*\.pb\.gw\.go$
+      - x/gov/types/v1/wrapper.go
+      - x/gov/types/v1beta1/wrapper.go
 issues:
-  exclude-rules:
-    - text: "Use of weak random number generator"
-      linters:
-        - gosec
-    - text: "comment on exported var"
-      linters:
-        - golint
-    - text: "don't use an underscore in package name"
-      linters:
-        - golint
-    - text: "ST1003:"
-      linters:
-        - stylecheck
-    # FIXME: Disabled until golangci-lint updates stylecheck with this fix:
-    # https://github.com/dominikh/go-tools/issues/389
-    - text: "ST1016:"
-      linters:
-        - stylecheck
-    - path: "migrations"
-      text: "SA1019:"
-      linters:
-        - staticcheck
-    - linters:
-        - gosec
-      text: "G115: integer overflow conversion"
-
   max-issues-per-linter: 10000
   max-same-issues: 10000
-
-linters-settings:
-  gci:
-    custom-order: true
-    sections:
-      - standard # Standard section: captures all standard packages.
-      - default # Default section: contains all imports that could not be matched to another section type.
-      - blank # blank imports
-      - dot # dot imports
-      - prefix(github.com/cometbft/cometbft) # comet
-      - prefix(github.com/cosmos) # cosmos org
-      - prefix(cosmossdk.io) # new modules
-      - prefix(github.com/cosmos/cosmos-sdk) # cosmos sdk
-      - prefix(github.com/atomone-hub/atomone) # AtomOne
-  dogsled:
-    max-blank-identifiers: 3
-  maligned:
-    # print struct with more effective memory layout or not, false by default
-    suggest-new: true
-  nolintlint:
-    allow-unused: false
-    allow-leading-space: true
-    require-explanation: false
-    require-specific: false
+formatters:
+  enable:
+    - gci
+    - gofumpt
+  settings:
+    gci:
+      sections:
+        - standard # Standard section: captures all standard packages.
+        - default # Default section: contains all imports that could not be matched to another section type.
+        - blank # blank imports
+        - dot # dot imports
+        - prefix(github.com/cometbft/cometbft) # comet
+        - prefix(github.com/cosmos) # cosmos org
+        - prefix(cosmossdk.io) # new modules
+        - prefix(github.com/cosmos/cosmos-sdk) # cosmos sdk
+        - prefix(github.com/atomone-hub/atomone) # AtomOne
+      custom-order: true
+  exclusions:
+    generated: lax
+    paths:
+      - tests/
+      - .*\.pb\.go$
+      - .*\.pb\.gw\.go$
+      - x/gov/types/v1/wrapper.go
+      - x/gov/types/v1beta1/wrapper.go

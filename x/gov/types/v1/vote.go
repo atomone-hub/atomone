@@ -17,8 +17,6 @@ const (
 )
 
 // NewVote creates a new Vote instance
-//
-//nolint:interfacer
 func NewVote(proposalID uint64, voter sdk.AccAddress, options WeightedVoteOptions, metadata string) Vote {
 	return Vote{ProposalId: proposalID, Voter: voter.String(), Options: options, Metadata: metadata}
 }
@@ -52,9 +50,9 @@ func (v Votes) String() string {
 		return "[]"
 	}
 	var out strings.Builder
-	out.WriteString(fmt.Sprintf("Votes for Proposal %d:", v[0].ProposalId))
+	fmt.Fprintf(&out, "Votes for Proposal %d:", v[0].ProposalId)
 	for _, vot := range v {
-		out.WriteString(fmt.Sprintf("\n  %s: %s", vot.Voter, vot.Options))
+		fmt.Fprintf(&out, "\n  %s: %s", vot.Voter, vot.Options)
 	}
 	return out.String()
 }

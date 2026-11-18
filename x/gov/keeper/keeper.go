@@ -38,7 +38,7 @@ func (keeper *Keeper) DeleteVotes(ctx sdk.Context, proposalID uint64) {
 	// Votes are stored as collections.Map[collections.Pair[uint64, sdk.AccAddress], v1.Vote]
 	// We need to clear all votes with the given proposalID prefix
 	rng := collections.NewPrefixedPairRange[uint64, sdk.AccAddress](proposalID)
-	err := keeper.Keeper.Votes.Clear(ctx, rng)
+	err := keeper.Votes.Clear(ctx, rng)
 	if err != nil {
 		panic(err)
 	}
@@ -46,7 +46,7 @@ func (keeper *Keeper) DeleteVotes(ctx sdk.Context, proposalID uint64) {
 
 // GetProposal implements GovKeeper.
 func (keeper *Keeper) GetProposal(ctx sdk.Context, id uint64) (v1.Proposal, bool) {
-	sdkProposal, err := keeper.Keeper.Proposals.Get(ctx, id)
+	sdkProposal, err := keeper.Proposals.Get(ctx, id)
 	if err != nil {
 		return v1.Proposal{}, false
 	}
@@ -59,14 +59,14 @@ func (keeper *Keeper) GetProposal(ctx sdk.Context, id uint64) (v1.Proposal, bool
 
 // GetProposalID implements GovKeeper.
 func (keeper *Keeper) GetProposalID(ctx sdk.Context) (proposalID uint64, err error) {
-	return keeper.Keeper.ProposalID.Peek(ctx)
+	return keeper.ProposalID.Peek(ctx)
 }
 
 // InsertActiveProposalQueue implements GovKeeper.
 func (keeper *Keeper) InsertActiveProposalQueue(ctx sdk.Context, proposalID uint64, endTime time.Time) {
 	// ActiveProposalsQueue is collections.Map[collections.Pair[time.Time, uint64], uint64]
 	key := collections.Join(endTime, proposalID)
-	err := keeper.Keeper.ActiveProposalsQueue.Set(ctx, key, proposalID)
+	err := keeper.ActiveProposalsQueue.Set(ctx, key, proposalID)
 	if err != nil {
 		panic(err)
 	}
@@ -92,7 +92,7 @@ func (keeper *Keeper) RefundAndDeleteDeposits(ctx sdk.Context, proposalID uint64
 func (keeper *Keeper) RemoveFromActiveProposalQueue(ctx sdk.Context, proposalID uint64, endTime time.Time) {
 	// ActiveProposalsQueue is collections.Map[collections.Pair[time.Time, uint64], uint64]
 	key := collections.Join(endTime, proposalID)
-	err := keeper.Keeper.ActiveProposalsQueue.Remove(ctx, key)
+	err := keeper.ActiveProposalsQueue.Remove(ctx, key)
 	if err != nil {
 		panic(err)
 	}
