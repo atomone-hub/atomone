@@ -8,8 +8,6 @@ import (
 )
 
 // NewDeposit creates a new Deposit instance
-//
-//nolint:interfacer
 func NewDeposit(proposalID uint64, depositor sdk.AccAddress, amount sdk.Coins) Deposit {
 	return Deposit{proposalID, depositor.String(), amount}
 }
@@ -38,9 +36,9 @@ func (d Deposits) String() string {
 		return "[]"
 	}
 	var out strings.Builder
-	out.WriteString(fmt.Sprintf("Deposits for Proposal %d:", d[0].ProposalId))
+	fmt.Fprintf(&out, "Deposits for Proposal %d:", d[0].ProposalId)
 	for _, dep := range d {
-		out.WriteString(fmt.Sprintf("\n  %s: %s", dep.Depositor, dep.Amount))
+		fmt.Fprintf(&out, "\n  %s: %s", dep.Depositor, dep.Amount)
 	}
 	return out.String()
 }

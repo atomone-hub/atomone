@@ -337,7 +337,7 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 		quorumMin := math.LegacyMustNewDecFromStr(quorumRange.Min)
 		quorumMax := math.LegacyMustNewDecFromStr(quorumRange.Max)
 		currentQuorum := math.LegacyMustNewDecFromStr(quorums.GetQuorum())
-		quorumPEma := (currentQuorum.Sub(quorumMin)).Quo(quorumMax.Sub(quorumMin))
+		quorumPEma := currentQuorum.Sub(quorumMin).Quo(quorumMax.Sub(quorumMin))
 		s.writeTextProposal(s.chainA)
 		proposalCounter++
 		submitGovFlags := []string{configFile(proposalTextFilename)}
@@ -348,7 +348,7 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "Text", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1.StatusPassed)
 		quorumsAfter := s.queryGovQuorums(chainAAPIEndpoint)
 		endQuorum := math.LegacyMustNewDecFromStr(quorumsAfter.GetQuorum())
-		endQuorumPEma := (endQuorum.Sub(quorumMin)).Quo(quorumMax.Sub(quorumMin))
+		endQuorumPEma := endQuorum.Sub(quorumMin).Quo(quorumMax.Sub(quorumMin))
 		expectedParticipation := endQuorumPEma.Sub(quorumPEma.Mul(math.LegacyMustNewDecFromStr("0.8"))).Quo(math.LegacyMustNewDecFromStr("0.2"))
 		proposal, _ := s.queryGovProposal(chainAAPIEndpoint, proposalCounter)
 		stakingPool := s.queryStakingPool(chainAAPIEndpoint)
@@ -375,7 +375,7 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 		lawQuorumMin := math.LegacyMustNewDecFromStr(lawQuorumRange.Min)
 		lawQuorumMax := math.LegacyMustNewDecFromStr(lawQuorumRange.Max)
 		currentLawQuorum := math.LegacyMustNewDecFromStr(quorums.GetLawQuorum())
-		lawQuorumPEma := (currentLawQuorum.Sub(lawQuorumMin)).Quo(lawQuorumMax.Sub(lawQuorumMin))
+		lawQuorumPEma := currentLawQuorum.Sub(lawQuorumMin).Quo(lawQuorumMax.Sub(lawQuorumMin))
 		s.writeGovLawProposal(s.chainA)
 		proposalCounter++
 		submitGovFlags := []string{configFile(proposalLawFilename)}
@@ -388,7 +388,7 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 			"vote", govtypesv1.StatusPassed)
 		quorumsAfter := s.queryGovQuorums(chainAAPIEndpoint)
 		endLawQuorum := math.LegacyMustNewDecFromStr(quorumsAfter.GetLawQuorum())
-		endLawQuorumPEma := (endLawQuorum.Sub(lawQuorumMin)).Quo(lawQuorumMax.Sub(lawQuorumMin))
+		endLawQuorumPEma := endLawQuorum.Sub(lawQuorumMin).Quo(lawQuorumMax.Sub(lawQuorumMin))
 		expectedParticipation := endLawQuorumPEma.Sub(lawQuorumPEma.Mul(math.LegacyMustNewDecFromStr("0.8"))).Quo(math.LegacyMustNewDecFromStr("0.2"))
 		proposal, _ := s.queryGovProposal(chainAAPIEndpoint, proposalCounter)
 		stakingPool := s.queryStakingPool(chainAAPIEndpoint)
@@ -415,7 +415,7 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 		constitutionAmendmentQuorumMin := math.LegacyMustNewDecFromStr(constitutionAmendmentQuorumRange.Min)
 		constitutionAmendmentQuorumMax := math.LegacyMustNewDecFromStr(constitutionAmendmentQuorumRange.Max)
 		currentConstitutionAmendmentQuorum := math.LegacyMustNewDecFromStr(quorums.GetConstitutionAmendmentQuorum())
-		constitutionAmendmentQuorumPEma := (currentConstitutionAmendmentQuorum.Sub(constitutionAmendmentQuorumMin)).Quo(constitutionAmendmentQuorumMax.Sub(constitutionAmendmentQuorumMin))
+		constitutionAmendmentQuorumPEma := currentConstitutionAmendmentQuorum.Sub(constitutionAmendmentQuorumMin).Quo(constitutionAmendmentQuorumMax.Sub(constitutionAmendmentQuorumMin))
 		newConstitution := "New test constitution 2"
 		amendmentMsg := s.generateConstitutionAmendment(s.chainA, newConstitution)
 		s.writeGovConstitutionAmendmentProposal(s.chainA, amendmentMsg.Amendment)
@@ -428,7 +428,7 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "gov/MsgSubmitProposal", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1.StatusPassed)
 		quorumsAfter := s.queryGovQuorums(chainAAPIEndpoint)
 		endConstitutionAmendmentQuorum := math.LegacyMustNewDecFromStr(quorumsAfter.GetConstitutionAmendmentQuorum())
-		endConstitutionAmendmentQuorumPEma := (endConstitutionAmendmentQuorum.Sub(constitutionAmendmentQuorumMin)).Quo(constitutionAmendmentQuorumMax.Sub(constitutionAmendmentQuorumMin))
+		endConstitutionAmendmentQuorumPEma := endConstitutionAmendmentQuorum.Sub(constitutionAmendmentQuorumMin).Quo(constitutionAmendmentQuorumMax.Sub(constitutionAmendmentQuorumMin))
 		expectedParticipation := endConstitutionAmendmentQuorumPEma.Sub(constitutionAmendmentQuorumPEma.Mul(math.LegacyMustNewDecFromStr("0.8"))).Quo(math.LegacyMustNewDecFromStr("0.2"))
 		proposal, _ := s.queryGovProposal(chainAAPIEndpoint, proposalCounter)
 		stakingPool := s.queryStakingPool(chainAAPIEndpoint)

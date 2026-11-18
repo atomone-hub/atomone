@@ -110,9 +110,9 @@ func (p Proposals) String() string {
 	var out strings.Builder
 	out.WriteString("ID - (Status) [Type] Title\n")
 	for _, prop := range p {
-		out.WriteString(fmt.Sprintf("%d - (%s) [%s] %s\n",
+		fmt.Fprintf(&out, "%d - (%s) [%s] %s\n",
 			prop.ProposalId, prop.Status,
-			prop.ProposalType(), prop.GetTitle()))
+			prop.ProposalType(), prop.GetTitle())
 	}
 	return strings.TrimSpace(out.String())
 }
