@@ -5,10 +5,7 @@ go 1.26.11
 replace (
 	cosmossdk.io/x/feegrant => cosmossdk.io/x/feegrant v0.1.1
 	cosmossdk.io/x/upgrade => github.com/atomone-hub/cosmos-sdk/x/upgrade v0.1.5-atomone.2
-	// atomone-sdk main (e606aa2) until its next release: the VAAS provider needs
-	// the pre-rotation staking hook, x/evidence ignoring evidence for unknown
-	// validators and the genesis round trip of consensus-key rotations.
-	github.com/cosmos/cosmos-sdk => github.com/atomone-hub/cosmos-sdk v0.500.3-0.20261112114214-e606aa2b81b1
+	github.com/cosmos/cosmos-sdk => github.com/atomone-hub/cosmos-sdk v0.500.3-0.20261113143351-ee379fe63faa
 	github.com/cosmos/ibc-go/v10 => github.com/cosmos/ibc-go/v10 v10.7.0
 )
 
@@ -294,4 +291,4 @@ replace (
 	nhooyr.io/websocket => github.com/coder/websocket v1.8.6
 )
 
-replace cosmossdk.io/x/evidence => github.com/atomone-hub/cosmos-sdk/x/evidence v0.1.2-0.20261112114214-e606aa2b81b1
+replace cosmossdk.io/x/evidence => github.com/atomone-hub/cosmos-sdk/x/evidence v0.1.2-0.20261113143351-ee379fe63faa

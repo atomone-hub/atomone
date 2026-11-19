@@ -10,8 +10,6 @@ import (
 
 	abci "github.com/cometbft/cometbft/abci/types"
 
-	"cosmossdk.io/core/appmodule"
-
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
@@ -24,7 +22,7 @@ import (
 )
 
 var (
-	_ appmodule.AppModule   = AppModule{}
+	_ module.AppModule      = AppModule{} //nolint:staticcheck // SA1019
 	_ module.AppModuleBasic = AppModuleBasic{}
 )
 

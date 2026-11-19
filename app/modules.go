@@ -83,14 +83,11 @@ func (am govModuleAtomOneDefaults) DefaultGenesis(cdc codec.JSONCodec) json.RawM
 	return cdc.MustMarshalJSON(atomonegovv1.DefaultGenesisState())
 }
 
-// cosmos-sdk's module manager still takes the deprecated module.AppModule.
-//
-//nolint:staticcheck
 func appModules(
 	app *AtomOneApp,
 	appCodec codec.Codec,
 	txConfig client.TxConfig,
-) []module.AppModule {
+) []module.AppModule { //nolint:staticcheck // SA1019
 	govModule := govModuleAtomOneDefaults{gov.NewAppModule(
 		appCodec,
 		app.GovKeeper,
@@ -99,7 +96,7 @@ func appModules(
 		app.GetSubspace(govtypes.ModuleName),
 	)}
 
-	return []module.AppModule{
+	return []module.AppModule{ //nolint:staticcheck // SA1019
 		// The provider module hands CometBFT the validator set, so genutil
 		// and staking run without their own validator updates.
 		no_valupdates_genutil.NewAppModule(

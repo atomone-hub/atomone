@@ -15,6 +15,7 @@
 ### DEPENDENCIES
 
 - Bump Go to 1.26.11 and the dependencies flagged by `govulncheck` [#390](https://github.com/atomone-hub/atomone/pull/390)
+- Bump the AtomOne SDK to a version with time-based minting [#389](https://github.com/atomone-hub/atomone/pull/389)
 
 ### FEATURES
 
@@ -22,6 +23,7 @@
 
 ### STATE BREAKING
 
+- Mint ATONE in proportion to elapsed block time, capped at the new `max_block_elapsed` param (ADR-007) [#389](https://github.com/atomone-hub/atomone/pull/389)
 - fix(10-gno): bind validator addresses to pubkeys and bound PartSetHeader.Total during conversion [#367](https://github.com/atomone-hub/atomone/pull/367)
 - fix(10-gno): compare light-client trust level without int64 narrowing [#388](https://github.com/atomone-hub/atomone/pull/388)
 - Shorten the `amino.name` of `x/coredaos` `MsgExtendVotingPeriod` to fit the Ledger name length limit [#387](https://github.com/atomone-hub/atomone/pull/387)
