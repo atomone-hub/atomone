@@ -83,7 +83,7 @@ func appModules(
 	app *AtomOneApp,
 	appCodec codec.Codec,
 	txConfig client.TxConfig,
-) []module.AppModule {
+) []module.AppModule { //nolint:staticcheck // SA1019
 	govModule := govModuleAtomOneDefaults{gov.NewAppModule(
 		appCodec,
 		app.GovKeeper,
@@ -92,7 +92,7 @@ func appModules(
 		app.GetSubspace(govtypes.ModuleName),
 	)}
 
-	return []module.AppModule{
+	return []module.AppModule{ //nolint:staticcheck // SA1019
 		genutil.NewAppModule(
 			app.AccountKeeper,
 			app.StakingKeeper,

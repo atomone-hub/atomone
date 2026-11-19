@@ -7,7 +7,7 @@
 
 ## Status
 
-DRAFT
+Implemented (https://github.com/atomone-hub/atomone-sdk/pull/10), (https://github.com/atomone-hub/atomone-sdk/pull/44), (https://github.com/atomone-hub/atomone-sdk/pull/60), (https://github.com/atomone-hub/atomone-sdk/pull/63), (https://github.com/atomone-hub/atomone/pull/323)
 
 ## Abstract
 

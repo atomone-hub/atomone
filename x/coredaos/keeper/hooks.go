@@ -80,6 +80,11 @@ func (h Hooks) AfterConsensusPubKeyUpdate(ctx context.Context, oldPk, newPk cryp
 	return nil
 }
 
+// BeforeConsensusPubKeyRotation is called before a validator rotates its consensus key.
+func (h Hooks) BeforeConsensusPubKeyRotation(context.Context, sdk.ValAddress, cryptotypes.PubKey, cryptotypes.PubKey) error {
+	return nil
+}
+
 // validateDelegation checks if the delegation is being performed by a core DAO
 // and returns an error if it is, since by Constitution, core DAOs cannot stake.
 func validateDelegation(params types.Params, delAddr sdk.AccAddress) error {
