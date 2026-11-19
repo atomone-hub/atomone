@@ -19,6 +19,8 @@
 
 ### FEATURES
 
+- Build `atomoned` without CGO or the `ledger` build tag, relying on the SDK's CGO-free Ledger support ([atomone-sdk#127](https://github.com/atomone-hub/atomone-sdk/pull/127)) [#372](https://github.com/atomone-hub/atomone/pull/372)
+
 ### STATE BREAKING
 
 - Mint ATONE in proportion to elapsed block time, capped at the new `max_block_elapsed` param (ADR-007) [#389](https://github.com/atomone-hub/atomone/pull/389)
