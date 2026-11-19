@@ -19,6 +19,8 @@
 
 ### FEATURES
 
+- Wire the VAAS provider module, so AtomOne leases its validator set to consumer chains over IBC v2 [#393](https://github.com/atomone-hub/atomone/pull/393)
+
 ### STATE BREAKING
 
 - Mint ATONE in proportion to elapsed block time, capped at the new `max_block_elapsed` param (ADR-007) [#389](https://github.com/atomone-hub/atomone/pull/389)

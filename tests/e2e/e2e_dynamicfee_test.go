@@ -87,8 +87,11 @@ func (s *IntegrationTestSuite) testDynamicfeeGasPriceChange() {
 			destAccounts = append(destAccounts, address.String())
 		}
 
+		// 500 rounds of the 7 accounts: about 35M gas, above the dynamicfee
+		// target (half of the 60M block cap) and, at the 1.5 gas adjustment,
+		// under the cap. Every output pays a bank send-restriction lookup.
 		var destAccountsMultisend []string
-		for range 600 {
+		for range 500 {
 			for j := range len(destAccounts) {
 				destAccountsMultisend = append(destAccountsMultisend, destAccounts[j])
 			}
