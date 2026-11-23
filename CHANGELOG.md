@@ -13,6 +13,8 @@
 
 ### DEPENDENCIES
 
+- Bump CometBFT to v0.38.26 [#395](https://github.com/atomone-hub/atomone/pull/395)
+
 ### FEATURES
 
 ### STATE BREAKING
