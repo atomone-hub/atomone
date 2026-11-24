@@ -16,6 +16,7 @@
 
 - Bump Go to 1.26.11 and the dependencies flagged by `govulncheck` [#390](https://github.com/atomone-hub/atomone/pull/390)
 - Bump the AtomOne SDK to a version with time-based minting [#389](https://github.com/atomone-hub/atomone/pull/389)
+- Bump CometBFT to v0.38.25 [#394](https://github.com/atomone-hub/atomone/pull/394)
 
 ### FEATURES
 
