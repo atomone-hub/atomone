@@ -101,7 +101,7 @@ func appModules(
 		),
 		auth.NewAppModule(appCodec, app.AccountKeeper, nil, app.GetSubspace(authtypes.ModuleName)),
 		vesting.NewAppModule(app.AccountKeeper, app.BankKeeper),
-		bank.NewAppModule(appCodec, app.BankKeeper, app.AccountKeeper, app.GetSubspace(banktypes.ModuleName)),
+		bank.NewAppModule(appCodec, app.BankServiceKeeper, app.AccountKeeper, app.GetSubspace(banktypes.ModuleName)),
 		govModule,
 		atomonegov.NewAppModule(appCodec, app.GovKeeperWrapper, app.AccountKeeper),
 		mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper, nil, app.GetSubspace(minttypes.ModuleName)),

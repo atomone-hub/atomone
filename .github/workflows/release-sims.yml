@@ -56,7 +56,7 @@ jobs:
           key: ${{ runner.os }}-go-runsim-binary
       - name: test-sim-multi-seed-long
         run: |
-          make test-sim-multi-seed-long
+          GOFLAGS=-tags=recoverylock_test make test-sim-multi-seed-long
 
   test-sim-nondeterminism:
     runs-on: ubuntu-latest
@@ -79,5 +79,5 @@ jobs:
         if: "env.GIT_DIFF != ''"
       - name: test nondeterminism
         run: |
-          make test-sim-nondeterminism
+          GOFLAGS=-tags=recoverylock_test make test-sim-nondeterminism
         if: "env.GIT_DIFF != ''"

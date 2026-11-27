@@ -38,4 +38,4 @@ jobs:
           key: ${{ runner.os }}-go-runsim-binary
       - name: test nondeterminism
         run: |
-          make test-sim-nondeterminism
+          GOFLAGS=-tags=recoverylock_test make test-sim-nondeterminism

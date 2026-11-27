@@ -21,6 +21,7 @@ concurrency:
 
 jobs:
   tests:
+    name: Fixture unit tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -38,6 +39,8 @@ jobs:
             **/go.sum
             **/Makefile
             Makefile
+            app/recoverylock/**
+            .github/workflows/test.yml
       - uses: actions/cache@v4
         with:
           path: |
@@ -49,12 +52,22 @@ jobs:
       - name: test & coverage report creation
         if: env.GIT_DIFF
         run: |
-          go test -v -coverprofile=profile.out -covermode=atomic -coverpkg=./... $(go list ./... | grep -v -e '/tests/e2e')
+          go test -tags=recoverylock_test -v -coverprofile=profile.out -covermode=atomic -coverpkg=./... $(go list -tags=recoverylock_test ./... | grep -v -e '/tests/e2e')
       - uses: actions/upload-artifact@v4
         if: env.GIT_DIFF
         with:
           name: "${{ github.sha }}-coverage"
           path: ./profile.out
+
+  release-manifest-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - name: Test release manifest validation
+        run: go test ./app/recoverylock/...
 
   test-e2e:
     runs-on: ubuntu-latest
@@ -118,11 +131,11 @@ jobs:
             go.sum
       - name: Install AtomOne
         run: |
-          make build
+          make build BUILD_TAGS=recoverylock_test
         if: env.GIT_DIFF
       - name: Start Local Network
         run: |
-          make localnet-start > liveness.out 2>&1 &
+          make localnet-start BUILD_TAGS=recoverylock_test > liveness.out 2>&1 &
         if: env.GIT_DIFF
       - name: Test Local Network Liveness
         run: |

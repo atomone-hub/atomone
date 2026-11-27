@@ -1,0 +1,9 @@
+{
+  "chain_id": "atomone-1",
+  "recovery_address": "atone1ng0kmvd2rz7mzh9x6227n8mqc43whn58xnf6e2",
+  "fee_payers": [
+    "atone1mhwea2pnk7td6pt44fwl2r8vx4nhm2dc03mldr"
+  ],
+  "list_count": 5725,
+  "list_sha256": "ad653663e3b9d4afba1784d1d9f9e8d0e0ac15a75e2787586b205d014e3c680b"
+}

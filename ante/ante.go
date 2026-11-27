@@ -29,6 +29,7 @@ type HandlerOptions struct {
 	TxFeeChecker     ante.TxFeeChecker
 	DynamicfeeKeeper *dynamicfeekeeper.Keeper
 	CoreDAOsKeeper   CoredaosParamsGetter
+	RecoveryLock     sdk.AnteDecorator
 }
 
 func NewAnteHandler(opts HandlerOptions) (sdk.AnteHandler, error) {
@@ -73,6 +74,11 @@ func NewAnteHandler(opts HandlerOptions) (sdk.AnteHandler, error) {
 		ante.NewIncrementSequenceDecorator(opts.AccountKeeper),
 		ante.NewValidateMemoDecorator(opts.AccountKeeper),
 		ante.NewConsumeGasForTxSizeDecorator(opts.AccountKeeper),
+	}
+	if opts.RecoveryLock != nil {
+		anteDecorators = append(anteDecorators, opts.RecoveryLock)
+	}
+	anteDecorators = append(anteDecorators,
 		photonante.NewValidateFeeDecorator(opts.PhotonKeeper),
 		dynamicfeeante.NewDynamicfeeCheckDecorator(
 			opts.AccountKeeper,
@@ -89,7 +95,7 @@ func NewAnteHandler(opts HandlerOptions) (sdk.AnteHandler, error) {
 		NewGovVoteDecorator(opts.Codec, opts.StakingKeeper),
 		NewGovSubmitProposalDecorator(opts.Codec, opts.CoreDAOsKeeper),
 		ibcante.NewRedundantRelayDecorator(opts.IBCkeeper),
-	}
+	)
 
 	return sdk.ChainAnteDecorators(anteDecorators...), nil
 }

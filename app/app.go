@@ -277,6 +277,7 @@ func NewAtomOneApp(
 			TxFeeChecker:     nil,
 			DynamicfeeKeeper: app.DynamicfeeKeeper,
 			CoreDAOsKeeper:   app.CoreDaosKeeper,
+			RecoveryLock:     app.RecoveryLock,
 		},
 	)
 	if err != nil {

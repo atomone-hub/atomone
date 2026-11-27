@@ -64,6 +64,7 @@ import (
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
+	"github.com/atomone-hub/atomone/app/recoverylock"
 	ibcgno "github.com/atomone-hub/atomone/modules/10-gno"
 	coredaoskeeper "github.com/atomone-hub/atomone/x/coredaos/keeper"
 	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
@@ -79,16 +80,19 @@ type AppKeepers struct {
 	memKeys map[string]*storetypes.MemoryStoreKey
 
 	// keepers
-	AccountKeeper    authkeeper.AccountKeeper
-	BankKeeper       bankkeeper.Keeper
-	StakingKeeper    *stakingkeeper.Keeper
-	SlashingKeeper   slashingkeeper.Keeper
-	MintKeeper       mintkeeper.Keeper
-	DistrKeeper      distrkeeper.Keeper
-	GovKeeper        *govkeeper.Keeper
-	GovKeeperWrapper *atomonegovkeeper.Keeper
-	UpgradeKeeper    *upgradekeeper.Keeper
-	ParamsKeeper     paramskeeper.Keeper
+	AccountKeeper authkeeper.AccountKeeper
+	BankKeeper    bankkeeper.Keeper
+	// BankServiceKeeper is concrete because the SDK bank service and migrations require it.
+	BankServiceKeeper bankkeeper.BaseKeeper
+	RecoveryLock      *recoverylock.Lock
+	StakingKeeper     *stakingkeeper.Keeper
+	SlashingKeeper    slashingkeeper.Keeper
+	MintKeeper        mintkeeper.Keeper
+	DistrKeeper       distrkeeper.Keeper
+	GovKeeper         *govkeeper.Keeper
+	GovKeeperWrapper  *atomonegovkeeper.Keeper
+	UpgradeKeeper     *upgradekeeper.Keeper
+	ParamsKeeper      paramskeeper.Keeper
 	// IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
 	IBCKeeper             *ibckeeper.Keeper
 	ICAHostKeeper         icahostkeeper.Keeper
@@ -158,7 +162,7 @@ func NewAppKeeper(
 		authorityStr,
 	)
 
-	appKeepers.BankKeeper = bankkeeper.NewBaseKeeper(
+	appKeepers.BankServiceKeeper = bankkeeper.NewBaseKeeper(
 		appCodec,
 		runtime.NewKVStoreService(appKeepers.keys[banktypes.StoreKey]),
 		appKeepers.AccountKeeper,
@@ -167,10 +171,17 @@ func NewAppKeeper(
 		logger,
 	)
 
+	cfg, chainID := recoverylock.MustLoad(maccPerms, logger)
+	// The lock reads distribution state after the keeper is initialized below.
+	appKeepers.RecoveryLock = recoverylock.New(cfg, chainID, appCodec, &appKeepers.DistrKeeper, bApp.LastBlockHeight)
+	appKeepers.BankServiceKeeper.AppendSendRestriction(appKeepers.RecoveryLock.SendRestriction)
+	appKeepers.BankKeeper = recoverylock.Bank{Keeper: appKeepers.BankServiceKeeper, Lock: appKeepers.RecoveryLock}
+	guardedRouter := recoverylock.Router{Inner: bApp.MsgServiceRouter(), Lock: appKeepers.RecoveryLock}
+
 	appKeepers.AuthzKeeper = authzkeeper.NewKeeper(
 		runtime.NewKVStoreService(appKeepers.keys[authzkeeper.StoreKey]),
 		appCodec,
-		bApp.MsgServiceRouter(),
+		guardedRouter,
 		appKeepers.AccountKeeper,
 	)
 
@@ -264,7 +275,7 @@ func NewAppKeeper(
 		appKeepers.BankKeeper,
 		appKeepers.StakingKeeper,
 		appKeepers.DistrKeeper,
-		bApp.MsgServiceRouter(),
+		guardedRouter,
 		govConfig,
 		authorityStr,
 	)
@@ -302,6 +313,7 @@ func NewAppKeeper(
 	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
 	appKeepers.StakingKeeper.SetHooks(
 		stakingtypes.NewMultiStakingHooks(
+			recoverylock.StakingHooks{Lock: appKeepers.RecoveryLock},
 			appKeepers.DistrKeeper.Hooks(),
 			appKeepers.SlashingKeeper.Hooks(),
 			appKeepers.GovKeeper.StakingHooks(),
@@ -317,7 +329,7 @@ func NewAppKeeper(
 		appKeepers.IBCKeeper.ChannelKeeper, // ICS4Wrapper
 		appKeepers.IBCKeeper.ChannelKeeper,
 		appKeepers.AccountKeeper,
-		bApp.MsgServiceRouter(),
+		guardedRouter,
 		bApp.GRPCQueryRouter(),
 		authorityStr,
 	)
@@ -328,7 +340,7 @@ func NewAppKeeper(
 		appKeepers.GetSubspace(icacontrollertypes.SubModuleName),
 		appKeepers.IBCKeeper.ChannelKeeper, // ICS4Wrapper
 		appKeepers.IBCKeeper.ChannelKeeper,
-		bApp.MsgServiceRouter(),
+		guardedRouter,
 		authorityStr,
 	)
 
@@ -338,7 +350,7 @@ func NewAppKeeper(
 		appKeepers.GetSubspace(ibctransfertypes.ModuleName),
 		appKeepers.IBCKeeper.ChannelKeeper,
 		appKeepers.IBCKeeper.ChannelKeeper,
-		bApp.MsgServiceRouter(),
+		guardedRouter,
 		appKeepers.AccountKeeper,
 		appKeepers.BankKeeper,
 		authorityStr,

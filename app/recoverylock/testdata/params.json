@@ -1,0 +1,16 @@
+{
+  "chain_id": "atomone-recovery-test",
+  "recovery_address": "atone1zfp6f5g5qekvekrluhc8u4kgvchshw3p5peh9c",
+  "fee_payers": [
+    "atone1j5e9me03snhljxv3vzgkwdeuxvprdvvjqjqlv8"
+  ],
+  "activation_height": 1000000000,
+  "expiry_time": 4102444800,
+  "activation_time_estimate": 0,
+  "unbonding_seconds": 0,
+  "estimate_ref_height": 0,
+  "estimate_ref_time": 0,
+  "list_sha256": "cf2b639b41d8fd385f0f998bc4b9e7ef2848423231e8a2e5716242fbe485f7a3",
+  "list_count": 2,
+  "test_values": true
+}
